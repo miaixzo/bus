@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.logger.metric.apache.log4j;
 
+import java.io.Serial;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.AbstractLogger;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.magic.AbstractProvider;
-
-import java.io.Serial;
 
 /**
  * A logger provider implementation that wraps an {@link org.apache.logging.log4j.Logger} instance.

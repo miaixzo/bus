@@ -24,34 +24,35 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.ibatis.plugin.Interceptor;
+import org.springframework.core.env.Environment;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.feature.audit.AuditConfig;
+import org.miaixz.bus.mapper.feature.audit.AuditHandler;
+import org.miaixz.bus.mapper.feature.audit.AuditProvider;
+import org.miaixz.bus.mapper.feature.operation.OperationHandler;
+import org.miaixz.bus.mapper.feature.paging.PageHandler;
+import org.miaixz.bus.mapper.feature.populate.PopulateConfig;
+import org.miaixz.bus.mapper.feature.populate.PopulateHandler;
+import org.miaixz.bus.mapper.feature.populate.PopulateProvider;
+import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
+import org.miaixz.bus.mapper.feature.prefix.TablePrefixHandler;
+import org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider;
+import org.miaixz.bus.mapper.feature.tenant.TenantConfig;
+import org.miaixz.bus.mapper.feature.tenant.TenantHandler;
+import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
+import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
+import org.miaixz.bus.mapper.feature.visible.VisibleHandler;
+import org.miaixz.bus.mapper.feature.visible.VisibleProvider;
 import org.miaixz.bus.mapper.handler.MapperHandler;
 import org.miaixz.bus.mapper.handler.MybatisInterceptor;
-import org.miaixz.bus.mapper.support.audit.AuditConfig;
-import org.miaixz.bus.mapper.support.audit.AuditHandler;
-import org.miaixz.bus.mapper.support.audit.AuditProvider;
-import org.miaixz.bus.mapper.support.operation.OperationHandler;
-import org.miaixz.bus.mapper.support.paging.PageHandler;
-import org.miaixz.bus.mapper.support.populate.PopulateConfig;
-import org.miaixz.bus.mapper.support.populate.PopulateHandler;
-import org.miaixz.bus.mapper.support.populate.PopulateProvider;
-import org.miaixz.bus.mapper.support.prefix.TablePrefixConfig;
-import org.miaixz.bus.mapper.support.prefix.TablePrefixHandler;
-import org.miaixz.bus.mapper.support.prefix.TablePrefixProvider;
-import org.miaixz.bus.mapper.support.tenant.TenantConfig;
-import org.miaixz.bus.mapper.support.tenant.TenantHandler;
-import org.miaixz.bus.mapper.support.tenant.TenantProvider;
-import org.miaixz.bus.mapper.support.visible.VisibleConfig;
-import org.miaixz.bus.mapper.support.visible.VisibleHandler;
-import org.miaixz.bus.mapper.support.visible.VisibleProvider;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.SpringBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
-import org.springframework.core.env.Environment;
 
 /**
  * A builder for creating and configuring MyBatis {@link Interceptor} instances.
@@ -200,6 +201,7 @@ public class MapperPluginBuilder {
 
         // Check for simplified tenant configuration (bus.mapper.tenant.*)
         MapperProperties.TenantProperties tenantProps = properties != null ? properties.getTenant() : null;
+        MapperProperties.PrefixProperties prefixProps = properties != null ? properties.getPrefix() : null;
 
         // Check if explicitly disabled
         if (tenantProps != null && !tenantProps.isEnabled()) {
@@ -229,6 +231,11 @@ public class MapperPluginBuilder {
                         defaultKey + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT + Args.PROP_IGNORE,
                         tenantProps.getIgnore());
             }
+            if (prefixProps != null && StringKit.isNotEmpty(prefixProps.getPrefix())) {
+                props.setProperty(
+                        defaultKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
+                        prefixProps.getPrefix());
+            }
         } else if (hasConfigFile) {
             Logger.info(false, "Starter", "Loading tenant config from configuration file");
             props.putAll(properties.resolveConfigurationProperties());
@@ -248,7 +255,7 @@ public class MapperPluginBuilder {
             TenantConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
                 Logger.info(false, "Starter", "Using tenant config from Provider.getConfig()");
-                handlers.add(new TenantHandler(providerConfig));
+                handlers.add(new TenantHandler(withTablePrefix(providerConfig, props)));
                 return;
             }
         }
@@ -263,6 +270,32 @@ public class MapperPluginBuilder {
             handlers.add(handler);
             Logger.info(false, "Starter", "Tenant handler configured successfully");
         }
+    }
+
+    /**
+     * Returns a tenant configuration that contains the table prefix supplied by mapper properties.
+     *
+     * @param config the tenant configuration returned by a provider
+     * @param props  the resolved mapper properties
+     * @return the tenant configuration with a table prefix
+     */
+    private static TenantConfig withTablePrefix(TenantConfig config, Properties props) {
+        if (config == null || StringKit.isNotEmpty(config.getTablePrefix()) || props == null) {
+            return config;
+        }
+        String defaultKey = org.miaixz.bus.mapper.Holder.getDefault();
+        String tablePrefix = props.getProperty(
+                defaultKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
+                props.getProperty(
+                        "default" + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
+                        props.getProperty(
+                                Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX)));
+        if (StringKit.isEmpty(tablePrefix)) {
+            return config;
+        }
+        return TenantConfig.builder().mode(config.getMode()).column(config.getColumn()).ignore(config.getIgnore())
+                .ignoreMappers(config.getIgnoreMappers()).tablePrefix(tablePrefix)
+                .enableSqlCache(config.isEnableSqlCache()).provider(config.getProvider()).build();
     }
 
     /**

@@ -23,14 +23,14 @@ import java.awt.*;
 import java.io.File;
 import java.util.HashMap;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.xyz.FileKit;
-import org.miaixz.bus.extra.image.ImageKit;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.extra.image.ImageKit;
 
 /**
  * QR code configuration.

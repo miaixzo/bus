@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import org.miaixz.bus.sensitive.metric.StrategyProvider;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.sensitive.metric.StrategyProvider;
 
 /**
  * An annotation used to specify a custom desensitization strategy implementation.

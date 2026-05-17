@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.http;
 
+import javax.net.ssl.X509TrustManager;
+
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.http.plugin.httpz.*;
-
-import javax.net.ssl.X509TrustManager;
 
 /**
  * A utility class for sending HTTP requests with a convenient, chainable API. It supports various request methods like

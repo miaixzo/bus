@@ -20,13 +20,11 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
-
-import java.io.Serial;
 import java.io.Serializable;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * This class is used by various models to represent the approved_by property, which can contain a User or Group

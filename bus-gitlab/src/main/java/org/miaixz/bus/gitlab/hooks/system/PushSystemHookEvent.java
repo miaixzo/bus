@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
+import java.io.Serial;
+
 import org.miaixz.bus.gitlab.hooks.web.AbstractPushEvent;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import java.io.Serial;
 
 /**
  * The push system hook event class.

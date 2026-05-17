@@ -20,7 +20,6 @@
 package org.miaixz.bus.gitlab.hooks.system;
 
 import java.io.Serial;
-
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;

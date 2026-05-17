@@ -19,13 +19,6 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.http.Address;
-import org.miaixz.bus.http.Builder;
-import org.miaixz.bus.http.Route;
-import org.miaixz.bus.http.accord.platform.Platform;
-import org.miaixz.bus.logger.Logger;
-
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.net.Proxy;
@@ -34,6 +27,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.http.Address;
+import org.miaixz.bus.http.Builder;
+import org.miaixz.bus.http.Route;
+import org.miaixz.bus.http.accord.platform.Platform;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Manages reuse of HTTP and HTTP/2 connections for reduced network latency. An instance of this class maintains

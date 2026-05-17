@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.models.Constants.ProjectOrderBy;
 import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import java.io.Serial;
 
 /**
  * This class is used to filter Projects when getting lists of projects for a specified group.

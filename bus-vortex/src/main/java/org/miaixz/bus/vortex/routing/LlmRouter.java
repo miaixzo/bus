@@ -19,15 +19,16 @@
 */
 package org.miaixz.bus.vortex.routing;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.routing.llm.LlmExecutor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
 
 import reactor.core.publisher.Mono;
 

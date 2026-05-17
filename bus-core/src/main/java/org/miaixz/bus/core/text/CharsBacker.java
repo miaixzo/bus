@@ -3752,7 +3752,7 @@ public class CharsBacker extends CharsValidator {
 
     /**
      * Checks if all letters in the given string are uppercase. The criteria are as follows:
-     * 
+     *
      * <pre>
      * 1. Uppercase letters include A-Z.
      * 2. Other non-letter Unicode characters are also considered uppercase.
@@ -3767,7 +3767,7 @@ public class CharsBacker extends CharsValidator {
 
     /**
      * Checks if all letters in the given string are lowercase. The criteria are as follows:
-     * 
+     *
      * <pre>
      * 1. Lowercase letters include a-z.
      * 2. Other non-letter Unicode characters are also considered lowercase.

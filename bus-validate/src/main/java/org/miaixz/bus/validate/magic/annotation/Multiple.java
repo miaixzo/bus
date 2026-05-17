@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.metric.MultipleMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * A multiple validator that allows for the configuration of several validators to be applied to a single field.

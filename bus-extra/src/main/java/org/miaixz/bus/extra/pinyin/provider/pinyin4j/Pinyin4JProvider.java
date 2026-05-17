@@ -20,10 +20,6 @@
 package org.miaixz.bus.extra.pinyin.provider.pinyin4j;
 
 import org.apache.logging.log4j.util.InternalException;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.extra.pinyin.PinyinProvider;
-import org.miaixz.bus.logger.Logger;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -31,6 +27,11 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.extra.pinyin.PinyinProvider;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Encapsulates the Pinyin4j engine.

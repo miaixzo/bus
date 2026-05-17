@@ -28,8 +28,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.glassfish.jersey.message.MessageUtils;
-
 import jakarta.annotation.Priority;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.ClientRequestContext;
@@ -40,6 +38,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.WriterInterceptor;
 import jakarta.ws.rs.ext.WriterInterceptorContext;
+
+import org.glassfish.jersey.message.MessageUtils;
 
 /**
  * This class logs request and response info masking HTTP header values that are known to contain sensitive information.

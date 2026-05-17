@@ -21,12 +21,6 @@ package org.miaixz.bus.spring.http;
 
 import java.io.IOException;
 
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.ContextBuilder;
-import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
-import org.springframework.stereotype.Component;
-import org.springframework.web.util.WebUtils;
-
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -35,6 +29,13 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.WebUtils;
+
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.ContextBuilder;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 
 /**
  * Request context filter to initialize and clean up request-scoped data.

@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.http.cache;
 
+import java.io.IOException;
+
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
-
-import java.io.IOException;
 
 /**
  * An internal interface for Http's cache. Applications should not implement this interface directly. Instead, they

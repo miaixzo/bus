@@ -20,8 +20,9 @@
 package org.miaixz.bus.starter.validate;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.context.annotation.Import;
+
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Auto-configuration for data validation.

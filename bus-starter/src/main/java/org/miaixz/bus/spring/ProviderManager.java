@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.spring;
 
-import org.miaixz.bus.core.Provider;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import org.miaixz.bus.core.Provider;
 
 /**
  * A manager for handling the Strategy Pattern within a Spring context. It loads and caches strategy providers (beans

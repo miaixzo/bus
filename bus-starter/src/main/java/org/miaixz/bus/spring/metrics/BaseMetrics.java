@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.spring.metrics;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Base model for startup metrics, used to track and record various indicators during the startup process.

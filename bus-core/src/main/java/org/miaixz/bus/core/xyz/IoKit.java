@@ -1897,7 +1897,7 @@ public class IoKit {
      * Returns a {@link LineIterator} for the given {@link Reader}.
      * <p>
      * Example usage:
-     * 
+     *
      * <pre>
      * LineIterator it = null;
      * try {
@@ -1922,7 +1922,7 @@ public class IoKit {
      * Returns a {@link LineIterator} for the given {@link InputStream} and charset.
      * <p>
      * Example usage:
-     * 
+     *
      * <pre>
      * LineIterator it = null;
      * try {

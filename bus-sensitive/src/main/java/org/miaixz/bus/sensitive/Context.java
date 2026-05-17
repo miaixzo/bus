@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.sensitive;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.sensitive.magic.annotation.Shield;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
  * Represents the execution context for a desensitization operation. It holds information about the current object,

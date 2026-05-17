@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,16 +23,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.health.builtin.hardware.GpuStats;
-import org.miaixz.bus.health.builtin.hardware.GpuTicks;
-import org.miaixz.bus.health.mac.jna.IOReport;
-
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
 import com.sun.jna.platform.mac.CoreFoundation.CFDictionaryRef;
 import com.sun.jna.platform.mac.CoreFoundation.CFStringRef;
 import com.sun.jna.ptr.PointerByReference;
+
+import org.miaixz.bus.health.builtin.hardware.GpuStats;
+import org.miaixz.bus.health.builtin.hardware.GpuTicks;
+import org.miaixz.bus.health.mac.jna.IOReport;
 
 /**
  * Manages a single IOReport subscription for GPU Stats and Energy Model channels, providing per-instance sampling of

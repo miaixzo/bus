@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.spring.listener;
 
-import org.miaixz.bus.core.xyz.ClassKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.spring.GeniusBuilder;
+import java.util.*;
+import java.util.stream.StreamSupport;
+
 import org.springframework.boot.Banner;
 import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.SpringApplication;
@@ -33,8 +33,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.*;
 
-import java.util.*;
-import java.util.stream.StreamSupport;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * An {@link ApplicationListener} for {@link ApplicationEnvironmentPreparedEvent} that adapts to Spring Cloud

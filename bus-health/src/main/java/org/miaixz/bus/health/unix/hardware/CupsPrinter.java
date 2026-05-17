@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -25,6 +25,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
+
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -33,9 +36,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractPrinter;
 import org.miaixz.bus.health.unix.driver.Lpstat;
 import org.miaixz.bus.health.unix.jna.Cups;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.PointerByReference;
 
 /**
  * CUPS-based printer implementation for Unix-like systems.

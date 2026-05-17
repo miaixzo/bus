@@ -19,15 +19,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.miaixz.bus.gitlab.models.Constants.IssueScope;
 import org.miaixz.bus.gitlab.support.ISO8601;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.Serial;
 
 /**
  * This class is used to filter issues when getting issue statistics. of them.

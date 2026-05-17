@@ -22,15 +22,15 @@ package org.miaixz.bus.extra.mq.provider.rabbitmq;
 import java.io.IOException;
 import java.util.Map;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.DeliverCallback;
+
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.MessageHandler;
 import org.miaixz.bus.extra.mq.RawMessage;
 import org.miaixz.bus.logger.Logger;
-
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.DeliverCallback;
 
 /**
  * RabbitMQ consumer implementation class. This class provides an adapter for consuming messages from RabbitMQ,

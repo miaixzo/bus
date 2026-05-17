@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.core.center.date.culture.star.twelve;
 
-import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.center.date.culture.Luck;
+import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
  * Represents the Ecliptic (黄道) and Black Path (黑道) concepts in Chinese traditional calendar, indicating auspicious or

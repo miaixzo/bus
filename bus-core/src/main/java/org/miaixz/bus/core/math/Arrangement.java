@@ -126,13 +126,13 @@ public class Arrangement implements Serializable {
      * </ul>
      * <p>
      * <b>Count formula:</b>
-     * 
+     *
      * <pre>
      * A(n, m) = n! / (n - m)!
      * </pre>
      * <p>
      * <b>Example:</b>
-     * 
+     *
      * <pre>
      * datas = ["1", "2", "3"]
      * m = 2
@@ -179,7 +179,7 @@ public class Arrangement implements Serializable {
      * </ul>
      * <p>
      * <b>Example (datas = ["1", "2", "3"]):</b>
-     * 
+     *
      * <pre>
      * m=1: ["1"], ["2"], ["3"]                             → 3
      * m=2: ["1", "2"], ["1", "3"], ["2", "1"], ...         → 6

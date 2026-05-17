@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.extra.mq.Consumer;

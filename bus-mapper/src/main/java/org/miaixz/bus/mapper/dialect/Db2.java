@@ -19,7 +19,15 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
-import org.miaixz.bus.mapper.support.paging.Pageable;
+import java.util.EnumSet;
+
+import org.miaixz.bus.mapper.Charter.Behavior;
+import org.miaixz.bus.mapper.Charter.Modify;
+import org.miaixz.bus.mapper.feature.paging.Pageable;
+import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
+import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * Dialect implementation for IBM DB2 databases.
@@ -44,11 +52,57 @@ public class Db2 extends AbstractDialect {
     /**
      * Returns the UPSERT family used by DB2 in this framework.
      *
-     * @return {@link Dialect.Type#MERGE_USING_VALUES}
+     * @return {@link Behavior#MERGE_USING_VALUES}
      */
     @Override
-    public Dialect.Type getUpsertType() {
-        return Dialect.Type.MERGE_USING_VALUES;
+    public Behavior getUpsertType() {
+        return Behavior.MERGE_USING_VALUES;
+    }
+
+    /**
+     * Returns the database behavior set advertised by this dialect.
+     *
+     * @return the supported behavior set
+     */
+    @Override
+    public EnumSet<Behavior> types() {
+        return schemaTypes(getUpsertType());
+    }
+
+    /**
+     * Resolves the SQL type descriptor used by this dialect for the supplied mapper column.
+     *
+     * @param column the mapper column metadata
+     * @return the SQL type descriptor for the column
+     */
+    @Override
+    public SqlTypeDescriptor resolveType(ColumnMeta column) {
+        return commonType(column, "INTEGER", "TIMESTAMP", "TIMESTAMP", "BLOB", "CLOB", "DECIMAL");
+    }
+
+    /**
+     * Builds the DDL used to change the nullable flag for a column.
+     *
+     * @param table        the mapper table metadata
+     * @param column       the mapper column metadata
+     * @param actualColumn the column metadata currently present in the database
+     * @return the generated nullable-change SQL
+     */
+    @Override
+    public String modifyColumnNullable(TableMeta table, ColumnMeta column, ColumnSnapshot actualColumn) {
+        return alterColumnNullable(table, column);
+    }
+
+    /**
+     * Builds the dialect-specific DDL used to replace or modify a column definition.
+     *
+     * @param table  the mapper table metadata
+     * @param column the mapper column metadata
+     * @return the generated column modification SQL
+     */
+    @Override
+    protected String modifyColumn(TableMeta table, ColumnMeta column) {
+        return modifyColumn(table, column, Modify.SET_DATA_TYPE);
     }
 
     /**

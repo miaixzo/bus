@@ -165,7 +165,7 @@ public class ObjectValidator {
      * <p>
      * Note: The difference between this method and {@link #isBlankIfString(Object)} is that this method does not check
      * for blank characters.
-     * 
+     *
      *
      * @param object The object to check.
      * @return {@code true} if the object is {@code null} or an empty {@link CharSequence}, {@code false} otherwise.
@@ -181,7 +181,7 @@ public class ObjectValidator {
 
     /**
      * Returns a default value if the given object is {@code null}.
-     * 
+     *
      * <pre>{@code
      * ObjectKit.defaultIfNull(null, null);      // = null
      * ObjectKit.defaultIfNull(null, "");        // = ""

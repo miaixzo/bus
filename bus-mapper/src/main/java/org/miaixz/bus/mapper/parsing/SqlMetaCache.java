@@ -22,7 +22,10 @@ package org.miaixz.bus.mapper.parsing;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import lombok.Getter;
+
 import org.apache.ibatis.builder.annotation.ProviderContext;
+
 import org.miaixz.bus.mapper.dialect.Dialect;
 
 /**
@@ -31,6 +34,7 @@ import org.miaixz.bus.mapper.dialect.Dialect;
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
 public class SqlMetaCache {
 
     /**
@@ -126,24 +130,6 @@ public class SqlMetaCache {
      */
     public boolean isDynamic() {
         return dynamicSqlScriptFunction != null;
-    }
-
-    /**
-     * Gets the execution method context.
-     *
-     * @return The execution method context.
-     */
-    public ProviderContext getContext() {
-        return context;
-    }
-
-    /**
-     * Gets the entity class metadata.
-     *
-     * @return The entity class metadata.
-     */
-    public TableMeta getTableMeta() {
-        return tableMeta;
     }
 
 }

@@ -291,7 +291,7 @@ public class Resolver extends Converter {
     /**
      * Normalizes a date string. By default, it processes date-time formats separated by spaces, where the part before
      * the space is the date and after is the time. Replaces the following characters with "-":
-     * 
+     *
      * <pre>
      * "."
      * "/"
@@ -300,13 +300,13 @@ public class Resolver extends Converter {
      * </pre>
      * <p>
      * Removes the following characters:
-     * 
+     *
      * <pre>
      * "日" (day)
      * </pre>
      * <p>
      * Replaces the following characters with ":":
-     * 
+     *
      * <pre>
      * "时" (hour)
      * "分" (minute)

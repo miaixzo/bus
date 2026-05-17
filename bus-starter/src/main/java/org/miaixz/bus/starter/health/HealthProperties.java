@@ -21,9 +21,11 @@ package org.miaixz.bus.starter.health;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import org.miaixz.bus.health.builtin.TID;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Configuration properties for health status endpoints.

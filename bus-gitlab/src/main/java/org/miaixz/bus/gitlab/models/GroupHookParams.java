@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serializable;
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * The group hook params class.

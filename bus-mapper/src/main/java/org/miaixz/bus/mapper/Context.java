@@ -21,11 +21,14 @@ package org.miaixz.bus.mapper;
 
 import java.util.function.Supplier;
 
-import org.miaixz.bus.mapper.support.audit.AuditConfig;
-import org.miaixz.bus.mapper.support.populate.PopulateConfig;
-import org.miaixz.bus.mapper.support.prefix.TablePrefixConfig;
-import org.miaixz.bus.mapper.support.tenant.TenantConfig;
-import org.miaixz.bus.mapper.support.visible.VisibleConfig;
+import lombok.Getter;
+import lombok.Setter;
+
+import org.miaixz.bus.mapper.feature.audit.AuditConfig;
+import org.miaixz.bus.mapper.feature.populate.PopulateConfig;
+import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
+import org.miaixz.bus.mapper.feature.tenant.TenantConfig;
+import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
 
 /**
  * Extends the core context to provide a specific context for the mapper module with unified configuration override
@@ -166,8 +169,10 @@ public class Context extends org.miaixz.bus.core.Context {
             config.setTenant(tenantConfig);
         } else {
             // Update existing config with new tenant ID
-            tenantConfig = TenantConfig.builder().column(tenantConfig.getColumn()).ignore(tenantConfig.getIgnore())
-                    .ignoreMappers(tenantConfig.getIgnoreMappers()).provider(() -> tenantId).build();
+            tenantConfig = TenantConfig.builder().mode(tenantConfig.getMode()).column(tenantConfig.getColumn())
+                    .ignore(tenantConfig.getIgnore()).ignoreMappers(tenantConfig.getIgnoreMappers())
+                    .tablePrefix(tenantConfig.getTablePrefix()).enableSqlCache(tenantConfig.isEnableSqlCache())
+                    .provider(() -> tenantId).build();
             config.setTenant(tenantConfig);
         }
     }
@@ -187,6 +192,15 @@ public class Context extends org.miaixz.bus.core.Context {
 
         TablePrefixConfig tablePrefixConfig = TablePrefixConfig.builder().provider(() -> prefix).build();
         config.setPrefix(tablePrefixConfig);
+
+        TenantConfig tenantConfig = config.getTenant();
+        if (tenantConfig != null) {
+            config.setTenant(
+                    TenantConfig.builder().mode(tenantConfig.getMode()).column(tenantConfig.getColumn())
+                            .ignore(tenantConfig.getIgnore()).ignoreMappers(tenantConfig.getIgnoreMappers())
+                            .tablePrefix(prefix).enableSqlCache(tenantConfig.isEnableSqlCache())
+                            .provider(tenantConfig.getProvider()).build());
+        }
     }
 
     /**
@@ -195,12 +209,33 @@ public class Context extends org.miaixz.bus.core.Context {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
+    @Setter
     public static class MapperConfig {
 
+        /**
+         * Tenant isolation configuration.
+         */
         private TenantConfig tenant;
+
+        /**
+         * SQL audit configuration.
+         */
         private AuditConfig audit;
+
+        /**
+         * Automatic field population configuration.
+         */
         private PopulateConfig populate;
+
+        /**
+         * Data visibility filtering configuration.
+         */
         private VisibleConfig visible;
+
+        /**
+         * Table prefix rewriting configuration.
+         */
         private TablePrefixConfig prefix;
 
         /**
@@ -212,46 +247,6 @@ public class Context extends org.miaixz.bus.core.Context {
             return new Builder();
         }
 
-        public TenantConfig getTenant() {
-            return tenant;
-        }
-
-        public void setTenant(TenantConfig tenant) {
-            this.tenant = tenant;
-        }
-
-        public AuditConfig getAudit() {
-            return audit;
-        }
-
-        public void setAudit(AuditConfig audit) {
-            this.audit = audit;
-        }
-
-        public PopulateConfig getPopulate() {
-            return populate;
-        }
-
-        public void setPopulate(PopulateConfig populate) {
-            this.populate = populate;
-        }
-
-        public VisibleConfig getVisible() {
-            return visible;
-        }
-
-        public void setVisible(VisibleConfig visible) {
-            this.visible = visible;
-        }
-
-        public TablePrefixConfig getPrefix() {
-            return prefix;
-        }
-
-        public void setPrefix(TablePrefixConfig prefix) {
-            this.prefix = prefix;
-        }
-
         /**
          * Fluent builder for MapperConfig.
          *
@@ -260,6 +255,9 @@ public class Context extends org.miaixz.bus.core.Context {
          */
         public static class Builder {
 
+            /**
+             * Mutable configuration instance assembled by this builder.
+             */
             private final MapperConfig config = new MapperConfig();
 
             /**

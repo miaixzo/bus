@@ -21,13 +21,13 @@ package org.miaixz.bus.cortex.registry;
 
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Change;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Type;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Post-commit change notification emitted after a registry mutation has been applied.

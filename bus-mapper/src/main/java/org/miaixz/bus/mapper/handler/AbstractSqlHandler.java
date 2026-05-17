@@ -30,6 +30,7 @@ import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.logger.Logger;
@@ -197,6 +198,26 @@ public abstract class AbstractSqlHandler {
                     e.getClass().getSimpleName());
             return false;
         }
+    }
+
+    /**
+     * Reads the request-scoped SQL rewrite for a mapped statement.
+     *
+     * @param ms the mapped statement
+     * @return the rewritten SQL, or {@code null} when no rewrite exists
+     */
+    protected String getSqlRewrite(MappedStatement ms) {
+        return SqlRewriteContext.get(ms.getId());
+    }
+
+    /**
+     * Stores the request-scoped SQL rewrite for a mapped statement.
+     *
+     * @param ms  the mapped statement
+     * @param sql the rewritten SQL
+     */
+    protected void putSqlRewrite(MappedStatement ms, String sql) {
+        SqlRewriteContext.put(ms.getId(), sql);
     }
 
 }

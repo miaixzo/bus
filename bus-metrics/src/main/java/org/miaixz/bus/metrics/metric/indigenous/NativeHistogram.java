@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.metrics.metric.indigenous;
 
-import org.miaixz.bus.metrics.metric.Histogram;
-import org.miaixz.bus.metrics.magic.TimerSnapshot;
-import org.miaixz.bus.metrics.observe.tag.Tag;
-
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.DoubleAdder;
+
+import org.miaixz.bus.metrics.magic.TimerSnapshot;
+import org.miaixz.bus.metrics.metric.Histogram;
+import org.miaixz.bus.metrics.observe.tag.Tag;
 
 /**
  * Histogram backed by T-Digest for accurate quantile estimation.

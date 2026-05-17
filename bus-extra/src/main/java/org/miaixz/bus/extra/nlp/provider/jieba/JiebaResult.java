@@ -22,10 +22,10 @@ package org.miaixz.bus.extra.nlp.provider.jieba;
 import java.util.Iterator;
 import java.util.List;
 
+import com.huaban.analysis.jieba.SegToken;
+
 import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
-
-import com.huaban.analysis.jieba.SegToken;
 
 /**
  * Implementation of {@link NLPResult} for Jieba word segmentation results. This class wraps a {@link List} of

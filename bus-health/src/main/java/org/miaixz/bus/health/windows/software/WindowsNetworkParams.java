@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -22,6 +22,12 @@ package org.miaixz.bus.health.windows.software;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.IPHlpAPI.FIXED_INFO;
+import com.sun.jna.platform.win32.IPHlpAPI.IP_ADDR_STRING;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -30,12 +36,6 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.IPHlpAPI.FIXED_INFO;
-import com.sun.jna.platform.win32.IPHlpAPI.IP_ADDR_STRING;
 
 /**
  * WindowsNetworkParams class.

@@ -11,6 +11,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.storage.cache.StorageCache",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.storage.ClientX",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -99,7 +110,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.storage.Provider",
+    "name": "org.miaixz.bus.storage.Context$ContextBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -110,18 +121,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.storage.Registry",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.storage.cache.StorageCache",
+    "name": "org.miaixz.bus.storage.Context$ContextBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -133,6 +133,28 @@
   },
   {
     "name": "org.miaixz.bus.storage.magic.Blob",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.storage.magic.Blob$BlobBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.storage.magic.Blob$BlobBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -165,7 +187,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.storage.metric.AliYunOssProvider",
+    "name": "org.miaixz.bus.storage.metric.AlibabaCloudProvider",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -176,7 +198,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.storage.metric.AlibabaCloudProvider",
+    "name": "org.miaixz.bus.storage.metric.AliYunOssProvider",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -650,6 +672,28 @@
   },
   {
     "name": "org.miaixz.bus.storage.metric.WebDavProvider",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.storage.Provider",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.storage.Registry",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

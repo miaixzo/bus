@@ -19,7 +19,20 @@
 */
 package org.miaixz.bus.auth.nimble.jd;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.Claims;
+import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
@@ -29,19 +42,6 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Claims;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 import org.miaixz.bus.logger.Logger;
 
 /**

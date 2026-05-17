@@ -19,7 +19,14 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
-import org.miaixz.bus.mapper.support.paging.Pageable;
+import java.util.EnumSet;
+
+import org.miaixz.bus.mapper.Charter.Behavior;
+import org.miaixz.bus.mapper.Charter.Modify;
+import org.miaixz.bus.mapper.feature.paging.Pageable;
+import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * Dialect implementation for Informix databases.
@@ -59,11 +66,63 @@ public class Informix extends AbstractDialect {
     /**
      * Returns the UPSERT family used by Informix in this framework.
      *
-     * @return {@link Dialect.Type#MERGE_USING_VALUES}
+     * @return {@link Behavior#MERGE_USING_VALUES}
      */
     @Override
-    public Dialect.Type getUpsertType() {
-        return Dialect.Type.MERGE_USING_VALUES;
+    public Behavior getUpsertType() {
+        return Behavior.MERGE_USING_VALUES;
+    }
+
+    /**
+     * Returns the database behavior set advertised by this dialect.
+     *
+     * @return the supported behavior set
+     */
+    @Override
+    public EnumSet<Behavior> types() {
+        return schemaTypes(getUpsertType());
+    }
+
+    /**
+     * Resolves the SQL type descriptor used by this dialect for the supplied mapper column.
+     *
+     * @param column the mapper column metadata
+     * @return the SQL type descriptor for the column
+     */
+    @Override
+    public SqlTypeDescriptor resolveType(ColumnMeta column) {
+        return commonType(
+                column,
+                "INTEGER",
+                "DATETIME YEAR TO FRACTION",
+                "DATETIME YEAR TO FRACTION",
+                "BYTE",
+                "TEXT",
+                "DECIMAL");
+    }
+
+    /**
+     * Builds the DDL used to add a column to an existing table.
+     *
+     * @param table  the mapper table metadata
+     * @param column the mapper column metadata
+     * @return the generated add-column SQL
+     */
+    @Override
+    public String addColumn(TableMeta table, ColumnMeta column) {
+        return "ALTER TABLE " + tableName(table) + " ADD (" + columnDefinition(column) + ")";
+    }
+
+    /**
+     * Builds the dialect-specific DDL used to replace or modify a column definition.
+     *
+     * @param table  the mapper table metadata
+     * @param column the mapper column metadata
+     * @return the generated column modification SQL
+     */
+    @Override
+    protected String modifyColumn(TableMeta table, ColumnMeta column) {
+        return modifyColumn(table, column, Modify.MODIFY_PARENTHESES);
     }
 
     /**

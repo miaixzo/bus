@@ -22,15 +22,16 @@ package org.miaixz.bus.mapper.builder;
 import java.util.Collections;
 import java.util.List;
 
+import jakarta.persistence.*;
+
 import org.apache.ibatis.type.TypeHandler;
+
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.provider.NamingProvider;
-
-import jakarta.persistence.*;
 
 /**
  * The default column builder, which supports entity classes annotated with `jakarta.persistence` annotations. It parses
@@ -103,10 +104,38 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
             if (!column.name().isEmpty()) {
                 columnMeta.column(column.name());
             }
-            columnMeta.insertable(column.insertable()).updatable(column.updatable());
+            columnMeta.insertable(column.insertable()).updatable(column.updatable()).nullable(column.nullable())
+                    .length(column.length()).precision(column.precision()).scale(column.scale())
+                    .unique(column.unique());
             if (column.scale() != 0) {
                 columnMeta.numericScale(String.valueOf(column.scale()));
             }
+            if (!column.columnDefinition().isBlank()) {
+                columnMeta.columnDefinition(column.columnDefinition());
+            }
+        }
+
+        // Process the basic annotation.
+        if (fieldMeta.isAnnotationPresent(Basic.class)) {
+            Basic basic = fieldMeta.getAnnotation(Basic.class);
+            columnMeta.nullable(basic.optional());
+        }
+
+        // Process the LOB annotation.
+        if (fieldMeta.isAnnotationPresent(Lob.class)) {
+            columnMeta.lob(true);
+        }
+
+        // Process the enum annotation.
+        if (fieldMeta.isAnnotationPresent(Enumerated.class)) {
+            Enumerated enumerated = fieldMeta.getAnnotation(Enumerated.class);
+            columnMeta.enumType(enumerated.value());
+        }
+
+        // Process the generated value annotation.
+        if (fieldMeta.isAnnotationPresent(GeneratedValue.class)) {
+            GeneratedValue generatedValue = fieldMeta.getAnnotation(GeneratedValue.class);
+            columnMeta.generationType(generatedValue.strategy());
         }
 
         // Process the order-by annotation.

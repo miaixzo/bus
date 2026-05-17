@@ -19,15 +19,16 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
 import org.miaixz.bus.pay.magic.Voucher;
 import org.miaixz.bus.pay.metric.wechat.entity.Receiver;
-
-import java.util.List;
 
 /**
  * Model for the V3 Profit Sharing API. Supports single/multiple profit sharing requests, adding/deleting receivers, and

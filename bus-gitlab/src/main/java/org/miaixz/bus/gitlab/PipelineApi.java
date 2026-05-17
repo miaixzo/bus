@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.*;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.*;
 
 /**
  * <p>
@@ -84,7 +84,7 @@ public class PipelineApi extends AbstractApi implements Constants {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "pipelines");
-        return (response.readEntity(new GenericType<List<Pipeline>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -260,7 +260,7 @@ public class PipelineApi extends AbstractApi implements Constants {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "pipelines");
-        return (response.readEntity(new GenericType<List<Pipeline>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -574,7 +574,7 @@ public class PipelineApi extends AbstractApi implements Constants {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "pipeline_schedules");
-        return (response.readEntity(new GenericType<List<PipelineSchedule>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -921,7 +921,7 @@ public class PipelineApi extends AbstractApi implements Constants {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "triggers");
-        return (response.readEntity(new GenericType<List<Trigger>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1272,7 +1272,7 @@ public class PipelineApi extends AbstractApi implements Constants {
 
     /**
      * Get a Stream of bridges in a pipeline.
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/pipelines/:pipeline_id/bridges</code>
      * </pre>

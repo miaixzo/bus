@@ -22,14 +22,14 @@ package org.miaixz.bus.mapper.parsing;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import org.miaixz.bus.core.Context;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.xyz.BooleanKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 /**
  * A base class for property mapping, providing storage and manipulation of properties.

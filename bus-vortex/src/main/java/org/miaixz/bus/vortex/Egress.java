@@ -21,12 +21,13 @@ package org.miaixz.bus.vortex;
 
 import java.net.URI;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.logger.Logger;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.logger.Logger;
 
 import reactor.netty.http.client.HttpClient;
 

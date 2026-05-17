@@ -40,12 +40,14 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.StringBuilderPool;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.Charter.Handler;
 import org.miaixz.bus.mapper.Context;
 
 /**
@@ -137,7 +139,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
         if (target instanceof Executor) {
             MappedStatement ms = (MappedStatement) args[0];
             Object parameter = args.length > 1 ? args[1] : null;
-            BoundSql boundSql = ms.getBoundSql(parameter);
+            BoundSql boundSql = initialBoundSql(ms, parameter, args);
             Object result = handleExecutor((Executor) target, args, invocation, boundSql);
             logging(ms, boundSql, start);
             return result;
@@ -181,11 +183,17 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
         Object parameter = args[1];
         SqlCommandType commandType = ms.getSqlCommandType();
 
-        if (commandType == SqlCommandType.SELECT) {
-            return processQuery(executor, ms, parameter, args, invocation, boundSql);
-        } else if (commandType == SqlCommandType.INSERT || commandType == SqlCommandType.UPDATE
-                || commandType == SqlCommandType.DELETE) {
-            return processUpdate(executor, ms, parameter, invocation, boundSql);
+        if (commandType == SqlCommandType.SELECT || commandType == SqlCommandType.INSERT
+                || commandType == SqlCommandType.UPDATE || commandType == SqlCommandType.DELETE) {
+            SqlRewriteContext.open();
+            try {
+                if (commandType == SqlCommandType.SELECT) {
+                    return processQuery(executor, ms, parameter, args, invocation, boundSql);
+                }
+                return processUpdate(executor, ms, parameter, invocation, boundSql);
+            } finally {
+                SqlRewriteContext.close();
+            }
         }
 
         return invocation.proceed();
@@ -204,11 +212,20 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             throws Throwable {
         if (args == null) {
             // Handle getBoundSql
-            List<MapperHandler> handlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.GET_BOUND_SQL);
+            List<MapperHandler> handlers = handlerRegistry.getHandlers(Handler.GET_BOUND_SQL);
             handlers.forEach(handler -> handler.getBoundSql(statementHandler));
         } else {
             // Handle prepare
-            List<MapperHandler> handlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.PREPARE);
+            MetaObject metaObject = getMetaObject(statementHandler);
+            MappedStatement ms = getMappedStatement(metaObject);
+            BoundSql boundSql = (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL);
+            if (ms != null && boundSql != null) {
+                String rewrittenSql = SqlRewriteContext.get(ms.getId());
+                if (rewrittenSql != null) {
+                    setBoundSql(boundSql, rewrittenSql);
+                }
+            }
+            List<MapperHandler> handlers = handlerRegistry.getHandlers(Handler.PREPARE);
             handlers.forEach(handler -> handler.prepare(statementHandler));
         }
 
@@ -236,10 +253,9 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             BoundSql boundSql) throws Throwable {
         RowBounds rowBounds = (RowBounds) args[2];
         ResultHandler<?> resultHandler = (ResultHandler<?>) args[3];
-        CacheKey cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
 
         // O(1) lookup: only get handlers that actually override query methods
-        List<MapperHandler> queryHandlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.QUERY);
+        List<MapperHandler> queryHandlers = handlerRegistry.getHandlers(Handler.QUERY);
         Logger.debug(
                 true,
                 "Mapper",
@@ -250,6 +266,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
                 rowBounds.getOffset(),
                 rowBounds.getLimit());
 
+        Object[] handlerResult = new Object[1];
         for (MapperHandler handler : queryHandlers) {
             // Allow handler to block execution
             if (!handler.isQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql)) {
@@ -262,19 +279,25 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
                 return Collections.emptyList();
             }
             // Allow handler to execute custom query logic
-            Object[] result = new Object[1];
-            handler.query(result, executor, ms, parameter, rowBounds, resultHandler, boundSql);
-            if (ArrayKit.isNotEmpty(result[0])) {
+            handler.query(handlerResult, executor, ms, parameter, rowBounds, resultHandler, boundSql);
+            if (handlerResult[0] != null) {
                 Logger.debug(
                         false,
                         "Mapper",
-                        "MyBatis query completed by handler: method={}, handler={}",
+                        "MyBatis query result supplied by handler: method={}, handler={}",
                         ms.getId(),
                         handler.getClass().getName());
-                return result[0];
             }
         }
-        Object result = executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
+        if (handlerResult[0] != null) {
+            return handlerResult[0];
+        }
+        CacheKey finalCacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
+        if (args.length > 5) {
+            args[4] = finalCacheKey;
+            args[5] = boundSql;
+        }
+        Object result = executor.query(ms, parameter, rowBounds, resultHandler, finalCacheKey, boundSql);
         Logger.debug(
                 false,
                 "Mapper",
@@ -282,6 +305,21 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
                 ms.getId(),
                 result == null ? "null" : result.getClass().getName());
         return result;
+    }
+
+    /**
+     * Resolves the initial bound SQL for the intercepted executor invocation.
+     *
+     * @param ms        the mapped statement
+     * @param parameter the invocation parameter
+     * @param args      the invocation arguments
+     * @return the initial bound SQL
+     */
+    private BoundSql initialBoundSql(MappedStatement ms, Object parameter, Object[] args) {
+        if (args.length > 5 && args[5] instanceof BoundSql boundSql) {
+            return boundSql;
+        }
+        return ms.getBoundSql(parameter);
     }
 
     /**
@@ -302,7 +340,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             Invocation invocation,
             BoundSql boundSql) throws Throwable {
         // O(1) lookup: only get handlers that actually override update methods
-        List<MapperHandler> updateHandlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.UPDATE);
+        List<MapperHandler> updateHandlers = handlerRegistry.getHandlers(Handler.UPDATE);
         Logger.debug(
                 true,
                 "Mapper",

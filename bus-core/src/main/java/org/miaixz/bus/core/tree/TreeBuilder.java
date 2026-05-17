@@ -284,7 +284,7 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
 
     /**
      * Builds a list of top-level trees (forest). This is useful when there is no single root node. For example:
-     * 
+     *
      * <pre>
      * - User Management
      *   - User List

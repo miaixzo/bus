@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.cortex.setting.binding;
 
-import org.miaixz.bus.core.basic.entity.Namespace;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.basic.entity.Namespace;
 
 /**
  * Relation row between one setting resource and an application or profile target.

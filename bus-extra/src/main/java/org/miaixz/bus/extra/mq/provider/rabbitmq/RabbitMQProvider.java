@@ -19,20 +19,22 @@
 */
 package org.miaixz.bus.extra.mq.provider.rabbitmq;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.extra.mq.Consumer;
-import org.miaixz.bus.extra.mq.MQConfig;
-import org.miaixz.bus.core.lang.exception.MQueueException;
-import org.miaixz.bus.extra.mq.Producer;
-import org.miaixz.bus.extra.mq.MQProvider;
-import org.miaixz.bus.logger.Logger;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.MQueueException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.extra.mq.Consumer;
+import org.miaixz.bus.extra.mq.MQConfig;
+import org.miaixz.bus.extra.mq.MQProvider;
+import org.miaixz.bus.extra.mq.Producer;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * RabbitMQ message queue engine implementation class. This class provides an adapter for interacting with a RabbitMQ

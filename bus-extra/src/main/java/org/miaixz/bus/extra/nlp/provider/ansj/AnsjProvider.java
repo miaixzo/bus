@@ -21,6 +21,7 @@ package org.miaixz.bus.extra.nlp.provider.ansj;
 
 import org.ansj.splitWord.Analysis;
 import org.ansj.splitWord.analysis.ToAnalysis;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;

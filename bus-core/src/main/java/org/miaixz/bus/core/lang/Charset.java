@@ -242,7 +242,7 @@ public class Charset {
      * Converts the character set encoding of a string. This method is used to correct garbled characters caused by
      * incorrect encoding when reading a string. For example, if a client encodes request parameters with GBK in a
      * Servlet request, and we read it with UTF-8, it will be garbled. This method can restore the original content.
-     * 
+     *
      * <pre>
      * Client - GBK encoding - Servlet container - UTF-8 decoding - garbled characters
      * Garbled characters - UTF-8 encoding - GBK decoding - correct content

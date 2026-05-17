@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.health.windows.driver;
 
+import java.util.Locale;
+
 import org.miaixz.bus.health.windows.hardware.WindowsGraphicsCard;
 import org.miaixz.bus.health.windows.jna.WindowsDxgi;
-
-import java.util.Locale;
 
 /**
  * Immutable snapshot of a DXGI adapter's identity and dedicated video memory.

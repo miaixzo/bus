@@ -16,4 +16,4 @@
 #                                                                           #
 #############################################################################
 
-org.miaixz.bus.mapper.support.keygen.PrimaryKeyEnhancer
+org.miaixz.bus.mapper.feature.keygen.PrimaryKeyEnhancer

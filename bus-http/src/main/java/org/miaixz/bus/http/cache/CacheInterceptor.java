@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.http.cache;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.Sink;
@@ -39,9 +42,6 @@ import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An interceptor that serves requests from the cache and writes responses to the cache.

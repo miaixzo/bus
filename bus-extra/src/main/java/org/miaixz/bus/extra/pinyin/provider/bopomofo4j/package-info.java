@@ -27,7 +27,7 @@
  *
  * <p>
  * To introduce (dependency):
- * 
+ *
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.rnkrsoft.bopomofo4j&lt;/groupId&gt;

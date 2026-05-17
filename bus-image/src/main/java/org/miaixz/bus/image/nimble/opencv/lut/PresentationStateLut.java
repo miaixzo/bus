@@ -20,6 +20,7 @@
 package org.miaixz.bus.image.nimble.opencv.lut;
 
 import java.util.Optional;
+
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 
 /**

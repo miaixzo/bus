@@ -19,6 +19,19 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -33,17 +46,6 @@ import org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser;
 import org.miaixz.bus.image.nimble.codec.mp4.MP4Parser;
 import org.miaixz.bus.image.nimble.codec.mpeg.MPEG2Parser;
 import org.miaixz.bus.logger.Logger;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
-import java.nio.channels.SeekableByteChannel;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
 
 /**
  * The {@code Jpg2Dcm} class provides functionality to encapsulate JPEG, MPEG, and MP4 files into a DICOM file format.

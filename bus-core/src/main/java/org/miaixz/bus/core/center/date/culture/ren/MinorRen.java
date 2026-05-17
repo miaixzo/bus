@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.core.center.date.culture.ren;
 
-import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.center.date.culture.Element;
 import org.miaixz.bus.core.center.date.culture.Luck;
+import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
  * Represents the Minor Liu Ren (小六壬) divination system, which consists of six states. This class extends

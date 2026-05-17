@@ -19,12 +19,6 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.http.metric.Internal;
-
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.ProtocolException;
@@ -32,6 +26,13 @@ import java.net.UnknownServiceException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocket;
+
+import org.miaixz.bus.http.metric.Internal;
 
 /**
  * Handles the fallback strategy for connection specifications: when a secure socket connection fails due to a handshake

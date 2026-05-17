@@ -22,8 +22,5 @@
  * <p>
  * This package contains miscellaneous utility classes, converter functions, and helper methods that simplify common
  * OpenCV tasks and provide convenient abstractions over native OpenCV operations.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 package org.opencv.utils;

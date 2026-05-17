@@ -614,10 +614,10 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * Checks if the array is sorted in ascending or descending order using the specified comparator.
      * <p>
      * If an empty array is provided, it returns {@code false}.
-     * 
+     *
      * <p>
      * If all elements are equal, it returns {@code true}.
-     * 
+     *
      *
      * @param comparator The comparator to use for comparison.
      * @return {@code true} if the array is sorted (ascending or descending), {@code false} otherwise.

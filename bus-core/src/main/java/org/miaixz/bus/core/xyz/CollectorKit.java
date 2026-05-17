@@ -399,9 +399,9 @@ public class CollectorKit {
     /**
      * A {@link Collector} that first collects elements into a specified {@link Collection} and then applies a final
      * transformation to that collection. The effect is equivalent to:
-     * 
+     *
      * <pre>{@code
-     * 
+     *
      * Collection<T> coll = Stream.of(a, b, c, d).collect(Collectors.toCollection(collFactory));
      * R result = mapper.apply(coll);
      * }</pre>
@@ -427,9 +427,9 @@ public class CollectorKit {
     /**
      * A {@link Collector} that first collects elements into an {@link ArrayList} and then applies a final
      * transformation to that list. The effect is equivalent to:
-     * 
+     *
      * <pre>{@code
-     * 
+     *
      * List<T> list = Stream.of(a, b, c, d).collect(Collectors.toList());
      * R result = mapper.apply(list);
      * }</pre>

@@ -21,10 +21,10 @@ package org.miaixz.bus.extra.ssh;
 
 import java.io.IOException;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
 
 /**

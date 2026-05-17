@@ -25,7 +25,9 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -137,7 +139,7 @@ public class BatchProvider extends BasicProvider {
      * <p>
      * <b>SQL Example (PostgreSQL):</b>
      * </p>
-     * 
+     *
      * <pre>
      * INSERT INTO users (id, name, email) VALUES
      * &lt;foreach collection="list" item="item" separator=","&gt;
@@ -247,8 +249,8 @@ public class BatchProvider extends BasicProvider {
      */
     protected static Function<Dialect, String> insertUpBatch(TableMeta entity) {
         return dialect -> {
-            Dialect.Type upsertType = dialect.getUpsertType();
-            if (upsertType == Dialect.Type.NONE) {
+            Behavior upsertType = dialect.getUpsertType();
+            if (upsertType == Behavior.NONE) {
                 throw unsupportedUpsert(dialect);
             }
             if (!supportsNativeBatchUpsert(upsertType)) {
@@ -259,6 +261,7 @@ public class BatchProvider extends BasicProvider {
                 case INSERT_ON_DUPLICATE -> buildBatchInsertOnDuplicate(entity);
                 case INSERT_ON_CONFLICT -> buildBatchInsertOnConflict(entity);
                 case INSERT_OR_REPLACE -> buildBatchInsertOrReplace(entity);
+                case MERGE_INTO_KEY -> buildBatchMergeIntoKey(entity);
                 default -> throw new UnsupportedOperationException(
                         dialect.getDatabase() + " does not support native batch UPSERT SQL");
             };
@@ -295,8 +298,8 @@ public class BatchProvider extends BasicProvider {
      */
     protected static Function<Dialect, String> insertUpSelectiveBatch(TableMeta entity) {
         return dialect -> {
-            Dialect.Type upsertType = dialect.getUpsertType();
-            if (upsertType == Dialect.Type.NONE) {
+            Behavior upsertType = dialect.getUpsertType();
+            if (upsertType == Behavior.NONE) {
                 throw unsupportedUpsert(dialect);
             }
             if (!supportsNativeBatchUpsert(upsertType)) {
@@ -307,6 +310,7 @@ public class BatchProvider extends BasicProvider {
                 case INSERT_ON_DUPLICATE -> buildBatchInsertOnDuplicateSelective(entity);
                 case INSERT_ON_CONFLICT -> buildBatchInsertOnConflictSelective(entity);
                 case INSERT_OR_REPLACE -> buildBatchInsertOrReplaceSelective(entity);
+                case MERGE_INTO_KEY -> buildBatchMergeIntoKeySelective(entity);
                 default -> throw new UnsupportedOperationException(
                         dialect.getDatabase() + " does not support native batch selective UPSERT SQL");
             };
@@ -350,6 +354,17 @@ public class BatchProvider extends BasicProvider {
     }
 
     /**
+     * Builds an H2-style native batch UPSERT statement.
+     *
+     * @param entity the table metadata
+     * @return the generated SQL
+     */
+    private static String buildBatchMergeIntoKey(TableMeta entity) {
+        return "MERGE INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") KEY(" + keyColumnList(entity)
+                + ") VALUES\n" + buildBatchRowValues(entity);
+    }
+
+    /**
      * Builds a MySQL-style native batch selective UPSERT statement.
      *
      * @param entity the table metadata
@@ -382,6 +397,17 @@ public class BatchProvider extends BasicProvider {
     private static String buildBatchInsertOrReplaceSelective(TableMeta entity) {
         return "INSERT OR REPLACE INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0")
                 + "\nVALUES\n" + buildBatchDynamicRows(entity);
+    }
+
+    /**
+     * Builds an H2-style native selective batch UPSERT statement.
+     *
+     * @param entity the table metadata
+     * @return the generated SQL
+     */
+    private static String buildBatchMergeIntoKeySelective(TableMeta entity) {
+        return "MERGE INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0") + "\nKEY("
+                + keyColumnList(entity) + ")\nVALUES\n" + buildBatchDynamicRows(entity);
     }
 
     /**

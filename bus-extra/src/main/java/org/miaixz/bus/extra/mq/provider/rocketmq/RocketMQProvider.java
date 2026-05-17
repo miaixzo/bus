@@ -23,12 +23,13 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.MixAll;
+
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.MQConfig;
-import org.miaixz.bus.core.lang.exception.MQueueException;
-import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.extra.mq.MQProvider;
+import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.logger.Logger;
 
 /**

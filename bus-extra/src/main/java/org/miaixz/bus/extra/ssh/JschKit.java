@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.extra.ssh;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.extra.ssh.provider.jsch.ChannelType;
-
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.extra.ssh.provider.jsch.ChannelType;
 import org.miaixz.bus.logger.Logger;
 
 /**

@@ -226,9 +226,9 @@ public class MapKit extends MapGets {
      * and values (e.g., key1, value1, key2, value2, ...). Keys will be cast to type K, and values to type V.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
-     * 
+     *
      * LinkedHashMap map = MapKit.ofKvs(false, "RED", "#FF0000", "GREEN", "#00FF00", "BLUE", "#0000FF");
      * </pre>
      *
@@ -313,9 +313,9 @@ public class MapKit extends MapGets {
      * </ul>
      * <p>
      * Example:
-     * 
+     *
      * <pre>
-     * 
+     *
      * Map&lt;Object, Object&gt; colorMap = MapKit
      *         .of(new String[][] { { "RED", "#FF0000" }, { "GREEN", "#00FF00" }, { "BLUE", "#0000FF" } });
      * </pre>
@@ -371,7 +371,7 @@ public class MapKit extends MapGets {
      * inverse operation of {@link #toMapList(Map)}.
      * <p>
      * For example, given the input data:
-     * 
+     *
      * <pre>
      * [
      *  {a: 1, b: 1, c: 1}
@@ -380,9 +380,9 @@ public class MapKit extends MapGets {
      *  {a: 4}
      * ]
      * </pre>
-     * 
+     *
      * The result will be:
-     * 
+     *
      * <pre>
      * {
      *   a: [1,2,3,4]
@@ -417,7 +417,7 @@ public class MapKit extends MapGets {
      * {@link #toListMap(Iterable)}.
      * <p>
      * For example, given the input data:
-     * 
+     *
      * <pre>
      * {
      *   a: [1,2,3,4]
@@ -425,9 +425,9 @@ public class MapKit extends MapGets {
      *   c: [1]
      * }
      * </pre>
-     * 
+     *
      * The result will be:
-     * 
+     *
      * <pre>
      * [
      *  {a: 1, b: 1, c: 1}

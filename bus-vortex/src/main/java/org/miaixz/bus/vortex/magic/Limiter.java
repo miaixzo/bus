@@ -19,11 +19,13 @@
 */
 package org.miaixz.bus.vortex.magic;
 
-import com.google.common.util.concurrent.RateLimiter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import com.google.common.util.concurrent.RateLimiter;
+
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.vortex.strategy.LimiterStrategy;
 

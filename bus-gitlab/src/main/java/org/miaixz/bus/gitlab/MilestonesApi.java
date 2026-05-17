@@ -23,13 +23,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Issue;
-import org.miaixz.bus.gitlab.models.MergeRequest;
-import org.miaixz.bus.gitlab.models.Milestone;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Issue;
+import org.miaixz.bus.gitlab.models.MergeRequest;
+import org.miaixz.bus.gitlab.models.Milestone;
 
 /**
  * This class implements the client side API for the GitLab milestones calls.
@@ -80,7 +80,7 @@ public class MilestonesApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -136,7 +136,7 @@ public class MilestonesApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -160,7 +160,7 @@ public class MilestonesApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -187,7 +187,7 @@ public class MilestonesApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -286,7 +286,7 @@ public class MilestonesApi extends AbstractApi {
                 "milestones",
                 milestoneId,
                 "merge_requests");
-        return (response.readEntity(new GenericType<List<MergeRequest>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -459,7 +459,7 @@ public class MilestonesApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -515,7 +515,7 @@ public class MilestonesApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -539,7 +539,7 @@ public class MilestonesApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -566,7 +566,7 @@ public class MilestonesApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

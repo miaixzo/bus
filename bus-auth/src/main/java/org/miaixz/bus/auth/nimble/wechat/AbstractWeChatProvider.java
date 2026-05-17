@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.auth.nimble.wechat;
 
-import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.auth.Complex;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Abstract base class for WeChat login providers.

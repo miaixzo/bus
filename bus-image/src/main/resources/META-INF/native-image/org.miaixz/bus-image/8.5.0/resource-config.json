@@ -2,10 +2,13 @@
   "resources": {
     "includes": [
       {
-        "pattern": "META-INF/org.miaixz.bus.image/*"
+        "pattern": "ldap\\.properties"
       },
       {
-        "pattern": "META-INF/services/*"
+        "pattern": "META-INF/services/.*"
+      },
+      {
+        "pattern": "org/miaixz/bus/image/.*"
       }
     ]
   }

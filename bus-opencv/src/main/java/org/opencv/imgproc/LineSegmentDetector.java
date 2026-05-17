@@ -1,6 +1,22 @@
-//
-// This file is auto-generated. Please don't modify it!
-//
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.opencv.imgproc;
 
 import org.opencv.core.Algorithm;
@@ -16,9 +32,6 @@ import org.opencv.core.Size;
  * <b>Note:</b> Implementation has been removed from OpenCV version 3.4.6 to 3.4.15 and version 4.1.0 to 4.5.3 due
  * original code license conflict. restored again after [Computation of a
  * NFA](https://github.com/rafael-grompone-von-gioi/binomial_nfa) code published under the MIT license.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class LineSegmentDetector extends Algorithm {
 
@@ -143,7 +156,7 @@ public class LineSegmentDetector extends Algorithm {
 
     /**
      * Draws the line segments on a given image.
-     * 
+     *
      * @param image The image, where the lines will be drawn. Should be bigger or equal to the image, where the lines
      *              were found.
      * @param lines A vector of the lines that needed to be drawn.

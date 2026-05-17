@@ -24,16 +24,16 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
-import org.miaixz.bus.gitlab.models.*;
-import org.miaixz.bus.logger.Logger;
-
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.models.*;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class is the base class for all the sub API classes. It provides implementations of delete(), get(), post() and

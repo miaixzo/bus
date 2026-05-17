@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.starter.metrics;
 
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.metrics.Metrics;
-import org.miaixz.bus.metrics.metric.prometheus.PrometheusExporter;
-import org.miaixz.bus.spring.ContextBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.metrics.Metrics;
+import org.miaixz.bus.metrics.metric.prometheus.PrometheusExporter;
+import org.miaixz.bus.spring.ContextBuilder;
 
 /**
  * Exposes the Prometheus-format metrics scrape endpoint at {@code /metricz}.

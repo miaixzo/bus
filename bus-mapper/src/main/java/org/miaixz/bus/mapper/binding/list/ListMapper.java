@@ -25,6 +25,7 @@ import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Lang;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
+
 import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.provider.ListProvider;
 

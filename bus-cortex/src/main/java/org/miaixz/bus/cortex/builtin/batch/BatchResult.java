@@ -22,10 +22,10 @@ package org.miaixz.bus.cortex.builtin.batch;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.cortex.Type;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.miaixz.bus.cortex.Type;
 
 /**
  * Result summary of a batch registry operation.

@@ -19,9 +19,10 @@
 */
 package org.miaixz.bus.starter.limiter;
 
+import org.springframework.beans.factory.InitializingBean;
+
 import org.miaixz.bus.limiter.Context;
 import org.miaixz.bus.limiter.Holder;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * A service that initializes the global context for the rate limiting and circuit breaking framework.

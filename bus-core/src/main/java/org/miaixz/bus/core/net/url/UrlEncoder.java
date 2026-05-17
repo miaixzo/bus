@@ -36,7 +36,7 @@ public class UrlEncoder {
     /**
      * Encodes a URL using the default UTF-8 charset. Non-ASCII characters are converted to their hexadecimal
      * representation, prefixed with '%'. The following characters are not encoded:
-     * 
+     *
      * <pre>
      * unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~"
      * </pre>
@@ -52,7 +52,7 @@ public class UrlEncoder {
     /**
      * Encodes a URL using the specified charset. Non-ASCII characters are converted to their hexadecimal
      * representation, prefixed with '%'. The following characters are not encoded:
-     * 
+     *
      * <pre>
      * unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~"
      * </pre>

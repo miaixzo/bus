@@ -1306,7 +1306,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes an element at a specified index.
-     * 
+     *
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
@@ -1317,7 +1317,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes an element at a specified index.
-     * 
+     *
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
@@ -1328,7 +1328,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes an element at a specified index.
-     * 
+     *
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
@@ -1339,7 +1339,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes an element at a specified index.
-     * 
+     *
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
@@ -1350,7 +1350,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes an element at a specified index.
-     * 
+     *
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
@@ -1361,7 +1361,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes an element at a specified index.
-     * 
+     *
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
@@ -1372,7 +1372,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes an element at a specified index.
-     * 
+     *
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
@@ -1421,7 +1421,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes the first occurrence of a specified element.
-     * 
+     *
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
@@ -1432,7 +1432,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes the first occurrence of a specified element.
-     * 
+     *
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
@@ -1443,7 +1443,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes the first occurrence of a specified element.
-     * 
+     *
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
@@ -1454,7 +1454,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes the first occurrence of a specified element.
-     * 
+     *
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
@@ -1465,7 +1465,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes the first occurrence of a specified element.
-     * 
+     *
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
@@ -1476,7 +1476,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes the first occurrence of a specified element.
-     * 
+     *
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
@@ -1487,7 +1487,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Removes the first occurrence of a specified element.
-     * 
+     *
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
@@ -2058,7 +2058,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in a portion of an array in-place.
-     * 
+     *
      * @param array               The array to reverse.
      * @param startIndexInclusive The starting index (inclusive).
      * @param endIndexExclusive   The ending index (exclusive).
@@ -2080,7 +2080,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in an array in-place.
-     * 
+     *
      * @param array The array to reverse.
      * @return The modified array.
      */
@@ -2090,7 +2090,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in a portion of an array in-place.
-     * 
+     *
      * @param array               The array to reverse.
      * @param startIndexInclusive The starting index (inclusive).
      * @param endIndexExclusive   The ending index (exclusive).
@@ -2112,7 +2112,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in an array in-place.
-     * 
+     *
      * @param array The array to reverse.
      * @return The modified array.
      */
@@ -2122,7 +2122,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in a portion of an array in-place.
-     * 
+     *
      * @param array               The array to reverse.
      * @param startIndexInclusive The starting index (inclusive).
      * @param endIndexExclusive   The ending index (exclusive).
@@ -2144,7 +2144,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in an array in-place.
-     * 
+     *
      * @param array The array to reverse.
      * @return The modified array.
      */
@@ -2154,7 +2154,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in a portion of an array in-place.
-     * 
+     *
      * @param array               The array to reverse.
      * @param startIndexInclusive The starting index (inclusive).
      * @param endIndexExclusive   The ending index (exclusive).
@@ -2176,7 +2176,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in an array in-place.
-     * 
+     *
      * @param array The array to reverse.
      * @return The modified array.
      */
@@ -2186,7 +2186,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in a portion of an array in-place.
-     * 
+     *
      * @param array               The array to reverse.
      * @param startIndexInclusive The starting index (inclusive).
      * @param endIndexExclusive   The ending index (exclusive).
@@ -2208,7 +2208,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in an array in-place.
-     * 
+     *
      * @param array The array to reverse.
      * @return The modified array.
      */
@@ -2218,7 +2218,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in a portion of an array in-place.
-     * 
+     *
      * @param array               The array to reverse.
      * @param startIndexInclusive The starting index (inclusive).
      * @param endIndexExclusive   The ending index (exclusive).
@@ -2240,7 +2240,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in an array in-place.
-     * 
+     *
      * @param array The array to reverse.
      * @return The modified array.
      */
@@ -2250,7 +2250,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in a portion of an array in-place.
-     * 
+     *
      * @param array               The array to reverse.
      * @param startIndexInclusive The starting index (inclusive).
      * @param endIndexExclusive   The ending index (exclusive).
@@ -2272,7 +2272,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Reverses the order of elements in an array in-place.
-     * 
+     *
      * @param array The array to reverse.
      * @return The modified array.
      */
@@ -2301,7 +2301,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the minimum value in a primitive number array.
-     * 
+     *
      * @param numberArray The array of numbers.
      * @return The minimum value.
      */
@@ -2320,7 +2320,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the minimum value in a primitive number array.
-     * 
+     *
      * @param numberArray The array of numbers.
      * @return The minimum value.
      */
@@ -2339,7 +2339,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the minimum value in a primitive character array.
-     * 
+     *
      * @param numberArray The array of characters.
      * @return The minimum value.
      */
@@ -2358,7 +2358,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the minimum value in a primitive number array.
-     * 
+     *
      * @param numberArray The array of numbers.
      * @return The minimum value.
      */
@@ -2377,7 +2377,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the minimum value in a primitive number array.
-     * 
+     *
      * @param numberArray The array of numbers.
      * @return The minimum value.
      */
@@ -2396,7 +2396,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the minimum value in a primitive number array.
-     * 
+     *
      * @param numberArray The array of numbers.
      * @return The minimum value.
      */
@@ -2434,7 +2434,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the maximum value in a primitive number array.
-     * 
+     *
      * @param numberArray The array of numbers.
      * @return The maximum value.
      */
@@ -2453,7 +2453,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the maximum value in a primitive number array.
-     * 
+     *
      * @param numberArray The array of numbers.
      * @return The maximum value.
      */
@@ -2472,7 +2472,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the maximum value in a primitive character array.
-     * 
+     *
      * @param numberArray The array of characters.
      * @return The maximum value.
      */
@@ -2491,7 +2491,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the maximum value in a primitive number array.
-     * 
+     *
      * @param numberArray The array of numbers.
      * @return The maximum value.
      */
@@ -2510,7 +2510,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the maximum value in a primitive number array.
-     * 
+     *
      * @param numberArray The array of numbers.
      * @return The maximum value.
      */
@@ -2529,7 +2529,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Finds the maximum value in a primitive number array.
-     * 
+     *
      * @param numberArray The array of numbers.
      * @return The maximum value.
      */
@@ -2575,7 +2575,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array The array to shuffle.
      * @return The shuffled array.
      */
@@ -2585,7 +2585,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array  The array to shuffle.
      * @param random The random number generator.
      * @return The shuffled array.
@@ -2602,7 +2602,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array The array to shuffle.
      * @return The shuffled array.
      */
@@ -2612,7 +2612,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array  The array to shuffle.
      * @param random The random number generator.
      * @return The shuffled array.
@@ -2629,7 +2629,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array The array to shuffle.
      * @return The shuffled array.
      */
@@ -2639,7 +2639,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array  The array to shuffle.
      * @param random The random number generator.
      * @return The shuffled array.
@@ -2656,7 +2656,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array The array to shuffle.
      * @return The shuffled array.
      */
@@ -2666,7 +2666,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array  The array to shuffle.
      * @param random The random number generator.
      * @return The shuffled array.
@@ -2683,7 +2683,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array The array to shuffle.
      * @return The shuffled array.
      */
@@ -2693,7 +2693,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array  The array to shuffle.
      * @param random The random number generator.
      * @return The shuffled array.
@@ -2710,7 +2710,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array The array to shuffle.
      * @return The shuffled array.
      */
@@ -2720,7 +2720,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array  The array to shuffle.
      * @param random The random number generator.
      * @return The shuffled array.
@@ -2737,7 +2737,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array The array to shuffle.
      * @return The shuffled array.
      */
@@ -2747,7 +2747,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Shuffles the elements of an array in-place.
-     * 
+     *
      * @param array  The array to shuffle.
      * @param random The random number generator.
      * @return The shuffled array.
@@ -2782,7 +2782,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Swaps two elements in an array.
-     * 
+     *
      * @param array  The array.
      * @param index1 The first index.
      * @param index2 The second index.
@@ -2800,7 +2800,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Swaps two elements in an array.
-     * 
+     *
      * @param array  The array.
      * @param index1 The first index.
      * @param index2 The second index.
@@ -2818,7 +2818,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Swaps two elements in an array.
-     * 
+     *
      * @param array  The array.
      * @param index1 The first index.
      * @param index2 The second index.
@@ -2836,7 +2836,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Swaps two elements in an array.
-     * 
+     *
      * @param array  The array.
      * @param index1 The first index.
      * @param index2 The second index.
@@ -2854,7 +2854,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Swaps two elements in an array.
-     * 
+     *
      * @param array  The array.
      * @param index1 The first index.
      * @param index2 The second index.
@@ -2872,7 +2872,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Swaps two elements in an array.
-     * 
+     *
      * @param array  The array.
      * @param index1 The first index.
      * @param index2 The second index.
@@ -2890,7 +2890,7 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Swaps two elements in an array.
-     * 
+     *
      * @param array  The array.
      * @param index1 The first index.
      * @param index2 The second index.

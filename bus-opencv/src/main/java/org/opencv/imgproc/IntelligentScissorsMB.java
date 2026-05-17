@@ -1,6 +1,22 @@
-//
-// This file is auto-generated. Please don't modify it!
-//
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.opencv.imgproc;
 
 import org.opencv.core.Mat;
@@ -18,9 +34,6 @@ import org.opencv.core.Point;
  * href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.138.3811&amp;rep=rep1&amp;type=pdf"&gt;"Intelligent
  * Scissors for Image Composition"&lt;/a&gt; algorithm designed by Eric N. Mortensen and William A. Barrett, Brigham
  * Young University CITE: Mortensen95intelligentscissors
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class IntelligentScissorsMB {
 
@@ -170,7 +183,7 @@ public class IntelligentScissorsMB {
      * <b>Note:</b> "Laplacian Zero-Crossing" feature extractor is used by default (following to original article)
      *
      * SEE: Canny
-     * 
+     *
      * @param threshold1   automatically generated
      * @param threshold2   automatically generated
      * @param apertureSize automatically generated
@@ -192,7 +205,7 @@ public class IntelligentScissorsMB {
      * <b>Note:</b> "Laplacian Zero-Crossing" feature extractor is used by default (following to original article)
      *
      * SEE: Canny
-     * 
+     *
      * @param threshold1   automatically generated
      * @param threshold2   automatically generated
      * @param apertureSize automatically generated
@@ -209,7 +222,7 @@ public class IntelligentScissorsMB {
      * <b>Note:</b> "Laplacian Zero-Crossing" feature extractor is used by default (following to original article)
      *
      * SEE: Canny
-     * 
+     *
      * @param threshold1 automatically generated
      * @param threshold2 automatically generated
      * @return automatically generated

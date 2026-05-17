@@ -22,13 +22,13 @@ package org.miaixz.bus.spring.http;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import jakarta.persistence.Transient;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.core.lang.annotation.Include;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import jakarta.persistence.Transient;
 
 /**
  * An abstract base class for HTTP message converters that provides a unified and reusable logic for determining which

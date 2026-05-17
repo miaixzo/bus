@@ -22,10 +22,10 @@ package org.miaixz.bus.gitlab;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.SystemHook;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.SystemHook;
 
 /**
  * This class implements the client side API for the GitLab System Hooks Keys API calls.
@@ -67,7 +67,7 @@ public class SystemHooksApi extends AbstractApi {
      */
     public List<SystemHook> getSystemHooks(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "hooks");
-        return (response.readEntity(new GenericType<List<SystemHook>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

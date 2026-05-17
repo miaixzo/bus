@@ -24,6 +24,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.boot.availability.ApplicationAvailability;
+import org.springframework.boot.availability.AvailabilityChangeEvent;
+import org.springframework.boot.availability.LivenessState;
+import org.springframework.boot.availability.ReadinessState;
+import org.springframework.context.ApplicationEventPublisher;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.data.id.ID;
@@ -34,11 +40,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Provider;
 import org.miaixz.bus.health.builtin.TID;
 import org.miaixz.bus.logger.Logger;
-import org.springframework.boot.availability.ApplicationAvailability;
-import org.springframework.boot.availability.AvailabilityChangeEvent;
-import org.springframework.boot.availability.LivenessState;
-import org.springframework.boot.availability.ReadinessState;
-import org.springframework.context.ApplicationEventPublisher;
 
 /**
  * Service class for managing and monitoring the system's health status and hardware information.

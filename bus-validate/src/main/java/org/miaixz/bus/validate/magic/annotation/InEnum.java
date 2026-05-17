@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.InEnumMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * Validates that the annotated object is a member of the specified enum. By default, the object is matched against the

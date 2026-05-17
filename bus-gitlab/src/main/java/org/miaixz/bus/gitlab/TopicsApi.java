@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Topic;
-import org.miaixz.bus.gitlab.models.TopicParams;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Topic;
+import org.miaixz.bus.gitlab.models.TopicParams;
 
 /**
  * The topics API class.
@@ -76,7 +76,7 @@ public class TopicsApi extends AbstractApi {
      */
     public List<Topic> getTopics(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "topics");
-        return (response.readEntity(new GenericType<List<Topic>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

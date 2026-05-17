@@ -23,6 +23,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+import org.opencv.core.CvType;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -30,7 +32,6 @@ import org.miaixz.bus.image.nimble.opencv.ImageCV;
 import org.miaixz.bus.image.nimble.opencv.ImageTransformer;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
-import org.opencv.core.CvType;
 
 /**
  * Represents DICOM overlay data for an image.

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.http.bodys;
 
+import java.io.*;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -26,8 +28,6 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
-
-import java.io.*;
 
 /**
  * The body of an HTTP response.

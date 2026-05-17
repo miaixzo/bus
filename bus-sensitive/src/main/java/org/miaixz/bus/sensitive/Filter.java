@@ -19,6 +19,13 @@
 */
 package org.miaixz.bus.sensitive;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.logger.Logger;
@@ -27,13 +34,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Entry;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 import org.miaixz.bus.sensitive.metric.ConditionProvider;
 import org.miaixz.bus.sensitive.metric.StrategyProvider;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * A context-aware filter for processing sensitive data. It handles the desensitization logic for fields annotated with

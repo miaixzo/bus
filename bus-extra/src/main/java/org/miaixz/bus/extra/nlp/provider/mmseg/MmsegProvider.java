@@ -19,15 +19,15 @@
 */
 package org.miaixz.bus.extra.nlp.provider.mmseg;
 
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.extra.nlp.NLPProvider;
-import org.miaixz.bus.extra.nlp.NLPResult;
-import org.miaixz.bus.logger.Logger;
-
 import com.chenlb.mmseg4j.ComplexSeg;
 import com.chenlb.mmseg4j.Dictionary;
 import com.chenlb.mmseg4j.MMSeg;
 import com.chenlb.mmseg4j.Seg;
+
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.nlp.NLPProvider;
+import org.miaixz.bus.extra.nlp.NLPResult;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * mmseg4j word segmentation engine implementation. This class serves as a concrete {@link NLPProvider} for the mmseg4j

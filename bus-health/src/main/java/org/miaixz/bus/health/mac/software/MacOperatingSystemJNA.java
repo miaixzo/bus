@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sun.jna.platform.mac.SystemB;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
@@ -32,8 +34,6 @@ import org.miaixz.bus.health.builtin.software.*;
 import org.miaixz.bus.health.mac.SysctlKit;
 import org.miaixz.bus.health.mac.driver.Who;
 import org.miaixz.bus.health.mac.driver.WindowInfo;
-
-import com.sun.jna.platform.mac.SystemB;
 
 /**
  * macOS, previously Mac OS X and later OS X) is a series of proprietary graphical operating systems developed and

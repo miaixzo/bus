@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.miaixz.bus.base.mapper.SharedMapper;
 import org.miaixz.bus.core.basic.entity.Entity;
 import org.miaixz.bus.core.basic.entity.Result;
@@ -34,13 +36,12 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.binding.condition.Condition;
 import org.miaixz.bus.mapper.binding.condition.ConditionWrapper;
 import org.miaixz.bus.mapper.binding.function.Fn;
-import org.miaixz.bus.mapper.support.paging.Page;
-import org.miaixz.bus.mapper.support.paging.PageContext;
-import org.miaixz.bus.logger.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.miaixz.bus.mapper.feature.paging.Page;
+import org.miaixz.bus.mapper.feature.paging.PageContext;
 
 /**
  * Abstract base implementation of {@link SharedService} providing standard CRUD functionality.

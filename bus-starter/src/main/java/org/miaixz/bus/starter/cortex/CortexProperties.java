@@ -19,17 +19,18 @@
 */
 package org.miaixz.bus.starter.cortex;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
 import org.miaixz.bus.cache.Hybrid;
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.guard.token.TokenGuardConfig;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Configuration properties for Bus Cortex starter wiring.

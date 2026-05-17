@@ -19,24 +19,17 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.miaixz.bus.core.center.map.BeanMap;
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.crypto.Builder;
-import org.miaixz.bus.logger.Logger;
+import jakarta.annotation.Resource;
+
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Bindable;
@@ -52,7 +45,15 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.zaxxer.hikari.HikariDataSource;
 
-import jakarta.annotation.Resource;
+import org.miaixz.bus.core.center.map.BeanMap;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.Builder;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Auto-configuration for data sources.

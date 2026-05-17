@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.driver.perfstat;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-
 import com.sun.jna.platform.unix.aix.Perfstat;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_id_t;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_netinterface_t;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * Utility to query performance stats for network interfaces

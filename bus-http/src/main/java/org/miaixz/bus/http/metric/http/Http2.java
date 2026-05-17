@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-
-import java.io.IOException;
 
 /**
  * Defines constants and utility methods for the HTTP/2 protocol.
@@ -137,14 +137,14 @@ public final class Http2 {
 
     /**
      * Returns a human-readable representation of HTTP/2 frame headers. The format is:
-     * 
+     *
      * <pre>
      *   direction streamID length type flags
      * </pre>
-     * 
+     *
      * Where direction is {@code <<} for inbound and {@code >>} for outbound. For example, the following would indicate
      * a HEAD request sent from the client.
-     * 
+     *
      * <pre>
      * {@code
      *   << 0x0000000f    12 HEADERS       END_HEADERS|END_STREAM

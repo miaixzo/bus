@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -22,17 +22,17 @@ package org.miaixz.bus.health.windows.driver;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.tuple.Tuple;
-import org.miaixz.bus.health.builtin.jna.ByRef;
-import org.miaixz.bus.health.builtin.jna.Struct;
-
 import com.sun.jna.Memory;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Guid.GUID;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.tuple.Tuple;
+import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.jna.Struct;
 
 /**
  * Utility to query device interfaces via Config Manager Device Tree functions

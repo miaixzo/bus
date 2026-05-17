@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import java.io.Serial;
 
 /**
  * The system hook event interface.

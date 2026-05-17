@@ -19,16 +19,17 @@
 */
 package org.miaixz.bus.validate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
+
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.magic.Checker;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Represents the context of the current validation operation. This class holds configuration and state for a validation

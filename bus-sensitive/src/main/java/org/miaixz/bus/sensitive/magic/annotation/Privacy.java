@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import org.miaixz.bus.sensitive.Builder;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.sensitive.Builder;
 
 /**
  * Marks a field, method parameter, or class for encryption and decryption of sensitive data.

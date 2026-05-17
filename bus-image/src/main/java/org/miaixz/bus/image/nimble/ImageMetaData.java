@@ -24,11 +24,12 @@ import java.util.Objects;
 
 import javax.imageio.metadata.IIOMetadata;
 
+import org.w3c.dom.Node;
+
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
-import org.w3c.dom.Node;
 
 /**
  * Represents the ImageMetaData type.

@@ -19,8 +19,9 @@
 */
 package org.miaixz.bus.tempus.temporal.workflow.subscriber;
 
-import io.temporal.worker.Worker;
 import org.miaixz.bus.tempus.temporal.Binding;
+
+import io.temporal.worker.Worker;
 
 /**
  * Describes how a Temporal worker subscriber should be created and configured.

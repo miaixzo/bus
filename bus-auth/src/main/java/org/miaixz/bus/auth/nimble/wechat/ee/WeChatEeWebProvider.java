@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.auth.nimble.wechat.ee;
 
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.url.UrlEncoder;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
 
 /**
  * WeChat Enterprise web login provider.

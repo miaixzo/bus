@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -21,6 +21,8 @@ package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import java.util.function.Supplier;
 
+import com.sun.jna.Memory;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -29,8 +31,6 @@ import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGlobalMemory;
 import org.miaixz.bus.health.unix.jna.OpenBsdLibc;
 import org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit;
-
-import com.sun.jna.Memory;
 
 /**
  * Memory obtained by sysctl vm.stats

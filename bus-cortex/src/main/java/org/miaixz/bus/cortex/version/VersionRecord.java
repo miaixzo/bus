@@ -21,11 +21,11 @@ package org.miaixz.bus.cortex.version;
 
 import java.util.List;
 
-import org.miaixz.bus.cortex.Nature;
-import org.miaixz.bus.cortex.Type;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.miaixz.bus.cortex.Nature;
+import org.miaixz.bus.cortex.Type;
 
 /**
  * Version-domain release record independent from registry assets.

@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.tempus.pattern;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
 import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.center.date.Week;
 import org.miaixz.bus.core.lang.Assert;
@@ -26,9 +29,6 @@ import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.tempus.pattern.matcher.PatternMatcher;
 import org.miaixz.bus.tempus.pattern.parser.PatternParser;
-
-import java.time.LocalDateTime;
-import java.util.*;
 
 /**
  * Represents a cron pattern, inspired by the Linux crontab format. The expression is a string of 5, 6, or 7 fields

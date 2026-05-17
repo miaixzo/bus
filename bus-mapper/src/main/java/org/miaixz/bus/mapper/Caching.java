@@ -20,7 +20,9 @@
 package org.miaixz.bus.mapper;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -31,6 +33,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
+
 import org.miaixz.bus.core.Context;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -64,8 +67,14 @@ public class Caching extends XMLLanguageDriver {
      * Caches {@link SqlSource} per {@link Configuration} to handle multi-datasource or multi-configuration scenarios
      * (e.g., in unit tests), ensuring consistency.
      */
-    private static final Map<Configuration, Map<String, SqlSource>> CONFIGURATION_CACHE_KEY_MAP = new ConcurrentHashMap<>(
+    private static final WeakHashMap<Configuration, Map<String, SqlSource>> CONFIGURATION_CACHE_KEY_MAP_BACKING = new WeakHashMap<>(
             4);
+
+    /**
+     * Weak-key cache for configuration-specific {@link SqlSource} instances.
+     */
+    private static final Map<Configuration, Map<String, SqlSource>> CONFIGURATION_CACHE_KEY_MAP = Collections
+            .synchronizedMap(CONFIGURATION_CACHE_KEY_MAP_BACKING);
 
     /**
      * If true, the cache is cleared after its first use, allowing for garbage collection. This should be set to
@@ -172,8 +181,7 @@ public class Caching extends XMLLanguageDriver {
     @Override
     public SqlSource createSqlSource(Configuration configuration, String script, Class<?> parameterType) {
         if (CACHE_SQL.containsKey(script)) {
-            Map<String, SqlSource> cacheKeyMap = CONFIGURATION_CACHE_KEY_MAP
-                    .computeIfAbsent(configuration, k -> new ConcurrentHashMap<>());
+            Map<String, SqlSource> cacheKeyMap = configurationCache(configuration);
             return cacheKeyMap.computeIfAbsent(script, k -> {
                 SqlMetaCache cache = CACHE_SQL.get(k);
                 if (cache == SqlMetaCache.NULL) {
@@ -221,6 +229,38 @@ public class Caching extends XMLLanguageDriver {
             });
         } else {
             return super.createSqlSource(configuration, script, parameterType);
+        }
+    }
+
+    /**
+     * Gets the configuration-local SQL source cache.
+     *
+     * @param configuration the MyBatis configuration
+     * @return the configuration-local cache
+     */
+    private static Map<String, SqlSource> configurationCache(Configuration configuration) {
+        synchronized (CONFIGURATION_CACHE_KEY_MAP) {
+            return CONFIGURATION_CACHE_KEY_MAP.computeIfAbsent(configuration, k -> new ConcurrentHashMap<>());
+        }
+    }
+
+    /**
+     * Clears cached SQL sources for a single MyBatis configuration.
+     *
+     * @param configuration the MyBatis configuration to clear
+     */
+    public static void clear(Configuration configuration) {
+        synchronized (CONFIGURATION_CACHE_KEY_MAP) {
+            CONFIGURATION_CACHE_KEY_MAP.remove(configuration);
+        }
+    }
+
+    /**
+     * Clears cached SQL sources for all MyBatis configurations.
+     */
+    public static void clearAll() {
+        synchronized (CONFIGURATION_CACHE_KEY_MAP) {
+            CONFIGURATION_CACHE_KEY_MAP.clear();
         }
     }
 

@@ -21,11 +21,11 @@ package org.miaixz.bus.cortex.guard.token;
 
 import java.util.*;
 
-import org.miaixz.bus.core.net.Specifics;
-import org.miaixz.bus.cortex.Builder;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.miaixz.bus.core.net.Specifics;
+import org.miaixz.bus.cortex.Builder;
 
 /**
  * Token guard configuration shared by asset or namespace-level security policy.

@@ -22,8 +22,5 @@
  * <p>
  * This package contains classes and utilities for using OpenCV within an OSGi (Open Services Gateway initiative)
  * framework, enabling dynamic module loading and service registration.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 package org.opencv.osgi;

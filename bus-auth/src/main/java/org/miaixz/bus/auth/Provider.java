@@ -20,13 +20,13 @@
 package org.miaixz.bus.auth;
 
 import org.miaixz.bus.auth.magic.Authorization;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.Claims;
+import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Claims;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 /**
  * Common interface for all authentication providers. All platform providers must implement this interface. This

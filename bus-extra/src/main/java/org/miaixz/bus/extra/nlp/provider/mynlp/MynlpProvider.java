@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.extra.nlp.provider.mynlp;
 
+import com.mayabot.nlp.Mynlp;
+import com.mayabot.nlp.segment.Lexer;
+import com.mayabot.nlp.segment.Sentence;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.logger.Logger;
-
-import com.mayabot.nlp.Mynlp;
-import com.mayabot.nlp.segment.Lexer;
-import com.mayabot.nlp.segment.Sentence;
 
 /**
  * Mynlp word segmentation engine implementation. This class serves as a concrete {@link NLPProvider} for the Mynlp NLP

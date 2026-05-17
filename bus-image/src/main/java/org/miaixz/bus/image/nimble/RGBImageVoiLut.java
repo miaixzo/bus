@@ -25,6 +25,9 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.opencv.core.CvType;
+import org.opencv.imgproc.Imgproc;
+
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Builder;
@@ -37,8 +40,6 @@ import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.opencv.lut.LutParameters;
 import org.miaixz.bus.image.nimble.opencv.lut.LutShape;
 import org.miaixz.bus.logger.Logger;
-import org.opencv.core.CvType;
-import org.opencv.imgproc.Imgproc;
 
 /**
  * Represents the RGBImageVoiLut type.

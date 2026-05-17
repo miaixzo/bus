@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.tls.TlsVersion;
-import org.miaixz.bus.http.secure.CipherSuite;
-
-import javax.net.ssl.SSLSocket;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import javax.net.ssl.SSLSocket;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.tls.TlsVersion;
+import org.miaixz.bus.http.secure.CipherSuite;
 
 /**
  * Specifies the configuration for a socket connection over which HTTP is transported. For {@code https:} URLs, this

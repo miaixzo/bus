@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.vortex.magic;
 
-import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.provider.AuthorizeProvider;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 
 /**
  * Represents a unified security principal, encapsulating the credential to be validated by an

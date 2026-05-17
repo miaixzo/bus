@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.shade.screw.dialect.sqlserver;
 
-import org.miaixz.bus.shade.screw.mapping.MappingField;
-import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.miaixz.bus.shade.screw.mapping.MappingField;
+import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 
 /**
  * Represents primary key information for a SQL Server table.

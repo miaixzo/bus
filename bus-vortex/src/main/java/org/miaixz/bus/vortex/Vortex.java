@@ -19,13 +19,15 @@
 */
 package org.miaixz.bus.vortex;
 
-import org.miaixz.bus.logger.Logger;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.springframework.context.SmartLifecycle;
+
+import org.miaixz.bus.logger.Logger;
+
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.resources.ConnectionProvider;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Manages the lifecycle of the core Reactor Netty HTTP server for the Vortex application.

@@ -21,9 +21,9 @@ package org.miaixz.bus.extra.nlp.provider.mynlp;
 
 import java.io.Serial;
 
-import org.miaixz.bus.extra.nlp.NLPWord;
-
 import com.mayabot.nlp.segment.WordTerm;
+
+import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
  * Wrapper class for a single word (WordTerm) from Mynlp word segmentation. This class adapts the Mynlp {@link WordTerm}

@@ -21,10 +21,11 @@ package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.session.Configuration;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.logger.Logger;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.FactoryBean;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A {@link FactoryBean} for creating MyBatis mapper interface proxies. It is configured via a SqlSessionFactory or a

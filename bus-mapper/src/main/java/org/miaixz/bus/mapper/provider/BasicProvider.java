@@ -23,7 +23,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
+
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.SqlScript;
@@ -265,9 +267,11 @@ public abstract class BasicProvider {
             case INSERT_ON_CONFLICT -> buildInsertOnConflict(entity, false);
             case INSERT_OR_REPLACE -> buildInsertOrReplace(entity, false);
             case UPDATE_OR_INSERT -> buildUpdateOrInsert(entity, false);
+            case MERGE_INTO_KEY -> buildMergeIntoKey(entity, false);
             case MERGE_USING_VALUES -> buildMergeUsingValues(entity, false);
             case MERGE_USING_DUAL -> buildMergeUsingDual(entity, false);
             case NONE -> throw unsupportedUpsert(dialect);
+            default -> throw unsupportedUpsert(dialect);
         };
     }
 
@@ -283,9 +287,11 @@ public abstract class BasicProvider {
             case INSERT_ON_CONFLICT -> buildInsertOnConflict(entity, true);
             case INSERT_OR_REPLACE -> buildInsertOrReplace(entity, true);
             case UPDATE_OR_INSERT -> buildUpdateOrInsert(entity, true);
+            case MERGE_INTO_KEY -> buildMergeIntoKey(entity, true);
             case MERGE_USING_VALUES -> buildMergeUsingValues(entity, true);
             case MERGE_USING_DUAL -> buildMergeUsingDual(entity, true);
             case NONE -> throw unsupportedUpsert(dialect);
+            default -> throw unsupportedUpsert(dialect);
         };
     }
 
@@ -367,9 +373,9 @@ public abstract class BasicProvider {
      * @param upsertType the UPSERT type
      * @return {@code true} when the dialect supports native batch UPSERT SQL
      */
-    protected static boolean supportsNativeBatchUpsert(Dialect.Type upsertType) {
-        return upsertType == Dialect.Type.INSERT_ON_DUPLICATE || upsertType == Dialect.Type.INSERT_ON_CONFLICT
-                || upsertType == Dialect.Type.INSERT_OR_REPLACE;
+    protected static boolean supportsNativeBatchUpsert(Behavior upsertType) {
+        return upsertType == Behavior.INSERT_ON_DUPLICATE || upsertType == Behavior.INSERT_ON_CONFLICT
+                || upsertType == Behavior.INSERT_OR_REPLACE || upsertType == Behavior.MERGE_INTO_KEY;
     }
 
     /**
@@ -486,6 +492,27 @@ public abstract class BasicProvider {
                 .append(buildDynamicColumnListSingle(entity)).append("\nVALUES\n")
                 .append(buildDynamicValuesListSingle(entity)).append("\nMATCHING (").append(keyColumnList(entity))
                 .append(")");
+        return sql.toString();
+    }
+
+    /**
+     * Builds an H2-style {@code MERGE INTO ... KEY (...)} statement.
+     *
+     * @param entity    the table metadata
+     * @param selective whether to include only non-null fields
+     * @return the generated SQL
+     */
+    protected static String buildMergeIntoKey(TableMeta entity, boolean selective) {
+        StringBuilder sql = new StringBuilder();
+        if (!selective) {
+            sql.append("MERGE INTO ").append(entity.tableName()).append(" (").append(insertColumnList(entity))
+                    .append(") KEY(").append(keyColumnList(entity)).append(") VALUES (")
+                    .append(insertValues(entity, null)).append(")");
+            return sql.toString();
+        }
+        sql.append("MERGE INTO ").append(entity.tableName()).append("\n").append(buildDynamicColumnListSingle(entity))
+                .append("\nKEY(").append(keyColumnList(entity)).append(")\nVALUES\n")
+                .append(buildDynamicValuesListSingle(entity));
         return sql.toString();
     }
 

@@ -20,13 +20,29 @@
 
 #-------------------------------------------------------------------
 # This script upgrades the project version. It includes:
-# 1. Updating the version number in pom.xml files.
-# 2. Replacing the version number in README.md and the VERSION file.
+# 1. Updating bus-bom parent versions in pom.xml files.
+# 2. Updating the VERSION file.
+# 3. Updating the Version class _VERSION constant.
+# 4. Adding the version to native-image index.json tested-versions.
+#
+# Usage:
+#   bash .github/scripts/version.sh <new-version>
+#
+# Examples:
+#   bash .github/scripts/version.sh 8.6.8
+#   bash .github/scripts/version.sh 8.6.8-SNAPSHOT
+#
+# Notes:
+#   The first argument is required.
+#   When the new version ends with "-SNAPSHOT", the stored project version
+#   uses the release part before "-SNAPSHOT".
+#   The script can be executed from any directory inside or outside the project.
 #-------------------------------------------------------------------
 
 set -o errexit
+set -o pipefail
 
-pwd=$(pwd)
+root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 
 # Display the LOGO
 "$(dirname ${BASH_SOURCE[0]})"/logo.sh
@@ -36,17 +52,14 @@ if [ -z "$1" ]; then
         exit 1
 fi
 
-# Set the version in all module pom.xml files
-mvn versions:set -DnewVersion=$1
-
 # Get the version number without the -SNAPSHOT suffix for use elsewhere
 version=${1%-SNAPSHOT}
 
 # Replace the version number in other files
-echo "Current path: ${pwd}"
+echo "Current path: ${root}"
 
 if [ -n "$1" ];then
-    old_version=$(cat "${pwd}"/VERSION)
+    old_version=$(cat "${root}"/VERSION)
     echo "Replacing old version ${old_version} with new version ${version}"
 else
     # Argument error, exit
@@ -59,8 +72,45 @@ if [ -z "$old_version" ]; then
     exit 1
 fi
 
-# Replace the version in README.md
-sed -i "s/${old_version}/${version}/g" "$pwd"/README.md
+export OLD_VERSION="${old_version}"
+export NEW_VERSION="${version}"
+
+# Replace bus-bom parent versions and the owning bus-bom/bus-parent project versions in pom.xml files.
+find "${root}" -path '*/target/*' -prune -o -name 'pom.xml' -print0 | while IFS= read -r -d '' pom; do
+    perl -0pi -e '
+        s{(<parent>\s*<groupId>org\.miaixz</groupId>\s*<artifactId>bus-bom</artifactId>\s*<version>)[^<]+(</version>)}{$1 . $ENV{"NEW_VERSION"} . $2}eg;
+        s{(<groupId>org\.miaixz</groupId>\s*<artifactId>bus-bom</artifactId>\s*<version>)[^<]+(</version>)}{$1 . $ENV{"NEW_VERSION"} . $2}eg;
+        s{(<groupId>org\.miaixz</groupId>\s*<artifactId>bus-parent</artifactId>\s*<version>)[^<]+(</version>)}{$1 . $ENV{"NEW_VERSION"} . $2}eg;
+    ' "${pom}"
+done
+
+# Replace the version in README files when they contain the previous release number.
+for readme in "${root}"/README.md "${root}"/README_CN.md; do
+    if [ -f "${readme}" ]; then
+        perl -0pi -e 's/\Q$ENV{"OLD_VERSION"}\E/$ENV{"NEW_VERSION"}/g' "${readme}"
+    fi
+done
+
+# Replace the _VERSION constant in Version.java files.
+find "${root}" -path '*/target/*' -prune -o -name 'Version.java' -print0 | while IFS= read -r -d '' version_file; do
+    perl -0pi -e 's{(public\s+static\s+final\s+String\s+_VERSION\s*=\s*")[^"]+(")}{$1 . $ENV{"NEW_VERSION"} . $2}eg' "${version_file}"
+done
+
+# Add the new version to every native-image tested-versions list without duplicating existing entries.
+find "${root}" -path '*/target/*' -prune -o -name 'index.json' -print0 | while IFS= read -r -d '' index_file; do
+    perl -0pi -e '
+        my $version = $ENV{"NEW_VERSION"};
+        s{("tested-versions"\s*:\s*\[)(.*?)(\n\s*\])}{
+            my ($head, $body, $tail) = ($1, $2, $3);
+            if ($body =~ /"\Q$version\E"/) {
+                $head . $body . $tail;
+            } else {
+                my $comma = $body =~ /"\s*$/ ? "," : "";
+                $head . $body . $comma . "\n      \"" . $version . "\"" . $tail;
+            }
+        }egs;
+    ' "${index_file}"
+done
 
 # Save the new version number to the VERSION file
-echo "$version" > "$pwd"/VERSION
+echo "$version" > "${root}"/VERSION

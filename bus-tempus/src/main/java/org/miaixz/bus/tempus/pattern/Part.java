@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.tempus.pattern;
 
+import java.util.Calendar;
+
 import org.miaixz.bus.core.center.date.Month;
 import org.miaixz.bus.core.center.date.Week;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CrontabException;
-
-import java.util.Calendar;
 
 /**
  * Enumeration of the parts of a cron expression. This enum defines the position and valid value range for each field in

@@ -27,13 +27,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.*;
-import org.miaixz.bus.gitlab.models.ImpersonationToken.Scope;
-import org.miaixz.bus.gitlab.support.EmailChecker;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.*;
+import org.miaixz.bus.gitlab.models.ImpersonationToken.Scope;
+import org.miaixz.bus.gitlab.support.EmailChecker;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -113,7 +113,7 @@ public class UserApi extends AbstractApi {
                 Response.Status.OK,
                 getPageQueryParams(page, perPage, customAttributesEnabled),
                 "users");
-        return (response.readEntity(new GenericType<List<User>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -176,7 +176,7 @@ public class UserApi extends AbstractApi {
         GitLabApiForm formData = createGitLabApiForm().withParam("active", true).withParam(PAGE_PARAM, page)
                 .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "users");
-        return (response.readEntity(new GenericType<List<User>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -311,7 +311,7 @@ public class UserApi extends AbstractApi {
         GitLabApiForm formData = createGitLabApiForm().withParam("blocked", true).withParam(PAGE_PARAM, page)
                 .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "users");
-        return (response.readEntity(new GenericType<List<User>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -399,7 +399,7 @@ public class UserApi extends AbstractApi {
         GitLabApiForm formData = createGitLabApiForm().withParam("username", username, true).withParam(PAGE_PARAM, 1)
                 .withParam(PER_PAGE_PARAM, 1);
         Response response = get(Response.Status.OK, formData.asMap(), "users");
-        List<User> users = response.readEntity(new GenericType<List<User>>() {
+        List<User> users = response.readEntity(new GenericType<>() {
         });
         return (users.isEmpty() ? null : users.get(0));
     }
@@ -486,7 +486,7 @@ public class UserApi extends AbstractApi {
         GitLabApiForm formData = createGitLabApiForm().withParam("provider", provider, true)
                 .withParam("extern_uid", externalUid, true).withParam(PAGE_PARAM, 1).withParam(PER_PAGE_PARAM, 1);
         Response response = get(Response.Status.OK, formData.asMap(), "users");
-        List<User> users = response.readEntity(new GenericType<List<User>>() {
+        List<User> users = response.readEntity(new GenericType<>() {
         });
         return (users.isEmpty() ? null : users.get(0));
     }
@@ -546,7 +546,7 @@ public class UserApi extends AbstractApi {
         GitLabApiForm formData = createGitLabApiForm().withParam("search", emailOrUsername, true)
                 .withParam(PAGE_PARAM, page).withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "users");
-        return (response.readEntity(new GenericType<List<User>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -592,31 +592,6 @@ public class UserApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /users</code>
      * </pre>
      *
-     * <p>
-     * The following properties of the provided User instance can be set during creation:
-     * 
-     * <pre>
-     * <code> email (required) - Email
-     * username (required) - Username
-     * name (required) - Name
-     * skype (optional) - Skype ID
-     * linkedin (optional) - LinkedIn
-     * twitter (optional) - Twitter account
-     * websiteUrl (optional) - Website URL
-     * organization (optional) - Organization name
-     * projectsLimit (optional) - Number of projects user can create
-     * externUid (optional) - External UID
-     * provider (optional) - External provider name
-     * bio (optional) - User's biography
-     * location (optional) - User's location
-     * admin (optional) - User is admin - true or false (default)
-     * canCreateGroup (optional) - User can create groups - true or false
-     * skipConfirmation (optional) - Skip confirmation - true or false (default)
-     * external (optional) - Flags the user as external - true or false(default)
-     * sharedRunnersMinutesLimit (optional) - Pipeline minutes quota for this user
-     * </code>
-     * </pre>
-     *
      * @param user          the User instance with the user info to create
      * @param password      the password for the new user
      * @param resetPassword whether to send a password reset link
@@ -640,7 +615,7 @@ public class UserApi extends AbstractApi {
      *
      * <p>
      * The following properties of the provided User instance can be set during update:
-     * 
+     *
      * <pre>
      * <code> email (required) - Email
      * username (required) - Username
@@ -732,7 +707,7 @@ public class UserApi extends AbstractApi {
      */
     public List<SshKey> getSshKeys() throws GitLabApiException {
         Response response = get(Response.Status.OK, getDefaultPerPageParam(), "user", "keys");
-        return (response.readEntity(new GenericType<List<SshKey>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -754,7 +729,7 @@ public class UserApi extends AbstractApi {
         }
 
         Response response = get(Response.Status.OK, getDefaultPerPageParam(), "users", userId, "keys");
-        List<SshKey> keys = response.readEntity(new GenericType<List<SshKey>>() {
+        List<SshKey> keys = response.readEntity(new GenericType<>() {
         });
 
         if (keys != null) {
@@ -926,7 +901,7 @@ public class UserApi extends AbstractApi {
                 "users",
                 getUserIdOrUsername(userIdOrUsername),
                 "impersonation_tokens");
-        return (response.readEntity(new GenericType<List<ImpersonationToken>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1061,7 +1036,7 @@ public class UserApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: DELETE /personal_access_tokens/:token_id</code>
      * </pre>
-     * 
+     *
      * @param tokenId the personal access token ID to revoke
      * @throws GitLabApiException if any exception occurs
      */
@@ -1324,7 +1299,7 @@ public class UserApi extends AbstractApi {
      */
     public List<Email> getEmails() throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "user", "emails");
-        return (response.readEntity(new GenericType<List<Email>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1341,7 +1316,7 @@ public class UserApi extends AbstractApi {
      */
     public List<Email> getEmails(final Object userIdOrUsername) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "users", getUserIdOrUsername(userIdOrUsername), "emails");
-        return (response.readEntity(new GenericType<List<Email>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1445,7 +1420,7 @@ public class UserApi extends AbstractApi {
      */
     public List<GpgKey> listGpgKeys() throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "user", "gpg_keys");
-        return (response.readEntity(new GenericType<List<GpgKey>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1491,7 +1466,7 @@ public class UserApi extends AbstractApi {
      */
     public List<GpgKey> listGpgKeys(final Long userId) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "users", userId, "gpg_keys");
-        return (response.readEntity(new GenericType<List<GpgKey>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

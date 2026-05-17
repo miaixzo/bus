@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.extra.nlp.provider.hanlp;
 
+import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.seg.Segment;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.logger.Logger;
-
-import com.hankcs.hanlp.HanLP;
-import com.hankcs.hanlp.seg.Segment;
 
 /**
  * HanLP word segmentation engine implementation. This class serves as a concrete {@link NLPProvider} for the HanLP NLP

@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.starter.health;
 
-import org.miaixz.bus.core.basic.spring.Controller;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.ContextBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import org.miaixz.bus.core.basic.spring.Controller;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.ContextBuilder;
 
 /**
  * REST controller for application health checks and state management.

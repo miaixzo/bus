@@ -20,17 +20,18 @@
 package org.miaixz.bus.cortex.registry.api;
 
 import jakarta.persistence.Transient;
-import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.cortex.Builder;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.Keying;
-import org.miaixz.bus.cortex.Type;
-import org.miaixz.bus.cortex.builtin.RegistryGenerator;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.extra.json.JsonKit;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.Builder;
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
 /**

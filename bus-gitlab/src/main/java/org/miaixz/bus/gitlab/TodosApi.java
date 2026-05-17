@@ -22,9 +22,9 @@ package org.miaixz.bus.gitlab;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Todo;
-
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Todo;
 
 /**
  * This class implements the client side API for the GitLab Todos API.

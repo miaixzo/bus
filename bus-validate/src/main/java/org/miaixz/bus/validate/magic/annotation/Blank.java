@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.BlankMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * Validates that the annotated string is blank or null. A string is blank if it is null, empty, or contains only

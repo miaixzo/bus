@@ -33,12 +33,12 @@ import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.gitlab.GitLabApiException;
 import org.miaixz.bus.logger.Logger;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * This class uses HTML scraping to create and revoke GitLab personal access tokens, the user's Feed token, and for

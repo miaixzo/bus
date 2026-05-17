@@ -21,13 +21,13 @@ package org.miaixz.bus.auth.magic;
 
 import java.io.Serializable;
 
-import org.miaixz.bus.core.xyz.StringKit;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Parameter class for authorization callbacks. This class encapsulates various parameters received during the callback
@@ -78,14 +78,14 @@ public class Callback implements Serializable {
     /**
      * Apple returns this value only when the user authorizes the application for the first time. If your application
      * has already obtained user authorization, Apple will not return this value again.
-     * 
+     *
      * @see <a href="https://developer.apple.com/documentation/sign_in_with_apple/useri">Apple User Info</a>
      */
     private String user;
 
     /**
      * Apple error message, returned only when the user cancels authorization.
-     * 
+     *
      * @see <a href=
      *      "https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_js/incorporating_sign_in_with_apple_into_other_platforms">Apple
      *      Error Response</a>

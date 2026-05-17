@@ -20,6 +20,7 @@
 package org.miaixz.bus.image.nimble;
 
 import java.util.Objects;
+
 import org.opencv.core.Mat;
 import org.opencv.img_hash.AverageHash;
 import org.opencv.img_hash.BlockMeanHash;

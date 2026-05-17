@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org sandao and other contributors.         ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,15 +19,6 @@
 */
 package org.miaixz.bus.socket.accord;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.socket.*;
-import org.miaixz.bus.socket.buffer.BufferPage;
-import org.miaixz.bus.socket.buffer.VirtualBuffer;
-import org.miaixz.bus.socket.buffer.WriteBuffer;
-import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
-import org.miaixz.bus.logger.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -36,6 +27,15 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.socket.*;
+import org.miaixz.bus.socket.buffer.BufferPage;
+import org.miaixz.bus.socket.buffer.VirtualBuffer;
+import org.miaixz.bus.socket.buffer.WriteBuffer;
+import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
 
 /**
  * Represents a TCP session for AIO (Asynchronous I/O).

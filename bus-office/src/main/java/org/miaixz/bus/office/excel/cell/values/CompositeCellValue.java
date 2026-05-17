@@ -21,10 +21,11 @@ package org.miaixz.bus.office.excel.cell.values;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.office.excel.CellKit;
 import org.miaixz.bus.office.excel.cell.NullCell;
 import org.miaixz.bus.office.excel.cell.editors.CellEditor;
-import org.miaixz.bus.office.excel.CellKit;
 
 /**
  * Composite cell value, used to read different values based on the cell type.

@@ -232,7 +232,7 @@ public class Pattern {
 
     /**
      * Regular expression for Uniform Social Credit Code (USCC).
-     * 
+     *
      * <pre>
      * Part 1: Registration and administration department code (1 digit, number or uppercase English letter)
      * Part 2: Institutional category code (1 digit, number or uppercase English letter)
@@ -249,7 +249,7 @@ public class Pattern {
      * Number, Seventeen-digit Code. Standard: GB 16735-2019. Official standard address:
      * https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2EBF667F8C032B1EDFD6DF9C1114E02 For manufacturers of complete
      * and/or incomplete vehicles with an annual production of 1,000 or more:
-     * 
+     *
      * <pre>
      *   Part 1: World Manufacturer Identifier (WMI), 3 characters;
      *   Part 2: Vehicle Descriptor Section (VDS), 6 characters;
@@ -257,7 +257,7 @@ public class Pattern {
      * </pre>
      * <p>
      * For manufacturers of complete and/or incomplete vehicles with an annual production of less than 1,000:
-     * 
+     *
      * <pre>
      *   Part 1: World Manufacturer Identifier (WMI), 3 characters;
      *   Part 2: Vehicle Descriptor Section (VDS), 6 characters;
@@ -285,14 +285,14 @@ public class Pattern {
      * Regular expression for Chinese names. Uyghur names use a middle dot (·). The correct middle dot is the one found
      * on the top-left of the keyboard (before '1') in Chinese input method. Incorrect characters: {@code ．.。．.} Correct
      * Uyghur names examples:
-     * 
+     *
      * <pre>
      * 霍加阿卜杜拉·麦提喀斯木
      * 玛合萨提别克·哈斯木别克
      * 阿布都热依木江·艾斯卡尔
      * 阿卜杜尼亚孜·毛力尼亚孜
      * </pre>
-     * 
+     *
      * <pre>
      * ----------
      * Incorrect examples:
@@ -306,7 +306,7 @@ public class Pattern {
      *   大                   reason: less than 2 characters
      * ----------
      * </pre>
-     * 
+     *
      * Summary for Chinese names: 2-60 characters, can only be Chinese characters and the Uyghur middle dot (·).
      * Broadened range for Chinese characters to include rare characters.
      */

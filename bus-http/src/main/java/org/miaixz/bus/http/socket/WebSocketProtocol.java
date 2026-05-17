@@ -146,7 +146,7 @@ public final class WebSocketProtocol {
 
     /**
      * Applies a WebSocket mask to the given data.
-     * 
+     *
      * @param cursor The cursor pointing to the data to be masked/unmasked.
      * @param key    The 4-byte mask key.
      */
@@ -164,7 +164,7 @@ public final class WebSocketProtocol {
 
     /**
      * Returns a human-readable error message for an invalid close code, or null if the code is valid.
-     * 
+     *
      * @param code The close code.
      * @return An error message string or null.
      */
@@ -180,7 +180,7 @@ public final class WebSocketProtocol {
 
     /**
      * Validates a WebSocket close code.
-     * 
+     *
      * @param code The close code to validate.
      * @throws IllegalArgumentException if the code is invalid.
      */
@@ -192,7 +192,7 @@ public final class WebSocketProtocol {
 
     /**
      * Computes the `Sec-WebSocket-Accept` header value from a client's key.
-     * 
+     *
      * @param key The `Sec-WebSocket-Key` from the client.
      * @return The corresponding `Sec-WebSocket-Accept` value for the server's response.
      */

@@ -49,25 +49,25 @@ public class LambdaKit {
      * reference. This method works for lambdas with no parameters but a return value, such as:
      * <ul>
      * <li>Reference to an instance method of a particular object:
-     * 
+     *
      * <pre>{@code
      * MyTeacher myTeacher = new MyTeacher();
      * Class<MyTeacher> supplierClass = LambdaKit.getRealClass(myTeacher::getAge);
      * Assert.assertEquals(MyTeacher.class, supplierClass);
      * }</pre>
-     * 
+     *
      * </li>
      * <li>Reference to a static method with no parameters:
-     * 
+     *
      * <pre>{@code
      * Class<MyTeacher> staticSupplierClass = LambdaKit.getRealClass(MyTeacher::takeAge);
      * Assert.assertEquals(MyTeacher.class, staticSupplierClass);
      * }</pre>
-     * 
+     *
      * </li>
      * </ul>
      * Note: In some cases, the exact type cannot be retrieved:
-     * 
+     *
      * <pre>{@code
      * // Enum test, can only get the enum type
      * Class<Enum<?>> enumSupplierClass = LambdaKit.getRealClass(LambdaKit.LambdaKindEnum.REF_NONE::ordinal);

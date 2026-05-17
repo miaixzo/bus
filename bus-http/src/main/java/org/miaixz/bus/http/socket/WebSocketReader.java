@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.http.socket;
 
+import java.io.IOException;
+import java.net.ProtocolException;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Normal;
-
-import java.io.IOException;
-import java.net.ProtocolException;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -99,7 +99,7 @@ public final class WebSocketReader {
     boolean isControlFrame;
 
     /**
-     * 
+     *
      * Constructs a new WebSocketReader.
      *
      * @param isClient      True if this is a client-side reader.
@@ -121,7 +121,7 @@ public final class WebSocketReader {
     }
 
     /**
-     * 
+     *
      * Processes the next frame from the source. Control frames will invoke a single callback, while message frames may
      * be delivered across multiple frames and will invoke {@link FrameCallback#onReadMessage}.
      *
@@ -137,7 +137,7 @@ public final class WebSocketReader {
     }
 
     /**
-     * 
+     *
      * Reads the header of the next frame.
      *
      * @throws IOException if a read or protocol error occurs.
@@ -204,7 +204,7 @@ public final class WebSocketReader {
     }
 
     /**
-     * 
+     *
      * Reads the payload of a control frame and invokes the appropriate callback.
      *
      * @throws IOException if a read or protocol error occurs.
@@ -254,7 +254,7 @@ public final class WebSocketReader {
     }
 
     /**
-     * 
+     *
      * Reads the payload of a message frame and invokes the message callback.
      *
      * @throws IOException if a read or protocol error occurs.
@@ -275,7 +275,7 @@ public final class WebSocketReader {
     }
 
     /**
-     * 
+     *
      * Skips control frames until a non-control frame is found.
      *
      * @throws IOException if a read error occurs.
@@ -291,7 +291,7 @@ public final class WebSocketReader {
     }
 
     /**
-     * 
+     *
      * Reads a complete message, which may be split across multiple frames. This method handles interleaved control
      * frames.
      *
@@ -333,7 +333,7 @@ public final class WebSocketReader {
     public interface FrameCallback {
 
         /**
-         * 
+         *
          * Invoked when a text message is received.
          *
          * @param text The text content.
@@ -342,7 +342,7 @@ public final class WebSocketReader {
         void onReadMessage(String text) throws IOException;
 
         /**
-         * 
+         *
          * Invoked when a binary message is received.
          *
          * @param bytes The binary content.
@@ -351,7 +351,7 @@ public final class WebSocketReader {
         void onReadMessage(ByteString bytes) throws IOException;
 
         /**
-         * 
+         *
          * Invoked when a ping frame is received.
          *
          * @param buffer The ping payload.
@@ -359,7 +359,7 @@ public final class WebSocketReader {
         void onReadPing(ByteString buffer);
 
         /**
-         * 
+         *
          * Invoked when a pong frame is received.
          *
          * @param buffer The pong payload.
@@ -367,7 +367,7 @@ public final class WebSocketReader {
         void onReadPong(ByteString buffer);
 
         /**
-         * 
+         *
          * Invoked when a close frame is received.
          *
          * @param code   The close code.

@@ -22,8 +22,5 @@
  * <p>
  * This package contains implementations of various image hashing algorithms used for duplicate image detection, image
  * similarity comparison, and perceptual hash computation.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 package org.opencv.img_hash;

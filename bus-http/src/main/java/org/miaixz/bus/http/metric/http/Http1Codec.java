@@ -52,7 +52,7 @@ import org.miaixz.bus.http.metric.Internal;
 public class Http1Codec implements HttpCodec {
 
     /**
-     * 
+     *
      * The initial state. Waiting to write the request headers.
      */
     private static final int STATE_IDLE = 0;
@@ -270,7 +270,7 @@ public class Http1Codec implements HttpCodec {
 
     /**
      * Returns bytes of a request header for sending on an HTTP transport.
-     * 
+     *
      * @param headers     The headers to write.
      * @param requestLine The request line to write.
      * @throws IOException if an I/O error occurs.
@@ -332,7 +332,7 @@ public class Http1Codec implements HttpCodec {
 
     /**
      * Reads headers or trailers.
-     * 
+     *
      * @return The headers.
      * @throws IOException if an I/O error occurs.
      */
@@ -384,7 +384,7 @@ public class Http1Codec implements HttpCodec {
     /**
      * Sets the delegate of {@code timeout} to {@link Timeout#NONE} and resets its underlying timeout to the default
      * configuration. Use this to avoid unexpected sharing of timeouts between pooled connections.
-     * 
+     *
      * @param timeout The timeout to detach.
      */
     private void detachTimeout(AssignTimeout timeout) {
@@ -396,7 +396,7 @@ public class Http1Codec implements HttpCodec {
 
     /**
      * The response body from a CONNECT should be empty, but if it is not then we should consume it before proceeding.
-     * 
+     *
      * @param response The response from the CONNECT request.
      * @throws IOException if an I/O error occurs.
      */

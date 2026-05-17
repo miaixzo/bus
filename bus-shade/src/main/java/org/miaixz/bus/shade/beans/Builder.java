@@ -19,17 +19,18 @@
 */
 package org.miaixz.bus.shade.beans;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 /**
  * Builds source code files based on FreeMarker templates and table entity information. This class provides methods to

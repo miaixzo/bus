@@ -21,15 +21,16 @@ package org.miaixz.bus.starter.pay;
 
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Configuration properties for the integrated payment service.

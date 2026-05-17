@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.ReflectMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * Validates by reflectively invoking a method on the validated parameter and then checking the result.

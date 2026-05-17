@@ -24,14 +24,15 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 
 /**
  * Configuration properties for the request/response wrapper pipeline.

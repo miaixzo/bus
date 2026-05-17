@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -26,6 +26,9 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.sun.jna.platform.unix.solaris.Kstat2;
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -42,9 +45,6 @@ import org.miaixz.bus.health.unix.jna.SolarisLibc;
 import org.miaixz.bus.health.unix.platform.solaris.KstatKit;
 import org.miaixz.bus.health.unix.platform.solaris.KstatKit.KstatChain;
 import org.miaixz.bus.health.unix.platform.solaris.driver.Who;
-
-import com.sun.jna.platform.unix.solaris.Kstat2;
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 
 /**
  * Solaris is a non-free Unix operating system originally developed by Sun Microsystems. It superseded the company's

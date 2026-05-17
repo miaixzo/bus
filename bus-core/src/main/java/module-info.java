@@ -19,7 +19,7 @@
 */
 /**
  * bus.core
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

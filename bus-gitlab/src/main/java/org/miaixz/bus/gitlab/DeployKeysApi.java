@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.DeployKey;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.DeployKey;
 
 /**
  * This class implements the client side API for the GitLab Deploy Keys API calls.
@@ -70,7 +70,7 @@ public class DeployKeysApi extends AbstractApi {
      */
     public List<DeployKey> getDeployKeys(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "deploy_keys");
-        return (response.readEntity(new GenericType<List<DeployKey>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -140,7 +140,7 @@ public class DeployKeysApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "deploy_keys");
-        return (response.readEntity(new GenericType<List<DeployKey>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

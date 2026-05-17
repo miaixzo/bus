@@ -1,3 +1,22 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.opencv.core;
 
 import java.nio.ByteBuffer;
@@ -6,9 +25,6 @@ import java.nio.ByteBuffer;
 //javadoc: Mat
 /**
  * The mat class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Mat extends CleanableMat {
 
@@ -470,7 +486,7 @@ public class Mat extends CleanableMat {
 
     /**
      * Element-wise multiplication with scale factor
-     * 
+     *
      * @param m     operand with with which to perform element-wise multiplication
      * @param scale scale factor
      * @return reference to a new Mat object
@@ -481,7 +497,7 @@ public class Mat extends CleanableMat {
 
     /**
      * Element-wise multiplication
-     * 
+     *
      * @param m operand with with which to perform element-wise multiplication
      * @return reference to a new Mat object
      */
@@ -491,7 +507,7 @@ public class Mat extends CleanableMat {
 
     /**
      * Matrix multiplication
-     * 
+     *
      * @param m operand with with which to perform matrix multiplication
      * @see Core#gemm(Mat, Mat, double, Mat, double, Mat, int)
      * @return reference to a new Mat object
@@ -1119,9 +1135,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The tuple 2 class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Tuple2<T> {
 
@@ -1145,9 +1158,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The tuple 3 class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Tuple3<T> {
 
@@ -1177,9 +1187,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The tuple 4 class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Tuple4<T> {
 
@@ -1215,9 +1222,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable interface.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Atable<T> {
 
@@ -1241,9 +1245,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable base class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableBase {
 
@@ -1266,9 +1267,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable byte class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableByte extends AtableBase implements Atable<Byte> {
 
@@ -1336,9 +1334,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable double class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableDouble extends AtableBase implements Atable<Double> {
 
@@ -1406,9 +1401,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable float class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableFloat extends AtableBase implements Atable<Float> {
 
@@ -1476,9 +1468,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable integer class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableInteger extends AtableBase implements Atable<Integer> {
 
@@ -1546,9 +1535,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable short class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableShort extends AtableBase implements Atable<Short> {
 

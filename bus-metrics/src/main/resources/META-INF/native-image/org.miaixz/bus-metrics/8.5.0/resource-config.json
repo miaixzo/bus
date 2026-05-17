@@ -2,7 +2,7 @@
   "resources": {
     "includes": [
       {
-        "pattern": "META-INF/services/*"
+        "pattern": "META-INF/services/.*"
       }
     ]
   }

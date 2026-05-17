@@ -23,11 +23,11 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.miaixz.bus.gitlab.hooks.web.*;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.logger.Logger;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class provides a handler for processing GitLab WebHook callouts.

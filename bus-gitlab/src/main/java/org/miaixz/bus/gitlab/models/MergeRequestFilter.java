@@ -22,20 +22,20 @@ package org.miaixz.bus.gitlab.models;
 import static org.miaixz.bus.gitlab.models.Constants.MergeRequestScope.ALL;
 import static org.miaixz.bus.gitlab.models.Constants.MergeRequestScope.ASSIGNED_TO_ME;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.gitlab.models.Constants.*;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
-import java.io.Serial;
+
+import org.miaixz.bus.gitlab.models.Constants.*;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 /**
  * This class is used to filter merge requests when getting lists of them.

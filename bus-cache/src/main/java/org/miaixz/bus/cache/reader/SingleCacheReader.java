@@ -20,9 +20,9 @@
 package org.miaixz.bus.cache.reader;
 
 import org.miaixz.bus.cache.Builder;
+import org.miaixz.bus.cache.builtin.PreventObjects;
 import org.miaixz.bus.cache.magic.AnnoHolder;
 import org.miaixz.bus.cache.magic.MethodHolder;
-import org.miaixz.bus.cache.builtin.PreventObjects;
 import org.miaixz.bus.core.lang.annotation.Singleton;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;

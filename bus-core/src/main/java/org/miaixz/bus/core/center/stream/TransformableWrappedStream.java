@@ -76,7 +76,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * Splits the stream into sub-streams of a specified batch size.
      * <p>
      * Example: {@code [1,2,3,4,5]} -> {@code [[1,2], [3,4], [5]]}
-     * 
+     *
      *
      * @param batchSize the desired size of each sub-stream (must be a positive integer)
      * @return an {@link EasyStream} of {@link EasyStream}s, where each inner stream contains elements of the specified
@@ -99,7 +99,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * Splits the stream into sub-lists of a specified batch size.
      * <p>
      * Example: {@code [1,2,3,4,5]} -> {@code [[1,2], [3,4], [5]]}
-     * 
+     *
      *
      * @param batchSize the desired size of each sub-list (must be a positive integer)
      * @return an {@link EasyStream} of {@link List}s, where each list contains elements of the specified batch size
@@ -177,7 +177,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * predicate. The stream terminates when the first non-matching element is encountered.
      * <p>
      * Example:
-     * 
+     *
      * <pre>{@code
      * EasyStream.of(1, 2, 3, 4, 5).takeWhile(i -> i < 3) // Get elements until the first element >= 3 is encountered
      *         .toList(); // = [1, 2]
@@ -186,14 +186,14 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * Unlike {@code JDK9}'s {@code takeWhile} method, this operation is a sequential and stateful intermediate
      * operation. Even in parallel streams, this operation is executed sequentially and does not affect subsequent
      * parallel operations:
-     * 
+     *
      * <pre>{@code
      * EasyStream.iterate(1, i -> i + 1).parallel().takeWhile(e -> e < 50) // Sequential execution
      *         .map(e -> e + 1) // Concurrent
      *         .map(String::valueOf) // Concurrent
      *         .toList();
      * }</pre>
-     * 
+     *
      * If not strictly necessary, it is not recommended to perform this operation in parallel streams.
      *
      * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
@@ -213,7 +213,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * is encountered.
      * <p>
      * Example:
-     * 
+     *
      * <pre>{@code
      * EasyStream.of(1, 2, 3, 4, 5).dropWhile(i -> i < 3) // Drop elements until the first element >= 3 is encountered
      *         .toList(); // = [3, 4, 5]
@@ -222,14 +222,14 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * Unlike {@code JDK9}'s {@code dropWhile} method, this operation is a sequential and stateful intermediate
      * operation. Even in parallel streams, this operation is executed sequentially and does not affect subsequent
      * parallel operations:
-     * 
+     *
      * <pre>{@code
      * EasyStream.iterate(1, i -> i + 1).parallel().dropWhile(e -> e < 50) // Sequential execution
      *         .map(e -> e + 1) // Concurrent
      *         .map(String::valueOf) // Concurrent
      *         .toList();
      * }</pre>
-     * 
+     *
      * If not strictly necessary, it is not recommended to perform this operation in parallel streams.
      *
      * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
@@ -284,7 +284,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * the element and its index. This is a stateless intermediate operation.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      *     {@code
      * Stream.of("one", "two", "three", "four").filter(e -> e.length() > 3)
@@ -418,9 +418,9 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * operation.
      * <p>
      * For example, to combine the IDs and parent IDs of all users in a list into a new stream:
-     * 
+     *
      * <pre>{@code
-     * 
+     *
      * EasyStream<Long> ids = EasyStream.of(users).flatMap(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
@@ -460,9 +460,9 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * a stateless intermediate operation.
      * <p>
      * For example, to combine the IDs and parent IDs of all users in a list into a new stream:
-     * 
+     *
      * <pre>{@code
-     * 
+     *
      * EasyStream<Long> ids = EasyStream.of(users).flat(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
@@ -498,9 +498,9 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * operation.
      * <p>
      * Example:
-     * 
+     *
      * <pre>{@code
-     * 
+     *
      * List<Student> students = EasyStream.of(studentTree).flatTree(Student::getChildren, Student::setChildren)
      *         .toList();
      * }</pre>
@@ -551,7 +551,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * of this stream. This is a stateless intermediate operation.
      * <p>
      * This is equivalent to calling {@code nonNull().map(...).nonNull()...}
-     * 
+     *
      *
      * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element to

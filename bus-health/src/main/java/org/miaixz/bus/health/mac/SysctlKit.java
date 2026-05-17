@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,15 +19,15 @@
 */
 package org.miaixz.bus.health.mac;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.builtin.jna.ByRef.CloseableSizeTByReference;
-import org.miaixz.bus.health.mac.jna.SystemB;
-import org.miaixz.bus.logger.Logger;
-
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.builtin.jna.ByRef.CloseableSizeTByReference;
+import org.miaixz.bus.health.mac.jna.SystemB;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Provides access to sysctl calls on macOS.

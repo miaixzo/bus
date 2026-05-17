@@ -821,7 +821,7 @@ public final class CipherSuite {
 
     /**
      * Generates a secondary name for a cipher suite by swapping the "TLS_" and "SSL_" prefixes.
-     * 
+     *
      * @param javaName The original Java name.
      * @return The alternative name.
      */

@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.LicenseTemplate;
-
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.LicenseTemplate;
 
 /**
  * This class provides an entry point to all the GitLab API licenses calls.

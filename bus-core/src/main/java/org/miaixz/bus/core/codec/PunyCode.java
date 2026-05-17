@@ -326,7 +326,7 @@ public class PunyCode {
     /**
      * Converts a digit (0-35) to its corresponding character representation used in Punycode. The mapping is as
      * follows:
-     * 
+     *
      * <pre>
      *     0-25  -> 'a'-'z'
      *     26-35 -> '0'-'9'
@@ -352,7 +352,7 @@ public class PunyCode {
     /**
      * Converts a character (representing a Punycode digit) to its corresponding integer digit value. The mapping is as
      * follows:
-     * 
+     *
      * <pre>
      *     'a'-'z' -> 0-25
      *     '0'-'9' -> 26-35

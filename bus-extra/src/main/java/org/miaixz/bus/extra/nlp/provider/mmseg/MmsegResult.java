@@ -21,12 +21,12 @@ package org.miaixz.bus.extra.nlp.provider.mmseg;
 
 import java.io.IOException;
 
+import com.chenlb.mmseg4j.MMSeg;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 import org.miaixz.bus.logger.Logger;
-
-import com.chenlb.mmseg4j.MMSeg;
 
 /**
  * mmseg4j word segmentation result implementation. This class adapts the mmseg4j {@link MMSeg} result to the common

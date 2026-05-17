@@ -19,8 +19,14 @@
 */
 package org.miaixz.bus.auth.nimble.wechat.ee;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.magic.Authorization;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.Claims;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
@@ -28,12 +34,6 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Claims;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * WeChat Enterprise third-party QR code login provider.

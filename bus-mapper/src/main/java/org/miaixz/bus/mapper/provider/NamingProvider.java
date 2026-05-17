@@ -19,16 +19,18 @@
 */
 package org.miaixz.bus.mapper.provider;
 
+import lombok.Getter;
+
 import org.miaixz.bus.core.Context;
 import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * Naming provider class based on {@link EnumValue.Naming}.
@@ -73,8 +75,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
 public class NamingProvider implements Provider {
 
+    /**
+     * Naming strategy represented by this provider.
+     */
     private final EnumValue.Naming naming;
 
     /**
@@ -205,15 +211,6 @@ public class NamingProvider implements Provider {
             return null;
         }
         return transform(field.getName());
-    }
-
-    /**
-     * Gets the underlying naming enumeration.
-     *
-     * @return the {@link EnumValue.Naming} instance
-     */
-    public EnumValue.Naming getNaming() {
-        return naming;
     }
 
     /**

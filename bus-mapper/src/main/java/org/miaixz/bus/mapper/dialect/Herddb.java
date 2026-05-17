@@ -19,7 +19,14 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
-import org.miaixz.bus.mapper.support.paging.Pageable;
+import java.util.EnumSet;
+
+import org.miaixz.bus.mapper.Charter.Behavior;
+import org.miaixz.bus.mapper.Charter.Modify;
+import org.miaixz.bus.mapper.feature.paging.Pageable;
+import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * Dialect implementation for Herddb databases.
@@ -43,11 +50,44 @@ public class Herddb extends AbstractDialect {
     /**
      * Returns the UPSERT family used by Herddb in this framework.
      *
-     * @return {@link Dialect.Type#NONE}
+     * @return {@link Behavior#NONE}
      */
     @Override
-    public Dialect.Type getUpsertType() {
-        return Dialect.Type.NONE;
+    public Behavior getUpsertType() {
+        return Behavior.NONE;
+    }
+
+    /**
+     * Returns the database behavior set advertised by this dialect.
+     *
+     * @return the supported behavior set
+     */
+    @Override
+    public EnumSet<Behavior> types() {
+        return schemaTypes(getUpsertType());
+    }
+
+    /**
+     * Resolves the SQL type descriptor used by this dialect for the supplied mapper column.
+     *
+     * @param column the mapper column metadata
+     * @return the SQL type descriptor for the column
+     */
+    @Override
+    public SqlTypeDescriptor resolveType(ColumnMeta column) {
+        return commonType(column, "INTEGER", "TIMESTAMP", "TIMESTAMP", "BLOB", "CLOB", "DECIMAL");
+    }
+
+    /**
+     * Builds the dialect-specific DDL used to replace or modify a column definition.
+     *
+     * @param table  the mapper table metadata
+     * @param column the mapper column metadata
+     * @return the generated column modification SQL
+     */
+    @Override
+    protected String modifyColumn(TableMeta table, ColumnMeta column) {
+        return modifyColumn(table, column, Modify.ALTER_COLUMN);
     }
 
     /**

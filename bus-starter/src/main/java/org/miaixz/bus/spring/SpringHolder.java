@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.spring;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.starter.Nexus;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.core.Ordered;
@@ -31,8 +31,9 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 
-import java.util.HashSet;
-import java.util.Set;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.starter.Nexus;
 
 /**
  * Holds Spring context information and provides utility methods.

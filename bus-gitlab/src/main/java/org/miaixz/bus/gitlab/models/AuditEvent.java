@@ -20,8 +20,6 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
-
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 

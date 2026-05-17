@@ -21,8 +21,8 @@ package org.miaixz.bus.core.center.date.culture.eightchar.provider.impl;
 
 import org.miaixz.bus.core.center.date.culture.eightchar.EightChar;
 import org.miaixz.bus.core.center.date.culture.eightchar.provider.EightCharProvider;
-import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleHour;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleHour;
 
 /**
  * Implementation of Eight Characters (八字) calculation for Lunar Sect 2. This implementation considers the day pillar

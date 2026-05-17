@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.extra.pinyin.provider.bopomofo4j;
 
+import com.rnkrsoft.bopomofo4j.Bopomofo4j;
+import com.rnkrsoft.bopomofo4j.ToneType;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
 import org.miaixz.bus.logger.Logger;
-
-import com.rnkrsoft.bopomofo4j.Bopomofo4j;
-import com.rnkrsoft.bopomofo4j.ToneType;
 
 /**
  * Encapsulates the Bopomofo4j engine.

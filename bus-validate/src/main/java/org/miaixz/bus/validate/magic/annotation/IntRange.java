@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.IntRangeMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * Validates that a number is within a specified integer range.

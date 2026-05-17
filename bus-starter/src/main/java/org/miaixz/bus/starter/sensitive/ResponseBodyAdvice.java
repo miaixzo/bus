@@ -19,7 +19,20 @@
 */
 package org.miaixz.bus.starter.sensitive;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import jakarta.annotation.Resource;
+
+import org.springframework.core.MethodParameter;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+
 import org.miaixz.bus.base.advice.BaseAdvice;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.entity.Result;
@@ -30,17 +43,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.Builder;
 import org.miaixz.bus.sensitive.magic.annotation.Privacy;
 import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
-import org.springframework.core.MethodParameter;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServerHttpResponse;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A {@link org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice} that intercepts responses from

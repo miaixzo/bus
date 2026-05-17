@@ -133,7 +133,7 @@ public class ReflectKit {
 
     /**
      * Converts a class descriptor string to a `Class` object.
-     * 
+     *
      * <pre>{@code
      * "[Z" => boolean[].class
      * "[[Ljava/util/Map;" => java.util.Map[][].class
@@ -177,7 +177,7 @@ public class ReflectKit {
 
     /**
      * Gets the JVM descriptor for a class.
-     * 
+     *
      * <pre>{@code
      * getDesc(boolean.class)       // Z
      * getDesc(Boolean.class)       // Ljava/lang/Boolean;

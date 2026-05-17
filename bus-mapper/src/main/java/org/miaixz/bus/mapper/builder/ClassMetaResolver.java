@@ -22,6 +22,8 @@ package org.miaixz.bus.mapper.builder;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import lombok.RequiredArgsConstructor;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
@@ -96,6 +98,7 @@ public interface ClassMetaResolver extends Order {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @RequiredArgsConstructor
     class MapperTypeMethod {
 
         /**
@@ -107,17 +110,6 @@ public interface ClassMetaResolver extends Order {
          * The Mapper interface method.
          */
         private final Method mapperMethod;
-
-        /**
-         * Constructs a new MapperTypeMethod.
-         *
-         * @param mapperType   The Mapper interface class.
-         * @param mapperMethod The Mapper interface method.
-         */
-        public MapperTypeMethod(Class<?> mapperType, Method mapperMethod) {
-            this.mapperType = mapperType;
-            this.mapperMethod = mapperMethod;
-        }
 
         /**
          * Compares this MapperTypeMethod with another object for equality.
@@ -183,6 +175,9 @@ public interface ClassMetaResolver extends Order {
          */
         private static class ClassMetaResolverHolder {
 
+            /**
+             * SPI-loaded resolver instances used by the resolver chain.
+             */
             private static final List<ClassMetaResolver> INSTANCES = NormalSpiLoader
                     .loadList(false, ClassMetaResolver.class);
 

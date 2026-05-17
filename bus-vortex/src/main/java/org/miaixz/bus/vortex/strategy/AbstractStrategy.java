@@ -26,24 +26,25 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
+import org.springframework.web.server.ServerWebExchange;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
 import org.miaixz.bus.vortex.magic.ErrorCode;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
-import org.springframework.web.server.ServerWebExchange;
 
 /**
  * An abstract base class for {@link Strategy} implementations, providing a collection of common utility methods.

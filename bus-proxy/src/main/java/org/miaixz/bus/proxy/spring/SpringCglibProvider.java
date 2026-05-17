@@ -21,12 +21,13 @@ package org.miaixz.bus.proxy.spring;
 
 import java.lang.reflect.Constructor;
 
+import org.springframework.cglib.proxy.Enhancer;
+
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.Aspect;
 import org.miaixz.bus.proxy.Provider;
-import org.springframework.cglib.proxy.Enhancer;
 
 /**
  * A proxy provider implementation that uses Spring's bundled CGLIB to create proxy objects. This allows for proxying

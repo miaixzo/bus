@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.http.metric;
 
+import javax.net.ssl.SSLSocket;
+
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.ConnectionPool;
 import org.miaixz.bus.http.accord.ConnectionSuite;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.accord.RealConnectionPool;
-
-import javax.net.ssl.SSLSocket;
 
 /**
  * Provides a mechanism to access internal APIs within the {@code org.miaixz.bus.http} package. The only implementation

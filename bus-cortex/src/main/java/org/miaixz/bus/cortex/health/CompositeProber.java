@@ -21,9 +21,9 @@ package org.miaixz.bus.cortex.health;
 
 import java.util.List;
 
+import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Prober;
 import org.miaixz.bus.cortex.Status;
-import org.miaixz.bus.cortex.Instance;
 
 /**
  * Composite prober that aggregates multiple probers.

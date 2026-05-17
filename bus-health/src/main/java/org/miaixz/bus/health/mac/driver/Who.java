@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -22,14 +22,14 @@ package org.miaixz.bus.health.mac.driver;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.jna.Native;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.software.OSSession;
 import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.health.unix.jna.CLibrary;
-
-import com.sun.jna.Native;
 
 /**
  * Utility to query logged in users on macOS.

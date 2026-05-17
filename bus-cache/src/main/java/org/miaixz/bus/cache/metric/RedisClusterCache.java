@@ -21,15 +21,16 @@ package org.miaixz.bus.cache.metric;
 
 import java.util.*;
 
+import jakarta.annotation.PreDestroy;
+
 import org.miaixz.bus.cache.Builder;
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.cache.Serializer;
+import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.cache.serialize.Hessian2Serializer;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
-import jakarta.annotation.PreDestroy;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;

@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import org.miaixz.bus.sensitive.Builder;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.sensitive.Builder;
 
 /**
  * A comprehensive annotation for enabling data desensitization and/or encryption at the class or method level. This can

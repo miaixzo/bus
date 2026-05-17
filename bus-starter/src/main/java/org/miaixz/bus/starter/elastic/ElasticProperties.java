@@ -19,16 +19,18 @@
 */
 package org.miaixz.bus.starter.elastic;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Configuration properties for Elasticsearch.

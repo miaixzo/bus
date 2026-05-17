@@ -1,9 +1,26 @@
-//
-// This file is auto-generated. Please don't modify it!
-//
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.opencv.imgcodecs;
 
 import java.util.List;
+
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfDouble;
@@ -15,9 +32,6 @@ import org.opencv.utils.Converters;
 
 /**
  * The imgcodecs class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Imgcodecs {
 
@@ -280,7 +294,7 @@ public class Imgcodecs {
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
      *
      * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
-     * 
+     *
      * @param filename    Name of file to be loaded.
      * @param segposition A vector of double holding the position of each fragment to read.
      * @param seglength   A vector of double holding the length of each fragment to read.
@@ -305,7 +319,7 @@ public class Imgcodecs {
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
      *
      * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
-     * 
+     *
      * @param filename    Name of file to be loaded.
      * @param segposition A vector of double holding the position of each fragment to read.
      * @param seglength   A vector of double holding the length of each fragment to read.
@@ -327,7 +341,7 @@ public class Imgcodecs {
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
      *
      * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
-     * 
+     *
      * @param filename    Name of file to be loaded.
      * @param segposition A vector of double holding the position of each fragment to read.
      * @param seglength   A vector of double holding the length of each fragment to read.
@@ -347,7 +361,7 @@ public class Imgcodecs {
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
      *
      * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
-     * 
+     *
      * @param buf        the raw byte data of jpg image (1 raw, x column).
      * @param dicomflags specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in
      *                   grfmt_dcm_dicom.hpp.
@@ -362,7 +376,7 @@ public class Imgcodecs {
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
      *
      * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
-     * 
+     *
      * @param buf        the raw byte data of jpg image (1 raw, x column).
      * @param dicomflags specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in
      *                   grfmt_dcm_dicom.hpp.
@@ -376,7 +390,7 @@ public class Imgcodecs {
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
      *
      * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
-     * 
+     *
      * @param buf the raw byte data of jpg image (1 raw, x column).
      * @return automatically generated
      */
@@ -393,7 +407,7 @@ public class Imgcodecs {
      * Loads a raw image (include RLE compressed image) from file segments.
      *
      * The function dicomRawRead loads a DICOM image from the specified file into Mat.
-     * 
+     *
      * @param filename    Name of file to be loaded.
      * @param segposition The position of the image to read.
      * @param seglength   The length image to read.
@@ -426,7 +440,7 @@ public class Imgcodecs {
      * Loads a raw image (include RLE compressed image) from Mat.
      *
      * The function dicomRawRead loads a DICOM image from a specified byte array into Mat.
-     * 
+     *
      * @param buf         the raw byte data of jpg image (1 raw, x column).
      * @param dicomParams A vector of int containing the specific DICOM parameters. See DICOM_PARAM in
      *                    grfmt_dcm_dicom.hpp.
@@ -468,7 +482,7 @@ public class Imgcodecs {
      * etc.), depending on file format support.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
-     * 
+     *
      * @param filename      Name of the file to be loaded.
      * @param metadataTypes Output vector with types of metadata chunks returned in metadata, see ImageMetadataType.
      * @param metadata      Output vector of vectors or vector of matrices to store the retrieved metadata.
@@ -493,7 +507,7 @@ public class Imgcodecs {
      * etc.), depending on file format support.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
-     * 
+     *
      * @param filename      Name of the file to be loaded.
      * @param metadataTypes Output vector with types of metadata chunks returned in metadata, see ImageMetadataType.
      * @param metadata      Output vector of vectors or vector of matrices to store the retrieved metadata.
@@ -516,7 +530,7 @@ public class Imgcodecs {
      * Loads a multi-page image from a file.
      *
      * The function imreadmulti loads a multi-page image from the specified file into a vector of Mat objects.
-     * 
+     *
      * @param filename Name of file to be loaded.
      * @param mats     A vector of Mat objects holding each page.
      * @param flags    Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR. SEE: cv::imread
@@ -534,7 +548,7 @@ public class Imgcodecs {
      * Loads a multi-page image from a file.
      *
      * The function imreadmulti loads a multi-page image from the specified file into a vector of Mat objects.
-     * 
+     *
      * @param filename Name of file to be loaded.
      * @param mats     A vector of Mat objects holding each page. SEE: cv::imread
      * @return automatically generated
@@ -556,7 +570,7 @@ public class Imgcodecs {
      *
      * The function imreadmulti loads a specified range from a multi-page image from the specified file into a vector of
      * Mat objects.
-     * 
+     *
      * @param filename Name of file to be loaded.
      * @param mats     A vector of Mat objects holding each page.
      * @param start    Start index of the image to load
@@ -577,7 +591,7 @@ public class Imgcodecs {
      *
      * The function imreadmulti loads a specified range from a multi-page image from the specified file into a vector of
      * Mat objects.
-     * 
+     *
      * @param filename Name of file to be loaded.
      * @param mats     A vector of Mat objects holding each page.
      * @param start    Start index of the image to load
@@ -794,7 +808,7 @@ public class Imgcodecs {
      *
      * The function imcount returns the number of pages in a multi-page image (e.g. TIFF), the number of frames in an
      * animation (e.g. AVIF), and 1 otherwise. If the image cannot be decoded, 0 is returned.
-     * 
+     *
      * @param filename Name of file to be loaded.
      * @param flags    Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR. TODO: when
      *                 cv::IMREAD_LOAD_GDAL flag used the return value will be 0 or 1 because OpenCV's GDAL decoder
@@ -810,7 +824,7 @@ public class Imgcodecs {
      *
      * The function imcount returns the number of pages in a multi-page image (e.g. TIFF), the number of frames in an
      * animation (e.g. AVIF), and 1 otherwise. If the image cannot be decoded, 0 is returned.
-     * 
+     *
      * @param filename Name of file to be loaded. TODO: when cv::IMREAD_LOAD_GDAL flag used the return value will be 0
      *                 or 1 because OpenCV's GDAL decoder doesn't support multi-page reading yet.
      * @return automatically generated
@@ -898,7 +912,7 @@ public class Imgcodecs {
      *
      * The sample below shows how to create a BGRA image, how to set custom compression parameters and save it to a PNG
      * file. It also demonstrates how to save multiple images in a TIFF file: INCLUDE: snippets/imgcodecs_imwrite.cpp
-     * 
+     *
      * @param filename Name of the file.
      * @param img      (Mat or vector of Mat) Image or Images to be saved.
      * @param params   Format-specific parameters encoded as pairs (paramId_1, paramValue_1, paramId_2, paramValue_2,
@@ -985,7 +999,7 @@ public class Imgcodecs {
      *
      * The sample below shows how to create a BGRA image, how to set custom compression parameters and save it to a PNG
      * file. It also demonstrates how to save multiple images in a TIFF file: INCLUDE: snippets/imgcodecs_imwrite.cpp
-     * 
+     *
      * @param filename Name of the file.
      * @param img      (Mat or vector of Mat) Image or Images to be saved.
      * @return true if the image is successfully written to the specified file; false otherwise.
@@ -1004,7 +1018,7 @@ public class Imgcodecs {
      *
      * The function imwriteWithMetadata saves the image to the specified file. It does the same thing as imwrite, but
      * additionally writes metadata if the corresponding format supports it.
-     * 
+     *
      * @param filename      Name of the file. As with imwrite, image format is determined by the file extension.
      * @param img           (Mat or vector of Mat) Image or Images to be saved.
      * @param metadataTypes Vector with types of metadata chucks stored in metadata to write, see ImageMetadataType.
@@ -1035,7 +1049,7 @@ public class Imgcodecs {
      *
      * The function imwriteWithMetadata saves the image to the specified file. It does the same thing as imwrite, but
      * additionally writes metadata if the corresponding format supports it.
-     * 
+     *
      * @param filename      Name of the file. As with imwrite, image format is determined by the file extension.
      * @param img           (Mat or vector of Mat) Image or Images to be saved.
      * @param metadataTypes Vector with types of metadata chucks stored in metadata to write, see ImageMetadataType.
@@ -1076,7 +1090,7 @@ public class Imgcodecs {
      * See cv::imread for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
-     * 
+     *
      * @param buf   Input array or vector of bytes.
      * @param flags Flag that can take values of cv::ImreadModes.
      * @return automatically generated
@@ -1099,7 +1113,7 @@ public class Imgcodecs {
      * See cv::imread for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
-     * 
+     *
      * @param buf           Input array or vector of bytes containing the encoded image data.
      * @param metadataTypes Output vector with types of metadata chucks returned in metadata, see cv::ImageMetadataType
      * @param metadata      Output vector of vectors or vector of matrices to store the retrieved metadata
@@ -1125,7 +1139,7 @@ public class Imgcodecs {
      * See cv::imread for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
-     * 
+     *
      * @param buf           Input array or vector of bytes containing the encoded image data.
      * @param metadataTypes Output vector with types of metadata chucks returned in metadata, see cv::ImageMetadataType
      * @param metadata      Output vector of vectors or vector of matrices to store the retrieved metadata
@@ -1154,7 +1168,7 @@ public class Imgcodecs {
      * See cv::imreadmulti for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
-     * 
+     *
      * @param buf   Input array or vector of bytes.
      * @param flags Flag that can take values of cv::ImreadModes.
      * @param mats  A vector of Mat objects holding each page, if more than one.
@@ -1178,7 +1192,7 @@ public class Imgcodecs {
      * See cv::imreadmulti for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
-     * 
+     *
      * @param buf   Input array or vector of bytes.
      * @param flags Flag that can take values of cv::ImreadModes.
      * @param mats  A vector of Mat objects holding each page, if more than one.

@@ -25,9 +25,9 @@ import java.util.Objects;
 
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 
 /**
  * Canonical normalization policy for setting entries.

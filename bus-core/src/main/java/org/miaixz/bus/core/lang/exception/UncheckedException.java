@@ -21,12 +21,12 @@ package org.miaixz.bus.core.lang.exception;
 
 import java.io.Serial;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.I18n;
 import org.miaixz.bus.core.lang.Keys;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Represents an unchecked exception, extending {@link RuntimeException}, that can carry an error code and message. This

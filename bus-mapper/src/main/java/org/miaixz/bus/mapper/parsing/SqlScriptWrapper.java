@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.parsing;
 import java.util.List;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
+
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.mapper.Order;
 

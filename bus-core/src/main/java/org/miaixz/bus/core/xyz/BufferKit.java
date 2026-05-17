@@ -198,7 +198,7 @@ public class BufferKit {
     /**
      * Finds the end position of a line in the ByteBuffer, with a maximum search length. The ByteBuffer's position is
      * advanced to the end of the line. Supported line endings are:
-     * 
+     *
      * <pre>
      * 1. \r\n
      * 2. \n
@@ -242,7 +242,7 @@ public class BufferKit {
     /**
      * Reads a single line from the ByteBuffer. If the last part of the buffer is not a complete line, {@code null} is
      * returned. Supported line endings are:
-     * 
+     *
      * <pre>
      * 1. \r\n
      * 2. \n

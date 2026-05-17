@@ -23,12 +23,13 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.InitializingBean;
+
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Monitor;
 import org.miaixz.bus.vortex.Registry;
 import org.miaixz.bus.vortex.cache.CacheManager;
-import org.springframework.beans.factory.InitializingBean;
 
 import reactor.core.publisher.Mono;
 

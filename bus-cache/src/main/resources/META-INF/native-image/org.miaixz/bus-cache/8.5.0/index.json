@@ -1,5 +1,6 @@
 [
+  "proxy-config.json",
   "reflect-config.json",
   "resource-config.json",
-  "proxy-config.json"
+  "serialization-config.json"
 ]

@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org sandao and other contributors.         ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.socket.metric.message;
 
-import org.miaixz.bus.socket.Message;
-import org.miaixz.bus.socket.Session;
-import org.miaixz.bus.socket.metric.decoder.FixedLengthFrameDecoder;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.miaixz.bus.socket.Message;
+import org.miaixz.bus.socket.Session;
+import org.miaixz.bus.socket.metric.decoder.FixedLengthFrameDecoder;
 
 /**
  * A message implementation for handling string messages.

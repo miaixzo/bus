@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.RegistryRepository;
-import org.miaixz.bus.gitlab.models.RegistryRepositoryTag;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.RegistryRepository;
+import org.miaixz.bus.gitlab.models.RegistryRepositoryTag;
 
 /**
  * <p>
@@ -82,7 +82,7 @@ public class ContainerRegistryApi extends AbstractApi {
                 getProjectIdOrPath(projectIdOrPath),
                 "registry",
                 "repositories");
-        return response.readEntity(new GenericType<List<RegistryRepository>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -226,7 +226,7 @@ public class ContainerRegistryApi extends AbstractApi {
                 repositoryId,
                 "tags",
                 tagName);
-        return response.readEntity(new GenericType<RegistryRepositoryTag>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 

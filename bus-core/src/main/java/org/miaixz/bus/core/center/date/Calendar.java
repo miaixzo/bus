@@ -312,7 +312,7 @@ public class Calendar extends Calculate {
      *
      * <p>
      * Sometimes, the millisecond part must be 0 (e.g., in MySQL databases), so this option is provided.
-     * 
+     *
      *
      * @param calendar The {@link java.util.Calendar} object to modify.
      * @param various  The time field to set to the end of.
@@ -637,7 +637,7 @@ public class Calendar extends Calculate {
 
     /**
      * Formats the specified {@link java.util.Calendar} time into a pure Chinese representation. For example:
-     * 
+     *
      * <pre>
      *     2018-02-24 12:13:14 converts to 二〇一八年二月二十四日 (if withTime is false)
      *     2018-02-24 12:13:14 converts to 二〇一八年二月二十四日十二时十三分十四秒 (if withTime is true)

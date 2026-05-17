@@ -21,9 +21,9 @@ package org.miaixz.bus.core.lang.exception;
 
 import java.io.Serial;
 
-import org.miaixz.bus.core.basic.normal.Errors;
-
 import lombok.ToString;
+
+import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * Represents an exception that occurs due to business logic errors.

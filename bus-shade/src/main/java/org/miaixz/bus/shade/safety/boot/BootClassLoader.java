@@ -26,13 +26,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 
+import org.springframework.boot.loader.launch.LaunchedClassLoader;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
-import org.springframework.boot.loader.launch.LaunchedClassLoader;
 
 /**
  * A custom {@link LaunchedClassLoader} that supports decryption of resources within a Spring Boot JAR. It intercepts

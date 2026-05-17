@@ -498,16 +498,19 @@ public class Nativex {
         String content = Files.readString(pomPath);
 
         Pattern groupIdPattern = Pattern.compile("<groupId>([^<]+)</groupId>");
-        Pattern artifactIdPattern = Pattern.compile("<artifactId>bus-all</artifactId>\\s*<version>([^<]+)</version>");
+        Pattern artifactIdPattern = Pattern.compile("<artifactId>bus-all</artifactId>");
+        Pattern versionPattern = Pattern.compile("<version>([^<]+)</version>");
 
         Matcher groupIdMatcher = groupIdPattern.matcher(content);
         Matcher artifactIdMatcher = artifactIdPattern.matcher(content);
+        Matcher versionMatcher = versionPattern.matcher(content);
 
         if (!groupIdMatcher.find() || !artifactIdMatcher.find()) {
             throw new IOException("Could not extract project metadata from POM file");
         }
 
-        return new Metadata(groupIdMatcher.group(1).trim(), "bus-all", artifactIdMatcher.group(1).trim());
+        String version = versionMatcher.find() ? versionMatcher.group(1).trim() : null;
+        return new Metadata(groupIdMatcher.group(1).trim(), "bus-all", version);
     }
 
     /**

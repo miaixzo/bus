@@ -19,6 +19,14 @@
 */
 package org.miaixz.bus.starter.tempus;
 
+import jakarta.annotation.Resource;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableTempus;
@@ -34,13 +42,6 @@ import org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManage
 import org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherOptionsFactory;
 import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding;
 import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-
-import jakarta.annotation.Resource;
 
 /**
  * Temporal framework-level auto-configuration.

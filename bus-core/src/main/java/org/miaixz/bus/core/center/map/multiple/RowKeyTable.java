@@ -330,7 +330,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 
         /**
          * Constructor.
-         * 
+         *
          * @param columnKey The column key.
          */
         Column(final C columnKey) {

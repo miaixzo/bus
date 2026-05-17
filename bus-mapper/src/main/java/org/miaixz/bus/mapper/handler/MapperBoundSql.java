@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.reflection.MetaObject;
+
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
@@ -48,7 +49,7 @@ public class MapperBoundSql {
 
     /**
      * Constructs a new MapperBoundSql.
-     * 
+     *
      * @param boundSql The original BoundSql object.
      */
     MapperBoundSql(BoundSql boundSql) {
@@ -58,7 +59,7 @@ public class MapperBoundSql {
 
     /**
      * Gets the SQL statement.
-     * 
+     *
      * @return The SQL statement string.
      */
     public String sql() {
@@ -67,7 +68,7 @@ public class MapperBoundSql {
 
     /**
      * Sets the SQL statement.
-     * 
+     *
      * @param sql The SQL statement to set.
      */
     public void sql(String sql) {
@@ -76,7 +77,7 @@ public class MapperBoundSql {
 
     /**
      * Gets a copy of the parameter mappings.
-     * 
+     *
      * @return A copy of the list of parameter mappings.
      */
     public List<ParameterMapping> parameterMappings() {
@@ -85,7 +86,7 @@ public class MapperBoundSql {
 
     /**
      * Sets the parameter mappings.
-     * 
+     *
      * @param parameterMappings The list of parameter mappings to set.
      */
     public void parameterMappings(List<ParameterMapping> parameterMappings) {
@@ -94,7 +95,7 @@ public class MapperBoundSql {
 
     /**
      * Gets the parameter object.
-     * 
+     *
      * @return The parameter object.
      */
     public Object parameterObject() {
@@ -103,7 +104,7 @@ public class MapperBoundSql {
 
     /**
      * Gets the map of additional parameters.
-     * 
+     *
      * @return A map of additional parameters.
      */
     public Map<String, Object> additionalParameters() {
@@ -112,7 +113,7 @@ public class MapperBoundSql {
 
     /**
      * A generic method to get a property value.
-     * 
+     *
      * @param property The name of the property.
      * @param <T>      The type of the return value.
      * @return The value of the property.

@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.http.Route;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.miaixz.bus.http.Route;
 
 /**
  * A blacklist of failed routes to avoid when creating new connections to a target address. If a failure occurs when

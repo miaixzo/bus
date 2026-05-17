@@ -21,12 +21,12 @@ package org.miaixz.bus.base.entity;
 
 import java.io.Serial;
 
-import org.miaixz.bus.core.basic.entity.Tracer;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.basic.entity.Tracer;
 
 /**
  * Base entity class, containing common fields such as data status, creator, creation time, modifier, modification time,

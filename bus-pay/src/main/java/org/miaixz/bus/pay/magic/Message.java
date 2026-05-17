@@ -23,15 +23,15 @@ import java.io.Serial;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Unified authorization response class.

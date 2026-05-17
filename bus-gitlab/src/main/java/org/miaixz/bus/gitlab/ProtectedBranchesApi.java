@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.Response;
+
 import org.miaixz.bus.gitlab.models.AccessLevel;
 import org.miaixz.bus.gitlab.models.AllowedTo;
 import org.miaixz.bus.gitlab.models.GitLabForm;
 import org.miaixz.bus.gitlab.models.ProtectedBranch;
-
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the Protected Branches API calls.

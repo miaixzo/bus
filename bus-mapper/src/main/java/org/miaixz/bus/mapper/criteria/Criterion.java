@@ -21,11 +21,11 @@ package org.miaixz.bus.mapper.criteria;
 
 import java.util.Collection;
 
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
  * Represents a single SQL query condition unit.
@@ -192,69 +192,6 @@ public class Criterion {
             variables.append(",typeHandler=").append(typeHandler);
         }
         return variables.append("}").toString();
-    }
-
-    /**
-     * Gets the condition expression.
-     *
-     * @return The condition expression.
-     */
-    public String getCondition() {
-        return condition;
-    }
-
-    /**
-     * Gets the second condition value.
-     *
-     * @return The second condition value.
-     */
-    public Object getSecondValue() {
-        return secondValue;
-    }
-
-    /**
-     * Gets the condition value.
-     *
-     * @return The condition value.
-     */
-    public Object getValue() {
-        return value;
-    }
-
-    /**
-     * Checks if this is a between-value condition.
-     *
-     * @return {@code true} if it is a between-value condition, {@code false} otherwise.
-     */
-    public boolean isBetweenValue() {
-        return betweenValue;
-    }
-
-    /**
-     * Checks if this is a list-value condition.
-     *
-     * @return {@code true} if it is a list-value condition, {@code false} otherwise.
-     */
-    public boolean isListValue() {
-        return listValue;
-    }
-
-    /**
-     * Checks if this is a no-value condition.
-     *
-     * @return {@code true} if it is a no-value condition, {@code false} otherwise.
-     */
-    public boolean isNoValue() {
-        return noValue;
-    }
-
-    /**
-     * Checks if this is a single-value condition.
-     *
-     * @return {@code true} if it is a single-value condition, {@code false} otherwise.
-     */
-    public boolean isSingleValue() {
-        return singleValue;
     }
 
     /**

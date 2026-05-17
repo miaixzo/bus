@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.http.cache;
 
-import org.miaixz.bus.core.io.sink.Sink;
-
 import java.io.IOException;
+
+import org.miaixz.bus.core.io.sink.Sink;
 
 /**
  * An interface for writing a response to the cache.

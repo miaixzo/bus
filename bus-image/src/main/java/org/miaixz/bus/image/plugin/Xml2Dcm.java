@@ -19,18 +19,19 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.galaxy.io.*;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.UID;
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.io.*;
 
 /**
  * The {@code Xml2Dcm} class provides functionality to convert a DICOM XML representation (according to DICOM Part 19)

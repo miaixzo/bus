@@ -19,6 +19,15 @@
 */
 package org.miaixz.bus.http.cache;
 
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.FaultHideSink;
 import org.miaixz.bus.core.io.sink.Sink;
@@ -29,15 +38,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A cache that uses a limited amount of space on a filesystem. Each cache entry has a string key and a fixed number of

@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.gitlab;
 
-import org.miaixz.bus.gitlab.models.Commit;
-
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Commit;
 
 /**
  * <p>

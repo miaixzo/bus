@@ -27,11 +27,11 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.logger.Logger;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A factory for creating {@link DatabaseQuery} instances based on the database type.

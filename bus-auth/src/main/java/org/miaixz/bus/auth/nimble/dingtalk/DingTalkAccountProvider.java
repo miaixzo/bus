@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.auth.nimble.dingtalk;
 
-import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.cache.CacheX;
 
 /**
  * DingTalk account login provider.

@@ -343,8 +343,8 @@ public class MapperConfiguration {
         };
 
         // 创建审计配置
-        org.miaixz.bus.mapper.support.audit.AuditConfig config =
-            org.miaixz.bus.mapper.support.audit.AuditConfig.builder()
+        org.miaixz.bus.mapper.feature.audit.AuditConfig config =
+            org.miaixz.bus.mapper.feature.audit.AuditConfig.builder()
                 .enabled(true)
                 .slowSqlThreshold(1000)  // 慢 SQL 阈值: 1 秒
                 .logParameters(true)     // 记录 SQL 参数
@@ -861,6 +861,45 @@ int delete(T entity);                      // 根据实体属性删除
 .count()                              // 计数
 .page(1, 20)                          // 分页
 ```
+
+-----
+
+## 实体表结构初始化
+
+Bus Mapper 支持根据实体元数据初始化数据表结构。能力由 `bus-mapper` 实现，Spring Boot 只负责绑定
+`bus.mapper.schema` 配置并在启动时触发执行。`Dialect` 是唯一数据库能力入口，由 `PagingBehavior`、
+`OptionsBehavior`、`SchemaBehavior` 三类行为组成。
+
+默认关闭：
+
+```yaml
+bus:
+  mapper:
+    schema:
+      enabled: false
+```
+
+支持模式：
+
+| 模式 | 行为 |
+| :--- | :--- |
+| `NONE` | 不读取元数据，不生成 SQL，不执行 SQL。 |
+| `SCRIPT` | 读取元数据并输出 SQL 脚本，不执行 DDL。 |
+| `CREATE` | 只创建缺失表，已存在表直接跳过。 |
+| `VALIDATE` | 读取元数据并输出差异报告，不执行 DDL。 |
+| `UPDATE` | 只执行配置明确放行的结构差异。 |
+
+所有内置方言均提供 schema 操作：MySQL、PostgreSQL、H2、SQLite、Firebird、Oscar、Oracle9i、SQL Server、
+Polardb、HerdDB、SQL Server 2012、DB2、AS/400、HSQLDB、CirroData、Informix、Oracle、XuguDB、Dameng。每个方言保留原有分页与
+UPSERT 行为，同时通过 `OptionsBehavior.types()` 与各方言直接实现的 `SchemaBehavior` 方法暴露 schema 和 metadata 能力。schema SQL
+规则直接归属于 `org.miaixz.bus.mapper.dialect` 下的对应方言类，例如 MySQL DDL 位于 `MySql`，PostgreSQL DDL 位于
+`PostgreSql`，H2 DDL 位于 `H2`。
+
+类型映射基于 Java 类型。`int(4)`、`int(8)` 不属于 Java 类型长度映射，默认不会生成。`VARCHAR(512)` 通过
+`@Column(length = 512)` 生成。需要数据库原生类型时使用 `@Column(columnDefinition = "...")`，例如
+`int(8) unsigned`。
+
+本方案不使用 Flyway，不使用 Liquibase，也不创建迁移记录表。
 
 -----
 

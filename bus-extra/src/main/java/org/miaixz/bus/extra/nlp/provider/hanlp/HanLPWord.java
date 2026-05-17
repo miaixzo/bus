@@ -21,9 +21,9 @@ package org.miaixz.bus.extra.nlp.provider.hanlp;
 
 import java.io.Serial;
 
-import org.miaixz.bus.extra.nlp.NLPWord;
-
 import com.hankcs.hanlp.seg.common.Term;
+
+import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
  * Wrapper class for a single word (Term) from HanLP word segmentation. This class adapts the HanLP {@link Term} object

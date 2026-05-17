@@ -21,14 +21,15 @@ package org.miaixz.bus.starter.cache;
 
 import java.util.Map;
 
-import org.miaixz.bus.cache.Options;
-import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.jdbc.JdbcProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.cache.Options;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.jdbc.JdbcProperties;
 
 /**
  * Starter-side configuration properties for the cache system.

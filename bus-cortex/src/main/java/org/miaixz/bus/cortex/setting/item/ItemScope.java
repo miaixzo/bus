@@ -22,13 +22,13 @@ package org.miaixz.bus.cortex.setting.item;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.cortex.builtin.Label;
-import org.miaixz.bus.cortex.builtin.LabelMapper;
-import org.miaixz.bus.cortex.builtin.Selector;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.cortex.builtin.Label;
+import org.miaixz.bus.cortex.builtin.LabelMapper;
+import org.miaixz.bus.cortex.builtin.Selector;
 
 /**
  * Shared scope object for setting queries, exports, and maintenance operations.

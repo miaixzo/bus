@@ -22,8 +22,5 @@
  * <p>
  * This package contains utilities for reading images from files and writing images to files, supporting formats such as
  * JPEG, PNG, TIFF, BMP, and other common image formats.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 package org.opencv.imgcodecs;

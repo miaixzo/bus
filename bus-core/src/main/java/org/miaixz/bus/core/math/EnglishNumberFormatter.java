@@ -170,7 +170,7 @@ public class EnglishNumberFormatter {
 
     /**
      * Parses a number between 10 and 19.
-     * 
+     *
      * @param x The number string.
      * @return The English word for the number.
      */
@@ -180,7 +180,7 @@ public class EnglishNumberFormatter {
 
     /**
      * Parses a multiple of ten.
-     * 
+     *
      * @param x The number string.
      * @return The English word for the number.
      */
@@ -190,7 +190,7 @@ public class EnglishNumberFormatter {
 
     /**
      * Parses the scale of the number (thousand, million, etc.).
-     * 
+     *
      * @param i The index of the scale.
      * @return The English word for the scale.
      */
@@ -246,7 +246,7 @@ public class EnglishNumberFormatter {
 
     /**
      * Parses the last digit of a number string.
-     * 
+     *
      * @param s The number string.
      * @return The English word for the last digit.
      */

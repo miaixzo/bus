@@ -19,24 +19,6 @@
 */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.io.timout.Timeout;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.http.accord.ConnectInterceptor;
-import org.miaixz.bus.http.accord.Transmitter;
-import org.miaixz.bus.http.cache.CacheInterceptor;
-import org.miaixz.bus.http.bodys.FormBody;
-import org.miaixz.bus.http.bodys.MultipartBody;
-import org.miaixz.bus.http.bodys.RequestBody;
-import org.miaixz.bus.http.metric.Interceptor;
-import org.miaixz.bus.http.metric.NamedRunnable;
-import org.miaixz.bus.http.metric.NewChain;
-import org.miaixz.bus.http.metric.http.BridgeInterceptor;
-import org.miaixz.bus.http.metric.http.CallServerInterceptor;
-import org.miaixz.bus.http.metric.http.RealInterceptorChain;
-import org.miaixz.bus.http.metric.http.RetryAndFollowUp;
-import org.miaixz.bus.logger.Logger;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
@@ -46,6 +28,24 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.miaixz.bus.core.io.timout.Timeout;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.http.accord.ConnectInterceptor;
+import org.miaixz.bus.http.accord.Transmitter;
+import org.miaixz.bus.http.bodys.FormBody;
+import org.miaixz.bus.http.bodys.MultipartBody;
+import org.miaixz.bus.http.bodys.RequestBody;
+import org.miaixz.bus.http.cache.CacheInterceptor;
+import org.miaixz.bus.http.metric.Interceptor;
+import org.miaixz.bus.http.metric.NamedRunnable;
+import org.miaixz.bus.http.metric.NewChain;
+import org.miaixz.bus.http.metric.http.BridgeInterceptor;
+import org.miaixz.bus.http.metric.http.CallServerInterceptor;
+import org.miaixz.bus.http.metric.http.RealInterceptorChain;
+import org.miaixz.bus.http.metric.http.RetryAndFollowUp;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * The concrete implementation of an HTTP call.

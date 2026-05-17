@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.util.Date;
 import java.io.Serial;
+import java.util.Date;
 
 /**
  * The access request class.

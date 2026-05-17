@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve.synthesize;
 
+import java.lang.annotation.Annotation;
+
 import org.miaixz.bus.core.lang.annotation.Link;
 import org.miaixz.bus.core.lang.annotation.resolve.attribute.AnnotationAttributeValueProvider;
 import org.miaixz.bus.core.lang.annotation.resolve.processor.SynthesizedAnnotationAttributeProcessor;
 import org.miaixz.bus.core.lang.annotation.resolve.processor.SynthesizedAnnotationPostProcessor;
-
-import java.lang.annotation.Annotation;
 
 /**
  * Represents an aggregate annotation that combines a group of annotation objects based on specific rules, allowing

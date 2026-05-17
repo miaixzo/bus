@@ -23,14 +23,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.Response;
+
 import org.miaixz.bus.gitlab.models.ExternalStatusCheck;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheckProtectedBranch;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheckResult;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheckStatus;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheckStatus.Status;
-
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab external status checks. See

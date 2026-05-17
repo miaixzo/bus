@@ -21,16 +21,8 @@ package org.miaixz.bus.starter.cache;
 
 import java.util.Map;
 
-import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.Collector;
-import org.miaixz.bus.cache.Context;
-import org.miaixz.bus.cache.Factory;
-import org.miaixz.bus.cache.collect.*;
-import org.miaixz.bus.core.xyz.MapKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.jdbc.JdbcProperties;
+import jakarta.annotation.Resource;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -40,8 +32,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 
-import jakarta.annotation.Resource;
+import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.cache.Collector;
+import org.miaixz.bus.cache.Context;
+import org.miaixz.bus.cache.Factory;
+import org.miaixz.bus.cache.collect.*;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.jdbc.JdbcProperties;
 
 /**
  * Auto-configuration for the cache system.

@@ -21,6 +21,11 @@ package org.miaixz.bus.base.spring;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import org.miaixz.bus.base.service.BaseService;
 import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -29,10 +34,6 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.magic.annotation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Base request encapsulation for common CRUD operations. This controller provides a set of RESTful endpoints for

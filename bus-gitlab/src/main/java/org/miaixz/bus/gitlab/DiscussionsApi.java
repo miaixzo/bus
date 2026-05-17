@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+
 import org.miaixz.bus.gitlab.models.Discussion;
 import org.miaixz.bus.gitlab.models.Note;
 import org.miaixz.bus.gitlab.models.Position;
 import org.miaixz.bus.gitlab.support.ISO8601;
-
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab Discussions API. See
@@ -89,7 +89,7 @@ public class DiscussionsApi extends AbstractApi {
                     "issues",
                     issueIid,
                     "discussions");
-            return (response.readEntity(new GenericType<List<Discussion>>() {
+            return (response.readEntity(new GenericType<>() {
             }));
         }
     }
@@ -175,7 +175,7 @@ public class DiscussionsApi extends AbstractApi {
                     "snippets",
                     snippetId,
                     "discussions");
-            return (response.readEntity(new GenericType<List<Discussion>>() {
+            return (response.readEntity(new GenericType<>() {
             }));
         }
     }
@@ -261,7 +261,7 @@ public class DiscussionsApi extends AbstractApi {
                     "epics",
                     epicId,
                     "discussions");
-            return (response.readEntity(new GenericType<List<Discussion>>() {
+            return (response.readEntity(new GenericType<>() {
             }));
         }
     }
@@ -350,7 +350,7 @@ public class DiscussionsApi extends AbstractApi {
                     "merge_requests",
                     mergeRequestIid,
                     "discussions");
-            return (response.readEntity(new GenericType<List<Discussion>>() {
+            return (response.readEntity(new GenericType<>() {
             }));
         }
     }
@@ -558,7 +558,7 @@ public class DiscussionsApi extends AbstractApi {
                     "commits",
                     commitSha,
                     "discussions");
-            return (response.readEntity(new GenericType<List<Discussion>>() {
+            return (response.readEntity(new GenericType<>() {
             }));
         }
     }

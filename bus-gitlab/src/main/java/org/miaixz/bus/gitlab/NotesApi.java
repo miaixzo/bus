@@ -23,11 +23,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Note;
-import org.miaixz.bus.gitlab.support.ISO8601;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Note;
+import org.miaixz.bus.gitlab.support.ISO8601;
 
 /**
  * The notes API class.
@@ -81,7 +81,7 @@ public class NotesApi extends AbstractApi {
                 "issues",
                 issueIid,
                 "notes");
-        return (response.readEntity(new GenericType<List<Note>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -369,7 +369,7 @@ public class NotesApi extends AbstractApi {
                 "merge_requests",
                 mergeRequestIid,
                 "notes");
-        return (response.readEntity(new GenericType<List<Note>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -642,7 +642,7 @@ public class NotesApi extends AbstractApi {
                 "epics",
                 epicId,
                 "notes");
-        return (response.readEntity(new GenericType<List<Note>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

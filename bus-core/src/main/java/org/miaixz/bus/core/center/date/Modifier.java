@@ -69,7 +69,7 @@ public class Modifier {
      * In {@link Modify#TRUNCATE} mode, milliseconds are always truncated to zero. However, in {@link Modify#CEILING}
      * and {@link Modify#ROUND} modes, sometimes the millisecond part must be zero (e.g., in MySQL databases), so this
      * option is added.
-     * 
+     *
      *
      * @param calendar  The {@link java.util.Calendar} object to modify.
      * @param dateField The date field to retain, e.g., {@link java.util.Calendar#DAY_OF_MONTH}.

@@ -29,9 +29,10 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.xml.sax.XMLReader;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.xml.sax.XMLReader;
 
 /**
  * Utility class for fixing XXE vulnerabilities. See:

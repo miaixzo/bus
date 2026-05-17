@@ -1,0 +1,142 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.mapper.feature.tenant;
+
+import org.miaixz.bus.mapper.provider.MapperProvider;
+
+/**
+ * Tenant ID provider interface.
+ *
+ * <p>
+ * This interface extends {@link MapperProvider} to provide tenant ID resolution capabilities for multi-tenancy support.
+ * Implementations can customize tenant ID resolution logic and optionally provide configuration via
+ * {@link #getConfig()}.
+ * </p>
+ *
+ * <p>
+ * The interface provides both tenant ID resolution and optional configuration support:
+ * </p>
+ * <ul>
+ * <li>Tenant ID resolution: {@link #getTenantId()}</li>
+ * <li>Configuration: {@link #getConfig()} - Optional method to provide tenant configuration</li>
+ * </ul>
+ *
+ * <h2>Configuration Priority</h2>
+ * <ol>
+ * <li>Provider.getConfig() - Highest priority</li>
+ * <li>Configuration file (application.yml)</li>
+ * <li>Default values</li>
+ * </ol>
+ *
+ * <h2>Common implementation strategies:</h2>
+ * <ul>
+ * <li>From ThreadLocal (default via {@link TenantContext})</li>
+ * <li>From Spring Security context</li>
+ * <li>From HTTP request headers</li>
+ * <li>From JWT token</li>
+ * <li>From Context properties</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * <p>
+ * <b>Example 1: Simple lambda (use configuration file)</b>
+ * </p>
+ *
+ * <pre>
+ * {@code
+ *
+ * &#64;author Kimi Liu
+ * &#64;Component
+ * public class SimpleTenantProvider implements TenantProvider {
+ *
+ *     public String getTenantId() {
+ *         return SecurityContextHolder.getTenantId();
+ *     }
+ *     // No getConfig() override - configuration from application.yml
+ * }
+ * }
+ * </pre>
+ *
+ * <p>
+ * <b>Example 2: Context-based dynamic tenant ID</b>
+ * </p>
+ *
+ * <pre>{@code
+ * @Component
+ * public class ContextAwareTenantProvider implements TenantProvider {
+ *
+ *     public String getTenantId() {
+ *         Context context = getContext();
+ *
+ *         // Read tenant strategy from context
+ *         String strategy = context.getProperty("tenant.strategy", "fixed");
+ *
+ *         if ("dynamic".equals(strategy)) {
+ *             return resolveDynamicTenant();
+ *         } else {
+ *             return context.getProperty("tenant.id", "default");
+ *         }
+ *     }
+ * }
+ * }</pre>
+ *
+ * <p>
+ * <b>Example 3: Full configuration from Provider</b>
+ * </p>
+ *
+ * <pre>{@code
+ * @Component
+ * public class CustomTenantProvider implements TenantProvider {
+ *
+ *     public TenantConfig getConfig() {
+ *         return TenantConfig.builder().column("tenant_id").ignoreTables("sys_config", "sys_dict").enabled(true)
+ *                 .build();
+ *     }
+ *
+ *     public String getTenantId() {
+ *         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+ *         return ((CustomUserDetails) auth.getPrincipal()).getTenantId();
+ *     }
+ * }
+ * }</pre>
+ *
+ * @see TenantConfig
+ * @see TenantHandler
+ * @see MapperProvider
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+@FunctionalInterface
+public interface TenantProvider extends MapperProvider<TenantConfig> {
+
+    /**
+     * Retrieves the current tenant ID.
+     *
+     * <p>
+     * This method is called during SQL execution to determine which tenant the operation belongs to. The tenant ID will
+     * be automatically added to SQL WHERE conditions for data isolation.
+     * </p>
+     *
+     * @return the current tenant ID, or null if not available
+     */
+    String getTenantId();
+
+}

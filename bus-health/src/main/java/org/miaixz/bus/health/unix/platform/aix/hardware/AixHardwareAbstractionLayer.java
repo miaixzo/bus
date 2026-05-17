@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -22,16 +22,16 @@ package org.miaixz.bus.health.unix.platform.aix.hardware;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
-import org.miaixz.bus.health.unix.hardware.UnixDisplay;
 import org.miaixz.bus.health.unix.hardware.CupsPrinter;
+import org.miaixz.bus.health.unix.hardware.UnixDisplay;
 import org.miaixz.bus.health.unix.platform.aix.driver.Lscfg;
 import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatDisk;
-
-import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
 
 /**
  * AIXHardwareAbstractionLayer class.

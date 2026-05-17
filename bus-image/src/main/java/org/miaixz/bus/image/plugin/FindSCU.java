@@ -19,6 +19,21 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.*;
+import java.security.GeneralSecurityException;
+import java.text.DecimalFormat;
+import java.util.EnumSet;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -44,20 +59,6 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.logger.Logger;
-
-import javax.xml.XMLConstants;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Templates;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.security.GeneralSecurityException;
-import java.text.DecimalFormat;
-import java.util.EnumSet;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The {@code FindSCU} class implements a Service Class User (SCU) for the DICOM C-FIND service. It supports various

@@ -423,7 +423,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * name, and the value is obtained by invoking the method.
      * <p>
      * Example: {@code dict.setFields(user::getName, user::getAge);}
-     * 
+     *
      *
      * @param fields An array of getter method references (e.g., {@code user::getNickname}).
      * @return This {@code Dictionary} instance for method chaining.

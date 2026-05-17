@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.http.secure;
 
-import org.miaixz.bus.core.lang.Charset;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.miaixz.bus.core.lang.Charset;
 
 /**
  * An RFC 7235 compliant authentication challenge.
@@ -47,7 +47,7 @@ public class Challenge {
 
     /**
      * Constructs a new Challenge with a scheme and a map of parameters.
-     * 
+     *
      * @param scheme     The authentication scheme.
      * @param authParams The map of authentication parameters.
      */
@@ -69,7 +69,7 @@ public class Challenge {
 
     /**
      * Constructs a new Challenge with a scheme and a realm.
-     * 
+     *
      * @param scheme The authentication scheme.
      * @param realm  The authentication realm.
      */

@@ -22,6 +22,8 @@ package org.miaixz.bus.vortex.routing.llm;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.web.reactive.function.client.WebClient;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -30,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

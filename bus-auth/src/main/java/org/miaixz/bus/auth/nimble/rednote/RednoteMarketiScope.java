@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.auth.nimble.rednote;
 
-import org.miaixz.bus.auth.nimble.AuthorizeScope;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
  * Xiaohongshu Commercial Platform OAuth authorization scopes.

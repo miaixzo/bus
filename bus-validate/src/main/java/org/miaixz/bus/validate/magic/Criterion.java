@@ -19,18 +19,19 @@
 */
 package org.miaixz.bus.validate.magic;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.text.replacer.HighMultiReplacer;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.MapKit;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.text.replacer.HighMultiReplacer;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.MapKit;
 
 /**
  * Represents the common properties extracted from a validation annotation. This class acts as a data carrier for a

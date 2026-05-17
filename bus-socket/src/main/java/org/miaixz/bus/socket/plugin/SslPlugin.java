@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org sandao and other contributors.         ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,6 +19,11 @@
 */
 package org.miaixz.bus.socket.plugin;
 
+import java.nio.channels.AsynchronousSocketChannel;
+import java.util.function.Consumer;
+
+import javax.net.ssl.SSLEngine;
+
 import org.miaixz.bus.socket.buffer.BufferPagePool;
 import org.miaixz.bus.socket.secure.ClientAuth;
 import org.miaixz.bus.socket.secure.SslAsynchronousSocketChannel;
@@ -26,10 +31,6 @@ import org.miaixz.bus.socket.secure.SslService;
 import org.miaixz.bus.socket.secure.factory.ClientSSLContextFactory;
 import org.miaixz.bus.socket.secure.factory.SSLContextFactory;
 import org.miaixz.bus.socket.secure.factory.ServerSSLContextFactory;
-
-import javax.net.ssl.SSLEngine;
-import java.nio.channels.AsynchronousSocketChannel;
-import java.util.function.Consumer;
 
 /**
  * A plugin for enabling SSL/TLS communication on socket channels.

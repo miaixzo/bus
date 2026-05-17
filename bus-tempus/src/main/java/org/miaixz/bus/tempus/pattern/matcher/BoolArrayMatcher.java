@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.tempus.pattern.matcher;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A {@link PartMatcher} that uses a boolean array to represent a list of integer values from a cron expression.

@@ -189,7 +189,7 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
 
     /**
      * Applies the hashing logic for a 16-byte chunk.
-     * 
+     *
      * @param bb The ByteBuffer containing the data.
      */
     private void metroHash64_16(final ByteBuffer bb) {
@@ -204,7 +204,7 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
 
     /**
      * Applies the hashing logic for an 8-byte chunk.
-     * 
+     *
      * @param bb The ByteBuffer containing the data.
      */
     private void metroHash64_8(final ByteBuffer bb) {
@@ -214,7 +214,7 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
 
     /**
      * Applies the hashing logic for a 4-byte chunk.
-     * 
+     *
      * @param bb The ByteBuffer containing the data.
      */
     private void metroHash64_4(final ByteBuffer bb) {
@@ -224,7 +224,7 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
 
     /**
      * Applies the hashing logic for a 2-byte chunk.
-     * 
+     *
      * @param bb The ByteBuffer containing the data.
      */
     private void metroHash64_2(final ByteBuffer bb) {
@@ -234,7 +234,7 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
 
     /**
      * Applies the hashing logic for a 1-byte chunk.
-     * 
+     *
      * @param bb The ByteBuffer containing the data.
      */
     private void metroHash64_1(final ByteBuffer bb) {

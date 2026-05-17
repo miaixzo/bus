@@ -22,10 +22,11 @@ package org.miaixz.bus.spring.banner;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.springframework.boot.Banner;
 import org.springframework.core.env.Environment;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * Abstract base class for {@link Banner} implementations.

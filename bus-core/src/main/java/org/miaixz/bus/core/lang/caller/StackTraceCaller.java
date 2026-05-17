@@ -95,7 +95,7 @@ public class StackTraceCaller implements Caller, Serializable {
      *
      * <p>
      * Call stack depth explanation:
-     * 
+     *
      * <pre>
      * 0: {@link Thread#getStackTrace()} itself (internal)
      * 1: {@link StackTraceCaller} method (internal)

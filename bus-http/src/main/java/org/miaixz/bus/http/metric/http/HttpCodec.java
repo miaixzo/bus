@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.accord.RealConnection;
-
-import java.io.IOException;
 
 /**
  * Encodes HTTP requests and decodes HTTP responses.

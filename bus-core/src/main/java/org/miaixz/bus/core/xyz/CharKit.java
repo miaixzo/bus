@@ -177,7 +177,7 @@ public class CharKit {
      * Checks if the character is a valid hexadecimal character.
      * <p>
      * A valid hex character is one of:
-     * 
+     *
      * <pre>
      * 1. 0-9
      * 2. a-f
@@ -368,7 +368,7 @@ public class CharKit {
      * Converts a letter or digit to its enclosed (circled) form.
      * <p>
      * Examples:
-     * 
+     *
      * <pre>
      * '1' - '①'
      * 'A' - 'Ⓐ'
@@ -395,7 +395,7 @@ public class CharKit {
      * Converts a number from 1 to 20 to its enclosed (circled) character form. Also known as Enclosed Alphanumerics.
      * <p>
      * Examples:
-     * 
+     *
      * <pre>
      * 1 - '①'
      * 12 - '⑫'

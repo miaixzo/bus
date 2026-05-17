@@ -220,7 +220,7 @@ public class CompareKit {
 
     /**
      * Naturally compares two objects. The comparison rules are:
-     * 
+     *
      * <pre>
      * 1. If both are `Comparable`, use `compareTo`.
      * 2. If `o1.equals(o2)`, return 0.

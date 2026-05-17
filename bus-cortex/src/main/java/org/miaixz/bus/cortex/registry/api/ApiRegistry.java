@@ -33,12 +33,12 @@ import org.miaixz.bus.cortex.Registry;
 import org.miaixz.bus.cortex.Trait;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.identity.Fingerprint;
+import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.registry.RegistryChange;
 import org.miaixz.bus.cortex.registry.RegistryStore;
 import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
-import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
-import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**

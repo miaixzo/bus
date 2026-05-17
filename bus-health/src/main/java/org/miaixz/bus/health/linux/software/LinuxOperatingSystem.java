@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -25,6 +25,10 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.function.Supplier;
 
+import com.sun.jna.Native;
+import com.sun.jna.platform.linux.LibC;
+import com.sun.jna.platform.linux.Udev;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -43,10 +47,6 @@ import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
 import org.miaixz.bus.health.linux.driver.proc.UpTime;
 import org.miaixz.bus.health.linux.jna.LinuxLibc;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.Native;
-import com.sun.jna.platform.linux.LibC;
-import com.sun.jna.platform.linux.Udev;
 
 /**
  * Linux is a family of open source Unix-like operating systems based on the Linux kernel, an operating system kernel

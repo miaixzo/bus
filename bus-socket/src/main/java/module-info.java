@@ -19,7 +19,7 @@
 */
 /**
  * bus.socket
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

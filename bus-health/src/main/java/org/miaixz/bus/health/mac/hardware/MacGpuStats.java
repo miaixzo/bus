@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,13 +23,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.builtin.hardware.GpuStats;
-import org.miaixz.bus.health.builtin.hardware.GpuTicks;
-import org.miaixz.bus.health.mac.SmcKit;
-import org.miaixz.bus.health.mac.driver.IOReportClient;
-import org.miaixz.bus.logger.Logger;
-
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation;
 import com.sun.jna.platform.mac.CoreFoundation.CFMutableDictionaryRef;
@@ -39,6 +32,13 @@ import com.sun.jna.platform.mac.IOKit.IOConnect;
 import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.builtin.hardware.GpuStats;
+import org.miaixz.bus.health.builtin.hardware.GpuTicks;
+import org.miaixz.bus.health.mac.SmcKit;
+import org.miaixz.bus.health.mac.driver.IOReportClient;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * macOS {@link GpuStats} session.

@@ -22,6 +22,8 @@ package org.miaixz.bus.extra.mq.provider.jms;
 import java.io.Closeable;
 import java.io.IOException;
 
+import jakarta.jms.*;
+
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Consumer;
@@ -29,8 +31,6 @@ import org.miaixz.bus.extra.mq.MQConfig;
 import org.miaixz.bus.extra.mq.MQProvider;
 import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.logger.Logger;
-
-import jakarta.jms.*;
 
 /**
  * Abstract base class for JMS (Java Message Service) engine. Provides a basic implementation for JMS message queue

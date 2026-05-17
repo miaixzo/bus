@@ -21,12 +21,15 @@ package org.miaixz.bus.cortex.setting.item;
 
 import java.util.List;
 import java.util.Map;
-import org.miaixz.bus.cortex.Setting;
-import org.miaixz.bus.cortex.Type;
+
+import jakarta.persistence.Transient;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import jakarta.persistence.Transient;
+
+import org.miaixz.bus.cortex.Setting;
+import org.miaixz.bus.cortex.Type;
 
 /**
  * Full current-state setting item model.

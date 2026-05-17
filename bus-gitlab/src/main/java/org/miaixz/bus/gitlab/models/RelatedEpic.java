@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.io.Serial;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * The related epic class.

@@ -25,6 +25,11 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.ToLongFunction;
 
+import jakarta.json.stream.JsonLocation;
+import jakarta.json.stream.JsonParser;
+import jakarta.json.stream.JsonParser.Event;
+import jakarta.json.stream.JsonParsingException;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Format;
@@ -32,11 +37,6 @@ import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.image.galaxy.data.PersonName.Group;
 import org.miaixz.bus.logger.Logger;
-
-import jakarta.json.stream.JsonLocation;
-import jakarta.json.stream.JsonParser;
-import jakarta.json.stream.JsonParser.Event;
-import jakarta.json.stream.JsonParsingException;
 
 /**
  * Represents the JSONReader type.

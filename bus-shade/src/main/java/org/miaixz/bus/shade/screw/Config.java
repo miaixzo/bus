@@ -24,14 +24,14 @@ import java.io.Serializable;
 
 import javax.sql.DataSource;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.shade.screw.engine.EngineConfig;
-import org.miaixz.bus.shade.screw.process.ProcessConfig;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.shade.screw.engine.EngineConfig;
+import org.miaixz.bus.shade.screw.process.ProcessConfig;
 
 /**
  * Main configuration class for the documentation generation process.

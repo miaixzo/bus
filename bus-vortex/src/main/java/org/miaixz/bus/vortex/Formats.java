@@ -22,12 +22,14 @@ package org.miaixz.bus.vortex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import org.springframework.http.MediaType;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.provider.BinaryProvider;
 import org.miaixz.bus.vortex.provider.JsonProvider;
 import org.miaixz.bus.vortex.provider.XmlProvider;
 import org.miaixz.bus.vortex.strategy.ResponseStrategy;
-import org.springframework.http.MediaType;
 
 /**
  * Enumerates the supported data formats for API responses, associating each format with a specific serialization

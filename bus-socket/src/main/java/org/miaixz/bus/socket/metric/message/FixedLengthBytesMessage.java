@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org sandao and other contributors.         ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.socket.metric.message;
 
+import java.nio.ByteBuffer;
+
 import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Session;
-
-import java.nio.ByteBuffer;
 
 /**
  * An abstract base class for messages that are prefixed with a fixed-length byte count.

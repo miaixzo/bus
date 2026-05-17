@@ -19,7 +19,7 @@
 */
 /**
  * bus.mapper
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -27,6 +27,7 @@ module bus.mapper {
 
     requires java.compiler;
     requires java.desktop;
+    requires java.sql;
 
     requires bus.core;
     requires bus.logger;
@@ -38,6 +39,7 @@ module bus.mapper {
 
     exports org.miaixz.bus.mapper;
     exports org.miaixz.bus.mapper.annotation;
+    exports org.miaixz.bus.mapper.behavior;
     exports org.miaixz.bus.mapper.binding;
     exports org.miaixz.bus.mapper.builder;
     exports org.miaixz.bus.mapper.criteria;
@@ -52,13 +54,14 @@ module bus.mapper {
     exports org.miaixz.bus.mapper.binding.function;
     exports org.miaixz.bus.mapper.binding.list;
     exports org.miaixz.bus.mapper.binding.logical;
-    exports org.miaixz.bus.mapper.support.audit;
-    exports org.miaixz.bus.mapper.support.keygen;
-    exports org.miaixz.bus.mapper.support.operation;
-    exports org.miaixz.bus.mapper.support.paging;
-    exports org.miaixz.bus.mapper.support.tenant;
-    exports org.miaixz.bus.mapper.support.populate;
-    exports org.miaixz.bus.mapper.support.visible;
-    exports org.miaixz.bus.mapper.support.prefix;
+    exports org.miaixz.bus.mapper.feature.audit;
+    exports org.miaixz.bus.mapper.feature.keygen;
+    exports org.miaixz.bus.mapper.feature.operation;
+    exports org.miaixz.bus.mapper.feature.paging;
+    exports org.miaixz.bus.mapper.feature.populate;
+    exports org.miaixz.bus.mapper.feature.prefix;
+    exports org.miaixz.bus.mapper.feature.schema;
+    exports org.miaixz.bus.mapper.feature.tenant;
+    exports org.miaixz.bus.mapper.feature.visible;
 
 }

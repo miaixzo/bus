@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.logger.magic;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
 import org.miaixz.bus.logger.Provider;
-
-import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * Abstract base class for logger providers, implementing common functionality.

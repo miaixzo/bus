@@ -22,9 +22,6 @@ package org.miaixz.bus.office.ofd;
 import java.io.*;
 import java.nio.file.Path;
 
-import org.miaixz.bus.core.io.file.PathResolve;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.ofdrw.font.Font;
 import org.ofdrw.layout.OFDDoc;
 import org.ofdrw.layout.edit.Annotation;
@@ -32,6 +29,10 @@ import org.ofdrw.layout.element.Div;
 import org.ofdrw.layout.element.Img;
 import org.ofdrw.layout.element.Paragraph;
 import org.ofdrw.reader.OFDReader;
+
+import org.miaixz.bus.core.io.file.PathResolve;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * OFD file generator.

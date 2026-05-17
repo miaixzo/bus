@@ -23,15 +23,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import org.apache.ibatis.type.TypeHandler;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 /**
  * A query criteria class for building complex SQL query conditions.
@@ -596,15 +597,6 @@ public class Criteria<T> {
     public Criteria<T> andCondition(String condition, Object value) {
         criteria.add(new Criterion(condition, value));
         return this;
-    }
-
-    /**
-     * Gets the list of criteria.
-     *
-     * @return The list of criteria.
-     */
-    public List<Criterion> getCriteria() {
-        return criteria;
     }
 
     /**

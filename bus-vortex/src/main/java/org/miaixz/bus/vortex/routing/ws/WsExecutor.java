@@ -19,24 +19,26 @@
 */
 package org.miaixz.bus.vortex.routing.ws;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import jakarta.annotation.PreDestroy;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.UrlKit;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.routing.Coordinator;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.UrlKit;
+import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.routing.Coordinator;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * An executor for managing and executing WebSocket connections and sessions.

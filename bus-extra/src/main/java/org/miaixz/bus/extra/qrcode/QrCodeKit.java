@@ -24,6 +24,12 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Map;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.GlobalHistogramBinarizer;
+import com.google.zxing.common.HybridBinarizer;
+
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -34,12 +40,6 @@ import org.miaixz.bus.extra.qrcode.render.AsciiArtRender;
 import org.miaixz.bus.extra.qrcode.render.BitMatrixRender;
 import org.miaixz.bus.extra.qrcode.render.ImageRender;
 import org.miaixz.bus.extra.qrcode.render.SVGRender;
-
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.GlobalHistogramBinarizer;
-import com.google.zxing.common.HybridBinarizer;
 
 /**
  * QR code utility class based on Zxing, supporting:.

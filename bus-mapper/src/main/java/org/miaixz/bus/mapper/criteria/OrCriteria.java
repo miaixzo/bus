@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.mapper.criteria;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.mapper.binding.function.Fn;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.mapper.binding.function.Fn;
 
 /**
  * An OR query criteria class that extends {@link Criteria} to build SQL query conditions connected by OR.

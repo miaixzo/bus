@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.validate.Builder;
-
-import java.lang.annotation.*;
 
 /**
  * Annotation for validating by comparing the values of two parameters.

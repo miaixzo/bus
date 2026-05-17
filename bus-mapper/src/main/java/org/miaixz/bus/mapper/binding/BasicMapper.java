@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Lang;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
+
 import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.binding.basic.EntityMapper;
 import org.miaixz.bus.mapper.binding.batch.BatchMapper;

@@ -22,8 +22,8 @@ package org.miaixz.bus.mapper.parsing;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 
 /**
  * Represents the metadata of an entity class field, providing field-related operations similar to

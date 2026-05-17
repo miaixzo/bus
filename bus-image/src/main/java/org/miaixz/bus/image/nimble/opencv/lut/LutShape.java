@@ -21,6 +21,7 @@ package org.miaixz.bus.image.nimble.opencv.lut;
 
 import java.util.Objects;
 import java.util.Set;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 

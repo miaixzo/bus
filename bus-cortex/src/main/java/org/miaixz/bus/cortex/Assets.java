@@ -23,13 +23,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.persistence.Transient;
+
 import lombok.*;
 import lombok.Builder;
+import lombok.experimental.SuperBuilder;
+
 import org.miaixz.bus.cortex.builtin.Label;
 import org.miaixz.bus.cortex.builtin.LabelMapper;
-
-import jakarta.persistence.Transient;
-import lombok.experimental.SuperBuilder;
 
 /**
  * Base class for all Cortex assets, covering both registry entries and gateway routing blueprints.

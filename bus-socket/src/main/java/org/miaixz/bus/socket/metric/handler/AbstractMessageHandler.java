@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org sandao and other contributors.         ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,15 +19,15 @@
 */
 package org.miaixz.bus.socket.metric.handler;
 
+import java.nio.channels.AsynchronousSocketChannel;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.socket.Handler;
 import org.miaixz.bus.socket.Monitor;
 import org.miaixz.bus.socket.Plugin;
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.Status;
-
-import java.nio.channels.AsynchronousSocketChannel;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An abstract base class for message handlers, providing common functionality and integrating with plugins. This class

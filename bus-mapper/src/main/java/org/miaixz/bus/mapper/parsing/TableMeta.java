@@ -25,6 +25,10 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -37,16 +41,13 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeException;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
+
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.builder.GenericTypeResolver;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents the metadata of an entity table, recording the relationship between an entity and its corresponding table.
@@ -89,6 +90,11 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      * The list of column metadata for this table.
      */
     protected List<ColumnMeta> columns;
+
+    /**
+     * Expected schema indexes.
+     */
+    protected List<IndexMeta> indexes;
 
     /**
      * Indicates if the initialization is complete and the table metadata is ready for use.
@@ -169,6 +175,29 @@ public class TableMeta extends PropertyMeta<TableMeta> {
             this.columns = new ArrayList<>();
         }
         return columns;
+    }
+
+    /**
+     * Gets all schema indexes.
+     *
+     * @return a list of indexes
+     */
+    public List<IndexMeta> indexes() {
+        if (this.indexes == null) {
+            this.indexes = new ArrayList<>();
+        }
+        return indexes;
+    }
+
+    /**
+     * Adds a schema index.
+     *
+     * @param index the index metadata
+     */
+    public void addIndex(IndexMeta index) {
+        if (index != null) {
+            indexes().add(index);
+        }
     }
 
     /**
@@ -313,8 +342,12 @@ public class TableMeta extends PropertyMeta<TableMeta> {
                 if (resultMaps == null) {
                     resultMaps = new ArrayList<>();
                     ResultMap resultMap = genResultMap(configuration, context, cacheKey);
-                    resultMaps.add(resultMap);
-                    configuration.addResultMap(resultMap);
+                    if (configuration.hasResultMap(resultMap.getId())) {
+                        resultMaps.add(configuration.getResultMap(resultMap.getId()));
+                    } else {
+                        resultMaps.add(resultMap);
+                        configuration.addResultMap(resultMap);
+                    }
                 }
             }
         }

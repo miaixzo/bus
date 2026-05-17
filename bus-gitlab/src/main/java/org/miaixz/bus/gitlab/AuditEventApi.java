@@ -23,11 +23,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.AuditEvent;
-import org.miaixz.bus.gitlab.support.ISO8601;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.AuditEvent;
+import org.miaixz.bus.gitlab.support.ISO8601;
 
 /**
  * This class implements the client side API for the GitLab Instance Audit Event API. See

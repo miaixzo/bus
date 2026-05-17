@@ -1,12 +1,22 @@
 [
   {
     "interfaces": [
-      "org.miaixz.bus.mapper.Mapper"
+      "org.apache.ibatis.executor.Executor"
     ]
   },
   {
     "interfaces": [
-      "org.miaixz.bus.mapper.binding.BasicMapper"
+      "org.apache.ibatis.executor.parameter.ParameterHandler"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.apache.ibatis.executor.resultset.ResultSetHandler"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.apache.ibatis.executor.statement.StatementHandler"
     ]
   },
   {
@@ -17,6 +27,11 @@
   {
     "interfaces": [
       "org.miaixz.bus.mapper.binding.basic.EntityMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.BasicMapper"
     ]
   },
   {
@@ -51,47 +66,32 @@
   },
   {
     "interfaces": [
-      "org.miaixz.bus.mapper.support.audit.AuditProvider"
+      "org.miaixz.bus.mapper.feature.audit.AuditProvider"
     ]
   },
   {
     "interfaces": [
-      "org.miaixz.bus.mapper.support.populate.PopulateProvider"
+      "org.miaixz.bus.mapper.feature.populate.PopulateProvider"
     ]
   },
   {
     "interfaces": [
-      "org.miaixz.bus.mapper.support.prefix.TablePrefixProvider"
+      "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider"
     ]
   },
   {
     "interfaces": [
-      "org.miaixz.bus.mapper.support.tenant.TenantProvider"
+      "org.miaixz.bus.mapper.feature.tenant.TenantProvider"
     ]
   },
   {
     "interfaces": [
-      "org.miaixz.bus.mapper.support.visible.VisibleProvider"
+      "org.miaixz.bus.mapper.feature.visible.VisibleProvider"
     ]
   },
   {
     "interfaces": [
-      "org.apache.ibatis.executor.Executor"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.apache.ibatis.executor.parameter.ParameterHandler"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.apache.ibatis.executor.resultset.ResultSetHandler"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.apache.ibatis.executor.statement.StatementHandler"
+      "org.miaixz.bus.mapper.Mapper"
     ]
   }
 ]

@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.*;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.*;
 
 /**
  * This class implements the client side API for the GitLab Epics and Epic Issues API calls.
@@ -83,7 +83,7 @@ public class EpicsApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "epics");
-        return (response.readEntity(new GenericType<List<Epic>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -351,7 +351,7 @@ public class EpicsApi extends AbstractApi {
     /**
      * Creates a new epic using the information contained in the provided Epic instance. Only the following fields from
      * the Epic instance are used:
-     * 
+     *
      * <pre>
      * <code>
      *      title - the title of the epic (required)
@@ -429,7 +429,7 @@ public class EpicsApi extends AbstractApi {
     /**
      * Updates an epic using the information contained in the provided Epic instance. Only the following fields from the
      * Epic instance are used:
-     * 
+     *
      * <pre>
      * <code>
      *      title - the title of the epic (optional)
@@ -439,7 +439,7 @@ public class EpicsApi extends AbstractApi {
      *      endDate - the end date of the epic (optional)
      * </code>
      * </pre>
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: PUT /groups/:id/epics/:epic_iid</code>
      * </pre>
@@ -521,7 +521,7 @@ public class EpicsApi extends AbstractApi {
                 "epics",
                 epicIid,
                 "issues");
-        return (response.readEntity(new GenericType<List<EpicIssue>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -647,7 +647,7 @@ public class EpicsApi extends AbstractApi {
                 epicIid,
                 "issues",
                 epicIssueId);
-        return response.readEntity(new GenericType<List<EpicIssue>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -795,7 +795,7 @@ public class EpicsApi extends AbstractApi {
                 epicIid,
                 "epics",
                 childEpicId);
-        return response.readEntity(new GenericType<List<ChildEpic>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 

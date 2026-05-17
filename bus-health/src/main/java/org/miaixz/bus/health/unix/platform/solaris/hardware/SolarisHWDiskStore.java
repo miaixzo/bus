@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,6 +23,9 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -36,9 +39,6 @@ import org.miaixz.bus.health.unix.platform.solaris.driver.disk.Iostat;
 import org.miaixz.bus.health.unix.platform.solaris.driver.disk.Lshal;
 import org.miaixz.bus.health.unix.platform.solaris.driver.disk.Prtvtoc;
 import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
-
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
-import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
 
 /**
  * Solaris hard disk implementation.

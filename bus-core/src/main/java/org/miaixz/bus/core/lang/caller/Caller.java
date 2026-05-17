@@ -51,7 +51,7 @@ public interface Caller {
      *
      * <p>
      * Call stack depth explanation:
-     * 
+     *
      * <pre>
      * 0: {@link CallerKit} itself
      * 1: The class that calls a method within {@link CallerKit}

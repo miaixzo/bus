@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org sandao and other contributors.         ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,13 +19,6 @@
 */
 package org.miaixz.bus.socket.accord;
 
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.socket.Context;
-import org.miaixz.bus.socket.Session;
-import org.miaixz.bus.socket.Worker;
-import org.miaixz.bus.socket.buffer.BufferPage;
-import org.miaixz.bus.socket.buffer.VirtualBuffer;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -34,6 +27,13 @@ import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.socket.Context;
+import org.miaixz.bus.socket.Session;
+import org.miaixz.bus.socket.Worker;
+import org.miaixz.bus.socket.buffer.BufferPage;
+import org.miaixz.bus.socket.buffer.VirtualBuffer;
 
 /**
  * Wraps the underlying UDP channel and provides communication and session management.

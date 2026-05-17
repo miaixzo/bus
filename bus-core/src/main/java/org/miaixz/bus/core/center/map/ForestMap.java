@@ -127,7 +127,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     /**
      * Adds or updates both a parent and a child node and establishes a parent-child link between them. This is a
      * convenience method equivalent to:
-     * 
+     *
      * <pre>{@code
      * putNode(parentKey, parentValue);
      * putNode(childKey, childValue);

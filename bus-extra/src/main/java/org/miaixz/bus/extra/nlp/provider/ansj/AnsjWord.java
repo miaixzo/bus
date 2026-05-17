@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.nlp.provider.ansj;
 import java.io.Serial;
 
 import org.ansj.domain.Term;
+
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**

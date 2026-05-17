@@ -24,11 +24,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.bean.copier.CopyOptions;
-import org.miaixz.bus.core.xyz.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import org.miaixz.bus.core.bean.copier.CopyOptions;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * XML converter for transforming XML data into Maps, Java Beans, etc.

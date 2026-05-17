@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.storage;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import lombok.*;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Represents the context for storage operations, containing configuration details for connecting to a storage service.

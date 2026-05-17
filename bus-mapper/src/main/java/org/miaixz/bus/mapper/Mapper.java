@@ -24,6 +24,7 @@ import java.io.Serializable;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Lang;
 import org.apache.ibatis.annotations.Options;
+
 import org.miaixz.bus.mapper.binding.BasicMapper;
 import org.miaixz.bus.mapper.provider.EntityProvider;
 

@@ -23,9 +23,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.DeployToken;
-
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.DeployToken;
 
 /**
  * This class implements the client side API for the GitLab Deploy Tokens API calls. See

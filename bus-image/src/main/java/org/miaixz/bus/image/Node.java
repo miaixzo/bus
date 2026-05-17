@@ -23,12 +23,12 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.logger.Logger;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Represents a DICOM Application Entity (AE) node, encapsulating its network address information such as AE Title,

@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.validate;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.validate.magic.Criterion;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.validate.magic.Criterion;
 
 /**
  * Validation result collector.

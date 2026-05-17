@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.validate.metric;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.Registry;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Multiple;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Validator for the {@link Multiple} annotation, allowing multiple validation rules to be applied sequentially.

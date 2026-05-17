@@ -23,14 +23,14 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.miaixz.bus.gitlab.hooks.system.*;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.logger.Logger;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import jakarta.servlet.http.HttpServletRequest;
+import org.miaixz.bus.gitlab.hooks.system.*;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class provides a handler for processing GitLab System Hook callouts.

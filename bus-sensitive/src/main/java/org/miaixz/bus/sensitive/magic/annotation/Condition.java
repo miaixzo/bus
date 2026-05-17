@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import org.miaixz.bus.sensitive.metric.ConditionProvider;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.sensitive.metric.ConditionProvider;
 
 /**
  * An annotation used to specify a custom condition for a desensitization strategy to be applied.

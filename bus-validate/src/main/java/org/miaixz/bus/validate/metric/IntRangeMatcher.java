@@ -19,16 +19,16 @@
 */
 package org.miaixz.bus.validate.metric;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.IntRange;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Validator for the {@link IntRange} annotation, checking if a numeric value is within a specified integer range.

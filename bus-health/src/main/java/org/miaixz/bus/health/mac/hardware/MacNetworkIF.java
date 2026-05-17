@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -24,16 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
+import com.sun.jna.platform.mac.CoreFoundation.CFStringRef;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 import org.miaixz.bus.health.mac.driver.net.NetStat;
 import org.miaixz.bus.health.mac.jna.SystemConfiguration;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
-import com.sun.jna.platform.mac.CoreFoundation.CFStringRef;
 
 /**
  * <p>

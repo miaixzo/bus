@@ -42,7 +42,7 @@ public class MapperStatementHandler {
 
     /**
      * Constructs a new MapperStatementHandler.
-     * 
+     *
      * @param statementHandler The MetaObject for the StatementHandler.
      */
     MapperStatementHandler(MetaObject statementHandler) {
@@ -51,7 +51,7 @@ public class MapperStatementHandler {
 
     /**
      * Gets the parameter handler.
-     * 
+     *
      * @return The {@link ParameterHandler} object.
      */
     public ParameterHandler parameterHandler() {
@@ -60,7 +60,7 @@ public class MapperStatementHandler {
 
     /**
      * Gets the mapped statement.
-     * 
+     *
      * @return The {@link MappedStatement} object.
      */
     public MappedStatement mappedStatement() {
@@ -69,7 +69,7 @@ public class MapperStatementHandler {
 
     /**
      * Gets the executor.
-     * 
+     *
      * @return The {@link Executor} object.
      */
     public Executor executor() {
@@ -78,7 +78,7 @@ public class MapperStatementHandler {
 
     /**
      * Gets the {@link MapperBoundSql} object.
-     * 
+     *
      * @return The {@link MapperBoundSql} object.
      */
     public MapperBoundSql mapperBoundSql() {
@@ -87,7 +87,7 @@ public class MapperStatementHandler {
 
     /**
      * Gets the {@link BoundSql} object.
-     * 
+     *
      * @return The {@link BoundSql} object.
      */
     public BoundSql boundSql() {
@@ -96,7 +96,7 @@ public class MapperStatementHandler {
 
     /**
      * Gets the configuration object.
-     * 
+     *
      * @return The {@link Configuration} object.
      */
     public Configuration configuration() {
@@ -105,7 +105,7 @@ public class MapperStatementHandler {
 
     /**
      * A generic method to get a property value.
-     * 
+     *
      * @param property The name of the property.
      * @param <T>      The type of the return value.
      * @return The value of the property.

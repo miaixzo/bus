@@ -28,6 +28,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFSimpleShape;
+
 import org.miaixz.bus.office.excel.SimpleAnchor;
 import org.miaixz.bus.office.excel.shape.ExcelPictureType;
 import org.miaixz.bus.office.excel.style.ShapeConfig;

@@ -19,15 +19,16 @@
 */
 package org.miaixz.bus.http.secure;
 
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.*;
+
+import javax.net.ssl.SSLPeerUnverifiedException;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.UnoUrl;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.*;
 
 /**
  * Constrains which certificates are trusted. Certificate pinning increases security, but also limits your server team's
@@ -56,7 +57,7 @@ public class CertificatePinner {
 
     /**
      * Constructs a new CertificatePinner.
-     * 
+     *
      * @param pins                    The set of pins.
      * @param certificateChainCleaner The certificate chain cleaner.
      */
@@ -80,7 +81,7 @@ public class CertificatePinner {
 
     /**
      * Computes the SHA-1 hash of a certificate's public key.
-     * 
+     *
      * @param x509Certificate The certificate.
      * @return The SHA-1 hash as a ByteString.
      */
@@ -90,7 +91,7 @@ public class CertificatePinner {
 
     /**
      * Computes the SHA-256 hash of a certificate's public key.
-     * 
+     *
      * @param x509Certificate The certificate.
      * @return The SHA-256 hash as a ByteString.
      */

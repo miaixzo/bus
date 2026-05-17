@@ -25,6 +25,7 @@ import java.awt.image.DataBufferShort;
 import java.awt.image.DataBufferUShort;
 import java.util.Arrays;
 import java.util.Objects;
+
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 

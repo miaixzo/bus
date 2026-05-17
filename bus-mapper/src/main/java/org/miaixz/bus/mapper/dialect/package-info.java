@@ -21,17 +21,10 @@
 /**
  * Database dialect support for bus-mapper.
  *
- * <h2>Overview</h2>
  * <p>
- * This package provides a unified abstraction for database-specific SQL generation and capabilities. Each supported
- * database has its own {@link org.miaixz.bus.mapper.dialect.Dialect} implementation that handles:
+ * This package provides the dialect abstraction, registry, and built-in database product implementations. Each dialect
+ * composes mapper-level database behaviors from {@code org.miaixz.bus.mapper.behavior}.
  * </p>
- * <ul>
- * <li>Pagination SQL generation</li>
- * <li>Database capability declarations such as multi-values insert support</li>
- * <li>JDBC URL based database identification and matching</li>
- * <li>UPSERT family selection through {@link org.miaixz.bus.mapper.dialect.Dialect.Type}</li>
- * </ul>
  *
  * @author Kimi Liu
  * @since Java 21+

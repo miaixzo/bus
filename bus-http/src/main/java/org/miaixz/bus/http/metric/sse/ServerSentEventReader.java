@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.http.metric.sse;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.SegmentBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
 
 /**
  * A reader for Server-Sent Events (SSE), responsible for parsing event stream data. It reads from an input stream,

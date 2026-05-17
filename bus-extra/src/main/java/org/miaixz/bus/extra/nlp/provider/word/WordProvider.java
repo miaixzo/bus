@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.nlp.provider.word;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;

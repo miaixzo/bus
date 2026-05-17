@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
+import java.util.regex.Pattern;
+
 import lombok.Getter;
 import lombok.Setter;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.regex.Pattern;
 
 /**
  * Represents a User-Agent, providing information about the browser, engine, OS, and device.

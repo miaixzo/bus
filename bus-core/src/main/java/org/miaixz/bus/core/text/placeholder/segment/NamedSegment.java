@@ -36,7 +36,7 @@ public class NamedSegment extends AbstractSegment {
 
     /**
      * Constructs a {@code NamedSegment} with the given name and whole placeholder text.
-     * 
+     *
      * @param name             The name of the placeholder variable.
      * @param wholePlaceholder The complete text of the placeholder, including delimiters.
      */
@@ -47,7 +47,7 @@ public class NamedSegment extends AbstractSegment {
 
     /**
      * Retrieves the complete text of the placeholder.
-     * 
+     *
      * @return The complete text of the placeholder.
      */
     @Override

@@ -24,16 +24,20 @@ import static org.miaixz.bus.mapper.Args.DELIMITER;
 import java.util.Objects;
 import java.util.regex.Matcher;
 
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
-import org.apache.ibatis.type.UnknownTypeHandler;
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.mapper.support.keygen.GenId;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.GenerationType;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.UnknownTypeHandler;
+
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.feature.keygen.GenId;
 
 /**
  * Represents the mapping between an entity field and a database column, storing column information provided on the
@@ -71,6 +75,11 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * Whether this column can be null.
      */
     protected boolean nullable;
+
+    /**
+     * Explicit DDL nullable value. {@code null} means the entity did not declare nullability.
+     */
+    protected Boolean ddlNullable;
 
     /**
      * Primary key strategy 1 (Priority 1): Whether to use JDBC to get the primary key. This has the highest priority.
@@ -133,6 +142,51 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     protected String numericScale;
 
     /**
+     * DDL character length.
+     */
+    protected Integer length;
+
+    /**
+     * DDL numeric precision.
+     */
+    protected Integer precision;
+
+    /**
+     * DDL numeric scale.
+     */
+    protected Integer scale;
+
+    /**
+     * Whether this column has a unique constraint.
+     */
+    protected Boolean unique;
+
+    /**
+     * Native column definition.
+     */
+    protected String columnDefinition;
+
+    /**
+     * Column comment.
+     */
+    protected String comment;
+
+    /**
+     * Whether this column is a large object.
+     */
+    protected Boolean lob;
+
+    /**
+     * Enum persistence strategy.
+     */
+    protected EnumType enumType;
+
+    /**
+     * Primary key generation strategy.
+     */
+    protected GenerationType generationType;
+
+    /**
      * Constructs a new MapperColumn.
      *
      * @param fieldMeta The entity class field.
@@ -192,6 +246,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      */
     public ColumnMeta nullable(boolean nullable) {
         this.nullable = nullable;
+        this.ddlNullable = nullable;
         return this;
     }
 

@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.nlp.provider.jcseg;
 import java.io.Serial;
 
 import org.lionsoul.jcseg.IWord;
+
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**

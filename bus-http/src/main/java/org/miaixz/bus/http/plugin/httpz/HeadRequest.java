@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
+import java.util.Map;
+
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.bodys.RequestBody;
-
-import java.util.Map;
 
 /**
  * Represents an HTTP HEAD request. This class encapsulates all the parameters and configuration for a HEAD request.

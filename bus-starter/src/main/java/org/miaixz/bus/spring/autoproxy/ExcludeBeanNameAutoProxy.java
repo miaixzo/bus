@@ -19,12 +19,13 @@
 */
 package org.miaixz.bus.spring.autoproxy;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.PatternKit;
-import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.PatternKit;
 
 /**
  * Extends {@link BeanNameAutoProxyCreator} to support excluding specified bean names from auto-proxying.

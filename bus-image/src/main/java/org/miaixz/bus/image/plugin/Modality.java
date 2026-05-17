@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.*;
+import java.security.GeneralSecurityException;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -28,10 +32,6 @@ import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.*;
-import java.security.GeneralSecurityException;
-import java.util.List;
 
 /**
  * The {@code Modality} class provides a set of static utility methods to simulate the behavior of a DICOM modality. It

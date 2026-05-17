@@ -23,10 +23,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Event;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Event;
 
 /**
  * This class implements the client side API for the GitLab events calls.
@@ -158,7 +158,7 @@ public class EventsApi extends AbstractApi {
                 .withParam("scope", scope != null ? scope.toValue().toLowerCase() : null);
 
         Response response = get(Response.Status.OK, formData.asMap(), "events");
-        return (response.readEntity(new GenericType<List<Event>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -344,7 +344,7 @@ public class EventsApi extends AbstractApi {
                 "users",
                 getUserIdOrUsername(userIdOrUsername),
                 "events");
-        return (response.readEntity(new GenericType<List<Event>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -475,7 +475,7 @@ public class EventsApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "events");
-        return (response.readEntity(new GenericType<List<Event>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

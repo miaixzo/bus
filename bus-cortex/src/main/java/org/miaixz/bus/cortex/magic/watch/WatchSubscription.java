@@ -22,12 +22,12 @@ package org.miaixz.bus.cortex.magic.watch;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.miaixz.bus.cortex.Listener;
 import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.Watch;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Single watch subscription entry.

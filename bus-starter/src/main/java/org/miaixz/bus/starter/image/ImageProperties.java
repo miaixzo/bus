@@ -21,8 +21,10 @@ package org.miaixz.bus.starter.image;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.spring.GeniusBuilder;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Configuration properties for image processing and analysis, particularly for DICOM.

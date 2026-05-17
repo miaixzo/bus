@@ -198,7 +198,7 @@ public class Consts extends Normal {
      * <p>
      * In API responses or service call results, this key identifies the operation status code, typically used alongside
      * HTTP status codes to provide more detailed error classification.
-     * 
+     *
      */
     public static final String ERRCODE = "errcode";
 

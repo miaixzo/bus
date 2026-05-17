@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,19 +23,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.miaixz.bus.health.windows.driver.DxgiAdapterInfo;
-import org.miaixz.bus.logger.Logger;
-
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
-import com.sun.jna.platform.win32.Guid.REFIID;
-import com.sun.jna.platform.win32.WinNT.HRESULT;
 import com.sun.jna.platform.win32.COM.COMInvoker;
 import com.sun.jna.platform.win32.COM.COMUtils;
+import com.sun.jna.platform.win32.Guid.REFIID;
+import com.sun.jna.platform.win32.WinNT.HRESULT;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.StdCallLibrary;
+
+import org.miaixz.bus.health.windows.driver.DxgiAdapterInfo;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Minimal JNA binding to {@code dxgi.dll} for enumerating display adapters and reading
