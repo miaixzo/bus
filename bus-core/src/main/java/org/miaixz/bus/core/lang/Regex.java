@@ -220,13 +220,14 @@ public class Regex {
     /**
      * Matches Chinese vehicle license plate numbers, including new energy vehicle plates.
      */
-    public static final String PLATE_NUMBER = "^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[ABCDEFGHJK])|([ABCDEFGHJK]([A-HJ-NP-Z0-9])[0-9]{4})))|"
-            + "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领]\\d{3}\\d{1,3}[领])|"
-            + "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$";
+    public static final String PLATE_NUMBER =
+            "^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[ABCDEFGHJK])|([ABCDEFGHJKP]([A-HJ-NP-Z0-9])\\d{4})))|" +
+                    "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领]\\d{3}\\d{1,3}[领])|" +
+                    "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$";
 
     /**
      * Matches a Unified Social Credit Code (USCC) for Chinese entities.
-     * 
+     *
      * <pre>
      * Part 1: Registration management department code (1 digit or uppercase English letter)
      * Part 2: Institution type code (1 digit or uppercase English letter)
@@ -242,15 +243,15 @@ public class Regex {
      * 17-digit code. Standard: GB 16735-2019. Official standard address:
      * https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2EBF667F8C032B1EDFD6DF9C1114E02 For manufacturers producing
      * 1,000 or more complete and/or incomplete vehicles per year:
-     * 
+     *
      * <pre>
      *   Part 1: World Manufacturer Identifier (WMI), 3 characters.
      *   Part 2: Vehicle Descriptor Section (VDS), 6 characters.
      *   Part 3: Vehicle Indicator Section (VIS), 8 characters.
      * </pre>
-     * 
+     * <p>
      * For manufacturers producing fewer than 1,000 complete and/or incomplete vehicles per year:
-     * 
+     *
      * <pre>
      *   Part 1: World Manufacturer Identifier (WMI), 3 characters.
      *   Part 2: Vehicle Descriptor Section (VDS), 6 characters.
