@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.logger.metric.slf4j;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.logger.Provider;
-import org.miaixz.bus.logger.magic.AbstractFactory;
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.NOPLoggerFactory;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.logger.Provider;
+import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
  * A factory for creating {@link org.slf4j.Logger} instances. This factory detects the presence of an SLF4J binding and

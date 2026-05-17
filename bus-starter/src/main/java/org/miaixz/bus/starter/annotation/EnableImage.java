@@ -19,10 +19,11 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import org.miaixz.bus.starter.image.ImageConfiguration;
+import java.lang.annotation.*;
+
 import org.springframework.context.annotation.Import;
 
-import java.lang.annotation.*;
+import org.miaixz.bus.starter.image.ImageConfiguration;
 
 /**
  * Enables image processing and DICOM server features.

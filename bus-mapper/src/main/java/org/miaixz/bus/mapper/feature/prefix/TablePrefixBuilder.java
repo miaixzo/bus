@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.RequiredArgsConstructor;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * SQL table name prefix builder using regex-based approach.

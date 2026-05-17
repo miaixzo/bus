@@ -204,7 +204,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      * <p>
      * For example, {@code FastStream.iterate(0, i -> i + 1)} can create an infinite stream starting from 0 and
      * incrementing by 1. Use {@link EasyStream#limit(long)} to limit the number of elements.
-     * 
+     *
      *
      * @param <T>  the type of the elements
      * @param seed the initial element
@@ -222,7 +222,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      * <p>
      * For example, {@code FastStream.iterate(0, i -> i < 3, i -> ++i)} can create a stream containing elements 0, 1, 2.
      * Use {@link EasyStream#limit(long)} to limit the number of elements.
-     * 
+     *
      *
      * @param <T>     the type of the elements
      * @param seed    the initial element
@@ -245,7 +245,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      * graph or tree nodes in a flattened manner, and parallel streams can be used to improve efficiency.
      * <p>
      * Example:
-     * 
+     *
      * <pre>{@code
      * Tree root = // Build tree structure
      * // Search for all nodes at level 3 in the tree structure and sort by weight
@@ -274,7 +274,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      * graph or tree nodes in a flattened manner, and parallel streams can be used to improve efficiency.
      * <p>
      * Example:
-     * 
+     *
      * <pre>{@code
      * Tree root = // Build tree structure
      * // Search for all nodes at level 3 in the tree structure and sort by weight
@@ -314,7 +314,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      * <p>
      * Concatenating from repetitive sequential streams may lead to deep call chains or even
      * {@code StackOverflowException}.
-     * 
+     *
      *
      * @param <T> the type of the elements
      * @param a   the first stream

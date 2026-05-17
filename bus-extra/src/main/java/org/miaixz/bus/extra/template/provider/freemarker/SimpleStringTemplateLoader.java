@@ -22,8 +22,9 @@ package org.miaixz.bus.extra.template.provider.freemarker;
 import java.io.Reader;
 import java.io.StringReader;
 
-import freemarker.cache.TemplateLoader;
 import org.miaixz.bus.logger.Logger;
+
+import freemarker.cache.TemplateLoader;
 
 /**
  * A {@link TemplateLoader} implementation that loads templates directly from a string. This is useful for situations

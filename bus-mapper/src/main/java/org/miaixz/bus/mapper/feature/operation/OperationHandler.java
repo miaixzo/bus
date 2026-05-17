@@ -21,19 +21,20 @@ package org.miaixz.bus.mapper.feature.operation;
 
 import java.util.regex.Pattern;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.MetaObject;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 import org.miaixz.bus.mapper.handler.MapperHandler;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Operation handler to prevent full table updates and deletes. This handler intercepts UPDATE and DELETE statements to

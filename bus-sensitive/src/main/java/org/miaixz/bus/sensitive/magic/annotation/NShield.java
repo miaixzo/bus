@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * An annotation to desensitize or filter key-value pairs within a field that contains a JSON string.

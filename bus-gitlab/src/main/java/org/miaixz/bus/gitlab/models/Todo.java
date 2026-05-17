@@ -20,13 +20,9 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-
-import org.miaixz.bus.gitlab.models.Constants.TodoAction;
-import org.miaixz.bus.gitlab.models.Constants.TodoState;
-import org.miaixz.bus.gitlab.models.Constants.TodoType;
-import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonParser;
@@ -36,7 +32,11 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.io.Serial;
+
+import org.miaixz.bus.gitlab.models.Constants.TodoAction;
+import org.miaixz.bus.gitlab.models.Constants.TodoState;
+import org.miaixz.bus.gitlab.models.Constants.TodoType;
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * The todo class.

@@ -29,6 +29,10 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.binding.function.Fn;
@@ -37,10 +41,6 @@ import org.miaixz.bus.mapper.criteria.Criterion;
 import org.miaixz.bus.mapper.criteria.OrCriteria;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 /**
  * A generic condition query object for building complex query criteria.

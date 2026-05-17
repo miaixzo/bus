@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;

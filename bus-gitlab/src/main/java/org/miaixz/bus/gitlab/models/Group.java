@@ -19,16 +19,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import org.miaixz.bus.gitlab.models.Constants.DefaultBranchProtectionLevel;
 import org.miaixz.bus.gitlab.models.Constants.ProjectCreationLevel;
 import org.miaixz.bus.gitlab.models.Constants.SubgroupCreationLevel;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.io.Serial;
 
 /**
  * The group class.

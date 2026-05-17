@@ -22,10 +22,10 @@ package org.miaixz.bus.cortex.guard;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 
 /**
  * Input context passed to guard strategies.

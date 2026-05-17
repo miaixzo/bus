@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.logger.Logger;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * An RFC 6265-compliant HTTP cookie.

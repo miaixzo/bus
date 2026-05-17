@@ -11,22 +11,37 @@
         "pattern": ".*\\.ya?ml$"
       },
       {
+        "pattern": "\\.conf$"
+      },
+      {
+        "pattern": "\\.json$"
+      },
+      {
+        "pattern": "\\.properties$"
+      },
+      {
+        "pattern": "\\.txt$"
+      },
+      {
+        "pattern": "\\.xml$"
+      },
+      {
         "pattern": "META-INF/.*"
       },
       {
         "pattern": "META-INF/.*\\.DSA"
       },
       {
-        "pattern": "META-INF/.*\\.RSA"
-      },
-      {
-        "pattern": "META-INF/.*\\.SF"
-      },
-      {
         "pattern": "META-INF/.*\\.json"
       },
       {
         "pattern": "META-INF/.*\\.properties"
+      },
+      {
+        "pattern": "META-INF/.*\\.RSA"
+      },
+      {
+        "pattern": "META-INF/.*\\.SF"
       },
       {
         "pattern": "META-INF/.*\\.sig"
@@ -53,25 +68,10 @@
         "pattern": "META-INF/MANIFEST\\.MF"
       },
       {
-        "pattern": "META-INF/NOTICE"
-      },
-      {
         "pattern": "META-INF/native-image/.*"
       },
       {
-        "pattern": "\\.conf$"
-      },
-      {
-        "pattern": "\\.json$"
-      },
-      {
-        "pattern": "\\.properties$"
-      },
-      {
-        "pattern": "\\.txt$"
-      },
-      {
-        "pattern": "\\.xml$"
+        "pattern": "META-INF/NOTICE"
       }
     ]
   },

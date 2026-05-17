@@ -19,16 +19,16 @@
 */
 package org.miaixz.bus.proxy.jdk;
 
+import java.io.Serial;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.miaixz.bus.core.xyz.ModifierKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.Aspect;
 import org.miaixz.bus.proxy.invoker.Interceptor;
-
-import java.io.Serial;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * A dynamic proxy aspect implementation using the JDK's {@link InvocationHandler}. This class intercepts method calls

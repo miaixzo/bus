@@ -25,12 +25,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.iterator.*;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.text.StringJoiner;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Utility class for {@link Iterable} and {@link Iterator}.
@@ -386,7 +387,7 @@ public class IteratorKit extends IteratorValidator {
     /**
      * Edits an iterator, producing a new {@link ArrayList}. The editing process is defined by the provided editor,
      * which can:
-     * 
+     *
      * <pre>
      * 1. Filter out desired objects (return {@code
      * null
@@ -418,7 +419,7 @@ public class IteratorKit extends IteratorValidator {
     /**
      * Removes all elements from the iterator that satisfy the given predicate. This method modifies the underlying
      * collection directly. The removal is done by implementing the {@link Predicate} interface:
-     * 
+     *
      * <pre>
      * 1. Remove specific objects: objects for which {@link Predicate#test(Object)} returns {@code
      * true

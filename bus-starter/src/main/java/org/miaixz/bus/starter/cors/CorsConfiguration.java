@@ -19,18 +19,20 @@
 */
 package org.miaixz.bus.starter.cors;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
+import java.util.Arrays;
+
 import jakarta.annotation.Resource;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.Arrays;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Auto-configuration for CORS (Cross-Origin Resource Sharing) support. This class enables and configures the CORS

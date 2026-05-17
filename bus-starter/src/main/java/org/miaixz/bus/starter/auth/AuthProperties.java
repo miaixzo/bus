@@ -21,15 +21,16 @@ package org.miaixz.bus.starter.auth;
 
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Authorization configuration properties.

@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.auth.nimble.microsoft;
 
-import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.Protocol;
 
 /**
  * Microsoft login provider.

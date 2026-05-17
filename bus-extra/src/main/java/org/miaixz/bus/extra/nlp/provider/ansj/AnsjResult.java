@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.nlp.provider.ansj;
 import java.util.Iterator;
 
 import org.ansj.domain.Term;
+
 import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 

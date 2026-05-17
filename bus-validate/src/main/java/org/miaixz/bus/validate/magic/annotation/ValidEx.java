@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import org.miaixz.bus.core.lang.exception.ValidateException;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * An annotation for specifying a custom exception to be thrown upon validation failure, replacing the default

@@ -23,11 +23,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * The iteration class.

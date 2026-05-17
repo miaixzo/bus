@@ -22,6 +22,8 @@ package org.miaixz.bus.image.metric.json.hl7;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.json.stream.JsonParser;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
@@ -31,8 +33,6 @@ import org.miaixz.bus.image.metric.json.ConfigurationDelegate;
 import org.miaixz.bus.image.metric.json.JSONReader;
 import org.miaixz.bus.image.metric.json.JSONWriter;
 import org.miaixz.bus.image.metric.json.JsonConfigurationExtension;
-
-import jakarta.json.stream.JsonParser;
 
 /**
  * Represents the JsonHL7Configuration type.

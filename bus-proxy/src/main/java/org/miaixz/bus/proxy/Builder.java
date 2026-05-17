@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.proxy;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.logger.Logger;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 
 /**
  * A utility class for creating and working with dynamic proxies.

@@ -23,11 +23,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+import lombok.Getter;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
-
-import lombok.Getter;
 
 /**
  * An interface that defines sorting order and priority to control execution sequence.

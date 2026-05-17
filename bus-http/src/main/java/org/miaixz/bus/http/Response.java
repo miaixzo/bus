@@ -19,6 +19,11 @@
 */
 package org.miaixz.bus.http;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Symbol;
@@ -29,11 +34,6 @@ import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.cache.CacheControl;
 import org.miaixz.bus.http.secure.Challenge;
 import org.miaixz.bus.http.socket.Handshake;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * An HTTP response, encapsulating all information from the server, including the request, protocol, status code,

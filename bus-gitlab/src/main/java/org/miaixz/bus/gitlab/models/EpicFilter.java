@@ -19,20 +19,20 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.models.AbstractEpic.EpicState;
 import org.miaixz.bus.gitlab.models.Constants.EpicOrderBy;
 import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import java.io.Serial;
 
 /**
  * This class is used to filter Groups when getting lists of epics.

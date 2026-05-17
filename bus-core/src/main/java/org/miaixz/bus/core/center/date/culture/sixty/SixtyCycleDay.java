@@ -286,7 +286,7 @@ public class SixtyCycleDay extends Loops {
 
     /**
      * The Three Pillars (Year, Month, Day).
-     * 
+     *
      * @return the {@link ThreePillars}
      */
     public ThreePillars getThreePillars() {

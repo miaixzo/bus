@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.vortex.magic;
 
-import org.miaixz.bus.core.basic.entity.Authorize;
-import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.basic.normal.Consts;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 
 /**
  * A standard response wrapper for service providers, encapsulating the result of an operation like authorization.

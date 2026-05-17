@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -22,6 +22,9 @@ package org.miaixz.bus.health.windows.hardware;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.Psapi;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
@@ -33,9 +36,6 @@ import org.miaixz.bus.health.windows.driver.perfmon.MemoryInformation.PageSwapPr
 import org.miaixz.bus.health.windows.driver.perfmon.PagingFile;
 import org.miaixz.bus.health.windows.driver.perfmon.PagingFile.PagingPercentProperty;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.Psapi;
 
 /**
  * Memory obtained from WMI

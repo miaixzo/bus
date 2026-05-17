@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.http.metric.sse;
 
+import java.io.IOException;
+
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.plugin.sse.EventSource;
 import org.miaixz.bus.http.plugin.sse.EventSourceListener;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
 
 /**
  * The core implementation for Server-Sent Events (SSE), responsible for establishing a connection with the server and

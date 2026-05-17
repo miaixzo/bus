@@ -22,11 +22,11 @@ package org.miaixz.bus.cortex.registry;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.cortex.Type;
-import org.miaixz.bus.cortex.builtin.Selector;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.builtin.Selector;
 
 /**
  * Internal registry query scope converted from the public {@code Vector} compatibility entry point.

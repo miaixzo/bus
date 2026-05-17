@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -21,6 +21,10 @@ package org.miaixz.bus.health.windows.driver.registry;
 
 import java.util.*;
 
+import com.sun.jna.Memory;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.WinPerf.*;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
@@ -28,10 +32,6 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.Memory;
-import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.WinPerf.*;
 
 /**
  * Utility to read HKEY_PERFORMANCE_DATA information.

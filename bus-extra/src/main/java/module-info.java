@@ -19,7 +19,7 @@
 */
 /**
  * Defines the bus.extra module, providing extended utilities and integrations.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -49,6 +49,7 @@ module bus.extra {
     requires ftplet.api;
     requires emoji.java;
     requires org.apache.commons.compress;
+    requires org.apache.commons.io;
     requires jakarta.mail;
     requires beetl;
     requires freemarker;

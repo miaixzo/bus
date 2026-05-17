@@ -1,401 +1,5 @@
 [
   {
-    "name": "org.miaixz.bus.http.Address",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Callback",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Cookie",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Cookie$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.DnsX",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Headers",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Headers$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpd",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpd$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpv",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpv$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpv$HttpvConfig",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpv$RealPreChain",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpv$SerialPreprocessor",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpv$TagTask",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpx",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpx$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpz",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Httpz$Client",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.NewCall",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.NewCall$Factory",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.RealCall",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.RealCall$AsyncCall",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Request",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Request$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Response",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Response$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Route",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.SoapX",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Stomp",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Stomp$Header",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Stomp$Message",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.Stomp$Subscriber",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.UnoUrl",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.UnoUrl$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.http.accord.ConnectInterceptor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -506,6 +110,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.http.accord.platform.JdkPlatform",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.accord.platform.Platform",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.http.accord.RealConnection",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -594,18 +220,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.accord.platform.JdkPlatform",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.accord.platform.Platform",
+    "name": "org.miaixz.bus.http.Address",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -705,6 +320,17 @@
   },
   {
     "name": "org.miaixz.bus.http.bodys.ResponseBody$BomAwareReader",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Builder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -891,7 +517,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.metric.CookieJar",
+    "name": "org.miaixz.bus.http.Callback",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -902,7 +528,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.metric.Dispatcher",
+    "name": "org.miaixz.bus.http.Cookie",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -913,7 +539,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.metric.EventListener",
+    "name": "org.miaixz.bus.http.Cookie$Builder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -924,7 +550,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.metric.EventListener$Factory",
+    "name": "org.miaixz.bus.http.DnsX",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -935,7 +561,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.metric.Interceptor",
+    "name": "org.miaixz.bus.http.Headers",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -946,7 +572,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.metric.Internal",
+    "name": "org.miaixz.bus.http.Headers$Builder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -957,7 +583,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.metric.NamedRunnable",
+    "name": "org.miaixz.bus.http.Httpd",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -968,7 +594,128 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.metric.NewChain",
+    "name": "org.miaixz.bus.http.Httpd$Builder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpv",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpv$Builder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpv$HttpvConfig",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpv$RealPreChain",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpv$SerialPreprocessor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpv$TagTask",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpx",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpx$Builder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpx$Builder$BuilderBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpz",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Httpz$Client",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1024,6 +771,50 @@
   },
   {
     "name": "org.miaixz.bus.http.metric.anget.UserAgent",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.metric.CookieJar",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.metric.Dispatcher",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.metric.EventListener",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.metric.EventListener$Factory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1474,6 +1265,50 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.http.metric.Interceptor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.metric.Internal",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.metric.NamedRunnable",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.metric.NewChain",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.http.metric.proxy.NullProxySelector",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -1519,6 +1354,28 @@
   },
   {
     "name": "org.miaixz.bus.http.metric.suffix.Suffixes",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.NewCall",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.NewCall$Factory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1661,29 +1518,29 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.http.plugin.httpv.CoverHttp$Async$OkGiveCall",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.plugin.httpv.CoverHttp$Async$PreGiveCall",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.http.plugin.httpv.CoverHttp$FilePara",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.plugin.httpv.CoverHttp$OkGiveCall",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.plugin.httpv.CoverHttp$PreGiveCall",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1705,7 +1562,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.plugin.httpv.CoverHttp$SyncHttpCall",
+    "name": "org.miaixz.bus.http.plugin.httpv.CoverHttp$Sync$SyncHttpCall",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1771,29 +1628,29 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.http.plugin.httpv.CoverTasks$ConvertFunc",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.http.plugin.httpv.CoverTasks$Data",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.http.plugin.httpv.CoverTasks$Executor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.plugin.httpv.CoverTasks$Executor$ConvertFunc",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.plugin.httpv.CoverTasks$Executor$Data",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2255,6 +2112,83 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.http.RealCall",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.RealCall$AsyncCall",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Request",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Request$Builder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Response",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Response$Builder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Route",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.http.secure.Authenticator",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -2388,6 +2322,17 @@
   },
   {
     "name": "org.miaixz.bus.http.secure.TrustRootIndex",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.SoapX",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2553,6 +2498,72 @@
   },
   {
     "name": "org.miaixz.bus.http.socket.WebSocketWriter$FrameSink",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Stomp",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Stomp$Header",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Stomp$Message",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.Stomp$Subscriber",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.UnoUrl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.http.UnoUrl$Builder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

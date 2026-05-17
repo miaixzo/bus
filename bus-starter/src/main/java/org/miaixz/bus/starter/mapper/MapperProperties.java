@@ -32,19 +32,20 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.mapper.Charter.Schema;
-import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.Charter.Schema;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Configuration properties for MyBatis Mapper.

@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.spring.banner;
 
-import org.miaixz.bus.core.Version;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.boot.ansi.AnsiOutput;
+
+import org.miaixz.bus.core.Version;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * A text-based {@link Banner} implementation that displays a custom ASCII art banner along with Spring Boot and Bus

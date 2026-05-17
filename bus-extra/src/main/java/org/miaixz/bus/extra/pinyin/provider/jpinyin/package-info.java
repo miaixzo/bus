@@ -26,7 +26,7 @@
  *
  * <p>
  * To introduce (dependency):
- * 
+ *
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.github.stuxuhai&lt;/groupId&gt;

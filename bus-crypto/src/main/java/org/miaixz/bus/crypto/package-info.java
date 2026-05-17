@@ -24,7 +24,7 @@
  * The main entry points for cryptographic operations are {@link org.miaixz.bus.crypto.Builder} or specific algorithm
  * classes. For example:
  * </p>
- * 
+ *
  * <pre>
  * Builder.md5(); // Using the Builder utility class
  * // or

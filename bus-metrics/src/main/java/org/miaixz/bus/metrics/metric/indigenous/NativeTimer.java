@@ -29,9 +29,9 @@ import java.util.concurrent.atomic.DoubleAdder;
 import java.util.function.Consumer;
 
 import org.miaixz.bus.metrics.Builder;
+import org.miaixz.bus.metrics.magic.TimerSnapshot;
 import org.miaixz.bus.metrics.metric.Sample;
 import org.miaixz.bus.metrics.metric.Timer;
-import org.miaixz.bus.metrics.magic.TimerSnapshot;
 import org.miaixz.bus.metrics.observe.tag.Tag;
 
 /**

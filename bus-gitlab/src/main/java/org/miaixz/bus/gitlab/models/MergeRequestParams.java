@@ -19,13 +19,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.models.Constants.StateEvent;
-
-import java.io.Serial;
 
 /**
  * This class provides the form parameters for creating and updating merge requests.
@@ -153,9 +152,8 @@ public class MergeRequestParams implements Serializable {
     }
 
     /**
-     * Add labels to the merge request (without affecting existing labels).
-     * If a label does not already exist, this creates a new project label and assigns it to the merge request.
-     * This is for merge request updates only.
+     * Add labels to the merge request (without affecting existing labels). If a label does not already exist, this
+     * creates a new project label and assigns it to the merge request. This is for merge request updates only.
      *
      * @param addLabels the List of labels to add
      * @return the reference to this MergeRequestParams instance
@@ -166,9 +164,8 @@ public class MergeRequestParams implements Serializable {
     }
 
     /**
-     * Add labels to the merge request (without affecting existing labels).
-     * If a label does not already exist, this creates a new project label and assigns it to the merge request.
-     * This is for merge request updates only.
+     * Add labels to the merge request (without affecting existing labels). If a label does not already exist, this
+     * creates a new project label and assigns it to the merge request. This is for merge request updates only.
      *
      * @param addLabels the array of labels to add
      * @return the reference to this MergeRequestParams instance
@@ -179,8 +176,7 @@ public class MergeRequestParams implements Serializable {
     }
 
     /**
-     * Remove labels from the merge request (without affecting other labels).
-     * This is for merge request updates only.
+     * Remove labels from the merge request (without affecting other labels). This is for merge request updates only.
      *
      * @param removeLabels the List of labels to remove
      * @return the reference to this MergeRequestParams instance
@@ -191,8 +187,7 @@ public class MergeRequestParams implements Serializable {
     }
 
     /**
-     * Remove labels from the merge request (without affecting other labels).
-     * This is for merge request updates only.
+     * Remove labels from the merge request (without affecting other labels). This is for merge request updates only.
      *
      * @param removeLabels the array of labels to remove
      * @return the reference to this MergeRequestParams instance
@@ -341,8 +336,7 @@ public class MergeRequestParams implements Serializable {
             form.withParam("source_branch", sourceBranch, true).withParam("target_project_id", targetProjectId)
                     .withParam("approvals_before_merge", approvalsBeforeMerge);
         } else {
-            form.withParam("state_event", stateEvent)
-                    .withParam("discussion_locked", discussionLocked)
+            form.withParam("state_event", stateEvent).withParam("discussion_locked", discussionLocked)
                     .withParam("add_labels", (addLabels != null ? String.join(",", addLabels) : null))
                     .withParam("remove_labels", (removeLabels != null ? String.join(",", removeLabels) : null));
         }

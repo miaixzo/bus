@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.auth.nimble.vk;
 
-import org.miaixz.bus.auth.nimble.AuthorizeScope;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
  * VK authorization scopes.

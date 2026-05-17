@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.http.cache;
 
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Headers;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * A cache control header with caching directives from a server or client. These directives set the policy for which

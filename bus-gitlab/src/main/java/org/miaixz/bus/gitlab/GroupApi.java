@@ -24,11 +24,11 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Stream;
 
+import jakarta.ws.rs.core.*;
+
 import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.gitlab.models.ImpersonationToken.Scope;
 import org.miaixz.bus.gitlab.support.ISO8601;
-
-import jakarta.ws.rs.core.*;
 import org.miaixz.bus.logger.Logger;
 
 /**

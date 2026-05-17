@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.cortex.setting.item.revision;
 
-import org.miaixz.bus.cortex.Type;
-import org.miaixz.bus.cortex.setting.item.Item;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.setting.item.Item;
 
 /**
  * Historical current-state item snapshot.

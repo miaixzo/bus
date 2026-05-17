@@ -19,8 +19,9 @@
 */
 package org.miaixz.bus.shade.safety.boot;
 
-import org.miaixz.bus.shade.safety.Launcher;
 import org.springframework.boot.loader.launch.PropertiesLauncher;
+
+import org.miaixz.bus.shade.safety.Launcher;
 
 /**
  * A custom {@link PropertiesLauncher} for Spring Boot applications that integrates with the {@link Launcher} to provide

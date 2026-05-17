@@ -1,40 +1,19 @@
 {
   "types": [
     {
+      "name": "org.miaixz.bus.image.builtin.ldap.LdapEnv"
+    },
+    {
       "name": "org.miaixz.bus.image.Device"
     },
     {
       "name": "org.miaixz.bus.image.Format"
     },
     {
-      "name": "org.miaixz.bus.image.IOD"
-    },
-    {
-      "name": "org.miaixz.bus.image.IOD$And"
-    },
-    {
-      "name": "org.miaixz.bus.image.IOD$CompositeCondition"
-    },
-    {
-      "name": "org.miaixz.bus.image.IOD$DataElement"
-    },
-    {
-      "name": "org.miaixz.bus.image.IOD$MemberOf"
-    },
-    {
-      "name": "org.miaixz.bus.image.IOD$Or"
-    },
-    {
-      "name": "org.miaixz.bus.image.IOD$Present"
-    },
-    {
-      "name": "org.miaixz.bus.image.builtin.ldap.LdapEnv"
+      "name": "org.miaixz.bus.image.galaxy.data.Attributes"
     },
     {
       "name": "org.miaixz.bus.image.galaxy.data.AttributeSelector"
-    },
-    {
-      "name": "org.miaixz.bus.image.galaxy.data.Attributes"
     },
     {
       "name": "org.miaixz.bus.image.galaxy.data.BulkData"
@@ -64,16 +43,25 @@
       "name": "org.miaixz.bus.image.galaxy.data.ValueSelector"
     },
     {
-      "name": "org.miaixz.bus.image.metric.Connection"
+      "name": "org.miaixz.bus.image.IOD"
     },
     {
-      "name": "org.miaixz.bus.image.metric.Property"
+      "name": "org.miaixz.bus.image.IOD$And"
     },
     {
-      "name": "org.miaixz.bus.image.metric.StorageOptions"
+      "name": "org.miaixz.bus.image.IOD$CompositeCondition"
     },
     {
-      "name": "org.miaixz.bus.image.metric.TransferCapability"
+      "name": "org.miaixz.bus.image.IOD$DataElement"
+    },
+    {
+      "name": "org.miaixz.bus.image.IOD$MemberOf"
+    },
+    {
+      "name": "org.miaixz.bus.image.IOD$Or"
+    },
+    {
+      "name": "org.miaixz.bus.image.IOD$Present"
     },
     {
       "name": "org.miaixz.bus.image.metric.api.AttributeCoercion"
@@ -83,6 +71,9 @@
     },
     {
       "name": "org.miaixz.bus.image.metric.api.AttributeCoercions"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.Connection"
     },
     {
       "name": "org.miaixz.bus.image.metric.hl7.ERRSegment"
@@ -136,16 +127,22 @@
       "name": "org.miaixz.bus.image.metric.pdu.AAssociateRJ"
     },
     {
+      "name": "org.miaixz.bus.image.metric.Property"
+    },
+    {
       "name": "org.miaixz.bus.image.metric.service.ImageServiceException"
     },
     {
       "name": "org.miaixz.bus.image.metric.service.InstanceLocator"
     },
     {
-      "name": "org.miaixz.bus.image.nimble.CIELabColorSpace"
+      "name": "org.miaixz.bus.image.metric.StorageOptions"
     },
     {
-      "name": "org.miaixz.bus.image.nimble.YBRColorSpace"
+      "name": "org.miaixz.bus.image.metric.TransferCapability"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.CIELabColorSpace"
     },
     {
       "name": "org.miaixz.bus.image.nimble.codec.CompressionRule"
@@ -176,6 +173,9 @@
     },
     {
       "name": "org.miaixz.bus.image.nimble.opencv.seg.Segment"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.YBRColorSpace"
     },
     {
       "name": "org.miaixz.bus.image.plugin.HL7Pdq"

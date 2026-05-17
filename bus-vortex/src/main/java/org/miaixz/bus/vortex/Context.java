@@ -22,15 +22,16 @@ package org.miaixz.bus.vortex;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cortex.Assets;
+import lombok.Getter;
+
+import org.springframework.http.codec.multipart.Part;
+
 import org.miaixz.bus.core.basic.entity.Tracer;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.magic.Parameter;
-import org.springframework.http.codec.multipart.Part;
-
-import lombok.Getter;
 
 /**
  * Represents the request context, a stateful object that is created at the beginning of a request and enriched as it

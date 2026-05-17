@@ -19,13 +19,15 @@
 */
 package org.miaixz.bus.starter.office;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
 import org.miaixz.bus.office.builtin.LocalOfficeProvider;
 import org.miaixz.bus.office.builtin.OnlineOfficeProvider;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Auto-configuration for online document preview.

@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.http;
 
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.plugin.httpv.CoverCall;
 import org.miaixz.bus.logger.Logger;
-
-import java.util.*;
 
 /**
  * A STOMP protocol client over WebSocket.

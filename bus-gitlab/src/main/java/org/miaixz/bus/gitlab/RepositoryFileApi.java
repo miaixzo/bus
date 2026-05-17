@@ -28,14 +28,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
 import org.miaixz.bus.gitlab.models.Blame;
 import org.miaixz.bus.gitlab.models.Constants;
 import org.miaixz.bus.gitlab.models.RepositoryFile;
 import org.miaixz.bus.gitlab.models.RepositoryFileResponse;
-
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -310,13 +310,13 @@ public class RepositoryFileApi extends AbstractApi {
      * file already exists in the directory it will be overwritten.
      *
      * V3:
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/blobs/:sha</code>
      * </pre>
      *
      * V4:
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/files/:filepath</code>
      * </pre>
@@ -378,13 +378,13 @@ public class RepositoryFileApi extends AbstractApi {
      * Get the raw file contents for a file by commit sha and path.
      *
      * V3:
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/blobs/:sha</code>
      * </pre>
      *
      * V4:
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/files/:filepath</code>
      * </pre>

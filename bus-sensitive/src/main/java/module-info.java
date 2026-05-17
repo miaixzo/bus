@@ -19,7 +19,7 @@
 */
 /**
  * bus.sensitive
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

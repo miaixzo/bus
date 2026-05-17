@@ -21,11 +21,11 @@ package org.miaixz.bus.gitlab;
 
 import java.util.Collections;
 
-import org.miaixz.bus.gitlab.models.Key;
-
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Key;
 
 /**
  * See: <a href="https://docs.gitlab.com/ee/api/keys.html">GitLab Key API Documentaion</a>

@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.http.metric;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.accord.Connection;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A chain of interceptors that can process an HTTP request and response.

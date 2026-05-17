@@ -21,13 +21,14 @@ package org.miaixz.bus.starter.notify;
 
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Registry;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Configuration properties for the message notification service.

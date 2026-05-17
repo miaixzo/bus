@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -24,18 +24,18 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.exception.NotFoundException;
-import org.miaixz.bus.health.Config;
-import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.platform.win32.Ole32;
-import com.sun.jna.platform.win32.WinError;
-import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.COM.COMException;
 import com.sun.jna.platform.win32.COM.COMUtils;
 import com.sun.jna.platform.win32.COM.Wbemcli;
 import com.sun.jna.platform.win32.COM.WbemcliUtil;
+import com.sun.jna.platform.win32.Ole32;
+import com.sun.jna.platform.win32.WinError;
+import com.sun.jna.platform.win32.WinNT;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.exception.NotFoundException;
+import org.miaixz.bus.health.Config;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Utility to handle WMI Queries. Designed to be extended with user-customized behavior.

@@ -130,7 +130,7 @@ public class VisibleContext {
      * </p>
      *
      * <pre>{@code
-     * 
+     *
      * List<Order> allOrders = VisibleContext.runIgnore(() -> orderMapper.selectAll());
      * }</pre>
      *

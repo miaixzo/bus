@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;

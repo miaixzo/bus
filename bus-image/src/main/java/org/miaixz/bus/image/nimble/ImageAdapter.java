@@ -23,6 +23,10 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferUShort;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.opencv.core.Core.MinMaxLocResult;
+import org.opencv.core.CvType;
+
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.image.nimble.opencv.ImageAnalyzer;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
@@ -30,8 +34,6 @@ import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.opencv.lut.*;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
-import org.opencv.core.Core.MinMaxLocResult;
-import org.opencv.core.CvType;
 
 /**
  * DICOM image adapter for handling DICOM image attributes and transformations.

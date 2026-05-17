@@ -20,6 +20,7 @@
 package org.miaixz.bus.mapper.parsing;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
+
 import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Symbol;

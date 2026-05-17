@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -26,6 +26,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.sun.jna.NativeLong;
+import com.sun.jna.platform.mac.IOKit.IOConnect;
+import com.sun.jna.platform.mac.IOKit.IOService;
+import com.sun.jna.platform.mac.IOKitUtil;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef.CloseableNativeLongByReference;
@@ -36,11 +41,6 @@ import org.miaixz.bus.health.mac.jna.IOKit.SMCKeyDataKeyInfo;
 import org.miaixz.bus.health.mac.jna.IOKit.SMCVal;
 import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.NativeLong;
-import com.sun.jna.platform.mac.IOKit.IOConnect;
-import com.sun.jna.platform.mac.IOKit.IOService;
-import com.sun.jna.platform.mac.IOKitUtil;
 
 /**
  * Provides access to SMC calls on macOS

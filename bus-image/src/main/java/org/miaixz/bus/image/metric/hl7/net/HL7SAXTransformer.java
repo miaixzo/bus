@@ -28,6 +28,8 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.xml.sax.SAXException;
+
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
@@ -37,7 +39,6 @@ import org.miaixz.bus.image.galaxy.io.SAXWriter;
 import org.miaixz.bus.image.metric.hl7.HL7Charset;
 import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
 import org.miaixz.bus.image.metric.hl7.HL7Parser;
-import org.xml.sax.SAXException;
 
 /**
  * Represents the HL7SAXTransformer type.

@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.auth;
 
+import java.util.List;
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Context configuration class, supporting protocols such as OAuth2, SAML, and LDAP. * This class holds various
@@ -105,7 +105,7 @@ public class Context {
     private boolean flag;
 
     /**
-     * 
+     *
      * PKCE (Proof Key for Code Exchange) mode for OAuth2.
      */
     private boolean pkce;

@@ -19,11 +19,12 @@
 */
 package org.miaixz.bus.starter.office;
 
-import org.miaixz.bus.office.Provider;
-import org.miaixz.bus.office.Registry;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
+import org.miaixz.bus.office.Provider;
+import org.miaixz.bus.office.Registry;
 
 /**
  * Service for providing online document viewing capabilities.

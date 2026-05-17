@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.validate.metric;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Size;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * Validator for the {@link Size} annotation, which checks the size of various data types.

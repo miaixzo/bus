@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.health.unix.jna;
 
-import org.miaixz.bus.health.Builder;
-
 import com.sun.jna.Library;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
@@ -28,6 +26,8 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
+
+import org.miaixz.bus.health.Builder;
 
 /**
  * C library with code common to all *nix-based operating systems. This class should be considered non-API as it may be

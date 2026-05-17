@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.cortex.magic;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Comparator;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.DateKit;

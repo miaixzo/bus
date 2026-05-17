@@ -19,15 +19,16 @@
 */
 package org.miaixz.bus.starter.annotation;
 
+import java.lang.annotation.*;
+
+import org.springframework.beans.factory.support.BeanNameGenerator;
+import org.springframework.context.annotation.Import;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.starter.jdbc.JdbcConfiguration;
 import org.miaixz.bus.starter.mapper.MapperConfiguration;
 import org.miaixz.bus.starter.mapper.MapperFactoryBean;
 import org.miaixz.bus.starter.mapper.MapperScannerRegistrar;
-import org.springframework.beans.factory.support.BeanNameGenerator;
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
 
 /**
  * Enables MyBatis and Mapper framework support.

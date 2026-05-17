@@ -29,14 +29,15 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
 
-import org.miaixz.bus.image.nimble.Photometric;
-import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
-import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
-import org.miaixz.bus.logger.Logger;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
+
+import org.miaixz.bus.image.nimble.Photometric;
+import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
+import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents the NativeJLSImageWriter type.

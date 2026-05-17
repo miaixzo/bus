@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.logger.metric.jboss;
 
+import java.io.Serial;
+
 import org.jboss.logging.Logger;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
 import org.miaixz.bus.logger.magic.AbstractProvider;
-
-import java.io.Serial;
 
 /**
  * A logger provider implementation that wraps a {@link org.jboss.logging.Logger} instance.

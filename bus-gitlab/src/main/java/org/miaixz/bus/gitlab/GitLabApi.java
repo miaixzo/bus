@@ -23,6 +23,9 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
 import org.miaixz.bus.gitlab.models.Constants.TokenType;
 import org.miaixz.bus.gitlab.models.OauthTokenResponse;
 import org.miaixz.bus.gitlab.models.User;
@@ -30,9 +33,6 @@ import org.miaixz.bus.gitlab.models.Version;
 import org.miaixz.bus.gitlab.support.MaskingLoggingFilter;
 import org.miaixz.bus.gitlab.support.Oauth2LoginStreamingOutput;
 import org.miaixz.bus.gitlab.support.SecretString;
-
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.logger.Logger;
 
 /**

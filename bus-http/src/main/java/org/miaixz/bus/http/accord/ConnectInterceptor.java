@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.http.accord;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
@@ -27,8 +29,6 @@ import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.RealInterceptorChain;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
 
 /**
  * An interceptor that opens a connection to the target server and proceeds to the next interceptor.

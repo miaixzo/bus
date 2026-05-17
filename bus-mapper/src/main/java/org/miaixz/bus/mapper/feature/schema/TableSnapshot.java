@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.miaixz.bus.mapper.parsing.IndexMeta;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import org.miaixz.bus.mapper.parsing.IndexMeta;
 
 /**
  * Database table snapshot.

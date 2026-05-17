@@ -21,12 +21,13 @@ package org.miaixz.bus.image.galaxy.io;
 
 import java.io.IOException;
 
-import org.miaixz.bus.image.Builder;
-import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.data.*;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+
+import org.miaixz.bus.image.Builder;
+import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.galaxy.data.*;
 
 /**
  * Represents the SAXWriter type.

@@ -66,7 +66,7 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     /**
      * Gets the function for retrieving the ID.
-     * 
+     *
      * @return The ID getter function.
      */
     public FunctionX<T, R> getIdKeyFun() {
@@ -75,7 +75,7 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     /**
      * Sets the function for retrieving the ID.
-     * 
+     *
      * @param idKeyFun The ID getter function.
      * @return this
      */
@@ -86,7 +86,7 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     /**
      * Gets the function for retrieving the parent ID.
-     * 
+     *
      * @return The parent ID getter function.
      */
     public FunctionX<T, R> getParentIdKeyFun() {
@@ -95,7 +95,7 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     /**
      * Sets the function for retrieving the parent ID.
-     * 
+     *
      * @param parentIdKeyFun The parent ID getter function.
      * @return this
      */
@@ -106,7 +106,7 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     /**
      * Gets the function for retrieving the weight.
-     * 
+     *
      * @return The weight getter function.
      */
     public FunctionX<T, Comparable<?>> getWeightKeyFun() {
@@ -115,7 +115,7 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     /**
      * Sets the function for retrieving the weight.
-     * 
+     *
      * @param weightKeyFun The weight getter function.
      * @return this
      */
@@ -126,7 +126,7 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     /**
      * Gets the function for retrieving the node name.
-     * 
+     *
      * @return The node name getter function.
      */
     public FunctionX<T, CharSequence> getNameKeyFun() {
@@ -135,7 +135,7 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     /**
      * Sets the function for retrieving the node name.
-     * 
+     *
      * @param nameKeyFun The node name getter function.
      * @return this
      */
@@ -146,7 +146,7 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     /**
      * Gets the function for retrieving the list of child nodes.
-     * 
+     *
      * @return The children getter function.
      */
     public FunctionX<T, List<T>> getChildrenKeyFun() {
@@ -155,7 +155,7 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     /**
      * Sets the function for retrieving the list of child nodes.
-     * 
+     *
      * @param childrenKeyFun The children getter function.
      * @return this
      */

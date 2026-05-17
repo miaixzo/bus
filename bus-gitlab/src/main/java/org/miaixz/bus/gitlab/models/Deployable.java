@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.models.Constants.DeploymentStatus;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import java.io.Serial;
 
 /**
  * The deployable class.

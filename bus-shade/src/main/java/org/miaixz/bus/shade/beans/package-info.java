@@ -19,7 +19,7 @@
 */
 /**
  * Provides utilities for generating related entity classes and methods.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

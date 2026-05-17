@@ -222,10 +222,10 @@ public class ArrayValidator {
     /**
      * <p>
      * Checks if any of the specified {@code CharSequence} array elements are blank.
-     * 
+     *
      * <p>
      * Returns {@code true} if the array is {@code null} or empty, or if any element is blank.
-     * 
+     *
      * <ul>
      * <li>{@code hasBlank()                  // true}</li>
      * <li>{@code hasBlank("", null, " ")     // true}</li>
@@ -235,7 +235,7 @@ public class ArrayValidator {
      *
      * <p>
      * Note: The difference between this method and {@link #isAllBlank(CharSequence...)} is:
-     * 
+     *
      * <ul>
      * <li>{@code hasBlank(CharSequence...)} is equivalent to {@code isBlank(...) || isBlank(...) || ...}</li>
      * <li>{@link #isAllBlank(CharSequence...)} is equivalent to {@code isBlank(...) && isBlank(...) && ...}</li>
@@ -271,10 +271,10 @@ public class ArrayValidator {
     /**
      * <p>
      * Checks if all elements in the specified {@code CharSequence} array are blank.
-     * 
+     *
      * <p>
      * Returns {@code true} if the array is {@code null} or empty, or if all elements are blank.
-     * 
+     *
      * <ul>
      * <li>{@code isAllBlank()                  // true}</li>
      * <li>{@code isAllBlank("", null, " ")     // true}</li>
@@ -284,7 +284,7 @@ public class ArrayValidator {
      *
      * <p>
      * Note: The difference between this method and {@link #hasBlank(CharSequence...)} is:
-     * 
+     *
      * <ul>
      * <li>{@link #hasBlank(CharSequence...)} is equivalent to {@code isBlank(...) || isBlank(...) || ...}</li>
      * <li>{@code isAllBlank(CharSequence...)} is equivalent to {@code isBlank(...) && isBlank(...) && ...}</li>
@@ -375,10 +375,10 @@ public class ArrayValidator {
      * Checks if the array is sorted in ascending or descending order using the specified comparator.
      * <p>
      * If an empty array or a {@code null} comparator is provided, it returns {@code false}.
-     * 
+     *
      * <p>
      * If all elements are equal, it returns {@code true}.
-     * 
+     *
      *
      * @param <T>        The type of elements in the array.
      * @param array      The array to check.
@@ -409,10 +409,10 @@ public class ArrayValidator {
      * Checks if the array is sorted in ascending or descending order.
      * <p>
      * If an empty array is provided, it returns {@code false}.
-     * 
+     *
      * <p>
      * If all elements are equal, it returns {@code true}.
-     * 
+     *
      *
      * @param <T>   The type of elements in the array, which must implement {@link Comparable}.
      * @param array The array to check.
@@ -735,7 +735,7 @@ public class ArrayValidator {
      * Checks if the generic array is sorted in ascending order (i.e., {@code array[i].compareTo(array[i + 1]) <= 0}).
      * <p>
      * If an empty array is provided, it returns {@code false}.
-     * 
+     *
      *
      * @param <T>   The type of elements in the array, which must implement {@link Comparable}.
      * @param array The generic array to check.
@@ -761,7 +761,7 @@ public class ArrayValidator {
      * Checks if the generic array is sorted in descending order (i.e., {@code array[i].compareTo(array[i + 1]) >= 0}).
      * <p>
      * If an empty array is provided, it returns {@code false}.
-     * 
+     *
      *
      * @param <T>   The type of elements in the array, which must implement {@link Comparable}.
      * @param array The generic array to check.
@@ -788,7 +788,7 @@ public class ArrayValidator {
      * {@code comparator.compare(array[i], array[i + 1]) <= 0}).
      * <p>
      * If an empty array or a {@code null} comparator is provided, it returns {@code false}.
-     * 
+     *
      *
      * @param <T>        The type of elements in the array.
      * @param array      The generic array to check.
@@ -815,7 +815,7 @@ public class ArrayValidator {
      * {@code comparator.compare(array[i], array[i + 1]) >= 0}).
      * <p>
      * If an empty array or a {@code null} comparator is provided, it returns {@code false}.
-     * 
+     *
      *
      * @param <T>        The type of elements in the array.
      * @param array      The generic array to check.
@@ -858,7 +858,7 @@ public class ArrayValidator {
     /**
      * Checks if a sub-array matches a portion of a larger array. This is equivalent to comparing the following
      * sub-sequences for equality:
-     * 
+     *
      * <pre>
      *     array[offset, subArray.length]
      *                  ||
@@ -939,10 +939,10 @@ public class ArrayValidator {
      * {@link ObjectKit#isEmpty(Object)} to determine emptiness.
      * <p>
      * If the provided array itself is empty, it returns {@code true}.
-     * 
+     *
      * <p>
      * <strong>Constraint: Each item in {@code args} must not be an array or a collection.</strong>
-     * 
+     *
      *
      * @param <T>  The type of elements in the array.
      * @param args The array of objects to check.
@@ -959,7 +959,7 @@ public class ArrayValidator {
      * {@link ObjectKit#isEmpty(Object)} to determine emptiness.
      * <p>
      * If the provided array itself is empty, it returns {@code true}.
-     * 
+     *
      *
      * @param args The array of objects to check.
      * @return {@code true} if all elements are not {@code null} or empty, {@code false} otherwise.
@@ -972,10 +972,10 @@ public class ArrayValidator {
      * Checks if the given array contains any {@code null} elements.
      * <p>
      * If the array is {@code null}, it returns {@code true}.
-     * 
+     *
      * <p>
      * If the array is empty, it returns {@code false}.
-     * 
+     *
      *
      * @param <T>   The type of elements in the array.
      * @param array The array to check.
@@ -997,7 +997,7 @@ public class ArrayValidator {
      * determine emptiness.
      * <p>
      * If the provided array itself is empty, it returns {@code false}.
-     * 
+     *
      *
      * @param <T>  The type of elements in the array.
      * @param args The array of objects to check.
@@ -1019,10 +1019,10 @@ public class ArrayValidator {
      * determine emptiness.
      * <p>
      * If the provided array itself is empty, it returns {@code false}.
-     * 
+     *
      * <p>
      * <strong>Constraint: Each item in {@code args} must not be an array or a collection.</strong>
-     * 
+     *
      *
      * @param <T>  The type of elements in the array.
      * @param args The array of objects to check.
@@ -1038,7 +1038,7 @@ public class ArrayValidator {
      * Checks if all elements in the given array are {@code null}.
      * <p>
      * If the array is {@code null} or empty, it returns {@code true}.
-     * 
+     *
      *
      * @param <T>   The type of elements in the array.
      * @param array The array to check.
@@ -1053,10 +1053,10 @@ public class ArrayValidator {
      * Checks if all elements in the given array are not {@code null}.
      * <p>
      * If the provided array is {@code null}, it returns {@code false}.
-     * 
+     *
      * <p>
      * If the provided array is empty, it returns {@code true}.
-     * 
+     *
      *
      * @param <T>   The type of elements in the array.
      * @param array The array to check.
@@ -1070,10 +1070,10 @@ public class ArrayValidator {
      * Checks if the given array contains any non-{@code null} elements.
      * <p>
      * If the array is {@code null} or empty, it returns {@code false}.
-     * 
+     *
      * <p>
      * Otherwise, it returns {@code true} if there is at least one non-{@code null} element.
-     * 
+     *
      *
      * @param <T>   The type of elements in the array.
      * @param array The array to check.
@@ -1260,7 +1260,7 @@ public class ArrayValidator {
     /**
      * Checks if a region of the first byte array matches a region of the second byte array. This is equivalent to
      * comparing the following sub-sequences for equality:
-     * 
+     *
      * <pre>
      *     array1[offset1 : offset1 + length]
      *                  ||

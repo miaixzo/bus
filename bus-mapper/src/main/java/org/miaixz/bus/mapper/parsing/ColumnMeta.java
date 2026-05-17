@@ -24,18 +24,20 @@ import static org.miaixz.bus.mapper.Args.DELIMITER;
 import java.util.Objects;
 import java.util.regex.Matcher;
 
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
-import org.apache.ibatis.type.UnknownTypeHandler;
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.mapper.feature.keygen.GenId;
-
 import jakarta.persistence.EnumType;
 import jakarta.persistence.GenerationType;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.UnknownTypeHandler;
+
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.feature.keygen.GenId;
 
 /**
  * Represents the mapping between an entity field and a database column, storing column information provided on the

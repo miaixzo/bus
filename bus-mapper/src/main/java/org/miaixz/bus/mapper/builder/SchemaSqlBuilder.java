@@ -25,12 +25,13 @@ import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
 import java.util.Objects;
 
+import lombok.Getter;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.reflection.ParamNameResolver;
 import org.apache.ibatis.scripting.xmltags.DynamicContext;
-import org.miaixz.bus.mapper.parsing.SqlScriptWrapper;
 
-import lombok.Getter;
+import org.miaixz.bus.mapper.parsing.SqlScriptWrapper;
 
 /**
  * An annotation-based {@link SqlScriptWrapper} that provides SQL script wrapping functionality based on annotations.

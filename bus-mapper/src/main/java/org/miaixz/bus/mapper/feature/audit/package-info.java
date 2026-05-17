@@ -25,7 +25,7 @@
  * This package provides comprehensive SQL execution auditing functionality, including execution time tracking, slow SQL
  * detection, parameter logging, result counting, and failure recording. It intercepts MyBatis SQL execution to
  * automatically collect and log audit information for monitoring, debugging, and optimization purposes.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

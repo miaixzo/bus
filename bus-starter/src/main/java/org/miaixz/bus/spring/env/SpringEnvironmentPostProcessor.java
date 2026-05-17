@@ -19,15 +19,16 @@
 */
 package org.miaixz.bus.spring.env;
 
-import org.miaixz.bus.core.Version;
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.spring.GeniusBuilder;
+import java.util.Properties;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 
-import java.util.Properties;
+import org.miaixz.bus.core.Version;
+import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * An {@link org.springframework.boot.env.EnvironmentPostProcessor} implementation that sets up some default properties

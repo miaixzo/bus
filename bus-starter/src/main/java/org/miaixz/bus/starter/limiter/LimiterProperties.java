@@ -21,9 +21,11 @@ package org.miaixz.bus.starter.limiter;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import org.miaixz.bus.limiter.Context;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Configuration properties for rate limiting and circuit breaking (downgrading).

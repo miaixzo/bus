@@ -19,8 +19,12 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,12 +34,9 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.regex.Pattern;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * The {@code Tpl2Xml} class converts a proprietary text-based template file for private DICOM dictionaries into

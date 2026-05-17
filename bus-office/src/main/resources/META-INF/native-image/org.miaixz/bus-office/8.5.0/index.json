@@ -1,4 +1,5 @@
 [
   "reflect-config.json",
-  "resource-config.json"
+  "resource-config.json",
+  "serialization-config.json"
 ]

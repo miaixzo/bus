@@ -23,14 +23,15 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.ibatis.annotations.MapKey;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.cursor.Cursor;
-import org.miaixz.bus.core.lang.Optional;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import org.apache.ibatis.annotations.MapKey;
+import org.apache.ibatis.annotations.ResultType;
+import org.apache.ibatis.cursor.Cursor;
+
+import org.miaixz.bus.core.lang.Optional;
 
 /**
  * A utility class for resolving generic types, based on the source code of MyBatis 3. It adds the

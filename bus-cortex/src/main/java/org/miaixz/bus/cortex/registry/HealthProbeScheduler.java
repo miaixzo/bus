@@ -28,17 +28,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
-import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
-import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Prober;
 import org.miaixz.bus.cortex.Status;
 import org.miaixz.bus.cortex.health.HttpProber;
 import org.miaixz.bus.cortex.health.TcpProber;
+import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
+import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
+import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
-import org.miaixz.bus.cortex.registry.api.ApiRegistry;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
+import org.miaixz.bus.cortex.registry.api.ApiRegistry;
 import org.miaixz.bus.logger.Logger;
 
 /**

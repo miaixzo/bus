@@ -27,6 +27,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.BooleanKit;
@@ -35,12 +41,6 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.TransferCapability;
 import org.miaixz.bus.image.plugin.StoreSCP;
 import org.miaixz.bus.logger.Logger;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 /**
  * Manages the lifecycle of a DICOM service process. This class acts as a central controller for starting and stopping

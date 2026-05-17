@@ -143,17 +143,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.extra.compress.CompressBuilder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.extra.compress.archiver.Archiver",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -177,6 +166,17 @@
   },
   {
     "name": "org.miaixz.bus.extra.compress.archiver.StreamArchiver",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.compress.CompressBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -297,6 +297,61 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.image.gif.GifDecoder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.image.gif.LZWEncoder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.image.gif.NeuQuant",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.extra.image.ImageKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -319,6 +374,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.extra.image.Images",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.extra.image.ImageText",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -331,17 +397,6 @@
   },
   {
     "name": "org.miaixz.bus.extra.image.ImageWriter",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.image.Images",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -452,61 +507,6 @@
   },
   {
     "name": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.image.gif.GifDecoder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.image.gif.LZWEncoder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.image.gif.NeuQuant",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -682,6 +682,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.extra.mq.Message",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.mq.MessageHandler",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.extra.mq.MQConfig",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -715,40 +737,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.extra.mq.Message",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.mq.MessageHandler",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.extra.mq.Producer",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.mq.RawMessage",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -771,6 +760,17 @@
   },
   {
     "name": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -804,17 +804,6 @@
   },
   {
     "name": "org.miaixz.bus.extra.mq.provider.kafka.KafkaConsumer",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.mq.provider.kafka.KafkaConsumer$ConsumerRecordMessage",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -891,17 +880,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQConsumer$RocketMQMessage",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProducer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -914,6 +892,17 @@
   },
   {
     "name": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProvider",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.mq.RawMessage",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1485,28 +1474,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.extra.ssh.Session",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.ssh.SshjKit",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.extra.ssh.provider.jsch.ChannelType",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -1573,7 +1540,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.extra.template.Template",
+    "name": "org.miaixz.bus.extra.ssh.Session",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1584,51 +1551,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.extra.template.TemplateConfig",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.template.TemplateFactory",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.template.TemplateKit",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.extra.template.TemplateProvider",
+    "name": "org.miaixz.bus.extra.ssh.SshjKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1706,6 +1629,72 @@
   },
   {
     "name": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafTemplate",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.template.Template",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.template.TemplateConfig",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.template.TemplateFactory",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.template.TemplateKit",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.extra.template.TemplateProvider",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

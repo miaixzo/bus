@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.mapper.parsing;
 
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +26,8 @@ import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * SQL table name parser, used to extract table names from SQL statements.

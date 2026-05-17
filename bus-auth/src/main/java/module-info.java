@@ -19,7 +19,7 @@
 */
 /**
  * bus.auth
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

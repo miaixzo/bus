@@ -19,7 +19,7 @@
 */
 /**
  * Provides date parsing related encapsulations, mainly including:
- * 
+ *
  * <pre>
  *                  DateParser
  *                   /    \

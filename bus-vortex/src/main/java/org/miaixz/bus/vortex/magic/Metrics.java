@@ -21,6 +21,7 @@ package org.miaixz.bus.vortex.magic;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
 import org.miaixz.bus.vortex.Monitor;
 import org.miaixz.bus.vortex.provider.MetricsProvider;
 

@@ -21,16 +21,16 @@ package org.miaixz.bus.extra.mq.provider.jms;
 
 import java.io.IOException;
 
+import jakarta.jms.BytesMessage;
+import jakarta.jms.JMSException;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.Session;
+
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.logger.Logger;
-
-import jakarta.jms.BytesMessage;
-import jakarta.jms.JMSException;
-import jakarta.jms.MessageProducer;
-import jakarta.jms.Session;
 
 /**
  * JMS (Java Message Service) message producer implementation. This class acts as an adapter for sending messages to a

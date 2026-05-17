@@ -22,6 +22,8 @@ package org.miaixz.bus.image.nimble.stream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencv.core.Core;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -31,7 +33,6 @@ import org.miaixz.bus.image.nimble.Photometric;
 import org.miaixz.bus.image.nimble.opencv.lut.ModalityLutModule;
 import org.miaixz.bus.image.nimble.opencv.lut.VoiLutModule;
 import org.miaixz.bus.logger.Logger;
-import org.opencv.core.Core;
 
 /**
  * Represents the ImageDescriptor type.

@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.provider;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.parsing.SqlScript;

@@ -19,7 +19,7 @@
 */
 /**
  * bus.starter
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -101,7 +101,6 @@ module bus.starter {
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpasyncclient;
     requires redis.clients.jedis;
-    requires org.checkerframework.checker.qual;
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;

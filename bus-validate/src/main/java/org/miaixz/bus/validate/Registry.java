@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.validate;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.metric.*;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The validator registry center. This class manages the registration and retrieval of validator instances. It uses a

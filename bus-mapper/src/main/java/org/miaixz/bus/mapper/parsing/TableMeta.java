@@ -25,6 +25,10 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -37,15 +41,13 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeException;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
+
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.builder.GenericTypeResolver;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents the metadata of an entity table, recording the relationship between an entity and its corresponding table.

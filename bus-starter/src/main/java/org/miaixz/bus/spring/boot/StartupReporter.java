@@ -19,11 +19,9 @@
 */
 package org.miaixz.bus.spring.boot;
 
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.metrics.BaseMetrics;
-import org.miaixz.bus.spring.metrics.BeanMetrics;
-import org.miaixz.bus.spring.metrics.BeanMetricsCustomizer;
-import org.miaixz.bus.spring.metrics.StartupMetrics;
+import java.lang.management.ManagementFactory;
+import java.util.*;
+
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 import org.springframework.boot.context.metrics.buffering.StartupTimeline;
@@ -35,8 +33,11 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.core.metrics.ApplicationStartup;
 import org.springframework.core.metrics.StartupStep;
 
-import java.lang.management.ManagementFactory;
-import java.util.*;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.metrics.BaseMetrics;
+import org.miaixz.bus.spring.metrics.BeanMetrics;
+import org.miaixz.bus.spring.metrics.BeanMetricsCustomizer;
+import org.miaixz.bus.spring.metrics.StartupMetrics;
 
 /**
  * A core component for collecting and reporting startup costs.

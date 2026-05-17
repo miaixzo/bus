@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.spring.annotation;
 
-import org.springframework.core.env.Environment;
-import org.springframework.util.Assert;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
+
+import org.springframework.core.env.Environment;
+import org.springframework.util.Assert;
 
 /**
  * A wrapper for annotations that allows their attributes to be resolved against a Spring {@link Environment}.

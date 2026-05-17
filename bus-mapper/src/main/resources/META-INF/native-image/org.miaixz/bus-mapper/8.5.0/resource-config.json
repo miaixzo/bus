@@ -2,22 +2,22 @@
   "resources": {
     "includes": [
       {
-        "pattern": ".*Mapper\\.xml$"
-      },
-      {
         "pattern": ".*mapper.*\\.properties$"
       },
       {
         "pattern": ".*mapper.*\\.xml$"
       },
       {
+        "pattern": ".*Mapper\\.xml$"
+      },
+      {
         "pattern": ".*mybatis-config\\.xml$"
       },
       {
-        "pattern": "META-INF/services/.*"
+        "pattern": "mapper/.*\\.xml$"
       },
       {
-        "pattern": "mapper/.*\\.xml$"
+        "pattern": "META-INF/services/.*"
       },
       {
         "pattern": "org/apache/ibatis/.*"

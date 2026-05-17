@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -24,13 +24,13 @@ import static com.sun.jna.platform.win32.WinNT.KEY_READ;
 
 import java.util.Objects;
 
-import org.miaixz.bus.health.Parsing;
-import org.miaixz.bus.logger.Logger;
-
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg.HKEY;
+
+import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Utility class for reading data from the Windows Registry.

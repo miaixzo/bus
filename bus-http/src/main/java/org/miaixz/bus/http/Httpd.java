@@ -19,6 +19,21 @@
 */
 package org.miaixz.bus.http;
 
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.Socket;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
+
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.net.Protocol;
@@ -36,20 +51,6 @@ import org.miaixz.bus.http.secure.CertificatePinner;
 import org.miaixz.bus.http.socket.RealWebSocket;
 import org.miaixz.bus.http.socket.WebSocket;
 import org.miaixz.bus.http.socket.WebSocketListener;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.Socket;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The core client for making HTTP requests and reading their responses. This class is designed to be efficient by

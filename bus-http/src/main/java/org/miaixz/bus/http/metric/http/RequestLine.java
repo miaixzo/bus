@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.net.Proxy;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.UnoUrl;
-
-import java.net.Proxy;
 
 /**
  * This class generates the request line of an HTTP/1.1 request.

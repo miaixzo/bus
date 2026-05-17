@@ -10,6 +10,7 @@ inputs:
     description: 'Whitespace-separated module list in build order.'
     required: false
     default: >-
+      bus-bom
       bus-core
       bus-opencv
       bus-logger
@@ -40,7 +41,6 @@ inputs:
       bus-storage
       bus-vortex
       bus-starter
-      bus-bom
       bus-all
       bus-parent
   maven-args:
@@ -238,7 +238,7 @@ runs:
             !in_parent && /<version>/ { print $3; exit }
           ' "$pom")"
 
-          if [ "$project_version" != "$VERSION" ]; then
+          if [ -n "$project_version" ] && [ "$project_version" != "$VERSION" ]; then
             echo "::error file=$pom::POM version '$project_version' does not match $VERSION"
             failed=1
           fi

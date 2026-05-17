@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.*;
-
 import jakarta.ws.rs.core.*;
+
+import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.logger.Logger;
 
 /**

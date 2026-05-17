@@ -21,13 +21,15 @@ package org.miaixz.bus.extra.mq.provider.rabbitmq;
 
 import java.io.IOException;
 import java.util.Map;
+
+import com.rabbitmq.client.Channel;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.logger.Logger;
-import com.rabbitmq.client.Channel;
 
 /**
  * RabbitMQ message producer implementation class. This class provides an adapter for sending messages to RabbitMQ,

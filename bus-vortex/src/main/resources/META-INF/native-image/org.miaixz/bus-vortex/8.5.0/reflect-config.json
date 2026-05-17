@@ -22,7 +22,51 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.Args$Limit$LimitBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.Args$Limit$LimitBuilderImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.cache.CacheManager",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.Channel",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.cluster.ClusterSynchronizer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -55,6 +99,28 @@
     "allPublicClasses": true
   },
   {
+    "name": "org.miaixz.bus.vortex.Egress$Resources",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.Egress$ResourcesHolder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.Executor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -67,138 +133,6 @@
   },
   {
     "name": "org.miaixz.bus.vortex.Filter",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.Formats",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.Handler",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.Holder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.Monitor",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.Provider",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.Registry",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.Router",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.Strategy",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.Strategy$Chain",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.Vortex",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.cache.CacheManager",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.cluster.ClusterSynchronizer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -232,6 +166,28 @@
   },
   {
     "name": "org.miaixz.bus.vortex.filter.PrimaryFilter$Chain",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.Formats",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.Handler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -286,6 +242,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.handler.ErrorsHandler$Message$MessageBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.handler.VortexHandler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -297,7 +264,40 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.Holder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.magic.Delegate",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.magic.Delegate$DelegateBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.magic.Delegate$DelegateBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -330,7 +330,51 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.magic.Limiter$LimiterBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.magic.Limiter$LimiterBuilderImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.magic.Metrics",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.magic.Metrics$MetricsBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.magic.Metrics$MetricsBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -363,7 +407,51 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.magic.Performance$PerformanceBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.magic.Performance$PerformanceBuilderImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.magic.Principal",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.magic.Principal$PrincipalBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.magic.Principal$PrincipalBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -385,6 +473,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.magic.Transmit$TransmitBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.magic.Transmit$TransmitBuilderImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.metric.CacheStats",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -396,7 +506,40 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.metric.CacheStats$CacheStatsBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.metric.DefaultMonitor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.Monitor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.Provider",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -473,6 +616,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.Registry",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.registry.AbstractRegistry",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -528,6 +682,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.Router",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.routing.Coordinator",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -539,73 +704,18 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.vortex.routing.GrpcRouter",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.routing.LlmRouter",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.routing.McpRouter",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.routing.MqRouter",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.routing.RestRouter",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.routing.WsRouter",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.vortex.routing.grpc.GrpcExecutor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.routing.GrpcRouter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -671,6 +781,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.routing.llm.LlmRequest$LlmRequestBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.routing.llm.LlmRequest$LlmRequestBuilderImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.routing.llm.LlmRequest$Message",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -694,6 +826,28 @@
   },
   {
     "name": "org.miaixz.bus.vortex.routing.llm.LlmResponse$Choice",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.routing.llm.LlmResponse$LlmResponseBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.routing.llm.LlmResponse$LlmResponseBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -737,7 +891,29 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.routing.LlmRouter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.routing.mcp.McpExecutor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.routing.McpRouter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -759,7 +935,29 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.routing.MqRouter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.routing.rest.RestExecutor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.routing.RestRouter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -792,6 +990,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.routing.WsRouter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.Strategy",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.strategy.AbstractStrategy",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -804,61 +1024,6 @@
   },
   {
     "name": "org.miaixz.bus.vortex.strategy.LimiterStrategy",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.strategy.QualifierStrategy",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.strategy.RequestStrategy",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.strategy.ResponseStrategy",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.strategy.StrategyFactory",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.vortex.strategy.VettingStrategy",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -902,6 +1067,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.strategy.QualifierStrategy",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.strategy.request.CstRequestStrategy",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -935,6 +1111,50 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.strategy.RequestStrategy",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.strategy.ResponseStrategy",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.strategy.StrategyFactory",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.strategy.StrategyFactory$ChainSpec",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.strategy.vetting.CstVettingStrategy",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -958,6 +1178,39 @@
   },
   {
     "name": "org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.strategy.VettingStrategy",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.Strategy$Chain",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.Vortex",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

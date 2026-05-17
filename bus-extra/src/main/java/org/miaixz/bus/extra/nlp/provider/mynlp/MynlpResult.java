@@ -21,11 +21,11 @@ package org.miaixz.bus.extra.nlp.provider.mynlp;
 
 import java.util.Iterator;
 
-import org.miaixz.bus.extra.nlp.NLPResult;
-import org.miaixz.bus.extra.nlp.NLPWord;
-
 import com.mayabot.nlp.segment.Sentence;
 import com.mayabot.nlp.segment.WordTerm;
+
+import org.miaixz.bus.extra.nlp.NLPResult;
+import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
  * Implementation of {@link NLPResult} for Mynlp word segmentation results. This class wraps a {@link Sentence} object

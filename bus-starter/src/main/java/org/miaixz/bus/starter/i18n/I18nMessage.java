@@ -22,11 +22,12 @@ package org.miaixz.bus.starter.i18n;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import org.miaixz.bus.core.lang.I18n;
-import org.miaixz.bus.core.lang.Symbol;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.AbstractMessageSource;
+
+import org.miaixz.bus.core.lang.I18n;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Spring {@link MessageSource} backed by the core {@link I18n} resolver, with convenience accessors for application

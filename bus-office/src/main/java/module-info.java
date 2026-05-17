@@ -19,7 +19,7 @@
 */
 /**
  * bus.office
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

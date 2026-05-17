@@ -19,6 +19,20 @@
 */
 package org.miaixz.bus.http.accord;
 
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.net.*;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -34,23 +48,10 @@ import org.miaixz.bus.http.metric.EventListener;
 import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.*;
-import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.http.secure.CertificatePinner;
 import org.miaixz.bus.http.socket.Handshake;
 import org.miaixz.bus.http.socket.RealWebSocket;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import java.io.IOException;
-import java.lang.ref.Reference;
-import java.net.*;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A concrete connection to a target server (either directly or via a proxy). This class handles the low-level details

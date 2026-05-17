@@ -19,10 +19,8 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.image.metric.hl7.HL7Charset;
-import org.miaixz.bus.image.metric.hl7.HL7Parser;
-import org.miaixz.bus.image.metric.hl7.HL7Segment;
-import org.xml.sax.SAXException;
+import java.io.*;
+import java.net.URL;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerConfigurationException;
@@ -31,8 +29,12 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.net.URL;
+
+import org.xml.sax.SAXException;
+
+import org.miaixz.bus.image.metric.hl7.HL7Charset;
+import org.miaixz.bus.image.metric.hl7.HL7Parser;
+import org.miaixz.bus.image.metric.hl7.HL7Segment;
 
 /**
  * The {@code HL72Xml} class provides functionality to convert an HL7 message into its XML representation. It can

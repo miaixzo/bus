@@ -22,11 +22,11 @@ package org.miaixz.bus.mapper.feature.schema;
 import java.util.Locale;
 import java.util.Objects;
 
-import org.apache.ibatis.type.JdbcType;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import org.apache.ibatis.type.JdbcType;
 
 /**
  * SQL column type descriptor.

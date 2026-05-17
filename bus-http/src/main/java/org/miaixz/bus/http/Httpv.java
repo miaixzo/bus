@@ -19,6 +19,11 @@
 */
 package org.miaixz.bus.http;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.nio.charset.Charset;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -28,11 +33,6 @@ import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.plugin.httpv.*;
 import org.miaixz.bus.http.socket.WebSocket;
 import org.miaixz.bus.http.socket.WebSocketListener;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.charset.Charset;
-import java.util.*;
 
 /**
  * A high-level HTTP client that provides a fluent and expressive API for making HTTP requests. It is built on top of

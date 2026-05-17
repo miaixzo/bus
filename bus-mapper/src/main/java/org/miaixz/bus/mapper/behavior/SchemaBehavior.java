@@ -24,12 +24,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.miaixz.bus.mapper.dialect.Dialect;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.IndexMeta;
-import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.feature.schema.TableSnapshot;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.IndexMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * Schema behavior exposed by a database dialect.

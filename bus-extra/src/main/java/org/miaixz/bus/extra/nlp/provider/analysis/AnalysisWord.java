@@ -24,6 +24,7 @@ import java.io.Serial;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.util.Attribute;
+
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**

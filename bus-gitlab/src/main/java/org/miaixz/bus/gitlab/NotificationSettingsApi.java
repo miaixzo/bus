@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Response;
+
 import org.miaixz.bus.gitlab.models.NotificationSettings;
 import org.miaixz.bus.gitlab.models.NotificationSettings.Events;
-
-import jakarta.ws.rs.core.Response;
 
 /**
  * The notification settings API class.

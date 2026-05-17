@@ -23,13 +23,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
 import org.miaixz.bus.cortex.builtin.Label;
 import org.miaixz.bus.cortex.builtin.LabelMapper;
 import org.miaixz.bus.cortex.builtin.Selector;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Shared cross-domain selector used by registry and setting scans.

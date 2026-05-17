@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.http;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.http.bodys.ResponseBody;
-
-import java.io.IOException;
 
 /**
  * A call is a request that has been prepared for execution. A call can be canceled. As this object represents a single

@@ -86,7 +86,7 @@ public class CreditCode {
      * refer to {@link #isCreditCode(CharSequence)}.
      *
      * <b>Rules:</b>
-     * 
+     *
      * <pre>
      * Part 1: Registration management department code, 1 digit (number or uppercase English letter)
      * Part 2: Institution category code, 1 digit (number or uppercase English letter)
@@ -107,7 +107,7 @@ public class CreditCode {
 
     /**
      * Checks if it is a valid unified social credit code.
-     * 
+     *
      * <pre>
      * Part 1: Registration management department code, 1 digit (number or uppercase English letter)
      * Part 2: Institution category code, 1 digit (number or uppercase English letter)

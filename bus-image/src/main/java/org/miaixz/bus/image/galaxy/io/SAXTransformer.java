@@ -24,8 +24,9 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
-import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.xml.sax.SAXException;
+
+import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
  * Represents the SAXTransformer type.

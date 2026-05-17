@@ -19,8 +19,13 @@
 */
 package org.miaixz.bus.starter.image;
 
-import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Args;
@@ -29,10 +34,7 @@ import org.miaixz.bus.image.Efforts;
 import org.miaixz.bus.image.Node;
 import org.miaixz.bus.image.nimble.opencv.OpenCVNativeLoader;
 import org.miaixz.bus.image.plugin.StoreSCP;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Auto-configuration for DICOM image processing.

@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.auth.magic;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.core.lang.Gender;
 
-import java.io.Serializable;
+import org.miaixz.bus.core.lang.Gender;
 
 /**
  * User information after successful authorization. The completeness of the data obtained varies depending on the

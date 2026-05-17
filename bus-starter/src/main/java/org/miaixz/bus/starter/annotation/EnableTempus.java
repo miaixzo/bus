@@ -21,8 +21,9 @@ package org.miaixz.bus.starter.annotation;
 
 import java.lang.annotation.*;
 
-import org.miaixz.bus.starter.tempus.TempusConfiguration;
 import org.springframework.context.annotation.Import;
+
+import org.miaixz.bus.starter.tempus.TempusConfiguration;
 
 /**
  * Enables Temporal workflow support.

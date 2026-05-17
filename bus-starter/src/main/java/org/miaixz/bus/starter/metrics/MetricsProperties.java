@@ -22,12 +22,13 @@ package org.miaixz.bus.starter.metrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Configuration properties for bus-metrics. Bound to prefix {@code bus.metrics}.

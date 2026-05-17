@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.http.secure;
 
-import org.miaixz.bus.http.accord.platform.Platform;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.X509TrustManager;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.List;
+
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.X509TrustManager;
+
+import org.miaixz.bus.http.accord.platform.Platform;
 
 /**
  * Computes a clean certificate chain from the raw array provided by a TLS implementation. A cleaned chain is a list of

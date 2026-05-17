@@ -99,7 +99,7 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
 
         /**
          * Constructor for MemoryChecker.
-         * 
+         *
          * @param maxFreeMemory The minimum free memory threshold.
          */
         private MemoryChecker(final long maxFreeMemory) {
@@ -108,7 +108,7 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
 
         /**
          * Tests if the available memory is greater than the configured threshold.
-         * 
+         *
          * @param e The element being offered to the queue (not used in the check).
          * @return `true` if there is enough memory, `false` otherwise.
          */

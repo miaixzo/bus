@@ -19,15 +19,6 @@
 */
 package org.miaixz.bus.sensitive;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.*;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.sensitive.magic.annotation.*;
-import org.miaixz.bus.sensitive.metric.BuiltInProvider;
-import org.miaixz.bus.sensitive.metric.ConditionProvider;
-import org.miaixz.bus.sensitive.metric.StrategyProvider;
-
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -36,6 +27,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.sensitive.magic.annotation.*;
+import org.miaixz.bus.sensitive.metric.BuiltInProvider;
+import org.miaixz.bus.sensitive.metric.ConditionProvider;
+import org.miaixz.bus.sensitive.metric.StrategyProvider;
 
 /**
  * A provider for processing sensitive data. It offers object desensitization capabilities, including support for deep

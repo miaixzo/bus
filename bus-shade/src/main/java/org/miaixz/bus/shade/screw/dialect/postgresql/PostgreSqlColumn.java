@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.shade.screw.dialect.postgresql;
 
-import org.miaixz.bus.shade.screw.mapping.MappingField;
-import org.miaixz.bus.shade.screw.metadata.Column;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.miaixz.bus.shade.screw.mapping.MappingField;
+import org.miaixz.bus.shade.screw.metadata.Column;
 
 /**
  * Represents column information for a PostgreSQL database table.

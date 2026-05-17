@@ -25,10 +25,11 @@ import java.io.Reader;
 import java.util.EnumSet;
 import java.util.StringTokenizer;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Represents the HL7Parser type.

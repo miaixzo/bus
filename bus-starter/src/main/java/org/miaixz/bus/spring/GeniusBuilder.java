@@ -21,14 +21,15 @@ package org.miaixz.bus.spring;
 
 import java.io.File;
 
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.ClassKit;
 import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+
+import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.ClassKit;
 
 /**
  * Global constant configuration for the Bus Spring Starter.

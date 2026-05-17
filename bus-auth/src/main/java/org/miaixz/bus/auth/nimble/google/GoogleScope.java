@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.auth.nimble.google;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.miaixz.bus.auth.nimble.AuthorizeScope;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
  * Google 授权范围

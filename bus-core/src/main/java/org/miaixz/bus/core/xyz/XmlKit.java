@@ -24,6 +24,13 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -33,12 +40,6 @@ import org.miaixz.bus.core.xml.DocumentBuilder;
 import org.miaixz.bus.core.xml.XmlMapper;
 import org.miaixz.bus.core.xml.XmlSaxReader;
 import org.miaixz.bus.core.xml.XmlWriter;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
 
 /**
  * XML utility class. This utility uses the W3C DOM tools and does not require third-party libraries. It encapsulates

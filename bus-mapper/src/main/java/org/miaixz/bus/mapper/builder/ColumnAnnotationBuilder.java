@@ -22,15 +22,16 @@ package org.miaixz.bus.mapper.builder;
 import java.util.Collections;
 import java.util.List;
 
+import jakarta.persistence.*;
+
 import org.apache.ibatis.type.TypeHandler;
+
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.provider.NamingProvider;
-
-import jakarta.persistence.*;
 
 /**
  * The default column builder, which supports entity classes annotated with `jakarta.persistence` annotations. It parses

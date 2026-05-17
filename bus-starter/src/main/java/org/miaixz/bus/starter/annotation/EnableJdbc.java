@@ -19,10 +19,11 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import org.miaixz.bus.starter.jdbc.JdbcConfiguration;
+import java.lang.annotation.*;
+
 import org.springframework.context.annotation.Import;
 
-import java.lang.annotation.*;
+import org.miaixz.bus.starter.jdbc.JdbcConfiguration;
 
 /**
  * Enables JDBC and data source support, typically using the Druid or HikariCP connection pool.

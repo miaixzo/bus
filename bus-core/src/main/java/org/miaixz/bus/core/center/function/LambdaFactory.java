@@ -61,9 +61,9 @@ public class LambdaFactory {
      * parameter types.
      *
      * <pre>{@code
-     * 
+     *
      * class Something {
-     * 
+     *
      *     private Long id;
      *     private String name;
      *     // ... Getter and Setter methods omitted

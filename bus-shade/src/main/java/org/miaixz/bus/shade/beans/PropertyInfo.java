@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.shade.beans;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serial;
 import java.io.Serializable;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represents information about a database column, including its name, JDBC type, comment, corresponding Java property

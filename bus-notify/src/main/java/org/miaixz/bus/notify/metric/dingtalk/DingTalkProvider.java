@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import lombok.Setter;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.net.HTTP;
@@ -34,8 +36,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
-
-import lombok.Setter;
 
 /**
  * DingTalk notification service provider.

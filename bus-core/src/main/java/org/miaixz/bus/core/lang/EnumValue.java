@@ -23,10 +23,10 @@ import java.awt.*;
 import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.core.center.map.BiMap;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import org.miaixz.bus.core.center.map.BiMap;
 
 /**
  * Generic interface for enum elements, allowing custom enums to implement this interface for data conversion. It is

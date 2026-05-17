@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.Httpd;
-
-import java.util.Map;
 
 /**
  * A builder for creating HTTP HEAD requests using a fluent interface. This class allows for setting the URL, query

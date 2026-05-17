@@ -25,18 +25,18 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
+import jakarta.activation.FileTypeMap;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.ByteArrayDataSource;
+
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import jakarta.activation.DataSource;
-import jakarta.activation.FileDataSource;
-import jakarta.activation.FileTypeMap;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.util.ByteArrayDataSource;
 import org.miaixz.bus.logger.Logger;
 
 /**

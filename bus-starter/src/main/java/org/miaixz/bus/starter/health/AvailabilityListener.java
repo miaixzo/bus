@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.starter.health;
 
-import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.availability.AvailabilityChangeEvent;
 import org.springframework.boot.availability.AvailabilityState;
 import org.springframework.boot.availability.LivenessState;
 import org.springframework.boot.availability.ReadinessState;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A component that listens for application availability events.

@@ -22,10 +22,11 @@ package org.miaixz.bus.mapper.parsing;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.apache.ibatis.builder.annotation.ProviderContext;
-import org.miaixz.bus.mapper.dialect.Dialect;
-
 import lombok.Getter;
+
+import org.apache.ibatis.builder.annotation.ProviderContext;
+
+import org.miaixz.bus.mapper.dialect.Dialect;
 
 /**
  * An SQL cache class for deferred generation of SQL scripts.

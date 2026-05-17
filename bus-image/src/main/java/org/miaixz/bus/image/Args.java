@@ -27,6 +27,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
+import lombok.*;
+import lombok.Builder;
+
 import org.miaixz.bus.core.net.tls.AnyTrustManager;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.Connection;
@@ -36,9 +39,6 @@ import org.miaixz.bus.image.metric.net.Priority;
 import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 import org.miaixz.bus.image.metric.pdu.IdentityAC;
 import org.miaixz.bus.image.metric.pdu.IdentityRQ;
-
-import lombok.*;
-import lombok.Builder;
 
 /**
  * Represents request argument information for DICOM operations. This class encapsulates various configuration

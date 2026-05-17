@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.mapper.Charter.Behavior;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -138,7 +139,7 @@ public class BatchProvider extends BasicProvider {
      * <p>
      * <b>SQL Example (PostgreSQL):</b>
      * </p>
-     * 
+     *
      * <pre>
      * INSERT INTO users (id, name, email) VALUES
      * &lt;foreach collection="list" item="item" separator=","&gt;

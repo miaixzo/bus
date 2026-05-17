@@ -19,15 +19,15 @@
 */
 package org.miaixz.bus.limiter;
 
+import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.limiter.magic.annotation.Downgrade;
 import org.miaixz.bus.limiter.magic.annotation.Hotspot;
 import org.miaixz.bus.limiter.magic.annotation.Limiting;
 import org.miaixz.bus.logger.Logger;
-
-import com.alibaba.csp.sentinel.slots.block.RuleConstant;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 
 /**
  * Manages the registration of various limiting and protection rules, such as downgrade, hotspot, and request limiting.

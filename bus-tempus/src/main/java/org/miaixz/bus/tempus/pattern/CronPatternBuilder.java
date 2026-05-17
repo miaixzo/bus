@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.tempus.pattern;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.StringJoiner;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.Serial;
 
 /**
  * A builder for creating cron expression strings.

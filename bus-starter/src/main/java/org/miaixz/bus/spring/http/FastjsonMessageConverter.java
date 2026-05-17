@@ -23,10 +23,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.xyz.FieldKit;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -39,6 +35,11 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.filter.PropertyFilter;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.xyz.FieldKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A JSON converter configurer for Fastjson2. This class configures the

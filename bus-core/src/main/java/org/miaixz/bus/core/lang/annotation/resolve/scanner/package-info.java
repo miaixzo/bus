@@ -19,7 +19,7 @@
 */
 /**
  * Annotation scanners for the annotation resolution framework.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

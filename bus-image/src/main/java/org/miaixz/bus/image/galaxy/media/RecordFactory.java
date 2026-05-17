@@ -29,13 +29,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.xml.sax.SAXException;
+
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ContentHandlerAdapter;
-import org.xml.sax.SAXException;
 
 /**
  * Represents the RecordFactory type.

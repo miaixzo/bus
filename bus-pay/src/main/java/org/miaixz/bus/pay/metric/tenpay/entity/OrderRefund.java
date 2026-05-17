@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.pay.metric.tenpay.entity;
 
-import org.miaixz.bus.pay.magic.Voucher;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.pay.magic.Voucher;
 
 /**
  * Order Refund model.

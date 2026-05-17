@@ -21,10 +21,12 @@ package org.miaixz.bus.starter.cors;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * CORS (Cross-Origin Resource Sharing) configuration properties.

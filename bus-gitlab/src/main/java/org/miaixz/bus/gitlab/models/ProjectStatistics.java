@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import java.io.Serial;
 
 /**
  * This class contains the sizing information from the project. To get this information, ProjectApi.getProject() has to

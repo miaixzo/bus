@@ -23,6 +23,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.core.MethodParameter;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
@@ -37,18 +50,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.miaixz.bus.validate.magic.annotation.Valid;
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.core.MethodParameter;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.method.support.ModelAndViewContainer;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * An automatic parameter resolver that handles parameter binding for various request formats.

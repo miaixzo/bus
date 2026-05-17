@@ -19,16 +19,17 @@
 */
 package org.miaixz.bus.shade.beans;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.logger.Logger;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents the basic information required for automatic code generation based on a database table. This class holds

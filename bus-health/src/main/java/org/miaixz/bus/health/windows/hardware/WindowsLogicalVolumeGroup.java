@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,6 +23,10 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
+import com.sun.jna.platform.win32.COM.COMException;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.VersionHelpers;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -36,10 +40,6 @@ import org.miaixz.bus.health.windows.driver.wmi.MSFTStorage.StoragePoolProperty;
 import org.miaixz.bus.health.windows.driver.wmi.MSFTStorage.StoragePoolToPhysicalDiskProperty;
 import org.miaixz.bus.health.windows.driver.wmi.MSFTStorage.VirtualDiskProperty;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.platform.win32.VersionHelpers;
-import com.sun.jna.platform.win32.COM.COMException;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * Windows Logical Volume Group

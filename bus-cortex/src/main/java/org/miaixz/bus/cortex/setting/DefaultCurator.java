@@ -29,14 +29,14 @@ import org.miaixz.bus.cortex.Curator;
 import org.miaixz.bus.cortex.Listener;
 import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.Watch;
-import org.miaixz.bus.cortex.setting.curator.ItemCuratorService;
-import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService;
-import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
-import org.miaixz.bus.cortex.setting.item.GrayRequestContext;
-import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
+import org.miaixz.bus.cortex.setting.curator.ItemCuratorService;
+import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService;
+import org.miaixz.bus.cortex.setting.item.GrayRequestContext;
+import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
+import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
 /**
  * Default consumer-facing curator implementation.

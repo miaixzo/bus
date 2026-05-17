@@ -19,20 +19,21 @@
 */
 package org.miaixz.bus.http;
 
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.util.List;
+import java.util.Objects;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.accord.Connection;
 import org.miaixz.bus.http.accord.ConnectionSuite;
 import org.miaixz.bus.http.secure.Authenticator;
 import org.miaixz.bus.http.secure.CertificatePinner;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * A specification for a connection to an origin server. For an HTTP client, this is the server that terminates the HTTP

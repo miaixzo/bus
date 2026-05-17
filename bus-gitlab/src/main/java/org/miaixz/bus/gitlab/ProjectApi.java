@@ -26,10 +26,10 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Stream;
 
+import jakarta.ws.rs.core.*;
+
 import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.gitlab.support.ISO8601;
-
-import jakarta.ws.rs.core.*;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -2840,9 +2840,9 @@ public class ProjectApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/snippets/:snippet_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * 
+     *
      * @param snippetId the ID of the project's snippet
-     * 
+     *
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteSnippet(Object projectIdOrPath, Long snippetId) throws GitLabApiException {

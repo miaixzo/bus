@@ -19,20 +19,21 @@
 */
 package org.miaixz.bus.spring.banner;
 
+import java.io.BufferedReader;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
+import org.springframework.boot.Banner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.SpringBuilder;
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.EnumerablePropertySource;
-
-import java.io.BufferedReader;
-import java.util.Properties;
-import java.util.stream.Collectors;
 
 /**
  * Handles Spring Boot Banner printing, ensuring a single banner is printed. Prioritizes an existing {@link Banner}

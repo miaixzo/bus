@@ -19,15 +19,15 @@
 */
 package org.miaixz.bus.mapper.feature.schema;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Risk;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 /**
  * Schema difference between entity metadata and a database snapshot.

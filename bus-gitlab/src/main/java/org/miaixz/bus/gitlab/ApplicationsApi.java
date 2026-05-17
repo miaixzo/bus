@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Application;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Application;
 
 /**
  * This class implements the client side API for the GitLab Applications API. See

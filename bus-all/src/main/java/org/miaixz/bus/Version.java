@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus;
 
+import org.miaixz.bus.core.lang.Keys;
+
 /**
  * <p>
  * Version (Application/Service Bus) is a microservice suite and foundational framework. It is written based on Java 8,
@@ -56,6 +58,10 @@ public class Version extends org.miaixz.bus.core.Version {
      */
     public Version(String v) {
         super(v);
+    }
+
+    public String name() {
+        return Keys.BUS;
     }
 
 }

@@ -25,10 +25,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.miaixz.bus.gitlab.models.GitLabForm;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The notification service class.

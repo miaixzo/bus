@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.starter.auth;
 
-import org.miaixz.bus.core.basic.entity.Authorize;
-import org.miaixz.bus.core.lang.annotation.Authenticate;
-import org.miaixz.bus.spring.ContextBuilder;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.lang.annotation.Authenticate;
+import org.miaixz.bus.spring.ContextBuilder;
 
 /**
  * Argument resolver for authorization, used to automatically inject the current logged-in user's information into

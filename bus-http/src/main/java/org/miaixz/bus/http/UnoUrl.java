@@ -19,18 +19,18 @@
 */
 package org.miaixz.bus.http;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
-
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
 
 /**
  * A Uniform Resource Locator (URL) for HTTP or HTTPS.

@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.sun.jna.Native;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -35,9 +38,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore;
 import org.miaixz.bus.health.unix.platform.aix.driver.Ls;
 import org.miaixz.bus.health.unix.platform.aix.driver.Lscfg;
 import org.miaixz.bus.health.unix.platform.aix.driver.Lspv;
-
-import com.sun.jna.Native;
-import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
 
 /**
  * AIX hard disk implementation.

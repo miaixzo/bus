@@ -506,7 +506,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.opencv.img_hash.ImgHashBase",
+    "name": "org.opencv.img_hash.Img_hash",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -517,7 +517,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.opencv.img_hash.Img_hash",
+    "name": "org.opencv.img_hash.ImgHashBase",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

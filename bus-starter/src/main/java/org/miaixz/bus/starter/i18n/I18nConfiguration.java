@@ -20,12 +20,14 @@
 package org.miaixz.bus.starter.i18n;
 
 import jakarta.annotation.Resource;
-import org.miaixz.bus.spring.GeniusBuilder;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Auto-configuration for internationalization (i18n). This class sets up the {@link MessageSource} bean based on the

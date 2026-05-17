@@ -28,15 +28,15 @@ import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.miaixz.bus.gitlab.models.Constants;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.logger.Logger;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.gitlab.models.Constants;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * <p>

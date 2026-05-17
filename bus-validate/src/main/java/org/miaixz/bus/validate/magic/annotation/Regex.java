@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.RegexMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * Validates that the annotated string matches a given regular expression.

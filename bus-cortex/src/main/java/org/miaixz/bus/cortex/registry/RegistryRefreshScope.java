@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.cortex.registry;
 
-import org.miaixz.bus.cortex.Type;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.miaixz.bus.cortex.Type;
 
 /**
  * Internal registry refresh or rebuild scope.

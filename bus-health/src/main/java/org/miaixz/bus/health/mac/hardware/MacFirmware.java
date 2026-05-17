@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -21,6 +21,11 @@ package org.miaixz.bus.health.mac.hardware;
 
 import java.util.function.Supplier;
 
+import com.sun.jna.Native;
+import com.sun.jna.platform.mac.IOKit.IOIterator;
+import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
+import com.sun.jna.platform.mac.IOKitUtil;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -28,11 +33,6 @@ import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
-
-import com.sun.jna.Native;
-import com.sun.jna.platform.mac.IOKit.IOIterator;
-import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
-import com.sun.jna.platform.mac.IOKitUtil;
 
 /**
  * Firmware data obtained from ioreg.

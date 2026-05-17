@@ -19,6 +19,12 @@
 */
 package org.miaixz.bus.http.plugin.httpv;
 
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.HTTP;
@@ -27,12 +33,6 @@ import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.socket.WebSocket;
 import org.miaixz.bus.http.socket.WebSocketListener;
-
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents an active or pending WebSocket call. This class provides methods to send messages, cancel the connection,

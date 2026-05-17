@@ -22,12 +22,12 @@ package org.miaixz.bus.mapper.dialect;
 import java.util.EnumSet;
 
 import org.miaixz.bus.mapper.Charter.Behavior;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.IndexMeta;
-import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.IndexMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * Dialect resolver and final dialect implementation for Polardb product-family endpoints.

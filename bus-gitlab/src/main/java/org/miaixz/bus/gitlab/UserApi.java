@@ -27,13 +27,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.*;
-import org.miaixz.bus.gitlab.models.ImpersonationToken.Scope;
-import org.miaixz.bus.gitlab.support.EmailChecker;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.*;
+import org.miaixz.bus.gitlab.models.ImpersonationToken.Scope;
+import org.miaixz.bus.gitlab.support.EmailChecker;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -615,7 +615,7 @@ public class UserApi extends AbstractApi {
      *
      * <p>
      * The following properties of the provided User instance can be set during update:
-     * 
+     *
      * <pre>
      * <code> email (required) - Email
      * username (required) - Username
@@ -1036,7 +1036,7 @@ public class UserApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: DELETE /personal_access_tokens/:token_id</code>
      * </pre>
-     * 
+     *
      * @param tokenId the personal access token ID to revoke
      * @throws GitLabApiException if any exception occurs
      */

@@ -19,11 +19,12 @@
 */
 package org.miaixz.bus.spring.undertow;
 
-import io.undertow.server.DefaultByteBufferPool;
-import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.stereotype.Component;
+
+import io.undertow.server.DefaultByteBufferPool;
+import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 
 /**
  * Customizes the Undertow servlet web server factory, specifically for WebSocket configuration.

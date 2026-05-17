@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.metrics.metric.prometheus;
 
-import io.prometheus.metrics.core.metrics.Counter;
-import io.prometheus.metrics.core.metrics.Gauge;
-import io.prometheus.metrics.core.metrics.Histogram;
-import io.prometheus.metrics.core.metrics.Summary;
-import io.prometheus.metrics.model.registry.PrometheusRegistry;
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.ToDoubleFunction;
+
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
@@ -35,10 +35,11 @@ import org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker;
 import org.miaixz.bus.metrics.observe.slo.SloTracker;
 import org.miaixz.bus.metrics.observe.tag.Tag;
 
-import java.util.Collections;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.function.ToDoubleFunction;
+import io.prometheus.metrics.core.metrics.Counter;
+import io.prometheus.metrics.core.metrics.Gauge;
+import io.prometheus.metrics.core.metrics.Histogram;
+import io.prometheus.metrics.core.metrics.Summary;
+import io.prometheus.metrics.model.registry.PrometheusRegistry;
 
 /**
  * Provider implementation backed by the Prometheus Java client SDK.

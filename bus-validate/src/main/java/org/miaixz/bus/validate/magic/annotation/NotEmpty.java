@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.NotEmptyMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * Validates that the annotated string, collection, map, or array is not null and not empty.

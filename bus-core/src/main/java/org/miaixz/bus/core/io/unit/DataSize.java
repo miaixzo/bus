@@ -167,7 +167,7 @@ public final class DataSize implements Comparable<DataSize> {
     /**
      * Parses a text string representing a data size and returns its value in bytes. If no unit is specified in the
      * text, {@link DataUnit#BYTES} is used as the default. Examples:
-     * 
+     *
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
      * "5MB"  -- parses as "5 megabytes"
@@ -185,7 +185,7 @@ public final class DataSize implements Comparable<DataSize> {
     /**
      * Parses a text string representing a data size and returns a {@code DataSize} object. If no unit is specified in
      * the text, {@link DataUnit#BYTES} is used as the default. Examples:
-     * 
+     *
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
      * "5MB"  -- parses as "5 megabytes"
@@ -204,7 +204,7 @@ public final class DataSize implements Comparable<DataSize> {
      * Parses a text string representing a data size and returns a {@code DataSize} object. The string should start with
      * a number followed optionally by a unit matching one of the supported {@linkplain DataUnit suffixes}. If no unit
      * is specified, the {@code defaultUnit} is used. Examples:
-     * 
+     *
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
      * "5MB"  -- parses as "5 megabytes"

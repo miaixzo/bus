@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.miaixz.bus.cortex.registry.api.ApiAssets;
-import org.miaixz.bus.cortex.registry.mcp.McpAssets;
-import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
 import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
 import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
+import org.miaixz.bus.cortex.registry.api.ApiAssets;
+import org.miaixz.bus.cortex.registry.mcp.McpAssets;
+import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
 import org.miaixz.bus.cortex.version.VersionAssets;
 import org.miaixz.bus.logger.Logger;
 

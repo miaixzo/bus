@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.mq.provider.rocketmq;
 import java.io.IOException;
 
 import org.apache.rocketmq.client.producer.MQProducer;
+
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;

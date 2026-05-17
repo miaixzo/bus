@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.cortex.bridge;
 
-import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.registry.RegistryAssets;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
 

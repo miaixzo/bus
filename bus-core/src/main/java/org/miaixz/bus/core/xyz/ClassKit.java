@@ -137,7 +137,7 @@ public class ClassKit {
      * Gets the class name. The name does not include the ".class" extension.
      * <p>
      * Example for `ClassKit`:
-     * 
+     *
      * <pre>
      * isSimple=false: "org.miaixz.bus.core.xyz.ClassKit"
      * isSimple=true: "ClassKit"

@@ -1450,7 +1450,7 @@ public class MathKit extends NumberValidator {
 
     /**
      * Calculates factorial, checking for overflow.
-     * 
+     *
      * @param a multiplier
      * @param b multiplicand
      * @return the result of a * b, or throw an exception if overflow occurs
@@ -1561,7 +1561,7 @@ public class MathKit extends NumberValidator {
 
     /**
      * Helper for permutation calculation.
-     * 
+     *
      * @param selectNum The number of items to select from.
      * @param minNum    The number of items to select.
      * @return The result of the sub-calculation.
@@ -1576,7 +1576,7 @@ public class MathKit extends NumberValidator {
 
     /**
      * Helper for factorial calculation.
-     * 
+     *
      * @param selectNum The number to calculate factorial for.
      * @return The factorial result.
      */

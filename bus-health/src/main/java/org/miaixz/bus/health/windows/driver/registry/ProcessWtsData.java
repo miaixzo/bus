@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,6 +23,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.VersionHelpers;
+import com.sun.jna.platform.win32.Wtsapi32;
+import com.sun.jna.platform.win32.Wtsapi32.WTS_PROCESS_INFO_EX;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -31,13 +38,6 @@ import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.driver.wmi.Win32Process;
 import org.miaixz.bus.health.windows.driver.wmi.Win32Process.ProcessXPProperty;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.VersionHelpers;
-import com.sun.jna.platform.win32.Wtsapi32;
-import com.sun.jna.platform.win32.Wtsapi32.WTS_PROCESS_INFO_EX;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * Utility to read process data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI

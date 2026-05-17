@@ -26,6 +26,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
+
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.Message;

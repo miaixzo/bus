@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.http.metric;
 
-import org.miaixz.bus.http.Response;
-
 import java.io.IOException;
+
+import org.miaixz.bus.http.Response;
 
 /**
  * Intercepts, observes, modifies, and potentially short-circuits requests and their corresponding responses. Typically,

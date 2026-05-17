@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.security.GeneralSecurityException;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
@@ -26,10 +30,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Message;
 import org.miaixz.bus.image.metric.hl7.HL7Segment;
 import org.miaixz.bus.image.metric.hl7.MLLPConnection;
 import org.miaixz.bus.image.metric.hl7.MLLPRelease;
-
-import java.io.IOException;
-import java.net.Socket;
-import java.security.GeneralSecurityException;
 
 /**
  * The {@code HL7Pix} class is a client for the IHE Patient Identifier Cross-referencing (PIX) profile. It sends an HL7

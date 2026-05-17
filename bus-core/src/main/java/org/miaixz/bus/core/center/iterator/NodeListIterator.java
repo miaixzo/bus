@@ -22,9 +22,10 @@ package org.miaixz.bus.core.center.iterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.miaixz.bus.core.lang.Assert;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * An {@link Iterator} wrapper for {@link NodeList}. This iterator allows iterating over the nodes in a

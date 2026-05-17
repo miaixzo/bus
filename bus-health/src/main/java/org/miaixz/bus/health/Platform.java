@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 import org.miaixz.bus.health.linux.hardware.LinuxHardwareAbstractionLayer;
@@ -48,6 +47,7 @@ import org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisHardwareAbstr
 import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
 import org.miaixz.bus.health.windows.hardware.WindowsHardwareAbstractionLayer;
 import org.miaixz.bus.health.windows.software.WindowsOperatingSystem;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * The main entry point for system information, providing platform-specific implementations of {@link OperatingSystem}

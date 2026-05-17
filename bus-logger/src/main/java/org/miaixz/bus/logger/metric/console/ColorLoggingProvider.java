@@ -19,15 +19,15 @@
 */
 package org.miaixz.bus.logger.metric.console;
 
+import java.io.Serial;
+import java.util.function.Function;
+
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
-
-import java.io.Serial;
-import java.util.function.Function;
 
 /**
  * A console logger that prints colorful messages using {@code System.out.println}.

@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.http.accord;
 
+import java.net.Socket;
+
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.Route;
 import org.miaixz.bus.http.socket.Handshake;
-
-import java.net.Socket;
 
 /**
  * The socket and streams of an HTTP, HTTPS, or HTTPS+HTTP/2 connection. May be used for multiple HTTP request/response

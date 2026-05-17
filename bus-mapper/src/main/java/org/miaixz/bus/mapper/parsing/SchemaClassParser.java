@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.mapper.parsing;
 
-import org.miaixz.bus.mapper.OGNL;
-
 import jakarta.persistence.Table;
+
+import org.miaixz.bus.mapper.OGNL;
 
 /**
  * The default entity class finder, which supports identifying entity classes with the

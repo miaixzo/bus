@@ -22,12 +22,12 @@ package org.miaixz.bus.gitlab.hooks.web;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import org.miaixz.bus.gitlab.models.Assignee;
 import org.miaixz.bus.gitlab.models.Duration;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * The event merge request class.

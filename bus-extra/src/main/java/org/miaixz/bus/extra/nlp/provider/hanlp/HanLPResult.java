@@ -22,10 +22,10 @@ package org.miaixz.bus.extra.nlp.provider.hanlp;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hankcs.hanlp.seg.common.Term;
+
 import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
-
-import com.hankcs.hanlp.seg.common.Term;
 
 /**
  * Implementation of {@link NLPResult} for HanLP word segmentation results. This class wraps a {@link List} of

@@ -100,7 +100,7 @@ public class Assert {
     /**
      * Asserts that an expression is false. If the expression is {@code true}, a custom exception provided by the
      * supplier is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.isFalse(i &gt; 0, () -&gt; {
      *     // to query relation message
@@ -156,7 +156,7 @@ public class Assert {
     /**
      * Asserts that an object is {@code null}. If the object is not {@code null}, a custom exception provided by the
      * supplier is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.isNull(value, () -&gt; {
      *     // to query relation message
@@ -178,7 +178,7 @@ public class Assert {
     /**
      * Asserts that an object is {@code null}. If the object is not {@code null}, an {@link IllegalArgumentException} is
      * thrown with a formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.isNull(value, "The value must be null");
      * </pre>
@@ -196,7 +196,7 @@ public class Assert {
     /**
      * Asserts that an object is {@code null}. If the object is not {@code null}, an {@link IllegalArgumentException} is
      * thrown with a default error message.
-     * 
+     *
      * <pre class="code">
      * Assert.isNull(value);
      * </pre>
@@ -211,7 +211,7 @@ public class Assert {
     /**
      * Asserts that an object is not {@code null}. If the object is {@code null}, a custom exception provided by the
      * supplier is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.notNull(clazz, () -&gt; {
      *     // to query relation message
@@ -236,7 +236,7 @@ public class Assert {
     /**
      * Asserts that an object is not {@code null}. If the object is {@code null}, an {@link IllegalArgumentException} is
      * thrown with a formatted error message.
-     * 
+     *
      * <pre>{@code
      * Assert.notNull(clazz, "The class must not be null");
      * }</pre>
@@ -259,7 +259,7 @@ public class Assert {
     /**
      * Asserts that an object is not {@code null}. If the object is {@code null}, an {@link IllegalArgumentException} is
      * thrown with a default error message.
-     * 
+     *
      * <pre>{@code
      * Assert.notNull(clazz);
      * }</pre>
@@ -279,7 +279,7 @@ public class Assert {
     /**
      * Asserts that an array is not empty (i.e., not {@code null} and contains at least one element). If the array is
      * empty, a custom exception provided by the supplier is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.notEmpty(array, () -&gt; {
      *     // to query relation message
@@ -305,7 +305,7 @@ public class Assert {
     /**
      * Asserts that an array is not empty (i.e., not {@code null} and contains at least one element). If the array is
      * empty, an {@link IllegalArgumentException} is thrown with a formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.notEmpty(array, "The array must have elements");
      * </pre>
@@ -325,7 +325,7 @@ public class Assert {
     /**
      * Asserts that an array is not empty (i.e., not {@code null} and contains at least one element). If the array is
      * empty, an {@link IllegalArgumentException} is thrown with a default error message.
-     * 
+     *
      * <pre class="code">
      * Assert.notEmpty(array, "The array must have elements");
      * </pre>
@@ -342,7 +342,7 @@ public class Assert {
     /**
      * Asserts that a collection is not empty (i.e., not {@code null} and contains at least one element). If the
      * collection is empty, a custom exception provided by the supplier is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.notEmpty(collection, () -&gt; {
      *     // to query relation message
@@ -371,7 +371,7 @@ public class Assert {
     /**
      * Asserts that a collection is not empty (i.e., not {@code null} and contains at least one element). If the
      * collection is empty, an {@link IllegalArgumentException} is thrown with a formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.notEmpty(collection, "Collection must have elements");
      * </pre>
@@ -392,7 +392,7 @@ public class Assert {
     /**
      * Asserts that a collection is not empty (i.e., not {@code null} and contains at least one element). If the
      * collection is empty, an {@link IllegalArgumentException} is thrown with a default error message.
-     * 
+     *
      * <pre class="code">
      * Assert.notEmpty(collection);
      * </pre>
@@ -412,7 +412,7 @@ public class Assert {
     /**
      * Asserts that a map is not empty (i.e., not {@code null} and contains at least one entry). If the map is empty, a
      * custom exception provided by the supplier is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.notEmpty(map, () -&gt; {
      *     // to query relation message
@@ -442,7 +442,7 @@ public class Assert {
     /**
      * Asserts that a map is not empty (i.e., not {@code null} and contains at least one entry). If the map is empty, an
      * {@link IllegalArgumentException} is thrown with a formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.notEmpty(map, "Map must have entries");
      * </pre>
@@ -464,7 +464,7 @@ public class Assert {
     /**
      * Asserts that a map is not empty (i.e., not {@code null} and contains at least one entry). If the map is empty, an
      * {@link IllegalArgumentException} is thrown with a default error message.
-     * 
+     *
      * <pre class="code">
      * Assert.notEmpty(map, "Map must have entries");
      * </pre>
@@ -483,7 +483,7 @@ public class Assert {
     /**
      * Checks that the given character sequence is not empty (i.e., not {@code null} and has a length greater than
      * zero). If the character sequence is empty, a custom exception provided by the supplier is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.notEmpty(name, () -&gt; {
      *     // to query relation message
@@ -554,7 +554,7 @@ public class Assert {
     /**
      * Checks that the given character sequence is not blank (i.e., not {@code null}, not empty, and not containing only
      * whitespace). If the character sequence is blank, a custom exception provided by the supplier is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.notBlank(name, () -&gt; {
      *     // to query relation message
@@ -625,7 +625,7 @@ public class Assert {
     /**
      * Asserts that a given string does not contain a specified substring. If it does, a custom exception provided by
      * the supplier is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.notContain(name, "rod", () -&gt; {
      *     // to query relation message
@@ -655,7 +655,7 @@ public class Assert {
     /**
      * Asserts that a given string does not contain a specified substring. If it does, an
      * {@link IllegalArgumentException} is thrown with a formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.notContain(name, "rod", "Name must not contain 'rod'");
      * </pre>
@@ -678,7 +678,7 @@ public class Assert {
     /**
      * Asserts that a given string does not contain a specified substring. If it does, an
      * {@link IllegalArgumentException} is thrown with a default error message.
-     * 
+     *
      * <pre class="code">
      * Assert.notContain(name, "rod");
      * </pre>
@@ -699,7 +699,7 @@ public class Assert {
     /**
      * Asserts that an array does not contain any {@code null} elements. If it does, a custom exception provided by the
      * supplier is thrown. An empty or {@code null} array is considered not to contain {@code null} elements.
-     * 
+     *
      * <pre class="code">
      * Assert.noNullElements(array, () -&gt; {
      *     // to query relation message
@@ -727,7 +727,7 @@ public class Assert {
      * Asserts that an array does not contain any {@code null} elements. If it does, an {@link IllegalArgumentException}
      * is thrown with a formatted error message. An empty or {@code null} array is considered not to contain
      * {@code null} elements.
-     * 
+     *
      * <pre class="code">
      * Assert.noNullElements(array, "The array must not have null elements");
      * </pre>
@@ -748,7 +748,7 @@ public class Assert {
      * Asserts that an array does not contain any {@code null} elements. If it does, an {@link IllegalArgumentException}
      * is thrown with a default error message. An empty or {@code null} array is considered not to contain {@code null}
      * elements.
-     * 
+     *
      * <pre class="code">
      * Assert.noNullElements(array);
      * </pre>
@@ -765,7 +765,7 @@ public class Assert {
     /**
      * Asserts that the given object is an instance of the specified class. If it is not, an
      * {@link IllegalArgumentException} is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.instanceOf(Foo.class, foo);
      * </pre>
@@ -784,7 +784,7 @@ public class Assert {
     /**
      * Asserts that the given object is an instance of the specified class. If it is not, an
      * {@link IllegalArgumentException} is thrown with a formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.instanceOf(Foo.class, foo, "foo must be an instance of class Foo");
      * </pre>
@@ -810,7 +810,7 @@ public class Assert {
     /**
      * Asserts that the given object is not an instance of the specified class. If it is, an
      * {@link IllegalArgumentException} is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.isNotInstanceOf(Foo.class, foo);
      * </pre>
@@ -829,7 +829,7 @@ public class Assert {
     /**
      * Asserts that the given object is not an instance of the specified class. If it is, an
      * {@link IllegalArgumentException} is thrown with a formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.isNotInstanceOf(Foo.class, foo, "foo must be not an Foo");
      * </pre>
@@ -855,7 +855,7 @@ public class Assert {
     /**
      * Asserts that {@code superType.isAssignableFrom(subType)} is {@code true}. That is, {@code subType} is assignable
      * to {@code superType}. If not, an {@link IllegalArgumentException} is thrown.
-     * 
+     *
      * <pre class="code">
      * Assert.isAssignable(Number.class, myClass);
      * </pre>
@@ -871,7 +871,7 @@ public class Assert {
     /**
      * Asserts that {@code superType.isAssignableFrom(subType)} is {@code true}. That is, {@code subType} is assignable
      * to {@code superType}. If not, an {@link IllegalArgumentException} is thrown with a formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.isAssignable(Number.class, myClass, "myClass must can be assignable to class Number");
      * </pre>
@@ -896,7 +896,7 @@ public class Assert {
     /**
      * Checks a boolean expression. If the expression is {@code false}, an {@link IllegalStateException} is thrown, with
      * the error message provided by the supplier.
-     * 
+     *
      * <pre class="code">
      * Assert.state(id == null, () -&gt; {
      *     // to query relation message
@@ -918,7 +918,7 @@ public class Assert {
     /**
      * Checks a boolean expression. If the expression is {@code false}, an {@link IllegalStateException} is thrown with
      * a formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.state(id == null, "The id property must not already be initialized");
      * </pre>
@@ -938,7 +938,7 @@ public class Assert {
     /**
      * Checks a boolean expression. If the expression is {@code false}, an {@link IllegalStateException} is thrown with
      * a default error message.
-     * 
+     *
      * <pre class="code">
      * Assert.state(id == null);
      * </pre>
@@ -1230,7 +1230,7 @@ public class Assert {
     /**
      * Asserts that two objects are not equal. If they are equal, an {@link IllegalArgumentException} is thrown with a
      * default error message.
-     * 
+     *
      * <pre class="code">
      * Assert.notEquals(obj1, obj2);
      * </pre>
@@ -1246,7 +1246,7 @@ public class Assert {
     /**
      * Asserts that two objects are not equal. If they are equal, an {@link IllegalArgumentException} is thrown with a
      * formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.notEquals(obj1, obj2, "obj1 must be not equals obj2");
      * </pre>
@@ -1283,7 +1283,7 @@ public class Assert {
     /**
      * Asserts that two objects are equal. If they are not equal, an {@link IllegalArgumentException} is thrown with a
      * default error message.
-     * 
+     *
      * <pre class="code">
      * Assert.isEquals(obj1, obj2);
      * </pre>
@@ -1299,7 +1299,7 @@ public class Assert {
     /**
      * Asserts that two objects are equal. If they are not equal, an {@link IllegalArgumentException} is thrown with a
      * formatted error message.
-     * 
+     *
      * <pre class="code">
      * Assert.isEquals(obj1, obj2, "obj1 must be equals obj2");
      * </pre>

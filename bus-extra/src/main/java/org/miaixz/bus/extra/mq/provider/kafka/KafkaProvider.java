@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.mq.provider.kafka;
 import java.util.Properties;
 
 import org.apache.kafka.clients.CommonClientConfigs;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.MQConfig;

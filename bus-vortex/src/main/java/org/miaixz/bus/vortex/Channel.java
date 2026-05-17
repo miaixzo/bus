@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.vortex;
 
+import java.util.Arrays;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.Arrays;
 
 /**
  * Enumerates the possible source channels of a request, allowing for channel-specific logic and authorization.

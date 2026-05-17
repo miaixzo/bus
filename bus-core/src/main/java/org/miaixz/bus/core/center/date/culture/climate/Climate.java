@@ -20,8 +20,8 @@
 package org.miaixz.bus.core.center.date.culture.climate;
 
 import org.miaixz.bus.core.center.date.Galaxy;
-import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.center.date.culture.JulianDay;
+import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
  * Represents a "Hou" (候) or Pentad, a five-day period in the Chinese traditional calendar, often associated with

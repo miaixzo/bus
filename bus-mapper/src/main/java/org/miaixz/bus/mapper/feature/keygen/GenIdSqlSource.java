@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.mapper.feature.keygen;
 
+import lombok.RequiredArgsConstructor;
+
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.SqlSource;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * Wraps an {@link SqlSource} to enable primary key generation before insertion.

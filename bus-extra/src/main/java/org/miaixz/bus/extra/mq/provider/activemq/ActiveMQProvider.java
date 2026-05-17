@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.extra.mq.provider.activemq;
 
+import jakarta.jms.ConnectionFactory;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.mq.MQConfig;
 import org.miaixz.bus.extra.mq.provider.jms.JmsProvider;
 import org.miaixz.bus.logger.Logger;
-
-import jakarta.jms.ConnectionFactory;
 
 /**
  * ActiveMQ message queue engine implementation class. This class extends {@link JmsProvider} to offer specific

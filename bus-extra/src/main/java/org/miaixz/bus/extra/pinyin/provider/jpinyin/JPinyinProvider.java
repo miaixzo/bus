@@ -19,15 +19,15 @@
 */
 package org.miaixz.bus.extra.pinyin.provider.jpinyin;
 
+import com.github.stuxuhai.jpinyin.PinyinException;
+import com.github.stuxuhai.jpinyin.PinyinFormat;
+import com.github.stuxuhai.jpinyin.PinyinHelper;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
 import org.miaixz.bus.logger.Logger;
-
-import com.github.stuxuhai.jpinyin.PinyinException;
-import com.github.stuxuhai.jpinyin.PinyinFormat;
-import com.github.stuxuhai.jpinyin.PinyinHelper;
 
 /**
  * Encapsulates the Jpinyin engine.

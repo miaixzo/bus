@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import org.miaixz.bus.core.net.HTTP;
-
 import java.util.Arrays;
+
+import org.miaixz.bus.core.net.HTTP;
 
 /**
  * Settings describe characteristics of the sending peer, which are used by the receiving peer. Settings are scoped to

@@ -24,15 +24,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.annotation.PreDestroy;
+
 import org.miaixz.bus.cache.Builder;
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.cache.Serializer;
+import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.cache.serialize.Hessian2Serializer;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
-import jakarta.annotation.PreDestroy;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Pipeline;

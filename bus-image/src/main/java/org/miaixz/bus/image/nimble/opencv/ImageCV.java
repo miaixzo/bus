@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
 
-import org.miaixz.bus.image.nimble.KernelData;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -33,6 +32,8 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+
+import org.miaixz.bus.image.nimble.KernelData;
 
 /**
  * Enhanced Mat implementation with additional memory management features. Implements PlanarImage for consistent image

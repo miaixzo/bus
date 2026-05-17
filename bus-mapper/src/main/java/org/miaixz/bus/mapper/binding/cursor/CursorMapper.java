@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.binding.cursor;
 import org.apache.ibatis.annotations.Lang;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.cursor.Cursor;
+
 import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.binding.condition.Condition;
 import org.miaixz.bus.mapper.provider.ConditionProvider;

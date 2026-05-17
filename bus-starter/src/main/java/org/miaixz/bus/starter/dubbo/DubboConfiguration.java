@@ -19,10 +19,12 @@
 */
 package org.miaixz.bus.starter.dubbo;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Auto-configuration for Apache Dubbo.

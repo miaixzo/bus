@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.vortex.strategy.vetting;
 
-import org.miaixz.bus.vortex.strategy.VettingStrategy;
 import org.miaixz.bus.core.Order;
+import org.miaixz.bus.vortex.strategy.VettingStrategy;
 
 /**
  * CST URL-based request vetting strategy.

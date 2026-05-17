@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -25,16 +25,6 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.GuardedBy;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.health.Formats;
-import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
-import org.miaixz.bus.logger.Logger;
-
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.solaris.Kstat2;
@@ -46,6 +36,16 @@ import com.sun.jna.platform.unix.solaris.LibKstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatCtl;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.GuardedBy;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.health.Formats;
+import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Provides access to kstat information on Solaris

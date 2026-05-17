@@ -21,12 +21,12 @@
   },
   {
     "interfaces": [
-      "io.temporal.internal.WorkflowThreadMarker"
+      "io.temporal.internal.sync.AsyncInternal$AsyncMarker"
     ]
   },
   {
     "interfaces": [
-      "io.temporal.internal.sync.AsyncInternal$AsyncMarker"
+      "io.temporal.internal.WorkflowThreadMarker"
     ]
   },
   {

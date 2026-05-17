@@ -19,18 +19,18 @@
 */
 package org.miaixz.bus.mapper.provider;
 
+import lombok.Getter;
+
 import org.miaixz.bus.core.Context;
 import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
-import org.miaixz.bus.logger.Logger;
-
-import lombok.Getter;
 
 /**
  * Naming provider class based on {@link EnumValue.Naming}.

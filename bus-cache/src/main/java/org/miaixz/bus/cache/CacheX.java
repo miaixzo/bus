@@ -47,7 +47,7 @@ public interface CacheX<K, V> {
      * Retrieves the value from the cache based on the specified key. Returns <code>null</code> if the key does not
      * exist or the value has expired. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * User user = cache.read("user123");
@@ -68,7 +68,7 @@ public interface CacheX<K, V> {
      * Retrieves values from the cache based on the specified collection of keys, returning a map of key-value pairs.
      * Keys that do not exist or have expired values will not be included in the returned map. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * List<String> userIds = Arrays.asList("user123", "user456");
@@ -87,7 +87,7 @@ public interface CacheX<K, V> {
      * Writes a key-value pair to the cache with a default expiration time (1 hour, 3600 seconds). If the key already
      * exists, its value is updated and the expiration time is reset. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * User user = new User("user123", "John Doe");
@@ -131,7 +131,7 @@ public interface CacheX<K, V> {
      * Writes multiple key-value pairs to the cache in a batch, setting the same expiration time in milliseconds for
      * all. For existing keys, their values are updated and the expiration time is reset. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * Map<String, User> userMap = new HashMap<>();
@@ -152,7 +152,7 @@ public interface CacheX<K, V> {
      * implementation returns <code>true</code>; implementing classes should override this to provide specific logic.
      * Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * String userId = "user123";
@@ -175,7 +175,7 @@ public interface CacheX<K, V> {
      * Removes the cached data for one or more specified keys. The operation is ignored for keys that do not exist.
      * Supports varargs to remove multiple keys. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * cache.remove("user123");

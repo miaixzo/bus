@@ -21,6 +21,8 @@ package org.miaixz.bus.shade.screw.dialect;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+
 import org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDataBaseQuery;
 import org.miaixz.bus.shade.screw.dialect.db2.Db2DataBaseQuery;
 import org.miaixz.bus.shade.screw.dialect.h2.H2DataBaseQuery;
@@ -29,8 +31,6 @@ import org.miaixz.bus.shade.screw.dialect.mysql.MySqlDataBaseQuery;
 import org.miaixz.bus.shade.screw.dialect.oracle.OracleDataBaseQuery;
 import org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery;
 import org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery;
-
-import lombok.Getter;
 
 /**
  * Enumeration of supported database types.

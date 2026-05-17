@@ -196,7 +196,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 
     /**
      * Wraps a {@link TreeEntryNode} as an {@link EntryNodeWrapper}.
-     * 
+     *
      * @param nodeEntry The map entry to wrap.
      * @return The wrapped entry.
      */

@@ -19,10 +19,11 @@
 */
 package org.miaixz.bus.spring.annotation;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Interface for handling placeholder resolution and binding of environment properties to objects.

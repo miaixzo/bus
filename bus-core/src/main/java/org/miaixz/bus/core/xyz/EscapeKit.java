@@ -56,7 +56,7 @@ public class EscapeKit {
 
     /**
      * Escapes special characters in XML.
-     * 
+     *
      * <pre>
      * &amp; (ampersand) becomes &amp;amp;
      * &lt; (less than) becomes &amp;lt;

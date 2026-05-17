@@ -24,6 +24,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
+
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.util.WebUtils;
+
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.metric.CaffeineCache;
 import org.miaixz.bus.cache.metric.MemoryCache;
@@ -34,8 +44,8 @@ import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.lang.annotation.Nullable;
-import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -44,15 +54,6 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.http.MutableRequestWrapper;
 import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.util.WebUtils;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Part;
 
 /**
  * A utility class for convenient operations on HTTP requests, user information, and more.

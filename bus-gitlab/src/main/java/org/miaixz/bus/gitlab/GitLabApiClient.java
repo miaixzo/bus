@@ -34,19 +34,20 @@ import java.util.logging.Level;
 
 import javax.net.ssl.*;
 
+import jakarta.ws.rs.client.*;
+import jakarta.ws.rs.core.*;
+
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.media.multipart.*;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
+
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.Constants.TokenType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.MaskingLoggingFilter;
-
-import jakarta.ws.rs.client.*;
-import jakarta.ws.rs.core.*;
 import org.miaixz.bus.logger.Logger;
 
 /**

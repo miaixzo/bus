@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,17 +23,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.sun.jna.Memory;
+import com.sun.jna.platform.win32.IPHlpAPI;
+import com.sun.jna.platform.win32.VersionHelpers;
+import com.sun.jna.platform.win32.WinError;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolStats;
-
-import com.sun.jna.Memory;
-import com.sun.jna.platform.win32.IPHlpAPI;
-import com.sun.jna.platform.win32.VersionHelpers;
-import com.sun.jna.platform.win32.WinError;
 
 /**
  * Internet Protocol Stats implementation

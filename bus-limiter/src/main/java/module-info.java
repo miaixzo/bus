@@ -19,7 +19,7 @@
 */
 /**
  * bus.limiter
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

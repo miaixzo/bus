@@ -22,15 +22,16 @@ package org.miaixz.bus.vortex.routing.llm;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.routing.Coordinator;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.routing.Coordinator;
 
 import reactor.core.publisher.Mono;
 

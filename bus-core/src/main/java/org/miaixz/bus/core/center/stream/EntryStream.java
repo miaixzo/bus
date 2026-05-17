@@ -492,9 +492,9 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * operation.
      * <p>
      * For example, to combine the IDs and parent IDs of all users in a list into a new stream:
-     * 
+     *
      * <pre>{@code
-     * 
+     *
      * FastStream<Long> ids = FastStream.of(users).flatMap(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
@@ -516,7 +516,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * retained for each new key.
      * <p>
      * Example:
-     * 
+     *
      * <pre>{@code
      * // unwrap = [{a = 1}, {b = 2}, {c = 3}]
      * unwrap.flatMapKey(data -> Stream.of(data + "1", data + "2"));
@@ -539,7 +539,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * retained for each new value.
      * <p>
      * Example:
-     * 
+     *
      * <pre>{@code
      * // unwrap = [{a = 1}, {b = 2}, {c = 3}]
      * unwrap.flatMapValue(num -> Stream.of(num, num + 1));

@@ -19,9 +19,10 @@
 */
 package org.miaixz.bus.starter.cache;
 
-import org.miaixz.bus.cache.Factory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+
+import org.miaixz.bus.cache.Factory;
 
 /**
  * Provides the shared cache factory only for starters that explicitly import it.

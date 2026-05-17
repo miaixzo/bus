@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Annotation for supporting multiple data sources.

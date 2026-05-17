@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,6 +23,8 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.sun.jna.platform.win32.Guid.GUID;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -32,8 +34,6 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 import org.miaixz.bus.health.windows.driver.DeviceTree;
-
-import com.sun.jna.platform.win32.Guid.GUID;
 
 /**
  * Windows Usb Device

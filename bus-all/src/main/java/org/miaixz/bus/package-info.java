@@ -23,4 +23,4 @@
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz;
+package org.miaixz.bus;

@@ -25,8 +25,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -43,6 +41,9 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Jackson JSON framework configurer, integrated with Spring MVC.

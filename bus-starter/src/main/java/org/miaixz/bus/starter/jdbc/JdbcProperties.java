@@ -19,12 +19,14 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.spring.GeniusBuilder;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.List;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Configuration properties for Druid DataSource.

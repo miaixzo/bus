@@ -22,12 +22,12 @@ package org.miaixz.bus.mapper.builder;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import lombok.RequiredArgsConstructor;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.mapper.Order;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * Resolves the entity class type based on information such as the mapper type and method. The default implementation

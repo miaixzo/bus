@@ -27,6 +27,9 @@ import java.util.*;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
@@ -40,9 +43,6 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * URL construction utility class, supporting OAuth-related functionalities. Provides methods to build URLs with query

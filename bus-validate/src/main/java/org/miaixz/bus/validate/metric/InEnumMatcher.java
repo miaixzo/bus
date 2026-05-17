@@ -19,15 +19,15 @@
 */
 package org.miaixz.bus.validate.metric;
 
+import java.lang.reflect.Method;
+import java.util.Objects;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.InEnum;
-
-import java.lang.reflect.Method;
-import java.util.Objects;
 
 /**
  * Validator for the {@link InEnum} annotation. Checks if an object's value matches one of the values of a specified

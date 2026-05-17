@@ -24,10 +24,10 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.miaixz.bus.core.xyz.MapKit;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.miaixz.bus.core.xyz.MapKit;
 
 /**
  * Represents an HTTP Media Type (also known as MIME type).

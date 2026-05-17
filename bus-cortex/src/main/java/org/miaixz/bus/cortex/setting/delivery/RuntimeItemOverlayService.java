@@ -28,8 +28,8 @@ import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
-import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 
 /**
  * Lightweight runtime overlay publisher outside the revision-tracked curator write path.

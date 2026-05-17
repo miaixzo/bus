@@ -19,6 +19,17 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
+import java.util.Locale;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -28,15 +39,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.image.galaxy.io.SAXReader;
 import org.miaixz.bus.logger.Logger;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * The {@code Pdf2Dcm} class provides functionality to encapsulate various file types (e.g., PDF, STL, CDA) into a DICOM

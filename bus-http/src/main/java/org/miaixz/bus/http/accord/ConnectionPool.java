@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.http.Address;
-
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.http.Address;
 
 /**
  * Manages reuse of HTTP and HTTP/2 connections for reduced network latency. HTTP requests that share the same

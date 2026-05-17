@@ -22,9 +22,10 @@ package org.miaixz.bus.mapper.provider;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.mapper.Charter.Behavior;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.SqlScript;

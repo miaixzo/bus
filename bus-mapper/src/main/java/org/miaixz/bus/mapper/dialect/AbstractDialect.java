@@ -37,18 +37,19 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
 
+import jakarta.persistence.EnumType;
+
 import org.apache.ibatis.type.JdbcType;
+
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Modify;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.IndexMeta;
-import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.feature.schema.TableSnapshot;
-
-import jakarta.persistence.EnumType;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.IndexMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * Base implementation for database dialects.

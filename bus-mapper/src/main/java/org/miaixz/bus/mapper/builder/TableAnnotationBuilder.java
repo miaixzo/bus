@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.mapper.builder;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.provider.NamingProvider;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 /**
  * The default table builder, which supports processing entity classes annotated with `jakarta.persistence` annotations.

@@ -22,15 +22,15 @@ package org.miaixz.bus.mapper.feature.tenant;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.mapper.Charter.Isolation;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.Charter.Isolation;
 
 /**
  * Multi-tenancy configuration class.

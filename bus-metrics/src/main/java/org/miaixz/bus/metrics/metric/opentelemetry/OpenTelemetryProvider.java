@@ -19,13 +19,12 @@
 */
 package org.miaixz.bus.metrics.metric.opentelemetry;
 
-import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.common.Attributes;
-import io.opentelemetry.api.common.AttributesBuilder;
-import io.opentelemetry.api.metrics.DoubleHistogram;
-import io.opentelemetry.api.metrics.LongCounter;
-import io.opentelemetry.api.metrics.Meter;
-import io.opentelemetry.api.metrics.ObservableDoubleGauge;
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.ToDoubleFunction;
+
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
@@ -37,11 +36,13 @@ import org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker;
 import org.miaixz.bus.metrics.observe.slo.SloTracker;
 import org.miaixz.bus.metrics.observe.tag.Tag;
 
-import java.util.Collections;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-import java.util.function.ToDoubleFunction;
+import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.common.AttributesBuilder;
+import io.opentelemetry.api.metrics.DoubleHistogram;
+import io.opentelemetry.api.metrics.LongCounter;
+import io.opentelemetry.api.metrics.Meter;
+import io.opentelemetry.api.metrics.ObservableDoubleGauge;
 
 /**
  * Provider implementation backed by OpenTelemetry SDK.

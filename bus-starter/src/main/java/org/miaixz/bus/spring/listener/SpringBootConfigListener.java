@@ -22,9 +22,6 @@ package org.miaixz.bus.spring.listener;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.miaixz.bus.core.Version;
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.spring.banner.BannerPrinter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationListener;
@@ -32,6 +29,10 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
+
+import org.miaixz.bus.core.Version;
+import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.spring.banner.BannerPrinter;
 
 /**
  * An {@link ApplicationListener} for the {@link ApplicationEnvironmentPreparedEvent}. It registers a custom property

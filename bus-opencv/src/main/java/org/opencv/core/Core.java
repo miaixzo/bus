@@ -1,9 +1,26 @@
-//
-// This file is auto-generated. Please don't modify it!
-//
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.opencv.core;
 
 import java.util.List;
+
 import org.opencv.utils.Converters;
 
 // C++: class Core
@@ -130,7 +147,7 @@ public class Core {
      *
      * The function cubeRoot computes \(\sqrt[3]{\texttt{val}}\). Negative arguments are handled correctly. NaN and Inf
      * are not handled. The accuracy approaches the maximum possible accuracy for single-precision data.
-     * 
+     *
      * @param val A function argument.
      * @return automatically generated
      */
@@ -147,7 +164,7 @@ public class Core {
      *
      * The function fastAtan2 calculates the full-range angle of an input 2D vector. The angle is measured in degrees
      * and varies from 0 to 360 degrees. The accuracy is about 0.3 degrees.
-     * 
+     *
      * @param x x-coordinate of the vector.
      * @param y y-coordinate of the vector.
      * @return automatically generated
@@ -162,7 +179,7 @@ public class Core {
 
     /**
      * proxy for hal::Cholesky
-     * 
+     *
      * @return automatically generated
      */
     public static boolean useIPP() {
@@ -216,7 +233,7 @@ public class Core {
      *                               borderInterpolate(-5, img.cols, cv::BORDER_WRAP));
      * </code> Normally, the function is not called directly. It is used inside filtering functions and also in
      * copyMakeBorder.
-     * 
+     *
      * @param p          0-based coordinate of the extrapolated pixel along one of the axes, likely &lt;0 or &gt;= len
      * @param len        Length of the array along the corresponding axis.
      * @param borderType Border type, one of the #BorderTypes, except for #BORDER_TRANSPARENT and #BORDER_ISOLATED. When
@@ -379,7 +396,7 @@ public class Core {
      * <b>Note:</b> (Python) Be careful to difference behaviour between src1/src2 are single number and they are
      * tuple/array. {@code add(src,X)} means {@code add(src,(X,X,X,X))}. {@code add(src,(X,))} means
      * {@code add(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1  first input array or a scalar.
      * @param src2  second input array or a scalar.
      * @param dst   output array that has the same size and number of channels as the input array(s); the depth is
@@ -422,7 +439,7 @@ public class Core {
      * <b>Note:</b> (Python) Be careful to difference behaviour between src1/src2 are single number and they are
      * tuple/array. {@code add(src,X)} means {@code add(src,(X,X,X,X))}. {@code add(src,(X,))} means
      * {@code add(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and number of channels as the input array(s); the depth is
@@ -463,7 +480,7 @@ public class Core {
      * <b>Note:</b> (Python) Be careful to difference behaviour between src1/src2 are single number and they are
      * tuple/array. {@code add(src,X)} means {@code add(src,(X,X,X,X))}. {@code add(src,(X,))} means
      * {@code add(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and number of channels as the input array(s); the depth is
@@ -510,7 +527,7 @@ public class Core {
      * (Python) Be careful to difference behaviour between src1/src2 are single number and they are tuple/array.
      * {@code subtract(src,X)} means {@code subtract(src,(X,X,X,X))}. {@code subtract(src,(X,))} means
      * {@code subtract(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1  first input array or a scalar.
      * @param src2  second input array or a scalar.
      * @param dst   output array of the same size and the same number of channels as the input array.
@@ -554,7 +571,7 @@ public class Core {
      * (Python) Be careful to difference behaviour between src1/src2 are single number and they are tuple/array.
      * {@code subtract(src,X)} means {@code subtract(src,(X,X,X,X))}. {@code subtract(src,(X,))} means
      * {@code subtract(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array of the same size and the same number of channels as the input array.
@@ -597,7 +614,7 @@ public class Core {
      * (Python) Be careful to difference behaviour between src1/src2 are single number and they are tuple/array.
      * {@code subtract(src,X)} means {@code subtract(src,(X,X,X,X))}. {@code subtract(src,(X,))} means
      * {@code subtract(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array of the same size and the same number of channels as the input array. of the output array
@@ -626,7 +643,7 @@ public class Core {
      * incorrect sign in the case of overflow. <b>Note:</b> (Python) Be careful to difference behaviour between
      * src1/src2 are single number and they are tuple/array. {@code multiply(src,X)} means
      * {@code multiply(src,(X,X,X,X))}. {@code multiply(src,(X,))} means {@code multiply(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1  first input array.
      * @param src2  second input array of the same size and the same type as src1.
      * @param dst   output array of the same size and type as src1.
@@ -653,7 +670,7 @@ public class Core {
      * incorrect sign in the case of overflow. <b>Note:</b> (Python) Be careful to difference behaviour between
      * src1/src2 are single number and they are tuple/array. {@code multiply(src,X)} means
      * {@code multiply(src,(X,X,X,X))}. {@code multiply(src,(X,))} means {@code multiply(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1  first input array.
      * @param src2  second input array of the same size and the same type as src1.
      * @param dst   output array of the same size and type as src1.
@@ -679,7 +696,7 @@ public class Core {
      * incorrect sign in the case of overflow. <b>Note:</b> (Python) Be careful to difference behaviour between
      * src1/src2 are single number and they are tuple/array. {@code multiply(src,X)} means
      * {@code multiply(src,(X,X,X,X))}. {@code multiply(src,(X,))} means {@code multiply(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1 first input array.
      * @param src2 second input array of the same size and the same type as src1.
      * @param dst  output array of the same size and type as src1. SEE: add, subtract, divide, scaleAdd, addWeighted,
@@ -711,7 +728,7 @@ public class Core {
      * incorrect sign in the case of overflow. <b>Note:</b> (Python) Be careful to difference behaviour between
      * src1/src2 are single number and they are tuple/array. {@code divide(src,X)} means {@code divide(src,(X,X,X,X))}.
      * {@code divide(src,(X,))} means {@code divide(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1  first input array.
      * @param src2  second input array of the same size and type as src1.
      * @param scale scalar factor.
@@ -742,7 +759,7 @@ public class Core {
      * incorrect sign in the case of overflow. <b>Note:</b> (Python) Be careful to difference behaviour between
      * src1/src2 are single number and they are tuple/array. {@code divide(src,X)} means {@code divide(src,(X,X,X,X))}.
      * {@code divide(src,(X,))} means {@code divide(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1  first input array.
      * @param src2  second input array of the same size and type as src1.
      * @param scale scalar factor.
@@ -771,7 +788,7 @@ public class Core {
      * incorrect sign in the case of overflow. <b>Note:</b> (Python) Be careful to difference behaviour between
      * src1/src2 are single number and they are tuple/array. {@code divide(src,X)} means {@code divide(src,(X,X,X,X))}.
      * {@code divide(src,(X,))} means {@code divide(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1 first input array.
      * @param src2 second input array of the same size and type as src1.
      * @param dst  output array of the same size and type as src2. case of an array-by-array division, you can only pass
@@ -808,7 +825,7 @@ public class Core {
      *     ...
      *     A.row(0) = A.row(1)*2 + A.row(2);
      * </code>
-     * 
+     *
      * @param src1  first input array.
      * @param alpha scale factor for the first array.
      * @param src2  second input array of the same size and type as src1.
@@ -833,7 +850,7 @@ public class Core {
      *     dst = src1*alpha + src2*beta + gamma;
      * </code> <b>Note:</b> Saturation is not applied when the output array has the depth CV_32S. You may even get
      * result of an incorrect sign in the case of overflow.
-     * 
+     *
      * @param src1  first input array.
      * @param alpha weight of the first array elements.
      * @param src2  second input array of the same size and channel number as src1.
@@ -857,7 +874,7 @@ public class Core {
      *     dst = src1*alpha + src2*beta + gamma;
      * </code> <b>Note:</b> Saturation is not applied when the output array has the depth CV_32S. You may even get
      * result of an incorrect sign in the case of overflow.
-     * 
+     *
      * @param src1  first input array.
      * @param alpha weight of the first array elements.
      * @param src2  second input array of the same size and channel number as src1.
@@ -890,7 +907,7 @@ public class Core {
      *     // Mat_&lt;float&gt; B = abs(A*5+3) will also do the job,
      *     // but it will allocate a temporary matrix
      * </code>
-     * 
+     *
      * @param src   input array.
      * @param dst   output array.
      * @param alpha optional scale factor.
@@ -916,7 +933,7 @@ public class Core {
      *     // Mat_&lt;float&gt; B = abs(A*5+3) will also do the job,
      *     // but it will allocate a temporary matrix
      * </code>
-     * 
+     *
      * @param src   input array.
      * @param dst   output array.
      * @param alpha optional scale factor. SEE: Mat::convertTo, cv::abs(const Mat&amp;)
@@ -941,7 +958,7 @@ public class Core {
      *     // Mat_&lt;float&gt; B = abs(A*5+3) will also do the job,
      *     // but it will allocate a temporary matrix
      * </code>
-     * 
+     *
      * @param src input array.
      * @param dst output array. SEE: Mat::convertTo, cv::abs(const Mat&amp;)
      */
@@ -983,7 +1000,7 @@ public class Core {
      * \texttt{lut(src(I) + d)}\) where \(d = \forkthree{0}{if \(\texttt{src}\) has depth \(\texttt{CV_8U}\) or
      * \(\texttt{CV_16U}\)}{128}{if \(\texttt{src}\) has depth \(\texttt{CV_8S}\)}{32768}{if \(\texttt{src}\) has depth
      * \(\texttt{CV_16S}\)}\)
-     * 
+     *
      * @param src input array of 8-bit or 16-bit integer elements.
      * @param lut look-up table of 256 elements (if src has depth CV_8U or CV_8S) or 65536 elements(if src has depth
      *            CV_16U or CV_16S); in case of multi-channel input array, the table should either have a single channel
@@ -1004,7 +1021,7 @@ public class Core {
      * Calculates the sum of array elements.
      *
      * The function cv::sum calculates and returns the sum of array elements, independently for each channel.
-     * 
+     *
      * @param src input array that must have from 1 to 4 channels. SEE: countNonZero, mean, meanStdDev, norm, minMaxLoc,
      *            reduce
      * @return automatically generated
@@ -1031,7 +1048,7 @@ public class Core {
      * <li>If the location of non-zero array elements is important, REF: findNonZero is helpful.</li>
      * <li>If the count of non-zero array elements is important, REF: countNonZero is helpful.</li>
      * </ul>
-     * 
+     *
      * @param src single-channel array. SEE: mean, meanStdDev, norm, minMaxLoc, calcCovarMatrix SEE: findNonZero,
      *            countNonZero
      * @return automatically generated
@@ -1058,7 +1075,7 @@ public class Core {
      * <li>If only whether there are non-zero elements is important, REF: hasNonZero is helpful.</li>
      * <li>If the location of non-zero array elements is important, REF: findNonZero is helpful.</li>
      * </ul>
-     * 
+     *
      * @param src single-channel array. SEE: mean, meanStdDev, norm, minMaxLoc, calcCovarMatrix SEE: findNonZero,
      *            hasNonZero
      * @return automatically generated
@@ -1100,7 +1117,7 @@ public class Core {
      * <li>If only count of non-zero array elements is important, REF: countNonZero is helpful.</li>
      * <li>If only whether there are non-zero elements is important, REF: hasNonZero is helpful.</li>
      * </ul>
-     * 
+     *
      * @param src single-channel array
      * @param idx the output array, type of cv::Mat or std::vector&lt;Point&gt;, corresponding to non-zero indices in
      *            the input SEE: countNonZero, hasNonZero
@@ -1120,7 +1137,7 @@ public class Core {
      * it: \(\begin{array}{l} N = \sum _{I: \; \texttt{mask} (I) \ne 0} 1 \\ M_c = \left ( \sum _{I: \; \texttt{mask}
      * (I) \ne 0}{ \texttt{mtx} (I)_c} \right )/N \end{array}\) When all the mask elements are 0's, the function returns
      * Scalar::all(0)
-     * 
+     *
      * @param src  input array that should have from 1 to 4 channels so that the result can be stored in Scalar_ .
      * @param mask optional operation mask. SEE: countNonZero, meanStdDev, norm, minMaxLoc
      * @return automatically generated
@@ -1136,7 +1153,7 @@ public class Core {
      * it: \(\begin{array}{l} N = \sum _{I: \; \texttt{mask} (I) \ne 0} 1 \\ M_c = \left ( \sum _{I: \; \texttt{mask}
      * (I) \ne 0}{ \texttt{mtx} (I)_c} \right )/N \end{array}\) When all the mask elements are 0's, the function returns
      * Scalar::all(0)
-     * 
+     *
      * @param src input array that should have from 1 to 4 channels so that the result can be stored in Scalar_ . SEE:
      *            countNonZero, meanStdDev, norm, minMaxLoc
      * @return automatically generated
@@ -1160,7 +1177,7 @@ public class Core {
      * The calculated standard deviation is only the diagonal of the complete normalized covariance matrix. If the full
      * matrix is needed, you can reshape the multi-channel array M x N to the single-channel array M\*N x mtx.channels()
      * (only possible when the matrix is continuous) and then pass the matrix to calcCovarMatrix .
-     * 
+     *
      * @param src    input array that should have from 1 to 4 channels so that the results can be stored in Scalar_ 's.
      * @param mean   output parameter: calculated mean value.
      * @param stddev output parameter: calculated standard deviation.
@@ -1183,7 +1200,7 @@ public class Core {
      * The calculated standard deviation is only the diagonal of the complete normalized covariance matrix. If the full
      * matrix is needed, you can reshape the multi-channel array M x N to the single-channel array M\*N x mtx.channels()
      * (only possible when the matrix is continuous) and then pass the matrix to calcCovarMatrix .
-     * 
+     *
      * @param src    input array that should have from 1 to 4 channels so that the results can be stored in Scalar_ 's.
      * @param mean   output parameter: calculated mean value.
      * @param stddev output parameter: calculated standard deviation. SEE: countNonZero, mean, norm, minMaxLoc,
@@ -1406,7 +1423,7 @@ public class Core {
      * naive nearest neighbor finder
      *
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
-     * 
+     *
      * @param src1       automatically generated
      * @param src2       automatically generated
      * @param dist       automatically generated
@@ -1446,7 +1463,7 @@ public class Core {
      * naive nearest neighbor finder
      *
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
-     * 
+     *
      * @param src1     automatically generated
      * @param src2     automatically generated
      * @param dist     automatically generated
@@ -1483,7 +1500,7 @@ public class Core {
      * naive nearest neighbor finder
      *
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
-     * 
+     *
      * @param src1     automatically generated
      * @param src2     automatically generated
      * @param dist     automatically generated
@@ -1509,7 +1526,7 @@ public class Core {
      * naive nearest neighbor finder
      *
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
-     * 
+     *
      * @param src1     automatically generated
      * @param src2     automatically generated
      * @param dist     automatically generated
@@ -1526,7 +1543,7 @@ public class Core {
      * naive nearest neighbor finder
      *
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
-     * 
+     *
      * @param src1     automatically generated
      * @param src2     automatically generated
      * @param dist     automatically generated
@@ -1542,7 +1559,7 @@ public class Core {
      * naive nearest neighbor finder
      *
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
-     * 
+     *
      * @param src1  automatically generated
      * @param src2  automatically generated
      * @param dist  automatically generated
@@ -2134,7 +2151,7 @@ public class Core {
 
     /**
      * Extracts a single channel from src (coi is 0-based index)
-     * 
+     *
      * @param src input array
      * @param dst output array
      * @param coi index of channel to extract SEE: mixChannels, split
@@ -2149,7 +2166,7 @@ public class Core {
 
     /**
      * Inserts a single channel to dst (coi is 0-based index)
-     * 
+     *
      * @param src input array
      * @param dst output array
      * @param coi index of channel for insertion SEE: mixChannels, merge
@@ -2176,7 +2193,7 @@ public class Core {
      * horizontal and vertical flipping of the image with the subsequent shift and absolute difference calculation to
      * check for a central symmetry (flipCode &lt; 0). Reversing the order of point arrays (flipCode &gt; 0 or flipCode
      * == 0).
-     * 
+     *
      * @param src      input array.
      * @param dst      output array of the same size and type as src.
      * @param flipCode a flag to specify how to flip the array; 0 means flipping around the x-axis and positive value
@@ -2193,7 +2210,7 @@ public class Core {
 
     /**
      * Flips a n-dimensional at given axis
-     * 
+     *
      * @param src  input array
      * @param dst  output array that has the same shape of src
      * @param axis axis that performs a flip on. 0 &lt;= axis &lt; src.dims.
@@ -2208,7 +2225,7 @@ public class Core {
 
     /**
      * Broadcast the given Mat to the given shape.
-     * 
+     *
      * @param src   input array
      * @param shape target shape. Should be a list of CV_32S numbers. Note that negative values are not supported.
      * @param dst   output array that has the given shape
@@ -2225,7 +2242,7 @@ public class Core {
      * Rotates a 2D array in multiples of 90 degrees. The function cv::rotate rotates the array in one of three
      * different ways: Rotate by 90 degrees clockwise (rotateCode = ROTATE_90_CLOCKWISE). Rotate by 180 degrees
      * clockwise (rotateCode = ROTATE_180). Rotate by 270 degrees clockwise (rotateCode = ROTATE_90_COUNTERCLOCKWISE).
-     * 
+     *
      * @param src        input array.
      * @param dst        output array of the same type as src. The size is the same with ROTATE_180, and the rows and
      *                   cols are switched for ROTATE_90_CLOCKWISE and ROTATE_90_COUNTERCLOCKWISE.
@@ -2246,7 +2263,7 @@ public class Core {
      * The function cv::repeat duplicates the input array one or more times along each of the two axes: \(\texttt{dst}
      * _{ij}= \texttt{src} _{i\mod src.rows, \; j\mod src.cols }\) The second variant of the function is more convenient
      * to use with REF: MatrixExpressions.
-     * 
+     *
      * @param src input array to replicate.
      * @param ny  Flag to specify how many times the {@code src} is repeated along the vertical axis.
      * @param nx  Flag to specify how many times the {@code src} is repeated along the horizontal axis.
@@ -2275,7 +2292,7 @@ public class Core {
      *     // 1, 2, 3;
      *     // 1, 2, 3]
      *  </code>
-     * 
+     *
      * @param src input array or vector of matrices. all of the matrices must have the same number of rows and the same
      *            depth.
      * @param dst output array. It has the same number of rows and depth as the src, and the sum of cols of the src.
@@ -2304,7 +2321,7 @@ public class Core {
      *     // 2,   2,   2,   2;
      *     // 3,   3,   3,   3]
      *  </code>
-     * 
+     *
      * @param src input array or vector of matrices. all of the matrices must have the same number of cols and the same
      *            depth
      * @param dst output array. It has the same number of cols and depth as the src, and the sum of rows of the src.
@@ -2332,7 +2349,7 @@ public class Core {
      * \ne0\) In case of floating-point arrays, their machine-specific bit representations (usually IEEE754-compliant)
      * are used for the operation. In case of multi-channel arrays, each channel is processed independently. In the
      * second and third cases above, the scalar is first converted to the array type.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and type as the input arrays.
@@ -2356,7 +2373,7 @@ public class Core {
      * \ne0\) In case of floating-point arrays, their machine-specific bit representations (usually IEEE754-compliant)
      * are used for the operation. In case of multi-channel arrays, each channel is processed independently. In the
      * second and third cases above, the scalar is first converted to the array type.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and type as the input arrays. specifies elements of the output
@@ -2382,7 +2399,7 @@ public class Core {
      * \ne0\) In case of floating-point arrays, their machine-specific bit representations (usually IEEE754-compliant)
      * are used for the operation. In case of multi-channel arrays, each channel is processed independently. In the
      * second and third cases above, the scalar is first converted to the array type.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and type as the input arrays.
@@ -2405,7 +2422,7 @@ public class Core {
      * \ne0\) In case of floating-point arrays, their machine-specific bit representations (usually IEEE754-compliant)
      * are used for the operation. In case of multi-channel arrays, each channel is processed independently. In the
      * second and third cases above, the scalar is first converted to the array type.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and type as the input arrays. specifies elements of the output
@@ -2431,7 +2448,7 @@ public class Core {
      * \ne0\) In case of floating-point arrays, their machine-specific bit representations (usually IEEE754-compliant)
      * are used for the operation. In case of multi-channel arrays, each channel is processed independently. In the 2nd
      * and 3rd cases above, the scalar is first converted to the array type.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and type as the input arrays.
@@ -2454,7 +2471,7 @@ public class Core {
      * \ne0\) In case of floating-point arrays, their machine-specific bit representations (usually IEEE754-compliant)
      * are used for the operation. In case of multi-channel arrays, each channel is processed independently. In the 2nd
      * and 3rd cases above, the scalar is first converted to the array type.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and type as the input arrays. specifies elements of the output
@@ -2475,7 +2492,7 @@ public class Core {
      * \neg \texttt{src} (I)\) In case of a floating-point input array, its machine-specific bit representation (usually
      * IEEE754-compliant) is used for the operation. In case of multi-channel arrays, each channel is processed
      * independently.
-     * 
+     *
      * @param src  input array.
      * @param dst  output array that has the same size and type as the input array.
      * @param mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to
@@ -2492,7 +2509,7 @@ public class Core {
      * \neg \texttt{src} (I)\) In case of a floating-point input array, its machine-specific bit representation (usually
      * IEEE754-compliant) is used for the operation. In case of multi-channel arrays, each channel is processed
      * independently.
-     * 
+     *
      * @param src input array.
      * @param dst output array that has the same size and type as the input array. specifies elements of the output
      *            array to be changed.
@@ -2519,7 +2536,7 @@ public class Core {
      * CV_32S. You may even get a negative value in the case of overflow. <b>Note:</b> (Python) Be careful to difference
      * behaviour between src1/src2 are single number and they are tuple/array. {@code absdiff(src,X)} means
      * {@code absdiff(src,(X,X,X,X))}. {@code absdiff(src,(X,))} means {@code absdiff(src,(X,0,0,0))}.
-     * 
+     *
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and type as input arrays. SEE: cv::abs(const Mat&amp;)
@@ -2536,7 +2553,7 @@ public class Core {
      * This is an overloaded member function, provided for convenience (python) Copies the matrix to another one. When
      * the operation mask is specified, if the Mat::create call shown above reallocates the matrix, the newly allocated
      * matrix is initialized with all zeros before copying the data.
-     * 
+     *
      * @param src  source matrix.
      * @param dst  Destination matrix. If it does not have a proper size or type before the operation, it is
      *             reallocated.
@@ -2568,7 +2585,7 @@ public class Core {
      *
      * When the lower and/or upper boundary parameters are scalars, the indexes (I) at lowerb and upperb in the above
      * formulas should be omitted.
-     * 
+     *
      * @param src    first input array.
      * @param lowerb inclusive lower boundary array or a scalar.
      * @param upperb inclusive upper boundary array or a scalar.
@@ -2606,7 +2623,7 @@ public class Core {
      *     Mat dst2 = src1 &lt; 8;
      *     ...
      * </code>
-     * 
+     *
      * @param src1  first input array or a scalar; when it is an array, it must have a single channel.
      * @param src2  second input array or a scalar; when it is an array, it must have a single channel.
      * @param dst   output array of type ref CV_8U that has the same size and the same number of channels as the input
@@ -2627,7 +2644,7 @@ public class Core {
      *
      * The function cv::min calculates the per-element minimum of two arrays: \(\texttt{dst} (I)= \min ( \texttt{src1}
      * (I), \texttt{src2} (I))\) or array and a scalar: \(\texttt{dst} (I)= \min ( \texttt{src1} (I), \texttt{value} )\)
-     * 
+     *
      * @param src1 first input array.
      * @param src2 second input array of the same size and type as src1.
      * @param dst  output array of the same size and type as src1. SEE: max, compare, inRange, minMaxLoc
@@ -2645,7 +2662,7 @@ public class Core {
      *
      * The function cv::max calculates the per-element maximum of two arrays: \(\texttt{dst} (I)= \max ( \texttt{src1}
      * (I), \texttt{src2} (I))\) or array and a scalar: \(\texttt{dst} (I)= \max ( \texttt{src1} (I), \texttt{value} )\)
-     * 
+     *
      * @param src1 first input array.
      * @param src2 second input array of the same size and type as src1 .
      * @param dst  output array of the same size and type as src1. SEE: min, compare, inRange, minMaxLoc, REF:
@@ -2664,7 +2681,7 @@ public class Core {
      *
      * The function cv::sqrt calculates a square root of each input array element. In case of multi-channel arrays, each
      * channel is processed independently. The accuracy is approximately the same as of the built-in std::sqrt .
-     * 
+     *
      * @param src input floating-point array.
      * @param dst output array of the same size and type as src.
      */
@@ -2691,7 +2708,7 @@ public class Core {
      * </code> For some values of power, such as integer values, 0.5 and -0.5, specialized faster algorithms are used.
      *
      * Special values (NaN, Inf) are not handled.
-     * 
+     *
      * @param src   input array.
      * @param power exponent of power.
      * @param dst   output array of the same size and type as src. SEE: sqrt, exp, log, cartToPolar, polarToCart
@@ -2713,7 +2730,7 @@ public class Core {
      * The maximum relative error is about 7e-6 for single-precision input and less than 1e-10 for double-precision
      * input. Currently, the function converts denormalized values to zeros on output. Special values (NaN, Inf) are not
      * handled.
-     * 
+     *
      * @param src input array.
      * @param dst output array of the same size and type as src. SEE: log, cartToPolar, polarToCart, phase, pow, sqrt,
      *            magnitude
@@ -2754,7 +2771,7 @@ public class Core {
      * \texttt{angle} (I)) \\ \texttt{y} (I) = \texttt{magnitude} (I) \sin ( \texttt{angle} (I)) \\ \end{array}\)
      *
      * The relative accuracy of the estimated coordinates is about 1e-6.
-     * 
+     *
      * @param magnitude      input floating-point array of magnitudes of 2D vectors; it can be an empty matrix (=Mat()),
      *                       in this case, the function assumes that all the magnitudes are =1; if it is not empty, it
      *                       must have the same size and type as angle.
@@ -2776,7 +2793,7 @@ public class Core {
      * \texttt{angle} (I)) \\ \texttt{y} (I) = \texttt{magnitude} (I) \sin ( \texttt{angle} (I)) \\ \end{array}\)
      *
      * The relative accuracy of the estimated coordinates is about 1e-6.
-     * 
+     *
      * @param magnitude input floating-point array of magnitudes of 2D vectors; it can be an empty matrix (=Mat()), in
      *                  this case, the function assumes that all the magnitudes are =1; if it is not empty, it must have
      *                  the same size and type as angle.
@@ -2801,7 +2818,7 @@ public class Core {
      * \texttt{atan2} ( \texttt{y} (I), \texttt{x} (I))[ \cdot180 / \pi ] \end{array}\)
      *
      * The angles are calculated with accuracy about 0.3 degrees. For the point (0,0), the angle is set to 0.
-     * 
+     *
      * @param x              array of x-coordinates; this must be a single-precision or double-precision floating-point
      *                       array.
      * @param y              array of y-coordinates, that must have the same size and same type as x.
@@ -2823,7 +2840,7 @@ public class Core {
      * \texttt{atan2} ( \texttt{y} (I), \texttt{x} (I))[ \cdot180 / \pi ] \end{array}\)
      *
      * The angles are calculated with accuracy about 0.3 degrees. For the point (0,0), the angle is set to 0.
-     * 
+     *
      * @param x         array of x-coordinates; this must be a single-precision or double-precision floating-point
      *                  array.
      * @param y         array of y-coordinates, that must have the same size and same type as x.
@@ -2847,7 +2864,7 @@ public class Core {
      * elements of x and y : \(\texttt{angle} (I) = \texttt{atan2} ( \texttt{y} (I), \texttt{x} (I))\)
      *
      * The angle estimation accuracy is about 0.3 degrees. When x(I)=y(I)=0 , the corresponding angle(I) is set to 0.
-     * 
+     *
      * @param x              input floating-point array of x-coordinates of 2D vectors.
      * @param y              input array of y-coordinates of 2D vectors; it must have the same size and the same type as
      *                       x.
@@ -2866,7 +2883,7 @@ public class Core {
      * elements of x and y : \(\texttt{angle} (I) = \texttt{atan2} ( \texttt{y} (I), \texttt{x} (I))\)
      *
      * The angle estimation accuracy is about 0.3 degrees. When x(I)=y(I)=0 , the corresponding angle(I) is set to 0.
-     * 
+     *
      * @param x     input floating-point array of x-coordinates of 2D vectors.
      * @param y     input array of y-coordinates of 2D vectors; it must have the same size and the same type as x.
      * @param angle output array of vector angles; it has the same size and same type as x . degrees, otherwise, they
@@ -2885,7 +2902,7 @@ public class Core {
      *
      * The function cv::magnitude calculates the magnitude of 2D vectors formed from the corresponding elements of x and
      * y arrays: \(\texttt{dst} (I) = \sqrt{\texttt{x}(I)^2 + \texttt{y}(I)^2}\)
-     * 
+     *
      * @param x         floating-point array of x-coordinates of the vectors.
      * @param y         floating-point array of y-coordinates of the vectors; it must have the same size as x.
      * @param magnitude output array of the same size and type as x. SEE: cartToPolar, polarToCart, phase, sqrt
@@ -2909,7 +2926,7 @@ public class Core {
      * of the first outlier is stored in pos (when pos != NULL). Then, the function either returns false (when
      * quiet=true) or throws an exception.</li>
      * </ul>
-     * 
+     *
      * @param a      input array.
      * @param quiet  a flag, indicating whether the functions quietly return false when the array elements are out of
      *               range or they throw an exception. elements.
@@ -2931,7 +2948,7 @@ public class Core {
      * of the first outlier is stored in pos (when pos != NULL). Then, the function either returns false (when
      * quiet=true) or throws an exception.</li>
      * </ul>
-     * 
+     *
      * @param a      input array.
      * @param quiet  a flag, indicating whether the functions quietly return false when the array elements are out of
      *               range or they throw an exception. elements.
@@ -2952,7 +2969,7 @@ public class Core {
      * of the first outlier is stored in pos (when pos != NULL). Then, the function either returns false (when
      * quiet=true) or throws an exception.</li>
      * </ul>
-     * 
+     *
      * @param a     input array.
      * @param quiet a flag, indicating whether the functions quietly return false when the array elements are out of
      *              range or they throw an exception. elements.
@@ -2972,7 +2989,7 @@ public class Core {
      * of the first outlier is stored in pos (when pos != NULL). Then, the function either returns false (when
      * quiet=true) or throws an exception.</li>
      * </ul>
-     * 
+     *
      * @param a input array. are out of range or they throw an exception. elements.
      * @return automatically generated
      */
@@ -3025,7 +3042,7 @@ public class Core {
      * The function can be replaced with a matrix expression. For example, the above call can be replaced with: <code>
      *     dst = alpha*src1.t()*src2 + beta*src3.t();
      * </code>
-     * 
+     *
      * @param src1  first multiplied input matrix that could be real(CV_32FC1, CV_64FC1) or complex(CV_32FC2, CV_64FC2).
      * @param src2  second multiplied input matrix of the same type as src1.
      * @param alpha weight of the matrix product.
@@ -3051,7 +3068,7 @@ public class Core {
      * The function can be replaced with a matrix expression. For example, the above call can be replaced with: <code>
      *     dst = alpha*src1.t()*src2 + beta*src3.t();
      * </code>
-     * 
+     *
      * @param src1  first multiplied input matrix that could be real(CV_32FC1, CV_64FC1) or complex(CV_32FC2, CV_64FC2).
      * @param src2  second multiplied input matrix of the same type as src1.
      * @param alpha weight of the matrix product.
@@ -3077,7 +3094,7 @@ public class Core {
      * \(\texttt{dst} = \texttt{scale} ( \texttt{src} - \texttt{delta} ) ( \texttt{src} - \texttt{delta} )^T\)
      * otherwise. The function is used to calculate the covariance matrix. With zero delta, it can be used as a faster
      * substitute for general matrix product A\*B when B=A'
-     * 
+     *
      * @param src   input single-channel matrix. Note that unlike gemm, the function can multiply not only
      *              floating-point matrices.
      * @param dst   output square matrix.
@@ -3104,7 +3121,7 @@ public class Core {
      * \(\texttt{dst} = \texttt{scale} ( \texttt{src} - \texttt{delta} ) ( \texttt{src} - \texttt{delta} )^T\)
      * otherwise. The function is used to calculate the covariance matrix. With zero delta, it can be used as a faster
      * substitute for general matrix product A\*B when B=A'
-     * 
+     *
      * @param src   input single-channel matrix. Note that unlike gemm, the function can multiply not only
      *              floating-point matrices.
      * @param dst   output square matrix.
@@ -3130,7 +3147,7 @@ public class Core {
      * \(\texttt{dst} = \texttt{scale} ( \texttt{src} - \texttt{delta} ) ( \texttt{src} - \texttt{delta} )^T\)
      * otherwise. The function is used to calculate the covariance matrix. With zero delta, it can be used as a faster
      * substitute for general matrix product A\*B when B=A'
-     * 
+     *
      * @param src   input single-channel matrix. Note that unlike gemm, the function can multiply not only
      *              floating-point matrices.
      * @param dst   output square matrix.
@@ -3155,7 +3172,7 @@ public class Core {
      * \(\texttt{dst} = \texttt{scale} ( \texttt{src} - \texttt{delta} ) ( \texttt{src} - \texttt{delta} )^T\)
      * otherwise. The function is used to calculate the covariance matrix. With zero delta, it can be used as a faster
      * substitute for general matrix product A\*B when B=A'
-     * 
+     *
      * @param src input single-channel matrix. Note that unlike gemm, the function can multiply not only floating-point
      *            matrices.
      * @param dst output square matrix.
@@ -3180,7 +3197,7 @@ public class Core {
      *
      * The function cv::transpose transposes the matrix src : \(\texttt{dst} (i,j) = \texttt{src} (j,i)\) <b>Note:</b>
      * No complex conjugation is done in case of a complex matrix. It should be done separately if needed.
-     * 
+     *
      * @param src input array.
      * @param dst output array of the same type as src.
      */
@@ -3196,7 +3213,7 @@ public class Core {
      * Transpose for n-dimensional matrices.
      *
      * <b>Note:</b> Input should be continuous single-channel matrix.
-     * 
+     *
      * @param src   input array.
      * @param order a permutation of [0,1,..,N-1] where N is the number of axes of src. The i'th axis of dst will
      *              correspond to the axis numbered order[i] of the input.
@@ -3223,7 +3240,7 @@ public class Core {
      *
      * The function may be used for geometrical transformation of N -dimensional points, arbitrary linear color space
      * transformation (such as various kinds of RGB to YUV transforms), shuffling the image channels, and so forth.
-     * 
+     *
      * @param src input array that must have as many channels (1 to 4) as m.cols or m.cols-1.
      * @param dst output array of the same size and depth as src; it has as many channels as m.rows.
      * @param m   transformation 2x2 or 2x3 floating-point matrix. SEE: perspectiveTransform, getAffineTransform,
@@ -3251,7 +3268,7 @@ public class Core {
      * perspective transformation, use warpPerspective . If you have an inverse problem, that is, you want to compute
      * the most probable perspective transformation out of several pairs of corresponding points, you can use
      * getPerspectiveTransform or findHomography .
-     * 
+     *
      * @param src input two-channel or three-channel floating-point array; each element is a 2D/3D vector to be
      *            transformed.
      * @param dst output array of the same size and type as src.
@@ -3315,7 +3332,7 @@ public class Core {
      *     Mat A = Mat::eye(4, 3, CV_32F)*5;
      *     // A will be set to [[5, 0, 0], [0, 5, 0], [0, 0, 5], [0, 0, 0]]
      * </code>
-     * 
+     *
      * @param mtx matrix to initialize (not necessarily square).
      * @param s   value to assign to diagonal elements. SEE: Mat::zeros, Mat::ones, Mat::setTo, Mat::operator=
      */
@@ -3333,7 +3350,7 @@ public class Core {
      *     Mat A = Mat::eye(4, 3, CV_32F)*5;
      *     // A will be set to [[5, 0, 0], [0, 5, 0], [0, 0, 5], [0, 0, 0]]
      * </code>
-     * 
+     *
      * @param mtx matrix to initialize (not necessarily square). SEE: Mat::zeros, Mat::ones, Mat::setTo, Mat::operator=
      */
     public static void setIdentity(Mat mtx) {
@@ -3353,7 +3370,7 @@ public class Core {
      *
      * For symmetric positively-determined matrices, it is also possible to use eigen decomposition to calculate the
      * determinant.
-     * 
+     *
      * @param mtx input matrix that must have CV_32FC1 or CV_64FC1 type and square size. SEE: trace, invert, solve,
      *            eigen, REF: MatrixExpressions
      * @return automatically generated
@@ -3371,7 +3388,7 @@ public class Core {
      *
      * The function cv::trace returns the sum of the diagonal elements of the matrix mtx . \(\mathrm{tr} ( \texttt{mtx}
      * ) = \sum _i \texttt{mtx} (i,i)\)
-     * 
+     *
      * @param mtx input matrix.
      * @return automatically generated
      */
@@ -3522,7 +3539,7 @@ public class Core {
      *     // (because of equal elements in A some permutations are possible):
      *     // [[1, 2, 0], [0, 2, 1], [0, 1, 2]]
      * </code>
-     * 
+     *
      * @param src   input single-channel array.
      * @param dst   output integer array of the same size as src.
      * @param flags operation flags that could be a combination of cv::SortFlags SEE: sort, randShuffle
@@ -3547,7 +3564,7 @@ public class Core {
      * </ul>
      *
      * The roots are stored in the roots array.
-     * 
+     *
      * @param coeffs equation coefficients, an array of 3 or 4 elements.
      * @param roots  output array of real roots that has 0, 1, 2 or 3 elements.
      * @return number of real roots. It can be -1 (all real numbers), 0, 1, 2 or 3.
@@ -3565,7 +3582,7 @@ public class Core {
      *
      * The function cv::solvePoly finds real and complex roots of a polynomial equation: \(\texttt{coeffs} [n] x^{n} +
      * \texttt{coeffs} [n-1] x^{n-1} + ... + \texttt{coeffs} [1] x + \texttt{coeffs} [0] = 0\)
-     * 
+     *
      * @param coeffs   array of polynomial coefficients.
      * @param roots    output (complex) array of roots.
      * @param maxIters maximum number of iterations the algorithm does.
@@ -3580,7 +3597,7 @@ public class Core {
      *
      * The function cv::solvePoly finds real and complex roots of a polynomial equation: \(\texttt{coeffs} [n] x^{n} +
      * \texttt{coeffs} [n-1] x^{n-1} + ... + \texttt{coeffs} [1] x + \texttt{coeffs} [0] = 0\)
-     * 
+     *
      * @param coeffs array of polynomial coefficients.
      * @param roots  output (complex) array of roots.
      * @return automatically generated
@@ -3668,7 +3685,7 @@ public class Core {
     /**
      *
      * <b>Note:</b> use #COVAR_ROWS or #COVAR_COLS flag
-     * 
+     *
      * @param samples samples stored as rows/columns of a single matrix.
      * @param covar   output covariance matrix of the type ctype and square size.
      * @param mean    input or output (depending on the flags) array as the average value of the input vectors.
@@ -3682,7 +3699,7 @@ public class Core {
     /**
      *
      * <b>Note:</b> use #COVAR_ROWS or #COVAR_COLS flag
-     * 
+     *
      * @param samples samples stored as rows/columns of a single matrix.
      * @param covar   output covariance matrix of the type ctype and square size.
      * @param mean    input or output (depending on the flags) array as the average value of the input vectors.
@@ -3698,7 +3715,7 @@ public class Core {
 
     /**
      * wrap PCA::operator()
-     * 
+     *
      * @param data          automatically generated
      * @param mean          automatically generated
      * @param eigenvectors  automatically generated
@@ -3710,7 +3727,7 @@ public class Core {
 
     /**
      * wrap PCA::operator()
-     * 
+     *
      * @param data         automatically generated
      * @param mean         automatically generated
      * @param eigenvectors automatically generated
@@ -3725,7 +3742,7 @@ public class Core {
 
     /**
      * wrap PCA::operator() and add eigenvalues output parameter
-     * 
+     *
      * @param data          automatically generated
      * @param mean          automatically generated
      * @param eigenvectors  automatically generated
@@ -3738,7 +3755,7 @@ public class Core {
 
     /**
      * wrap PCA::operator() and add eigenvalues output parameter
-     * 
+     *
      * @param data         automatically generated
      * @param mean         automatically generated
      * @param eigenvectors automatically generated
@@ -3754,7 +3771,7 @@ public class Core {
 
     /**
      * wrap PCA::operator()
-     * 
+     *
      * @param data             automatically generated
      * @param mean             automatically generated
      * @param eigenvectors     automatically generated
@@ -3770,7 +3787,7 @@ public class Core {
 
     /**
      * wrap PCA::operator() and add eigenvalues output parameter
-     * 
+     *
      * @param data             automatically generated
      * @param mean             automatically generated
      * @param eigenvectors     automatically generated
@@ -3787,7 +3804,7 @@ public class Core {
 
     /**
      * wrap PCA::project
-     * 
+     *
      * @param data         automatically generated
      * @param mean         automatically generated
      * @param eigenvectors automatically generated
@@ -3803,7 +3820,7 @@ public class Core {
 
     /**
      * wrap PCA::backProject
-     * 
+     *
      * @param data         automatically generated
      * @param mean         automatically generated
      * @param eigenvectors automatically generated
@@ -3819,7 +3836,7 @@ public class Core {
 
     /**
      * wrap SVD::compute
-     * 
+     *
      * @param src   automatically generated
      * @param w     automatically generated
      * @param u     automatically generated
@@ -3832,7 +3849,7 @@ public class Core {
 
     /**
      * wrap SVD::compute
-     * 
+     *
      * @param src automatically generated
      * @param w   automatically generated
      * @param u   automatically generated
@@ -3848,7 +3865,7 @@ public class Core {
 
     /**
      * wrap SVD::backSubst
-     * 
+     *
      * @param w   automatically generated
      * @param u   automatically generated
      * @param vt  automatically generated
@@ -3871,7 +3888,7 @@ public class Core {
      * \sqrt{\sum_{i,j}{\texttt{icovar(i,j)}\cdot(\texttt{vec1}(I)-\texttt{vec2}(I))\cdot(\texttt{vec1(j)}-\texttt{vec2(j)})}
      * }\) The covariance matrix may be calculated using the #calcCovarMatrix function and then inverted using the
      * invert function (preferably using the #DECOMP_SVD method, as the most accurate).
-     * 
+     *
      * @param v1     first 1D input vector.
      * @param v2     second 1D input vector.
      * @param icovar inverse covariance matrix.
@@ -4010,7 +4027,7 @@ public class Core {
      * <li>(Python) An example rearranging the quadrants of a Fourier image can be found at
      * opencv_source/samples/python/dft.py</li>
      * </ul>
-     * 
+     *
      * @param src         input array that could be real or complex.
      * @param dst         output array whose size and type depends on the flags .
      * @param flags       transformation flags, representing a combination of the #DftFlags
@@ -4150,7 +4167,7 @@ public class Core {
      * <li>(Python) An example rearranging the quadrants of a Fourier image can be found at
      * opencv_source/samples/python/dft.py</li>
      * </ul>
-     * 
+     *
      * @param src   input array that could be real or complex.
      * @param dst   output array whose size and type depends on the flags .
      * @param flags transformation flags, representing a combination of the #DftFlags nonzeroRows rows of the input
@@ -4289,7 +4306,7 @@ public class Core {
      * <li>(Python) An example rearranging the quadrants of a Fourier image can be found at
      * opencv_source/samples/python/dft.py</li>
      * </ul>
-     * 
+     *
      * @param src input array that could be real or complex.
      * @param dst output array whose size and type depends on the flags . nonzeroRows rows of the input array
      *            (#DFT_INVERSE is not set) or only the first nonzeroRows of the output array (#DFT_INVERSE is set)
@@ -4312,7 +4329,7 @@ public class Core {
      * idft(src, dst, flags) is equivalent to dft(src, dst, flags | #DFT_INVERSE) . <b>Note:</b> None of dft and idft
      * scales the result by default. So, you should pass #DFT_SCALE to one of dft or idft explicitly to make these
      * transforms mutually inverse. SEE: dft, dct, idct, mulSpectrums, getOptimalDFTSize
-     * 
+     *
      * @param src         input floating-point real or complex array.
      * @param dst         output array whose size and type depend on the flags.
      * @param flags       operation flags (see dft and #DftFlags).
@@ -4329,7 +4346,7 @@ public class Core {
      * idft(src, dst, flags) is equivalent to dft(src, dst, flags | #DFT_INVERSE) . <b>Note:</b> None of dft and idft
      * scales the result by default. So, you should pass #DFT_SCALE to one of dft or idft explicitly to make these
      * transforms mutually inverse. SEE: dft, dct, idct, mulSpectrums, getOptimalDFTSize
-     * 
+     *
      * @param src   input floating-point real or complex array.
      * @param dst   output array whose size and type depend on the flags.
      * @param flags operation flags (see dft and #DftFlags). the convolution sample in dft description.
@@ -4344,7 +4361,7 @@ public class Core {
      * idft(src, dst, flags) is equivalent to dft(src, dst, flags | #DFT_INVERSE) . <b>Note:</b> None of dft and idft
      * scales the result by default. So, you should pass #DFT_SCALE to one of dft or idft explicitly to make these
      * transforms mutually inverse. SEE: dft, dct, idct, mulSpectrums, getOptimalDFTSize
-     * 
+     *
      * @param src input floating-point real or complex array.
      * @param dst output array whose size and type depend on the flags. the convolution sample in dft description.
      */
@@ -4388,7 +4405,7 @@ public class Core {
      *     size_t getOptimalDCTSize(size_t N) { return 2*getOptimalDFTSize((N+1)/2); }
      *     N1 = getOptimalDCTSize(N);
      * </code>
-     * 
+     *
      * @param src   input floating-point array.
      * @param dst   output array of the same size and type as src .
      * @param flags transformation flags as a combination of cv::DftFlags (DCT_*) SEE: dft, getOptimalDFTSize, idct
@@ -4429,7 +4446,7 @@ public class Core {
      *     size_t getOptimalDCTSize(size_t N) { return 2*getOptimalDFTSize((N+1)/2); }
      *     N1 = getOptimalDCTSize(N);
      * </code>
-     * 
+     *
      * @param src input floating-point array.
      * @param dst output array of the same size and type as src . SEE: dft, getOptimalDFTSize, idct
      */
@@ -4445,7 +4462,7 @@ public class Core {
      * Calculates the inverse Discrete Cosine Transform of a 1D or 2D array.
      *
      * idct(src, dst, flags) is equivalent to dct(src, dst, flags | DCT_INVERSE).
-     * 
+     *
      * @param src   input floating-point single-channel array.
      * @param dst   output array of the same size and type as src.
      * @param flags operation flags. SEE: dct, dft, idft, getOptimalDFTSize
@@ -4458,7 +4475,7 @@ public class Core {
      * Calculates the inverse Discrete Cosine Transform of a 1D or 2D array.
      *
      * idct(src, dst, flags) is equivalent to dct(src, dst, flags | DCT_INVERSE).
-     * 
+     *
      * @param src input floating-point single-channel array.
      * @param dst output array of the same size and type as src. SEE: dct, dft, idft, getOptimalDFTSize
      */
@@ -4480,7 +4497,7 @@ public class Core {
      * (pass conjB=true ) of two arrays rapidly. When the arrays are complex, they are simply multiplied (per element)
      * with an optional conjugation of the second-array elements. When the arrays are real, they are assumed to be
      * CCS-packed (see dft for details).
-     * 
+     *
      * @param a     first input array.
      * @param b     second input array of the same size and type as src1 .
      * @param c     output array of the same size and type as src1 .
@@ -4504,7 +4521,7 @@ public class Core {
      * (pass conjB=true ) of two arrays rapidly. When the arrays are complex, they are simply multiplied (per element)
      * with an optional conjugation of the second-array elements. When the arrays are real, they are assumed to be
      * CCS-packed (see dft for details).
-     * 
+     *
      * @param a     first input array.
      * @param b     second input array of the same size and type as src1 .
      * @param c     output array of the same size and type as src1 .
@@ -4538,7 +4555,7 @@ public class Core {
      * While the function cannot be used directly to estimate the optimal vector size for DCT transform (since the
      * current DCT implementation supports only even-size vectors), it can be easily processed as
      * getOptimalDFTSize((vecsize+1)/2)\*2.
-     * 
+     *
      * @param vecsize vector size. SEE: dft, dct, idft, idct, mulSpectrums
      * @return automatically generated
      */
@@ -4554,7 +4571,7 @@ public class Core {
      * Sets state of default random number generator.
      *
      * The function cv::setRNGSeed sets state of default random number generator to custom value.
-     * 
+     *
      * @param seed new state for default random number generator SEE: RNG, randu, randn
      */
     public static void setRNGSeed(int seed) {
@@ -4570,7 +4587,7 @@ public class Core {
      *
      * Non-template variant of the function fills the matrix dst with uniformly-distributed random numbers from the
      * specified range: \(\texttt{low} _c \leq \texttt{dst} (I)_c &lt; \texttt{high} _c\)
-     * 
+     *
      * @param dst  output array of random numbers; the array must be pre-allocated.
      * @param low  inclusive lower boundary of the generated random numbers.
      * @param high exclusive upper boundary of the generated random numbers. SEE: RNG, randn, theRNG
@@ -4589,7 +4606,7 @@ public class Core {
      * The function cv::randn fills the matrix dst with normally distributed random numbers with the specified mean
      * vector and the standard deviation matrix. The generated random numbers are clipped to fit the value range of the
      * output array data type.
-     * 
+     *
      * @param dst    output array of random numbers; the array must be pre-allocated and have 1 to 4 channels.
      * @param mean   mean value (expectation) of the generated random numbers.
      * @param stddev standard deviation of the generated random numbers; it can be either a vector (in which case a
@@ -4608,7 +4625,7 @@ public class Core {
      *
      * The function cv::randShuffle shuffles the specified 1D array by randomly choosing pairs of elements and swapping
      * them. The number of such swap operations will be dst.rows\*dst.cols\*iterFactor .
-     * 
+     *
      * @param dst        input/output numerical 1D array.
      * @param iterFactor scale factor that determines the number of random swap operations (see the details below).
      *                   instead. SEE: RNG, sort
@@ -4622,7 +4639,7 @@ public class Core {
      *
      * The function cv::randShuffle shuffles the specified 1D array by randomly choosing pairs of elements and swapping
      * them. The number of such swap operations will be dst.rows\*dst.cols\*iterFactor .
-     * 
+     *
      * @param dst input/output numerical 1D array. below). instead. SEE: RNG, sort
      */
     public static void randShuffle(Mat dst) {
@@ -4645,7 +4662,7 @@ public class Core {
      * <ul>
      * <li>(Python) An example on k-means clustering can be found at opencv_source_code/samples/python/kmeans.py</li>
      * </ul>
-     * 
+     *
      * @param data       Data for clustering. An array of N-Dimensional points with float coordinates is needed.
      *                   Examples of this array can be:
      *                   <ul>
@@ -4702,7 +4719,7 @@ public class Core {
      * <ul>
      * <li>(Python) An example on k-means clustering can be found at opencv_source_code/samples/python/kmeans.py</li>
      * </ul>
-     * 
+     *
      * @param data       Data for clustering. An array of N-Dimensional points with float coordinates is needed.
      *                   Examples of this array can be:
      *                   <ul>
@@ -4760,7 +4777,7 @@ public class Core {
      * <li>{@code GCD} - Supports only values &lt;= 0.</li>
      * <li>{@code C=} - No special defined behaviour.</li>
      * </ul>
-     * 
+     *
      * @param nthreads Number of threads used by OpenCV. SEE: getNumThreads, getThreadNum
      */
     public static void setNumThreads(int nthreads) {
@@ -4788,7 +4805,7 @@ public class Core {
      * setNumThreads with threads &gt; 0, otherwise returns the number of logical CPUs, available for the process. SEE:
      * setNumThreads, getThreadNum</li>
      * </ul>
-     * 
+     *
      * @return automatically generated
      */
     public static int getNumThreads() {
@@ -4830,7 +4847,7 @@ public class Core {
      *
      * Returned value is raw cmake output including version control system revision, compiler version, compiler flags,
      * enabled modules and third party libraries, etc. Output format depends on target architecture.
-     * 
+     *
      * @return automatically generated
      */
     public static String getBuildInformation() {
@@ -4847,7 +4864,7 @@ public class Core {
      * For example "3.4.1-dev".
      *
      * SEE: getMajorVersion, getMinorVersion, getRevisionVersion
-     * 
+     *
      * @return automatically generated
      */
     public static String getVersionString() {
@@ -4860,7 +4877,7 @@ public class Core {
 
     /**
      * Returns major library version
-     * 
+     *
      * @return automatically generated
      */
     public static int getVersionMajor() {
@@ -4873,7 +4890,7 @@ public class Core {
 
     /**
      * Returns minor library version
-     * 
+     *
      * @return automatically generated
      */
     public static int getVersionMinor() {
@@ -4886,7 +4903,7 @@ public class Core {
 
     /**
      * Returns revision field of the library version
-     * 
+     *
      * @return automatically generated
      */
     public static int getVersionRevision() {
@@ -4903,7 +4920,7 @@ public class Core {
      * The function returns the number of ticks after the certain event (for example, when the machine was turned on).
      * It can be used to initialize RNG or to measure a function execution time by reading the tick count before and
      * after the function call. SEE: getTickFrequency, TickMeter
-     * 
+     *
      * @return automatically generated
      */
     public static long getTickCount() {
@@ -4923,7 +4940,7 @@ public class Core {
      *     // do something ...
      *     t = ((double)getTickCount() - t)/getTickFrequency();
      * </code> SEE: getTickCount, TickMeter
-     * 
+     *
      * @return automatically generated
      */
     public static double getTickFrequency() {
@@ -4945,7 +4962,7 @@ public class Core {
      * CPU varies the CPU frequency depending on the load, the number of CPU clocks spent in some code cannot be
      * directly converted to time units. Therefore, getTickCount is generally a preferable solution for measuring
      * execution time.
-     * 
+     *
      * @return automatically generated
      */
     public static long getCPUTickCount() {
@@ -4962,7 +4979,7 @@ public class Core {
      * The function returns true if the host hardware supports the specified feature. When user calls
      * setUseOptimized(false), the subsequent calls to checkHardwareSupport() will return false until
      * setUseOptimized(true) is called. This way user can dynamically switch on and off the optimized code in OpenCV.
-     * 
+     *
      * @param feature The feature of interest, one of cv::CpuFeatures
      * @return automatically generated
      */
@@ -4978,7 +4995,7 @@ public class Core {
      * Returns feature name by ID
      *
      * Returns empty string if feature is not defined
-     * 
+     *
      * @param feature automatically generated
      * @return automatically generated
      */
@@ -5002,7 +5019,7 @@ public class Core {
      * </ul>
      *
      * Example: {@code SSE SSE2 SSE3 *SSE4.1 *SSE4.2 *FP16 *AVX *AVX2 *AVX512-SKX?}
-     * 
+     *
      * @return automatically generated
      */
     public static String getCPUFeaturesLine() {
@@ -5015,7 +5032,7 @@ public class Core {
 
     /**
      * Returns the number of logical CPUs available for the process.
-     * 
+     *
      * @return automatically generated
      */
     public static int getNumberOfCPUs() {
@@ -5045,7 +5062,7 @@ public class Core {
      *
      * By default, the optimized code is enabled unless you disable it in CMake. The current status can be retrieved
      * using useOptimized.
-     * 
+     *
      * @param onoff The boolean flag specifying whether the optimized code should be used (onoff=true) or not
      *              (onoff=false).
      */
@@ -5061,7 +5078,7 @@ public class Core {
      * Returns the status of optimized code usage.
      *
      * The function returns true if the optimized code is enabled. Otherwise, it returns false.
-     * 
+     *
      * @return automatically generated
      */
     public static boolean useOptimized() {

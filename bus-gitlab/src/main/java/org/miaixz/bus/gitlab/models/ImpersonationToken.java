@@ -24,12 +24,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 /**
  * The impersonation token class.

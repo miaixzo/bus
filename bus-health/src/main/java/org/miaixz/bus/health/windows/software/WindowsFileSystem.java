@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -22,6 +22,12 @@ package org.miaixz.bus.health.windows.software;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinBase;
+import com.sun.jna.platform.win32.WinNT;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -34,12 +40,6 @@ import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation;
 import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation.HandleCountProperty;
 import org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk;
 import org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk.LogicalDiskProperty;
-
-import com.sun.jna.Native;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinBase;
-import com.sun.jna.platform.win32.WinNT;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * The Windows File System contains {@link OSFileStore}s which are a storage pool, device, partition, volume, concrete

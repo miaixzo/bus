@@ -19,19 +19,19 @@
 */
 package org.miaixz.bus.auth.nimble.aliyun;
 
+import java.util.Map;
+
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Claims;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-
-import java.util.Map;
 
 /**
  * Aliyun login provider.

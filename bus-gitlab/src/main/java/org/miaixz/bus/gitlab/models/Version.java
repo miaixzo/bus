@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import java.io.Serial;
 
 /**
  * The version class.

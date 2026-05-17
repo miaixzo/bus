@@ -21,17 +21,17 @@ package org.miaixz.bus.notify.metric.generic;
 
 import java.io.File;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.notify.magic.Notice;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.notify.magic.Notice;
 
 /**
  * Represents the notice for generic email messages.

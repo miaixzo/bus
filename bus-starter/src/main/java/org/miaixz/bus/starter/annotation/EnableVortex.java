@@ -19,10 +19,11 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import org.miaixz.bus.starter.vortex.VortexConfiguration;
+import java.lang.annotation.*;
+
 import org.springframework.context.annotation.Import;
 
-import java.lang.annotation.*;
+import org.miaixz.bus.starter.vortex.VortexConfiguration;
 
 /**
  * Enables Vortex reactive routing and gateway features.

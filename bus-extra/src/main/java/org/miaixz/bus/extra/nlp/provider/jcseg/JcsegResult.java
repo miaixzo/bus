@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import org.lionsoul.jcseg.ISegment;
 import org.lionsoul.jcseg.IWord;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;

@@ -113,7 +113,7 @@ public class Hpack {
 
     /**
      * Creates a map from name to the first index in the static table.
-     * 
+     *
      * @return an unmodifiable map from header name to index.
      */
     private static Map<ByteString, Integer> nameToFirstIndex() {
@@ -128,7 +128,7 @@ public class Hpack {
 
     /**
      * An HTTP/2 response cannot contain uppercase header characters and must be treated as malformed.
-     * 
+     *
      * @param name the name of the header
      * @return the name of the header if it is lowercase
      * @throws IOException if the header name contains uppercase characters
@@ -224,7 +224,7 @@ public class Hpack {
 
         /**
          * Evicts entries from the dynamic table until {@code bytesToRecover} bytes are recovered.
-         * 
+         *
          * @param bytesToRecover the number of bytes to recover.
          * @return the number of entries evicted.
          */
@@ -251,7 +251,7 @@ public class Hpack {
         /**
          * Read {@code byteCount} bytes of headers from the source stream. This implementation does not propagate the
          * never indexed flag of a header.
-         * 
+         *
          * @throws IOException if an I/O error occurs.
          */
         void readHeaders() throws IOException {
@@ -284,7 +284,7 @@ public class Hpack {
 
         /**
          * Returns the list of headers read and clears the list.
-         * 
+         *
          * @return the list of headers.
          */
         public List<Http2Header> getAndResetHeaderList() {
@@ -353,7 +353,7 @@ public class Hpack {
 
         /**
          * Inserts a header into the dynamic table.
-         * 
+         *
          * @param index index of the header, -1 when new.
          * @param entry the header entry to insert.
          */
@@ -420,7 +420,7 @@ public class Hpack {
 
         /**
          * Reads a potentially Huffman encoded byte string.
-         * 
+         *
          * @return the read byte string.
          * @throws IOException if an I/O error occurs.
          */
@@ -528,7 +528,7 @@ public class Hpack {
 
         /**
          * Returns the count of entries evicted.
-         * 
+         *
          * @param bytesToRecover the number of bytes to recover.
          * @return the number of evicted entries.
          */
@@ -581,7 +581,7 @@ public class Hpack {
 
         /**
          * This does not use "never indexed" semantics for sensitive headers.
-         * 
+         *
          * @param headerBlock the list of headers to write.
          * @throws IOException if an I/O error occurs.
          */
@@ -657,7 +657,7 @@ public class Hpack {
 
         /**
          * Writes an integer with HPACK-style variable-length encoding.
-         * 
+         *
          * @param value      the integer to write.
          * @param prefixMask the mask for the prefix.
          * @param bits       the number of bits for the prefix.
@@ -684,7 +684,7 @@ public class Hpack {
 
         /**
          * Writes a byte string, applying Huffman encoding if it is shorter.
-         * 
+         *
          * @param data the byte string to write.
          * @throws IOException if an I/O error occurs.
          */

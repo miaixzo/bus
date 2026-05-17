@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.spring.boot;
 
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.metrics.ChildrenMetrics;
-import org.miaixz.bus.spring.metrics.ModuleMetrics;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.SmartLifecycle;
+
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.metrics.ChildrenMetrics;
+import org.miaixz.bus.spring.metrics.ModuleMetrics;
 
 /**
  * Implements {@link SmartLifecycle} to calculate application context refresh time.

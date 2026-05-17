@@ -70,7 +70,7 @@ public class UrlDecoder implements Serializable {
     /**
      * Decodes a URL-encoded string according to the rules at
      * <a href="https://url.spec.whatwg.org/#urlencoded-parsing">https://url.spec.whatwg.org/#urlencoded-parsing</a>.
-     * 
+     *
      * <pre>
      * 1. Converts "+" and "%20" to a space (" ").
      * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
@@ -87,7 +87,7 @@ public class UrlDecoder implements Serializable {
     /**
      * Decodes a URL-encoded string according to the rules at
      * <a href="https://url.spec.whatwg.org/#urlencoded-parsing">https://url.spec.whatwg.org/#urlencoded-parsing</a>.
-     * 
+     *
      * <pre>
      * 1. Converts "+" and "%20" to a space (" ").
      * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
@@ -104,7 +104,7 @@ public class UrlDecoder implements Serializable {
 
     /**
      * Decodes a URL-encoded string.
-     * 
+     *
      * <pre>
      * 1. Converts "%20" to a space.
      * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
@@ -121,7 +121,7 @@ public class UrlDecoder implements Serializable {
 
     /**
      * Decodes a URL-encoded string.
-     * 
+     *
      * <pre>
      * 1. Converts "%20" to a space.
      * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
@@ -179,7 +179,7 @@ public class UrlDecoder implements Serializable {
 
     /**
      * Decodes URL-encoded bytes.
-     * 
+     *
      * <pre>
      * 1. Converts "+" and "%20" to a space.
      * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
@@ -195,7 +195,7 @@ public class UrlDecoder implements Serializable {
 
     /**
      * Decodes URL-encoded bytes.
-     * 
+     *
      * <pre>
      * 1. Converts "%20" to a space.
      * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.

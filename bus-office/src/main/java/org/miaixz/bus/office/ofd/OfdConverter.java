@@ -22,12 +22,13 @@ package org.miaixz.bus.office.ofd;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.logger.Logger;
 import org.ofdrw.converter.export.*;
 import org.ofdrw.converter.ofdconverter.ImageConverter;
 import org.ofdrw.converter.ofdconverter.PDFConverter;
 import org.ofdrw.converter.ofdconverter.TextConverter;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Document converter based on {@code ofdrw-converter}.

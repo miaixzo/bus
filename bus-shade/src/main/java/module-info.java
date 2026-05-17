@@ -19,7 +19,7 @@
 */
 /**
  * bus.shade
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

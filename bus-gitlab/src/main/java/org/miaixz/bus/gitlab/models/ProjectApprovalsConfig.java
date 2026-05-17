@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.Serial;
 
 /**
  * The project approvals config class.

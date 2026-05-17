@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.tempus.pattern.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
@@ -27,9 +30,6 @@ import org.miaixz.bus.tempus.pattern.Part;
 import org.miaixz.bus.tempus.pattern.matcher.AlwaysTrueMatcher;
 import org.miaixz.bus.tempus.pattern.matcher.PartMatcher;
 import org.miaixz.bus.tempus.pattern.matcher.PatternMatcher;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A parser for cron expressions that converts a cron string into a list of {@link PatternMatcher} objects.
@@ -60,7 +60,7 @@ public class PatternParser {
 
     /**
      * Parses a grouped cron expression, where individual patterns are separated by '|'.
-     * 
+     *
      * <pre>
      *     cronA | cronB | ...
      * </pre>

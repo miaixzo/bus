@@ -183,13 +183,13 @@ public class NetKit {
 
     /**
      * Determines if an IPv4 address is a private IP address. Private IP ranges:
-     * 
+     *
      * <pre>
      * A class: 10.0.0.0 - 10.255.255.255
      * B class: 172.16.0.0 - 172.31.255.255
      * C class: 192.168.0.0 - 192.168.255.255
      * </pre>
-     * 
+     *
      * Also, the 127.x.x.x range is a loopback address.
      *
      * @param ipAddress The IP address to check.
@@ -617,7 +617,7 @@ public class NetKit {
 
     /**
      * Retrieves DNS information, such as TXT records.
-     * 
+     *
      * <pre class="code">
      * NetKit.getDnsInfo("example.com", "TXT")
      * </pre>

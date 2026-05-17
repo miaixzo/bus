@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -21,6 +21,12 @@ package org.miaixz.bus.health.windows.driver;
 
 import java.util.*;
 
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.Kernel32Util;
+import com.sun.jna.platform.win32.VersionHelpers;
+import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.platform.win32.WinNT.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Triplet;
@@ -28,12 +34,6 @@ import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
 import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.driver.wmi.Win32Processor;
-
-import com.sun.jna.platform.win32.Kernel32Util;
-import com.sun.jna.platform.win32.VersionHelpers;
-import com.sun.jna.platform.win32.WinNT;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import com.sun.jna.platform.win32.WinNT.*;
 
 /**
  * Utility to query Logical Processor Information

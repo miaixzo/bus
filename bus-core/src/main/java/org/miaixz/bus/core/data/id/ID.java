@@ -108,7 +108,7 @@ public class ID {
      *
      * <p>
      * The structure of a snowflake ID is as follows (each part is separated by a hyphen):
-     * 
+     *
      * <pre>
      * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
      * </pre>
@@ -137,7 +137,7 @@ public class ID {
      *
      * <p>
      * The structure of a snowflake ID is as follows (each part is separated by a hyphen):
-     * 
+     *
      * <pre>
      * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
      * </pre>
@@ -164,7 +164,7 @@ public class ID {
      *
      * <p>
      * The structure of a snowflake ID is as follows (each part is separated by a hyphen):
-     * 
+     *
      * <pre>
      * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
      * </pre>

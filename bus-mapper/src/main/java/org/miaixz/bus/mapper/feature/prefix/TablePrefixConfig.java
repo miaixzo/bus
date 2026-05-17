@@ -22,13 +22,13 @@ package org.miaixz.bus.mapper.feature.prefix;
 import java.util.Collections;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * Table prefix configuration class.

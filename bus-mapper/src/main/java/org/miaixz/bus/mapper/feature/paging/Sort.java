@@ -23,11 +23,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
-import org.miaixz.bus.mapper.Order;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import org.miaixz.bus.mapper.Order;
 
 /**
  * Sort option for queries.

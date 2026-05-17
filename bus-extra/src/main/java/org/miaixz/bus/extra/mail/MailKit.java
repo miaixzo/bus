@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import jakarta.mail.Authenticator;
+import jakarta.mail.Session;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
-
-import jakarta.mail.Authenticator;
-import jakarta.mail.Session;
 
 /**
  * A utility class for sending emails, built on top of the Jakarta Mail API. This class provides a set of static methods

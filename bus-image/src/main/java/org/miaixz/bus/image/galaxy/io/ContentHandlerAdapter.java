@@ -26,14 +26,15 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Objects;
 
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.logger.Logger;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * A SAX {@link org.xml.sax.ContentHandler} adapter that parses DICOM XML representations into an {@link Attributes}

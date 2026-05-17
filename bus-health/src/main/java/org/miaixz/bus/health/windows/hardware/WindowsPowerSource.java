@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -24,6 +24,12 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.Platform;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.win32.W32APITypeMapper;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -33,12 +39,6 @@ import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.windows.jna.Kernel32;
 import org.miaixz.bus.health.windows.jna.PowrProf;
-
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.Platform;
-import com.sun.jna.platform.win32.*;
-import com.sun.jna.win32.W32APITypeMapper;
 
 /**
  * A Power Source

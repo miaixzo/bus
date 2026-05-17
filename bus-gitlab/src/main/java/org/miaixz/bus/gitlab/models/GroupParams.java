@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.models.Constants.DefaultBranchProtectionLevel;
 import org.miaixz.bus.gitlab.models.Constants.ProjectCreationLevel;
 import org.miaixz.bus.gitlab.models.Constants.SubgroupCreationLevel;
-import java.io.Serial;
 
 /**
  * This class is utilized by the <code>org.miaixz.bus.gitlab.GroupApi#createGroup(GroupParams)</code> and

@@ -23,11 +23,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.SpringBuilder;
-import org.miaixz.bus.spring.env.SpringEnvironmentPostProcessor;
-import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
@@ -35,6 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.SpringBuilder;
+import org.miaixz.bus.spring.env.SpringEnvironmentPostProcessor;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 
 /**
  * Configures Spring MVC message converters, supporting serialization/deserialization for strings and JSON.

@@ -22,13 +22,13 @@ package org.miaixz.bus.gitlab;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Package;
-import org.miaixz.bus.gitlab.models.PackageFile;
-import org.miaixz.bus.gitlab.models.PackageFilter;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Package;
+import org.miaixz.bus.gitlab.models.PackageFile;
+import org.miaixz.bus.gitlab.models.PackageFilter;
 
 /**
  * <p>

@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.validate;
 
+import java.lang.annotation.Annotation;
+
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Validator;
-
-import java.lang.annotation.Annotation;
 
 /**
  * Predefined validator names within the current framework.

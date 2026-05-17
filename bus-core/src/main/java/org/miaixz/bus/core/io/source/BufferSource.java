@@ -84,7 +84,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
 
     /**
      * Removes two bytes from this source and returns them as a short.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0x7f).writeByte(0xff).writeByte(0x00).writeByte(0x0f);
      * assertEquals(4, buffer.size());
@@ -103,7 +103,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
 
     /**
      * Removes two bytes from this source and returns them as a short, in little-endian order.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0xff).writeByte(0x7f).writeByte(0x0f).writeByte(0x00);
      * assertEquals(4, buffer.size());
@@ -122,7 +122,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
 
     /**
      * Removes four bytes from this source and returns them as an integer.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0x7f).writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0x00)
      *         .writeByte(0x00).writeByte(0x00).writeByte(0x0f);
@@ -142,7 +142,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
 
     /**
      * Removes four bytes from this source and returns them as an integer, in little-endian order.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0x7f).writeByte(0x0f)
      *         .writeByte(0x00).writeByte(0x00).writeByte(0x00);
@@ -162,7 +162,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
 
     /**
      * Removes eight bytes from this source and returns them as a long.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0x7f).writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0xff)
      *         .writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0x00).writeByte(0x00).writeByte(0x00)
@@ -183,7 +183,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
 
     /**
      * Removes eight bytes from this source and returns them as a long, in little-endian order.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0xff)
      *         .writeByte(0xff).writeByte(0xff).writeByte(0x7f).writeByte(0x0f).writeByte(0x00).writeByte(0x00)
@@ -205,7 +205,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
     /**
      * Reads a signed decimal long from this source (i.e., a string of base-10 digits with an optional leading '-'
      * character). This operation will iterate until a non-digit character is found.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeUtf8("8675309 -123 00001");
      *
@@ -225,7 +225,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
     /**
      * Reads an unsigned hexadecimal long from this source (i.e., a string of base-16 digits). This operation will
      * iterate until a non-hexadecimal character is found.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeUtf8("ffff CAFEBABE 10");
      *
@@ -276,7 +276,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *
      * This can be used as an alternative to {@link #readByteString} or even {@link #readUtf8} if the set of expected
      * values is known in advance.
-     * 
+     *
      * <pre>{@code
      * Options FIELDS = Options
      *         .of(ByteString.encodeUtf8("depth="), ByteString.encodeUtf8("height="), ByteString.encodeUtf8("width="));
@@ -372,7 +372,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
     /**
      * Removes all bytes from this source, decodes them as UTF-8, and returns the string. If this source is empty, an
      * empty string is returned.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeUtf8("Uh uh uh!").writeByte(' ').writeUtf8("You didn't say the magic word!");
      *
@@ -390,7 +390,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
 
     /**
      * Removes {@code byteCount} bytes from this source, decodes them as UTF-8, and returns the string.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeUtf8("Uh uh uh!").writeByte(' ').writeUtf8("You didn't say the magic word!");
      * assertEquals(40, buffer.size());
@@ -415,7 +415,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
     /**
      * Removes and returns characters until the next newline (but not including the newline). The newline is either
      * {@code "\n"} or {@code "\r\n"}; these characters are not included in the result.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer().writeUtf8("I'm a hacker!\n").writeUtf8("That's what I said: you're a nerd.\n")
      *         .writeUtf8("I prefer to be called a hacker!\n");
@@ -456,7 +456,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
     /**
      * Similar to {@link #readUtf8LineStrict()}, but allows the caller to specify the maximum length allowed for the
      * match. Use this to prevent streams that may not contain {@code "\n"} or {@code "\r\n"}.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer();
      * buffer.writeUtf8("12345\r\n");
@@ -520,7 +520,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * Returns the index of the first {@code b} in this buffer at or after {@code fromIndex}. This expands the buffer as
      * necessary until {@code b} is found. This will read an unbounded number of bytes into the buffer. Returns -1 if
      * the stream is exhausted before the requested byte is found.
-     * 
+     *
      * <pre>{@code
      * Buffer buffer = new Buffer();
      * buffer.writeUtf8("Don't move! He can't see us if we don't move.");
@@ -562,7 +562,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * Returns the index of the first match for {@code bytes} in this buffer at or after {@code fromIndex}. This expands
      * the buffer as necessary until {@code bytes} is found. This will read an unbounded number of bytes into the
      * buffer. Returns -1 if the stream is exhausted before the requested bytes are found.
-     * 
+     *
      * <pre>{@code
      * ByteString MOVE = ByteString.encodeUtf8("move");
      * Buffer buffer = new Buffer();
@@ -592,7 +592,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * Returns the index in this buffer at or after {@code fromIndex} of the first byte that is in {@code targetBytes}.
      * This expands the buffer as necessary until a target byte is found. This will read an unbounded number of bytes
      * into the buffer. Returns -1 if the stream is exhausted before a requested byte is found.
-     * 
+     *
      * <pre>{@code
      * ByteString ANY_VOWEL = ByteString.encodeUtf8("AEOIUaeoiu");
      * Buffer buffer = new Buffer();
@@ -613,7 +613,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * Returns true if the bytes in this source at {@code offset} equal {@code bytes}. This expands the buffer as
      * necessary until either a byte does not match, all bytes match, or the stream is exhausted before enough bytes can
      * be read to determine a match.
-     * 
+     *
      * <pre>{@code
      * ByteString simonSays = ByteString.encodeUtf8("Simon says:");
      * Buffer standOnOneLeg = new Buffer().writeUtf8("Simon says: Stand on one leg.");
@@ -647,7 +647,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
     /**
      * Returns a new {@code BufferSource} that can read from this {@code BufferSource} without consuming its data. The
      * returned source becomes invalid once this source is next read or closed.
-     * 
+     *
      * <pre> {@code
      *   Buffer buffer = new Buffer();
      *   buffer.writeUtf8("abcdefghi");

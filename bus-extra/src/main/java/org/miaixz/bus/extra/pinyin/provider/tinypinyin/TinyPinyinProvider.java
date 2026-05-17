@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.extra.pinyin.provider.tinypinyin;
 
+import com.github.promeg.pinyinhelper.Pinyin;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
 import org.miaixz.bus.logger.Logger;
-
-import com.github.promeg.pinyinhelper.Pinyin;
 
 /**
  * Encapsulates the TinyPinyin engine.

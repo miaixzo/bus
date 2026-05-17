@@ -21,18 +21,19 @@ package org.miaixz.bus.mapper.feature.audit;
 
 import java.util.Properties;
 
+import lombok.Getter;
+
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
-
-import lombok.Getter;
 
 /**
  * SQL Audit Interceptor

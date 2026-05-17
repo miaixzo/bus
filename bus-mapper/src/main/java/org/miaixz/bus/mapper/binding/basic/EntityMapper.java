@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.binding.basic;
 import java.util.List;
 
 import org.apache.ibatis.annotations.*;
+
 import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.provider.EntityProvider;
 

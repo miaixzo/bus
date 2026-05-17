@@ -22,14 +22,15 @@ package org.miaixz.bus.spring.env;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
+
+import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * An {@link EnvironmentPostProcessor} implementation for logging configuration detection and initialization.

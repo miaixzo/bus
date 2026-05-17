@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
-import org.miaixz.bus.core.xyz.BeanKit;
-import org.miaixz.bus.http.Httpd;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.http.Httpd;
 
 /**
  * An abstract base builder for creating HTTP requests. It provides a fluent API for setting common request properties

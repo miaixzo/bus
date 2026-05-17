@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.*;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.*;
 
 /**
  * This class provides an entry point to all the GitLab API Issue calls.
@@ -84,9 +84,9 @@ public class IssuesApi extends AbstractApi implements Constants {
      * <pre>
      * <code>GitLab Endpoint: GET /issues</code>
      * </pre>
-     * 
+     *
      * r
-     * 
+     *
      * @param itemsPerPage the number of issues per page
      * @return the Pager of issues in the specified range
      * @throws GitLabApiException if any exception occurs

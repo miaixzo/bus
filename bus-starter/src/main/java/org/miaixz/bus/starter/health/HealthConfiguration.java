@@ -19,12 +19,9 @@
 */
 package org.miaixz.bus.starter.health;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
-import org.miaixz.bus.health.Provider;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.starter.annotation.EnableHealth;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.availability.ApplicationAvailability;
 import org.springframework.boot.availability.ApplicationAvailabilityBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -38,6 +35,11 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+
+import org.miaixz.bus.health.Provider;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableHealth;
 
 /**
  * Auto-configuration for application health status and monitoring.

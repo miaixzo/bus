@@ -19,12 +19,11 @@
 */
 package org.miaixz.bus.spring.boot;
 
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.metrics.BaseMetrics;
-import org.miaixz.bus.spring.metrics.ChildrenMetrics;
-import org.miaixz.bus.spring.metrics.ModuleMetrics;
+import java.lang.management.ManagementFactory;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.logging.LoggerConfiguration;
@@ -34,10 +33,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import java.lang.management.ManagementFactory;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.metrics.BaseMetrics;
+import org.miaixz.bus.spring.metrics.ChildrenMetrics;
+import org.miaixz.bus.spring.metrics.ModuleMetrics;
 
 /**
  * Implements {@link org.springframework.boot.SpringApplicationRunListener} and {@link ApplicationListener} to calculate

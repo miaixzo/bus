@@ -28,16 +28,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.ArtifactsFile;
-import org.miaixz.bus.gitlab.models.Constants;
-import org.miaixz.bus.gitlab.models.Job;
-import org.miaixz.bus.gitlab.models.JobAttributes;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+
+import org.miaixz.bus.gitlab.models.ArtifactsFile;
+import org.miaixz.bus.gitlab.models.Constants;
+import org.miaixz.bus.gitlab.models.Job;
+import org.miaixz.bus.gitlab.models.JobAttributes;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -317,7 +317,7 @@ public class JobApi extends AbstractApi implements Constants {
 
     /**
      * Get a Stream of jobs in a pipeline.
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/pipelines/:pipeline_id/jobs</code>
      * </pre>
@@ -333,7 +333,7 @@ public class JobApi extends AbstractApi implements Constants {
 
     /**
      * Get a Stream of jobs in a pipeline.
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/pipelines/:pipeline_id/jobs</code>
      * </pre>

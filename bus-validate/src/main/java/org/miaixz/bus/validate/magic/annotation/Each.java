@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.metric.EachMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * Validates each element of an array, collection, or map.

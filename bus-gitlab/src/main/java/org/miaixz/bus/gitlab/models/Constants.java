@@ -26,10 +26,10 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 /**
  * The constants interface.

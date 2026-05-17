@@ -21,12 +21,12 @@ package org.miaixz.bus.core.net;
 
 import java.io.IOException;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
  * An enumeration of network protocols, used for identifying and handling various network protocols. The protocol names

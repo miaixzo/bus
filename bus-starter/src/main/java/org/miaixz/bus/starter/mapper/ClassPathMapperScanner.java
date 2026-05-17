@@ -27,9 +27,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
@@ -48,6 +45,10 @@ import org.springframework.core.type.classreading.ClassFormatException;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A {@link ClassPathBeanDefinitionScanner} that scans for and registers MyBatis mapper interfaces.

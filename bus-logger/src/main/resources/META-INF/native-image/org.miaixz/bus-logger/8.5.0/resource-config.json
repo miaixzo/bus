@@ -2,9 +2,6 @@
   "resources": {
     "includes": [
       {
-        "pattern": "META-INF/services/*"
-      },
-      {
         "pattern": "logback-spring.groovy"
       },
       {
@@ -24,6 +21,9 @@
       },
       {
         "pattern": "logback.xml"
+      },
+      {
+        "pattern": "META-INF/services/.*"
       }
     ]
   },

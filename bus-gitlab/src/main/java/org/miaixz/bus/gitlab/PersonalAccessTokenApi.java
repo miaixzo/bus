@@ -22,11 +22,11 @@ package org.miaixz.bus.gitlab;
 import java.util.Date;
 import java.util.List;
 
-import org.miaixz.bus.gitlab.models.PersonalAccessToken;
-import org.miaixz.bus.gitlab.support.ISO8601;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.PersonalAccessToken;
+import org.miaixz.bus.gitlab.support.ISO8601;
 
 /**
  * This class provides an entry point to all the GitLab API personal access token calls.
@@ -146,7 +146,7 @@ public class PersonalAccessTokenApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: DELETE /personal_access_tokens/:token_id</code>
      * </pre>
-     * 
+     *
      * @param tokenId the personal access token ID to revoke
      * @throws GitLabApiException if any exception occurs
      */

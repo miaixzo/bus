@@ -19,9 +19,10 @@
 */
 package org.miaixz.bus.shade.safety.boot;
 
+import org.springframework.boot.loader.launch.JarLauncher;
+
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Launcher;
-import org.springframework.boot.loader.launch.JarLauncher;
 
 /**
  * A custom {@link JarLauncher} for Spring Boot applications that integrates with the {@link Launcher} to provide

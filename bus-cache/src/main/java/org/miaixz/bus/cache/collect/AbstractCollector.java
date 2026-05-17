@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.cache.collect;
 
-import jakarta.annotation.PreDestroy;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.*;
@@ -29,6 +28,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import jakarta.annotation.PreDestroy;
+
 import org.miaixz.bus.cache.Collector;
 import org.miaixz.bus.cache.magic.CachePair;
 import org.miaixz.bus.core.lang.Normal;

@@ -22,6 +22,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.base.entity.BaseEntity$BaseEntityBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.base.entity.BaseEntity$BaseEntityBuilderImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.base.mapper.BaseMapper",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

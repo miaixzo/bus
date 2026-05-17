@@ -21,12 +21,12 @@ package org.miaixz.bus.mapper.feature.paging;
 
 import java.util.regex.Pattern;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import org.miaixz.bus.core.text.PooledStringBuilder;
 import org.miaixz.bus.core.text.StringBuilderPool;
 import org.miaixz.bus.mapper.Order;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Pagination SQL builder that handles sorting and pagination SQL generation.

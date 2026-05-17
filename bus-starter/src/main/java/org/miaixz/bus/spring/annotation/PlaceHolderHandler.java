@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.spring.annotation;
 
-import org.miaixz.bus.core.xyz.MethodKit;
-import org.springframework.core.env.Environment;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+
+import org.springframework.core.env.Environment;
+
+import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
  * An {@link InvocationHandler} that resolves annotation attribute values from the Spring {@link Environment} when the

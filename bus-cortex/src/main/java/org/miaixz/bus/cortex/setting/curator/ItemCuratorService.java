@@ -29,11 +29,11 @@ import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.guard.GuardContext;
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
 import org.miaixz.bus.cortex.setting.SettingPublisher;
 import org.miaixz.bus.cortex.setting.item.*;
 import org.miaixz.bus.cortex.setting.item.revision.ItemRevision;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore;
 
 /**

@@ -25,9 +25,9 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.registry.RegistryStore;
 import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
-import org.miaixz.bus.cortex.magic.watch.WatchManager;
 
 /**
  * Registry for MCP tool definitions.

@@ -390,7 +390,7 @@ public class UrlQuery {
 
     /**
      * Adds a key-value pair to the map.
-     * 
+     *
      * <pre>
      *     1. If key and value are not null (e.g., "a=1" or "=1"), put them directly.
      *     2. If key is not null and value is null (e.g., "a="), the value is treated as an empty string.

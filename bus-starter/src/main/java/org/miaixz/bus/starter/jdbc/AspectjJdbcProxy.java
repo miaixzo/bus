@@ -23,9 +23,10 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.core.annotation.Order;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.springframework.core.annotation.Order;
 
 /**
  * AOP aspect for dynamic data source switching.

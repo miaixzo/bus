@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.extra.template.provider.thymeleaf;
 
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.*;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -26,9 +30,6 @@ import org.miaixz.bus.extra.template.Template;
 import org.miaixz.bus.extra.template.TemplateConfig;
 import org.miaixz.bus.extra.template.TemplateProvider;
 import org.miaixz.bus.logger.Logger;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.*;
 
 /**
  * Thymeleaf template engine implementation. This class provides an implementation of {@link TemplateProvider} for the

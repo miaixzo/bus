@@ -19,6 +19,11 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.IOException;
+import java.net.ProtocolException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -32,11 +37,6 @@ import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.net.ProtocolException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * This is the last interceptor in the chain. It makes a network call to the server.

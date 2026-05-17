@@ -22,13 +22,14 @@ package org.miaixz.bus.spring.boot;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.metrics.BaseMetrics;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.io.ResourceLoader;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.metrics.BaseMetrics;
 
 /**
  * An extension of {@link org.springframework.boot.SpringApplication} that calculates the initialization time of each

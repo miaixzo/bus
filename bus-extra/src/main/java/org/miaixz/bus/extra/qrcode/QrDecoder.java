@@ -23,13 +23,13 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.core.codec.Decoder;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.extra.image.ImageKit;
-
 import com.google.zxing.*;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
+
+import org.miaixz.bus.core.codec.Decoder;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.extra.image.ImageKit;
 
 /**
  * QR code (barcode, etc.) decoder.

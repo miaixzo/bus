@@ -99,50 +99,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.safety.Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.shade.safety.Complex",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.shade.safety.Injector",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.shade.safety.Launcher",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.shade.safety.algorithm.AsymmetricKey",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -550,6 +506,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.shade.safety.Builder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.safety.Complex",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.shade.safety.complex.AllComplex",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -606,6 +584,28 @@
   },
   {
     "name": "org.miaixz.bus.shade.safety.complex.RegexComplex",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.safety.Injector",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.safety.Launcher",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -770,7 +770,73 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.shade.screw.Config$ConfigBuilder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.shade.screw.dialect.AbstractDatabaseQuery",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbColumn",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDatabase",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDataBaseQuery",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbPrimaryKey",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbTable",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -814,72 +880,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.OtherDataBaseQuery",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbColumn",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDataBaseQuery",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDatabase",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbPrimaryKey",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbTable",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.shade.screw.dialect.db2.Db2DataBaseQuery",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -902,17 +902,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.mariadb.MariaDbDataBaseQuery",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbColumn",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -925,6 +914,17 @@
   },
   {
     "name": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbDatabase",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.screw.dialect.mariadb.MariaDbDataBaseQuery",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -968,7 +968,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDataBaseQuery",
+    "name": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDatabase",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -979,7 +979,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDatabase",
+    "name": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDataBaseQuery",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1023,7 +1023,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDataBaseQuery",
+    "name": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDatabase",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1034,7 +1034,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDatabase",
+    "name": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDataBaseQuery",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1067,6 +1067,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.shade.screw.dialect.OtherDataBaseQuery",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlColumn",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -1078,7 +1089,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery",
+    "name": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1089,7 +1100,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase",
+    "name": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1133,7 +1144,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery",
+    "name": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDatabase",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1144,7 +1155,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDatabase",
+    "name": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1189,6 +1200,17 @@
   },
   {
     "name": "org.miaixz.bus.shade.screw.engine.EngineConfig",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.screw.engine.EngineConfig$EngineConfigBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1364,17 +1386,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.metadata.DataSchema",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.shade.screw.metadata.Database",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -1387,6 +1398,17 @@
   },
   {
     "name": "org.miaixz.bus.shade.screw.metadata.DatabaseSchema",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.screw.metadata.DataSchema",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1464,6 +1486,17 @@
   },
   {
     "name": "org.miaixz.bus.shade.screw.process.ProcessConfig",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.shade.screw.process.ProcessConfig$ProcessConfigBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

@@ -105,9 +105,9 @@ public class MethodInvoker implements Invoker {
      * parameter types.
      *
      * <pre class="code">
-     * 
+     *
      * interface Duck {
-     * 
+     *
      *     default String quack() {
      *         return "Quack";
      *     }
@@ -136,9 +136,9 @@ public class MethodInvoker implements Invoker {
      * exactly match the method's parameter types.
      *
      * <pre class="code">
-     * 
+     *
      * interface Duck {
-     * 
+     *
      *     default String quack() {
      *         return "Quack";
      *     }
@@ -253,7 +253,7 @@ public class MethodInvoker implements Invoker {
 
     /**
      * Sets whether to check arguments before method invocation.
-     * 
+     *
      * <pre>
      * 1. Checks if the number of arguments matches the method's parameter count.
      * 2. If a parameter is {@code

@@ -26,6 +26,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ResourceKit;
@@ -33,9 +37,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Code;
 import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.image.galaxy.data.VR;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Represents a DICOM Information Object Definition (IOD), which specifies the modules and attributes for a particular

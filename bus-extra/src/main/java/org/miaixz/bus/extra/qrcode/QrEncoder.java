@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.extra.qrcode;
 
-import org.miaixz.bus.core.codec.Encoder;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+
+import org.miaixz.bus.core.codec.Encoder;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Encoder for QR codes (and other barcodes), used to convert text content into a BitMatrix.

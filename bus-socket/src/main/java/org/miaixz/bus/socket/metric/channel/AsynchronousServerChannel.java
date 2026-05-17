@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org sandao and other contributors.         ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,9 +19,6 @@
 */
 package org.miaixz.bus.socket.metric.channel;
 
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.socket.metric.handler.FutureCompletionHandler;
-
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.SocketOption;
@@ -30,6 +27,9 @@ import java.nio.channels.*;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.socket.metric.handler.FutureCompletionHandler;
 
 /**
  * An abstract base class for asynchronous server channels, simulating the JDK7 AIO processing style. This class

@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.io.Serial;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * The project access token class.

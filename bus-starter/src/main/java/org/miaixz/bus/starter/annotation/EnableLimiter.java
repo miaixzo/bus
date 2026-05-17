@@ -19,10 +19,11 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import org.miaixz.bus.starter.limiter.LimiterConfiguration;
+import java.lang.annotation.*;
+
 import org.springframework.context.annotation.Import;
 
-import java.lang.annotation.*;
+import org.miaixz.bus.starter.limiter.LimiterConfiguration;
 
 /**
  * Enables rate limiting and circuit breaking (downgrade) features.

@@ -23,11 +23,11 @@ import java.util.EnumSet;
 
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Modify;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * Dialect implementation for IBM AS/400 databases.

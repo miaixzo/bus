@@ -19,18 +19,20 @@
 */
 package org.miaixz.bus.starter.limiter;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.limiter.Supplier;
 import org.miaixz.bus.limiter.metric.FallbackProvider;
 import org.miaixz.bus.limiter.metric.MethodProvider;
 import org.miaixz.bus.limiter.metric.RequestProvider;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Auto-configuration for the rate limiting and circuit breaking framework.

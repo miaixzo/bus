@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.socket;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.net.SocketOption;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Represents the context for a server or client, holding configuration and operational parameters. The generic type

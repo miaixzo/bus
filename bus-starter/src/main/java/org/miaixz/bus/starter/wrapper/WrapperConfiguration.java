@@ -19,21 +19,12 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.MapKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
-import org.miaixz.bus.spring.http.AwareWebMvcConfigurer;
-import org.miaixz.bus.spring.http.RuntimeContextBindingFilter;
-import org.miaixz.bus.spring.http.SentinelRequestHandler;
+import jakarta.annotation.Resource;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -42,12 +33,22 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.filter.ForwardedHeaderFilter;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import jakarta.annotation.Resource;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.http.AwareWebMvcConfigurer;
+import org.miaixz.bus.spring.http.RuntimeContextBindingFilter;
+import org.miaixz.bus.spring.http.SentinelRequestHandler;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 
 /**
  * Configuration class for XSS protection and request/response content caching. This class configures web request

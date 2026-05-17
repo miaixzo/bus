@@ -23,11 +23,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 /**
  * The event label class.

@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -22,16 +22,16 @@ package org.miaixz.bus.health.windows;
 import java.time.OffsetDateTime;
 import java.util.Locale;
 
+import com.sun.jna.platform.win32.COM.Wbemcli;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.Variant;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
-
-import com.sun.jna.platform.win32.Variant;
-import com.sun.jna.platform.win32.COM.Wbemcli;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * Helper class for WMI

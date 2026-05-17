@@ -19,17 +19,20 @@
 */
 package org.miaixz.bus.starter.mongo;
 
-import com.mongodb.connection.ClusterConnectionMode;
-import com.mongodb.connection.ClusterType;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.MINUTES;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.spring.GeniusBuilder;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.MINUTES;
+import com.mongodb.connection.ClusterConnectionMode;
+import com.mongodb.connection.ClusterType;
+
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Configuration properties for MongoDB, mirroring a subset of {@link com.mongodb.MongoClientSettings}.

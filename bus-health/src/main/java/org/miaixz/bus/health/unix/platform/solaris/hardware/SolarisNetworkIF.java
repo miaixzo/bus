@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,6 +23,8 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
@@ -30,8 +32,6 @@ import org.miaixz.bus.health.unix.platform.solaris.KstatKit;
 import org.miaixz.bus.health.unix.platform.solaris.KstatKit.KstatChain;
 import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 
 /**
  * SolarisNetworks class.

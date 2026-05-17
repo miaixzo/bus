@@ -24,12 +24,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.mapper.Charter.Schema;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.mapper.Charter.Schema;
 
 /**
  * Entity schema initialization configuration.

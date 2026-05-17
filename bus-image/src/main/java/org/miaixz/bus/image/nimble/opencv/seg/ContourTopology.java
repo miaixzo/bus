@@ -21,6 +21,7 @@ package org.miaixz.bus.image.nimble.opencv.seg;
 
 import java.awt.geom.Point2D;
 import java.util.Arrays;
+
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;

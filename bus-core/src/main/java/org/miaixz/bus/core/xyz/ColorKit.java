@@ -119,7 +119,7 @@ public class ColorKit {
 
     /**
      * Converts a color string into a {@link Color} object. Supports the following formats:
-     * 
+     *
      * <pre>
      * 1. English color names (case-insensitive)
      * 2. Hexadecimal format, e.g., `#fcf6d6` or `$fcf6d6`

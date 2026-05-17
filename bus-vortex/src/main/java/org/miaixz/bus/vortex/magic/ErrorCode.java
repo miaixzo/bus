@@ -73,7 +73,7 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
      * Error code: 116004 - Request body is too large.
      * <p>
      * Indicates that the size of the incoming request body exceeds the configured limit for that request type.
-     * 
+     *
      * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final Errors _116004 = ErrorRegistry.builder().key("116004").value("Request body is too large")

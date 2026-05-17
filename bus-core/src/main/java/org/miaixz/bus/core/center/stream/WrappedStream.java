@@ -222,7 +222,7 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * Performs an action for each element of this stream. This is a stateless intermediate operation.
      * <p>
      * For example, to observe elements at various points in a pipeline:
-     * 
+     *
      * <pre>{@code
      *     .of("one", "two", "three", "four")
      *         .filter(e -> e.length() > 3)
@@ -308,7 +308,7 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * during the operation. This is a terminal operation.
      * <p>
      * For example, the following code compiles but throws an {@link ArrayStoreException} at runtime:
-     * 
+     *
      * <pre>{@code
      *
      * String[] strings = Stream.<Integer>builder().add(1).build().toArray(String[]::new);
@@ -333,14 +333,14 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * function, and returns the reduced value. This is a terminal operation.
      * <p>
      * For example, to sum integers:
-     * 
+     *
      * <pre>{@code
      *
      * Integer sum = integers.reduce(0, (a, b) -> a + b);
      * }</pre>
      * <p>
      * Or equivalently:
-     * 
+     *
      * <pre>{@code
      *
      * Integer sum = integers.reduce(0, Integer::sum);
@@ -364,7 +364,7 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * {@link Optional} describing the reduced value, if any. This is a terminal operation.
      * <p>
      * This is equivalent to:
-     * 
+     *
      * <pre>{@code
      *     boolean foundAny = false;
      *     T result = null;
@@ -382,7 +382,7 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * However, it is not limited to sequential execution, for example, in parallel streams.
      * <p>
      * An example scenario where {@link NullPointerException} might be thrown:
-     * 
+     *
      * <pre>{@code
      *
      * Optional<Integer> reduce = Stream.<Integer>builder().add(1).add(1).build().reduce((a, b) -> null);
@@ -450,7 +450,7 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      *                    results
      * @param <R>         the type of the result
      * @return the result of the mutable reduction
-     * 
+     *
      *         <pre>{@code
      *  List<Integer> collect = Stream.iterate(1, i -> ++i).limit(10).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
      * }</pre>
@@ -653,7 +653,7 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * <p>
      * A stream that is unordered does not have an encounter order. This can sometimes improve the performance of
      * parallel operations.
-     * 
+     *
      *
      * @return an unordered stream
      */

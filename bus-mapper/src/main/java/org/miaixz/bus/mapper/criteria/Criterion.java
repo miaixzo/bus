@@ -21,11 +21,11 @@ package org.miaixz.bus.mapper.criteria;
 
 import java.util.Collection;
 
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
  * Represents a single SQL query condition unit.

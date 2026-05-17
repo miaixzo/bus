@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.validate.metric;
 
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Regex;
-
-import java.util.regex.Pattern;
 
 /**
  * Validator for the {@link Regex} annotation, checking if a string matches a given regular expression.

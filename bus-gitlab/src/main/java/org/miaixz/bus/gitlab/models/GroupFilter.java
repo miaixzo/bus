@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,6 @@ import java.util.List;
 import org.miaixz.bus.gitlab.models.Constants.GroupOrderBy;
 import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import java.io.Serial;
 
 /**
  * This class is used to filter Groups when getting lists of groups.

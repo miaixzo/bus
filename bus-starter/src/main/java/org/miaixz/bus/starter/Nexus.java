@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.starter;
 
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.annotation.*;
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
-import java.lang.annotation.Annotation;
-import java.util.Map;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.*;
 
 /**
  * Centralized composite condition: checks if any sub-feature is enabled/active to determine whether proxy support is

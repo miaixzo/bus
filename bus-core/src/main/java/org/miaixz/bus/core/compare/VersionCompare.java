@@ -61,7 +61,7 @@ public class VersionCompare extends NullCompare<String> implements Serializable 
 
     /**
      * Compares two version strings. {@code null} versions are considered the smallest.
-     * 
+     *
      * <pre>
      * compare(null, "v1") &lt; 0
      * compare("v1", "v1")  = 0

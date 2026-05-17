@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.setting.metric.setting;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A utility class that provides static methods for accessing {@link org.miaixz.bus.setting.Setting} configuration

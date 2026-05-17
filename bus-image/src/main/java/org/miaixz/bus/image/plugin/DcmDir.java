@@ -19,6 +19,13 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -35,13 +42,6 @@ import org.miaixz.bus.image.galaxy.media.ImageDirWriter;
 import org.miaixz.bus.image.galaxy.media.RecordFactory;
 import org.miaixz.bus.image.galaxy.media.RecordType;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.regex.Pattern;
 
 /**
  * The {@code DcmDir} class provides functionalities to create, read, and manage DICOMDIR files. It supports adding and

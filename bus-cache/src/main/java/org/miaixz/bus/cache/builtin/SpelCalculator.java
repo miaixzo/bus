@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.cache.builtin;
 
-import org.miaixz.bus.cache.Builder;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+
+import org.miaixz.bus.cache.Builder;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * A utility class for evaluating cache expressions used in key generation and conditional caching.

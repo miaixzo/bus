@@ -19,7 +19,26 @@
 */
 package org.miaixz.bus.starter.vortex;
 
+import java.util.List;
+import java.util.Map;
+
 import jakarta.annotation.Resource;
+
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.http.server.reactive.HttpHandler;
+import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
+import org.springframework.web.reactive.function.server.*;
+import org.springframework.web.server.WebHandler;
+import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
+import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.PORT;
@@ -51,24 +70,8 @@ import org.miaixz.bus.vortex.strategy.request.RestRequestStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.CstVettingStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.McpVettingStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.http.server.reactive.HttpHandler;
-import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
-import org.springframework.web.reactive.function.server.*;
-import org.springframework.web.server.WebHandler;
-import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
-import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
-import reactor.netty.http.server.HttpServer;
 
-import java.util.List;
-import java.util.Map;
+import reactor.netty.http.server.HttpServer;
 
 /**
  * Auto-configuration for the Vortex gateway.

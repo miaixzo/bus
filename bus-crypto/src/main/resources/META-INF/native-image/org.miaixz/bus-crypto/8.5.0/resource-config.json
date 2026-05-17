@@ -2,9 +2,6 @@
   "resources": {
     "includes": [
       {
-        "pattern": "META-INF/services/.*"
-      },
-      {
         "pattern": "\\.bks$"
       },
       {
@@ -21,6 +18,9 @@
       },
       {
         "pattern": "\\.pem$"
+      },
+      {
+        "pattern": "META-INF/services/.*"
       },
       {
         "pattern": "org/bouncycastle/.*"

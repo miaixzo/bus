@@ -26,11 +26,11 @@ import java.util.EnumSet;
 import java.util.Locale;
 
 import org.miaixz.bus.mapper.Charter.Behavior;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * Dialect implementation for PostgreSQL databases.

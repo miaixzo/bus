@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.cache;
 
-import org.miaixz.bus.core.lang.EnumValue;
-
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.EnumValue;
 
 /**
  * Represents the global configuration for the cache system.

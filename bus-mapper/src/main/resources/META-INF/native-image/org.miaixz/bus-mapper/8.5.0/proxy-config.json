@@ -1,12 +1,22 @@
 [
   {
     "interfaces": [
-      "org.miaixz.bus.mapper.Mapper"
+      "org.apache.ibatis.executor.Executor"
     ]
   },
   {
     "interfaces": [
-      "org.miaixz.bus.mapper.binding.BasicMapper"
+      "org.apache.ibatis.executor.parameter.ParameterHandler"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.apache.ibatis.executor.resultset.ResultSetHandler"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.apache.ibatis.executor.statement.StatementHandler"
     ]
   },
   {
@@ -17,6 +27,11 @@
   {
     "interfaces": [
       "org.miaixz.bus.mapper.binding.basic.EntityMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.BasicMapper"
     ]
   },
   {
@@ -76,22 +91,7 @@
   },
   {
     "interfaces": [
-      "org.apache.ibatis.executor.Executor"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.apache.ibatis.executor.parameter.ParameterHandler"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.apache.ibatis.executor.resultset.ResultSetHandler"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.apache.ibatis.executor.statement.StatementHandler"
+      "org.miaixz.bus.mapper.Mapper"
     ]
   }
 ]

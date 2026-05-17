@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
-import java.io.Serial;
 
 /**
  * This class is used to filter Groups when getting lists of groups for a specified project.

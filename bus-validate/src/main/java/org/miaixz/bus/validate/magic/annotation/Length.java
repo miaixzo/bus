@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.LengthMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * Validates the length of a String, array, or collection.

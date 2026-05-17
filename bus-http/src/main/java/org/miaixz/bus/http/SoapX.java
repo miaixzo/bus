@@ -19,17 +19,18 @@
 */
 package org.miaixz.bus.http;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.http.plugin.soap.SoapBuilder;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 /**
  * A utility class for SOAP-related operations.

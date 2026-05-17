@@ -23,6 +23,9 @@ import java.awt.image.DataBuffer;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.opencv.core.CvType;
+
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
 import org.miaixz.bus.image.nimble.opencv.ImageTransformer;
@@ -31,7 +34,6 @@ import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.opencv.lut.PresentationStateLut;
 import org.miaixz.bus.image.nimble.opencv.lut.WindLevelParameters;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
-import org.opencv.core.CvType;
 
 /**
  * A utility class for performing various rendering operations on DICOM images.

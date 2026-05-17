@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -29,6 +29,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.sun.jna.Native;
+import com.sun.jna.platform.unix.Resource;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -44,9 +47,6 @@ import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
 import org.miaixz.bus.health.unix.jna.SolarisLibc;
 import org.miaixz.bus.health.unix.platform.solaris.driver.PsInfo;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.Native;
-import com.sun.jna.platform.unix.Resource;
 
 /**
  * OSProcess implementation

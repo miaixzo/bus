@@ -25,14 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.RequiredArgsConstructor;
+
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Risk;
 import org.miaixz.bus.mapper.behavior.SchemaBehavior;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * Computes schema differences.

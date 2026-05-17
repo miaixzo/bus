@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.cortex.setting.profile;
 
-import org.miaixz.bus.cortex.Setting;
-import org.miaixz.bus.cortex.Type;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.cortex.Setting;
+import org.miaixz.bus.cortex.Type;
 
 /**
  * Profile directory entry for the setting domain.

@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
+import java.io.File;
+import java.io.OutputStreamWriter;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
-import java.io.OutputStreamWriter;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
 
 /**
  * The {@code Xml2HL7} class provides a utility to convert an XML representation of an HL7 message back into the

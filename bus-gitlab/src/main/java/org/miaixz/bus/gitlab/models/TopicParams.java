@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serializable;
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * This class is utilized by the <code>org.miaixz.bus.gitlab.TopicsApi#createTopic(TopicParams)</code> and

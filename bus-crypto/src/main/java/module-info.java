@@ -19,7 +19,7 @@
 */
 /**
  * bus.crypto
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

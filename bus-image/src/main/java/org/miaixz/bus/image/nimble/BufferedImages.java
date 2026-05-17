@@ -30,10 +30,11 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageReader;
 import javax.imageio.metadata.IIOInvalidTreeException;
 
+import org.w3c.dom.Node;
+
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
-import org.w3c.dom.Node;
 
 /**
  * Represents the BufferedImages type.

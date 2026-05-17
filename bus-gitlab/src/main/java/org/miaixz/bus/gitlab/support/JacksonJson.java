@@ -25,8 +25,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.miaixz.bus.gitlab.models.User;
-import org.miaixz.bus.logger.Logger;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.ContextResolver;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.*;
@@ -35,9 +36,8 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.ext.ContextResolver;
+import org.miaixz.bus.gitlab.models.User;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Jackson JSON Configuration and utility class.

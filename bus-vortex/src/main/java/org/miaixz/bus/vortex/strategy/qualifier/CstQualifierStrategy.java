@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.vortex.strategy.qualifier;
 
+import org.springframework.web.server.ServerWebExchange;
+
+import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.strategy.QualifierStrategy;
-import org.miaixz.bus.core.Order;
-import org.springframework.web.server.ServerWebExchange;
 
 /**
  * Qualifies CST URL-based requests.

@@ -55,6 +55,8 @@ import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.util.Arrays;
+import org.w3c.dom.Element;
+
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.codec.binary.Hex;
 import org.miaixz.bus.core.lang.*;
@@ -66,7 +68,6 @@ import org.miaixz.bus.crypto.builtin.digest.mac.BCHMac;
 import org.miaixz.bus.crypto.builtin.digest.mac.Mac;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 import org.miaixz.bus.crypto.center.*;
-import org.w3c.dom.Element;
 import org.miaixz.bus.logger.Logger;
 
 /**

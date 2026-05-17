@@ -28,8 +28,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -41,9 +45,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.parsing.ClassColumn;
 import org.miaixz.bus.mapper.parsing.ClassField;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * A utility class providing static methods for OGNL expressions, type registration, SPI instance retrieval, and

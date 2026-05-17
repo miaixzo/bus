@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.ibatis.plugin.Interceptor;
+import org.springframework.core.env.Environment;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.handler.MapperHandler;
-import org.miaixz.bus.mapper.handler.MybatisInterceptor;
 import org.miaixz.bus.mapper.feature.audit.AuditConfig;
 import org.miaixz.bus.mapper.feature.audit.AuditHandler;
 import org.miaixz.bus.mapper.feature.audit.AuditProvider;
@@ -48,10 +48,11 @@ import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
 import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
 import org.miaixz.bus.mapper.feature.visible.VisibleHandler;
 import org.miaixz.bus.mapper.feature.visible.VisibleProvider;
+import org.miaixz.bus.mapper.handler.MapperHandler;
+import org.miaixz.bus.mapper.handler.MybatisInterceptor;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.SpringBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
-import org.springframework.core.env.Environment;
 
 /**
  * A builder for creating and configuring MyBatis {@link Interceptor} instances.

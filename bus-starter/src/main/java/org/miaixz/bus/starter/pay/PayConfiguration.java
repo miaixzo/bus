@@ -19,22 +19,24 @@
 */
 package org.miaixz.bus.starter.pay;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
+
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.cache.PayCache;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.cache.CacheFactoryProvider;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 
 /**
  * Auto-configuration for the integrated payment service. This class sets up the necessary beans for the payment

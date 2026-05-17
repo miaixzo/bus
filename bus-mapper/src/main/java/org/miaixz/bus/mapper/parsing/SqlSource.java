@@ -26,16 +26,17 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.DataSource;
 
+import lombok.Getter;
+
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
+
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
-
-import lombok.Getter;
 
 /**
  * A custom {@link org.apache.ibatis.mapping.SqlSource} that wraps a modified SQL while ensuring parameter mappings

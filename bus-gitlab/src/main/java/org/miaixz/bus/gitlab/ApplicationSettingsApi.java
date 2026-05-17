@@ -22,13 +22,13 @@ package org.miaixz.bus.gitlab;
 import java.text.ParseException;
 import java.util.Iterator;
 
-import org.miaixz.bus.gitlab.models.ApplicationSettings;
-import org.miaixz.bus.gitlab.models.Setting;
-import org.miaixz.bus.gitlab.support.ISO8601;
+import jakarta.ws.rs.core.Response;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.gitlab.models.ApplicationSettings;
+import org.miaixz.bus.gitlab.models.Setting;
+import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.logger.Logger;
 
 /**

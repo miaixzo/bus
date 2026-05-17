@@ -19,9 +19,17 @@
 */
 package org.miaixz.bus.validate;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -31,13 +39,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.magic.Checker;
 import org.miaixz.bus.validate.magic.Criterion;
 import org.miaixz.bus.validate.magic.annotation.*;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Represents an object to be validated. Note: When the object to be validated is null, its Class cannot be obtained, so

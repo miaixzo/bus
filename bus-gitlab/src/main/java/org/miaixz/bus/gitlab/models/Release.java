@@ -19,16 +19,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.io.Serial;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * The release class.

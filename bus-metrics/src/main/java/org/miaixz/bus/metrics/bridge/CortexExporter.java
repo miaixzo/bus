@@ -28,8 +28,8 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.Provider;
-import org.miaixz.bus.metrics.metric.Timer;
 import org.miaixz.bus.metrics.magic.TimerSnapshot;
+import org.miaixz.bus.metrics.metric.Timer;
 import org.miaixz.bus.metrics.metric.indigenous.NativeProvider;
 
 /**

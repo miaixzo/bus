@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.text.MessageFormat;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.*;
@@ -29,8 +31,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.service.QueryRetrieveLevel;
 import org.miaixz.bus.logger.Logger;
-
-import java.text.MessageFormat;
 
 /**
  * The {@code CFind} class provides a simple way to perform a DICOM C-FIND operation. It encapsulates the setup and

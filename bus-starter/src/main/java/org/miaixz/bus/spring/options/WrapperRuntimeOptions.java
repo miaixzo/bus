@@ -19,12 +19,13 @@
 */
 package org.miaixz.bus.spring.options;
 
-import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.net.HTTP;
-
 import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.HTTP;
 
 /**
  * Runtime compatibility options shared by wrapper-related HTTP components.

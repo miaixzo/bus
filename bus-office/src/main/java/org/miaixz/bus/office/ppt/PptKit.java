@@ -27,6 +27,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.sl.usermodel.PictureData;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
+
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;

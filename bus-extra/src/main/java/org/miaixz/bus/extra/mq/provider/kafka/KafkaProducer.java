@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;

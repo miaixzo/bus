@@ -19,9 +19,6 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
-
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -36,6 +33,9 @@ import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
+import jakarta.annotation.Resource;
+import jakarta.persistence.Entity;
+
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -45,20 +45,6 @@ import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.miaixz.bus.core.Context;
-import org.miaixz.bus.core.io.file.FileType;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.binding.basic.ClassMapper;
-import org.miaixz.bus.mapper.builder.GenericTypeResolver;
-import org.miaixz.bus.mapper.feature.schema.EntitySchemaInitializer;
-import org.miaixz.bus.mapper.feature.schema.SchemaConfig;
-import org.miaixz.bus.mapper.feature.schema.SchemaReport;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -81,6 +67,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -94,8 +81,21 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
-import jakarta.annotation.Resource;
-import jakarta.persistence.Entity;
+import org.miaixz.bus.core.Context;
+import org.miaixz.bus.core.io.file.FileType;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.binding.basic.ClassMapper;
+import org.miaixz.bus.mapper.builder.GenericTypeResolver;
+import org.miaixz.bus.mapper.feature.schema.EntitySchemaInitializer;
+import org.miaixz.bus.mapper.feature.schema.SchemaConfig;
+import org.miaixz.bus.mapper.feature.schema.SchemaReport;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Unified auto-configuration for MyBatis with comprehensive Native Image support.

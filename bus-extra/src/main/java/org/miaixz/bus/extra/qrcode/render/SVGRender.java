@@ -24,14 +24,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import com.google.zxing.common.BitMatrix;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.image.ImageKit;
 import org.miaixz.bus.extra.qrcode.QrConfig;
-
-import com.google.zxing.common.BitMatrix;
 
 /**
  * SVG renderer for QR codes.

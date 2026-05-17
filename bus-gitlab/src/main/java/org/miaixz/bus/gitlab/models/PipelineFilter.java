@@ -23,13 +23,13 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.miaixz.bus.gitlab.models.Constants.PipelineOrderBy;
 import org.miaixz.bus.gitlab.models.Constants.PipelineScope;
 import org.miaixz.bus.gitlab.models.Constants.PipelineSource;
 import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * This class is used to filter Pipelines when getting lists of them.

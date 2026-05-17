@@ -185,7 +185,7 @@ public class IPv6 {
     /**
      * Normalizes an IPv6 address by replacing the scope name (e.g., {@code %en0}) with its numeric scope ID (e.g.,
      * {@code %5}).
-     * 
+     *
      * <pre>
      * fe80:0:0:0:894:aeec:f37d:23e1%en0  ->  fe80:0:0:0:894:aeec:f37d:23e1%5
      * </pre>

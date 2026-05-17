@@ -1,6 +1,22 @@
-//
-// This file is auto-generated. Please don't modify it!
-//
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.opencv.img_hash;
 
 import org.opencv.core.Mat;
@@ -21,7 +37,7 @@ public class Img_hash {
 
     /**
      * Computes pHash value of the input image
-     * 
+     *
      * @param inputArr  input image want to compute hash value, type should be CV_8UC4, CV_8UC3, CV_8UC1.
      * @param outputArr Hash value of input, it will contain 8 uchar value
      */
@@ -35,7 +51,7 @@ public class Img_hash {
 
     /**
      * Calculates img_hash::AverageHash in one call
-     * 
+     *
      * @param inputArr  input image want to compute hash value, type should be CV_8UC4, CV_8UC3 or CV_8UC1.
      * @param outputArr Hash value of input, it will contain 16 hex decimal number, return type is CV_8U
      */
@@ -49,7 +65,7 @@ public class Img_hash {
 
     /**
      * Computes block mean hash of the input image
-     * 
+     *
      * @param inputArr  input image want to compute hash value, type should be CV_8UC4, CV_8UC3 or CV_8UC1.
      * @param outputArr Hash value of input, it will contain 16 hex decimal number, return type is CV_8U
      * @param mode      the mode
@@ -60,7 +76,7 @@ public class Img_hash {
 
     /**
      * Computes block mean hash of the input image
-     * 
+     *
      * @param inputArr  input image want to compute hash value, type should be CV_8UC4, CV_8UC3 or CV_8UC1.
      * @param outputArr Hash value of input, it will contain 16 hex decimal number, return type is CV_8U
      */
@@ -75,7 +91,7 @@ public class Img_hash {
 
     /**
      * Computes radial variance hash of the input image
-     * 
+     *
      * @param inputArr       input image want to compute hash value, type should be CV_8UC4, CV_8UC3, CV_8UC1.
      * @param outputArr      Hash value of input
      * @param sigma          Gaussian kernel standard deviation
@@ -87,7 +103,7 @@ public class Img_hash {
 
     /**
      * Computes radial variance hash of the input image
-     * 
+     *
      * @param inputArr  input image want to compute hash value, type should be CV_8UC4, CV_8UC3, CV_8UC1.
      * @param outputArr Hash value of input
      * @param sigma     Gaussian kernel standard deviation
@@ -98,7 +114,7 @@ public class Img_hash {
 
     /**
      * Computes radial variance hash of the input image
-     * 
+     *
      * @param inputArr  input image want to compute hash value, type should be CV_8UC4, CV_8UC3, CV_8UC1.
      * @param outputArr Hash value of input
      */
@@ -112,7 +128,7 @@ public class Img_hash {
 
     /**
      * Computes average hash value of the input image
-     * 
+     *
      * @param inputArr  input image want to compute hash value, type should be CV_8UC4, CV_8UC3, CV_8UC1.
      * @param outputArr Hash value of input, it will contain 16 hex decimal number, return type is CV_8U
      * @param alpha     int scale factor for marr wavelet (default=2).
@@ -124,7 +140,7 @@ public class Img_hash {
 
     /**
      * Computes average hash value of the input image
-     * 
+     *
      * @param inputArr  input image want to compute hash value, type should be CV_8UC4, CV_8UC3, CV_8UC1.
      * @param outputArr Hash value of input, it will contain 16 hex decimal number, return type is CV_8U
      * @param alpha     int scale factor for marr wavelet (default=2).
@@ -135,7 +151,7 @@ public class Img_hash {
 
     /**
      * Computes average hash value of the input image
-     * 
+     *
      * @param inputArr  input image want to compute hash value, type should be CV_8UC4, CV_8UC3, CV_8UC1.
      * @param outputArr Hash value of input, it will contain 16 hex decimal number, return type is CV_8U
      */
@@ -150,7 +166,7 @@ public class Img_hash {
     /**
      * Computes color moment hash of the input, the algorithm is come from the paper "Perceptual Hashing for Color
      * Images Using Invariant Moments"
-     * 
+     *
      * @param inputArr  input image want to compute hash value, type should be CV_8UC4, CV_8UC3 or CV_8UC1.
      * @param outputArr 42 hash values with type CV_64F(double)
      */

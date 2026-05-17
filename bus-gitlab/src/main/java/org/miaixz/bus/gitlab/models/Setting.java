@@ -22,10 +22,10 @@ package org.miaixz.bus.gitlab.models;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 /**
  * This enum provides constants and value validation for the available GitLab application settings. See
@@ -530,7 +530,7 @@ public enum Setting {
     /**
      * NOT DOCUMENTED: but it's returned by a call to /api/v4/application/settings Was added with this commit
      * https://gitlab.com/gitlab-org/gitlab/commit/30e7f01877fd436e21efdf0974d42d8fc83f4883
-     * 
+     *
      * @since 2019-07-18
      */
     LOGIN_RECAPTCHA_PROTECTION_ENABLED(Boolean.class),

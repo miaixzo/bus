@@ -21,10 +21,10 @@ package org.miaixz.bus.image;
 
 import java.util.List;
 
-import org.miaixz.bus.image.metric.Connection;
-
 import lombok.*;
 import lombok.Builder;
+
+import org.miaixz.bus.image.metric.Connection;
 
 /**
  * Represents configurable options for a DICOM connection or request.

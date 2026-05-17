@@ -82,7 +82,7 @@ public class EmojiKit {
      * string to their corresponding Unicode emoji characters.
      * <p>
      * Examples:
-     * 
+     *
      * <pre>
      *  {@code :smile:} is replaced by {@code 😄}
      *  {@code &#128516;} is replaced by {@code 😄}
@@ -156,7 +156,7 @@ public class EmojiKit {
      * Converts Unicode emoji characters in a string to their HTML representation (either hexadecimal or decimal).
      * <p>
      * Examples:
-     * 
+     *
      * <pre>
      * If isHex is true: {@code 👦🏿} is converted to {@code &#x1f466;}
      * If isHex is false: {@code 👦🏿} is converted to {@code &#128102;}

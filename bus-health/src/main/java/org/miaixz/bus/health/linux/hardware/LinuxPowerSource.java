@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -23,6 +23,12 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 
+import com.sun.jna.platform.linux.Udev;
+import com.sun.jna.platform.linux.Udev.UdevContext;
+import com.sun.jna.platform.linux.Udev.UdevDevice;
+import com.sun.jna.platform.linux.Udev.UdevEnumerate;
+import com.sun.jna.platform.linux.Udev.UdevListEntry;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
@@ -31,12 +37,6 @@ import org.miaixz.bus.health.builtin.hardware.PowerSource;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
 import org.miaixz.bus.health.linux.SysPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
-
-import com.sun.jna.platform.linux.Udev;
-import com.sun.jna.platform.linux.Udev.UdevContext;
-import com.sun.jna.platform.linux.Udev.UdevDevice;
-import com.sun.jna.platform.linux.Udev.UdevEnumerate;
-import com.sun.jna.platform.linux.Udev.UdevListEntry;
 
 /**
  * A Power Source

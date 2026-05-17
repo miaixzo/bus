@@ -25,14 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.ClassKit;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.ReflectKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
-import org.miaixz.bus.starter.annotation.EnableMapper;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.EnvironmentAware;
@@ -42,6 +34,15 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
+
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
+import org.miaixz.bus.starter.annotation.EnableMapper;
 
 /**
  * An {@link ImportBeanDefinitionRegistrar} that handles the registration of mapper interfaces.

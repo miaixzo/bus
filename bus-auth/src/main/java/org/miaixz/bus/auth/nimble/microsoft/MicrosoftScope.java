@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.nimble.microsoft;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**

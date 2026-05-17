@@ -21,6 +21,8 @@ package org.miaixz.bus.image.metric.json.imageio;
 
 import java.util.Map;
 
+import jakarta.json.stream.JsonParser;
+
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.json.ConfigurationDelegate;
 import org.miaixz.bus.image.metric.json.JSONReader;
@@ -28,8 +30,6 @@ import org.miaixz.bus.image.metric.json.JSONWriter;
 import org.miaixz.bus.image.metric.json.JsonConfigurationExtension;
 import org.miaixz.bus.image.nimble.codec.ImageWriterFactory;
 import org.miaixz.bus.image.nimble.extend.ImageWriterExtension;
-
-import jakarta.json.stream.JsonParser;
 
 /**
  * Represents the JsonImageWriterConfiguration type.

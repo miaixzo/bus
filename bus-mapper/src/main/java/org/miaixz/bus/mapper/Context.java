@@ -21,14 +21,14 @@ package org.miaixz.bus.mapper;
 
 import java.util.function.Supplier;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.miaixz.bus.mapper.feature.audit.AuditConfig;
 import org.miaixz.bus.mapper.feature.populate.PopulateConfig;
 import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
 import org.miaixz.bus.mapper.feature.tenant.TenantConfig;
 import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Extends the core context to provide a specific context for the mapper module with unified configuration override

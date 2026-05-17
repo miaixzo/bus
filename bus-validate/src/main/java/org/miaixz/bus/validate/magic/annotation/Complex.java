@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.validate.magic.Matcher;
-
-import java.lang.annotation.*;
 
 /**
  * A meta-annotation for creating custom validation annotations. By placing this on an annotation definition, you mark

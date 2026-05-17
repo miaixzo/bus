@@ -21,9 +21,9 @@ package org.miaixz.bus.extra.nlp.provider.jieba;
 
 import java.io.Serial;
 
-import org.miaixz.bus.extra.nlp.NLPWord;
-
 import com.huaban.analysis.jieba.SegToken;
+
+import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
  * Wrapper class for a single word (SegToken) from Jieba word segmentation. This class adapts the Jieba {@link SegToken}

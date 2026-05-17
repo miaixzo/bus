@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.image.galaxy.io.ImageInputHandler;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-
-import java.io.IOException;
 
 /**
  * The {@code DcmDump} class provides a utility to print a textual representation of a DICOM file's structure and

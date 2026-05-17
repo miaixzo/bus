@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Snippet;
-import org.miaixz.bus.gitlab.models.Visibility;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Snippet;
+import org.miaixz.bus.gitlab.models.Visibility;
 
 /**
  * This class provides an entry point to all the GitLab Snippets API project calls.

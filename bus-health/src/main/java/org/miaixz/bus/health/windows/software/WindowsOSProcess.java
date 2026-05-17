@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -24,6 +24,13 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.sun.jna.Memory;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.Advapi32Util.Account;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.WinNT.HANDLE;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -44,13 +51,6 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32Process;
 import org.miaixz.bus.health.windows.driver.wmi.Win32Process.CommandLineProperty;
 import org.miaixz.bus.health.windows.driver.wmi.Win32ProcessCached;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.Memory;
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.Advapi32Util.Account;
-import com.sun.jna.platform.win32.WinNT.HANDLE;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * OSProcess implementation

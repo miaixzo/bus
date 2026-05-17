@@ -22,12 +22,12 @@ package org.miaixz.bus.cortex;
 import java.io.Serial;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.miaixz.bus.core.basic.entity.Namespace;
-
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.basic.entity.Namespace;
 
 /**
  * Minimal common base for all Cortex domain objects.

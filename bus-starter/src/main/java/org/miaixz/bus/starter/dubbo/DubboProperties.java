@@ -21,10 +21,12 @@ package org.miaixz.bus.starter.dubbo;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import org.apache.dubbo.config.*;
-import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Configuration properties for Apache Dubbo.

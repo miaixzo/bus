@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.starter.socket;
 
+import java.io.IOException;
+
 import jakarta.annotation.Resource;
+
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.Handler;
 import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.accord.AioServer;
-
-import java.io.IOException;
 
 /**
  * A service class that manages the lifecycle of a {@link AioServer}.

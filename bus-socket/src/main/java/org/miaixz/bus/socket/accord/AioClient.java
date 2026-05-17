@@ -1,7 +1,7 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org sandao and other contributors.         ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
  ~                                                                           ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
  ~ you may not use this file except in compliance with the License.          ~
@@ -19,15 +19,6 @@
 */
 package org.miaixz.bus.socket.accord;
 
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.socket.Context;
-import org.miaixz.bus.socket.Handler;
-import org.miaixz.bus.socket.Message;
-import org.miaixz.bus.socket.Session;
-import org.miaixz.bus.socket.buffer.BufferPagePool;
-import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
-import org.miaixz.bus.logger.Logger;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -37,6 +28,15 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.Map;
 import java.util.concurrent.*;
+
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.socket.Context;
+import org.miaixz.bus.socket.Handler;
+import org.miaixz.bus.socket.Message;
+import org.miaixz.bus.socket.Session;
+import org.miaixz.bus.socket.buffer.BufferPagePool;
+import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
 
 /**
  * AIO implementation of a client service.

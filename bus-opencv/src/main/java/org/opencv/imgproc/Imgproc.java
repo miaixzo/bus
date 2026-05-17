@@ -1,10 +1,27 @@
-//
-// This file is auto-generated. Please don't modify it!
-//
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.opencv.imgproc;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfInt;
@@ -454,7 +471,7 @@ public class Imgproc {
      * Two of such generated kernels can be passed to sepFilter2D. Those functions automatically recognize smoothing
      * kernels (a symmetrical kernel with sum of weights equal to 1) and handle them accordingly. You may also use the
      * higher-level GaussianBlur.
-     * 
+     *
      * @param ksize Aperture size. It should be odd ( \(\texttt{ksize} \mod 2 = 1\) ) and positive.
      * @param sigma Gaussian standard deviation. If it is non-positive, it is computed from ksize as
      *              {@code sigma = 0.3*((ksize-1)*0.5 - 1) + 0.8}.
@@ -478,7 +495,7 @@ public class Imgproc {
      * Two of such generated kernels can be passed to sepFilter2D. Those functions automatically recognize smoothing
      * kernels (a symmetrical kernel with sum of weights equal to 1) and handle them accordingly. You may also use the
      * higher-level GaussianBlur.
-     * 
+     *
      * @param ksize Aperture size. It should be odd ( \(\texttt{ksize} \mod 2 = 1\) ) and positive.
      * @param sigma Gaussian standard deviation. If it is non-positive, it is computed from ksize as
      *              {@code sigma = 0.3*((ksize-1)*0.5 - 1) + 0.8}. SEE: sepFilter2D, getDerivKernels,
@@ -812,7 +829,7 @@ public class Imgproc {
      * applications, and perhaps d=9 for offline applications that need heavy noise filtering.
      *
      * This filter does not work inplace.
-     * 
+     *
      * @param src        Source 8-bit or floating-point, 1-channel or 3-channel image.
      * @param dst        Destination image of the same size and type as src .
      * @param d          Diameter of each pixel neighborhood that is used during filtering. If it is non-positive, it is
@@ -846,7 +863,7 @@ public class Imgproc {
      * applications, and perhaps d=9 for offline applications that need heavy noise filtering.
      *
      * This filter does not work inplace.
-     * 
+     *
      * @param src        Source 8-bit or floating-point, 1-channel or 3-channel image.
      * @param dst        Destination image of the same size and type as src .
      * @param d          Diameter of each pixel neighborhood that is used during filtering. If it is non-positive, it is
@@ -3340,7 +3357,7 @@ public class Imgproc {
      *
      * The function finds lines in a set of points using a modification of the Hough transform. INCLUDE:
      * snippets/imgproc_HoughLinesPointSet.cpp
-     * 
+     *
      * @param point      Input vector of points. Each vector must be encoded as a Point vector \((x,y)\). Type must be
      *                   CV_32FC2 or CV_32SC2.
      * @param lines      Output vector of found lines. Each vector is encoded as a vector&lt;Vec3d&gt; \((votes, rho,
@@ -5557,7 +5574,7 @@ public class Imgproc {
      *     Mat hann;
      *     createHanningWindow(hann, Size(100, 100), CV_32F);
      * </code>
-     * 
+     *
      * @param dst     Destination array to place Hann coefficients in
      * @param winSize The window size specifications (both width and height must be &gt; 1)
      * @param type    Created array type
@@ -5865,7 +5882,7 @@ public class Imgproc {
      *
      * ranges argument is either empty vector or a flattened vector of histSize.size()*2 elements (histSize.size()
      * element pairs). The first and second elements of each pair specify the lower and upper boundaries.
-     * 
+     *
      * @param images     automatically generated
      * @param channels   automatically generated
      * @param mask       automatically generated
@@ -5903,7 +5920,7 @@ public class Imgproc {
      *
      * ranges argument is either empty vector or a flattened vector of histSize.size()*2 elements (histSize.size()
      * element pairs). The first and second elements of each pair specify the lower and upper boundaries.
-     * 
+     *
      * @param images   automatically generated
      * @param channels automatically generated
      * @param mask     automatically generated
@@ -6036,7 +6053,7 @@ public class Imgproc {
      * Creates a smart pointer to a cv::CLAHE class and initializes it.
      *
      * equally sized rectangular tiles. tileGridSize defines the number of tiles in row and column.
-     * 
+     *
      * @return automatically generated
      */
     public static CLAHE createCLAHE() {
@@ -7111,7 +7128,7 @@ public class Imgproc {
      *
      *
      * variant without {@code mask} parameter
-     * 
+     *
      * @param src1     automatically generated
      * @param src2     automatically generated
      * @param weights1 automatically generated
@@ -7999,7 +8016,7 @@ public class Imgproc {
      *             "area1 =" &lt;&lt; area1 &lt;&lt; endl &lt;&lt;
      *             "approx poly vertices" &lt;&lt; approx.size() &lt;&lt; endl;
      * </code>
-     * 
+     *
      * @param contour  Input vector of 2D points (contour vertices), stored in std::vector or Mat.
      * @param oriented Oriented area flag. If it is true, the function returns a signed area value, depending on the
      *                 contour orientation (clockwise or counter-clockwise). Using this feature you can determine
@@ -8035,7 +8052,7 @@ public class Imgproc {
      *             "area1 =" &lt;&lt; area1 &lt;&lt; endl &lt;&lt;
      *             "approx poly vertices" &lt;&lt; approx.size() &lt;&lt; endl;
      * </code>
-     * 
+     *
      * @param contour Input vector of 2D points (contour vertices), stored in std::vector or Mat. depending on the
      *                contour orientation (clockwise or counter-clockwise). Using this feature you can determine
      *                orientation of a contour by taking the sign of an area. By default, the parameter is false, which
@@ -8591,7 +8608,7 @@ public class Imgproc {
 
     /**
      * Creates a smart pointer to a cv::GeneralizedHoughBallard class and initializes it.
-     * 
+     *
      * @return automatically generated
      */
     public static GeneralizedHoughBallard createGeneralizedHoughBallard() {
@@ -8604,7 +8621,7 @@ public class Imgproc {
 
     /**
      * Creates a smart pointer to a cv::GeneralizedHoughGuil class and initializes it.
-     * 
+     *
      * @return automatically generated
      */
     public static GeneralizedHoughGuil createGeneralizedHoughGuil() {
@@ -9029,7 +9046,7 @@ public class Imgproc {
      *
      * use {@code rec} parameter as alternative specification of the drawn rectangle: `r.tl() and r.br()-Point(1,1)` are
      * opposite corners
-     * 
+     *
      * @param img       automatically generated
      * @param rec       automatically generated
      * @param color     automatically generated
@@ -9058,7 +9075,7 @@ public class Imgproc {
      *
      * use {@code rec} parameter as alternative specification of the drawn rectangle: `r.tl() and r.br()-Point(1,1)` are
      * opposite corners
-     * 
+     *
      * @param img       automatically generated
      * @param rec       automatically generated
      * @param color     automatically generated
@@ -9085,7 +9102,7 @@ public class Imgproc {
      *
      * use {@code rec} parameter as alternative specification of the drawn rectangle: `r.tl() and r.br()-Point(1,1)` are
      * opposite corners
-     * 
+     *
      * @param img       automatically generated
      * @param rec       automatically generated
      * @param color     automatically generated
@@ -9110,7 +9127,7 @@ public class Imgproc {
      *
      * use {@code rec} parameter as alternative specification of the drawn rectangle: `r.tl() and r.br()-Point(1,1)` are
      * opposite corners
-     * 
+     *
      * @param img   automatically generated
      * @param rec   automatically generated
      * @param color automatically generated
@@ -9137,7 +9154,7 @@ public class Imgproc {
      * Draws a circle.
      *
      * The function cv::circle draws a simple or filled circle with a given center and radius.
-     * 
+     *
      * @param img       Image where the circle is drawn.
      * @param center    Center of the circle.
      * @param radius    Radius of the circle.
@@ -9166,7 +9183,7 @@ public class Imgproc {
      * Draws a circle.
      *
      * The function cv::circle draws a simple or filled circle with a given center and radius.
-     * 
+     *
      * @param img       Image where the circle is drawn.
      * @param center    Center of the circle.
      * @param radius    Radius of the circle.
@@ -9193,7 +9210,7 @@ public class Imgproc {
      * Draws a circle.
      *
      * The function cv::circle draws a simple or filled circle with a given center and radius.
-     * 
+     *
      * @param img       Image where the circle is drawn.
      * @param center    Center of the circle.
      * @param radius    Radius of the circle.
@@ -9218,7 +9235,7 @@ public class Imgproc {
      * Draws a circle.
      *
      * The function cv::circle draws a simple or filled circle with a given center and radius.
-     * 
+     *
      * @param img    Image where the circle is drawn.
      * @param center Center of the circle.
      * @param radius Radius of the circle.
@@ -10490,7 +10507,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughLines
-     * 
+     *
      * @param image       automatically generated
      * @param lines       automatically generated
      * @param rho         automatically generated
@@ -10532,7 +10549,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughLines
-     * 
+     *
      * @param image     automatically generated
      * @param lines     automatically generated
      * @param rho       automatically generated
@@ -10571,7 +10588,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughLines
-     * 
+     *
      * @param image     automatically generated
      * @param lines     automatically generated
      * @param rho       automatically generated
@@ -10599,7 +10616,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughLines
-     * 
+     *
      * @param image     automatically generated
      * @param lines     automatically generated
      * @param rho       automatically generated
@@ -10625,7 +10642,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughLines
-     * 
+     *
      * @param image     automatically generated
      * @param lines     automatically generated
      * @param rho       automatically generated
@@ -10649,7 +10666,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughLines
-     * 
+     *
      * @param image     automatically generated
      * @param lines     automatically generated
      * @param rho       automatically generated
@@ -10671,7 +10688,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughCircles
-     * 
+     *
      * @param image     automatically generated
      * @param circles   automatically generated
      * @param method    automatically generated
@@ -10710,7 +10727,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughCircles
-     * 
+     *
      * @param image     automatically generated
      * @param circles   automatically generated
      * @param method    automatically generated
@@ -10746,7 +10763,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughCircles
-     * 
+     *
      * @param image   automatically generated
      * @param circles automatically generated
      * @param method  automatically generated
@@ -10772,7 +10789,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughCircles
-     * 
+     *
      * @param image   automatically generated
      * @param circles automatically generated
      * @param method  automatically generated
@@ -10796,7 +10813,7 @@ public class Imgproc {
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
      *
      * SEE: HoughCircles
-     * 
+     *
      * @param image   automatically generated
      * @param circles automatically generated
      * @param method  automatically generated

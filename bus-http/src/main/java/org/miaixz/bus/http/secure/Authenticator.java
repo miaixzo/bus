@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.http.secure;
 
+import java.io.IOException;
+
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.Route;
-
-import java.io.IOException;
 
 /**
  * Responds to authentication challenges from origin web servers or proxies. Implementations may either attempt to

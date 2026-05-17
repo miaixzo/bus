@@ -221,7 +221,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
 
     /**
      * Creates an instance based on the builder's configuration.
-     * 
+     *
      * @param builder The builder to configure the map.
      */
     private ConcurrentLinkedHashMap(final Builder<K, V> builder) {
@@ -259,7 +259,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
 
     /**
      * Calculates the next power of two, ceiling.
-     * 
+     *
      * @param x the value to round
      * @return the next power of two
      */
@@ -269,7 +269,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
 
     /**
      * Determines the index of the read buffer to use for the current thread.
-     * 
+     *
      * @return the index of the read buffer
      */
     static long readBufferIndex() {
@@ -307,7 +307,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
 
     /**
      * Determines whether the map has exceeded its capacity.
-     * 
+     *
      * @return if the map has overflowed
      */
     boolean hasOverflowed() {

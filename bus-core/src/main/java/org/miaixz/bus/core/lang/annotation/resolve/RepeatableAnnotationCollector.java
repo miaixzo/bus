@@ -58,7 +58,7 @@ public interface RepeatableAnnotationCollector {
      * annotations, and the component type of that array is itself annotated with {@link Repeatable}.
      * <p>
      * Example:
-     * 
+     *
      * <pre><code>
      * // Container annotation
      * {@literal @}interface Annotations {
@@ -68,7 +68,7 @@ public interface RepeatableAnnotationCollector {
      * {@literal @}Repeatable(Annotations.class)
      * {@literal @}interface Item {}
      * </code></pre>
-     * 
+     *
      * Parsing any {@code Annotations} object will yield the {@code Item} annotation objects contained within its
      * {@code value} attribute.
      *
@@ -99,14 +99,14 @@ public interface RepeatableAnnotationCollector {
      * from all such matching attributes.
      * <p>
      * Example:
-     * 
+     *
      * <pre><code>
      * {@literal @}interface MyAnnotations {
      * 	Item1[] items1() default {};
      * 	Item2[] items2() default {};
      * }
      * </code></pre>
-     * 
+     *
      * Parsing any {@code MyAnnotations} object will yield {@code Item1} annotation objects from the {@code items1}
      * attribute, and {@code Item2} annotation objects from the {@code items2} attribute.
      *
