@@ -44,6 +44,15 @@ runs:
 
         SOURCE_PARENT_INSTALLED=false
 
+        requires_source_parent() {
+          awk '
+            /<parent>/ { in_parent = 1 }
+            /<\/parent>/ { in_parent = 0 }
+            in_parent && /<artifactId>bus-parent<\/artifactId>/ { found = 1 }
+            END { exit(found ? 0 : 1) }
+          ' "$1"
+        }
+
         for module in $MODULES; do
           case "$module" in
             bus-*) ;;
@@ -53,34 +62,23 @@ runs:
               ;;
           esac
 
-          case "$module" in
-            bus-bom|bus-parent) ;;
-            *)
-              if [ "$SOURCE_PARENT_INSTALLED" = false ]; then
-                echo "::group::Install source bus-parent for module publishing"
-                mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -DupdatePomFile=false -f bus-parent/pom.xml clean install
-                echo "::endgroup::"
-                SOURCE_PARENT_INSTALLED=true
-              fi
-              ;;
-          esac
+          if [ "$SOURCE_PARENT_INSTALLED" = false ] && requires_source_parent "$module/pom.xml"; then
+            echo "::group::Install source bus-parent for module publishing"
+            mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -DupdatePomFile=false -f bus-parent/pom.xml clean install
+            echo "::endgroup::"
+            SOURCE_PARENT_INSTALLED=true
+          fi
 
           echo "::group::Deploy $module"
           case "$module" in
-            bus-bom|bus-parent)
-              PUBLISH_ARGS=""
-              if [ "$module" = "bus-parent" ]; then
-                PUBLISH_ARGS="-DupdatePomFile=true"
-              fi
-              mvn $MAVEN_ARGS $PUBLISH_ARGS -f "$module/pom.xml" $GOALS
-              if [ "$module" = "bus-parent" ]; then
-                echo "::endgroup::"
-                echo "::group::Install source bus-parent for module publishing"
-                mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -DupdatePomFile=false -f bus-parent/pom.xml clean install
-                echo "::endgroup::"
-                SOURCE_PARENT_INSTALLED=true
-                continue
-              fi
+            bus-parent)
+              mvn $MAVEN_ARGS -DupdatePomFile=true -f "$module/pom.xml" $GOALS
+              echo "::endgroup::"
+              echo "::group::Install source bus-parent for module publishing"
+              mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -DupdatePomFile=false -f bus-parent/pom.xml clean install
+              echo "::endgroup::"
+              SOURCE_PARENT_INSTALLED=true
+              continue
               ;;
             *)
               mvn $MAVEN_ARGS -DupdatePomFile=true -DautoPublish=true -DpublishingServerId=central -f "$module/pom.xml" \

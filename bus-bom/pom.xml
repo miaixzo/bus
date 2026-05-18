@@ -1057,17 +1057,18 @@
                             <resolveProjectVersion>true</resolveProjectVersion>
                             <groomMode>resolveCiFriendliesOnly</groomMode>
                             <pomElements>
-                                <compileScope>remove</compileScope>
                                 <parent>keep</parent>
                                 <properties>keep</properties>
                                 <dependencies>keep</dependencies>
+                                <compileScope>remove</compileScope>
                                 <dependencyManagement>keep</dependencyManagement>
                                 <distributionManagement>remove</distributionManagement>
-                                <repositories>remove</repositories>
+                                <build>keep</build>
+                                <buildPlugins>remove</buildPlugins>
                                 <pluginManagement>keep</pluginManagement>
                                 <pluginRepositories>remove</pluginRepositories>
+                                <repositories>remove</repositories>
                                 <reporting>remove</reporting>
-                                <build>remove</build>
                                 <profiles>remove</profiles>
                             </pomElements>
                         </configuration>

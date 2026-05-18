@@ -105,7 +105,7 @@
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-core</artifactId>
-            <scope>true</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

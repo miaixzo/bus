@@ -153,18 +153,23 @@ runs:
           require 'rexml/document'
 
           modules = ENV.fetch('MODULES').split
-          special_first = ['bus-bom', 'bus-parent']
           module_index = modules.each_with_index.to_h
           module_set = module_index.keys.to_h { |module_name| [module_name, true] }
 
           failed = false
 
-          modules.each do |module_name|
-            next if special_first.include?(module_name)
-
+          dependencies_for = lambda do |module_name|
             pom = "#{module_name}/pom.xml"
             document = REXML::Document.new(File.read(pom))
             dependencies = []
+
+            REXML::XPath.each(document, '/project/parent/artifactId') do |element|
+              artifact_id = element.text
+              next unless module_set[artifact_id]
+              next if artifact_id == module_name
+
+              dependencies << artifact_id
+            end
 
             REXML::XPath.each(document, '/project/dependencies/dependency/artifactId') do |element|
               artifact_id = element.text
@@ -174,9 +179,13 @@ runs:
               dependencies << artifact_id
             end
 
-            dependencies.uniq.each do |dependency|
-              next if special_first.include?(dependency)
+            dependencies.uniq
+          end
 
+          modules.each do |module_name|
+            pom = "#{module_name}/pom.xml"
+
+            dependencies_for.call(module_name).each do |dependency|
               if module_index[dependency] > module_index[module_name]
                 warn "::error file=#{pom}::#{module_name} must be built after dependency #{dependency}"
                 failed = true
@@ -184,25 +193,13 @@ runs:
             end
           end
 
-          derived_order = special_first.dup
-          remaining = modules - special_first
-          built = special_first.to_h { |module_name| [module_name, true] }
+          derived_order = []
+          remaining = modules.dup
+          built = {}
 
           until remaining.empty?
             ready = remaining.select do |module_name|
-              pom = "#{module_name}/pom.xml"
-              document = REXML::Document.new(File.read(pom))
-              dependencies = []
-
-              REXML::XPath.each(document, '/project/dependencies/dependency/artifactId') do |element|
-                artifact_id = element.text
-                next unless module_set[artifact_id]
-                next if special_first.include?(artifact_id)
-
-                dependencies << artifact_id
-              end
-
-              dependencies.uniq.all? { |dependency| built[dependency] }
+              dependencies_for.call(module_name).all? { |dependency| built[dependency] }
             end.sort
 
             if ready.empty?
