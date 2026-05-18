@@ -10,7 +10,7 @@ inputs:
     required: false
     default: '-B -ntp -DskipTests -Djava.version=21 -Dmaven.compiler.release=21'
   goals:
-    description: 'Maven goals to execute for every module.'
+    description: 'Maven goals to execute for modules that publish themselves.'
     required: false
     default: 'clean deploy'
 
@@ -42,8 +42,51 @@ runs:
       run: |
         set -euo pipefail
 
+        SOURCE_PARENT_INSTALLED=false
+
         for module in $MODULES; do
+          case "$module" in
+            bus-*) ;;
+            *)
+              echo "::error::Non-Bus module '$module' is not supported by the Bus Maven Central action"
+              exit 1
+              ;;
+          esac
+
+          case "$module" in
+            bus-bom|bus-parent) ;;
+            *)
+              if [ "$SOURCE_PARENT_INSTALLED" = false ]; then
+                echo "::group::Install source bus-parent for module publishing"
+                mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -DupdatePomFile=false -f bus-parent/pom.xml clean install
+                echo "::endgroup::"
+                SOURCE_PARENT_INSTALLED=true
+              fi
+              ;;
+          esac
+
           echo "::group::Deploy $module"
-          mvn $MAVEN_ARGS -f "$module/pom.xml" $GOALS
+          case "$module" in
+            bus-bom|bus-parent)
+              PUBLISH_ARGS=""
+              if [ "$module" = "bus-parent" ]; then
+                PUBLISH_ARGS="-DupdatePomFile=true"
+              fi
+              mvn $MAVEN_ARGS $PUBLISH_ARGS -f "$module/pom.xml" $GOALS
+              if [ "$module" = "bus-parent" ]; then
+                echo "::endgroup::"
+                echo "::group::Install source bus-parent for module publishing"
+                mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -DupdatePomFile=false -f bus-parent/pom.xml clean install
+                echo "::endgroup::"
+                SOURCE_PARENT_INSTALLED=true
+                continue
+              fi
+              ;;
+            *)
+              mvn $MAVEN_ARGS -DupdatePomFile=true -DautoPublish=true -DpublishingServerId=central -f "$module/pom.xml" \
+                clean install org.apache.maven.plugins:maven-gpg-plugin:sign \
+                org.sonatype.central:central-publishing-maven-plugin:publish
+              ;;
+          esac
           echo "::endgroup::"
         done

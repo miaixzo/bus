@@ -19,14 +19,16 @@
 */
 package org.miaixz.bus.core;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CompareKit;
 
@@ -55,7 +57,7 @@ public class Version implements Comparable<Version>, Serializable {
     /**
      * The current version of the bus-core library.
      */
-    public static final String _VERSION = "8.6.8";
+    public static final String _VERSION = resolveCurrentVersion();
 
     /**
      * The original, unparsed version string.
@@ -191,6 +193,67 @@ public class Version implements Comparable<Version>, Serializable {
      */
     public static String all() {
         return _VERSION;
+    }
+
+    /**
+     * Resolves the current library version from the package implementation version written into {@code MANIFEST.MF}.
+     * Local fallbacks only support source-tree execution where no packaged manifest exists.
+     *
+     * @return The resolved version string.
+     */
+    private static String resolveCurrentVersion() {
+        String version = clean(Version.class.getPackage().getImplementationVersion());
+        if (version != null) {
+            return version;
+        }
+        version = clean(Keys.get(Keys.VERSION));
+        if (version != null) {
+            return version;
+        }
+        version = readLocalVersionFile();
+        if (version != null) {
+            return version;
+        }
+        return Normal.UNKNOWN;
+    }
+
+    /**
+     * Reads the version from the nearest local repository {@code VERSION} file.
+     *
+     * @return The local version, or {@code null} when unavailable.
+     */
+    private static String readLocalVersionFile() {
+        String userDir = Keys.get(Keys.USER_DIR);
+        if (userDir == null) {
+            return null;
+        }
+        Path current = Path.of(userDir).toAbsolutePath();
+        while (current != null) {
+            Path versionFile = current.resolve("VERSION");
+            if (Files.isRegularFile(versionFile)) {
+                try {
+                    return clean(Files.readString(versionFile, Charset.UTF_8));
+                } catch (IOException e) {
+                    return null;
+                }
+            }
+            current = current.getParent();
+        }
+        return null;
+    }
+
+    /**
+     * Normalizes a version candidate.
+     *
+     * @param value The version candidate.
+     * @return The normalized version, or {@code null} when blank.
+     */
+    private static String clean(final String value) {
+        if (value == null) {
+            return null;
+        }
+        String version = value.trim();
+        return version.isEmpty() ? null : version;
     }
 
     /**
