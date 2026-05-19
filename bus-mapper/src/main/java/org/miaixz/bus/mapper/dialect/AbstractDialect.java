@@ -48,7 +48,9 @@ import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.feature.schema.TableSnapshot;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
+import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
@@ -110,9 +112,15 @@ public abstract class AbstractDialect implements Dialect {
                 Behavior.DROP_INDEX,
                 Behavior.CREATE_UNIQUE,
                 Behavior.DROP_UNIQUE,
+                Behavior.CREATE_PRIMARY_KEY,
+                Behavior.DROP_PRIMARY_KEY,
+                Behavior.CREATE_FOREIGN_KEY,
+                Behavior.DROP_FOREIGN_KEY,
                 Behavior.READ_TABLE_METADATA,
                 Behavior.READ_COLUMN_METADATA,
-                Behavior.READ_INDEX_METADATA);
+                Behavior.READ_INDEX_METADATA,
+                Behavior.READ_PRIMARY_KEY_METADATA,
+                Behavior.READ_FOREIGN_KEY_METADATA);
         if (upsertType != null && upsertType != Behavior.NONE) {
             types.add(upsertType);
         }
@@ -223,6 +231,8 @@ public abstract class AbstractDialect implements Dialect {
         if (snapshot.exists()) {
             snapshot.columns(readColumns(connection, table));
             snapshot.indexes(readIndexes(connection, table));
+            snapshot.primaryKey(readPrimaryKey(connection, table));
+            snapshot.foreignKeys(readForeignKeys(connection, table));
         }
         return snapshot;
     }
@@ -276,6 +286,110 @@ public abstract class AbstractDialect implements Dialect {
                 columns.add(
                         new ColumnSnapshot().name(rs.getString("COLUMN_NAME")).type(type)
                                 .nullable(nullable == DatabaseMetaData.columnNullable));
+            }
+        }
+    }
+
+    /**
+     * Reads the primary key metadata for the supplied mapper table.
+     *
+     * @param connection the JDBC connection used to read database metadata
+     * @param table      the mapper table metadata
+     * @return the primary key metadata, or {@code null} when no primary key exists
+     * @throws SQLException if database metadata cannot be read
+     */
+    @Override
+    public PrimaryKeyMeta readPrimaryKey(Connection connection, TableMeta table) throws SQLException {
+        DatabaseMetaData metaData = connection.getMetaData();
+        for (String tableName : tableLookupNames(metaData, table)) {
+            PrimaryKeyMeta primaryKey = readPrimaryKey(metaData, table, tableName);
+            if (primaryKey != null) {
+                return primaryKey;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Reads primary key metadata for one physical table name.
+     *
+     * @param metaData  the database metadata
+     * @param table     the table metadata
+     * @param tableName the physical table name to query
+     * @return the primary key metadata, or {@code null} when no primary key exists
+     * @throws SQLException when metadata access fails
+     */
+    private PrimaryKeyMeta readPrimaryKey(DatabaseMetaData metaData, TableMeta table, String tableName)
+            throws SQLException {
+        Map<Short, String> columns = new LinkedHashMap<>();
+        String name = null;
+        try (ResultSet rs = metaData.getPrimaryKeys(table.catalog(), table.schema(), tableName)) {
+            while (rs.next()) {
+                if (name == null) {
+                    name = rs.getString("PK_NAME");
+                }
+                columns.put(rs.getShort("KEY_SEQ"), rs.getString("COLUMN_NAME"));
+            }
+        }
+        if (columns.isEmpty()) {
+            return null;
+        }
+        return PrimaryKeyMeta
+                .of(name == null || name.isBlank() ? table.table() + "_pk" : name, new ArrayList<>(columns.values()));
+    }
+
+    /**
+     * Reads foreign key metadata for the supplied mapper table.
+     *
+     * @param connection the JDBC connection used to read database metadata
+     * @param table      the mapper table metadata
+     * @return the foreign key metadata found in database metadata
+     * @throws SQLException if database metadata cannot be read
+     */
+    @Override
+    public List<ForeignKeyMeta> readForeignKeys(Connection connection, TableMeta table) throws SQLException {
+        Map<String, ForeignKeyMeta> foreignKeys = new LinkedHashMap<>();
+        DatabaseMetaData metaData = connection.getMetaData();
+        for (String tableName : tableLookupNames(metaData, table)) {
+            readForeignKeys(metaData, table, tableName, foreignKeys);
+            if (!foreignKeys.isEmpty()) {
+                break;
+            }
+        }
+        return new ArrayList<>(foreignKeys.values());
+    }
+
+    /**
+     * Reads foreign key metadata for one physical table name.
+     *
+     * @param metaData    the database metadata
+     * @param table       the table metadata
+     * @param tableName   the physical table name to query
+     * @param foreignKeys the foreign key snapshot collector keyed by foreign key name
+     * @throws SQLException when metadata access fails
+     */
+    private void readForeignKeys(
+            DatabaseMetaData metaData,
+            TableMeta table,
+            String tableName,
+            Map<String, ForeignKeyMeta> foreignKeys) throws SQLException {
+        try (ResultSet rs = metaData.getImportedKeys(table.catalog(), table.schema(), tableName)) {
+            while (rs.next()) {
+                String name = rs.getString("FK_NAME");
+                String column = rs.getString("FKCOLUMN_NAME");
+                String referencedColumn = rs.getString("PKCOLUMN_NAME");
+                if (column == null || referencedColumn == null) {
+                    continue;
+                }
+                String key = name == null || name.isBlank() ? table.table() + "_" + column + "_fk" : name;
+                ForeignKeyMeta foreignKey = foreignKeys.get(key);
+                if (foreignKey == null) {
+                    foreignKey = new ForeignKeyMeta().name(key).referencedTable(referencedTable(rs))
+                            .onDelete(foreignKeyRule(rs, "DELETE_RULE")).onUpdate(foreignKeyRule(rs, "UPDATE_RULE"));
+                    foreignKeys.put(key, foreignKey);
+                }
+                foreignKey.columns().add(column);
+                foreignKey.referencedColumns().add(referencedColumn);
             }
         }
     }
@@ -342,10 +456,10 @@ public abstract class AbstractDialect implements Dialect {
         for (ColumnMeta column : table.columns()) {
             joiner.add(columnDefinition(column));
         }
-        List<ColumnMeta> ids = table.columns().stream().filter(ColumnMeta::id).toList();
+        List<String> ids = table.primaryKey() == null ? List.of() : table.primaryKey().columns();
         if (!ids.isEmpty()) {
             StringJoiner pk = new StringJoiner(", ");
-            ids.forEach(column -> pk.add(identifier(column.column())));
+            ids.forEach(column -> pk.add(identifier(column)));
             joiner.add("PRIMARY KEY (" + pk + ")");
         }
         return "CREATE TABLE " + tableName(table) + " (" + joiner + ")";
@@ -489,6 +603,67 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String dropUnique(TableMeta table, IndexMeta index) {
         return dropIndex(table, index);
+    }
+
+    /**
+     * Builds the DDL used to create a primary key constraint.
+     *
+     * @param table      the mapper table metadata
+     * @param primaryKey the mapper primary key metadata
+     * @return the generated create-primary-key SQL
+     */
+    @Override
+    public String createPrimaryKey(TableMeta table, PrimaryKeyMeta primaryKey) {
+        return "ALTER TABLE " + tableName(table) + " ADD CONSTRAINT " + identifier(primaryKeyName(table, primaryKey))
+                + " PRIMARY KEY (" + columnList(primaryKey.columns()) + ")";
+    }
+
+    /**
+     * Builds the DDL used to drop a primary key constraint.
+     *
+     * @param table      the mapper table metadata
+     * @param primaryKey the mapper primary key metadata
+     * @return the generated drop-primary-key SQL
+     */
+    @Override
+    public String dropPrimaryKey(TableMeta table, PrimaryKeyMeta primaryKey) {
+        return "ALTER TABLE " + tableName(table) + " DROP CONSTRAINT " + identifier(primaryKeyName(table, primaryKey));
+    }
+
+    /**
+     * Builds the DDL used to create a foreign key constraint.
+     *
+     * @param table      the mapper table metadata
+     * @param foreignKey the mapper foreign key metadata
+     * @return the generated create-foreign-key SQL
+     */
+    @Override
+    public String createForeignKey(TableMeta table, ForeignKeyMeta foreignKey) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("ALTER TABLE ").append(tableName(table));
+        sql.append(" ADD CONSTRAINT ").append(identifier(foreignKey.name()));
+        sql.append(" FOREIGN KEY (").append(columnList(foreignKey.columns())).append(")");
+        sql.append(" REFERENCES ").append(foreignKey.referencedTable());
+        sql.append(" (").append(columnList(foreignKey.referencedColumns())).append(")");
+        if (foreignKey.onDelete() != null && !foreignKey.onDelete().isBlank()) {
+            sql.append(" ON DELETE ").append(foreignKey.onDelete());
+        }
+        if (foreignKey.onUpdate() != null && !foreignKey.onUpdate().isBlank()) {
+            sql.append(" ON UPDATE ").append(foreignKey.onUpdate());
+        }
+        return sql.toString();
+    }
+
+    /**
+     * Builds the DDL used to drop a foreign key constraint.
+     *
+     * @param table      the mapper table metadata
+     * @param foreignKey the mapper foreign key metadata
+     * @return the generated drop-foreign-key SQL
+     */
+    @Override
+    public String dropForeignKey(TableMeta table, ForeignKeyMeta foreignKey) {
+        return "ALTER TABLE " + tableName(table) + " DROP CONSTRAINT " + identifier(foreignKey.name());
     }
 
     /**
@@ -707,6 +882,20 @@ public abstract class AbstractDialect implements Dialect {
     }
 
     /**
+     * Builds the primary key constraint name.
+     *
+     * @param table      the table metadata
+     * @param primaryKey the primary key metadata
+     * @return the primary key constraint name
+     */
+    protected String primaryKeyName(TableMeta table, PrimaryKeyMeta primaryKey) {
+        if (primaryKey != null && primaryKey.name() != null && !primaryKey.name().isBlank()) {
+            return primaryKey.name();
+        }
+        return table.table() + "_pk";
+    }
+
+    /**
      * Builds a comma-separated identifier list.
      *
      * @param columns the column names
@@ -773,6 +962,49 @@ public abstract class AbstractDialect implements Dialect {
         if (name != null && names.stream().noneMatch(existing -> existing.equals(name))) {
             names.add(name);
         }
+    }
+
+    /**
+     * Builds a referenced table name from foreign key metadata.
+     *
+     * @param rs the imported key result set
+     * @return the referenced table name
+     * @throws SQLException when metadata access fails
+     */
+    private String referencedTable(ResultSet rs) throws SQLException {
+        String catalog = rs.getString("PKTABLE_CAT");
+        String schema = rs.getString("PKTABLE_SCHEM");
+        String table = rs.getString("PKTABLE_NAME");
+        StringJoiner joiner = new StringJoiner(".");
+        if (catalog != null && !catalog.isBlank()) {
+            joiner.add(catalog);
+        }
+        if (schema != null && !schema.isBlank()) {
+            joiner.add(schema);
+        }
+        if (table != null && !table.isBlank()) {
+            joiner.add(table);
+        }
+        return joiner.toString();
+    }
+
+    /**
+     * Reads a foreign key rule from metadata.
+     *
+     * @param rs     the imported key result set
+     * @param column the rule column name
+     * @return the SQL rule name, or {@code null} when no explicit action is available
+     * @throws SQLException when metadata access fails
+     */
+    private String foreignKeyRule(ResultSet rs, String column) throws SQLException {
+        short rule = rs.getShort(column);
+        return switch (rule) {
+            case DatabaseMetaData.importedKeyCascade -> "CASCADE";
+            case DatabaseMetaData.importedKeySetNull -> "SET NULL";
+            case DatabaseMetaData.importedKeySetDefault -> "SET DEFAULT";
+            case DatabaseMetaData.importedKeyRestrict -> "RESTRICT";
+            default -> null;
+        };
     }
 
     /**

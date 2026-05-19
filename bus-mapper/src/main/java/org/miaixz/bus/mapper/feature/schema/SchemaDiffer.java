@@ -31,7 +31,9 @@ import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Risk;
 import org.miaixz.bus.mapper.behavior.SchemaBehavior;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
+import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
@@ -75,11 +77,49 @@ public class SchemaDiffer {
             diffs.add(
                     SchemaDiff
                             .of(Behavior.CREATE_TABLE, Risk.SAFE, table, "Table does not exist: " + table.tableName()));
+            diffCreateIndexes(table, diffs);
+            diffCreateForeignKeys(table, diffs);
             return diffs;
         }
         diffColumns(table, snapshot, diffs);
+        diffPrimaryKey(table, snapshot, diffs);
         diffIndexes(table, snapshot, diffs);
+        diffForeignKeys(table, snapshot, diffs);
         return diffs;
+    }
+
+    /**
+     * Adds index creation differences for a missing table.
+     *
+     * @param table the entity table metadata
+     * @param diffs the difference collector
+     */
+    private void diffCreateIndexes(TableMeta table, List<SchemaDiff> diffs) {
+        for (IndexMeta index : expectedIndexes(table)) {
+            diffs.add(
+                    SchemaDiff.of(
+                            index.unique() ? Behavior.CREATE_UNIQUE : Behavior.CREATE_INDEX,
+                            Risk.SAFE,
+                            table,
+                            "Index does not exist: " + index.name()).index(index));
+        }
+    }
+
+    /**
+     * Adds foreign key creation differences for a missing table.
+     *
+     * @param table the entity table metadata
+     * @param diffs the difference collector
+     */
+    private void diffCreateForeignKeys(TableMeta table, List<SchemaDiff> diffs) {
+        for (ForeignKeyMeta foreignKey : table.foreignKeys()) {
+            diffs.add(
+                    SchemaDiff.of(
+                            Behavior.CREATE_FOREIGN_KEY,
+                            Risk.SAFE,
+                            table,
+                            "Foreign key does not exist: " + foreignKey.name()).foreignKey(foreignKey));
+        }
     }
 
     /**
@@ -231,13 +271,27 @@ public class SchemaDiffer {
         Set<String> expectedNames = new HashSet<>();
         for (IndexMeta index : expected) {
             expectedNames.add(TableSnapshot.normalizeIdentifier(index.name()));
-            if (!snapshot.hasIndex(index)) {
+            IndexMeta actual = snapshot.index(index.name());
+            if (actual == null) {
                 diffs.add(
                         SchemaDiff.of(
                                 index.unique() ? Behavior.CREATE_UNIQUE : Behavior.CREATE_INDEX,
                                 Risk.SAFE,
                                 table,
                                 "Index does not exist: " + index.name()).index(index));
+            } else if (!TableSnapshot.sameIndex(actual, index)) {
+                diffs.add(
+                        SchemaDiff.of(
+                                actual.unique() ? Behavior.DROP_UNIQUE : Behavior.DROP_INDEX,
+                                Risk.DANGEROUS,
+                                table,
+                                "Index differs: " + actual.name()).index(actual));
+                diffs.add(
+                        SchemaDiff.of(
+                                index.unique() ? Behavior.CREATE_UNIQUE : Behavior.CREATE_INDEX,
+                                Risk.DANGEROUS,
+                                table,
+                                "Index differs: " + index.name()).index(index));
             }
         }
         for (IndexMeta actual : snapshot.indexes()) {
@@ -256,6 +310,101 @@ public class SchemaDiffer {
     }
 
     /**
+     * Computes primary key differences.
+     *
+     * @param table    the entity table metadata
+     * @param snapshot the database table snapshot
+     * @param diffs    the difference collector
+     */
+    private void diffPrimaryKey(TableMeta table, TableSnapshot snapshot, List<SchemaDiff> diffs) {
+        PrimaryKeyMeta expected = table.primaryKey();
+        PrimaryKeyMeta actual = snapshot.primaryKey();
+        if (expected != null && actual == null) {
+            diffs.add(
+                    SchemaDiff.of(
+                            Behavior.CREATE_PRIMARY_KEY,
+                            Risk.SAFE,
+                            table,
+                            "Primary key does not exist: " + expected.name()).primaryKey(expected));
+            return;
+        }
+        if (expected == null && actual != null) {
+            diffs.add(
+                    SchemaDiff.of(
+                            Behavior.DROP_PRIMARY_KEY,
+                            Risk.DANGEROUS,
+                            table,
+                            "Database primary key is not mapped: " + actual.name()).primaryKey(actual));
+            return;
+        }
+        if (expected != null && !TableSnapshot.samePrimaryKey(actual, expected)) {
+            diffs.add(
+                    SchemaDiff.of(
+                            Behavior.DROP_PRIMARY_KEY,
+                            Risk.DANGEROUS,
+                            table,
+                            "Primary key differs: " + actual.name()).primaryKey(actual));
+            diffs.add(
+                    SchemaDiff.of(
+                            Behavior.CREATE_PRIMARY_KEY,
+                            Risk.DANGEROUS,
+                            table,
+                            "Primary key differs: " + expected.name()).primaryKey(expected));
+        }
+    }
+
+    /**
+     * Computes foreign key differences.
+     *
+     * @param table    the entity table metadata
+     * @param snapshot the database table snapshot
+     * @param diffs    the difference collector
+     */
+    private void diffForeignKeys(TableMeta table, TableSnapshot snapshot, List<SchemaDiff> diffs) {
+        List<ForeignKeyMeta> expected = table.foreignKeys();
+        Set<String> expectedNames = new HashSet<>();
+        for (ForeignKeyMeta foreignKey : expected) {
+            expectedNames.add(TableSnapshot.normalizeIdentifier(foreignKey.name()));
+            ForeignKeyMeta actual = snapshot.foreignKeys().stream()
+                    .filter(
+                            item -> TableSnapshot.normalizeIdentifier(item.name())
+                                    .equals(TableSnapshot.normalizeIdentifier(foreignKey.name())))
+                    .findFirst().orElse(null);
+            if (actual == null) {
+                diffs.add(
+                        SchemaDiff.of(
+                                Behavior.CREATE_FOREIGN_KEY,
+                                Risk.SAFE,
+                                table,
+                                "Foreign key does not exist: " + foreignKey.name()).foreignKey(foreignKey));
+            } else if (!TableSnapshot.sameForeignKey(actual, foreignKey)) {
+                diffs.add(
+                        SchemaDiff.of(
+                                Behavior.DROP_FOREIGN_KEY,
+                                Risk.DANGEROUS,
+                                table,
+                                "Foreign key differs: " + actual.name()).foreignKey(actual));
+                diffs.add(
+                        SchemaDiff.of(
+                                Behavior.CREATE_FOREIGN_KEY,
+                                Risk.DANGEROUS,
+                                table,
+                                "Foreign key differs: " + foreignKey.name()).foreignKey(foreignKey));
+            }
+        }
+        for (ForeignKeyMeta actual : snapshot.foreignKeys()) {
+            if (!expectedNames.contains(TableSnapshot.normalizeIdentifier(actual.name()))) {
+                diffs.add(
+                        SchemaDiff.of(
+                                Behavior.DROP_FOREIGN_KEY,
+                                Risk.DANGEROUS,
+                                table,
+                                "Database foreign key is not mapped: " + actual.name()).foreignKey(actual));
+            }
+        }
+    }
+
+    /**
      * Tests whether a database index represents the table primary key.
      *
      * @param table the table metadata
@@ -266,8 +415,11 @@ public class SchemaDiffer {
         if (index == null || index.columns() == null || index.columns().isEmpty()) {
             return false;
         }
-        List<String> primaryKeys = table.idColumns().stream().map(ColumnMeta::column)
-                .map(TableSnapshot::normalizeIdentifier).toList();
+        PrimaryKeyMeta primaryKey = table.primaryKey();
+        if (primaryKey == null) {
+            return false;
+        }
+        List<String> primaryKeys = primaryKey.columns().stream().map(TableSnapshot::normalizeIdentifier).toList();
         List<String> indexColumns = index.columns().stream().map(TableSnapshot::normalizeIdentifier).toList();
         return !primaryKeys.isEmpty() && primaryKeys.equals(indexColumns);
     }
@@ -279,13 +431,35 @@ public class SchemaDiffer {
      * @return the expected index definitions
      */
     public List<IndexMeta> expectedIndexes(TableMeta table) {
-        List<IndexMeta> indexes = new ArrayList<>(table.indexes());
+        List<IndexMeta> indexes = new ArrayList<>();
+        for (IndexMeta index : table.indexes()) {
+            addIndex(indexes, index);
+        }
         for (ColumnMeta column : table.columns()) {
             if (Boolean.TRUE.equals(column.unique())) {
-                indexes.add(IndexMeta.of(table.table() + "_" + column.column() + "_uk", true, column.column()));
+                addIndex(indexes, IndexMeta.of(table.table() + "_" + column.column() + "_uk", true, column.column()));
             }
         }
+        indexes.sort((left, right) -> Boolean.compare(right.unique(), left.unique()));
         return indexes;
+    }
+
+    /**
+     * Adds an index definition when an equivalent definition is not already present.
+     *
+     * @param indexes the index collector
+     * @param index   the index metadata
+     */
+    private void addIndex(List<IndexMeta> indexes, IndexMeta index) {
+        if (index == null || index.columns() == null || index.columns().isEmpty()) {
+            return;
+        }
+        boolean exists = indexes.stream().anyMatch(
+                current -> current.unique() == index.unique()
+                        && TableSnapshot.sameColumns(current.columns(), index.columns()));
+        if (!exists) {
+            indexes.add(index);
+        }
     }
 
     /**

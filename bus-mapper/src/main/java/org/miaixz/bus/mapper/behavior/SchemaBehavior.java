@@ -28,7 +28,9 @@ import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.feature.schema.TableSnapshot;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
+import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
@@ -85,6 +87,30 @@ public interface SchemaBehavior {
      */
     default List<IndexMeta> readIndexes(Connection connection, TableMeta table) throws SQLException {
         throw unsupportedSchema("READ_INDEX_METADATA", table);
+    }
+
+    /**
+     * Reads primary key metadata for a table.
+     *
+     * @param connection the active database connection
+     * @param table      the table metadata
+     * @return the primary key metadata, or {@code null} when the table has no primary key
+     * @throws SQLException when metadata access fails
+     */
+    default PrimaryKeyMeta readPrimaryKey(Connection connection, TableMeta table) throws SQLException {
+        throw unsupportedSchema("READ_PRIMARY_KEY_METADATA", table);
+    }
+
+    /**
+     * Reads foreign key metadata for a table.
+     *
+     * @param connection the active database connection
+     * @param table      the table metadata
+     * @return the foreign key metadata
+     * @throws SQLException when metadata access fails
+     */
+    default List<ForeignKeyMeta> readForeignKeys(Connection connection, TableMeta table) throws SQLException {
+        throw unsupportedSchema("READ_FOREIGN_KEY_METADATA", table);
     }
 
     /**
@@ -249,6 +275,50 @@ public interface SchemaBehavior {
      */
     default String dropUnique(TableMeta table, IndexMeta index) {
         throw unsupportedSchema("DROP_UNIQUE", table);
+    }
+
+    /**
+     * Builds primary key constraint creation SQL.
+     *
+     * @param table      the table metadata
+     * @param primaryKey the primary key metadata
+     * @return the primary key constraint creation SQL
+     */
+    default String createPrimaryKey(TableMeta table, PrimaryKeyMeta primaryKey) {
+        throw unsupportedSchema("CREATE_PRIMARY_KEY", table);
+    }
+
+    /**
+     * Builds primary key constraint drop SQL.
+     *
+     * @param table      the table metadata
+     * @param primaryKey the primary key metadata
+     * @return the primary key constraint drop SQL
+     */
+    default String dropPrimaryKey(TableMeta table, PrimaryKeyMeta primaryKey) {
+        throw unsupportedSchema("DROP_PRIMARY_KEY", table);
+    }
+
+    /**
+     * Builds foreign key constraint creation SQL.
+     *
+     * @param table      the table metadata
+     * @param foreignKey the foreign key metadata
+     * @return the foreign key constraint creation SQL
+     */
+    default String createForeignKey(TableMeta table, ForeignKeyMeta foreignKey) {
+        throw unsupportedSchema("CREATE_FOREIGN_KEY", table);
+    }
+
+    /**
+     * Builds foreign key constraint drop SQL.
+     *
+     * @param table      the table metadata
+     * @param foreignKey the foreign key metadata
+     * @return the foreign key constraint drop SQL
+     */
+    default String dropForeignKey(TableMeta table, ForeignKeyMeta foreignKey) {
+        throw unsupportedSchema("DROP_FOREIGN_KEY", table);
     }
 
     /**

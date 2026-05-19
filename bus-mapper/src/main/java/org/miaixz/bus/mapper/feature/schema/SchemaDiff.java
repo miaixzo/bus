@@ -26,7 +26,9 @@ import lombok.experimental.Accessors;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Risk;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
+import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
@@ -76,6 +78,16 @@ public class SchemaDiff {
      * Index metadata associated with the difference.
      */
     private IndexMeta index;
+
+    /**
+     * Primary key metadata associated with the difference.
+     */
+    private PrimaryKeyMeta primaryKey;
+
+    /**
+     * Foreign key metadata associated with the difference.
+     */
+    private ForeignKeyMeta foreignKey;
 
     /**
      * Human-readable difference message.

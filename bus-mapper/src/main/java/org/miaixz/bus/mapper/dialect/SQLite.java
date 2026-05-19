@@ -27,6 +27,7 @@ import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
@@ -65,7 +66,10 @@ public class SQLite extends AbstractDialect {
      */
     @Override
     public EnumSet<Behavior> types() {
-        return schemaTypes(getUpsertType());
+        EnumSet<Behavior> types = schemaTypes(getUpsertType());
+        types.remove(Behavior.CREATE_FOREIGN_KEY);
+        types.remove(Behavior.DROP_FOREIGN_KEY);
+        return types;
     }
 
     /**
@@ -102,6 +106,30 @@ public class SQLite extends AbstractDialect {
     @Override
     protected String modifyColumn(TableMeta table, ColumnMeta column) {
         return modifyColumn(table, column, Modify.ALTER_COLUMN_TYPE);
+    }
+
+    /**
+     * Rejects foreign key creation on existing SQLite tables.
+     *
+     * @param table      the mapper table metadata
+     * @param foreignKey the mapper foreign key metadata
+     * @return never returns normally
+     */
+    @Override
+    public String createForeignKey(TableMeta table, ForeignKeyMeta foreignKey) {
+        throw unsupportedSchema("CREATE_FOREIGN_KEY", table);
+    }
+
+    /**
+     * Rejects foreign key dropping on existing SQLite tables.
+     *
+     * @param table      the mapper table metadata
+     * @param foreignKey the mapper foreign key metadata
+     * @return never returns normally
+     */
+    @Override
+    public String dropForeignKey(TableMeta table, ForeignKeyMeta foreignKey) {
+        throw unsupportedSchema("DROP_FOREIGN_KEY", table);
     }
 
     /**

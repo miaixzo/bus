@@ -43,6 +43,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Charter.Schema;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -489,22 +490,23 @@ public class MapperProperties {
         }
 
         /**
-         * Enable/disable entity schema initialization (default: false).
+         * Whether entity schema initialization is enabled.
          */
         private boolean enabled = false;
 
         /**
-         * Schema initialization mode.
+         * Schema initialization mode used to determine whether mapper reads metadata, writes scripts, validates
+         * differences, creates missing tables, or updates allowed differences.
          */
         private Schema mode = Schema.NONE;
 
         /**
-         * Whether to only collect SQL without executing DDL.
+         * Whether generated DDL should be collected without execution.
          */
         private boolean dryRun = true;
 
         /**
-         * Whether to print generated SQL.
+         * Whether generated schema SQL should be printed through mapper logging.
          */
         private boolean printSql = true;
 
@@ -523,30 +525,143 @@ public class MapperProperties {
          */
         private String[] entityPackages;
 
-        private Set<String> includeTables = new HashSet<>();
-        private Set<String> excludeTables = new HashSet<>();
-        private Set<String> includeEntities = new HashSet<>();
-        private Set<String> excludeEntities = new HashSet<>();
+        /**
+         * Whether missing tables may be created.
+         */
         private boolean allowCreateTable = false;
-        private boolean allowAddColumn = false;
-        private boolean allowModifyType = false;
-        private boolean allowExpandLength = false;
-        private boolean allowShrinkLength = false;
-        private boolean allowExpandDecimal = false;
-        private boolean allowShrinkDecimal = false;
-        private boolean allowModifyNullable = false;
-        private boolean allowDropColumn = false;
-        private boolean allowRenameColumn = false;
-        private boolean allowCreateIndex = false;
-        private boolean allowDropIndex = false;
-        private boolean allowCreateUnique = false;
-        private boolean allowDropUnique = false;
-        private boolean allowDangerous = false;
-        private Set<String> dangerousWhitelist = new HashSet<>();
-        private Map<String, String> renameMappings = new LinkedHashMap<>();
-        private String scriptLocation = "";
-        private String datasourceKey = "";
 
+        /**
+         * Whether missing columns may be added to existing tables.
+         */
+        private boolean allowAddColumn = false;
+
+        /**
+         * Whether existing column SQL types may be changed.
+         */
+        private boolean allowModifyType = false;
+
+        /**
+         * Whether character column lengths may be expanded.
+         */
+        private boolean allowExpandLength = false;
+
+        /**
+         * Whether character column lengths may be shrunk.
+         */
+        private boolean allowShrinkLength = false;
+
+        /**
+         * Whether numeric precision or scale may be expanded.
+         */
+        private boolean allowExpandDecimal = false;
+
+        /**
+         * Whether numeric precision or scale may be shrunk.
+         */
+        private boolean allowShrinkDecimal = false;
+
+        /**
+         * Whether column nullable constraints may be changed.
+         */
+        private boolean allowModifyNullable = false;
+
+        /**
+         * Whether unmapped database columns may be dropped.
+         */
+        private boolean allowDropColumn = false;
+
+        /**
+         * Whether configured column rename mappings may be executed.
+         */
+        private boolean allowRenameColumn = false;
+
+        /**
+         * Whether missing normal indexes may be created.
+         */
+        private boolean allowCreateIndex = false;
+
+        /**
+         * Whether unmapped normal indexes may be dropped.
+         */
+        private boolean allowDropIndex = false;
+
+        /**
+         * Whether missing unique indexes or unique constraints may be created.
+         */
+        private boolean allowCreateUnique = false;
+
+        /**
+         * Whether unmapped unique indexes or unique constraints may be dropped.
+         */
+        private boolean allowDropUnique = false;
+
+        /**
+         * Whether missing primary key constraints may be created.
+         */
+        private boolean allowCreatePrimaryKey = false;
+
+        /**
+         * Whether unmapped database primary key constraints may be dropped.
+         */
+        private boolean allowDropPrimaryKey = false;
+
+        /**
+         * Whether missing foreign key constraints may be created.
+         */
+        private boolean allowCreateForeignKey = false;
+
+        /**
+         * Whether unmapped database foreign key constraints may be dropped.
+         */
+        private boolean allowDropForeignKey = false;
+
+        /**
+         * Whether dangerous schema changes may be executed after the specific operation flag and whitelist also match.
+         */
+        private boolean allowDangerous = false;
+
+        /**
+         * Output path used by {@link Schema#SCRIPT} mode to write generated schema SQL.
+         */
+        private String scriptLocation = Normal.EMPTY;
+
+        /**
+         * Datasource bean name used for schema initialization when it must target a datasource different from the
+         * primary datasource.
+         */
+        private String datasourceKey = Normal.EMPTY;
+
+        /**
+         * Whitelist of dangerous schema change keys that may run when {@link #allowDangerous} is enabled.
+         */
+        private Set<String> dangerousWhitelist = new HashSet<>();
+
+        /**
+         * Table names explicitly included in schema initialization. Empty means all discovered tables are eligible
+         * unless excluded.
+         */
+        private Set<String> includeTables = new HashSet<>();
+
+        /**
+         * Table names excluded from schema initialization.
+         */
+        private Set<String> excludeTables = new HashSet<>();
+
+        /**
+         * Entity class names explicitly included in schema initialization. Empty means all discovered entities are
+         * eligible unless excluded.
+         */
+        private Set<String> includeEntities = new HashSet<>();
+
+        /**
+         * Entity class names excluded from schema initialization.
+         */
+        private Set<String> excludeEntities = new HashSet<>();
+
+        /**
+         * Column rename mappings used when {@link #allowRenameColumn} is enabled.
+         */
+        private Map<String, String> renameMappings = new LinkedHashMap<>();
     }
 
     /**

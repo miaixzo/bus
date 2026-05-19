@@ -170,6 +170,26 @@ public class SchemaConfig {
     private boolean allowDropUnique = false;
 
     /**
+     * Whether missing primary key constraints may be created.
+     */
+    private boolean allowCreatePrimaryKey = false;
+
+    /**
+     * Whether unmapped database primary key constraints may be dropped.
+     */
+    private boolean allowDropPrimaryKey = false;
+
+    /**
+     * Whether missing foreign key constraints may be created.
+     */
+    private boolean allowCreateForeignKey = false;
+
+    /**
+     * Whether unmapped database foreign key constraints may be dropped.
+     */
+    private boolean allowDropForeignKey = false;
+
+    /**
      * Whether dangerous schema changes may be executed.
      */
     private boolean allowDangerous = false;
