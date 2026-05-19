@@ -1103,6 +1103,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
                             <resolveProjectVersion>true</resolveProjectVersion>
+                            <resolveProjectExpressions>true</resolveProjectExpressions>
                             <groomMode>resolveCiFriendliesOnly</groomMode>
                             <pomElements>
                                 <parent>keep</parent>

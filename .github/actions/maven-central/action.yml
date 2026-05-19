@@ -72,7 +72,7 @@ runs:
           echo "::group::Deploy $module"
           case "$module" in
             bus-parent)
-              mvn $MAVEN_ARGS -Dgroom.updatePomFile=true -f "$module/pom.xml" $GOALS
+              mvn $MAVEN_ARGS -Dgroom.updatePomFile=true -Dgroom.pomElements.buildPlugins=remove -f "$module/pom.xml" $GOALS
               echo "::endgroup::"
               echo "::group::Install source bus-parent for module publishing"
               mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -f bus-parent/pom.xml clean install

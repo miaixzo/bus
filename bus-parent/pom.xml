@@ -365,6 +365,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
                             <resolveProjectVersion>true</resolveProjectVersion>
+                            <resolveProjectExpressions>true</resolveProjectExpressions>
                             <groomMode>oss</groomMode>
                             <groomDependencyMode>inherited</groomDependencyMode>
                             <applyProjectElementRemovalsToPomPackaging>false</applyProjectElementRemovalsToPomPackaging>
@@ -394,6 +395,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
                             <resolveProjectVersion>true</resolveProjectVersion>
+                            <resolveProjectExpressions>true</resolveProjectExpressions>
                             <groomMode>resolveCiFriendliesOnly</groomMode>
                             <pomElements>
                                 <parent>keep</parent>
@@ -401,7 +403,7 @@
                                 <dependencies>keep</dependencies>
                                 <compileScope>remove</compileScope>
                                 <build>keep</build>
-                                <buildPlugins>remove</buildPlugins>
+                                <buildPlugins>keep</buildPlugins>
                                 <pluginManagement>keep</pluginManagement>
                                 <dependencyManagement>keep</dependencyManagement>
                                 <distributionManagement>remove</distributionManagement>
