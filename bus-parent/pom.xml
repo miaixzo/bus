@@ -19,7 +19,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -78,10 +78,6 @@
         <system>Github Issues</system>
         <url>https://github.com/818000/bus/issues</url>
     </issueManagement>
-
-    <properties>
-        <updatePomFile>false</updatePomFile>
-    </properties>
 
     <build>
         <pluginManagement>
@@ -280,8 +276,8 @@
                             <excludes>
                                 <exclude>**/target/**</exclude>
                             </excludes>
-                            <trimTrailingWhitespace />
-                            <endWithNewline />
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
                             <indent>
                                 <spaces>true</spaces>
                                 <spacesPerTab>2</spacesPerTab>
@@ -294,8 +290,8 @@
                             <excludes>
                                 <exclude>**/target/**</exclude>
                             </excludes>
-                            <trimTrailingWhitespace />
-                            <endWithNewline />
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
                             <indent>
                                 <spaces>true</spaces>
                                 <spacesPerTab>4</spacesPerTab>
@@ -313,8 +309,8 @@
                             <excludes>
                                 <exclude>**/target/**</exclude>
                             </excludes>
-                            <trimTrailingWhitespace />
-                            <endWithNewline />
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
                         </format>
                     </formats>
                     <java>
@@ -324,9 +320,9 @@
                         <eclipse>
                             <file>../.github/scripts/format.xml</file>
                         </eclipse>
-                        <removeUnusedImports />
-                        <trimTrailingWhitespace />
-                        <endWithNewline />
+                        <removeUnusedImports/>
+                        <trimTrailingWhitespace/>
+                        <endWithNewline/>
                         <importOrder>
                             <order>\#,java,javax,jakarta,lombok,org,com,net,org.miaixz</order>
                         </importOrder>
@@ -360,13 +356,12 @@
                 <artifactId>groom-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>normalize-publish-pom</id>
+                        <id>module-publish-pom</id>
                         <goals>
                             <goal>normalize</goal>
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
-                            <updatePomFile>${updatePomFile}</updatePomFile>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
                             <resolveProjectVersion>true</resolveProjectVersion>
@@ -374,7 +369,6 @@
                             <groomDependencyMode>inherited</groomDependencyMode>
                             <applyProjectElementRemovalsToPomPackaging>false</applyProjectElementRemovalsToPomPackaging>
                             <pomElements>
-                                <compileScope>remove</compileScope>
                                 <parent>remove</parent>
                                 <properties>remove</properties>
                                 <dependencyManagement>remove</dependencyManagement>
@@ -382,6 +376,7 @@
                                 <repositories>remove</repositories>
                                 <pluginManagement>remove</pluginManagement>
                                 <pluginRepositories>remove</pluginRepositories>
+                                <compileScope>remove</compileScope>
                                 <reporting>remove</reporting>
                                 <build>remove</build>
                                 <profiles>remove</profiles>
@@ -389,14 +384,13 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>normalize-parent-publish-pom</id>
+                        <id>parent-publish-pom</id>
                         <goals>
                             <goal>normalize</goal>
                         </goals>
                         <phase>process-resources</phase>
                         <inherited>false</inherited>
                         <configuration>
-                            <updatePomFile>${updatePomFile}</updatePomFile>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
                             <resolveProjectVersion>true</resolveProjectVersion>

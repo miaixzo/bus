@@ -64,7 +64,7 @@ runs:
 
           if [ "$SOURCE_PARENT_INSTALLED" = false ] && requires_source_parent "$module/pom.xml"; then
             echo "::group::Install source bus-parent for module publishing"
-            mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -DupdatePomFile=false -f bus-parent/pom.xml clean install
+            mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -f bus-parent/pom.xml clean install
             echo "::endgroup::"
             SOURCE_PARENT_INSTALLED=true
           fi
@@ -72,16 +72,16 @@ runs:
           echo "::group::Deploy $module"
           case "$module" in
             bus-parent)
-              mvn $MAVEN_ARGS -DupdatePomFile=true -f "$module/pom.xml" $GOALS
+              mvn $MAVEN_ARGS -Dgroom.updatePomFile=true -f "$module/pom.xml" $GOALS
               echo "::endgroup::"
               echo "::group::Install source bus-parent for module publishing"
-              mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -DupdatePomFile=false -f bus-parent/pom.xml clean install
+              mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -f bus-parent/pom.xml clean install
               echo "::endgroup::"
               SOURCE_PARENT_INSTALLED=true
               continue
               ;;
             *)
-              mvn $MAVEN_ARGS -DupdatePomFile=true -DautoPublish=true -DpublishingServerId=central -f "$module/pom.xml" \
+              mvn $MAVEN_ARGS -Dgroom.updatePomFile=true -DautoPublish=true -DpublishingServerId=central -f "$module/pom.xml" \
                 clean install org.apache.maven.plugins:maven-gpg-plugin:sign \
                 org.sonatype.central:central-publishing-maven-plugin:publish
               ;;

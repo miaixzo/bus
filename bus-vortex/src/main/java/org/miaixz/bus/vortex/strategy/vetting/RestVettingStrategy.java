@@ -39,6 +39,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UnicodeKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.center.HMac;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -229,13 +230,9 @@ public class RestVettingStrategy extends VettingStrategy {
             throw new IllegalArgumentException("Key, http method, and params cannot be null or empty.");
         }
 
-        String sortedAndEncodedParams = params.entrySet().stream().map(entry -> {
-            Object value = entry.getValue();
-            String normalizedValue = value instanceof Map || value instanceof Collection
-                    || (value != null && value.getClass().isArray()) ? JsonKit.toJsonString(value)
-                            : String.valueOf(value);
-            return Map.entry(entry.getKey(), normalizedValue);
-        }).filter(entry -> StringKit.isNotEmpty(entry.getValue())).sorted(Map.Entry.comparingByKey())
+        String sortedAndEncodedParams = params.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), normalizeParameterValue(entry.getValue())))
+                .filter(entry -> StringKit.isNotEmpty(entry.getValue())).sorted(Map.Entry.comparingByKey())
                 .map(
                         entry -> UrlEncoder.encodeAll(entry.getKey(), Charset.UTF_8)
                                 + UrlEncoder.encodeAll(entry.getValue(), Charset.UTF_8))
@@ -246,6 +243,21 @@ public class RestVettingStrategy extends VettingStrategy {
         HMac hmac = Builder.hmac(Algorithm.HMACSHA256, key.getBytes(Charset.UTF_8));
         byte[] signBytes = hmac.digest(stringToSign.getBytes(Charset.UTF_8));
         return Base64.encode(signBytes);
+    }
+
+    /**
+     * Converts one request parameter value to the stable string form used by REST signature generation.
+     *
+     * @param value source parameter value
+     * @return canonical parameter value
+     */
+    private String normalizeParameterValue(Object value) {
+        String text = value instanceof Map || value instanceof Collection
+                || (value != null && value.getClass().isArray())
+                ? JsonKit.toJsonString(value)
+                : String.valueOf(value);
+
+        return UnicodeKit.toString(text);
     }
 
 }

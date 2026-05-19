@@ -273,7 +273,7 @@
                 <artifactId>groom-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>normalize-publish-pom</id>
+                        <id>all-publish-pom</id>
                         <configuration>
                             <updatePomFile>true</updatePomFile>
                             <outputDirectory>${project.build.directory}</outputDirectory>
