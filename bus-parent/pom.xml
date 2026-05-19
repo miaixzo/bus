@@ -79,6 +79,10 @@
         <url>https://github.com/818000/bus/issues</url>
     </issueManagement>
 
+    <properties>
+        <updatePomFile>false</updatePomFile>
+    </properties>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -87,7 +91,6 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
                         <parameters>true</parameters>
-                        <annotationProcessorPathsUseDepMgmt>true</annotationProcessorPathsUseDepMgmt>
                         <annotationProcessorPaths>
                             <path>
                                 <groupId>org.projectlombok</groupId>
@@ -363,7 +366,7 @@
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
-                            <updatePomFile>true</updatePomFile>
+                            <updatePomFile>${updatePomFile}</updatePomFile>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
                             <resolveProjectVersion>true</resolveProjectVersion>
@@ -393,6 +396,7 @@
                         <phase>process-resources</phase>
                         <inherited>false</inherited>
                         <configuration>
+                            <updatePomFile>${updatePomFile}</updatePomFile>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
                             <resolveProjectVersion>true</resolveProjectVersion>
