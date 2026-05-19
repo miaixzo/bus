@@ -133,7 +133,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
 
             ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
             copyDownstreamHeaders(responseBuilder, clientResponse.headers().asHttpHeaders());
-            return clientResponse.bodyToMono(String.class).defaultIfEmpty(Normal.EMPTY).flatMap(responseBuilder::bodyValue);
+            return clientResponse.bodyToMono(String.class).defaultIfEmpty(Normal.EMPTY)
+                    .flatMap(responseBuilder::bodyValue);
         });
     }
 
@@ -180,7 +181,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      */
     private WebClient.RequestHeadersSpec<?> request(Assets assets, String payload) {
         URI uri = UrlKit.toURI(buildGrpcUrl(assets, assets.getMethod()));
-        return Egress.request(HttpMethod.POST, uri).header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(payload);
+        return Egress.request(HttpMethod.POST, uri).header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .bodyValue(payload);
     }
 
     /**

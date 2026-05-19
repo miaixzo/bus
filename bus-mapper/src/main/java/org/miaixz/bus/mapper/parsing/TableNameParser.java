@@ -500,7 +500,7 @@ public final class TableNameParser {
          * Creates an SQL token.
          *
          * @param start the starting position of the token
-         * @param end the ending position of the token
+         * @param end   the ending position of the token
          * @param value the token value
          */
         private SqlToken(int start, int end, String value) {

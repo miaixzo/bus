@@ -603,8 +603,8 @@ public class GenericTypeResolver {
         /**
          * Creates a parameterized type descriptor.
          *
-         * @param rawType the raw class
-         * @param ownerType the owning type
+         * @param rawType             the raw class
+         * @param ownerType           the owning type
          * @param actualTypeArguments the actual type arguments
          */
         public ParameterizedTypes(Class<?> rawType, Type ownerType, Type[] actualTypeArguments) {

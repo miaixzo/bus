@@ -127,9 +127,9 @@ public class UncheckedException extends RuntimeException {
     /**
      * Constructs a new UncheckedException with the specified error code, detail message, and cause.
      *
-     * @param errcode   The error code.
-     * @param errmsg    The detail message.
-     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param errcode The error code.
+     * @param errmsg  The detail message.
+     * @param cause   The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     protected UncheckedException(final String errcode, final String errmsg, final Throwable cause) {
         super(errmsg, cause);

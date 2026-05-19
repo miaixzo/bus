@@ -253,9 +253,7 @@ public class RestVettingStrategy extends VettingStrategy {
      */
     private String normalizeParameterValue(Object value) {
         String text = value instanceof Map || value instanceof Collection
-                || (value != null && value.getClass().isArray())
-                ? JsonKit.toJsonString(value)
-                : String.valueOf(value);
+                || (value != null && value.getClass().isArray()) ? JsonKit.toJsonString(value) : String.valueOf(value);
 
         return UnicodeKit.toString(text);
     }

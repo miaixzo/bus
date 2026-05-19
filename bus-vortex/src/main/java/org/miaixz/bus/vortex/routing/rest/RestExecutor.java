@@ -549,8 +549,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Handles the execution for an ATOMIC request using streamed downstream response passthrough.
      * <p>
-     * The route mode remains ATOMIC for compatibility with existing assets, but the downstream {@link DataBuffer} body is
-     * no longer materialized through entity buffering. Keeping the body as a {@link Flux} allows WebFlux to own
+     * The route mode remains ATOMIC for compatibility with existing assets, but the downstream {@link DataBuffer} body
+     * is no longer materialized through entity buffering. Keeping the body as a {@link Flux} allows WebFlux to own
      * cancellation, error, and release handling.
      * </p>
      *

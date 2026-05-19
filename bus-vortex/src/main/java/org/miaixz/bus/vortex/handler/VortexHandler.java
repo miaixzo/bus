@@ -216,7 +216,7 @@ public class VortexHandler {
                             assets.getMethod());
 
                     return handleMockResponse(context, assets).flatMap(
-                                    response -> executePostHandlers(exchange, router, response, null).thenReturn(response))
+                            response -> executePostHandlers(exchange, router, response, null).thenReturn(response))
                             .doOnSuccess(serverResponse -> {
                                 long duration = System.currentTimeMillis() - context.getTimestamp();
                                 Logger.info(
@@ -352,7 +352,9 @@ public class VortexHandler {
      * @return {@link Mono} that always terminates with the original error
      */
     private Mono<ServerResponse> executePostHandlersThenError(
-            ServerWebExchange exchange, Router<ServerRequest, ?> router, Throwable error) {
+            ServerWebExchange exchange,
+            Router<ServerRequest, ?> router,
+            Throwable error) {
         return executePostHandlers(exchange, router, null, error).onErrorResume(handlerError -> {
             try {
                 if (handlerError != error) {

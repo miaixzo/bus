@@ -89,9 +89,9 @@ public class PopulateConfig {
     /**
      * Creates a full populate configuration.
      *
-     * @param created whether create time auto-fill is enabled
+     * @param created  whether create time auto-fill is enabled
      * @param modified whether update time auto-fill is enabled
-     * @param creator whether creator auto-fill is enabled
+     * @param creator  whether creator auto-fill is enabled
      * @param modifier whether modifier auto-fill is enabled
      * @param provider user information provider
      */

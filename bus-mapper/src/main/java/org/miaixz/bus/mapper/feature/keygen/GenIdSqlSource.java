@@ -43,7 +43,7 @@ public class GenIdSqlSource implements SqlSource {
     /**
      * Creates a SQL source wrapper that prepares generated ids before SQL execution.
      *
-     * @param sqlSource the original SQL source
+     * @param sqlSource    the original SQL source
      * @param keyGenerator the generated id key generator
      */
     public GenIdSqlSource(SqlSource sqlSource, GenIdKeyGenerator keyGenerator) {

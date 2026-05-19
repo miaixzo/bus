@@ -78,7 +78,8 @@ public class Limiter {
     private volatile RateLimiter rateLimiter;
 
     /**
-     * Lazily initializes and retrieves the underlying {@link RateLimiter} instance using thread-safe double-checked locking.
+     * Lazily initializes and retrieves the underlying {@link RateLimiter} instance using thread-safe double-checked
+     * locking.
      *
      * @return the singleton {@link RateLimiter} instance for this limiter configuration
      */
@@ -110,9 +111,9 @@ public class Limiter {
     /**
      * Lightweight token bucket rate limiter for per-minute request quotas.
      * <p>
-     * The limiter stores up to one second of permits, matching the previous smooth-burst behavior closely while avoiding a
-     * direct Guava dependency. The implementation is synchronized because each limiter instance is shared by concurrent
-     * requests and the critical section contains only a few arithmetic operations.
+     * The limiter stores up to one second of permits, matching the previous smooth-burst behavior closely while
+     * avoiding a direct Guava dependency. The implementation is synchronized because each limiter instance is shared by
+     * concurrent requests and the critical section contains only a few arithmetic operations.
      *
      * @author Kimi Liu
      * @since Java 21+

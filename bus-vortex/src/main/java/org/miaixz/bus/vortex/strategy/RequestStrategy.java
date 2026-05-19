@@ -536,8 +536,8 @@ public class RequestStrategy extends AbstractStrategy {
      * <li>Detailed logging for large bodies to track memory usage</li>
      * </ul>
      * <p>
-     * <b>Note:</b> The collected {@link DataBuffer}s are released after their bytes are copied into the replayable request
-     * body.
+     * <b>Note:</b> The collected {@link DataBuffer}s are released after their bytes are copied into the replayable
+     * request body.
      *
      * @param dataBuffers The list of {@link DataBuffer}s to read.
      * @return A byte array containing the merged data from all buffers.

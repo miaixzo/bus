@@ -331,8 +331,8 @@ public class PageBuilder {
         /**
          * Creates a pagination result.
          *
-         * @param sql SQL statement with pagination applied
-         * @param countSql SQL statement used for count queries
+         * @param sql           SQL statement with pagination applied
+         * @param countSql      SQL statement used for count queries
          * @param countRequired whether a count query must be executed
          */
         public PaginationResult(String sql, String countSql, boolean countRequired) {

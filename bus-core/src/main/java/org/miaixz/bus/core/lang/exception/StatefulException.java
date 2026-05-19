@@ -146,8 +146,8 @@ public class StatefulException extends UncheckedException {
     /**
      * Constructs a new StatefulException with the specified status code and cause.
      *
-     * @param status    The status code.
-     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param status The status code.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     public StatefulException(final int status, final Throwable cause) {
         super(cause);
@@ -157,9 +157,9 @@ public class StatefulException extends UncheckedException {
     /**
      * Constructs a new StatefulException with the specified status code, detail message, and cause.
      *
-     * @param status    The status code.
-     * @param msg       The detail message.
-     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param status The status code.
+     * @param msg    The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     public StatefulException(final int status, final String msg, final Throwable cause) {
         super(msg, cause);

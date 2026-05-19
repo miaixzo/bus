@@ -77,7 +77,7 @@ public class VisibleConfig {
      * Creates a visible-control configuration.
      *
      * @param provider the visible information provider
-     * @param ignore tables excluded from visible checking
+     * @param ignore   tables excluded from visible checking
      */
     public VisibleConfig(VisibleProvider provider, List<String> ignore) {
         this.provider = provider;

@@ -825,7 +825,7 @@ public class OGNL {
          * Creates a cache statistics snapshot.
          *
          * @param lambdaCacheSize number of cached lambda expressions
-         * @param classCacheSize number of cached class descriptors
+         * @param classCacheSize  number of cached class descriptors
          * @param methodCacheSize number of cached method descriptors
          */
         public CacheStats(int lambdaCacheSize, int classCacheSize, int methodCacheSize) {

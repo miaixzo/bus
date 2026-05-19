@@ -114,11 +114,7 @@ public final class Holder {
                 "- Max Multipart Request Size: {} MB",
                 performance.getMaxMultipartRequestSize() / (1024 * 1024));
         Logger.info(true, "Vortex", "- Max Connections: {}", performance.getMaxConnections());
-        Logger.info(
-                true,
-                "Vortex",
-                "- Pending Acquire Timeout: {} seconds",
-                pendingAcquireTimeoutSeconds(performance));
+        Logger.info(true, "Vortex", "- Pending Acquire Timeout: {} seconds", pendingAcquireTimeoutSeconds(performance));
         Logger.info(true, "Vortex", "- Pending Acquire Max Count: {}", pendingAcquireMaxCount(performance));
         Logger.info(true, "Vortex", "- Max Producer Cache Size: {}", performance.getMaxProducerCacheSize());
         Logger.info(true, "Vortex", "- L2 Cache Size: {}", performance.getCacheSize());
@@ -149,8 +145,8 @@ public final class Holder {
             Logger.info(true, "Vortex", "  - Pending Acquire Max Count: {}", pendingAcquireMaxCount);
             return ConnectionProvider.builder("vortex-http-pool").maxConnections(perf.getMaxConnections())
                     .pendingAcquireTimeout(Duration.ofSeconds(pendingAcquireTimeoutSeconds))
-                    .pendingAcquireMaxCount(pendingAcquireMaxCount)
-                    .maxIdleTime(Duration.ofSeconds(20)).maxLifeTime(Duration.ofMinutes(5)).build();
+                    .pendingAcquireMaxCount(pendingAcquireMaxCount).maxIdleTime(Duration.ofSeconds(20))
+                    .maxLifeTime(Duration.ofMinutes(5)).build();
         });
     }
 

@@ -94,9 +94,9 @@ public class OpenAIProvider implements LlmProvider {
     /**
      * Constructs a new {@code OpenAIProvider} instance.
      * <p>
-     * This constructor initializes the provider with the specified configuration. Outbound calls are executed through the
-     * shared {@link Egress} client so LLM traffic reuses the same connection pool and codec settings as REST and MCP
-     * routing. The endpoint URL is normalized by removing any trailing slashes.
+     * This constructor initializes the provider with the specified configuration. Outbound calls are executed through
+     * the shared {@link Egress} client so LLM traffic reuses the same connection pool and codec settings as REST and
+     * MCP routing. The endpoint URL is normalized by removing any trailing slashes.
      * </p>
      *
      * @param type     The provider type identifier (e.g., "openai", "gemini", "qwen", "vllm", "ollama"). Must not be
@@ -143,7 +143,8 @@ public class OpenAIProvider implements LlmProvider {
 
         Logger.debug(true, "Vortex", "Sending non-streaming request to {}: model={}", type, request.getModel());
 
-        return Egress.request(HttpMethod.POST, chatCompletionsUri()).header(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
+        return Egress.request(HttpMethod.POST, chatCompletionsUri())
+                .header(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
                 .header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
                 .bodyToMono(String.class).map(this::parseResponse)
                 .doOnError(e -> Logger.error(false, "Vortex", "Request failed: {}", e.getClass().getSimpleName()));
@@ -171,7 +172,8 @@ public class OpenAIProvider implements LlmProvider {
 
         Logger.debug(true, "Vortex", "Sending streaming request to {}: model={}", type, request.getModel());
 
-        return Egress.request(HttpMethod.POST, chatCompletionsUri()).header(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
+        return Egress.request(HttpMethod.POST, chatCompletionsUri())
+                .header(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
                 .header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
                 .bodyToFlux(String.class).map(chunk -> "data: " + chunk + Symbol.LF + Symbol.LF).doOnError(
                         e -> Logger

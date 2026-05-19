@@ -104,8 +104,8 @@ public class LicenseException extends UncheckedException {
     /**
      * Constructs a new LicenseException with the specified detail message and cause.
      *
-     * @param errmsg    The detail message.
-     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param errmsg The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     public LicenseException(final String errmsg, final Throwable cause) {
         super(errmsg, cause);
@@ -125,9 +125,9 @@ public class LicenseException extends UncheckedException {
     /**
      * Constructs a new LicenseException with the specified error code, detail message, and cause.
      *
-     * @param errcode   The error code.
-     * @param errmsg    The detail message.
-     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param errcode The error code.
+     * @param errmsg  The detail message.
+     * @param cause   The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     public LicenseException(final String errcode, final String errmsg, final Throwable cause) {
         super(errcode, errmsg, cause);

@@ -100,11 +100,11 @@ public class AuditConfig {
      * Creates a full audit configuration.
      *
      * @param slowSqlThreshold slow SQL threshold in milliseconds
-     * @param logParameters whether SQL parameters are logged
-     * @param logResults whether SQL results are logged
-     * @param logAllSql whether all SQL statements are logged
-     * @param printConsole whether audit information is printed to the console
-     * @param provider audit logger provider
+     * @param logParameters    whether SQL parameters are logged
+     * @param logResults       whether SQL results are logged
+     * @param logAllSql        whether all SQL statements are logged
+     * @param printConsole     whether audit information is printed to the console
+     * @param provider         audit logger provider
      */
     public AuditConfig(long slowSqlThreshold, boolean logParameters, boolean logResults, boolean logAllSql,
             boolean printConsole, AuditProvider provider) {

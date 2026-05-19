@@ -111,7 +111,7 @@ public interface ClassMetaResolver extends Order {
         /**
          * Creates a mapper-method cache key.
          *
-         * @param mapperType the mapper interface class
+         * @param mapperType   the mapper interface class
          * @param mapperMethod the mapper interface method
          */
         public MapperTypeMethod(Class<?> mapperType, Method mapperMethod) {

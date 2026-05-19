@@ -75,8 +75,8 @@ public class LimiterStrategy extends AbstractStrategy {
      * <li>Extracts the API method, version, and client IP address from the context.</li>
      * <li>Calls {@link #getLimiters} to find all applicable limiters (e.g., global and per-IP).</li>
      * <li>For each applicable limiter, it calls the non-blocking {@link Limiter#acquire()} method. If a limiter has no
-     * available tokens, this call throws an exception, which is caught by the global error handler to produce a
-     * "Too Many Requests" response.</li>
+     * available tokens, this call throws an exception, which is caught by the global error handler to produce a "Too
+     * Many Requests" response.</li>
      * <li>If all limiters are successfully acquired, it proceeds to the next strategy in the chain.</li>
      * </ol>
      *

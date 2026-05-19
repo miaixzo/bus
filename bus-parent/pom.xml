@@ -19,7 +19,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -276,8 +276,8 @@
                             <excludes>
                                 <exclude>**/target/**</exclude>
                             </excludes>
-                            <trimTrailingWhitespace/>
-                            <endWithNewline/>
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
                             <indent>
                                 <spaces>true</spaces>
                                 <spacesPerTab>2</spacesPerTab>
@@ -290,8 +290,8 @@
                             <excludes>
                                 <exclude>**/target/**</exclude>
                             </excludes>
-                            <trimTrailingWhitespace/>
-                            <endWithNewline/>
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
                             <indent>
                                 <spaces>true</spaces>
                                 <spacesPerTab>4</spacesPerTab>
@@ -309,8 +309,8 @@
                             <excludes>
                                 <exclude>**/target/**</exclude>
                             </excludes>
-                            <trimTrailingWhitespace/>
-                            <endWithNewline/>
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
                         </format>
                     </formats>
                     <java>
@@ -320,9 +320,9 @@
                         <eclipse>
                             <file>../.github/scripts/format.xml</file>
                         </eclipse>
-                        <removeUnusedImports/>
-                        <trimTrailingWhitespace/>
-                        <endWithNewline/>
+                        <removeUnusedImports />
+                        <trimTrailingWhitespace />
+                        <endWithNewline />
                         <importOrder>
                             <order>\#,java,javax,jakarta,lombok,org,com,net,org.miaixz</order>
                         </importOrder>

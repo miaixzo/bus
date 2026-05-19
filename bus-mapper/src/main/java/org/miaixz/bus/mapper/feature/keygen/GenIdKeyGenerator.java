@@ -85,9 +85,9 @@ public class GenIdKeyGenerator implements KeyGenerator {
     /**
      * Creates a generated id key generator.
      *
-     * @param genId the primary key generator
-     * @param table the entity table metadata
-     * @param column the primary key column metadata
+     * @param genId         the primary key generator
+     * @param table         the entity table metadata
+     * @param column        the primary key column metadata
      * @param configuration the MyBatis configuration
      * @param executeBefore whether the key is generated before insert execution
      */

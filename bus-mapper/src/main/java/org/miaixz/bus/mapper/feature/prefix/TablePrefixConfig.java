@@ -77,7 +77,7 @@ public class TablePrefixConfig {
      * Creates a table prefix configuration.
      *
      * @param provider the prefix provider
-     * @param ignore table names excluded from prefixing
+     * @param ignore   table names excluded from prefixing
      */
     public TablePrefixConfig(TablePrefixProvider provider, List<String> ignore) {
         this.provider = provider;

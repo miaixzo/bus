@@ -618,8 +618,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Handles the execution for a BUFFERING MCP request.
      * <p>
-     * This path mirrors REST buffering behavior while streaming the downstream response body through WebFlux. It is used
-     * for non-streaming MCP responses such as JSON acknowledgements, without materializing a standalone
+     * This path mirrors REST buffering behavior while streaming the downstream response body through WebFlux. It is
+     * used for non-streaming MCP responses such as JSON acknowledgements, without materializing a standalone
      * {@link DataBuffer}.
      *
      * @param bodySpec The request body specification.
