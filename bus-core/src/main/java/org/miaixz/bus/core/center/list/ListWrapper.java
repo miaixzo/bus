@@ -47,7 +47,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the number of elements in the wrapped list.
+     *
+     * @return the number of elements in the wrapped list
      */
     @Override
     public int size() {
@@ -55,7 +57,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns whether the wrapped list contains no elements.
+     *
+     * @return {@code true} if the wrapped list contains no elements
      */
     @Override
     public boolean isEmpty() {
@@ -63,7 +67,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns whether the wrapped list contains the specified element.
+     *
+     * @param o the element whose presence is tested
+     * @return {@code true} if the wrapped list contains the specified element
      */
     @Override
     public boolean contains(final Object o) {
@@ -71,7 +78,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns an iterator over the wrapped list.
+     *
+     * @return an iterator over the wrapped list
      */
     @Override
     public Iterator<E> iterator() {
@@ -79,7 +88,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Performs the given action for each element in the wrapped list.
+     *
+     * @param action the action to perform
      */
     @Override
     public void forEach(final Consumer<? super E> action) {
@@ -87,7 +98,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns an array containing all elements in the wrapped list.
+     *
+     * @return an array containing all elements in the wrapped list
      */
     @Override
     public Object[] toArray() {
@@ -95,7 +108,11 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns an array containing all elements in the wrapped list.
+     *
+     * @param a   the destination array
+     * @param <T> the runtime type of the array
+     * @return an array containing all elements in the wrapped list
      */
     @Override
     public <T> T[] toArray(final T[] a) {
@@ -103,7 +120,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Adds the specified element to the wrapped list.
+     *
+     * @param e the element to add
+     * @return {@code true} if the wrapped list changed
      */
     @Override
     public boolean add(final E e) {
@@ -111,7 +131,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Removes the specified element from the wrapped list.
+     *
+     * @param o the element to remove
+     * @return {@code true} if the wrapped list changed
      */
     @Override
     public boolean remove(final Object o) {
@@ -119,15 +142,21 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns whether the wrapped list contains all elements in the specified collection.
+     *
+     * @param c the collection whose elements are tested
+     * @return {@code true} if the wrapped list contains all elements in the collection
      */
     @Override
     public boolean containsAll(final Collection<?> c) {
-        return new HashSet<>(raw).containsAll(c);
+        return raw.containsAll(c);
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Adds all elements in the specified collection to the wrapped list.
+     *
+     * @param c the collection containing elements to add
+     * @return {@code true} if the wrapped list changed
      */
     @Override
     public boolean addAll(final Collection<? extends E> c) {
@@ -135,7 +164,11 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Inserts all elements in the specified collection into the wrapped list.
+     *
+     * @param index the insertion index
+     * @param c     the collection containing elements to add
+     * @return {@code true} if the wrapped list changed
      */
     @Override
     public boolean addAll(final int index, final Collection<? extends E> c) {
@@ -143,7 +176,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Removes all elements in the specified collection from the wrapped list.
+     *
+     * @param c the collection containing elements to remove
+     * @return {@code true} if the wrapped list changed
      */
     @Override
     public boolean removeAll(final Collection<?> c) {
@@ -151,7 +187,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Removes all elements that satisfy the specified predicate.
+     *
+     * @param filter the predicate used to select elements for removal
+     * @return {@code true} if the wrapped list changed
      */
     @Override
     public boolean removeIf(final Predicate<? super E> filter) {
@@ -159,7 +198,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Retains only the elements contained in the specified collection.
+     *
+     * @param c the collection containing elements to retain
+     * @return {@code true} if the wrapped list changed
      */
     @Override
     public boolean retainAll(final Collection<?> c) {
@@ -167,7 +209,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Replaces each element in the wrapped list with the result of the specified operator.
+     *
+     * @param operator the operator applied to each element
      */
     @Override
     public void replaceAll(final UnaryOperator<E> operator) {
@@ -175,7 +219,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Sorts the wrapped list with the specified comparator.
+     *
+     * @param c the comparator used to order the wrapped list
      */
     @Override
     public void sort(final Comparator<? super E> c) {
@@ -183,7 +229,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Removes all elements from the wrapped list.
      */
     @Override
     public void clear() {
@@ -191,7 +237,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the element at the specified index.
+     *
+     * @param index the index of the element to return
+     * @return the element at the specified index
      */
     @Override
     public E get(final int index) {
@@ -199,7 +248,11 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Replaces the element at the specified index.
+     *
+     * @param index   the index of the element to replace
+     * @param element the element to store
+     * @return the previous element at the specified index
      */
     @Override
     public E set(final int index, final E element) {
@@ -207,7 +260,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Inserts the specified element at the specified index.
+     *
+     * @param index   the insertion index
+     * @param element the element to insert
      */
     @Override
     public void add(final int index, final E element) {
@@ -215,7 +271,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Removes the element at the specified index.
+     *
+     * @param index the index of the element to remove
+     * @return the removed element
      */
     @Override
     public E remove(final int index) {
@@ -223,7 +282,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the first index of the specified element.
+     *
+     * @param o the element to search for
+     * @return the first index of the element, or {@code -1} if it is absent
      */
     @Override
     public int indexOf(final Object o) {
@@ -231,7 +293,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the last index of the specified element.
+     *
+     * @param o the element to search for
+     * @return the last index of the element, or {@code -1} if it is absent
      */
     @Override
     public int lastIndexOf(final Object o) {
@@ -239,7 +304,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns a list iterator over the wrapped list.
+     *
+     * @return a list iterator over the wrapped list
      */
     @Override
     public ListIterator<E> listIterator() {
@@ -247,7 +314,10 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns a list iterator starting at the specified index.
+     *
+     * @param index the iterator start index
+     * @return a list iterator starting at the specified index
      */
     @Override
     public ListIterator<E> listIterator(final int index) {
@@ -255,7 +325,11 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns a view of the wrapped list between the specified indexes.
+     *
+     * @param fromIndex the start index, inclusive
+     * @param toIndex   the end index, exclusive
+     * @return a view of the requested range
      */
     @Override
     public List<E> subList(final int fromIndex, final int toIndex) {
@@ -263,7 +337,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns a spliterator over the wrapped list.
+     *
+     * @return a spliterator over the wrapped list
      */
     @Override
     public Spliterator<E> spliterator() {
@@ -271,7 +347,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns a sequential stream over the wrapped list.
+     *
+     * @return a sequential stream over the wrapped list
      */
     @Override
     public Stream<E> stream() {
@@ -279,7 +357,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns a parallel stream over the wrapped list.
+     *
+     * @return a parallel stream over the wrapped list
      */
     @Override
     public Stream<E> parallelStream() {
@@ -287,7 +367,9 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the hash code of the wrapped list.
+     *
+     * @return the hash code of the wrapped list
      */
     @Override
     public int hashCode() {
@@ -295,18 +377,14 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Compares the specified object with the wrapped list for equality.
+     *
+     * @param object the object to compare
+     * @return {@code true} if the specified object is equal to the wrapped list
      */
     @Override
     public boolean equals(final Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        }
-        final ListWrapper<?> that = (ListWrapper<?>) object;
-        return Objects.equals(raw, that.raw);
+        return raw.equals(object);
     }
 
 }

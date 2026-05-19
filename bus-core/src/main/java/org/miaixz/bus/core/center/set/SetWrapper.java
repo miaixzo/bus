@@ -107,9 +107,7 @@ public class SetWrapper<E> extends SimpleWrapper<Set<E>> implements Set<E> {
      */
     @Override
     public Object[] toArray() {
-        // This implementation returns an empty array, which might not be the intended behavior.
-        // It should ideally delegate to raw.toArray() or create a new array with the set's contents.
-        return new Object[0];
+        return raw.toArray();
     }
 
     /**
