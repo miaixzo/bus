@@ -77,8 +77,8 @@ public class CloneException extends InternalException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public CloneException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public CloneException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**

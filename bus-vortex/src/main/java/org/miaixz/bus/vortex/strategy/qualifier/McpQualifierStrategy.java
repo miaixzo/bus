@@ -35,7 +35,6 @@ import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * Qualifies MCP ingress requests by resolving the registered MCP service route asset.
@@ -91,7 +90,7 @@ public class McpQualifierStrategy extends QualifierStrategy {
             String version = requestRoute.versionPart();
             Integer verb = requestRoute.verbPart();
 
-            return Mono.fromCallable(() -> this.registry.get(requestRoute)).subscribeOn(Schedulers.boundedElastic())
+            return Mono.defer(() -> Mono.justOrEmpty(this.registry.get(requestRoute)))
                     .switchIfEmpty(Mono.defer(() -> {
                         Logger.warn(
                                 false,

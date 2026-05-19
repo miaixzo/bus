@@ -216,7 +216,7 @@ public class VortexHandler {
                             assets.getMethod());
 
                     return handleMockResponse(context, assets).flatMap(
-                            response -> executePostHandlers(exchange, router, response, null).map(obj -> response))
+                                    response -> executePostHandlers(exchange, router, response, null).thenReturn(response))
                             .doOnSuccess(serverResponse -> {
                                 long duration = System.currentTimeMillis() - context.getTimestamp();
                                 Logger.info(
@@ -247,13 +247,13 @@ public class VortexHandler {
                                         method,
                                         path,
                                         error.getMessage());
-                                return executePostHandlers(exchange, router, null, error).then(Mono.error(error));
+                                return executePostHandlersThenError(exchange, router, error);
                             });
                 }
 
                 return router.route(request).timeout(Duration.ofSeconds(routeTimeoutSeconds(assets, request)))
                         .retryWhen(buildRetrySpec(assets, ip, method, path)).cast(ServerResponse.class)
-                        .flatMap(response -> executePostHandlers(exchange, router, response, null).map(obj -> response))
+                        .flatMap(response -> executePostHandlers(exchange, router, response, null).thenReturn(response))
                         .doOnSuccess(serverResponse -> {
                             long duration = System.currentTimeMillis() - context.getTimestamp();
                             Logger.info(
@@ -285,7 +285,7 @@ public class VortexHandler {
                                     path,
                                     error.getMessage());
 
-                            return executePostHandlers(exchange, router, null, error).then(Mono.error(error));
+                            return executePostHandlersThenError(exchange, router, error);
                         });
             });
         });
@@ -318,25 +318,57 @@ public class VortexHandler {
      * @param router   the selected routing strategy instance (with wildcard return type)
      * @param response the response returned from the target service (may be null if error occurred earlier)
      * @param error    the error that occurred (may be null if request succeeded)
-     * @return {@link Mono<Object>} the original response after interceptor processing
+     * @return {@link Mono<Void>} that completes when all post handlers have finished
      */
-    private Mono<Object> executePostHandlers(
+    private Mono<Void> executePostHandlers(
             ServerWebExchange exchange,
             Router<ServerRequest, ?> router,
             Object response,
             Throwable error) {
         ServerResponse serverResponse = response instanceof ServerResponse ? (ServerResponse) response : null;
 
-        Mono<Void> postHandle = error == null
-                ? Flux.fromIterable(handlers)
-                        .concatMap(handler -> handler.postHandle(exchange, router, null, serverResponse)).then()
-                : Mono.empty();
+        Mono<Void> postHandle = Mono.empty();
+        if (error == null) {
+            postHandle = Flux.fromIterable(handlers)
+                    .concatMap(handler -> handler.postHandle(exchange, router, null, serverResponse)).then();
+        }
 
         Mono<Void> afterCompletion = Flux.fromIterable(handlers)
                 .concatMap(handler -> handler.afterCompletion(exchange, router, null, serverResponse, error)).then();
 
-        return postHandle.then(afterCompletion)
-                .then(Mono.defer(() -> response == null ? Mono.empty() : Mono.just(response)));
+        return postHandle.then(afterCompletion);
+    }
+
+    /**
+     * Executes completion handlers for a failed request and rethrows the original routing error.
+     * <p>
+     * Handler failures are attached as suppressed exceptions so a null response or cleanup failure cannot hide the
+     * original failure, including critical errors such as {@link OutOfMemoryError}.
+     * </p>
+     *
+     * @param exchange the current request/response context
+     * @param router   the selected routing strategy instance
+     * @param error    the original routing error
+     * @return {@link Mono} that always terminates with the original error
+     */
+    private Mono<ServerResponse> executePostHandlersThenError(
+            ServerWebExchange exchange, Router<ServerRequest, ?> router, Throwable error) {
+        return executePostHandlers(exchange, router, null, error).onErrorResume(handlerError -> {
+            try {
+                if (handlerError != error) {
+                    error.addSuppressed(handlerError);
+                }
+                Logger.error(
+                        false,
+                        "Vortex",
+                        "Post handlers failed after routing error: event=POST_HANDLER_ERROR, original={}, suppressed={}",
+                        error.getClass().getName(),
+                        handlerError.getClass().getName());
+            } catch (Throwable ignored) {
+                // Preserve the original routing error even when suppression or logging fails.
+            }
+            return Mono.empty();
+        }).then(Mono.error(error));
     }
 
     /**
@@ -400,10 +432,10 @@ public class VortexHandler {
                     true,
                     "Vortex",
                     "All {} retry attempts exhausted: clientIp={}, method={}, path={}, event=RETRY_EXHAUSTED",
+                    maxRetries,
                     ip,
                     method,
-                    path,
-                    maxRetries);
+                    path);
             return retrySignal.failure();
         });
     }

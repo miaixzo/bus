@@ -25,8 +25,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.miaixz.bus.core.basic.normal.Errors;
-import org.miaixz.bus.core.lang.I18n;
-import org.miaixz.bus.core.lang.Keys;
 
 /**
  * Represents an unchecked exception, extending {@link RuntimeException}, that can carry an error code and message. This
@@ -99,10 +97,8 @@ public class UncheckedException extends RuntimeException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public UncheckedException(final Errors errors, String errmsg) {
-        super(errmsg);
-        this.errcode = errors.getKey();
-        this.errmsg = errmsg;
+    public UncheckedException(final Errors errors, final String errmsg) {
+        this(errors.getKey(), errmsg);
     }
 
     /**
@@ -129,14 +125,47 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
+     * Constructs a new UncheckedException with the specified error code, detail message, and cause.
+     *
+     * @param errcode   The error code.
+     * @param errmsg    The detail message.
+     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     */
+    protected UncheckedException(final String errcode, final String errmsg, final Throwable cause) {
+        super(errmsg, cause);
+        this.errcode = errcode;
+        this.errmsg = errmsg;
+    }
+
+    /**
+     * Constructs a new UncheckedException with the specified error object and cause.
+     *
+     * @param errors The error object containing error code and message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     */
+    protected UncheckedException(final Errors errors, final Throwable cause) {
+        this(errors.getKey(), errors.getValue(), cause);
+    }
+
+    /**
+     * Constructs a new UncheckedException with the specified error object, detail message, and cause.
+     *
+     * @param errors The error object containing error code.
+     * @param errmsg The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     */
+    public UncheckedException(final Errors errors, final String errmsg, final Throwable cause) {
+        this(errors.getKey(), errmsg, cause);
+    }
+
+    /**
      * Constructs a new UncheckedException with the specified detail message format and arguments.
      *
      * @param format The format string for the detail message.
      * @param args   The arguments referenced by the format specifiers in the format string.
      */
     protected UncheckedException(final String format, final Object... args) {
-        super(String.format(format, args));
-        this.errmsg = String.format(format, args);
+        this(String.format(format, args));
     }
 
     /**
@@ -147,8 +176,7 @@ public class UncheckedException extends RuntimeException {
      * @param args   The arguments referenced by the format specifiers in the format string.
      */
     protected UncheckedException(final Throwable cause, final String format, final Object... args) {
-        super(String.format(format, args), cause);
-        this.errmsg = String.format(format, args);
+        this(String.format(format, args), cause);
     }
 
     /**
@@ -168,39 +196,23 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * Getmessage method.
+     * Returns the resolved exception message.
      *
-     * @return the String value
+     * @return The resolved exception message.
      */
     @Override
     public String getMessage() {
-        if (this.errcode != null) {
-            return this.errmsg;
-        }
-        return super.getMessage();
+        return Errors.message(this.errcode, this.errmsg, super.getMessage());
     }
 
     /**
-     * Getlocalizedmessage method.
+     * Returns the localized exception message.
      *
-     * @return the String value
+     * @return The localized exception message.
      */
     @Override
     public String getLocalizedMessage() {
-        if (errcode != null) {
-            try {
-                String message = I18n.AUTO_DETECT.message(Keys.BUNDLE_NAME, this.errcode);
-                if (!this.errcode.equals(message)) {
-                    return message;
-                }
-            } catch (Exception e) {
-            }
-            // Fallback to the error message registered in ERRORS_CACHE
-            Errors.Entry entry = Errors.require(this.errcode);
-            return entry != null ? entry.getValue() : this.getMessage();
-
-        }
-        return super.getLocalizedMessage();
+        return Errors.localizedMessage(this.errcode, this.errmsg, super.getLocalizedMessage());
     }
 
 }

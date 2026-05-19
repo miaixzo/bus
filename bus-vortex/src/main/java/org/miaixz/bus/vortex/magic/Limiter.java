@@ -24,21 +24,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import com.google.common.util.concurrent.RateLimiter;
-
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.vortex.strategy.LimiterStrategy;
 
 /**
- * A rate limiter that encapsulates Google Guava's {@link RateLimiter} to provide a non-blocking, fail-fast mechanism
- * suitable for a reactive environment.
+ * A rate limiter that provides a non-blocking, fail-fast token bucket mechanism suitable for a reactive environment.
  * <p>
  * This class implements the token bucket algorithm. It is designed to be used within the gateway's strategy chain to
  * enforce rate limits on APIs. Instead of blocking the calling thread when no tokens are available, its
  * {@link #acquire()} method throws an exception, allowing the request to be rejected quickly with a "Too Many Requests"
  * error.
  *
- * @see com.google.common.util.concurrent.RateLimiter
  * @see LimiterStrategy
  * @author Kimi Liu
  * @since Java 21+
@@ -77,21 +73,20 @@ public class Limiter {
     private Integer throttle;
 
     /**
-     * The underlying Guava RateLimiter instance. It is volatile and lazily initialized to ensure thread safety.
+     * The underlying token bucket instance. It is volatile and lazily initialized to ensure thread safety.
      */
     private volatile RateLimiter rateLimiter;
 
     /**
-     * Lazily initializes and retrieves the underlying {@link RateLimiter} instance using thread-safe double-checked
-     * locking.
+     * Lazily initializes and retrieves the underlying {@link RateLimiter} instance using thread-safe double-checked locking.
      *
-     * @return The singleton {@link RateLimiter} instance for this limiter configuration.
+     * @return the singleton {@link RateLimiter} instance for this limiter configuration
      */
     public RateLimiter fetchRateLimiter() {
         if (null == rateLimiter) {
             synchronized (this) {
                 if (null == rateLimiter) {
-                    rateLimiter = RateLimiter.create(throttle / 60D);
+                    rateLimiter = RateLimiter.create(throttle);
                 }
             }
         }
@@ -110,6 +105,98 @@ public class Limiter {
         if (!fetchRateLimiter().tryAcquire()) {
             throw new ValidateException(ErrorCode._LIMITER);
         }
+    }
+
+    /**
+     * Lightweight token bucket rate limiter for per-minute request quotas.
+     * <p>
+     * The limiter stores up to one second of permits, matching the previous smooth-burst behavior closely while avoiding a
+     * direct Guava dependency. The implementation is synchronized because each limiter instance is shared by concurrent
+     * requests and the critical section contains only a few arithmetic operations.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    public static final class RateLimiter {
+
+        /**
+         * Number of nanoseconds in one second.
+         */
+        private static final double NANOS_PER_SECOND = 1_000_000_000D;
+
+        /**
+         * Refill rate expressed as permits per second.
+         */
+        private final double permitsPerSecond;
+
+        /**
+         * Maximum stored permits retained after idle time.
+         */
+        private final double maxPermits;
+
+        /**
+         * Currently stored permits.
+         */
+        private double storedPermits;
+
+        /**
+         * Last refill timestamp from {@link System#nanoTime()}.
+         */
+        private long lastRefillNanos;
+
+        /**
+         * Creates a rate limiter from a per-minute quota.
+         *
+         * @param permitsPerMinute maximum number of permits per minute
+         */
+        private RateLimiter(int permitsPerMinute) {
+            if (permitsPerMinute <= 0) {
+                throw new IllegalArgumentException("permitsPerMinute must be greater than zero");
+            }
+            this.permitsPerSecond = permitsPerMinute / 60D;
+            this.maxPermits = Math.max(1D, this.permitsPerSecond);
+            this.storedPermits = this.maxPermits;
+            this.lastRefillNanos = System.nanoTime();
+        }
+
+        /**
+         * Creates a rate limiter from a per-minute quota.
+         *
+         * @param permitsPerMinute maximum number of permits per minute
+         * @return a new rate limiter
+         */
+        public static RateLimiter create(int permitsPerMinute) {
+            return new RateLimiter(permitsPerMinute);
+        }
+
+        /**
+         * Attempts to acquire one permit without blocking.
+         *
+         * @return {@code true} when one permit is available
+         */
+        public synchronized boolean tryAcquire() {
+            refill(System.nanoTime());
+            if (storedPermits < 1D) {
+                return false;
+            }
+            storedPermits -= 1D;
+            return true;
+        }
+
+        /**
+         * Refills stored permits according to elapsed time.
+         *
+         * @param nowNanos current monotonic timestamp
+         */
+        private void refill(long nowNanos) {
+            if (nowNanos <= lastRefillNanos) {
+                return;
+            }
+            double elapsedSeconds = (nowNanos - lastRefillNanos) / NANOS_PER_SECOND;
+            storedPermits = Math.min(maxPermits, storedPermits + elapsedSeconds * permitsPerSecond);
+            lastRefillNanos = nowNanos;
+        }
+
     }
 
 }

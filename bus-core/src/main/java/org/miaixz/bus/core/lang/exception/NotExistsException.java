@@ -77,8 +77,8 @@ public class NotExistsException extends UncheckedException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public NotExistsException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public NotExistsException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**
@@ -102,13 +102,13 @@ public class NotExistsException extends UncheckedException {
     }
 
     /**
-     * Constructs a new NotExistsException with the specified error code and cause.
+     * Constructs a new NotExistsException with the specified detail message and cause.
      *
-     * @param errcode   The error code.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param errmsg    The detail message.
+     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public NotExistsException(final String errcode, final Throwable throwable) {
-        super(errcode, throwable);
+    public NotExistsException(final String errmsg, final Throwable cause) {
+        super(errmsg, cause);
     }
 
     /**
@@ -127,10 +127,10 @@ public class NotExistsException extends UncheckedException {
      *
      * @param errcode   The error code.
      * @param errmsg    The detail message.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public NotExistsException(final String errcode, final String errmsg, final Throwable throwable) {
-        super(errcode, errmsg, throwable);
+    public NotExistsException(final String errcode, final String errmsg, final Throwable cause) {
+        super(errcode, errmsg, cause);
     }
 
     /**

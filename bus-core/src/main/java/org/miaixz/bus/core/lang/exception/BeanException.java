@@ -70,8 +70,8 @@ public class BeanException extends InternalException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public BeanException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public BeanException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**

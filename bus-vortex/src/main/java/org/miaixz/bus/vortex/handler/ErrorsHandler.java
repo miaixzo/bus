@@ -19,7 +19,9 @@
 */
 package org.miaixz.bus.vortex.handler;
 
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeoutException;
 
 import lombok.*;
 
@@ -29,6 +31,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
@@ -147,7 +150,21 @@ public class ErrorsHandler implements WebExceptionHandler {
      */
     private Message buildErrorMessage(Throwable ex, String method, String path) {
 
-        if (ex instanceof ResponseStatusException rse) {
+        OutOfMemoryError outOfMemoryError = findCause(ex, OutOfMemoryError.class);
+        if (outOfMemoryError != null) {
+            Logger.error(
+                    false,
+                    "Vortex",
+                    outOfMemoryError,
+                    "Out of memory while processing request: clientIp=N/A, method={}, path={}, event=ERROR_OUT_OF_MEMORY, exception={}",
+                    method,
+                    path,
+                    outOfMemoryError.getClass().getSimpleName());
+            return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue()).build();
+        }
+
+        ResponseStatusException rse = findCause(ex, ResponseStatusException.class);
+        if (rse != null) {
             Logger.error(
                     false,
                     "Vortex",
@@ -158,8 +175,10 @@ public class ErrorsHandler implements WebExceptionHandler {
                     rse.getReason());
             return Message.builder().errcode(String.valueOf(rse.getStatusCode().value())).errmsg(rse.getReason())
                     .build();
-        } else if (ex instanceof UncheckedException) {
-            UncheckedException ue = (UncheckedException) ex;
+        }
+
+        UncheckedException ue = findCause(ex, UncheckedException.class);
+        if (ue != null) {
             String errcode = ue.getErrcode();
             String errmsg = ue.getErrmsg();
             if (StringKit.isNotBlank(errcode)) {
@@ -173,31 +192,65 @@ public class ErrorsHandler implements WebExceptionHandler {
                         errmsg);
                 return Message.builder().errcode(errcode).errmsg(errmsg).build();
             }
-        } else if (ex instanceof WebClientException || ex instanceof WebClientRequestException) {
-            if (ex.getCause() instanceof UnknownHostException) {
-                Logger.error(
-                        false,
-                        "Vortex",
-                        ex.getCause(),
-                        "Unknown host: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}",
-                        method,
-                        path,
-                        ex.getCause().getClass().getSimpleName());
-                return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue())
-                        .build();
-            } else {
-                Logger.error(
-                        false,
-                        "Vortex",
-                        ex,
-                        "Web client failure: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}",
-                        method,
-                        path,
-                        ex.getClass().getSimpleName());
-                return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue())
-                        .build();
-            }
         }
+
+        TimeoutException timeoutException = findCause(ex, TimeoutException.class);
+        SocketTimeoutException socketTimeoutException = findCause(ex, SocketTimeoutException.class);
+        if (timeoutException != null || socketTimeoutException != null) {
+            Throwable timeout = timeoutException != null ? timeoutException : socketTimeoutException;
+            Logger.error(
+                    false,
+                    "Vortex",
+                    timeout,
+                    "Request timed out: clientIp=N/A, method={}, path={}, event=ERROR_TIMEOUT, exception={}",
+                    method,
+                    path,
+                    timeout.getClass().getSimpleName());
+            return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue()).build();
+        }
+
+        WebClientResponseException responseException = findCause(ex, WebClientResponseException.class);
+        if (responseException != null) {
+            Logger.error(
+                    false,
+                    "Vortex",
+                    responseException,
+                    "Downstream response error: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT_RESPONSE, status={}, exception={}",
+                    method,
+                    path,
+                    responseException.getStatusCode().value(),
+                    responseException.getClass().getSimpleName());
+            return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue()).build();
+        }
+
+        UnknownHostException unknownHostException = findCause(ex, UnknownHostException.class);
+        if (unknownHostException != null) {
+            Logger.error(
+                    false,
+                    "Vortex",
+                    unknownHostException,
+                    "Unknown host: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}",
+                    method,
+                    path,
+                    unknownHostException.getClass().getSimpleName());
+            return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue()).build();
+        }
+
+        WebClientRequestException requestException = findCause(ex, WebClientRequestException.class);
+        WebClientException clientException = findCause(ex, WebClientException.class);
+        if (requestException != null || clientException != null) {
+            Throwable webClientError = requestException != null ? requestException : clientException;
+            Logger.error(
+                    false,
+                    "Vortex",
+                    webClientError,
+                    "Web client failure: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}",
+                    method,
+                    path,
+                    webClientError.getClass().getSimpleName());
+            return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue()).build();
+        }
+
         Logger.error(
                 false,
                 "Vortex",
@@ -208,6 +261,26 @@ public class ErrorsHandler implements WebExceptionHandler {
                 ex.getClass().getName(),
                 ex.getClass().getSimpleName());
         return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue()).build();
+    }
+
+    /**
+     * Finds the first exception of the requested type in the cause chain.
+     *
+     * @param throwable the exception to inspect
+     * @param type      the expected exception type
+     * @param <T>       the expected exception type
+     * @return the first matching exception, or {@code null} when no match exists
+     */
+    private <T extends Throwable> T findCause(Throwable throwable, Class<T> type) {
+        Throwable current = throwable;
+        int depth = 0;
+        while (current != null && depth++ < 64) {
+            if (type.isInstance(current)) {
+                return type.cast(current);
+            }
+            current = current.getCause();
+        }
+        return null;
     }
 
     /**

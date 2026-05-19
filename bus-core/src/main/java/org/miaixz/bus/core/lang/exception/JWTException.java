@@ -77,8 +77,8 @@ public class JWTException extends UncheckedException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public JWTException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public JWTException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**

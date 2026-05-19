@@ -77,8 +77,8 @@ public class DateException extends InternalException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public DateException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public DateException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**

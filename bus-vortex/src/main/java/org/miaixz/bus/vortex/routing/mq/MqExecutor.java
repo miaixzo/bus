@@ -58,7 +58,7 @@ import reactor.core.scheduler.Schedulers;
  * <li>Optimized thread pool with core size based on CPU cores, max size for burst handling</li>
  * <li>Producer cache with bounded size (configurable via {@code vortex.performance.max-producer-cache-size})</li>
  * <li>Graceful shutdown with timeout handling</li>
- * <li>Rejection policy that CallerRunsPolicy to prevent message loss under load</li>
+ * <li>Fail-fast rejection policy so blocking broker calls never run on reactive request threads</li>
  * </ul>
  * <ul>
  * <li>Buffering mode (stream = 1 or null): Returns a simple JSON acknowledgment response</li>
@@ -79,10 +79,10 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
      * <li>Core pool size: CPU cores * 2 for optimal throughput</li>
      * <li>Max pool size: CPU cores * 4 for burst handling</li>
      * <li>Keep-alive time: 60 seconds for idle threads</li>
-     * <li>CallerRunsPolicy: Prevents message rejection by running in caller thread under load</li>
+     * <li>AbortPolicy: Fails fast when the dedicated queue is saturated</li>
      * </ul>
      */
-    private final ExecutorService executor;
+    private final ThreadPoolExecutor executor;
 
     /**
      * A thread-safe LRU cache of {@link Producer} instances, keyed by their broker URL.
@@ -137,7 +137,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
                     t.setDaemon(true);
                     t.setPriority(Thread.NORM_PRIORITY);
                     return t;
-                }, new ThreadPoolExecutor.CallerRunsPolicy());
+                }, new ThreadPoolExecutor.AbortPolicy());
     }
 
     /**
@@ -234,11 +234,21 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
             }
         };
 
-        return Mono.fromCallable(() -> {
-            Producer producer = getOrCreateProducer(assets);
-            producer.send(message);
-            return JsonKit.toJsonString(Map.of("status", "Request forwarded to MQ"));
-        }).subscribeOn(Schedulers.fromExecutor(this.executor)).doOnError(
+        return Mono.<String>create(sink -> {
+            try {
+                this.executor.execute(() -> {
+                    try {
+                        Producer producer = getOrCreateProducer(assets);
+                        producer.send(message);
+                        sink.success(JsonKit.toJsonString(Map.of("status", "Request forwarded to MQ")));
+                    } catch (Throwable e) {
+                        sink.error(e);
+                    }
+                });
+            } catch (RejectedExecutionException e) {
+                sink.error(e);
+            }
+        }).doOnError(
                 e -> Logger.error(
                         false,
                         "Vortex",

@@ -268,7 +268,7 @@ public class AmazonProvider extends AbstractProvider {
             }
             String aud = (String) jsonObject.get("aud");
             if (!context.getClientId().equals(aud)) {
-                throw new AuthorizedException(ErrorCode._100113.getKey());
+                throw new AuthorizedException(ErrorCode._100113);
             }
         } catch (Exception e) {
             Logger.warn(

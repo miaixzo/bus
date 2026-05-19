@@ -128,6 +128,9 @@ bus:
     limit:
       enabled: true           # 启用限流
     performance:
+      max-connections: 5000
+      pending-acquire-timeout-seconds: 45
+      pending-acquire-max-count: 0  # 0 表示按 max-connections * 2 派生
       sanitize-null-like-parameters: true
 ```
 
@@ -297,6 +300,9 @@ bus:
     port: 8765
     path: /router/rest
     performance:
+      max-connections: 5000
+      pending-acquire-timeout-seconds: 45
+      pending-acquire-max-count: 0
       sanitize-null-like-parameters: true
 ```
 
@@ -336,6 +342,9 @@ context.putQueryParameter("lang", "en");
 | bus.vortex.path | String | /router/rest | 网关路由路径 |
 | bus.vortex.condition | boolean | false | 是否启用自定义 Spring MVC 条件桥接 |
 | bus.vortex.limit.enabled | boolean | false | 启用限流 |
+| bus.vortex.performance.max-connections | int | 5000 | 出站 HTTP 连接池最大连接数 |
+| bus.vortex.performance.pending-acquire-timeout-seconds | int | 45 | 等待获取出站连接的最长时间 |
+| bus.vortex.performance.pending-acquire-max-count | int | 0 | 出站连接等待队列上限；`0` 表示按 `max-connections * 2` 派生 |
 | bus.vortex.performance.sanitize-null-like-parameters | boolean | true | 在路由前移除 `null` / `"null"` / `"undefined"` 参数 |
 
 -----

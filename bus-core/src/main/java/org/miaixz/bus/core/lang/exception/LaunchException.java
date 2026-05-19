@@ -77,8 +77,8 @@ public class LaunchException extends UncheckedException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public LaunchException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public LaunchException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**
@@ -105,10 +105,10 @@ public class LaunchException extends UncheckedException {
      * Constructs a new LaunchException with the specified detail message and cause.
      *
      * @param errmsg    The detail message.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public LaunchException(final String errmsg, final Throwable throwable) {
-        super(errmsg, throwable);
+    public LaunchException(final String errmsg, final Throwable cause) {
+        super(errmsg, cause);
     }
 
     /**
@@ -127,10 +127,10 @@ public class LaunchException extends UncheckedException {
      *
      * @param errcode   The error code.
      * @param errmsg    The detail message.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public LaunchException(final String errcode, final String errmsg, final Throwable throwable) {
-        super(errcode, errmsg, throwable);
+    public LaunchException(final String errcode, final String errmsg, final Throwable cause) {
+        super(errcode, errmsg, cause);
     }
 
     /**

@@ -34,7 +34,6 @@ import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * Qualifies REST/API style requests by resolving route assets and applying route-level authorization.
@@ -78,7 +77,7 @@ public class RestQualifierStrategy extends QualifierStrategy {
             String version = requestRoute.versionPart();
             Integer verb = requestRoute.verbPart();
 
-            return Mono.fromCallable(() -> this.registry.get(requestRoute)).subscribeOn(Schedulers.boundedElastic())
+            return Mono.defer(() -> Mono.justOrEmpty(this.registry.get(requestRoute)))
                     .switchIfEmpty(Mono.defer(() -> {
                         Logger.warn(
                                 false,

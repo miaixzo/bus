@@ -27,8 +27,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.miaixz.bus.core.basic.normal.Errors;
-import org.miaixz.bus.core.lang.I18n;
-import org.miaixz.bus.core.lang.Keys;
 
 /**
  * Represents an exception related to I/O operations or other relevant system issues.
@@ -79,6 +77,7 @@ public class RelevantException extends IOException {
      */
     protected RelevantException(final String errmsg) {
         super(errmsg);
+        this.errmsg = errmsg;
     }
 
     /**
@@ -98,10 +97,8 @@ public class RelevantException extends IOException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public RelevantException(final Errors errors, String errmsg) {
-        super(errmsg);
-        this.errcode = errors.getKey();
-        this.errmsg = errmsg;
+    public RelevantException(final Errors errors, final String errmsg) {
+        this(errors.getKey(), errmsg);
     }
 
     /**
@@ -112,6 +109,7 @@ public class RelevantException extends IOException {
      */
     protected RelevantException(final String errmsg, final Throwable cause) {
         super(errmsg, cause);
+        this.errmsg = errmsg;
     }
 
     /**
@@ -127,24 +125,58 @@ public class RelevantException extends IOException {
     }
 
     /**
+     * Constructs a new RelevantException with the specified error code, detail message, and cause.
+     *
+     * @param errcode   The error code.
+     * @param errmsg    The detail message.
+     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     */
+    protected RelevantException(final String errcode, final String errmsg, final Throwable cause) {
+        super(errmsg, cause);
+        this.errcode = errcode;
+        this.errmsg = errmsg;
+    }
+
+    /**
+     * Constructs a new RelevantException with the specified error object and cause.
+     *
+     * @param errors The error object containing error code and message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     */
+    protected RelevantException(final Errors errors, final Throwable cause) {
+        this(errors.getKey(), errors.getValue(), cause);
+    }
+
+    /**
+     * Constructs a new RelevantException with the specified error object, detail message, and cause.
+     *
+     * @param errors The error object containing error code.
+     * @param errmsg The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     */
+    public RelevantException(final Errors errors, final String errmsg, final Throwable cause) {
+        this(errors.getKey(), errmsg, cause);
+    }
+
+    /**
      * Constructs a new RelevantException with the specified detail message format and arguments.
      *
      * @param format The format string for the detail message.
      * @param args   The arguments referenced by the format specifiers in the format string.
      */
     protected RelevantException(final String format, final Object... args) {
-        super(String.format(format, args));
+        this(String.format(format, args));
     }
 
     /**
      * Constructs a new RelevantException with the specified cause, detail message format, and arguments.
      *
-     * @param e    The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
-     * @param fmt  The format string for the detail message.
-     * @param args The arguments referenced by the format specifiers in the format string.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param format The format string for the detail message.
+     * @param args   The arguments referenced by the format specifiers in the format string.
      */
-    protected RelevantException(final Throwable e, String fmt, final Object... args) {
-        super(String.format(fmt, args), e);
+    protected RelevantException(final Throwable cause, final String format, final Object... args) {
+        this(String.format(format, args), cause);
     }
 
     /**
@@ -204,39 +236,23 @@ public class RelevantException extends IOException {
     }
 
     /**
-     * Getmessage method.
+     * Returns the resolved exception message.
      *
-     * @return the String value
+     * @return The resolved exception message.
      */
     @Override
     public String getMessage() {
-        if (this.errcode != null) {
-            return this.errmsg;
-        }
-        return super.getMessage();
+        return Errors.message(this.errcode, this.errmsg, super.getMessage());
     }
 
     /**
-     * Getlocalizedmessage method.
+     * Returns the localized exception message.
      *
-     * @return the String value
+     * @return The localized exception message.
      */
     @Override
     public String getLocalizedMessage() {
-        if (errcode != null) {
-            try {
-                String message = I18n.AUTO_DETECT.message(Keys.BUNDLE_NAME, this.errcode);
-                if (!this.errcode.equals(message)) {
-                    return message;
-                }
-            } catch (Exception e) {
-            }
-            // Fallback to the error message registered in ERRORS_CACHE
-            Errors.Entry entry = Errors.require(this.errcode);
-            return entry != null ? entry.getValue() : this.getMessage();
-
-        }
-        return super.getLocalizedMessage();
+        return Errors.localizedMessage(this.errcode, this.errmsg, super.getLocalizedMessage());
     }
 
 }

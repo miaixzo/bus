@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.reactivestreams.Publisher;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -155,9 +156,7 @@ public class ResponseStrategy extends AbstractStrategy {
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                 Flux<? extends DataBuffer> flux = Flux.from(body);
 
-                Mono<List<? extends DataBuffer>> collectedBuffers = flux.collectList().map(list -> list);
-
-                Mono<DataBuffer> formattedBufferMono = collectedBuffers.flatMap(dataBuffers -> {
+                Mono<DataBuffer> formattedBufferMono = flux.collectList().flatMap(dataBuffers -> {
                     byte[] allBytes = merge(dataBuffers);
                     String bodyString = new String(allBytes, Charset.UTF_8);
 
@@ -215,25 +214,15 @@ public class ResponseStrategy extends AbstractStrategy {
 
                 getDelegate().getHeaders().setContentType(Formats.BINARY.getMediaType());
 
-                if (body instanceof Flux) {
-                    Logger.debug(
-                            true,
-                            "Vortex",
-                            "Binary Flux detected, streaming directly: strategy=response, clientIp={}",
-                            context.getX_request_ip());
-                    return super.writeWith(body);
-                }
-
-                Flux<? extends DataBuffer> flux = Flux.from(body);
-
-                return flux.doOnNext(dataBuffer -> {
+                Flux<? extends DataBuffer> flux = Flux.from(body).doOnNext(dataBuffer -> {
                     Logger.debug(
                             true,
                             "Vortex",
                             "Binary data chunk emitted: strategy=response, clientIp={}, bytes={}",
                             context.getX_request_ip(),
                             dataBuffer.readableByteCount());
-                }).then(super.writeWith(flux));
+                });
+                return super.writeWith(flux);
             }
         };
     }
@@ -245,18 +234,26 @@ public class ResponseStrategy extends AbstractStrategy {
      * @return The merged byte array.
      */
     private byte[] merge(List<? extends DataBuffer> dataBuffers) {
-        int totalBytes = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
+        try {
+            int totalBytes = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
 
-        byte[] result = new byte[totalBytes];
+            byte[] result = new byte[totalBytes];
 
-        int position = 0;
-        for (DataBuffer buffer : dataBuffers) {
-            int length = buffer.readableByteCount();
-            buffer.read(result, position, length);
-            position += length;
+            int position = 0;
+            for (DataBuffer buffer : dataBuffers) {
+                int length = buffer.readableByteCount();
+                buffer.read(result, position, length);
+                position += length;
+            }
+
+            return result;
+        } finally {
+            dataBuffers.forEach(dataBuffer -> {
+                if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
+                    pooledDataBuffer.release();
+                }
+            });
         }
-
-        return result;
     }
 
 }

@@ -77,8 +77,8 @@ public class RevisedException extends RelevantException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public RevisedException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public RevisedException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**
@@ -102,13 +102,13 @@ public class RevisedException extends RelevantException {
     }
 
     /**
-     * Constructs a new RevisedException with the specified error code and cause.
+     * Constructs a new RevisedException with the specified detail message and cause.
      *
-     * @param errcode   The error code.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param errmsg    The detail message.
+     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public RevisedException(final String errcode, final Throwable throwable) {
-        super(errcode, throwable);
+    public RevisedException(final String errmsg, final Throwable cause) {
+        super(errmsg, cause);
     }
 
     /**
@@ -127,10 +127,10 @@ public class RevisedException extends RelevantException {
      *
      * @param errcode   The error code.
      * @param errmsg    The detail message.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public RevisedException(final String errcode, final String errmsg, final Throwable throwable) {
-        super(errcode, errmsg, throwable);
+    public RevisedException(final String errcode, final String errmsg, final Throwable cause) {
+        super(errcode, errmsg, cause);
     }
 
     /**

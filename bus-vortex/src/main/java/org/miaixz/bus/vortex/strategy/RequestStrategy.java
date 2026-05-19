@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
@@ -535,31 +536,38 @@ public class RequestStrategy extends AbstractStrategy {
      * <li>Detailed logging for large bodies to track memory usage</li>
      * </ul>
      * <p>
-     * <b>Note:</b> DataBuffer lifecycle is managed by Spring WebFlux framework. When obtained via
-     * {@code request.getBody().collectList()}, the framework automatically handles release. No manual release is
-     * needed.
+     * <b>Note:</b> The collected {@link DataBuffer}s are released after their bytes are copied into the replayable request
+     * body.
      *
      * @param dataBuffers The list of {@link DataBuffer}s to read.
      * @return A byte array containing the merged data from all buffers.
      * @throws ValidateException if the total size of the data buffers exceeds {@link Holder#getMaxRequestSize()}.
      */
     private byte[] readBodyToBytes(List<DataBuffer> dataBuffers) {
-        int totalSize = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
+        try {
+            int totalSize = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
 
-        if (totalSize > Holder.getMaxRequestSize()) {
-            throw new ValidateException(ErrorCode._100530);
+            if (totalSize > Holder.getMaxRequestSize()) {
+                throw new ValidateException(ErrorCode._100530);
+            }
+
+            byte[] bytes = new byte[totalSize];
+            int pos = 0;
+
+            for (DataBuffer buffer : dataBuffers) {
+                int length = buffer.readableByteCount();
+                buffer.read(bytes, pos, length);
+                pos += length;
+            }
+
+            return bytes;
+        } finally {
+            dataBuffers.forEach(dataBuffer -> {
+                if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
+                    pooledDataBuffer.release();
+                }
+            });
         }
-
-        byte[] bytes = new byte[totalSize];
-        int pos = 0;
-
-        for (DataBuffer buffer : dataBuffers) {
-            int length = buffer.readableByteCount();
-            buffer.read(bytes, pos, length);
-            pos += length;
-        }
-
-        return bytes;
     }
 
 }

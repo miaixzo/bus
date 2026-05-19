@@ -77,8 +77,8 @@ public class MQueueException extends UncheckedException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public MQueueException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public MQueueException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**
@@ -127,10 +127,10 @@ public class MQueueException extends UncheckedException {
      *
      * @param errcode   The error code.
      * @param errmsg    The detail message.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param cause     The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public MQueueException(final String errcode, final String errmsg, final Throwable throwable) {
-        super(errcode, errmsg, throwable);
+    public MQueueException(final String errcode, final String errmsg, final Throwable cause) {
+        super(errcode, errmsg, cause);
     }
 
     /**

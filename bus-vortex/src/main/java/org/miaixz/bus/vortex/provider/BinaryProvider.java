@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.provider;
 
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.PooledDataBuffer;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
@@ -76,10 +77,16 @@ public class BinaryProvider implements Provider<Object, byte[]> {
 
             if (input instanceof DataBuffer) {
                 DataBuffer dataBuffer = (DataBuffer) input;
-                byte[] bytes = new byte[dataBuffer.readableByteCount()];
-                dataBuffer.read(bytes);
-                Logger.debug(true, "Vortex", "Serializing data-buffer input: size={}", bytes.length);
-                return bytes;
+                try {
+                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(bytes);
+                    Logger.debug(true, "Vortex", "Serializing data-buffer input: size={}", bytes.length);
+                    return bytes;
+                } finally {
+                    if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
+                        pooledDataBuffer.release();
+                    }
+                }
             }
 
             if (input instanceof Flux) {
