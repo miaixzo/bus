@@ -39,7 +39,7 @@ public final class Fingerprint {
      */
 
     private Fingerprint() {
-
+        // No initialization required.
     }
 
     /**

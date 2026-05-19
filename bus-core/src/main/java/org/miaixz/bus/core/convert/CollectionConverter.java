@@ -40,6 +40,7 @@ public class CollectionConverter implements MatcherConverter, Serializable {
      * Constructs a new CollectionConverter. Utility class constructor for static access.
      */
     CollectionConverter() {
+        // No initialization required.
     }
 
     /**

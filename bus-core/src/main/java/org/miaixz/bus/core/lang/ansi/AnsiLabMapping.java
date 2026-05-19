@@ -35,6 +35,7 @@ public abstract class AnsiLabMapping {
      * Constructs a new AnsiLabMapping. Utility class constructor for static access.
      */
     AnsiLabMapping() {
+        // No initialization required.
     }
 
     /**

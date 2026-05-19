@@ -39,6 +39,13 @@ import org.miaixz.bus.logger.Logger;
 public class JdkSerializer extends AbstractSerializer {
 
     /**
+     * Constructs a new JdkSerializer instance.
+     */
+    public JdkSerializer() {
+        // No initialization required.
+    }
+
+    /**
      * Serializes a {@link Serializable} object to an {@link OutputStream}.
      *
      * @param object       The object to serialize. Must implement {@link Serializable}.

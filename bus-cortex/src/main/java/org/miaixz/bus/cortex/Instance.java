@@ -41,7 +41,7 @@ public class Instance {
      * Creates an empty runtime instance descriptor.
      */
     public Instance() {
-
+        // No initialization required.
     }
 
     /**

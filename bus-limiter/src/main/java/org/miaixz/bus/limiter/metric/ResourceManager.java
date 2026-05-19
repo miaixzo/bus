@@ -38,6 +38,13 @@ import org.miaixz.bus.limiter.magic.annotation.Limiting;
 public class ResourceManager {
 
     /**
+     * Constructs a new ResourceManager instance.
+     */
+    public ResourceManager() {
+        // No initialization required.
+    }
+
+    /**
      * A static set to keep track of method resource keys that have been registered for protection. This is primarily
      * used for logging or to avoid re-registering rules.
      */

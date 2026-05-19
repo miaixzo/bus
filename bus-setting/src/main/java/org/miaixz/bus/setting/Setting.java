@@ -321,10 +321,6 @@ public class Setting extends AbstractSetting implements Map<String, String> {
         /**
          * Gets an object value for the specified key in the specified group.
          *
-         * @param key          the key to look up
-         * @param group        the group to look in
-         * @param defaultValue the default value to return if the key is not found
-         * @return the value associated with the key, or the default value if not found
          */
         final String result = this.groupedMap.get(group, key);
         if (result == null && logIfNull) {

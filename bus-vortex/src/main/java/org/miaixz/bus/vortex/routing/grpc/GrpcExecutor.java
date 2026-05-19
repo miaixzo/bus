@@ -60,6 +60,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * Creates a gRPC executor.
      */
     public GrpcExecutor() {
+        // No initialization required.
     }
 
     /**

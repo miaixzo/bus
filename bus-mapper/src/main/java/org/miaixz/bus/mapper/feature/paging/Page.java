@@ -421,6 +421,7 @@ public class Page<T> extends ArrayList<T> {
          * Creates a page builder.
          */
         private Builder() {
+            // No initialization required.
         }
 
         /**

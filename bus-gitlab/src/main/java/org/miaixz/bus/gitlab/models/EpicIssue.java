@@ -44,13 +44,32 @@ public class EpicIssue extends AbstractIssue {
     private Long epicIssueId;
     private Integer relativePosition;
 
+    /**
+     * Returns the links.
+     *
+     * @return the result
+     */
+
     public Map<String, String> getLinks() {
         return links;
     }
 
+    /**
+     * Sets the links.
+     *
+     * @param links the links value
+     */
+
     public void setLinks(Map<String, String> links) {
         this.links = links;
     }
+
+    /**
+     * Returns the link by name.
+     *
+     * @param name the name value
+     * @return the result
+     */
 
     @JsonIgnore
     public String getLinkByName(String name) {
@@ -61,21 +80,51 @@ public class EpicIssue extends AbstractIssue {
         return (links.get(name));
     }
 
+    /**
+     * Returns the epic issue id.
+     *
+     * @return the result
+     */
+
     public Long getEpicIssueId() {
         return epicIssueId;
     }
+
+    /**
+     * Sets the epic issue id.
+     *
+     * @param epicIssueId the epic issue id value
+     */
 
     public void setEpicIssueId(Long epicIssueId) {
         this.epicIssueId = epicIssueId;
     }
 
+    /**
+     * Returns the relative position.
+     *
+     * @return the result
+     */
+
     public Integer getRelativePosition() {
         return relativePosition;
     }
 
+    /**
+     * Sets the relative position.
+     *
+     * @param relativePosition the relative position value
+     */
+
     public void setRelativePosition(Integer relativePosition) {
         this.relativePosition = relativePosition;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

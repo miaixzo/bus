@@ -39,15 +39,37 @@ public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseabl
     private final String username;
     private final SecretString password;
 
+    /**
+     * Constructs a new {@code Oauth2LoginStreamingOutput} instance.
+     *
+     * @param username the username value
+     * @param password the password value
+     */
+
     public Oauth2LoginStreamingOutput(String username, CharSequence password) {
         this.username = username;
         this.password = new SecretString(password);
     }
 
+    /**
+     * Constructs a new {@code Oauth2LoginStreamingOutput} instance.
+     *
+     * @param username the username value
+     * @param password the password value
+     */
+
     public Oauth2LoginStreamingOutput(String username, char[] password) {
         this.username = username;
         this.password = new SecretString(password);
     }
+
+    /**
+     * Executes the write operation.
+     *
+     * @param output the output value
+     * @throws IOException             if the operation fails
+     * @throws WebApplicationException if the operation fails
+     */
 
     @Override
     public void write(OutputStream output) throws IOException, WebApplicationException {
@@ -84,15 +106,13 @@ public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseabl
         password.clear();
     }
 
+    /**
+     * Executes the close operation.
+     */
+
     @Override
     public void close() {
         clearPassword();
-    }
-
-    @Override
-    public void finalize() throws Throwable {
-        clearPassword();
-        super.finalize();
     }
 
 }

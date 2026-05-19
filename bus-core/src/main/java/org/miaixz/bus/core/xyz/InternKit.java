@@ -35,6 +35,7 @@ public class InternKit {
      * Constructs a new InternKit. Utility class constructor for static access.
      */
     private InternKit() {
+        // No initialization required.
     }
 
     /**

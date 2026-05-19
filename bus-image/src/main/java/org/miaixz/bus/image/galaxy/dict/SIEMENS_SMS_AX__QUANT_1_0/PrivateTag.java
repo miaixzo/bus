@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SMS_AX__QUANT_1_0;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SMS-AX QUANT 1.0";

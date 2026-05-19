@@ -37,6 +37,13 @@ import org.miaixz.bus.socket.Session;
  */
 public abstract class FixedLengthBytesMessage<T> implements Message<T> {
 
+    /**
+     * Constructs a new FixedLengthBytesMessage instance.
+     */
+    public FixedLengthBytesMessage() {
+        // No initialization required.
+    }
+
     @Override
     public final T decode(ByteBuffer readBuffer, Session session) {
         // Ensure there are enough bytes to read the length prefix

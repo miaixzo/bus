@@ -38,6 +38,11 @@ import org.miaixz.bus.gitlab.models.Application;
  */
 public class ApplicationsApi extends AbstractApi {
 
+    /**
+     * Executes the applications api operation.
+     *
+     * @param gitLabApi the git lab api value
+     */
     public ApplicationsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

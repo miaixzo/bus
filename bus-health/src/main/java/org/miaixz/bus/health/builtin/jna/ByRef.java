@@ -152,6 +152,13 @@ public interface ByRef {
     class CloseablePointerByReference extends PointerByReference implements AutoCloseable {
 
         /**
+         * Constructs a new CloseablePointerByReference instance.
+         */
+        public CloseablePointerByReference() {
+            // No initialization required.
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -168,6 +175,13 @@ public interface ByRef {
      * @since Java 21+
      */
     class CloseableLONGLONGByReference extends LONGLONGByReference implements AutoCloseable {
+
+        /**
+         * Constructs a new CloseableLONGLONGByReference instance.
+         */
+        public CloseableLONGLONGByReference() {
+            // No initialization required.
+        }
 
         /**
          * Closes this resource.
@@ -188,6 +202,13 @@ public interface ByRef {
     class CloseableULONGptrByReference extends ULONG_PTRByReference implements AutoCloseable {
 
         /**
+         * Constructs a new CloseableULONGptrByReference instance.
+         */
+        public CloseableULONGptrByReference() {
+            // No initialization required.
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -204,6 +225,13 @@ public interface ByRef {
      * @since Java 21+
      */
     class CloseableHANDLEByReference extends HANDLEByReference implements AutoCloseable {
+
+        /**
+         * Constructs a new CloseableHANDLEByReference instance.
+         */
+        public CloseableHANDLEByReference() {
+            // No initialization required.
+        }
 
         /**
          * Closes this resource.
@@ -256,6 +284,13 @@ public interface ByRef {
      * @since Java 21+
      */
     class CloseablePROCESSENTRY32ByReference extends PROCESSENTRY32.ByReference implements AutoCloseable {
+
+        /**
+         * Constructs a new CloseablePROCESSENTRY32ByReference instance.
+         */
+        public CloseablePROCESSENTRY32ByReference() {
+            // No initialization required.
+        }
 
         /**
          * Closes this resource.

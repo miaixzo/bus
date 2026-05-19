@@ -82,8 +82,70 @@ public interface InternetProtocolStats {
      * @since Java 21+
      */
     enum TcpState {
-        UNKNOWN, CLOSED, LISTEN, SYN_SENT, SYN_RECV, ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2, CLOSE_WAIT, CLOSING, LAST_ACK,
-        TIME_WAIT, NONE
+        /**
+         * Unknown TCP state.
+         */
+        UNKNOWN,
+
+        /**
+         * Closed TCP state.
+         */
+        CLOSED,
+
+        /**
+         * Listening TCP state.
+         */
+        LISTEN,
+
+        /**
+         * SYN sent TCP state.
+         */
+        SYN_SENT,
+
+        /**
+         * SYN received TCP state.
+         */
+        SYN_RECV,
+
+        /**
+         * Established TCP state.
+         */
+        ESTABLISHED,
+
+        /**
+         * First FIN wait TCP state.
+         */
+        FIN_WAIT_1,
+
+        /**
+         * Second FIN wait TCP state.
+         */
+        FIN_WAIT_2,
+
+        /**
+         * Close wait TCP state.
+         */
+        CLOSE_WAIT,
+
+        /**
+         * Closing TCP state.
+         */
+        CLOSING,
+
+        /**
+         * Last ACK TCP state.
+         */
+        LAST_ACK,
+
+        /**
+         * Time wait TCP state.
+         */
+        TIME_WAIT,
+
+        /**
+         * No TCP state.
+         */
+        NONE
 
     }
 

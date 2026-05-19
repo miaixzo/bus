@@ -44,53 +44,131 @@ public class Comment implements Serializable {
     private Integer line;
     private String note;
 
+    /**
+     * Returns the author.
+     *
+     * @return the result
+     */
+
     public Author getAuthor() {
         return author;
     }
+
+    /**
+     * Sets the author.
+     *
+     * @param author the author value
+     */
 
     public void setAuthor(Author author) {
         this.author = author;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the line type.
+     *
+     * @return the result
+     */
+
     public LineType getLineType() {
         return lineType;
     }
+
+    /**
+     * Sets the line type.
+     *
+     * @param lineType the line type value
+     */
 
     public void setLineType(LineType lineType) {
         this.lineType = lineType;
     }
 
+    /**
+     * Returns the path.
+     *
+     * @return the result
+     */
+
     public String getPath() {
         return path;
     }
+
+    /**
+     * Sets the path.
+     *
+     * @param path the path value
+     */
 
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Returns the line.
+     *
+     * @return the result
+     */
+
     public Integer getLine() {
         return line;
     }
+
+    /**
+     * Sets the line.
+     *
+     * @param line the line value
+     */
 
     public void setLine(Integer line) {
         this.line = line;
     }
 
+    /**
+     * Returns the note.
+     *
+     * @return the result
+     */
+
     public String getNote() {
         return note;
     }
 
+    /**
+     * Sets the note.
+     *
+     * @param note the note value
+     */
+
     public void setNote(String note) {
         this.note = note;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

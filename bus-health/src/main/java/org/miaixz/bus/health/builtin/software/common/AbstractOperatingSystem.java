@@ -42,6 +42,13 @@ import org.miaixz.bus.health.builtin.software.OperatingSystem;
 public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     /**
+     * Constructs a new AbstractOperatingSystem instance.
+     */
+    public AbstractOperatingSystem() {
+        // No initialization required.
+    }
+
+    /**
      * The USE_WHO_COMMAND constant.
      */
     protected static final boolean USE_WHO_COMMAND = Config.get(Config._UNIX_WHOCOMMAND, false);

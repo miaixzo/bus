@@ -55,7 +55,7 @@ public class PBKDF2 {
      * Constructor with default algorithm PBKDF2WithHmacSHA1, key length 512, and 1000 iterations.
      */
     public PBKDF2() {
-
+        // No initialization required.
     }
 
     /**

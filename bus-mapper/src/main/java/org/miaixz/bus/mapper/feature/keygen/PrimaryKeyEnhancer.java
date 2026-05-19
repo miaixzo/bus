@@ -35,6 +35,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class PrimaryKeyEnhancer implements SqlSourceEnhancer {
 
     /**
+     * Constructs a new PrimaryKeyEnhancer instance.
+     */
+    public PrimaryKeyEnhancer() {
+        // No initialization required.
+    }
+
+    /**
      * Customizes the SQL source based on the primary key generator type.
      *
      * @param sqlSource The original SQL source.

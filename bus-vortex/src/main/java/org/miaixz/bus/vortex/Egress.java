@@ -148,7 +148,7 @@ public final class Egress {
          * Utility holder constructor.
          */
         private ResourcesHolder() {
-
+            // No initialization required.
         }
 
         /**

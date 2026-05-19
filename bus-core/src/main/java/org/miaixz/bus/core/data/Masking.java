@@ -54,6 +54,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Masking {
 
     /**
+     * Constructs a new Masking instance.
+     */
+    public Masking() {
+        // No initialization required.
+    }
+
+    /**
      * The default rich text masking processor.
      */
     private static final MaskingProcessor DEFAULT_PROCESSOR = createDefaultProcessor();

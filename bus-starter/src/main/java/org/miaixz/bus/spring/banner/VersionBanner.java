@@ -27,6 +27,13 @@ package org.miaixz.bus.spring.banner;
  */
 public class VersionBanner extends AbstractBanner {
 
+    /**
+     * Executes the version banner operation.
+     *
+     * @param resourceClass    the resource class value
+     * @param resourceLocation the resource location value
+     * @param defaultBanner    the default banner value
+     */
     public VersionBanner(Class<?> resourceClass, String resourceLocation, String defaultBanner) {
         super(resourceClass, resourceLocation, defaultBanner);
         initialize();

@@ -46,6 +46,7 @@ public class ChineseNumberFormatter {
      * Constructs a new ChineseNumberFormatter. Utility class constructor for static access.
      */
     private ChineseNumberFormatter() {
+        // No initialization required.
     }
 
     /**

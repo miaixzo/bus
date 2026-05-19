@@ -57,6 +57,7 @@ public class PrimitiveArray extends ArrayValidator {
      * Constructs a new PrimitiveArray. Utility class constructor for static access.
      */
     public PrimitiveArray() {
+        // No initialization required.
     }
 
     /**

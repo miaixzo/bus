@@ -36,6 +36,13 @@ import org.miaixz.bus.validate.magic.annotation.Size;
 public class SizeMatcher implements Matcher<Object, Size> {
 
     /**
+     * Constructs a new SizeMatcher instance.
+     */
+    public SizeMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the size of the given object is within the range specified by the {@link Size} annotation.
      *
      * @param object     The object to validate. Supported types are {@link String}, arrays ({@code Object[]}),

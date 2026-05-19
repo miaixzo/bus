@@ -46,6 +46,13 @@ import org.miaixz.bus.logger.Logger;
 public class Holder implements org.miaixz.bus.core.Holder {
 
     /**
+     * Constructs a new Holder instance.
+     */
+    public Holder() {
+        // No initialization required.
+    }
+
+    /**
      * The globally held {@link java.security.Provider} instance, initialized via SPI. If no custom provider is found or
      * configured, this might be {@code null}.
      */

@@ -44,7 +44,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      * Constructs a new MutableInt with a default value of 0.
      */
     public MutableInt() {
-
+        // No initialization required.
     }
 
     /**

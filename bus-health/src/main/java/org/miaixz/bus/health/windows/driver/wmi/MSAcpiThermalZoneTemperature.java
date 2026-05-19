@@ -37,6 +37,13 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class MSAcpiThermalZoneTemperature {
 
     /**
+     * Constructs a new {@code MSAcpiThermalZoneTemperature} instance.
+     */
+    public MSAcpiThermalZoneTemperature() {
+        // No initialization required.
+    }
+
+    /**
      * The WMI namespace for this class.
      */
     public static final String WMI_NAMESPACE = "ROOT\\WMI";
@@ -64,6 +71,9 @@ public final class MSAcpiThermalZoneTemperature {
      * @since Java 21+
      */
     public enum TemperatureProperty {
+        /**
+         * currenttemperature option.
+         */
         CURRENTTEMPERATURE
 
     }

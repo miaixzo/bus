@@ -45,7 +45,7 @@ public final class ImageioCodec {
      * Creates a new instance.
      */
     private ImageioCodec() {
-
+        // No initialization required.
     }
 
     /**

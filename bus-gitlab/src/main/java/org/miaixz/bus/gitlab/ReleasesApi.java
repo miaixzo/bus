@@ -37,6 +37,12 @@ import org.miaixz.bus.gitlab.models.ReleaseParams;
  */
 public class ReleasesApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code ReleasesApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ReleasesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -81,6 +81,13 @@ import org.miaixz.bus.mapper.Context;
 public class MybatisInterceptor extends AbstractSqlHandler implements Interceptor {
 
     /**
+     * Constructs a new MybatisInterceptor instance.
+     */
+    public MybatisInterceptor() {
+        // No initialization required.
+    }
+
+    /**
      * Pre-compiled pattern for matching multiple whitespace characters. Used to normalize SQL strings for logging.
      */
     private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile("[\\s]+");

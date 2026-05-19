@@ -31,6 +31,13 @@ import java.io.Serializable;
  */
 public class NodeConfig implements Serializable {
 
+    /**
+     * Constructs a new {@code NodeConfig} instance.
+     */
+    public NodeConfig() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852250253009L;
 

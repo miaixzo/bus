@@ -51,6 +51,13 @@ import org.miaixz.bus.starter.cache.CacheFactoryProvider;
 public class PayConfiguration {
 
     /**
+     * Constructs a new PayConfiguration instance.
+     */
+    public PayConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected payment configuration properties.
      */
     @Resource

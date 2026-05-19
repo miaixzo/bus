@@ -38,6 +38,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class PunyCode {
 
     /**
+     * Constructs a new PunyCode instance.
+     */
+    public PunyCode() {
+        // No initialization required.
+    }
+
+    /**
      * Minimum value for T.
      */
     private static final int TMIN = 1;

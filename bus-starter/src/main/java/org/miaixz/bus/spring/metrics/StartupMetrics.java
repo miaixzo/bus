@@ -42,6 +42,13 @@ import lombok.Setter;
 public class StartupMetrics {
 
     /**
+     * Constructs a new StartupMetrics instance.
+     */
+    public StartupMetrics() {
+        // No initialization required.
+    }
+
+    /**
      * The name of the application.
      * <p>
      * Records the name of the current application instance, used for identification.

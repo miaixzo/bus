@@ -49,7 +49,7 @@ public class Principal {
      * Creates an empty security principal.
      */
     public Principal() {
-
+        // No initialization required.
     }
 
     /**

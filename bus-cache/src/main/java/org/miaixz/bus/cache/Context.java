@@ -36,6 +36,13 @@ import org.miaixz.bus.core.lang.EnumValue;
 public class Context {
 
     /**
+     * Constructs a new Context instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
+
+    /**
      * A map of named cache instances, where the key is the cache name and the value is the {@link CacheX}
      * implementation.
      */

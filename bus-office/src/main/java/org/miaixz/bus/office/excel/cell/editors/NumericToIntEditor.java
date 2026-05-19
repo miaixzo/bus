@@ -31,6 +31,13 @@ import org.apache.poi.ss.usermodel.Cell;
 public class NumericToIntEditor implements CellEditor {
 
     /**
+     * Constructs a new NumericToIntEditor instance.
+     */
+    public NumericToIntEditor() {
+        // No initialization required.
+    }
+
+    /**
      * Implements the behavior defined by the supertype.
      *
      * @param cell  the cell being edited

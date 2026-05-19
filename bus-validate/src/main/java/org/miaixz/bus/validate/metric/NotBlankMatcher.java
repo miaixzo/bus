@@ -35,6 +35,13 @@ import org.miaixz.bus.validate.magic.annotation.NotBlank;
 public class NotBlankMatcher implements Validator<Object>, Matcher<Object, NotBlank> {
 
     /**
+     * Constructs a new NotBlankMatcher instance.
+     */
+    public NotBlankMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object is not blank.
      *
      * @param object     The object to validate.

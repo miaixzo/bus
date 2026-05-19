@@ -43,6 +43,7 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
      * Constructs a new CityHash. Utility class constructor for static access.
      */
     private CityHash() {
+        // No initialization required.
     }
 
     // Some primes between 2^63 and 2^64 for various uses.

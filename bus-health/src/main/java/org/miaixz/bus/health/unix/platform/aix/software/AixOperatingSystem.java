@@ -57,6 +57,13 @@ import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatProcess;
 public class AixOperatingSystem extends AbstractOperatingSystem {
 
     /**
+     * Constructs a new AixOperatingSystem instance.
+     */
+    public AixOperatingSystem() {
+        // No initialization required.
+    }
+
+    /**
      * The BOOTTIME constant.
      */
     private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;

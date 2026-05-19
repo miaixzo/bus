@@ -36,6 +36,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Setting {
 
     /**
+     * Constructs a new Setting instance.
+     */
+    public Setting() {
+        // No initialization required.
+    }
+
+    /**
      * A cache for {@code Setting} instances, keyed by file path.
      */
     private static final Map<String, org.miaixz.bus.setting.Setting> CACHE_SETTING = new ConcurrentHashMap<>();

@@ -40,6 +40,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class CorsProperties {
 
     /**
+     * Constructs a new CorsProperties instance.
+     */
+    public CorsProperties() {
+        // No initialization required.
+    }
+
+    /**
      * The path pattern to which this CORS configuration applies. Default is {@code /**}.
      */
     private String path = "/**";

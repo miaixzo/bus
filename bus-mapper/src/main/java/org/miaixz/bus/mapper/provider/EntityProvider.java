@@ -53,6 +53,13 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 public class EntityProvider extends BasicProvider {
 
     /**
+     * Constructs a new EntityProvider instance.
+     */
+    public EntityProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Saves an entity by inserting all its fields.
      *
      * @param context The provider context, containing method and interface information.

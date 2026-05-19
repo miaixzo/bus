@@ -99,6 +99,13 @@ import org.miaixz.bus.starter.jdbc.JdbcProperties;
 public class CacheProperties extends Options {
 
     /**
+     * Constructs a new CacheProperties instance.
+     */
+    public CacheProperties() {
+        // No initialization required.
+    }
+
+    /**
      * Named {@link CacheX} instances for advanced multi-cache scenarios.
      * <p>
      * Because {@link CacheX} is an interface, this map <strong>cannot</strong> be bound from YAML. Provide it

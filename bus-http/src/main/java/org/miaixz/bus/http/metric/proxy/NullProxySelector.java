@@ -37,6 +37,13 @@ import java.util.List;
 public class NullProxySelector extends ProxySelector {
 
     /**
+     * Constructs a new NullProxySelector instance.
+     */
+    public NullProxySelector() {
+        // No initialization required.
+    }
+
+    /**
      * Selects a list of proxies to use for a given URI. This implementation always returns a list containing only
      * {@link Proxy#NO_PROXY}.
      *

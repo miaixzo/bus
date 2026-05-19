@@ -413,6 +413,8 @@ public interface CentralProcessor {
         }
 
         /**
+         * Returns the integer index of this enum in processor tick arrays.
+         *
          * @return The integer index of this ENUM in the processor tick arrays, which matches the output of Linux
          *         /proc/cpuinfo
          */
@@ -458,6 +460,8 @@ public interface CentralProcessor {
         private final int processorGroup;
 
         /**
+         * Executes the number operation.
+         *
          * @param processorNumber         the Processor number
          * @param physicalProcessorNumber the core number
          * @param physicalPackageNumber   the package/socket number
@@ -467,6 +471,8 @@ public interface CentralProcessor {
         }
 
         /**
+         * Executes the number operation.
+         *
          * @param processorNumber         the Processor number
          * @param physicalProcessorNumber the core number
          * @param physicalPackageNumber   the package/socket number
@@ -478,6 +484,8 @@ public interface CentralProcessor {
         }
 
         /**
+         * Executes the number operation.
+         *
          * @param processorNumber         the Processor number
          * @param physicalProcessorNumber the core number
          * @param physicalPackageNumber   the package/socket number
@@ -849,7 +857,25 @@ public interface CentralProcessor {
          */
         public enum Type {
 
-            UNIFIED, INSTRUCTION, DATA, TRACE;
+            /**
+             * Unified cache type.
+             */
+            UNIFIED,
+
+            /**
+             * Instruction cache type.
+             */
+            INSTRUCTION,
+
+            /**
+             * Data cache type.
+             */
+            DATA,
+
+            /**
+             * Trace cache type.
+             */
+            TRACE;
 
             /**
              * Returns the to string result.

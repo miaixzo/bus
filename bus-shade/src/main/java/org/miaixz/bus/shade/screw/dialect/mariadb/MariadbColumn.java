@@ -36,6 +36,13 @@ import org.miaixz.bus.shade.screw.metadata.Column;
 public class MariadbColumn implements Column {
 
     /**
+     * Constructs a new MariadbColumn instance.
+     */
+    public MariadbColumn() {
+        // No initialization required.
+    }
+
+    /**
      * The table name that is the scope of a REFERENCE attribute (may be {@code null}).
      */
     @MappingField(value = "SCOPE_TABLE")

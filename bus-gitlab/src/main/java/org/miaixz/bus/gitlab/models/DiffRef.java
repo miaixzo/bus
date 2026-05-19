@@ -39,32 +39,79 @@ public class DiffRef implements Serializable {
     private String headSha;
     private String startSha;
 
+    /**
+     * Constructs a new {@code DiffRef} instance.
+     */
+
     public DiffRef() {
+        // No initialization required.
     }
+
+    /**
+     * Returns the base sha.
+     *
+     * @return the result
+     */
 
     public String getBaseSha() {
         return baseSha;
     }
 
+    /**
+     * Sets the base sha.
+     *
+     * @param baseSha the base sha value
+     */
+
     public void setBaseSha(final String baseSha) {
         this.baseSha = baseSha;
     }
+
+    /**
+     * Returns the head sha.
+     *
+     * @return the result
+     */
 
     public String getHeadSha() {
         return headSha;
     }
 
+    /**
+     * Sets the head sha.
+     *
+     * @param headSha the head sha value
+     */
+
     public void setHeadSha(final String headSha) {
         this.headSha = headSha;
     }
+
+    /**
+     * Returns the start sha.
+     *
+     * @return the result
+     */
 
     public String getStartSha() {
         return startSha;
     }
 
+    /**
+     * Sets the start sha.
+     *
+     * @param startSha the start sha value
+     */
+
     public void setStartSha(final String startSha) {
         this.startSha = startSha;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

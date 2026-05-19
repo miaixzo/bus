@@ -55,6 +55,13 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class NumberConverter extends AbstractConverter implements MatcherConverter {
 
+    /**
+     * Constructs a new {@code NumberConverter} instance.
+     */
+    public NumberConverter() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852269279995L;
 

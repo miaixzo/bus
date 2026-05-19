@@ -39,6 +39,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class HealthProperties {
 
     /**
+     * Constructs a new HealthProperties instance.
+     */
+    public HealthProperties() {
+        // No initialization required.
+    }
+
+    /**
      * The default type of health information to return when no 'tid' parameter is specified. This can be a single value
      * or a comma-separated list of values from {@link TID}. For example: "cpu,memory,diskstore".
      */

@@ -48,6 +48,13 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class UrlDecoder implements Serializable {
 
+    /**
+     * Constructs a new UrlDecoder instance.
+     */
+    public UrlDecoder() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852231876163L;
 

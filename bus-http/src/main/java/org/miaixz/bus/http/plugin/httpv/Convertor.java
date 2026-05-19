@@ -112,6 +112,11 @@ public interface Convertor {
 
         private final Convertor convertor;
 
+        /**
+         * Executes the form convertor operation.
+         *
+         * @param convertor the convertor value
+         */
         public FormConvertor(Convertor convertor) {
             this.convertor = convertor;
         }

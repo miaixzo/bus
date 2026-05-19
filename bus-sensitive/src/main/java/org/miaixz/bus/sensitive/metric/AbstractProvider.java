@@ -32,6 +32,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public abstract class AbstractProvider implements StrategyProvider {
 
     /**
+     * Constructs a new AbstractProvider instance.
+     */
+    public AbstractProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Builds a masked string in automatic mode, where the number of masked characters is calculated based on the
      * string's length, typically masking the middle part.
      *

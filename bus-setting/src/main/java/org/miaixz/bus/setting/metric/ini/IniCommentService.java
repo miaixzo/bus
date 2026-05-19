@@ -29,10 +29,23 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class IniCommentService extends AbstractElement implements IniComment {
 
+    /**
+     * Creates an INI comment.
+     *
+     * @param value         normalized comment value
+     * @param originalValue original comment line
+     * @param lineNumber    source line number
+     */
     public IniCommentService(String value, String originalValue, int lineNumber) {
         super(value, originalValue, lineNumber);
     }
 
+    /**
+     * Creates an INI comment from an original source line.
+     *
+     * @param originalValue original comment line
+     * @param lineNumber    source line number
+     */
     public IniCommentService(String originalValue, int lineNumber) {
         super(originalValue.substring(1), originalValue, lineNumber);
     }

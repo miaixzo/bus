@@ -229,6 +229,7 @@ public class MailAccount implements Serializable {
      * Constructs a new {@code MailAccount} with default values.
      */
     public MailAccount() {
+        // No initialization required.
     }
 
     /**

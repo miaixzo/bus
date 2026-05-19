@@ -56,57 +56,141 @@ public class ImpersonationToken implements Serializable {
     private Date lastUsedAt;
     private Boolean impersonation;
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return description;
     }
+
+    /**
+     * Returns the active.
+     *
+     * @return the result
+     */
 
     public Boolean getActive() {
         return active;
     }
 
+    /**
+     * Sets the active.
+     *
+     * @param active the active value
+     */
+
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    /**
+     * Returns the token.
+     *
+     * @return the result
+     */
 
     public String getToken() {
         return token;
     }
 
+    /**
+     * Sets the token.
+     *
+     * @param token the token value
+     */
+
     public void setToken(String token) {
         this.token = token;
     }
+
+    /**
+     * Returns the scopes.
+     *
+     * @return the result
+     */
 
     public List<Scope> getScopes() {
         return scopes;
     }
 
+    /**
+     * Sets the scopes.
+     *
+     * @param scopes the scopes value
+     */
+
     public void setScopes(List<Scope> scopes) {
         this.scopes = scopes;
     }
+
+    /**
+     * Returns the user id.
+     *
+     * @return the result
+     */
 
     public Long getUserId() {
         return userId;
     }
 
+    /**
+     * Sets the user id.
+     *
+     * @param userId the user id value
+     */
+
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    /**
+     * Returns the revoked.
+     *
+     * @return the result
+     */
 
     public Boolean getRevoked() {
         return revoked;
     }
 
+    /**
+     * Sets the revoked.
+     *
+     * @param revoked the revoked value
+     */
+
     public void setRevoked(Boolean revoked) {
         this.revoked = revoked;
     }
+
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
 
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
+
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
 
     public void setDescription(String description) {
         this.description = description;
@@ -121,77 +205,63 @@ public class ImpersonationToken implements Serializable {
     public enum Scope {
 
         /**
-         * Grants complete read/write access to the API.
+         * The api scope.
          */
         API,
-
         /**
-         * Grants read access to the API.
+         * The read api scope.
          */
         READ_API,
-
         /**
-         * Grants read-only access to user profile information.
+         * The read user scope.
          */
         READ_USER,
-
         /**
-         * Grants read-only access to repositories.
+         * The read repository scope.
          */
         READ_REPOSITORY,
-
         /**
-         * Grants read-write access to repositories.
+         * The write repository scope.
          */
         WRITE_REPOSITORY,
-
         /**
-         * Grants read (pull) access to the container registry.
+         * The read registry scope.
          */
         READ_REGISTRY,
-
         /**
-         * Grants write (push) access to the container registry.
+         * The write registry scope.
          */
         WRITE_REGISTRY,
-
         /**
-         * Grants read access through the virtual registry.
+         * The read virtual registry scope.
          */
         READ_VIRTUAL_REGISTRY,
-
         /**
-         * Grants write access through the virtual registry.
+         * The write virtual registry scope.
          */
         WRITE_VIRTUAL_REGISTRY,
-
         /**
-         * Grants create access to runners.
+         * The create runner scope.
          */
         CREATE_RUNNER,
-
         /**
-         * Grants access to manage runners.
+         * The manage runner scope.
          */
         MANAGE_RUNNER,
-
         /**
-         * Grants access to GitLab Duo related API endpoints.
+         * The ai features scope.
          */
         AI_FEATURES,
-
         /**
-         * Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+         * The k8 s proxy scope.
          */
         K8S_PROXY,
-
         /**
-         * Grants permission to rotate this token using the impersonation token API.
+         * The self rotate scope.
          */
         SELF_ROTATE,
-
         /**
-         * Grants permission to perform API actions as any user when authenticated as an administrator.
+         * The sudo scope.
          */
         SUDO;
 
@@ -233,45 +303,111 @@ public class ImpersonationToken implements Serializable {
 
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the last used at.
+     *
+     * @return the result
+     */
+
     public Date getLastUsedAt() {
         return lastUsedAt;
     }
+
+    /**
+     * Sets the last used at.
+     *
+     * @param lastUsedAt the last used at value
+     */
 
     public void setLastUsedAt(Date lastUsedAt) {
         this.lastUsedAt = lastUsedAt;
     }
 
+    /**
+     * Returns the impersonation.
+     *
+     * @return the result
+     */
+
     public Boolean getImpersonation() {
         return impersonation;
     }
+
+    /**
+     * Sets the impersonation.
+     *
+     * @param impersonation the impersonation value
+     */
 
     public void setImpersonation(Boolean impersonation) {
         this.impersonation = impersonation;
     }
 
+    /**
+     * Returns the expires at.
+     *
+     * @return the result
+     */
+
     public Date getExpiresAt() {
         return expiresAt;
     }
 
+    /**
+     * Sets the expires at.
+     *
+     * @param expiresAt the expires at value
+     */
+
     public void setExpiresAt(Date expiresAt) {
         this.expiresAt = expiresAt;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

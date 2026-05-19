@@ -41,6 +41,7 @@ public final class Lscfg {
      * Creates a new Lscfg instance.
      */
     private Lscfg() {
+        // No initialization required.
     }
 
     /**

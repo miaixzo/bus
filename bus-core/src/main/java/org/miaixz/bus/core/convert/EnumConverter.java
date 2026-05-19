@@ -43,6 +43,7 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
      * Constructs a new EnumConverter. Utility class constructor for static access.
      */
     public EnumConverter() {
+        // No initialization required.
     }
 
     @Serial

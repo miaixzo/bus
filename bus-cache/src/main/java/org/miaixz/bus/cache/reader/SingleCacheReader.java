@@ -41,6 +41,13 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
 public class SingleCacheReader extends AbstractReader {
 
     /**
+     * Constructs a new SingleCacheReader instance.
+     */
+    public SingleCacheReader() {
+        // No initialization required.
+    }
+
+    /**
      * Executes the single-key cache read operation.
      * <p>
      * It first attempts to read from the cache. On a miss, it invokes the original method, writes the result to the

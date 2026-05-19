@@ -53,6 +53,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class Caching extends XMLLanguageDriver {
 
     /**
+     * Constructs a new Caching instance.
+     */
+    public Caching() {
+        // No initialization required.
+    }
+
+    /**
      * A map to cache {@link SqlMetaCache} objects. The initial capacity is set based on an estimate (e.g., 30 entities
      * with 25 methods each).
      * <p>

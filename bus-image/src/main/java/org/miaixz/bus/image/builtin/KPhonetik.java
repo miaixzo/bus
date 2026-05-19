@@ -31,6 +31,13 @@ import org.miaixz.bus.core.lang.Normal;
 public class KPhonetik implements FuzzyString {
 
     /**
+     * Constructs a new KPhonetik instance.
+     */
+    public KPhonetik() {
+        // No initialization required.
+    }
+
+    /**
      * Converts the input string into its Kölner Phonetik (Cologne Phonetics) representation. The algorithm processes
      * the input character by character, mapping them to phonetic codes. Vowels and certain consonants are mapped to
      * '0', while other consonants are mapped to digits based on their phonetic similarity. Consecutive identical

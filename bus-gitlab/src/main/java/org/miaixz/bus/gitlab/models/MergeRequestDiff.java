@@ -38,21 +38,51 @@ public class MergeRequestDiff extends MergeRequestVersion {
     private List<Commit> commits;
     private List<Diff> diffs;
 
+    /**
+     * Returns the commits.
+     *
+     * @return the result
+     */
+
     public List<Commit> getCommits() {
         return commits;
     }
+
+    /**
+     * Sets the commits.
+     *
+     * @param commits the commits value
+     */
 
     public void setCommits(List<Commit> commits) {
         this.commits = commits;
     }
 
+    /**
+     * Returns the diffs.
+     *
+     * @return the result
+     */
+
     public List<Diff> getDiffs() {
         return diffs;
     }
 
+    /**
+     * Sets the diffs.
+     *
+     * @param diffs the diffs value
+     */
+
     public void setDiffs(List<Diff> diffs) {
         this.diffs = diffs;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

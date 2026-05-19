@@ -64,6 +64,13 @@ import org.miaixz.bus.core.xyz.*;
 public class Validator {
 
     /**
+     * Constructs a new Validator instance.
+     */
+    public Validator() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given value is {@code true}.
      *
      * @param value the value to check

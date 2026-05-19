@@ -34,6 +34,7 @@ public class AtomicLongArrayConverter extends AbstractConverter {
      * Constructs a new AtomicLongArrayConverter. Utility class constructor for static access.
      */
     public AtomicLongArrayConverter() {
+        // No initialization required.
     }
 
     @Serial

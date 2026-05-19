@@ -50,121 +50,299 @@ public class Label implements Serializable {
     private Integer priority;
     private Boolean isProjectLabel;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
+
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Sets the name and returns this instance.
+     *
+     * @param name the name value
+     * @return the result
+     */
 
     public Label withName(String name) {
         this.name = name;
         return (this);
     }
 
+    /**
+     * Returns the color.
+     *
+     * @return the result
+     */
+
     public String getColor() {
         return color;
     }
 
+    /**
+     * Sets the color.
+     *
+     * @param color the color value
+     */
+
     public void setColor(String color) {
         this.color = color;
     }
+
+    /**
+     * Sets the color and returns this instance.
+     *
+     * @param color the color value
+     * @return the result
+     */
 
     public Label withColor(String color) {
         this.color = color;
         return (this);
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
+
     public void setDescription(String description) {
         this.description = description;
     }
+
+    /**
+     * Sets the description and returns this instance.
+     *
+     * @param description the description value
+     * @return the result
+     */
 
     public Label withDescription(String description) {
         this.description = description;
         return (this);
     }
 
+    /**
+     * Returns the description html.
+     *
+     * @return the result
+     */
+
     public String getDescriptionHtml() {
         return descriptionHtml;
     }
+
+    /**
+     * Sets the description html.
+     *
+     * @param descriptionHtml the description html value
+     */
 
     public void setDescriptionHtml(String descriptionHtml) {
         this.descriptionHtml = descriptionHtml;
     }
 
+    /**
+     * Returns the text color.
+     *
+     * @return the result
+     */
+
     public String getTextColor() {
         return textColor;
     }
+
+    /**
+     * Sets the text color.
+     *
+     * @param textColor the text color value
+     */
 
     public void setTextColor(String textColor) {
         this.textColor = textColor;
     }
 
+    /**
+     * Returns the open issues count.
+     *
+     * @return the result
+     */
+
     public Integer getOpenIssuesCount() {
         return openIssuesCount;
     }
+
+    /**
+     * Sets the open issues count.
+     *
+     * @param openIssuesCount the open issues count value
+     */
 
     public void setOpenIssuesCount(Integer openIssuesCount) {
         this.openIssuesCount = openIssuesCount;
     }
 
+    /**
+     * Returns the closed issues count.
+     *
+     * @return the result
+     */
+
     public Integer getClosedIssuesCount() {
         return closedIssuesCount;
     }
+
+    /**
+     * Sets the closed issues count.
+     *
+     * @param closedIssuesCount the closed issues count value
+     */
 
     public void setClosedIssuesCount(Integer closedIssuesCount) {
         this.closedIssuesCount = closedIssuesCount;
     }
 
+    /**
+     * Returns the open merge requests count.
+     *
+     * @return the result
+     */
+
     public Integer getOpenMergeRequestsCount() {
         return openMergeRequestsCount;
     }
+
+    /**
+     * Sets the open merge requests count.
+     *
+     * @param openMergeRequestsCount the open merge requests count value
+     */
 
     public void setOpenMergeRequestsCount(Integer openMergeRequestsCount) {
         this.openMergeRequestsCount = openMergeRequestsCount;
     }
 
+    /**
+     * Returns whether the subscribed is enabled.
+     *
+     * @return the result
+     */
+
     public Boolean isSubscribed() {
         return subscribed;
     }
+
+    /**
+     * Sets the subscribed.
+     *
+     * @param subscribed the subscribed value
+     */
 
     public void setSubscribed(Boolean subscribed) {
         this.subscribed = subscribed;
     }
 
+    /**
+     * Returns the priority.
+     *
+     * @return the result
+     */
+
     public Integer getPriority() {
         return priority;
     }
 
+    /**
+     * Sets the priority.
+     *
+     * @param priority the priority value
+     */
+
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
+
+    /**
+     * Sets the priority and returns this instance.
+     *
+     * @param priority the priority value
+     * @return the result
+     */
 
     public Label withPriority(Integer priority) {
         this.priority = priority;
         return (this);
     }
 
+    /**
+     * Returns the is project label.
+     *
+     * @return the result
+     */
+
     public Boolean getIsProjectLabel() {
         return isProjectLabel;
     }
 
+    /**
+     * Sets the is project label.
+     *
+     * @param isProjectLabel the is project label value
+     */
+
     public void setIsProjectLabel(Boolean isProjectLabel) {
         this.isProjectLabel = isProjectLabel;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

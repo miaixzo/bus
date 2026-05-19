@@ -47,6 +47,7 @@ public class Convert {
      * Constructs a new Convert. Utility class constructor for static access.
      */
     private Convert() {
+        // No initialization required.
     }
 
     /**

@@ -40,7 +40,7 @@ public class StringKit extends CharsBacker {
      * Constructs a new string utility instance.
      */
     public StringKit() {
-
+        // No initialization required.
     }
 
     /**

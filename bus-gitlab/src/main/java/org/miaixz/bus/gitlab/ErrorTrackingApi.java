@@ -35,6 +35,12 @@ import org.miaixz.bus.gitlab.models.ErrorTrackingClientKey;
  */
 public class ErrorTrackingApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code ErrorTrackingApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ErrorTrackingApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -87,7 +87,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
      * Default constructor (uses default configuration).
      */
     public TenantHandler() {
-
+        // No initialization required.
     }
 
     /**

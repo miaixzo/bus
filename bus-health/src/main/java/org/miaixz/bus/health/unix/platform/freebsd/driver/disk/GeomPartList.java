@@ -40,6 +40,13 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 public final class GeomPartList {
 
     /**
+     * Constructs a new GeomPartList instance.
+     */
+    public GeomPartList() {
+        // No initialization required.
+    }
+
+    /**
      * The GEOM_PART_LIST constant.
      */
     private static final String GEOM_PART_LIST = "geom part list";

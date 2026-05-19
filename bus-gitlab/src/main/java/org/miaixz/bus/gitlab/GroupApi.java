@@ -46,6 +46,12 @@ import org.miaixz.bus.logger.Logger;
  */
 public class GroupApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code GroupApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public GroupApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
@@ -839,6 +845,14 @@ public class GroupApi extends AbstractApi {
         Response response = post(Response.Status.CREATED, formData, "groups");
         return (response.readEntity(Group.class));
     }
+
+    /**
+     * Adds the group.
+     *
+     * @param group the group value
+     * @return the result
+     * @throws GitLabApiException if the operation fails
+     */
 
     public Group addGroup(Group group) throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("name", group.getName(), true)
@@ -2608,6 +2622,8 @@ public class GroupApi extends AbstractApi {
      *                      {@link AccessLevel#OWNER}.
      * @return the created GroupAccessToken instance
      * @throws GitLabApiException if any exception occurs
+     *
+     * @param description the description value
      */
     public GroupAccessToken createGroupAccessToken(
             Object groupIdOrPath,
@@ -2702,6 +2718,8 @@ public class GroupApi extends AbstractApi {
      * @param groupIdOrPath   the group in the form of an Long(ID), String(path), or Group instance
      * @param groupHookParams webhook creation options
      * @throws GitLabApiException if any exception occurs
+     *
+     * @return the result
      */
     public GroupHook addWebhook(Object groupIdOrPath, GroupHookParams groupHookParams) throws GitLabApiException {
         Response response = post(

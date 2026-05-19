@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_Release_1_2;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SPI-P Release 1;2";

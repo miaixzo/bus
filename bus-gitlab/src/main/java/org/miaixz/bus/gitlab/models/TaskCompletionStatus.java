@@ -38,21 +38,51 @@ public class TaskCompletionStatus implements Serializable {
     private Integer count;
     private Integer completedCount;
 
+    /**
+     * Returns the count.
+     *
+     * @return the result
+     */
+
     public Integer getCount() {
         return count;
     }
+
+    /**
+     * Sets the count.
+     *
+     * @param count the count value
+     */
 
     public void setCount(Integer count) {
         this.count = count;
     }
 
+    /**
+     * Returns the completed count.
+     *
+     * @return the result
+     */
+
     public Integer getCompletedCount() {
         return completedCount;
     }
 
+    /**
+     * Sets the completed count.
+     *
+     * @param completedCount the completed count value
+     */
+
     public void setCompletedCount(Integer completedCount) {
         this.completedCount = completedCount;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

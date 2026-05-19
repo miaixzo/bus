@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.mitra_object_document_1_0;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "MITRA OBJECT DOCUMENT 1.0";

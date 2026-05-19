@@ -42,6 +42,13 @@ import org.miaixz.bus.office.excel.style.StyleSet;
 public class CellKit {
 
     /**
+     * Constructs a new CellKit instance.
+     */
+    public CellKit() {
+        // No initialization required.
+    }
+
+    /**
      * Gets the value of a cell.
      *
      * @param cell The {@link Cell} object.

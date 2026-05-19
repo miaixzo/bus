@@ -41,6 +41,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class Context {
 
     /**
+     * Constructs a new Context instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
+
+    /**
      * The current object being processed.
      */
     private Object currentObject;

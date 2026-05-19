@@ -38,6 +38,7 @@ public class CastKit {
      * Constructs a new CastKit. Utility class constructor for static access.
      */
     private CastKit() {
+        // No initialization required.
     }
 
     /**

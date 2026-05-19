@@ -34,7 +34,7 @@ public final class ItemRevisionNumbers {
      * Prevents utility class instantiation.
      */
     private ItemRevisionNumbers() {
-
+        // No initialization required.
     }
 
     /**

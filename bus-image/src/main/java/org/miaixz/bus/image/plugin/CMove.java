@@ -40,6 +40,13 @@ import org.miaixz.bus.logger.Logger;
 public class CMove {
 
     /**
+     * Constructs a new CMove instance.
+     */
+    public CMove() {
+        // No initialization required.
+    }
+
+    /**
      * Performs a DICOM C-MOVE operation.
      *
      * @param callingNode    the configuration of the calling DICOM node.

@@ -37,6 +37,13 @@ import org.miaixz.bus.core.lang.reflect.JdkProxy;
 public class Builder {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * A concurrent hash map to cache method names for performance. The key is the {@link Method} object, and the value
      * is its string representation.
      */

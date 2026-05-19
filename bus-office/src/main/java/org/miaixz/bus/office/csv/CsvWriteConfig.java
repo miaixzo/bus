@@ -32,6 +32,13 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Serializable {
 
+    /**
+     * Constructs a new CsvWriteConfig instance.
+     */
+    public CsvWriteConfig() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852283371616L;
 

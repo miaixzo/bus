@@ -36,26 +36,64 @@ public class CustomAttribute implements Serializable {
     private String key;
     private String value;
 
+    /**
+     * Returns the key.
+     *
+     * @return the result
+     */
+
     public String getKey() {
         return key;
     }
+
+    /**
+     * Sets the key.
+     *
+     * @param key the key value
+     */
 
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     public String getValue() {
         return value;
     }
+
+    /**
+     * Sets the value.
+     *
+     * @param value the value value
+     */
 
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     * Sets the key and returns this instance.
+     *
+     * @param key the key value
+     * @return the result
+     */
+
     public CustomAttribute withKey(String key) {
         this.key = key;
         return this;
     }
+
+    /**
+     * Sets the value and returns this instance.
+     *
+     * @param value the value value
+     * @return the result
+     */
 
     public CustomAttribute withValue(String value) {
         this.value = value;

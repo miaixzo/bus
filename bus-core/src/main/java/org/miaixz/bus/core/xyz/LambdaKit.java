@@ -42,6 +42,13 @@ import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
  */
 public class LambdaKit {
 
+    /**
+     * Constructs a new LambdaKit instance.
+     */
+    public LambdaKit() {
+        // No initialization required.
+    }
+
     private static final WeakConcurrentMap<Object, LambdaX> CACHE = new WeakConcurrentMap<>();
 
     /**

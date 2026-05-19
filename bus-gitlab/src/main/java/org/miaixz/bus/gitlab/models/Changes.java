@@ -53,15 +53,33 @@ public class Changes implements Serializable {
     private String oldPath;
     private Boolean renamedFile;
 
+    /**
+     * Returns the amode.
+     *
+     * @return the result
+     */
+
     @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty("a_mode")
     public String getAMode() {
         return a_mode;
     }
 
+    /**
+     * Sets the amode.
+     *
+     * @param a_mode the a mode value
+     */
+
     public void setAMode(String a_mode) {
         this.a_mode = a_mode;
     }
+
+    /**
+     * Returns the bmode.
+     *
+     * @return the result
+     */
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty("b_mode")
@@ -69,57 +87,141 @@ public class Changes implements Serializable {
         return b_mode;
     }
 
+    /**
+     * Sets the bmode.
+     *
+     * @param b_mode the b mode value
+     */
+
     public void setBMode(String b_mode) {
         this.b_mode = b_mode;
     }
+
+    /**
+     * Returns the deleted file.
+     *
+     * @return the result
+     */
 
     public Boolean getDeletedFile() {
         return deletedFile;
     }
 
+    /**
+     * Sets the deleted file.
+     *
+     * @param deletedFile the deleted file value
+     */
+
     public void setDeletedFile(Boolean deletedFile) {
         this.deletedFile = deletedFile;
     }
+
+    /**
+     * Returns the diff.
+     *
+     * @return the result
+     */
 
     public String getDiff() {
         return diff;
     }
 
+    /**
+     * Sets the diff.
+     *
+     * @param diff the diff value
+     */
+
     public void setDiff(String diff) {
         this.diff = diff;
     }
+
+    /**
+     * Returns the new file.
+     *
+     * @return the result
+     */
 
     public Boolean getNewFile() {
         return newFile;
     }
 
+    /**
+     * Sets the new file.
+     *
+     * @param newFile the new file value
+     */
+
     public void setNewFile(Boolean newFile) {
         this.newFile = newFile;
     }
+
+    /**
+     * Returns the new path.
+     *
+     * @return the result
+     */
 
     public String getNewPath() {
         return newPath;
     }
 
+    /**
+     * Sets the new path.
+     *
+     * @param newPath the new path value
+     */
+
     public void setNewPath(String newPath) {
         this.newPath = newPath;
     }
+
+    /**
+     * Returns the old path.
+     *
+     * @return the result
+     */
 
     public String getOldPath() {
         return oldPath;
     }
 
+    /**
+     * Sets the old path.
+     *
+     * @param oldPath the old path value
+     */
+
     public void setOldPath(String oldPath) {
         this.oldPath = oldPath;
     }
+
+    /**
+     * Returns the renamed file.
+     *
+     * @return the result
+     */
 
     public Boolean getRenamedFile() {
         return renamedFile;
     }
 
+    /**
+     * Sets the renamed file.
+     *
+     * @param renamedFile the renamed file value
+     */
+
     public void setRenamedFile(Boolean renamedFile) {
         this.renamedFile = renamedFile;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

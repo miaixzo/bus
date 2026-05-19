@@ -40,6 +40,13 @@ import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
 public class Boot {
 
     /**
+     * Constructs a new Boot instance.
+     */
+    public Boot() {
+        // No initialization required.
+    }
+
+    /**
      * Encrypts a Spring Boot JAR package.
      *
      * @param src  The source JAR file path.

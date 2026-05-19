@@ -39,29 +39,71 @@ public class ExternalStatusCheckResult implements Serializable {
     private MergeRequest mergeRequest;
     private ExternalStatusCheck externalStatusCheck;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the merge request.
+     *
+     * @return the result
+     */
+
     public MergeRequest getMergeRequest() {
         return mergeRequest;
     }
+
+    /**
+     * Sets the merge request.
+     *
+     * @param mergeRequest the merge request value
+     */
 
     public void setMergeRequest(MergeRequest mergeRequest) {
         this.mergeRequest = mergeRequest;
     }
 
+    /**
+     * Returns the external status check.
+     *
+     * @return the result
+     */
+
     public ExternalStatusCheck getExternalStatusCheck() {
         return externalStatusCheck;
     }
 
+    /**
+     * Sets the external status check.
+     *
+     * @param externalStatusCheck the external status check value
+     */
+
     public void setExternalStatusCheck(ExternalStatusCheck externalStatusCheck) {
         this.externalStatusCheck = externalStatusCheck;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

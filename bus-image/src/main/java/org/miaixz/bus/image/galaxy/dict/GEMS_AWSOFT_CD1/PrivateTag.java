@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_AWSOFT_CD1;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_AWSOFT_CD1";

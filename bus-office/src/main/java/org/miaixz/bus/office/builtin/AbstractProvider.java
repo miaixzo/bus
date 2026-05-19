@@ -29,4 +29,11 @@ import org.miaixz.bus.office.Provider;
  */
 public abstract class AbstractProvider implements Provider {
 
+    /**
+     * Constructs a new AbstractProvider instance.
+     */
+    public AbstractProvider() {
+        // No initialization required.
+    }
+
 }

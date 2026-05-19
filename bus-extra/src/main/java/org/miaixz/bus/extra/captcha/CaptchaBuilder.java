@@ -33,6 +33,13 @@ import org.miaixz.bus.extra.captcha.provider.ShearProvider;
 public class CaptchaBuilder {
 
     /**
+     * Constructs a new CaptchaBuilder instance.
+     */
+    public CaptchaBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a CAPTCHA with line interference, default 5 characters, 150 interference lines.
      *
      * @param width  Image width.

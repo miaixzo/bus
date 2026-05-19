@@ -33,6 +33,13 @@ import java.util.Map;
 public class MapValidator {
 
     /**
+     * Constructs a new MapValidator instance.
+     */
+    public MapValidator() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given {@link Map} is empty.
      *
      * @param map The map to check.

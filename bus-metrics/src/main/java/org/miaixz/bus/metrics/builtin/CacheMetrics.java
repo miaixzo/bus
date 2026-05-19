@@ -33,6 +33,13 @@ import org.miaixz.bus.metrics.Metrics;
 public class CacheMetrics {
 
     /**
+     * Constructs a new CacheMetrics instance.
+     */
+    public CacheMetrics() {
+        // No initialization required.
+    }
+
+    /**
      * Wrap a CacheX with metric tracking. Returns a proxy that records hit/miss/write.
      *
      * @param cache     the target cache

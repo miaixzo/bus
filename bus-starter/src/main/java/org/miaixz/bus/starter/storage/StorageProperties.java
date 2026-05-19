@@ -47,6 +47,13 @@ import org.miaixz.bus.storage.Registry;
 public class StorageProperties {
 
     /**
+     * Constructs a new StorageProperties instance.
+     */
+    public StorageProperties() {
+        // No initialization required.
+    }
+
+    /**
      * A map of storage provider configurations, where the key is the provider {@link Registry} type and the value is
      * the {@link Context} containing the specific configuration for that provider.
      */

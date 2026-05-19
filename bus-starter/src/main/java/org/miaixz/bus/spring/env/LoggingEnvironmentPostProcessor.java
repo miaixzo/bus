@@ -44,6 +44,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     /**
+     * Constructs a new LoggingEnvironmentPostProcessor instance.
+     */
+    public LoggingEnvironmentPostProcessor() {
+        // No initialization required.
+    }
+
+    /**
      * Ensures compatibility by setting specific system properties for logging.
      * <p>
      * The following system properties are set:

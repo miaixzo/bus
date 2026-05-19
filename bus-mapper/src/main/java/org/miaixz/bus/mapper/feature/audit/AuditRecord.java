@@ -46,6 +46,13 @@ import lombok.Getter;
 public class AuditRecord {
 
     /**
+     * Constructs a new AuditRecord instance.
+     */
+    public AuditRecord() {
+        // No initialization required.
+    }
+
+    /**
      * SQL statement ID (Mapper method fully qualified name)
      */
     private String sqlId;

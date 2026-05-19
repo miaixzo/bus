@@ -36,6 +36,12 @@ import org.miaixz.bus.gitlab.models.LicenseTemplate;
  */
 public class LicenseTemplatesApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code LicenseTemplatesApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public LicenseTemplatesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -37,6 +37,7 @@ public abstract class AbstractChildLimitProvider implements ChildLimitProvider {
      * Constructs a new AbstractChildLimitProvider. Utility class constructor for static access.
      */
     protected AbstractChildLimitProvider() {
+        // No initialization required.
     }
 
     /**

@@ -31,6 +31,13 @@ import org.miaixz.bus.sensitive.Context;
 public class NoneProvider extends AbstractProvider {
 
     /**
+     * Constructs a new NoneProvider instance.
+     */
+    public NoneProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Returns the original object's string representation without any modification.
      *
      * @param object  The original object.

@@ -44,7 +44,7 @@ public class Transmit {
      * Creates an empty service transmission snapshot.
      */
     public Transmit() {
-
+        // No initialization required.
     }
 
     /**

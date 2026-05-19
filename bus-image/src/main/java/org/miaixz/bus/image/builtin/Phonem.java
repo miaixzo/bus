@@ -31,6 +31,13 @@ package org.miaixz.bus.image.builtin;
 public class Phonem implements FuzzyString {
 
     /**
+     * Constructs a new {@code Phonem} instance.
+     */
+    public Phonem() {
+        // No initialization required.
+    }
+
+    /**
      * Main method for testing the Phonem algorithm. It takes command-line arguments and prints their phonetic
      * representation.
      *

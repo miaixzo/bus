@@ -35,6 +35,13 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
 public final class MemoryInformation {
 
     /**
+     * Constructs a new {@code MemoryInformation} instance.
+     */
+    public MemoryInformation() {
+        // No initialization required.
+    }
+
+    /**
      * Returns page swap counters
      *
      * @return Page swap counters for memory.
@@ -57,7 +64,20 @@ public final class MemoryInformation {
      */
     public enum PageSwapProperty implements PerfCounterQuery.PdhCounterProperty {
 
-        PAGESINPUTPERSEC(null, "Pages Input/sec"), //
+        /**
+         *
+         * pages input/sec page swap property.
+         *
+         */
+
+        PAGESINPUTPERSEC(null, "Pages Input/sec"),
+
+        /**
+         *
+         * pages output/sec page swap property.
+         *
+         */
+
         PAGESOUTPUTPERSEC(null, "Pages Output/sec");
 
         /**

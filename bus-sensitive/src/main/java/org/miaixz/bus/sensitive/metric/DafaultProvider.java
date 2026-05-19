@@ -35,6 +35,13 @@ import org.miaixz.bus.sensitive.Context;
 public class DafaultProvider extends AbstractProvider {
 
     /**
+     * Constructs a new DafaultProvider instance.
+     */
+    public DafaultProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Applies a default desensitization logic to the provided value.
      *
      * @param object  The object containing the string to be desensitized.

@@ -41,6 +41,7 @@ public class GrayRequestContext {
      * Creates an empty gray-routing request context.
      */
     public GrayRequestContext() {
+        // No initialization required.
     }
 
     /**

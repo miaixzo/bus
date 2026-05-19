@@ -40,27 +40,59 @@ public class AllowedTo implements Serializable {
     private Long userId;
     private Long groupId;
 
+    /**
+     * Executes the allowed to operation.
+     *
+     * @param accessLevel the access level value
+     * @param userId      the user id value
+     * @param groupId     the group id value
+     */
     public AllowedTo(AccessLevel accessLevel, Long userId, Long groupId) {
         this.accessLevel = accessLevel;
         this.userId = userId;
         this.groupId = groupId;
     }
 
+    /**
+     * Executes the with access level operation.
+     *
+     * @param accessLevel the access level value
+     * @return the result
+     */
     public AllowedTo withAccessLevel(AccessLevel accessLevel) {
         this.accessLevel = accessLevel;
         return (this);
     }
 
+    /**
+     * Executes the with user id operation.
+     *
+     * @param userId the user id value
+     * @return the result
+     */
     public AllowedTo withUserId(Long userId) {
         this.userId = userId;
         return (this);
     }
 
+    /**
+     * Executes the with group id operation.
+     *
+     * @param groupId the group id value
+     * @return the result
+     */
     public AllowedTo withGroupId(Long groupId) {
         this.groupId = groupId;
         return (this);
     }
 
+    /**
+     * Returns the form.
+     *
+     * @param form          the form value
+     * @param allowedToName the allowed to name value
+     * @return the result
+     */
     public GitLabForm getForm(GitLabForm form, String allowedToName) {
 
         if (form == null) {

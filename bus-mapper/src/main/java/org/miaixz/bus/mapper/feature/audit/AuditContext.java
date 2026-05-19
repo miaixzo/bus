@@ -75,7 +75,7 @@ public class AuditContext {
      * Private constructor to prevent instantiation
      */
     private AuditContext() {
-
+        // No initialization required.
     }
 
     /**

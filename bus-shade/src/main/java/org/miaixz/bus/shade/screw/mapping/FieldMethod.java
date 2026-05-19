@@ -32,6 +32,13 @@ import java.lang.reflect.Method;
 public class FieldMethod {
 
     /**
+     * Constructs a new FieldMethod instance.
+     */
+    public FieldMethod() {
+        // No initialization required.
+    }
+
+    /**
      * The {@link Field} object.
      */
     private Field field;

@@ -38,6 +38,12 @@ import org.miaixz.bus.gitlab.models.TopicParams;
  */
 public class TopicsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code TopicsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public TopicsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -58,40 +58,48 @@ public class CommitRef implements Serializable {
     public enum RefType {
 
         /**
-         * Represents a branch reference.
-         * <p>
-         * Branches are movable pointers to commits used for development lines.
-         * </p>
+         * The branch defines.
          */
         BRANCH,
-
         /**
-         * Represents a tag reference.
-         * <p>
-         * Tags are fixed pointers to specific commits, often used for marking releases.
-         * </p>
+         * The tag defines.
          */
         TAG,
-
         /**
-         * Represents all reference types (both branches and tags).
-         * <p>
-         * This value is used when no specific filtering is desired.
-         * </p>
+         * The all defines.
          */
         ALL;
 
         private static JacksonJsonEnumHelper<RefType> enumHelper = new JacksonJsonEnumHelper<>(RefType.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static RefType forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -100,21 +108,51 @@ public class CommitRef implements Serializable {
 
     }
 
+    /**
+     * Returns the type.
+     *
+     * @return the result
+     */
+
     public RefType getType() {
         return type;
     }
+
+    /**
+     * Sets the type.
+     *
+     * @param type the type value
+     */
 
     public void setType(RefType type) {
         this.type = type;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
+
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

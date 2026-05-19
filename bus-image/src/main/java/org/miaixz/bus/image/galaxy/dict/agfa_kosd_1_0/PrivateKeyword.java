@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.agfa_kosd_1_0;
 public class PrivateKeyword {
 
     /**
+     * Constructs a new {@code PrivateKeyword} instance.
+     */
+    public PrivateKeyword() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "";

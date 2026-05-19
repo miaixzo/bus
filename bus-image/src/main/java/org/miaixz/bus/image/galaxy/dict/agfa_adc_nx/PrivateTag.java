@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.agfa_adc_nx;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Agfa ADC NX";

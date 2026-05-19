@@ -32,6 +32,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class NamingCase {
 
     /**
+     * Constructs a new NamingCase instance.
+     */
+    public NamingCase() {
+        // No initialization required.
+    }
+
+    /**
      * Converts a camel case string to an underscore case (SnakeCase, underScoreCase). If the input camel case string is
      * empty, an empty string is returned. Rules:
      * <ul>

@@ -33,25 +33,61 @@ public class IssueChanges extends EventChanges {
     private ChangeContainer<Boolean> confidential;
     private ChangeContainer<String> heathStatus;
 
+    /**
+     * Returns the due date.
+     *
+     * @return the result
+     */
+
     public ChangeContainer<Date> getDueDate() {
         return dueDate;
     }
+
+    /**
+     * Sets the due date.
+     *
+     * @param dueDate the due date value
+     */
 
     public void setDueDate(ChangeContainer<Date> dueDate) {
         this.dueDate = dueDate;
     }
 
+    /**
+     * Returns the confidential.
+     *
+     * @return the result
+     */
+
     public ChangeContainer<Boolean> getConfidential() {
         return confidential;
     }
+
+    /**
+     * Sets the confidential.
+     *
+     * @param confidential the confidential value
+     */
 
     public void setConfidential(ChangeContainer<Boolean> confidential) {
         this.confidential = confidential;
     }
 
+    /**
+     * Returns the heath status.
+     *
+     * @return the result
+     */
+
     public ChangeContainer<String> getHeathStatus() {
         return heathStatus;
     }
+
+    /**
+     * Sets the heath status.
+     *
+     * @param heathStatus the heath status value
+     */
 
     public void setHeathStatus(ChangeContainer<String> heathStatus) {
         this.heathStatus = heathStatus;

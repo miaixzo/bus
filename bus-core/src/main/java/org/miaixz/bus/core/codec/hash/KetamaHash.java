@@ -34,6 +34,13 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class KetamaHash implements Hash64<byte[]>, Hash32<byte[]> {
 
     /**
+     * Constructs a new KetamaHash instance.
+     */
+    public KetamaHash() {
+        // No initialization required.
+    }
+
+    /**
      * Calculates the MD5 hash of the given key.
      *
      * @param key The key to be hashed.

@@ -46,6 +46,12 @@ import org.miaixz.bus.logger.Logger;
  */
 public class ImportExportApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code ImportExportApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ImportExportApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

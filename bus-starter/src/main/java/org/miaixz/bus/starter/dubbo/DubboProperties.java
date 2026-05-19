@@ -44,6 +44,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class DubboProperties {
 
     /**
+     * Constructs a new DubboProperties instance.
+     */
+    public DubboProperties() {
+        // No initialization required.
+    }
+
+    /**
      * The base packages to scan for Dubbo service interfaces.
      */
     protected String basePackages;

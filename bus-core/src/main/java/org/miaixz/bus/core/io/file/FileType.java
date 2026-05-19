@@ -916,7 +916,7 @@ public class FileType {
      * Private constructor to prevent instantiation of this utility class.
      */
     private FileType() {
-
+        // No initialization required.
     }
 
     /**

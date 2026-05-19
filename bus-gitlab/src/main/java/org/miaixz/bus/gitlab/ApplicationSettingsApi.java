@@ -40,6 +40,12 @@ import org.miaixz.bus.logger.Logger;
  */
 public class ApplicationSettingsApi extends AbstractApi {
 
+    /**
+     * Executes the application settings api operation.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ApplicationSettingsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -33,6 +33,13 @@ import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
 public abstract class AbstractVirtualMemory implements VirtualMemory {
 
     /**
+     * Constructs a new AbstractVirtualMemory instance.
+     */
+    public AbstractVirtualMemory() {
+        // No initialization required.
+    }
+
+    /**
      * Returns the to string result.
      *
      * @return the to string result

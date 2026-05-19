@@ -52,6 +52,13 @@ import org.miaixz.bus.logger.Logger;
 public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
     /**
+     * Constructs a new FreeBsdOperatingSystem instance.
+     */
+    public FreeBsdOperatingSystem() {
+        // No initialization required.
+    }
+
+    /**
      * The PS_COMMAND_ARGS constant.
      */
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)

@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SMS_USG_ANTARES_3D_VOLUME;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MED SMS USG ANTARES 3D VOLUME";

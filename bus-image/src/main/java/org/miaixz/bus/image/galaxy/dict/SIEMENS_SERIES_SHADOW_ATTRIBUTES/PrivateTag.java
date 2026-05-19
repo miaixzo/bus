@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SERIES_SHADOW_ATTRIBUTES;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SERIES SHADOW ATTRIBUTES";

@@ -37,10 +37,25 @@ public class MarkdownRequest implements Serializable {
     private boolean gfm;
     private String project;
 
+    /**
+     * Constructs a new {@code MarkdownRequest} instance.
+     *
+     * @param text the text value
+     * @param gfm  the gfm value
+     */
+
     public MarkdownRequest(String text, boolean gfm) {
         this.text = text;
         this.gfm = gfm;
     }
+
+    /**
+     * Constructs a new {@code MarkdownRequest} instance.
+     *
+     * @param text    the text value
+     * @param gfm     the gfm value
+     * @param project the project value
+     */
 
     public MarkdownRequest(String text, boolean gfm, String project) {
         this.text = text;
@@ -48,25 +63,61 @@ public class MarkdownRequest implements Serializable {
         this.project = project;
     }
 
+    /**
+     * Returns the text.
+     *
+     * @return the result
+     */
+
     public String getText() {
         return text;
     }
+
+    /**
+     * Sets the text.
+     *
+     * @param text the text value
+     */
 
     public void setText(String text) {
         this.text = text;
     }
 
+    /**
+     * Returns whether the gfm is enabled.
+     *
+     * @return the result
+     */
+
     public boolean isGfm() {
         return gfm;
     }
+
+    /**
+     * Sets the gfm.
+     *
+     * @param gfm the gfm value
+     */
 
     public void setGfm(boolean gfm) {
         this.gfm = gfm;
     }
 
+    /**
+     * Returns the project.
+     *
+     * @return the result
+     */
+
     public String getProject() {
         return project;
     }
+
+    /**
+     * Sets the project.
+     *
+     * @param project the project value
+     */
 
     public void setProject(String project) {
         this.project = project;

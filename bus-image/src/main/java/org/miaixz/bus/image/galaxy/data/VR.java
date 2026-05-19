@@ -683,6 +683,13 @@ public enum VR {
     public static class Holder {
 
         /**
+         * Constructs a new {@code Holder} instance.
+         */
+        public Holder() {
+            // No initialization required.
+        }
+
+        /**
          * The vr value.
          */
         public VR vr;

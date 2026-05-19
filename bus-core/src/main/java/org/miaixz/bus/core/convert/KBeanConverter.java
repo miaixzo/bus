@@ -47,6 +47,13 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public class KBeanConverter implements MatcherConverter, Serializable {
 
+    /**
+     * Constructs a new {@code KBeanConverter} instance.
+     */
+    public KBeanConverter() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852268927129L;
 

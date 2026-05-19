@@ -36,7 +36,7 @@ public final class Builder {
      * Creates a new Builder.
      */
     private Builder() {
-
+        // No initialization required.
     }
 
     /**

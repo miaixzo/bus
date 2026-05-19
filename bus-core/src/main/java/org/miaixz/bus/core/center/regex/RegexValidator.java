@@ -34,7 +34,7 @@ public class RegexValidator {
      * Constructs a new regular expression validator.
      */
     public RegexValidator() {
-
+        // No initialization required.
     }
 
     /**

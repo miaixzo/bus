@@ -35,6 +35,13 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public class ColorModelFactory {
 
     /**
+     * Constructs a new ColorModelFactory instance.
+     */
+    public ColorModelFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Creates the monochrome color model.
      *
      * @param bits     the bits.

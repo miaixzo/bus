@@ -78,6 +78,13 @@ import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
 public class Context extends org.miaixz.bus.core.Context {
 
     /**
+     * Constructs a new Context instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
+
+    /**
      * ThreadLocal storage for mapper configuration.
      */
     private static final ThreadLocal<MapperConfig> MAPPER_CONFIG = new ThreadLocal<>();
@@ -214,6 +221,13 @@ public class Context extends org.miaixz.bus.core.Context {
     public static class MapperConfig {
 
         /**
+         * Constructs a new MapperConfig instance.
+         */
+        public MapperConfig() {
+            // No initialization required.
+        }
+
+        /**
          * Tenant isolation configuration.
          */
         private TenantConfig tenant;
@@ -254,6 +268,13 @@ public class Context extends org.miaixz.bus.core.Context {
          * @since Java 21+
          */
         public static class Builder {
+
+            /**
+             * Constructs a new Builder instance.
+             */
+            public Builder() {
+                // No initialization required.
+            }
 
             /**
              * Mutable configuration instance assembled by this builder.

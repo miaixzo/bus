@@ -36,6 +36,13 @@ import org.miaixz.bus.crypto.center.RSA;
 public class RSAProvider implements Provider {
 
     /**
+     * Constructs a new RSAProvider instance.
+     */
+    public RSAProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Encrypts the given content using RSA with the provided key. The key string is expected to be a comma-separated
      * string containing the private key, public key, and key type. Example:
      * "privateKeyBase64,publicKeyBase64,PrivateKey" or "privateKeyBase64,publicKeyBase64,PublicKey".

@@ -275,7 +275,6 @@ public interface SharedService<T, I extends Serializable> extends Service {
     /**
      * Creates and returns a new {@link Condition} instance for building complex queries.
      *
-     *
      * @return a new Condition object
      */
     default Condition<T> condition() {

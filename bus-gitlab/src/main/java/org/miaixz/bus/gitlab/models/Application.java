@@ -32,6 +32,13 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Application implements Serializable {
 
+    /**
+     * Constructs a new Application instance.
+     */
+    public Application() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852235903898L;
 
@@ -42,53 +49,119 @@ public class Application implements Serializable {
     private Boolean confidential;
     private String secret;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the application id.
+     *
+     * @return the result
+     */
     public String getApplicationId() {
         return applicationId;
     }
 
+    /**
+     * Sets the application id.
+     *
+     * @param applicationId the application id value
+     */
     public void setApplicationId(String applicationId) {
         this.applicationId = applicationId;
     }
 
+    /**
+     * Returns the application name.
+     *
+     * @return the result
+     */
     public String getApplicationName() {
         return applicationName;
     }
 
+    /**
+     * Sets the application name.
+     *
+     * @param applicationName the application name value
+     */
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName;
     }
 
+    /**
+     * Returns the callback url.
+     *
+     * @return the result
+     */
     public String getCallbackUrl() {
         return callbackUrl;
     }
 
+    /**
+     * Sets the callback url.
+     *
+     * @param callbackUrl the callback url value
+     */
     public void setCallbackUrl(String callbackUrl) {
         this.callbackUrl = callbackUrl;
     }
 
+    /**
+     * Returns the confidential.
+     *
+     * @return the result
+     */
     public Boolean getConfidential() {
         return confidential;
     }
 
+    /**
+     * Sets the confidential.
+     *
+     * @param confidential the confidential value
+     */
     public void setConfidential(Boolean confidential) {
         this.confidential = confidential;
     }
 
+    /**
+     * Returns the secret.
+     *
+     * @return the result
+     */
     public String getSecret() {
         return secret;
     }
 
+    /**
+     * Sets the secret.
+     *
+     * @param secret the secret value
+     */
     public void setSecret(String secret) {
         this.secret = secret;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

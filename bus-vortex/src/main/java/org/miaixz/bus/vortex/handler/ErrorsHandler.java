@@ -63,6 +63,7 @@ public class ErrorsHandler implements WebExceptionHandler {
      * Creates a global errors handler.
      */
     public ErrorsHandler() {
+        // No initialization required.
     }
 
     /**
@@ -225,6 +226,7 @@ public class ErrorsHandler implements WebExceptionHandler {
          * Creates an empty response message.
          */
         public Message() {
+            // No initialization required.
         }
 
         /**

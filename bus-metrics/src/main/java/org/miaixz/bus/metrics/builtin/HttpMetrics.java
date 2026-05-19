@@ -47,6 +47,13 @@ import org.miaixz.bus.metrics.metric.Sample;
 public class HttpMetrics implements Filter {
 
     /**
+     * Constructs a new HttpMetrics instance.
+     */
+    public HttpMetrics() {
+        // No initialization required.
+    }
+
+    /**
      * Servlet request attribute key used to pass the in-flight {@link Sample} through the filter chain.
      */
     private static final String ATTR_SAMPLE = Builder.HTTP_ATTR_SAMPLE;

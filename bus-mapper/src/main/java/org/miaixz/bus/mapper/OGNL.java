@@ -29,7 +29,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
@@ -59,6 +58,13 @@ import org.miaixz.bus.mapper.parsing.ClassField;
  * @since Java 21+
  */
 public class OGNL {
+
+    /**
+     * Constructs a new OGNL instance.
+     */
+    public OGNL() {
+        // No initialization required.
+    }
 
     /**
      * A string containing SQL syntax keywords for injection checks, delimited by '|'.
@@ -758,7 +764,6 @@ public class OGNL {
      * FROM users
      * WHERE status = ?
      *
-     *
      * AND active = ?
      *
      * // After formatting:
@@ -799,7 +804,6 @@ public class OGNL {
      * @since Java 21+
      */
     @Getter
-    @RequiredArgsConstructor
     public static class CacheStats {
 
         /**
@@ -816,6 +820,19 @@ public class OGNL {
          * Number of cached method descriptors.
          */
         private final int methodCacheSize;
+
+        /**
+         * Creates a cache statistics snapshot.
+         *
+         * @param lambdaCacheSize number of cached lambda expressions
+         * @param classCacheSize number of cached class descriptors
+         * @param methodCacheSize number of cached method descriptors
+         */
+        public CacheStats(int lambdaCacheSize, int classCacheSize, int methodCacheSize) {
+            this.lambdaCacheSize = lambdaCacheSize;
+            this.classCacheSize = classCacheSize;
+            this.methodCacheSize = methodCacheSize;
+        }
 
         /**
          * Gets the total size of all caches.

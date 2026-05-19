@@ -283,6 +283,7 @@ public class VersionAssets extends Assets {
          * Creates an empty version metadata view.
          */
         public Meta() {
+            // No initialization required.
         }
 
         /**

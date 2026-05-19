@@ -46,6 +46,12 @@ import org.miaixz.bus.logger.Logger;
  */
 public class TagsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code TagsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public TagsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

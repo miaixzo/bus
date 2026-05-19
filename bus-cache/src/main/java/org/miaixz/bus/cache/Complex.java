@@ -49,6 +49,13 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
 public class Complex {
 
     /**
+     * Constructs a new Complex instance.
+     */
+    public Complex() {
+        // No initialization required.
+    }
+
+    /**
      * The configuration context for the cache module.
      */
     private Context context;

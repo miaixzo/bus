@@ -33,6 +33,13 @@ import org.miaixz.bus.core.net.HTTP;
 public final class Http2Settings {
 
     /**
+     * Constructs a new Http2Settings instance.
+     */
+    public Http2Settings() {
+        // No initialization required.
+    }
+
+    /**
      * The total number of settings.
      */
     public static final int COUNT = 10;

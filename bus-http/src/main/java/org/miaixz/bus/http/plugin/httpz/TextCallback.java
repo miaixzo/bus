@@ -35,6 +35,13 @@ import org.miaixz.bus.logger.Logger;
 public abstract class TextCallback implements Callback {
 
     /**
+     * Constructs a new TextCallback instance.
+     */
+    public TextCallback() {
+        // No initialization required.
+    }
+
+    /**
      * Handles the successful HTTP response by consuming the response body as a string and passing it to the
      * {@link #onSuccess(NewCall, String, String)} method.
      *

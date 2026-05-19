@@ -39,29 +39,71 @@ public class CommitStats implements Serializable {
     private Integer deletions;
     private Integer total;
 
+    /**
+     * Returns the additions.
+     *
+     * @return the result
+     */
+
     public Integer getAdditions() {
         return additions;
     }
+
+    /**
+     * Sets the additions.
+     *
+     * @param additions the additions value
+     */
 
     public void setAdditions(Integer additions) {
         this.additions = additions;
     }
 
+    /**
+     * Returns the deletions.
+     *
+     * @return the result
+     */
+
     public Integer getDeletions() {
         return deletions;
     }
+
+    /**
+     * Sets the deletions.
+     *
+     * @param deletions the deletions value
+     */
 
     public void setDeletions(Integer deletions) {
         this.deletions = deletions;
     }
 
+    /**
+     * Returns the total.
+     *
+     * @return the result
+     */
+
     public Integer getTotal() {
         return total;
     }
 
+    /**
+     * Sets the total.
+     *
+     * @param total the total value
+     */
+
     public void setTotal(Integer total) {
         this.total = total;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

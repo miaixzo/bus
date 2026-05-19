@@ -42,6 +42,7 @@ public class JsonProvider implements Provider<Object, String> {
      * Creates a JSON provider.
      */
     public JsonProvider() {
+        // No initialization required.
     }
 
     /**

@@ -42,6 +42,13 @@ import org.miaixz.bus.office.excel.style.ShapeConfig;
 public class ExcelDrawing {
 
     /**
+     * Constructs a new ExcelDrawing instance.
+     */
+    public ExcelDrawing() {
+        // No initialization required.
+    }
+
+    /**
      * Writes a picture to the current sheet in the workbook. This method only writes data to the Workbook's Sheet and
      * does not write to a file.
      *

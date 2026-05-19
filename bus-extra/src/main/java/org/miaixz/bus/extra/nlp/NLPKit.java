@@ -29,6 +29,13 @@ package org.miaixz.bus.extra.nlp;
 public class NLPKit {
 
     /**
+     * Constructs a new NLPKit instance.
+     */
+    public NLPKit() {
+        // No initialization required.
+    }
+
+    /**
      * Performs word segmentation on the given text using the default NLP engine.
      *
      * @param text The input text {@link String} to be segmented.

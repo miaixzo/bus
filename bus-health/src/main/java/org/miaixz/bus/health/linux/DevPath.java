@@ -38,6 +38,13 @@ import org.miaixz.bus.health.Config;
 public final class DevPath {
 
     /**
+     * Constructs a new DevPath instance.
+     */
+    public DevPath() {
+        // No initialization required.
+    }
+
+    /**
      * The /dev filesystem location.
      */
     public static final String DEV = queryDevConfig() + "/";

@@ -38,7 +38,7 @@ public class VortexMetricsFeed {
      * Private constructor; this is a static utility class.
      */
     private VortexMetricsFeed() {
-
+        // No initialization required.
     }
 
     /**

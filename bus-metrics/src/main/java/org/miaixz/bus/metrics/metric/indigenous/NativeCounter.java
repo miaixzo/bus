@@ -32,6 +32,13 @@ import org.miaixz.bus.metrics.metric.Counter;
 public class NativeCounter implements Counter {
 
     /**
+     * Constructs a new NativeCounter instance.
+     */
+    public NativeCounter() {
+        // No initialization required.
+    }
+
+    /**
      * Lock-free accumulator for the cumulative event count.
      */
     private final LongAdder adder = new LongAdder();

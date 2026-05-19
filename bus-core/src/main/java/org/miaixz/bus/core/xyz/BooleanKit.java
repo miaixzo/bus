@@ -36,6 +36,7 @@ public class BooleanKit {
      * Constructs a new BooleanKit. Utility class constructor for static access.
      */
     private BooleanKit() {
+        // No initialization required.
     }
 
     /**

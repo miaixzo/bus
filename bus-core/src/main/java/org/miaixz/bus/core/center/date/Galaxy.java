@@ -32,6 +32,7 @@ public class Galaxy {
      * Constructs a new Galaxy. Utility class constructor for static access.
      */
     private Galaxy() {
+        // No initialization required.
     }
 
     /**

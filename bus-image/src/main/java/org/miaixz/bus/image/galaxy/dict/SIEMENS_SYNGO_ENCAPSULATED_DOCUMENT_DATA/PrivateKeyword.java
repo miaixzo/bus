@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_ENCAPSULATED_DOCUMENT_DAT
 public class PrivateKeyword {
 
     /**
+     * Constructs a new {@code PrivateKeyword} instance.
+     */
+    public PrivateKeyword() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "";

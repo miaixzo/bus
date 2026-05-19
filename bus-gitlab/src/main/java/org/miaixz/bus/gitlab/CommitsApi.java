@@ -44,6 +44,12 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  */
 public class CommitsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code CommitsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public CommitsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

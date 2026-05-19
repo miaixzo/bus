@@ -77,6 +77,13 @@ import org.miaixz.bus.starter.cache.CacheFactoryProvider;
 public class AuthConfiguration {
 
     /**
+     * Constructs a new AuthConfiguration instance.
+     */
+    public AuthConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected authorization configuration properties, containing settings for various authorization components.
      * Automatically injected via the {@link EnableConfigurationProperties} annotation.
      */

@@ -28,6 +28,13 @@ package org.miaixz.bus.image.metric.net;
 public class PDVType {
 
     /**
+     * Constructs a new {@code PDVType} instance.
+     */
+    public PDVType() {
+        // No initialization required.
+    }
+
+    /**
      * The data value.
      */
     public static final int DATA = 0;

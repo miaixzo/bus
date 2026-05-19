@@ -53,7 +53,7 @@ public class Limiter {
      * Creates an empty limiter definition.
      */
     public Limiter() {
-
+        // No initialization required.
     }
 
     /**

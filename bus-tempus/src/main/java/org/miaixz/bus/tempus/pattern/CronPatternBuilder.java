@@ -36,9 +36,19 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class CronPatternBuilder implements Builder<String> {
 
+    /**
+     * Constructs a new {@code CronPatternBuilder} instance.
+     */
+    public CronPatternBuilder() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852287899252L;
 
+    /**
+     * Cron expression parts.
+     */
     final String[] parts = new String[7];
 
     /**

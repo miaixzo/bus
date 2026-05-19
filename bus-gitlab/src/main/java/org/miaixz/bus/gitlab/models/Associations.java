@@ -40,37 +40,91 @@ public class Associations implements Serializable {
     private int issuesCount;
     private int mergeRequestsCount;
 
+    /**
+     * Returns the groups count.
+     *
+     * @return the result
+     */
+
     public int getGroupsCount() {
         return groupsCount;
     }
+
+    /**
+     * Sets the groups count.
+     *
+     * @param groupsCount the groups count value
+     */
 
     public void setGroupsCount(int groupsCount) {
         this.groupsCount = groupsCount;
     }
 
+    /**
+     * Returns the projects count.
+     *
+     * @return the result
+     */
+
     public int getProjectsCount() {
         return projectsCount;
     }
+
+    /**
+     * Sets the projects count.
+     *
+     * @param projectsCount the projects count value
+     */
 
     public void setProjectsCount(int projectsCount) {
         this.projectsCount = projectsCount;
     }
 
+    /**
+     * Returns the issues count.
+     *
+     * @return the result
+     */
+
     public int getIssuesCount() {
         return issuesCount;
     }
+
+    /**
+     * Sets the issues count.
+     *
+     * @param issuesCount the issues count value
+     */
 
     public void setIssuesCount(int issuesCount) {
         this.issuesCount = issuesCount;
     }
 
+    /**
+     * Returns the merge requests count.
+     *
+     * @return the result
+     */
+
     public int getMergeRequestsCount() {
         return mergeRequestsCount;
     }
 
+    /**
+     * Sets the merge requests count.
+     *
+     * @param mergeRequestsCount the merge requests count value
+     */
+
     public void setMergeRequestsCount(int mergeRequestsCount) {
         this.mergeRequestsCount = mergeRequestsCount;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

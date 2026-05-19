@@ -40,6 +40,13 @@ import org.miaixz.bus.image.nimble.extend.ImageWriterExtension;
 public class JsonImageWriterConfiguration extends JsonConfigurationExtension {
 
     /**
+     * Constructs a new JsonImageWriterConfiguration instance.
+     */
+    public JsonImageWriterConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Stores the to.
      *
      * @param device the device.

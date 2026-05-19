@@ -61,6 +61,7 @@ public class AnyHostnameVerifier implements HostnameVerifier {
      * Private constructor for singleton pattern.
      */
     private AnyHostnameVerifier() {
+        // No initialization required.
     }
 
     /**

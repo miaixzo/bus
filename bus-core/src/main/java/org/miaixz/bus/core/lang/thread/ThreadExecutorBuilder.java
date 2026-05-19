@@ -34,6 +34,7 @@ public class ThreadExecutorBuilder {
      * Constructs a new thread executor builder.
      */
     public ThreadExecutorBuilder() {
+        // No initialization required.
     }
 
     /**

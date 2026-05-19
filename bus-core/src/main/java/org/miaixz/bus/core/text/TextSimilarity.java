@@ -35,6 +35,7 @@ public class TextSimilarity {
      * Constructs a new text similarity utility instance.
      */
     public TextSimilarity() {
+        // No initialization required.
     }
 
     /**

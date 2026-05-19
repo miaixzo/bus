@@ -86,6 +86,13 @@ import org.miaixz.bus.logger.Logger;
 public class Builder {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * The default curve name for SM2 algorithm.
      */
     public static final String SM2_CURVE_NAME = "sm2p256v1";
@@ -138,7 +145,6 @@ public class Builder {
      * AES decryption: aes().decrypt(data)
      * </pre>
      *
-     *
      * @return A new {@link AES} instance.
      */
     public static AES aes() {
@@ -154,7 +160,6 @@ public class Builder {
      * AES encryption: aes(key).encrypt(data)
      * AES decryption: aes(key).decrypt(data)
      * </pre>
-     *
      *
      * @param key The AES key.
      * @return A new {@link AES} instance.
@@ -174,7 +179,6 @@ public class Builder {
      * DES decryption: des().decrypt(data)
      * </pre>
      *
-     *
      * @return A new {@link DES} instance.
      */
     public static DES des() {
@@ -190,7 +194,6 @@ public class Builder {
      * DES encryption: des(key).encrypt(data)
      * DES decryption: des(key).decrypt(data)
      * </pre>
-     *
      *
      * @param key The DES key.
      * @return A new {@link DES} instance.
@@ -210,7 +213,6 @@ public class Builder {
      * DESede decryption: tdea().decrypt(data)
      * </pre>
      *
-     *
      * @return A new {@link TDEA} instance.
      */
     public static TDEA tdea() {
@@ -228,7 +230,6 @@ public class Builder {
      * DESede decryption: tdea(key).decrypt(data)
      * </pre>
      *
-     *
      * @param key The TDEA key.
      * @return A new {@link TDEA} instance.
      */
@@ -245,7 +246,6 @@ public class Builder {
      * MD5 digest: md5().digest(data)
      * MD5 digest to hexadecimal string: md5().digestHex(data)
      * </pre>
-     *
      *
      * @return A new {@link MD5} instance.
      */
@@ -293,7 +293,6 @@ public class Builder {
      * SHA1 digest to hexadecimal string: sha1().digestHex(data)
      * </pre>
      *
-     *
      * @return A new {@link Digester} instance for SHA1.
      */
     public static Digester sha1() {
@@ -339,7 +338,6 @@ public class Builder {
      * SHA256 digest: sha256().digest(data)
      * SHA256 digest to hexadecimal string: sha256().digestHex(data)
      * </pre>
-     *
      *
      * @return A new {@link Digester} instance for SHA256.
      */
@@ -423,7 +421,6 @@ public class Builder {
      * HmacMD5 digest to hexadecimal string: hmacMd5(key).digestHex(data)
      * </pre>
      *
-     *
      * @param key The encryption key as a string. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacMD5.
      */
@@ -440,7 +437,6 @@ public class Builder {
      * HmacMD5 digest: hmacMd5(key).digest(data)
      * HmacMD5 digest to hexadecimal string: hmacMd5(key).digestHex(data)
      * </pre>
-     *
      *
      * @param key The encryption key as a byte array. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacMD5.
@@ -459,7 +455,6 @@ public class Builder {
      * HmacMD5 digest to hexadecimal string: hmacMd5().digestHex(data)
      * </pre>
      *
-     *
      * @return A new {@link HMac} instance for HmacMD5.
      */
     public static HMac hmacMd5() {
@@ -475,7 +470,6 @@ public class Builder {
      * HmacSHA1 digest: hmacSha1(key).digest(data)
      * HmacSHA1 digest to hexadecimal string: hmacSha1(key).digestHex(data)
      * </pre>
-     *
      *
      * @param key The encryption key as a string. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacSHA1.
@@ -494,7 +488,6 @@ public class Builder {
      * HmacSHA1 digest to hexadecimal string: hmacSha1(key).digestHex(data)
      * </pre>
      *
-     *
      * @param key The encryption key as a byte array. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacSHA1.
      */
@@ -512,7 +505,6 @@ public class Builder {
      * HmacSHA1 digest to hexadecimal string: hmacSha1().digestHex(data)
      * </pre>
      *
-     *
      * @return A new {@link HMac} instance for HmacSHA1.
      */
     public static HMac hmacSha1() {
@@ -528,7 +520,6 @@ public class Builder {
      * HmacSHA256 digest: hmacSha256(key).digest(data)
      * HmacSHA256 digest to hexadecimal string: hmacSha256(key).digestHex(data)
      * </pre>
-     *
      *
      * @param key The encryption key as a string. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacSHA256.
@@ -547,7 +538,6 @@ public class Builder {
      * HmacSHA256 digest to hexadecimal string: hmacSha256(key).digestHex(data)
      * </pre>
      *
-     *
      * @param key The encryption key as a byte array. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacSHA256.
      */
@@ -564,7 +554,6 @@ public class Builder {
      * HmacSHA256 digest: hmacSha256().digest(data)
      * HmacSHA256 digest to hexadecimal string: hmacSha256().digestHex(data)
      * </pre>
-     *
      *
      * @return A new {@link HMac} instance for HmacSHA256.
      */
@@ -617,7 +606,6 @@ public class Builder {
      * addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
      * </pre>
      *
-     *
      * @param provider The {@link java.security.Provider} to add.
      */
     public static void addProvider(final java.security.Provider provider) {
@@ -637,7 +625,6 @@ public class Builder {
      * <p>
      * Note: For some special strings, it might be difficult to distinguish between Hex and Base64. The system property
      * {@link #CRYPTO_DECODE_HEX} can be used to force disable Hex parsing.
-     *
      *
      * @param key The key string to be decoded.
      * @return The decoded key as a byte array.
@@ -913,7 +900,6 @@ public class Builder {
      * SM3 digest to hexadecimal string: sm3().digestHex(data)
      * </pre>
      *
-     *
      * @return A new {@link SM3} instance.
      */
     public static SM3 sm3() {
@@ -971,7 +957,6 @@ public class Builder {
      * SM4 decryption: sm4().decrypt(data)
      * </pre>
      *
-     *
      * @return A new {@link SM4} instance.
      */
     public static SM4 sm4() {
@@ -987,7 +972,6 @@ public class Builder {
      * SM4 encryption: sm4(key).encrypt(data)
      * SM4 decryption: sm4(key).decrypt(data)
      * </pre>
-     *
      *
      * @param key The SM4 key.
      * @return A new {@link SM4} instance.

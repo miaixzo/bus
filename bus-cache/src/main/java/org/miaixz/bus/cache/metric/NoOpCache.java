@@ -41,6 +41,13 @@ import org.miaixz.bus.cache.CacheX;
 public class NoOpCache<K, V> implements CacheX<K, V> {
 
     /**
+     * Constructs a new NoOpCache instance.
+     */
+    public NoOpCache() {
+        // No initialization required.
+    }
+
+    /**
      * Performs no operation and always returns {@code null}.
      *
      * @param key The cache key.

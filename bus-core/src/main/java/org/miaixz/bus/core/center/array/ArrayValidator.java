@@ -47,6 +47,7 @@ public class ArrayValidator {
      * Constructs a new ArrayValidator. Utility class constructor for static access.
      */
     ArrayValidator() {
+        // No initialization required.
     }
 
     /**
@@ -379,7 +380,6 @@ public class ArrayValidator {
      * <p>
      * If all elements are equal, it returns {@code true}.
      *
-     *
      * @param <T>        The type of elements in the array.
      * @param array      The array to check.
      * @param comparator The comparator to use for comparison. It should handle {@code null} values if necessary.
@@ -412,7 +412,6 @@ public class ArrayValidator {
      *
      * <p>
      * If all elements are equal, it returns {@code true}.
-     *
      *
      * @param <T>   The type of elements in the array, which must implement {@link Comparable}.
      * @param array The array to check.
@@ -736,7 +735,6 @@ public class ArrayValidator {
      * <p>
      * If an empty array is provided, it returns {@code false}.
      *
-     *
      * @param <T>   The type of elements in the array, which must implement {@link Comparable}.
      * @param array The generic array to check.
      * @return {@code true} if the array is sorted in ascending order, {@code false} otherwise.
@@ -761,7 +759,6 @@ public class ArrayValidator {
      * Checks if the generic array is sorted in descending order (i.e., {@code array[i].compareTo(array[i + 1]) >= 0}).
      * <p>
      * If an empty array is provided, it returns {@code false}.
-     *
      *
      * @param <T>   The type of elements in the array, which must implement {@link Comparable}.
      * @param array The generic array to check.
@@ -789,7 +786,6 @@ public class ArrayValidator {
      * <p>
      * If an empty array or a {@code null} comparator is provided, it returns {@code false}.
      *
-     *
      * @param <T>        The type of elements in the array.
      * @param array      The generic array to check.
      * @param comparator The comparator to use for comparison. It should handle {@code null} values if necessary.
@@ -815,7 +811,6 @@ public class ArrayValidator {
      * {@code comparator.compare(array[i], array[i + 1]) >= 0}).
      * <p>
      * If an empty array or a {@code null} comparator is provided, it returns {@code false}.
-     *
      *
      * @param <T>        The type of elements in the array.
      * @param array      The generic array to check.
@@ -943,7 +938,6 @@ public class ArrayValidator {
      * <p>
      * <strong>Constraint: Each item in {@code args} must not be an array or a collection.</strong>
      *
-     *
      * @param <T>  The type of elements in the array.
      * @param args The array of objects to check.
      * @return {@code true} if all elements are {@code null} or empty, {@code false} otherwise.
@@ -960,7 +954,6 @@ public class ArrayValidator {
      * <p>
      * If the provided array itself is empty, it returns {@code true}.
      *
-     *
      * @param args The array of objects to check.
      * @return {@code true} if all elements are not {@code null} or empty, {@code false} otherwise.
      */
@@ -975,7 +968,6 @@ public class ArrayValidator {
      *
      * <p>
      * If the array is empty, it returns {@code false}.
-     *
      *
      * @param <T>   The type of elements in the array.
      * @param array The array to check.
@@ -997,7 +989,6 @@ public class ArrayValidator {
      * determine emptiness.
      * <p>
      * If the provided array itself is empty, it returns {@code false}.
-     *
      *
      * @param <T>  The type of elements in the array.
      * @param args The array of objects to check.
@@ -1023,7 +1014,6 @@ public class ArrayValidator {
      * <p>
      * <strong>Constraint: Each item in {@code args} must not be an array or a collection.</strong>
      *
-     *
      * @param <T>  The type of elements in the array.
      * @param args The array of objects to check.
      * @return {@code true} if any element is {@code null} or empty, {@code false} otherwise.
@@ -1038,7 +1028,6 @@ public class ArrayValidator {
      * Checks if all elements in the given array are {@code null}.
      * <p>
      * If the array is {@code null} or empty, it returns {@code true}.
-     *
      *
      * @param <T>   The type of elements in the array.
      * @param array The array to check.
@@ -1057,7 +1046,6 @@ public class ArrayValidator {
      * <p>
      * If the provided array is empty, it returns {@code true}.
      *
-     *
      * @param <T>   The type of elements in the array.
      * @param array The array to check.
      * @return {@code true} if all elements are not {@code null} or the array is empty, {@code false} otherwise.
@@ -1073,7 +1061,6 @@ public class ArrayValidator {
      *
      * <p>
      * Otherwise, it returns {@code true} if there is at least one non-{@code null} element.
-     *
      *
      * @param <T>   The type of elements in the array.
      * @param array The array to check.

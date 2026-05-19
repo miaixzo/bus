@@ -73,6 +73,13 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     class SMCKeyDataVers extends Structure {
 
         /**
+         * Constructs a new SMCKeyDataVers instance.
+         */
+        public SMCKeyDataVers() {
+            // No initialization required.
+        }
+
+        /**
          * Major version number.
          */
         public byte major;
@@ -111,6 +118,13 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      */
     @FieldOrder({ "version", "length", "cpuPLimit", "gpuPLimit", "memPLimit" })
     class SMCKeyDataPLimitData extends Structure {
+
+        /**
+         * Constructs a new SMCKeyDataPLimitData instance.
+         */
+        public SMCKeyDataPLimitData() {
+            // No initialization required.
+        }
 
         /**
          * Version of the power limit data structure.
@@ -153,6 +167,13 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     class SMCKeyDataKeyInfo extends Structure {
 
         /**
+         * Constructs a new SMCKeyDataKeyInfo instance.
+         */
+        public SMCKeyDataKeyInfo() {
+            // No initialization required.
+        }
+
+        /**
          * Size of the data.
          */
         public int dataSize;
@@ -180,6 +201,13 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      */
     @FieldOrder({ "key", "vers", "pLimitData", "keyInfo", "result", "status", "data8", "data32", "bytes" })
     class SMCKeyData extends Structure implements AutoCloseable {
+
+        /**
+         * Constructs a new SMCKeyData instance.
+         */
+        public SMCKeyData() {
+            // No initialization required.
+        }
 
         /**
          * The SMC key.
@@ -247,6 +275,13 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      */
     @FieldOrder({ "key", "dataSize", "dataType", "bytes" })
     class SMCVal extends Structure implements AutoCloseable {
+
+        /**
+         * Constructs a new SMCVal instance.
+         */
+        public SMCVal() {
+            // No initialization required.
+        }
 
         /**
          * The SMC key.

@@ -46,6 +46,7 @@ public class BinaryProvider implements Provider<Object, byte[]> {
      * Creates a binary provider.
      */
     public BinaryProvider() {
+        // No initialization required.
     }
 
     /**

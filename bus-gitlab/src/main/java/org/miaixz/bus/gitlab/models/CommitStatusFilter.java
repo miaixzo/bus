@@ -40,30 +40,72 @@ public class CommitStatusFilter implements Serializable {
     private String name;
     private Boolean all;
 
+    /**
+     * Sets the ref and returns this instance.
+     *
+     * @param ref the ref value
+     * @return the result
+     */
+
     public CommitStatusFilter withRef(String ref) {
         this.ref = ref;
         return this;
     }
+
+    /**
+     * Sets the stage and returns this instance.
+     *
+     * @param stage the stage value
+     * @return the result
+     */
 
     public CommitStatusFilter withStage(String stage) {
         this.stage = stage;
         return this;
     }
 
+    /**
+     * Sets the name and returns this instance.
+     *
+     * @param name the name value
+     * @return the result
+     */
+
     public CommitStatusFilter withName(String name) {
         this.name = name;
         return this;
     }
+
+    /**
+     * Sets the all and returns this instance.
+     *
+     * @param all the all value
+     * @return the result
+     */
 
     public CommitStatusFilter withAll(Boolean all) {
         this.all = all;
         return this;
     }
 
+    /**
+     * Returns the query params.
+     *
+     * @param page    the page value
+     * @param perPage the per page value
+     * @return the result
+     */
+
     @JsonIgnore
     public GitLabForm getQueryParams(int page, int perPage) {
         return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
+
+    /**
+     * Returns the query params.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     public GitLabForm getQueryParams() {

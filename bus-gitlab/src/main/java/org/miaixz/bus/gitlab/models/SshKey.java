@@ -46,54 +46,132 @@ public class SshKey implements Serializable {
 
     private Long userId;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the title.
+     *
+     * @return the result
+     */
+
     public String getTitle() {
         return title;
     }
+
+    /**
+     * Sets the title.
+     *
+     * @param title the title value
+     */
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Returns the key.
+     *
+     * @return the result
+     */
+
     public String getKey() {
         return key;
     }
+
+    /**
+     * Sets the key.
+     *
+     * @param key the key value
+     */
 
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the expires at.
+     *
+     * @return the result
+     */
+
     public Date getExpiresAt() {
         return expiresAt;
     }
 
+    /**
+     * Sets the expires at.
+     *
+     * @param expiresAt the expires at value
+     */
+
     public void setExpiresAt(Date expiresAt) {
         this.expiresAt = expiresAt;
     }
+
+    /**
+     * Returns the user id.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     public Long getUserId() {
         return userId;
     }
 
+    /**
+     * Sets the user id.
+     *
+     * @param userId the user id value
+     */
+
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

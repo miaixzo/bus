@@ -38,6 +38,13 @@ import org.miaixz.bus.health.linux.ProcPath;
 public final class CpuStat {
 
     /**
+     * Constructs a new CpuStat instance.
+     */
+    public CpuStat() {
+        // No initialization required.
+    }
+
+    /**
      * Gets the System CPU ticks array from {@code /proc/stat}
      *
      * @return Array of CPU ticks

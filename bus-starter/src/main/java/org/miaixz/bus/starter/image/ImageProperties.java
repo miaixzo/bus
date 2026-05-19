@@ -38,6 +38,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class ImageProperties {
 
     /**
+     * Constructs a new ImageProperties instance.
+     */
+    public ImageProperties() {
+        // No initialization required.
+    }
+
+    /**
      * Configuration for the DICOM node/server.
      */
     private Node node = new Node();
@@ -71,6 +78,13 @@ public class ImageProperties {
     @Getter
     @Setter
     public class Node {
+
+        /**
+         * Constructs a new Node instance.
+         */
+        public Node() {
+            // No initialization required.
+        }
 
         /**
          * The hostname or IP address of the DICOM server.

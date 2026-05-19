@@ -33,6 +33,13 @@ import java.util.Map;
 public class JsonKit {
 
     /**
+     * Constructs a new JsonKit instance.
+     */
+    public JsonKit() {
+        // No initialization required.
+    }
+
+    /**
      * Retrieves the globally available singleton JSON provider instance.
      *
      * @return The singleton {@link JsonProvider} instance.

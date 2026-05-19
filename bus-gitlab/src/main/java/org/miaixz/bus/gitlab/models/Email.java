@@ -36,17 +36,41 @@ public class Email implements Serializable {
     private Long id;
     private String email;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the email.
+     *
+     * @return the result
+     */
+
     public String getEmail() {
         return email;
     }
+
+    /**
+     * Sets the email.
+     *
+     * @param email the email value
+     */
 
     public void setEmail(String email) {
         this.email = email;

@@ -45,6 +45,7 @@ public class ExceptionKit {
      * Constructs a new ExceptionKit. Utility class constructor for static access.
      */
     private ExceptionKit() {
+        // No initialization required.
     }
 
     /**

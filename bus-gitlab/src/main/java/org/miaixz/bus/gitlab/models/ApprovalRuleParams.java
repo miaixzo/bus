@@ -47,6 +47,8 @@ public class ApprovalRuleParams implements Serializable {
     private List<String> usernames;
 
     /**
+     * Executes the rule. operation.
+     *
      * @param approvalsRequired The number of required approvals for this rule.
      * @return this ApprovalRuleParams instance
      */
@@ -56,6 +58,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
+     * Executes the rule. operation.
+     *
      * @param name The name of the approval rule.
      * @return this ApprovalRuleParams instance
      */
@@ -65,6 +69,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
+     * Sets whether the rule applies to all protected branches.
+     *
      * @param appliesToAllProtectedBranches Whether the rule is applied to all protected branches. If set to true, the
      *                                      value of protected_branch_ids is ignored. Default is false. Introduced in
      *                                      GitLab 15.3.
@@ -76,6 +82,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
+     * Executes the approvers. operation.
+     *
      * @param groupIds The IDs of groups as approvers.
      * @return this ApprovalRuleParams instance
      */
@@ -85,6 +93,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
+     * Executes the api. operation.
+     *
      * @param protectedBranchIds The IDs of protected branches to scope the rule by. To identify the ID, use the API.
      * @return this ApprovalRuleParams instance
      */
@@ -94,6 +104,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
+     * Sets the report type and returns this instance.
+     *
      * @param reportType The report type required when the rule type is report_approver. The supported report types are
      *                   license_scanning (Deprecated in GitLab 15.9) and code_coverage.
      * @return this ApprovalRuleParams instance
@@ -104,6 +116,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
+     * Sets the rule type and returns this instance.
+     *
      * @param ruleType The type of rule. any_approver is a pre-configured default rule with approvals_required at 0.
      *                 Other rules are regular and report_approver.
      * @return this ApprovalRuleParams instance
@@ -114,6 +128,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
+     * Sets the approver user IDs and returns this instance.
+     *
      * @param userIds The IDs of users as approvers. If you provide both user_ids and usernames, both lists of users are
      *                added.
      * @return this ApprovalRuleParams instance
@@ -124,6 +140,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
+     * Sets the approver usernames and returns this instance.
+     *
      * @param usernames The usernames of approvers for this rule (same as user_ids but requires a list of usernames). If
      *                  you provide both user_ids and usernames, both lists of users are added.
      * @return this ApprovalRuleParams instance

@@ -35,6 +35,13 @@ import org.miaixz.bus.validate.magic.annotation.Blank;
 public class BlankMatcher implements Validator<Object>, Matcher<Object, Blank> {
 
     /**
+     * Constructs a new BlankMatcher instance.
+     */
+    public BlankMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object is blank.
      *
      * @param object  The object to validate.

@@ -38,7 +38,7 @@ public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T>
      * Private constructor to enforce singleton pattern.
      */
     private NoneUpperBound() {
-
+        // No initialization required.
     }
 
     /**

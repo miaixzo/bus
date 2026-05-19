@@ -52,6 +52,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
 public class RequestBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice {
 
+    /**
+     * Constructs a new RequestBodyAdvice instance.
+     */
+    public RequestBodyAdvice() {
+        // No initialization required.
+    }
+
     @Resource
     private SensitiveProperties properties;
 

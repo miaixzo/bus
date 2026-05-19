@@ -99,24 +99,6 @@ public interface Keying<S> {
      * @param verb        numeric verb code
      * @param fingerprint runtime instance fingerprint
      */
-    /**
-     * The type field.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    /**
-     * The type field.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    /**
-     * The type field.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
     record RegistrySpec(int mode, String namespace, Type type, String appId, String id, String method, String version,
             Integer verb, String fingerprint) {
 

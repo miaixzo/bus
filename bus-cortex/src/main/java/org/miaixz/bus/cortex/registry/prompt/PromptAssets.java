@@ -188,6 +188,7 @@ public class PromptAssets extends Assets {
          * Creates an empty prompt metadata view.
          */
         public Meta() {
+            // No initialization required.
         }
 
         /**

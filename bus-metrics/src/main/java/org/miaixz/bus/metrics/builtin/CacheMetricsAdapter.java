@@ -66,6 +66,13 @@ import org.miaixz.bus.cache.Collector;
 public class CacheMetricsAdapter implements Collector {
 
     /**
+     * Constructs a new CacheMetricsAdapter instance.
+     */
+    public CacheMetricsAdapter() {
+        // No initialization required.
+    }
+
+    /**
      * Per-pattern local counters: index 0 = hit count, index 1 = request count.
      * <p>
      * {@link LongAdder} is chosen over {@link java.util.concurrent.atomic.AtomicLong} because it has lower contention

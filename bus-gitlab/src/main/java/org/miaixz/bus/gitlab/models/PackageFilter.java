@@ -102,6 +102,8 @@ public class PackageFilter implements Serializable {
     }
 
     /**
+     * Sets the include versionless and returns this instance.
+     *
      * @param includeVersionless if true, versionless packages are included in the response
      * @return the reference to this ProjectFilter instance
      */

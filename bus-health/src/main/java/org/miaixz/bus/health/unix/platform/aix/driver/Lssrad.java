@@ -43,6 +43,7 @@ public final class Lssrad {
      * Creates a new Lssrad instance.
      */
     private Lssrad() {
+        // No initialization required.
     }
 
     /**

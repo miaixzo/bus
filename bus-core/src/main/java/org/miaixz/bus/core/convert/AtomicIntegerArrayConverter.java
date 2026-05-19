@@ -34,6 +34,7 @@ public class AtomicIntegerArrayConverter extends AbstractConverter {
      * Constructs a new AtomicIntegerArrayConverter. Utility class constructor for static access.
      */
     public AtomicIntegerArrayConverter() {
+        // No initialization required.
     }
 
     @Serial

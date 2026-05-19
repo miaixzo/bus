@@ -38,6 +38,13 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, String>> {
 
+    /**
+     * Constructs a new GroupedMap instance.
+     */
+    public GroupedMap() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852227322018L;
 

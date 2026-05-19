@@ -40,6 +40,13 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class Fsstat {
 
     /**
+     * Constructs a new Fsstat instance.
+     */
+    public Fsstat() {
+        // No initialization required.
+    }
+
+    /**
      * Queries fsstat to map partitions to mount points.
      *
      * @return A map with partitions as the key and mount points as the value.

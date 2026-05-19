@@ -38,7 +38,7 @@ public final class ItemBindingProjection {
      * Prevents utility class instantiation.
      */
     private ItemBindingProjection() {
-
+        // No initialization required.
     }
 
     /**

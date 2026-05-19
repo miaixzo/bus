@@ -31,6 +31,13 @@ import org.miaixz.bus.image.galaxy.data.Code;
 public class DeIdentificationMethod {
 
     /**
+     * Constructs a new DeIdentificationMethod instance.
+     */
+    public DeIdentificationMethod() {
+        // No initialization required.
+    }
+
+    /**
      * Code for Basic Application Confidentiality Profile de-identification method.
      */
     public static final Code BasicApplicationConfidentialityProfile = new Code("113100", "DCM", null,

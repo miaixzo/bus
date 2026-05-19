@@ -39,21 +39,51 @@ public class ApprovalState implements Serializable {
     private Boolean approvalRulesOverwritten;
     private List<ApprovalRule> rules;
 
+    /**
+     * Returns the approval rules overwritten.
+     *
+     * @return the result
+     */
+
     public Boolean getApprovalRulesOverwritten() {
         return approvalRulesOverwritten;
     }
+
+    /**
+     * Sets the approval rules overwritten.
+     *
+     * @param approvalRulesOverwritten the approval rules overwritten value
+     */
 
     public void setApprovalRulesOverwritten(Boolean approvalRulesOverwritten) {
         this.approvalRulesOverwritten = approvalRulesOverwritten;
     }
 
+    /**
+     * Returns the rules.
+     *
+     * @return the result
+     */
+
     public List<ApprovalRule> getRules() {
         return rules;
     }
 
+    /**
+     * Sets the rules.
+     *
+     * @param rules the rules value
+     */
+
     public void setRules(List<ApprovalRule> rules) {
         this.rules = rules;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

@@ -42,6 +42,7 @@ public final class PerfstatMemory {
      * Creates a new PerfstatMemory instance.
      */
     private PerfstatMemory() {
+        // No initialization required.
     }
 
     /**

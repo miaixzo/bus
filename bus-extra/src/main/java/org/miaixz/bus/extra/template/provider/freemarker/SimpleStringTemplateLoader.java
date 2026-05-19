@@ -36,6 +36,13 @@ import freemarker.cache.TemplateLoader;
 public class SimpleStringTemplateLoader implements TemplateLoader {
 
     /**
+     * Constructs a new SimpleStringTemplateLoader instance.
+     */
+    public SimpleStringTemplateLoader() {
+        // No initialization required.
+    }
+
+    /**
      * Finds the template source. This method is designed to be overridden by subclasses for custom template lookup.
      *
      * Subclasses may override to add caching or custom loading logic.

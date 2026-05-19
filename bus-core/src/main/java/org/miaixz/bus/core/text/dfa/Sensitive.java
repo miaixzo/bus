@@ -41,6 +41,13 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 public class Sensitive {
 
     /**
+     * Constructs a new Sensitive instance.
+     */
+    public Sensitive() {
+        // No initialization required.
+    }
+
+    /**
      * The default separator used for sensitive words in a string, typically a comma.
      */
     public static final String DEFAULT_SEPARATOR = Symbol.COMMA;

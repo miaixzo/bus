@@ -40,6 +40,13 @@ import org.miaixz.bus.http.accord.platform.Platform;
 public abstract class CertificateChainCleaner {
 
     /**
+     * Constructs a new CertificateChainCleaner instance.
+     */
+    public CertificateChainCleaner() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a {@code CertificateChainCleaner} that uses the platform's default trust manager.
      *
      * @param trustManager The trust manager to use.

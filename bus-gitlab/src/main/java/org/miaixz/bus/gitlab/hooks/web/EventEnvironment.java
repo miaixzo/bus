@@ -33,29 +33,71 @@ public class EventEnvironment {
     private String action;
     private String deploymentTier;
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the action.
+     *
+     * @return the result
+     */
+
     public String getAction() {
         return action;
     }
+
+    /**
+     * Sets the action.
+     *
+     * @param action the action value
+     */
 
     public void setAction(String action) {
         this.action = action;
     }
 
+    /**
+     * Returns the deployment tier.
+     *
+     * @return the result
+     */
+
     public String getDeploymentTier() {
         return deploymentTier;
     }
 
+    /**
+     * Sets the deployment tier.
+     *
+     * @param deploymentTier the deployment tier value
+     */
+
     public void setDeploymentTier(String deploymentTier) {
         this.deploymentTier = deploymentTier;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

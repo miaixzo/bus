@@ -56,6 +56,7 @@ public class FileKit extends PathResolve {
      * Constructs a new FileKit. Utility class constructor for static access.
      */
     private FileKit() {
+        // No initialization required.
     }
 
     /**

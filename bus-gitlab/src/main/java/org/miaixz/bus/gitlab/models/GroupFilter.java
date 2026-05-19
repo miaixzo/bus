@@ -194,6 +194,12 @@ public class GroupFilter implements Serializable {
         return form;
     }
 
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));

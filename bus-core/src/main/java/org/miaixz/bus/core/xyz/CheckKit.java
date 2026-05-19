@@ -43,6 +43,7 @@ public class CheckKit {
      * Constructs a new CheckKit. Utility class constructor for static access.
      */
     private CheckKit() {
+        // No initialization required.
     }
 
     /**

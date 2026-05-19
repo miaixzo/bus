@@ -35,6 +35,13 @@ import org.miaixz.bus.logger.Logger;
 public class MQFactory {
 
     /**
+     * Constructs a new MQFactory instance.
+     */
+    public MQFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Creates an {@link MQProvider} instance based on the provided {@link MQConfig}. This method attempts to
      * automatically detect the correct MQ engine implementation from the classpath or uses a custom engine if specified
      * in the configuration. It is recommended to manage the lifecycle of the returned engine, potentially as a

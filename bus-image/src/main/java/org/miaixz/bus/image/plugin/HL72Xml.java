@@ -46,6 +46,13 @@ import org.miaixz.bus.image.metric.hl7.HL7Segment;
 public class HL72Xml {
 
     /**
+     * Constructs a new HL72Xml instance.
+     */
+    public HL72Xml() {
+        // No initialization required.
+    }
+
+    /**
      * The URL of the XSLT stylesheet to apply.
      */
     private URL xslt;

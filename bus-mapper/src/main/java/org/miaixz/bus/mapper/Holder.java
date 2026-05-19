@@ -40,6 +40,13 @@ import org.miaixz.bus.mapper.builder.TableSchemaChain;
 public class Holder<T> implements org.miaixz.bus.core.Holder<T> {
 
     /**
+     * Constructs a new Holder instance.
+     */
+    public Holder() {
+        // No initialization required.
+    }
+
+    /**
      * The processing chain for table schemas, loaded via SPI.
      * <p>
      * This chain of processors is responsible for building table models based on database table structure information.

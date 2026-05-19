@@ -49,7 +49,7 @@ public class Delegate {
      * Creates an empty provider response wrapper.
      */
     public Delegate() {
-
+        // No initialization required.
     }
 
     /**

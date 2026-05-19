@@ -41,6 +41,12 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  */
 public class DiscussionsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code DiscussionsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public DiscussionsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

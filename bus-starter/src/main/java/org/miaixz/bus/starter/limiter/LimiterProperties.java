@@ -42,4 +42,11 @@ import org.miaixz.bus.spring.GeniusBuilder;
 @ConfigurationProperties(GeniusBuilder.LIMITER)
 public class LimiterProperties extends Context {
 
+    /**
+     * Constructs a new LimiterProperties instance.
+     */
+    public LimiterProperties() {
+        // No initialization required.
+    }
+
 }

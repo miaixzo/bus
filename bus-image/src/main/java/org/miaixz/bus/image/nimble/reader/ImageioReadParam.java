@@ -32,6 +32,13 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public class ImageioReadParam extends ImageReadParam {
 
     /**
+     * Constructs a new ImageioReadParam instance.
+     */
+    public ImageioReadParam() {
+        // No initialization required.
+    }
+
+    /**
      * The window center value.
      */
     private float windowCenter;

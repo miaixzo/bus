@@ -45,6 +45,13 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
 public class MultiCacheReader extends AbstractReader {
 
     /**
+     * Constructs a new MultiCacheReader instance.
+     */
+    public MultiCacheReader() {
+        // No initialization required.
+    }
+
+    /**
      * Merges the results from a method invocation with cached values into a single map.
      *
      * @param resultMapType        The expected type of the final result map.

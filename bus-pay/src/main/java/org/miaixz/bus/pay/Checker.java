@@ -30,6 +30,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Checker {
 
     /**
+     * Constructs a new Checker instance.
+     */
+    public Checker() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if payment is supported.
      *
      * @param context The payment context.

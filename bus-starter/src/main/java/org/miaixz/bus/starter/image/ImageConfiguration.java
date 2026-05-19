@@ -51,6 +51,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class ImageConfiguration {
 
     /**
+     * Constructs a new ImageConfiguration instance.
+     */
+    public ImageConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected image configuration properties.
      */
     @Resource

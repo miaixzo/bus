@@ -45,6 +45,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class I18nConfiguration {
 
     /**
+     * Constructs a new I18nConfiguration instance.
+     */
+    public I18nConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected i18n configuration properties.
      */
     @Resource

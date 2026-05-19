@@ -263,6 +263,7 @@ public interface DicomConfiguration extends Closeable {
     /**
      * Gets the dicom configuration extension.
      *
+     * @param <T>   the extension type
      * @param clazz the clazz.
      * @return the dicom configuration extension.
      */

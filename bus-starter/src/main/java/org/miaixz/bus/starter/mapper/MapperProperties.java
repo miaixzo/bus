@@ -61,6 +61,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 @ConfigurationProperties(prefix = GeniusBuilder.MAPPER)
 public class MapperProperties {
 
+    /**
+     * Constructs a new MapperProperties instance.
+     */
+    public MapperProperties() {
+        // No initialization required.
+    }
+
     private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
     private static final Pattern NAMESPACE_INDEXED_KEY = Pattern
             .compile("^namespaces(?:\\[(\\d+)\\]|\\.(\\d+))\\.(.+)$");
@@ -251,6 +258,13 @@ public class MapperProperties {
     public static class OperationProperties {
 
         /**
+         * Constructs a new OperationProperties instance.
+         */
+        public OperationProperties() {
+            // No initialization required.
+        }
+
+        /**
          * Enable/disable operation handler (default: true).
          */
         private boolean enabled = true;
@@ -271,6 +285,13 @@ public class MapperProperties {
     @Getter
     @Setter
     public static class TenantProperties {
+
+        /**
+         * Constructs a new TenantProperties instance.
+         */
+        public TenantProperties() {
+            // No initialization required.
+        }
 
         /**
          * Enable/disable tenant handler (default: true).
@@ -303,6 +324,13 @@ public class MapperProperties {
     @Getter
     @Setter
     public static class AuditProperties {
+
+        /**
+         * Constructs a new AuditProperties instance.
+         */
+        public AuditProperties() {
+            // No initialization required.
+        }
 
         /**
          * Enable/disable audit handler (default: true).
@@ -347,6 +375,13 @@ public class MapperProperties {
     public static class PopulateProperties {
 
         /**
+         * Constructs a new PopulateProperties instance.
+         */
+        public PopulateProperties() {
+            // No initialization required.
+        }
+
+        /**
          * Enable/disable populate handler (default: true).
          */
         private boolean enabled = true;
@@ -384,6 +419,13 @@ public class MapperProperties {
     public static class VisibleProperties {
 
         /**
+         * Constructs a new VisibleProperties instance.
+         */
+        public VisibleProperties() {
+            // No initialization required.
+        }
+
+        /**
          * Enable/disable visible handler (default: true).
          */
         private boolean enabled = true;
@@ -404,6 +446,13 @@ public class MapperProperties {
     @Getter
     @Setter
     public static class PrefixProperties {
+
+        /**
+         * Constructs a new PrefixProperties instance.
+         */
+        public PrefixProperties() {
+            // No initialization required.
+        }
 
         /**
          * Enable/disable prefix handler (default: true).
@@ -431,6 +480,13 @@ public class MapperProperties {
     @Getter
     @Setter
     public static class SchemaProperties {
+
+        /**
+         * Constructs a new SchemaProperties instance.
+         */
+        public SchemaProperties() {
+            // No initialization required.
+        }
 
         /**
          * Enable/disable entity schema initialization (default: false).

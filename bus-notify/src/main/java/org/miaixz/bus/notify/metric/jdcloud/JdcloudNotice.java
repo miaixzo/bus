@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.notify.metric.jdcloud;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -36,8 +35,14 @@ import org.miaixz.bus.notify.magic.Notice;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class JdcloudNotice extends Notice {
+
+    /**
+     * Creates a JD Cloud SMS notice.
+     */
+    public JdcloudNotice() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.

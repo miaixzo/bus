@@ -91,33 +91,81 @@ public class Group extends AbstractGroup<Group> {
          */
         private Long jobArtifactsSize;
 
+        /**
+         * Returns the storage size.
+         *
+         * @return the result
+         */
+
         public Long getStorageSize() {
             return storageSize;
         }
+
+        /**
+         * Sets the storage size.
+         *
+         * @param storageSize the storage size value
+         */
 
         public void setStorageSize(Long storageSize) {
             this.storageSize = storageSize;
         }
 
+        /**
+         * Returns the repository size.
+         *
+         * @return the result
+         */
+
         public Long getRepositorySize() {
             return repositorySize;
         }
+
+        /**
+         * Sets the repository size.
+         *
+         * @param repositorySize the repository size value
+         */
 
         public void setRepositorySize(Long repositorySize) {
             this.repositorySize = repositorySize;
         }
 
+        /**
+         * Returns the lfs objects size.
+         *
+         * @return the result
+         */
+
         public Long getLfsObjectsSize() {
             return lfsObjectsSize;
         }
+
+        /**
+         * Sets the lfs objects size.
+         *
+         * @param lfsObjectsSize the lfs objects size value
+         */
 
         public void setLfsObjectsSize(Long lfsObjectsSize) {
             this.lfsObjectsSize = lfsObjectsSize;
         }
 
+        /**
+         * Returns the job artifacts size.
+         *
+         * @return the result
+         */
+
         public Long getJobArtifactsSize() {
             return jobArtifactsSize;
         }
+
+        /**
+         * Sets the job artifacts size.
+         *
+         * @param jobArtifactsSize the job artifacts size value
+         */
 
         public void setJobArtifactsSize(Long jobArtifactsSize) {
             this.jobArtifactsSize = jobArtifactsSize;
@@ -148,245 +196,603 @@ public class Group extends AbstractGroup<Group> {
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
 
+    /**
+     * Returns the path.
+     *
+     * @return the result
+     */
+
     public String getPath() {
         return this.path;
     }
+
+    /**
+     * Sets the path.
+     *
+     * @param path the path value
+     */
 
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return description;
     }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Returns the visibility.
+     *
+     * @return the result
+     */
+
     public Visibility getVisibility() {
         return visibility;
     }
+
+    /**
+     * Sets the visibility.
+     *
+     * @param visibility the visibility value
+     */
 
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
 
+    /**
+     * Returns the lfs enabled.
+     *
+     * @return the result
+     */
+
     public Boolean getLfsEnabled() {
         return lfsEnabled;
     }
+
+    /**
+     * Sets the lfs enabled.
+     *
+     * @param lfsEnabled the lfs enabled value
+     */
 
     public void setLfsEnabled(Boolean lfsEnabled) {
         this.lfsEnabled = lfsEnabled;
     }
 
+    /**
+     * Returns the request access enabled.
+     *
+     * @return the result
+     */
+
     public Boolean getRequestAccessEnabled() {
         return requestAccessEnabled;
     }
+
+    /**
+     * Sets the request access enabled.
+     *
+     * @param requestAccessEnabled the request access enabled value
+     */
 
     public void setRequestAccessEnabled(Boolean requestAccessEnabled) {
         this.requestAccessEnabled = requestAccessEnabled;
     }
 
+    /**
+     * Returns the parent id.
+     *
+     * @return the result
+     */
+
     public Long getParentId() {
         return parentId;
     }
+
+    /**
+     * Sets the parent id.
+     *
+     * @param parentId the parent id value
+     */
 
     public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 
+    /**
+     * Returns the shared runners minutes limit.
+     *
+     * @return the result
+     */
+
     public Integer getSharedRunnersMinutesLimit() {
         return sharedRunnersMinutesLimit;
     }
+
+    /**
+     * Sets the shared runners minutes limit.
+     *
+     * @param sharedRunnersMinutesLimit the shared runners minutes limit value
+     */
 
     public void setSharedRunnersMinutesLimit(Integer sharedRunnersMinutesLimit) {
         this.sharedRunnersMinutesLimit = sharedRunnersMinutesLimit;
     }
 
+    /**
+     * Returns the statistics.
+     *
+     * @return the result
+     */
+
     public Statistics getStatistics() {
         return statistics;
     }
+
+    /**
+     * Sets the statistics.
+     *
+     * @param statistics the statistics value
+     */
 
     public void setStatistics(Statistics statistics) {
         this.statistics = statistics;
     }
 
+    /**
+     * Returns the projects.
+     *
+     * @return the result
+     */
+
     public List<Project> getProjects() {
         return (projects);
     }
+
+    /**
+     * Sets the projects.
+     *
+     * @param projects the projects value
+     */
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
     }
 
+    /**
+     * Returns the shared projects.
+     *
+     * @return the result
+     */
+
     public List<Project> getSharedProjects() {
         return (sharedProjects);
     }
+
+    /**
+     * Sets the shared projects.
+     *
+     * @param sharedProjects the shared projects value
+     */
 
     public void setSharedProjects(List<Project> sharedProjects) {
         this.sharedProjects = sharedProjects;
     }
 
+    /**
+     * Returns the marked for deletion on.
+     *
+     * @return the result
+     */
+
     public Date getMarkedForDeletionOn() {
         return markedForDeletionOn;
     }
+
+    /**
+     * Sets the marked for deletion on.
+     *
+     * @param markedForDeletionOn the marked for deletion on value
+     */
 
     public void setMarkedForDeletionOn(Date markedForDeletionOn) {
         this.markedForDeletionOn = markedForDeletionOn;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the shared with groups.
+     *
+     * @return the result
+     */
+
     public List<SharedGroup> getSharedWithGroups() {
         return sharedWithGroups;
     }
+
+    /**
+     * Sets the shared with groups.
+     *
+     * @param sharedWithGroups the shared with groups value
+     */
 
     public void setSharedWithGroups(List<SharedGroup> sharedWithGroups) {
         this.sharedWithGroups = sharedWithGroups;
     }
 
+    /**
+     * Returns the runners token.
+     *
+     * @return the result
+     */
+
     public String getRunnersToken() {
         return runnersToken;
     }
+
+    /**
+     * Sets the runners token.
+     *
+     * @param runnersToken the runners token value
+     */
 
     public void setRunnersToken(String runnersToken) {
         this.runnersToken = runnersToken;
     }
 
+    /**
+     * Returns the prevent sharing groups outside hierarchy.
+     *
+     * @return the result
+     */
+
     public Boolean getPreventSharingGroupsOutsideHierarchy() {
         return preventSharingGroupsOutsideHierarchy;
     }
+
+    /**
+     * Sets the prevent sharing groups outside hierarchy.
+     *
+     * @param preventSharingGroupsOutsideHierarchy the prevent sharing groups outside hierarchy value
+     */
 
     public void setPreventSharingGroupsOutsideHierarchy(Boolean preventSharingGroupsOutsideHierarchy) {
         this.preventSharingGroupsOutsideHierarchy = preventSharingGroupsOutsideHierarchy;
     }
 
+    /**
+     * Returns the prevent forking outside group.
+     *
+     * @return the result
+     */
+
     public Boolean getPreventForkingOutsideGroup() {
         return preventForkingOutsideGroup;
     }
+
+    /**
+     * Sets the prevent forking outside group.
+     *
+     * @param preventForkingOutsideGroup the prevent forking outside group value
+     */
 
     public void setPreventForkingOutsideGroup(Boolean preventForkingOutsideGroup) {
         this.preventForkingOutsideGroup = preventForkingOutsideGroup;
     }
 
+    /**
+     * Returns the project creation level.
+     *
+     * @return the result
+     */
+
     public ProjectCreationLevel getProjectCreationLevel() {
         return this.projectCreationLevel;
     }
+
+    /**
+     * Sets the project creation level.
+     *
+     * @param projectCreationLevel the project creation level value
+     */
 
     public void setProjectCreationLevel(ProjectCreationLevel projectCreationLevel) {
         this.projectCreationLevel = projectCreationLevel;
     }
 
+    /**
+     * Returns the subgroup creation level.
+     *
+     * @return the result
+     */
+
     public SubgroupCreationLevel getSubgroupCreationLevel() {
         return this.subgroupCreationLevel;
     }
+
+    /**
+     * Sets the subgroup creation level.
+     *
+     * @param subgroupCreationLevel the subgroup creation level value
+     */
 
     public void setSubgroupCreationLevel(SubgroupCreationLevel subgroupCreationLevel) {
         this.subgroupCreationLevel = subgroupCreationLevel;
     }
 
+    /**
+     * Returns the default branch protection.
+     *
+     * @return the result
+     */
+
     public DefaultBranchProtectionLevel getDefaultBranchProtection() {
         return this.defaultBranchProtection;
     }
+
+    /**
+     * Sets the default branch protection.
+     *
+     * @param defaultBranchProtection the default branch protection value
+     */
 
     public void setDefaultBranchProtection(DefaultBranchProtectionLevel defaultBranchProtection) {
         this.defaultBranchProtection = defaultBranchProtection;
     }
 
+    /**
+     * Returns the custom attributes.
+     *
+     * @return the result
+     */
+
     public List<CustomAttribute> getCustomAttributes() {
         return customAttributes;
     }
 
+    /**
+     * Sets the custom attributes.
+     *
+     * @param customAttributes the custom attributes value
+     */
+
     public void setCustomAttributes(List<CustomAttribute> customAttributes) {
         this.customAttributes = customAttributes;
     }
+
+    /**
+     * Sets the path and returns this instance.
+     *
+     * @param path the path value
+     * @return the result
+     */
 
     public Group withPath(String path) {
         this.path = path;
         return this;
     }
 
+    /**
+     * Sets the description and returns this instance.
+     *
+     * @param description the description value
+     * @return the result
+     */
+
     public Group withDescription(String description) {
         this.description = description;
         return this;
     }
+
+    /**
+     * Sets the visibility and returns this instance.
+     *
+     * @param visibility the visibility value
+     * @return the result
+     */
 
     public Group withVisibility(Visibility visibility) {
         this.visibility = visibility;
         return this;
     }
 
+    /**
+     * Sets the lfs enabled and returns this instance.
+     *
+     * @param lfsEnabled the lfs enabled value
+     * @return the result
+     */
+
     public Group withlfsEnabled(boolean lfsEnabled) {
         this.lfsEnabled = lfsEnabled;
         return this;
     }
+
+    /**
+     * Sets the request access enabled and returns this instance.
+     *
+     * @param requestAccessEnabled the request access enabled value
+     * @return the result
+     */
 
     public Group withRequestAccessEnabled(boolean requestAccessEnabled) {
         this.requestAccessEnabled = requestAccessEnabled;
         return this;
     }
 
+    /**
+     * Sets the parent id and returns this instance.
+     *
+     * @param parentId the parent id value
+     * @return the result
+     */
+
     public Group withParentId(Long parentId) {
         this.parentId = parentId;
         return this;
     }
+
+    /**
+     * Sets the shared runners minutes limit and returns this instance.
+     *
+     * @param minutesLimit the minutes limit value
+     * @return the result
+     */
 
     public Group withSharedRunnersMinutesLimit(Integer minutesLimit) {
         this.sharedRunnersMinutesLimit = minutesLimit;
         return this;
     }
 
+    /**
+     * Sets the statistics and returns this instance.
+     *
+     * @param statistics the statistics value
+     * @return the result
+     */
+
     public Group withStatistics(Statistics statistics) {
         this.statistics = statistics;
         return this;
     }
+
+    /**
+     * Sets the projects and returns this instance.
+     *
+     * @param projects the projects value
+     * @return the result
+     */
 
     public Group withProjects(List<Project> projects) {
         this.projects = projects;
         return this;
     }
 
+    /**
+     * Sets the shared projects and returns this instance.
+     *
+     * @param sharedProjects the shared projects value
+     * @return the result
+     */
+
     public Group withSharedProjects(List<Project> sharedProjects) {
         this.sharedProjects = sharedProjects;
         return this;
     }
+
+    /**
+     * Sets the prevent sharing groups outside hierarchy and returns this instance.
+     *
+     * @param preventSharingGroupsOutsideHierarchy the prevent sharing groups outside hierarchy value
+     * @return the result
+     */
 
     public Group withPreventSharingGroupsOutsideHierarchy(Boolean preventSharingGroupsOutsideHierarchy) {
         this.preventSharingGroupsOutsideHierarchy = preventSharingGroupsOutsideHierarchy;
         return this;
     }
 
+    /**
+     * Sets the prevent forking outside group and returns this instance.
+     *
+     * @param preventForkingOutsideGroup the prevent forking outside group value
+     * @return the result
+     */
+
     public Group withPreventForkingOutsideGroup(Boolean preventForkingOutsideGroup) {
         this.preventForkingOutsideGroup = preventForkingOutsideGroup;
         return this;
     }
+
+    /**
+     * Sets the project creation level and returns this instance.
+     *
+     * @param projectCreationLevel the project creation level value
+     * @return the result
+     */
 
     public Group withProjectCreationLevel(ProjectCreationLevel projectCreationLevel) {
         this.projectCreationLevel = projectCreationLevel;
         return this;
     }
 
+    /**
+     * Sets the subgroup creation level and returns this instance.
+     *
+     * @param subgroupCreationLevel the subgroup creation level value
+     * @return the result
+     */
+
     public Group withSubgroupCreationLevel(SubgroupCreationLevel subgroupCreationLevel) {
         this.subgroupCreationLevel = subgroupCreationLevel;
         return this;
     }
+
+    /**
+     * Sets the default branch protection and returns this instance.
+     *
+     * @param defaultBranchProtection the default branch protection value
+     * @return the result
+     */
 
     public Group withDefaultBranchProtection(DefaultBranchProtectionLevel defaultBranchProtection) {
         this.defaultBranchProtection = defaultBranchProtection;
         return this;
     }
 
+    /**
+     * Sets the custom attributes and returns this instance.
+     *
+     * @param customAttributes the custom attributes value
+     * @return the result
+     */
+
     public Group withCustomAttributes(List<CustomAttribute> customAttributes) {
         this.customAttributes = customAttributes;
         return this;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

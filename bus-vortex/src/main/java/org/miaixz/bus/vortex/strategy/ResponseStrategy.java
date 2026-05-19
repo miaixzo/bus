@@ -50,7 +50,7 @@ public class ResponseStrategy extends AbstractStrategy {
      * Creates a response strategy.
      */
     public ResponseStrategy() {
-
+        // No initialization required.
     }
 
     /**

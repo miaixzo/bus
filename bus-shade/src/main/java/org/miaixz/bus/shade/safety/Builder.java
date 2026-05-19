@@ -52,6 +52,13 @@ import org.miaixz.bus.shade.safety.complex.NotComplex;
 public abstract class Builder {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * Path to WEB-INF/classes/ directory.
      */
     public static final String WEB_INF_CLASSES = "WEB-INF/classes/";

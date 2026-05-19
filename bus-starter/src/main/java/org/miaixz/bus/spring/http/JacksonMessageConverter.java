@@ -61,6 +61,13 @@ import org.miaixz.bus.logger.Logger;
 @ConditionalOnClass({ ObjectMapper.class })
 public class JacksonMessageConverter extends AbstractHttpMessageConverter {
 
+    /**
+     * Constructs a new JacksonMessageConverter instance.
+     */
+    public JacksonMessageConverter() {
+        // No initialization required.
+    }
+
     private AutoBindingTypeMatcher autoTypeMatcher;
 
     /**

@@ -40,10 +40,27 @@ import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
  */
 public final class SslService {
 
+    /**
+     * SSL context used to create engines.
+     */
     private final SSLContext sslContext;
+
+    /**
+     * Optional engine customizer.
+     */
     private final Consumer<SSLEngine> consumer;
+
+    /**
+     * Whether SSL debug logging is enabled.
+     */
     private boolean debug;
 
+    /**
+     * Creates an SSL service.
+     *
+     * @param sslContext SSL context
+     * @param consumer   optional SSL engine customizer
+     */
     public SslService(SSLContext sslContext, Consumer<SSLEngine> consumer) {
         this.sslContext = sslContext;
         this.consumer = consumer;
@@ -272,6 +289,11 @@ public final class SslService {
         }
     }
 
+    /**
+     * Enables or disables SSL debug logging.
+     *
+     * @param debug whether debug logging is enabled
+     */
     public void debug(boolean debug) {
         this.debug = debug;
     }

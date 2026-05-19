@@ -286,6 +286,9 @@ public final class LookupTableCV {
 
     /**
      * Returns the index offset of entry 0 for a specific band.
+     *
+     * @param band the band value
+     * @return the result
      */
     public int getOffset(int band) {
         return offsets[band];

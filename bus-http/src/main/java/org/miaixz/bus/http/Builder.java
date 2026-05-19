@@ -198,6 +198,7 @@ public class Builder {
      * Constructs a new {@code Builder} instance.
      */
     public Builder() {
+        // No initialization required.
     }
 
     /**

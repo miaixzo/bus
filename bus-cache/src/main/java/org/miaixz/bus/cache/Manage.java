@@ -326,7 +326,7 @@ public class Manage {
                         "Cache remove started: cache={}, keyCount={}",
                         cacheImpl.getLeft(),
                         keys.length);
-                cacheImpl.getRight().remove(keys);
+                cacheImpl.getRight().remove((Object[]) keys);
                 Logger.debug(
                         false,
                         "Cache",

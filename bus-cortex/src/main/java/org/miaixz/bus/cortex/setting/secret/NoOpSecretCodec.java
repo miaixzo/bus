@@ -31,7 +31,7 @@ public class NoOpSecretCodec implements SecretCodec {
      * Creates a no-op secret codec.
      */
     public NoOpSecretCodec() {
-
+        // No initialization required.
     }
 
     /**

@@ -44,7 +44,7 @@ public class TreeKit {
      * Constructs a new tree utility instance.
      */
     public TreeKit() {
-
+        // No initialization required.
     }
 
     /**

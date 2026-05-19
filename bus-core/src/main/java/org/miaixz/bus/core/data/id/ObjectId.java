@@ -51,6 +51,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ObjectId {
 
     /**
+     * Constructs a new ObjectId instance.
+     */
+    public ObjectId() {
+        // No initialization required.
+    }
+
+    /**
      * A thread-safe counter for generating unique IDs.
      */
     private static final AtomicInteger NEXT_INC = new AtomicInteger(RandomKit.randomInt());

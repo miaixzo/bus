@@ -38,6 +38,13 @@ import org.miaixz.bus.logger.Logger;
 public class MethodManager {
 
     /**
+     * Constructs a new MethodManager instance.
+     */
+    public MethodManager() {
+        // No initialization required.
+    }
+
+    /**
      * A static map to store method information. The key is the method name (String), and the value is a {@link Pair}
      * containing the {@link StrategyMode} and the associated {@link Annotation}.
      */

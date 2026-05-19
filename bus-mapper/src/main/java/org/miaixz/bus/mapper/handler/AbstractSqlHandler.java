@@ -44,6 +44,13 @@ import org.miaixz.bus.logger.Logger;
 public abstract class AbstractSqlHandler {
 
     /**
+     * Constructs a new AbstractSqlHandler instance.
+     */
+    public AbstractSqlHandler() {
+        // No initialization required.
+    }
+
+    /**
      * The property path for the `boundSql` field within a delegate proxy object.
      */
     public static final String DELEGATE_BOUNDSQL = "delegate.boundSql";
@@ -117,6 +124,7 @@ public abstract class AbstractSqlHandler {
      * @param target The proxy object.
      * @return The real target object.
      */
+    @SuppressWarnings("unchecked")
     protected static <T> T realTarget(Object target) {
         if (Proxy.isProxyClass(target.getClass())) {
             Plugin plugin = (Plugin) Proxy.getInvocationHandler(target);

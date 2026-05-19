@@ -32,6 +32,13 @@ import org.miaixz.bus.core.lang.Symbol;
 public class NamingRules {
 
     /**
+     * Constructs a new NamingRules instance.
+     */
+    public NamingRules() {
+        // No initialization required.
+    }
+
+    /**
      * Converts a database table name to a Java class name, applying camel case convention. The first letter of the
      * resulting class name will be capitalized.
      *

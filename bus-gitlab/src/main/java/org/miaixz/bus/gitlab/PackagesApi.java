@@ -43,6 +43,12 @@ import org.miaixz.bus.gitlab.models.PackageFilter;
  */
 public class PackagesApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code PackagesApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public PackagesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

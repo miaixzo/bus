@@ -49,7 +49,7 @@ public final class LifeCycle {
      * Private constructor to prevent instantiation.
      */
     private LifeCycle() {
-
+        // No initialization required.
     }
 
     /**

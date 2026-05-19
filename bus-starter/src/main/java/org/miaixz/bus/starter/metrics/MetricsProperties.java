@@ -42,6 +42,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class MetricsProperties {
 
     /**
+     * Constructs a new MetricsProperties instance.
+     */
+    public MetricsProperties() {
+        // No initialization required.
+    }
+
+    /**
      * Provider selection: "native" (default) or "micrometer".
      */
     private String provider = "native";
@@ -109,6 +116,13 @@ public class MetricsProperties {
     public static class Cardinality {
 
         /**
+         * Constructs a new Cardinality instance.
+         */
+        public Cardinality() {
+            // No initialization required.
+        }
+
+        /**
          * Default max distinct values per tag key (for unregistered keys).
          */
         private int defaultMax = 100;
@@ -134,6 +148,13 @@ public class MetricsProperties {
     @Getter
     @Setter
     public static class CardinalityRule {
+
+        /**
+         * Constructs a new CardinalityRule instance.
+         */
+        public CardinalityRule() {
+            // No initialization required.
+        }
 
         /**
          * Tag key this rule applies to.
@@ -162,6 +183,13 @@ public class MetricsProperties {
     @Setter
     public static class SloDefinition {
 
+        /**
+         * Constructs a new SloDefinition instance.
+         */
+        public SloDefinition() {
+            // No initialization required.
+        }
+
         private String name;
         private String metric;
 
@@ -186,6 +214,13 @@ public class MetricsProperties {
     @Setter
     public static class RateWindow {
 
+        /**
+         * Constructs a new RateWindow instance.
+         */
+        public RateWindow() {
+            // No initialization required.
+        }
+
         private boolean enabled = true;
         private int tickIntervalSeconds = 5;
 
@@ -200,6 +235,13 @@ public class MetricsProperties {
     @Getter
     @Setter
     public static class Cortex {
+
+        /**
+         * Constructs a new Cortex instance.
+         */
+        public Cortex() {
+            // No initialization required.
+        }
 
         private boolean enabled = false;
         private int intervalSeconds = 15;

@@ -52,6 +52,7 @@ public class CacheKeys {
      * </p>
      */
     public CacheKeys() {
+        // No initialization required.
     }
 
     /**

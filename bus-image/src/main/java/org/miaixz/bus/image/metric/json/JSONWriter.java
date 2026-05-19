@@ -125,6 +125,7 @@ public class JSONWriter implements ImageInputHandler {
      * @param a  the a.
      * @param a2 the a2.
      * @return true if the condition is met; otherwise false.
+     * @param <T> the value type
      */
     public static <T> boolean equals(T[] a, T[] a2) {
         int length = a.length;
@@ -170,6 +171,8 @@ public class JSONWriter implements ImageInputHandler {
 
     /**
      * Writes the given attributes as a full JSON object. Subsequent calls will generate a new JSON object.
+     *
+     * @param attrs the attrs value
      */
     public void write(Attributes attrs) {
         gen.writeStartObject();
@@ -180,6 +183,8 @@ public class JSONWriter implements ImageInputHandler {
     /**
      * Writes the given attributes to JSON. Can be used to output multiple attributes (e.g. metadata, attributes) to the
      * same JSON object.
+     *
+     * @param attrs the attrs value
      */
     public void writeAttributes(Attributes attrs) {
         final SpecificCharacterSet cs = attrs.getSpecificCharacterSet();
@@ -743,6 +748,7 @@ public class JSONWriter implements ImageInputHandler {
      * @param name   the name.
      * @param value  the value.
      * @param defVal the def val.
+     * @param <T>    the value type
      */
     public <T> void writeNotNullOrDef(String name, T value, T defVal) {
         if (value != null && !value.equals(defVal))
@@ -811,6 +817,7 @@ public class JSONWriter implements ImageInputHandler {
      * @param name    the name.
      * @param values  the values.
      * @param defVals the def vals.
+     * @param <T>     the value type
      */
     public <T> void writeNotEmpty(String name, T[] values, T... defVals) {
         if (values.length != 0 && !equals(values, defVals)) {
@@ -826,6 +833,7 @@ public class JSONWriter implements ImageInputHandler {
      *
      * @param name the name.
      * @param map  the map.
+     * @param <T>  the value type
      */
     public <T> void writeNotEmpty(String name, Map<String, T> map) {
         writeNotEmpty(name, toStrings(map));

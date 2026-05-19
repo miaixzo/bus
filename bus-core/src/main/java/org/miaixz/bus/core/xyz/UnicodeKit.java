@@ -28,6 +28,13 @@ package org.miaixz.bus.core.xyz;
 public class UnicodeKit {
 
     /**
+     * Constructs a new UnicodeKit instance.
+     */
+    public UnicodeKit() {
+        // No initialization required.
+    }
+
+    /**
      * Converts a Unicode-escaped string (e.g., "\\uXXXX") to a normal string.
      *
      * @param unicode The Unicode-escaped string.

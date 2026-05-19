@@ -39,6 +39,13 @@ import org.miaixz.bus.core.xyz.StreamKit;
 public class ExcelShape {
 
     /**
+     * Constructs a new ExcelShape instance.
+     */
+    public ExcelShape() {
+        // No initialization required.
+    }
+
+    /**
      * Writes picture data to a file.
      *
      * @param pic  The {@link Picture} object containing the image data.

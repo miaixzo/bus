@@ -141,6 +141,7 @@ public class Code implements Serializable {
      * Creates a new instance.
      */
     protected Code() {
+        // No initialization required.
     } // needed for JPA
 
     /**
@@ -341,6 +342,7 @@ public class Code implements Serializable {
          * Creates a new instance.
          */
         private Key() {
+            // No initialization required.
         }
 
         /**

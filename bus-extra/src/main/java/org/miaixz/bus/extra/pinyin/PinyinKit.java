@@ -32,6 +32,13 @@ import org.miaixz.bus.core.xyz.PatternKit;
 public class PinyinKit {
 
     /**
+     * Constructs a new PinyinKit instance.
+     */
+    public PinyinKit() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a Pinyin engine.
      *
      * @param engineName The engine name.

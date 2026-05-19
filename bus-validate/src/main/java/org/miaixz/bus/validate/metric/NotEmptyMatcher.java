@@ -34,6 +34,13 @@ import org.miaixz.bus.validate.magic.annotation.NotEmpty;
 public class NotEmptyMatcher implements Matcher<Object, NotEmpty> {
 
     /**
+     * Constructs a new NotEmptyMatcher instance.
+     */
+    public NotEmptyMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object is not empty.
      *
      * @param object     The object to validate.

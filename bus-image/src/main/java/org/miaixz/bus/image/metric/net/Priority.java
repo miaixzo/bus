@@ -28,6 +28,13 @@ package org.miaixz.bus.image.metric.net;
 public class Priority {
 
     /**
+     * Constructs a new {@code Priority} instance.
+     */
+    public Priority() {
+        // No initialization required.
+    }
+
+    /**
      * The normal value.
      */
     public static final int NORMAL = 0;

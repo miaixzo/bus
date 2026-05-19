@@ -45,69 +45,171 @@ public class DownstreamPipeline implements Serializable {
     private Date updatedAt;
     private String webUrl;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the project id.
+     *
+     * @return the result
+     */
+
     public Long getProjectId() {
         return projectId;
     }
+
+    /**
+     * Sets the project id.
+     *
+     * @param projectId the project id value
+     */
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
 
+    /**
+     * Returns the sha.
+     *
+     * @return the result
+     */
+
     public String getSha() {
         return sha;
     }
+
+    /**
+     * Sets the sha.
+     *
+     * @param sha the sha value
+     */
 
     public void setSha(String sha) {
         this.sha = sha;
     }
 
+    /**
+     * Returns the ref.
+     *
+     * @return the result
+     */
+
     public String getRef() {
         return ref;
     }
+
+    /**
+     * Sets the ref.
+     *
+     * @param ref the ref value
+     */
 
     public void setRef(String ref) {
         this.ref = ref;
     }
 
+    /**
+     * Returns the status.
+     *
+     * @return the result
+     */
+
     public String getStatus() {
         return status;
     }
+
+    /**
+     * Sets the status.
+     *
+     * @param status the status value
+     */
 
     public void setStatus(String status) {
         this.status = status;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the updated at.
+     *
+     * @return the result
+     */
+
     public Date getUpdatedAt() {
         return updatedAt;
     }
+
+    /**
+     * Sets the updated at.
+     *
+     * @param updatedAt the updated at value
+     */
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
+    /**
+     * Returns the web url.
+     *
+     * @return the result
+     */
+
     public String getWebUrl() {
         return webUrl;
     }
 
+    /**
+     * Sets the web url.
+     *
+     * @param webUrl the web url value
+     */
+
     public void setWebUrl(String webUrl) {
         this.webUrl = webUrl;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

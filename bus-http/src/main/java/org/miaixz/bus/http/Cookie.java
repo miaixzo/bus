@@ -712,6 +712,13 @@ public final class Cookie {
     public static class Builder {
 
         /**
+         * Constructs a new Builder instance.
+         */
+        public Builder() {
+            // No initialization required.
+        }
+
+        /**
          * The name of the cookie.
          */
         String name;

@@ -54,7 +54,7 @@ public class Args extends Specifics {
      * Creates an empty gateway argument contract holder.
      */
     public Args() {
-
+        // No initialization required.
     }
 
     /**
@@ -300,7 +300,7 @@ public class Args extends Specifics {
          * Creates an empty rate-limit configuration.
          */
         public Limit() {
-
+            // No initialization required.
         }
 
         /**

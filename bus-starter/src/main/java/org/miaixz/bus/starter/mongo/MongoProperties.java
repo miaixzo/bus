@@ -46,6 +46,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class MongoProperties {
 
     /**
+     * Constructs a new MongoProperties instance.
+     */
+    public MongoProperties() {
+        // No initialization required.
+    }
+
+    /**
      * The settings for the network socket.
      */
     @NestedConfigurationProperty
@@ -90,6 +97,13 @@ public class MongoProperties {
      */
     @Data
     public static class Connection {
+
+        /**
+         * Constructs a new {@code Connection} instance.
+         */
+        public Connection() {
+            // No initialization required.
+        }
 
         /**
          * The maximum number of connections in the pool. Default is 100.
@@ -140,6 +154,13 @@ public class MongoProperties {
     public static class Ssl {
 
         /**
+         * Constructs a new {@code Ssl} instance.
+         */
+        public Ssl() {
+            // No initialization required.
+        }
+
+        /**
          * Whether SSL/TLS is enabled.
          */
         private boolean enabled;
@@ -160,6 +181,13 @@ public class MongoProperties {
      */
     @Data
     public static class Cluster {
+
+        /**
+         * Constructs a new {@code Cluster} instance.
+         */
+        public Cluster() {
+            // No initialization required.
+        }
 
         /**
          * The mode for connecting to the cluster.
@@ -199,6 +227,13 @@ public class MongoProperties {
     public static class Server {
 
         /**
+         * Constructs a new {@code Server} instance.
+         */
+        public Server() {
+            // No initialization required.
+        }
+
+        /**
          * The frequency at which the driver sends a heartbeat to the server. Default is 10 seconds.
          */
         private long heartbeatFrequencyMilliSeconds = 10000;
@@ -219,6 +254,13 @@ public class MongoProperties {
      */
     @Data
     public static class Socket {
+
+        /**
+         * Constructs a new {@code Socket} instance.
+         */
+        public Socket() {
+            // No initialization required.
+        }
 
         /**
          * The timeout for establishing a new socket connection. Default is 10 seconds.

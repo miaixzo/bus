@@ -41,6 +41,7 @@ public class ChineseNumberParser {
      * Constructs a new ChineseNumberParser. Utility class constructor for static access.
      */
     private ChineseNumberParser() {
+        // No initialization required.
     }
 
     /**

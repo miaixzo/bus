@@ -34,7 +34,7 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
      * Constructs a new ErrorCode with default settings.
      */
     public ErrorCode() {
-
+        // No initialization required.
     }
 
     /**

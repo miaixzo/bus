@@ -47,6 +47,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
 
     /**
+     * Constructs a new SchemaSqlScriptBuilder instance.
+     */
+    public SchemaSqlScriptBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Wraps an SQL script by applying annotations from the interface, method, and parameters.
      *
      * @param context   The provider context.

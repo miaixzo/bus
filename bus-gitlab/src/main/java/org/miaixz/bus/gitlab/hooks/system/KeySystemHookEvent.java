@@ -34,8 +34,14 @@ public class KeySystemHookEvent extends AbstractSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852292810115L;
+    /**
+     * The key create event value.
+     */
 
     public static final String KEY_CREATE_EVENT = "key_create";
+    /**
+     * The key destroy event value.
+     */
     public static final String KEY_DESTROY_EVENT = "key_destroy";
 
     private Date createdAt;
@@ -45,53 +51,131 @@ public class KeySystemHookEvent extends AbstractSystemHookEvent {
     private String key;
     private Long id;
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the updated at.
+     *
+     * @return the result
+     */
+
     public Date getUpdatedAt() {
         return updatedAt;
     }
+
+    /**
+     * Sets the updated at.
+     *
+     * @param updatedAt the updated at value
+     */
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
+    /**
+     * Returns the event name.
+     *
+     * @return the result
+     */
+
     public String getEventName() {
         return this.eventName;
     }
+
+    /**
+     * Sets the event name.
+     *
+     * @param eventName the event name value
+     */
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
 
+    /**
+     * Returns the username.
+     *
+     * @return the result
+     */
+
     public String getUsername() {
         return username;
     }
+
+    /**
+     * Sets the username.
+     *
+     * @param username the username value
+     */
 
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * Returns the key.
+     *
+     * @return the result
+     */
+
     public String getKey() {
         return key;
     }
+
+    /**
+     * Sets the key.
+     *
+     * @param key the key value
+     */
 
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
 
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
+
     public void setId(Long id) {
         this.id = id;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

@@ -42,6 +42,13 @@ import org.miaixz.bus.core.text.StringJoiner;
 public class IteratorKit extends IteratorValidator {
 
     /**
+     * Constructs a new IteratorKit instance.
+     */
+    public IteratorKit() {
+        // No initialization required.
+    }
+
+    /**
      * Gets an {@link Iterator} from an {@link Iterable}.
      *
      * @param <T>      the element type

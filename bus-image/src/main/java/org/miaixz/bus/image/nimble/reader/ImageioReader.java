@@ -235,6 +235,11 @@ public class ImageioReader extends ImageReader implements Closeable {
 
     /**
      * Creates an offset/length table based on the frame positions
+     *
+     * @param pixelData        the pixel data fragments
+     * @param frames           the number of frames
+     * @param basicOffsetTable the basic offset table
+     * @param start            the starting stream position
      */
     public static void generateOffsetLengths(Fragments pixelData, int frames, byte[] basicOffsetTable, long start) {
         long lastOffset = 0;
@@ -790,9 +795,9 @@ public class ImageioReader extends ImageReader implements Closeable {
      * Generate an image input stream for the given frame, -1 for all frames (video, multi-component single frame) Does
      * not necessarily support the length operation without seeking/reading to the end of the input.
      *
-     * @param frameIndex
-     * @return
-     * @throws IOException
+     * @param frameIndex the frame index, or {@code -1} for all frames
+     * @return the image input stream for the requested frame
+     * @throws IOException if the frame stream cannot be created
      */
     public javax.imageio.stream.ImageInputStream iisOfFrame(int frameIndex) throws IOException {
         javax.imageio.stream.ImageInputStream iisOfFrame;
@@ -1232,6 +1237,9 @@ public class ImageioReader extends ImageReader implements Closeable {
      * data information to the attributes object. NOTE: This read will read past image data, and may end up
      * scanning/seeking through multiframe or video data in order to find the post pixel data. This may be slow.
      * Replaces the attributes object with a new one, thus is thread safe for other uses of the object.
+     *
+     * @return the result
+     * @throws IOException if the operation fails
      */
     public Attributes readPostPixeldata() throws IOException {
         if (frames == 0)

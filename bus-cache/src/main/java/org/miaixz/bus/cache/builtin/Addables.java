@@ -39,6 +39,13 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class Addables {
 
     /**
+     * Constructs a new Addables instance.
+     */
+    public Addables() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a new {@link Addable} instance based on the target type.
      *
      * @param type The class of the object to create (e.g., {@code List.class}, {@code Map.class},

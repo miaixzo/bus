@@ -42,45 +42,111 @@ public class Tag implements Serializable {
     private Release release;
     private Date createdAt;
 
+    /**
+     * Returns the commit.
+     *
+     * @return the result
+     */
+
     public Commit getCommit() {
         return this.commit;
     }
+
+    /**
+     * Sets the commit.
+     *
+     * @param commit the commit value
+     */
 
     public void setCommit(Commit commit) {
         this.commit = commit;
     }
 
+    /**
+     * Returns the message.
+     *
+     * @return the result
+     */
+
     public String getMessage() {
         return message;
     }
+
+    /**
+     * Sets the message.
+     *
+     * @param message the message value
+     */
 
     public void setMessage(String message) {
         this.message = message;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return this.name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the release.
+     *
+     * @return the result
+     */
+
     public Release getRelease() {
         return release;
     }
+
+    /**
+     * Sets the release.
+     *
+     * @param release the release value
+     */
 
     public void setRelease(Release release) {
         this.release = release;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
+
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

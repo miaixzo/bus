@@ -38,29 +38,71 @@ public class CreateRunnerResponse implements Serializable {
     private String token;
     private Date tokenExpiresAt;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the token.
+     *
+     * @return the result
+     */
+
     public String getToken() {
         return token;
     }
+
+    /**
+     * Sets the token.
+     *
+     * @param token the token value
+     */
 
     public void setToken(String token) {
         this.token = token;
     }
 
+    /**
+     * Returns the token expires at.
+     *
+     * @return the result
+     */
+
     public Date getTokenExpiresAt() {
         return tokenExpiresAt;
     }
 
+    /**
+     * Sets the token expires at.
+     *
+     * @param tokenExpiresAt the token expires at value
+     */
+
     public void setTokenExpiresAt(Date tokenExpiresAt) {
         this.tokenExpiresAt = tokenExpiresAt;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

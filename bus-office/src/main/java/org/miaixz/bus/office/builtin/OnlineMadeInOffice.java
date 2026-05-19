@@ -31,6 +31,13 @@ import org.miaixz.bus.office.Context;
  */
 public class OnlineMadeInOffice extends AbstractOffice {
 
+    /**
+     * Constructs a new OnlineMadeInOffice instance.
+     */
+    public OnlineMadeInOffice() {
+        // No initialization required.
+    }
+
     @Override
     public void execute(Context context) throws InternalException {
         Logger.debug(

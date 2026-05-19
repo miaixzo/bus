@@ -36,6 +36,7 @@ public class TokenCredential {
      * Creates an empty parsed token credential.
      */
     public TokenCredential() {
+        // No initialization required.
     }
 
     /**

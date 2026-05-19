@@ -31,6 +31,13 @@ import org.opencv.imgproc.Imgproc;
 public class TiledProcessor {
 
     /**
+     * Constructs a new {@code TiledProcessor} instance.
+     */
+    public TiledProcessor() {
+        // No initialization required.
+    }
+
+    /**
      * Copies the tile from source.
      *
      * @param sourceImage the source image.

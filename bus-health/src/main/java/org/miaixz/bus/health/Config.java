@@ -48,6 +48,13 @@ import org.miaixz.bus.setting.metric.props.Props;
 public final class Config {
 
     /**
+     * Constructs a new Config instance.
+     */
+    public Config() {
+        // No initialization required.
+    }
+
+    /**
      * Global configuration file path, specifying health-related properties.
      */
     public static final String _HEALTH_PROPERTIES = "bus.health.properties";

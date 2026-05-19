@@ -42,6 +42,13 @@ import org.miaixz.bus.image.galaxy.data.Sequence;
 public final class ICCProfile {
 
     /**
+     * Constructs a new ICCProfile instance.
+     */
+    public ICCProfile() {
+        // No initialization required.
+    }
+
+    /**
      * Determines whether present in.
      *
      * @param attrs the attrs.

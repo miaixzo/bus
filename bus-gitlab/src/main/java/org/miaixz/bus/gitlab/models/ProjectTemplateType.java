@@ -33,32 +33,27 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 public enum ProjectTemplateType {
 
     /**
-     * Dockerfile templates.
+     * The dockerfiles project template type.
      */
     DOCKERFILES,
-
     /**
-     * Git ignore templates.
+     * The gitignores project template type.
      */
     GITIGNORES,
-
     /**
-     * GitLab CI YAML templates.
+     * The gitlab ci ymls project template type.
      */
     GITLAB_CI_YMLS,
-
     /**
-     * License templates.
+     * The licenses project template type.
      */
     LICENSES,
-
     /**
-     * Issue description templates.
+     * The issues project template type.
      */
     ISSUES,
-
     /**
-     * Merge request description templates.
+     * The merge requests project template type.
      */
     MERGE_REQUESTS;
 

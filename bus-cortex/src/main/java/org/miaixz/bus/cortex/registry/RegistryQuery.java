@@ -42,7 +42,7 @@ public class RegistryQuery {
      * Creates an empty registry query.
      */
     public RegistryQuery() {
-
+        // No initialization required.
     }
 
     /**

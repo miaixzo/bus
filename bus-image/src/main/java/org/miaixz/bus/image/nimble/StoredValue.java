@@ -31,6 +31,13 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public abstract class StoredValue {
 
     /**
+     * Constructs a new {@code StoredValue} instance.
+     */
+    public StoredValue() {
+        // No initialization required.
+    }
+
+    /**
      * Executes the value of operation.
      *
      * @param attrs the attrs.

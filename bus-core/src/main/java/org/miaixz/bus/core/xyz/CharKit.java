@@ -38,6 +38,7 @@ public class CharKit {
      * Constructs a new CharKit. Utility class constructor for static access.
      */
     private CharKit() {
+        // No initialization required.
     }
 
     /**

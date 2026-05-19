@@ -181,7 +181,7 @@ public class ApplicationEntity implements Serializable {
      * Creates a new instance.
      */
     public ApplicationEntity() {
-
+        // No initialization required.
     }
 
     /**

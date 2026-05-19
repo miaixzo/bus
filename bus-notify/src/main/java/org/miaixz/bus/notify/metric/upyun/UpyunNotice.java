@@ -68,6 +68,13 @@ public class UpyunNotice extends Notice {
     public static class MessageId {
 
         /**
+         * Constructs a new {@code MessageId} instance.
+         */
+        public MessageId() {
+            // No initialization required.
+        }
+
+        /**
          * The error code, if any, indicating a failure.
          */
         private String error_code;

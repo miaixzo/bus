@@ -29,6 +29,13 @@ package org.miaixz.bus.crypto.center;
 public class Vigenere {
 
     /**
+     * Constructs a new Vigenere instance.
+     */
+    public Vigenere() {
+        // No initialization required.
+    }
+
+    /**
      * Encrypts the data.
      *
      * @param data      The data to encrypt.

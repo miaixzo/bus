@@ -36,6 +36,13 @@ import lombok.Setter;
 @Setter
 public class TableSchema implements Serializable {
 
+    /**
+     * Constructs a new TableSchema instance.
+     */
+    public TableSchema() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852277958951L;
 

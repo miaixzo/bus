@@ -66,7 +66,15 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
         }
     };
 
+    /**
+     * The printer value.
+     *
+     */
     private final FastDatePrinter printer;
+    /**
+     * The parser value.
+     *
+     */
     private final FastDateParser parser;
 
     /**

@@ -39,6 +39,13 @@ import org.miaixz.bus.core.lang.Normal;
 public class MapKit extends MapGets {
 
     /**
+     * Constructs a new MapKit instance.
+     */
+    public MapKit() {
+        // No initialization required.
+    }
+
+    /**
      * Returns the given map if it is not empty, otherwise returns the default map.
      *
      * @param <T>        The type of the map.

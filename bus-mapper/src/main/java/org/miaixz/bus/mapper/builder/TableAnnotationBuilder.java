@@ -37,6 +37,13 @@ import org.miaixz.bus.mapper.provider.NamingProvider;
 public class TableAnnotationBuilder implements TableSchemaBuilder {
 
     /**
+     * Constructs a new TableAnnotationBuilder instance.
+     */
+    public TableAnnotationBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Creates table metadata for an entity class based on annotations or default naming conventions.
      *
      * @param entityClass The entity class.

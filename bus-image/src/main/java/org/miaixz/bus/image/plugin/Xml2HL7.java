@@ -39,6 +39,13 @@ import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
 public class Xml2HL7 {
 
     /**
+     * Constructs a new {@code Xml2HL7} instance.
+     */
+    public Xml2HL7() {
+        // No initialization required.
+    }
+
+    /**
      * Parses an XML file containing an HL7 message and prints the ER7 formatted message to standard output.
      *
      * @param fname The name of the XML file, or "-" to read from standard input.

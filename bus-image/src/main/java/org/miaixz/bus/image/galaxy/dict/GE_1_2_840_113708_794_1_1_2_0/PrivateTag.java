@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.GE_1_2_840_113708_794_1_1_2_0;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "1.2.840.113708.794.1.1.2.0";

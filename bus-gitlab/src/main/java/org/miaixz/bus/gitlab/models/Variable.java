@@ -72,61 +72,151 @@ public class Variable implements Serializable {
 
     private String environmentScope;
 
+    /**
+     * Constructs a new {@code Variable} instance.
+     */
+
     public Variable() {
+        // No initialization required.
     }
+
+    /**
+     * Constructs a new {@code Variable} instance.
+     *
+     * @param key   the key value
+     * @param value the value value
+     */
 
     public Variable(String key, String value) {
         this.key = key;
         this.value = value;
     }
 
+    /**
+     * Returns the key.
+     *
+     * @return the result
+     */
+
     public String getKey() {
         return key;
     }
+
+    /**
+     * Sets the key.
+     *
+     * @param key the key value
+     */
 
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     public String getValue() {
         return value;
     }
+
+    /**
+     * Sets the value.
+     *
+     * @param value the value value
+     */
 
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     * Returns the variable type.
+     *
+     * @return the result
+     */
+
     public Type getVariableType() {
         return variableType;
     }
+
+    /**
+     * Sets the variable type.
+     *
+     * @param variableType the variable type value
+     */
 
     public void setVariableType(Type variableType) {
         this.variableType = variableType;
     }
 
+    /**
+     * Returns the protected.
+     *
+     * @return the result
+     */
+
     public Boolean getProtected() {
         return isProtected;
     }
+
+    /**
+     * Sets the protected.
+     *
+     * @param isProtected the is protected value
+     */
 
     public void setProtected(Boolean isProtected) {
         this.isProtected = isProtected;
     }
 
+    /**
+     * Returns the masked.
+     *
+     * @return the result
+     */
+
     public Boolean getMasked() {
         return isMasked;
     }
+
+    /**
+     * Sets the masked.
+     *
+     * @param masked the masked value
+     */
 
     public void setMasked(Boolean masked) {
         this.isMasked = masked;
     }
 
+    /**
+     * Returns the environment scope.
+     *
+     * @return the result
+     */
+
     public String getEnvironmentScope() {
         return environmentScope;
     }
 
+    /**
+     * Sets the environment scope.
+     *
+     * @param environmentScope the environment scope value
+     */
+
     public void setEnvironmentScope(String environmentScope) {
         this.environmentScope = environmentScope;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {
@@ -141,19 +231,45 @@ public class Variable implements Serializable {
      */
     public enum Type {
 
-        ENV_VAR, FILE;
+        /**
+         * The env var type.
+         */
+        ENV_VAR,
+        /**
+         * The file type.
+         */
+        FILE;
 
         private static JacksonJsonEnumHelper<Type> enumHelper = new JacksonJsonEnumHelper<>(Type.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static Type forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {

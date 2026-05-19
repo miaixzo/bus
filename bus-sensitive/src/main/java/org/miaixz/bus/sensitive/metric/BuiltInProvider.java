@@ -34,6 +34,13 @@ import org.miaixz.bus.sensitive.Context;
 public class BuiltInProvider extends AbstractProvider {
 
     /**
+     * Constructs a new BuiltInProvider instance.
+     */
+    public BuiltInProvider() {
+        // No initialization required.
+    }
+
+    /**
      * This method is not intended to be called directly and returns null. The framework uses this class as a marker to
      * select a built-in strategy.
      *

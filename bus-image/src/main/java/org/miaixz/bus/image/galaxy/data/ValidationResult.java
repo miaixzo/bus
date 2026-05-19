@@ -36,6 +36,13 @@ import org.miaixz.bus.image.Tag;
 public class ValidationResult {
 
     /**
+     * Constructs a new {@code ValidationResult} instance.
+     */
+    public ValidationResult() {
+        // No initialization required.
+    }
+
+    /**
      * The missing attributes value.
      */
     private ArrayList<IOD.DataElement> missingAttributes;

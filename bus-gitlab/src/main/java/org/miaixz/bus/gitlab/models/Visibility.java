@@ -32,19 +32,49 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
  */
 public enum Visibility {
 
-    PUBLIC, PRIVATE, INTERNAL;
+    /**
+     * The public visibility.
+     */
+    PUBLIC,
+    /**
+     * The private visibility.
+     */
+    PRIVATE,
+    /**
+     * The internal visibility.
+     */
+    INTERNAL;
 
     private static JacksonJsonEnumHelper<Visibility> enumHelper = new JacksonJsonEnumHelper<>(Visibility.class);
+
+    /**
+     * Returns the value.
+     *
+     * @param value the value value
+     * @return the result
+     */
 
     @JsonCreator
     public static Visibility forValue(String value) {
         return enumHelper.forValue(value);
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     @JsonValue
     public String toValue() {
         return (enumHelper.toString(this));
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

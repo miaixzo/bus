@@ -66,7 +66,7 @@ public class CompositeConverter implements Converter, Serializable {
      * Private constructor to prevent direct instantiation.
      */
     private CompositeConverter() {
-
+        // No initialization required.
     }
 
     /**
@@ -84,7 +84,6 @@ public class CompositeConverter implements Converter, Serializable {
      * <p>
      * <strong>Warning:</strong> Since this is a singleton, this registration is global.
      *
-     *
      * @param converter The {@link MatcherConverter} to register.
      * @return This {@code CompositeConverter} instance.
      */
@@ -97,7 +96,6 @@ public class CompositeConverter implements Converter, Serializable {
      * Registers a custom converter for a specific target type.
      * <p>
      * <strong>Warning:</strong> Since this is a singleton, this registration is global.
-     *
      *
      * @param type      The target type for which this converter will be used.
      * @param converter The {@link Converter} to register.

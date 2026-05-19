@@ -43,6 +43,7 @@ public class CollectionStream extends CollectionValidator {
      * Constructs a new CollectionStream. Utility class constructor for static access.
      */
     public CollectionStream() {
+        // No initialization required.
     }
 
     /**

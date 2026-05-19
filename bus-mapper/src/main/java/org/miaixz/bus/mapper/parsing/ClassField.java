@@ -22,7 +22,6 @@ package org.miaixz.bus.mapper.parsing;
 import java.util.function.Predicate;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Records the class and field name corresponding to a field, used to match entity class fields with database column
@@ -32,7 +31,6 @@ import lombok.RequiredArgsConstructor;
  * @since Java 21+
  */
 @Getter
-@RequiredArgsConstructor
 public class ClassField implements Predicate<ColumnMeta> {
 
     /**
@@ -44,6 +42,17 @@ public class ClassField implements Predicate<ColumnMeta> {
      * The field name.
      */
     private final String field;
+
+    /**
+     * Creates a class-field matcher.
+     *
+     * @param clazz the entity class
+     * @param field the field name
+     */
+    public ClassField(Class<?> clazz, String field) {
+        this.clazz = clazz;
+        this.field = field;
+    }
 
     /**
      * Tests if the property name of the specified column matches the current field name (case-insensitive).

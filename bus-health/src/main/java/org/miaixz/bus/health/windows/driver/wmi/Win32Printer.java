@@ -56,6 +56,7 @@ public final class Win32Printer {
      * Creates a new Win32Printer instance.
      */
     private Win32Printer() {
+        // No initialization required.
     }
 
     /**

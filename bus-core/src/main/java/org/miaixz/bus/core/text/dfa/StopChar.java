@@ -36,6 +36,7 @@ public class StopChar {
      * Constructs a new stop-character definition holder.
      */
     public StopChar() {
+        // No initialization required.
     }
 
     /**

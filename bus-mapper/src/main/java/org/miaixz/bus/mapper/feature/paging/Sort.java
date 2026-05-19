@@ -23,9 +23,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import org.miaixz.bus.mapper.Order;
 
@@ -235,13 +233,21 @@ public final class Sort implements Serializable, Iterable<Order> {
      * @author Kimi Liu
      * @since Java 21+
      */
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SortBuilder {
 
         /**
          * The property name to be sorted.
          */
         private final String property;
+
+        /**
+         * Creates a sort builder for the specified property.
+         *
+         * @param property the property name to be sorted
+         */
+        private SortBuilder(String property) {
+            this.property = property;
+        }
 
         /**
          * Sets the direction to ascending.

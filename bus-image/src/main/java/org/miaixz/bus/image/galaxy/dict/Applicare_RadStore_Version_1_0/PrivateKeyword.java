@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.Applicare_RadStore_Version_1_0;
 public class PrivateKeyword {
 
     /**
+     * Constructs a new {@code PrivateKeyword} instance.
+     */
+    public PrivateKeyword() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "";

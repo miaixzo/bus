@@ -56,6 +56,13 @@ import org.miaixz.bus.logger.Logger;
 public class LinuxFileSystem extends AbstractFileSystem {
 
     /**
+     * Constructs a new {@code LinuxFileSystem} instance.
+     */
+    public LinuxFileSystem() {
+        // No initialization required.
+    }
+
+    /**
      * The FS_PATH_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder

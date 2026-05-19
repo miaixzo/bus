@@ -34,6 +34,12 @@ public class EpicInLink extends AbstractEpic<EpicInLink> {
     @Serial
     private static final long serialVersionUID = 2852252889389L;
 
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));

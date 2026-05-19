@@ -50,6 +50,13 @@ import org.miaixz.bus.logger.Logger;
 public class Pdf2Dcm {
 
     /**
+     * Constructs a new {@code Pdf2Dcm} instance.
+     */
+    public Pdf2Dcm() {
+        // No initialization required.
+    }
+
+    /**
      * The maximum file size allowed for encapsulation (2GB - 2 bytes).
      */
     private static final long MAX_FILE_SIZE = 0x7FFFFFFE;

@@ -49,6 +49,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
  */
 public class SpringCloudConfigListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent>, Ordered {
 
+    /**
+     * Constructs a new SpringCloudConfigListener instance.
+     */
+    public SpringCloudConfigListener() {
+        // No initialization required.
+    }
+
     private final static MapPropertySource HIGH_PRIORITY_CONFIG = new MapPropertySource(GeniusBuilder.BUS_HIGH_PRIORITY,
             new HashMap<>());
 

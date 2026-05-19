@@ -38,6 +38,7 @@ public class LoggingWatchListener implements Listener<Watch<Object>> {
      * Creates a logging watch listener.
      */
     public LoggingWatchListener() {
+        // No initialization required.
     }
 
     /**

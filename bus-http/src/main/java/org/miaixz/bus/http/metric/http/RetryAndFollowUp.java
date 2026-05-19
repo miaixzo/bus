@@ -59,6 +59,11 @@ public class RetryAndFollowUp implements Interceptor {
 
     private final Httpd httpd;
 
+    /**
+     * Executes the retry and follow up operation.
+     *
+     * @param httpd the httpd value
+     */
     public RetryAndFollowUp(Httpd httpd) {
         this.httpd = httpd;
     }

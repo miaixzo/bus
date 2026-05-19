@@ -52,6 +52,7 @@ public class Base62 {
      * Constructs a new Base62. Utility class constructor for static access.
      */
     private Base62() {
+        // No initialization required.
     }
 
     /**

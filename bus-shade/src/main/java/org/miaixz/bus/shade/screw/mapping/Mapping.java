@@ -46,6 +46,7 @@ public class Mapping {
      * Private constructor to prevent instantiation.
      */
     private Mapping() {
+        // No initialization required.
     }
 
     /**

@@ -77,7 +77,6 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * <p>
      * Example: {@code [1,2,3,4,5]} -> {@code [[1,2], [3,4], [5]]}
      *
-     *
      * @param batchSize the desired size of each sub-stream (must be a positive integer)
      * @return an {@link EasyStream} of {@link EasyStream}s, where each inner stream contains elements of the specified
      *         batch size
@@ -99,7 +98,6 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * Splits the stream into sub-lists of a specified batch size.
      * <p>
      * Example: {@code [1,2,3,4,5]} -> {@code [[1,2], [3,4], [5]]}
-     *
      *
      * @param batchSize the desired size of each sub-list (must be a positive integer)
      * @return an {@link EasyStream} of {@link List}s, where each list contains elements of the specified batch size
@@ -551,7 +549,6 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * of this stream. This is a stateless intermediate operation.
      * <p>
      * This is equivalent to calling {@code nonNull().map(...).nonNull()...}
-     *
      *
      * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element to

@@ -74,6 +74,7 @@ public class FtpConfig implements Serializable {
      * 0).
      */
     public FtpConfig() {
+        // No initialization required.
     }
 
     /**

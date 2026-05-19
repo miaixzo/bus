@@ -40,6 +40,12 @@ import org.miaixz.bus.gitlab.models.RunnerDetail;
  */
 public class RunnersApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code RunnersApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public RunnersApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -44,7 +44,7 @@ public final class RegistryAssets {
      * Creates the registry assets utility holder.
      */
     private RegistryAssets() {
-
+        // No initialization required.
     }
 
     /**

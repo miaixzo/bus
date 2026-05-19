@@ -43,6 +43,13 @@ import org.miaixz.bus.mapper.provider.NamingProvider;
 public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
 
     /**
+     * Constructs a new ColumnAnnotationBuilder instance.
+     */
+    public ColumnAnnotationBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * A marker to indicate that a field should not be mapped to a database column.
      */
     private static final Optional<List<ColumnMeta>> IGNORE = Optional.of(Collections.emptyList());
@@ -92,6 +99,7 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
      * @param columnMeta The column metadata object.
      * @param fieldMeta  The field metadata object.
      */
+    @SuppressWarnings("unchecked")
     protected void processAnnotations(ColumnMeta columnMeta, FieldMeta fieldMeta) {
         // Process the primary key annotation.
         if (!columnMeta.id() && fieldMeta.isAnnotationPresent(Id.class)) {

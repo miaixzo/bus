@@ -40,6 +40,10 @@ import org.miaixz.bus.logger.Logger;
  */
 public class SystemHookManager implements HookManager {
 
+    /**
+     * The system hook event value.
+     */
+
     public static final String SYSTEM_HOOK_EVENT = "System Hook";
     private final JacksonJson jacksonJson = new JacksonJson();
 
@@ -52,6 +56,7 @@ public class SystemHookManager implements HookManager {
      * Create a HookManager to handle GitLab system hook events.
      */
     public SystemHookManager() {
+        // No initialization required.
     }
 
     /**
@@ -360,11 +365,23 @@ public class SystemHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire project event operation.
+     *
+     * @param event the event value
+     */
+
     protected void fireProjectEvent(ProjectSystemHookEvent event) {
         for (SystemHookListener listener : systemHookListeners) {
             listener.onProjectEvent(event);
         }
     }
+
+    /**
+     * Executes the fire team member event operation.
+     *
+     * @param event the event value
+     */
 
     protected void fireTeamMemberEvent(TeamMemberSystemHookEvent event) {
         for (SystemHookListener listener : systemHookListeners) {
@@ -372,11 +389,23 @@ public class SystemHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire user event operation.
+     *
+     * @param event the event value
+     */
+
     protected void fireUserEvent(UserSystemHookEvent event) {
         for (SystemHookListener listener : systemHookListeners) {
             listener.onUserEvent(event);
         }
     }
+
+    /**
+     * Executes the fire key event operation.
+     *
+     * @param event the event value
+     */
 
     protected void fireKeyEvent(KeySystemHookEvent event) {
         for (SystemHookListener listener : systemHookListeners) {
@@ -384,11 +413,23 @@ public class SystemHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire group event operation.
+     *
+     * @param event the event value
+     */
+
     protected void fireGroupEvent(GroupSystemHookEvent event) {
         for (SystemHookListener listener : systemHookListeners) {
             listener.onGroupEvent(event);
         }
     }
+
+    /**
+     * Executes the fire group member event operation.
+     *
+     * @param event the event value
+     */
 
     protected void fireGroupMemberEvent(GroupMemberSystemHookEvent event) {
         for (SystemHookListener listener : systemHookListeners) {
@@ -396,11 +437,23 @@ public class SystemHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire push event operation.
+     *
+     * @param event the event value
+     */
+
     protected void firePushEvent(PushSystemHookEvent event) {
         for (SystemHookListener listener : systemHookListeners) {
             listener.onPushEvent(event);
         }
     }
+
+    /**
+     * Executes the fire tag push event operation.
+     *
+     * @param event the event value
+     */
 
     protected void fireTagPushEvent(TagPushSystemHookEvent event) {
         for (SystemHookListener listener : systemHookListeners) {
@@ -408,11 +461,23 @@ public class SystemHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire repository event operation.
+     *
+     * @param event the event value
+     */
+
     protected void fireRepositoryEvent(RepositorySystemHookEvent event) {
         for (SystemHookListener listener : systemHookListeners) {
             listener.onRepositoryEvent(event);
         }
     }
+
+    /**
+     * Executes the fire merge request event operation.
+     *
+     * @param event the event value
+     */
 
     protected void fireMergeRequestEvent(MergeRequestSystemHookEvent event) {
         for (SystemHookListener listener : systemHookListeners) {

@@ -41,6 +41,13 @@ import org.miaixz.bus.health.linux.ProcPath;
 public final class CpuInfo {
 
     /**
+     * Constructs a new CpuInfo instance.
+     */
+    public CpuInfo() {
+        // No initialization required.
+    }
+
+    /**
      * Gets the CPU manufacturer from {@code /proc/cpuinfo}
      *
      * @return The manufacturer if known, null otherwise

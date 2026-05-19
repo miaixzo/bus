@@ -43,6 +43,13 @@ import lombok.Setter;
 public class ChildrenMetrics<T extends BaseMetrics> extends BaseMetrics {
 
     /**
+     * Constructs a new ChildrenMetrics instance.
+     */
+    public ChildrenMetrics() {
+        // No initialization required.
+    }
+
+    /**
      * A list of child metrics, implemented using a thread-safe {@link CopyOnWriteArrayList}.
      * <p>
      * {@code CopyOnWriteArrayList} is suitable for concurrent scenarios where reads far outnumber writes, providing

@@ -70,6 +70,7 @@ public class TenantContext {
      * Private constructor to prevent instantiation.
      */
     private TenantContext() {
+        // No initialization required.
     }
 
     /**

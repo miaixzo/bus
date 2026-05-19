@@ -45,6 +45,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class LogicalProvider {
 
     /**
+     * Constructs a new LogicalProvider instance.
+     */
+    public LogicalProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Selects records that are not logically deleted based on entity field conditions.
      *
      * @param context The provider context, containing method and interface information.

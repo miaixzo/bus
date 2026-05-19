@@ -37,6 +37,13 @@ import org.miaixz.bus.core.lang.Validator;
 public class PhoneKit {
 
     /**
+     * Constructs a new PhoneKit instance.
+     */
+    public PhoneKit() {
+        // No initialization required.
+    }
+
+    /**
      * Validates if the value is a mobile phone number (Mainland China).
      *
      * @param value The value.

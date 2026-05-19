@@ -27,4 +27,11 @@ package org.miaixz.bus.metrics.observe;
  */
 public class Test {
 
+    /**
+     * Constructs a new Test instance.
+     */
+    public Test() {
+        // No initialization required.
+    }
+
 }

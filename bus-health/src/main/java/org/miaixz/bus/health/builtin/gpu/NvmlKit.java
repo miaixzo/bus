@@ -109,6 +109,7 @@ public final class NvmlKit {
      * Creates a new NvmlKit instance.
      */
     private NvmlKit() {
+        // No initialization required.
     }
 
     // -------------------------------------------------------------------------

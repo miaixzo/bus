@@ -29,6 +29,8 @@ public interface Sample {
 
     /**
      * Stop timing and record the elapsed duration into the associated Timer.
+     *
+     * @return elapsed duration in nanoseconds
      */
     long stop();
 

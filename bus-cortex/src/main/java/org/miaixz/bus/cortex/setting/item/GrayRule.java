@@ -40,7 +40,7 @@ public class GrayRule {
      * Creates an empty gray-release rule.
      */
     public GrayRule() {
-
+        // No initialization required.
     }
 
     /**

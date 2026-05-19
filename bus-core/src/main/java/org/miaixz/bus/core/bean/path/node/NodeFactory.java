@@ -32,6 +32,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class NodeFactory {
 
     /**
+     * Constructs a new NodeFactory instance.
+     */
+    public NodeFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a {@link Node} instance based on the provided expression string. It checks for specific delimiters to
      * determine the node type:
      * <ul>

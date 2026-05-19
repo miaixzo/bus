@@ -46,20 +46,55 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = ReleaseEvent.class, name = ReleaseEvent.OBJECT_KIND) })
 public interface Event extends Serializable {
 
+    /**
+     * Returns the GitLab webhook object kind.
+     *
+     * @return the GitLab webhook object kind
+     */
     String getObjectKind();
 
+    /**
+     * Sets the original request URL.
+     *
+     * @param url the original request URL
+     */
     void setRequestUrl(String url);
 
+    /**
+     * Returns the original request URL.
+     *
+     * @return the original request URL
+     */
     @JsonIgnore
     String getRequestUrl();
 
+    /**
+     * Sets the original request query string.
+     *
+     * @param queryString the original request query string
+     */
     void setRequestQueryString(String queryString);
 
+    /**
+     * Returns the original request query string.
+     *
+     * @return the original request query string
+     */
     @JsonIgnore
     String getRequestQueryString();
 
+    /**
+     * Sets the original request secret token.
+     *
+     * @param secretToken the original request secret token
+     */
     void setRequestSecretToken(String secretToken);
 
+    /**
+     * Returns the original request secret token.
+     *
+     * @return the original request secret token
+     */
     @JsonIgnore
     String getRequestSecretToken();
 

@@ -44,6 +44,7 @@ public class CitizenIdKit {
      * Constructs a new CitizenIdKit. Utility class constructor for static access.
      */
     private CitizenIdKit() {
+        // No initialization required.
     }
 
     /**

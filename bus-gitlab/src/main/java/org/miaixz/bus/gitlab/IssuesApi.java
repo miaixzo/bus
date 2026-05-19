@@ -41,6 +41,12 @@ import org.miaixz.bus.gitlab.models.*;
  */
 public class IssuesApi extends AbstractApi implements Constants {
 
+    /**
+     * Constructs a new {@code IssuesApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public IssuesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

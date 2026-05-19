@@ -30,6 +30,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AlwaysTrueMatcher implements PartMatcher {
 
     /**
+     * Constructs a new {@code AlwaysTrueMatcher} instance.
+     */
+    public AlwaysTrueMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Singleton instance.
      */
     public static final AlwaysTrueMatcher INSTANCE = new AlwaysTrueMatcher();

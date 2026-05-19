@@ -34,6 +34,7 @@ import org.miaixz.bus.http.UnoUrl;
 public class RequestLine {
 
     private RequestLine() {
+        // No initialization required.
     }
 
     /**

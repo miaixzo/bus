@@ -34,6 +34,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class BandCardProvider extends AbstractProvider {
 
     /**
+     * Constructs a new BandCardProvider instance.
+     */
+    public BandCardProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Applies bank card-specific desensitization logic to the provided value.
      *
      * @param object  The object containing the bank card number to be desensitized.

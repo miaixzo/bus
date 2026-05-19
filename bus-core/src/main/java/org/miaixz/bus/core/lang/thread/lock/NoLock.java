@@ -34,6 +34,13 @@ import java.util.concurrent.locks.Lock;
 public class NoLock implements Lock {
 
     /**
+     * Constructs a new {@code NoLock} instance.
+     */
+    public NoLock() {
+        // No initialization required.
+    }
+
+    /**
      * A singleton instance of {@code NoLock}.
      */
     public static NoLock INSTANCE = new NoLock();

@@ -34,6 +34,13 @@ import org.miaixz.bus.validate.magic.annotation.English;
 public class EnglishMatcher implements Matcher<Object, English> {
 
     /**
+     * Constructs a new EnglishMatcher instance.
+     */
+    public EnglishMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object, when converted to a string, consists only of English letters.
      *
      * @param object     The object to validate.

@@ -42,6 +42,13 @@ import org.miaixz.bus.logger.Logger;
  */
 public class AliPayBuilder {
 
+    /**
+     * Constructs a new AliPayBuilder instance.
+     */
+    public AliPayBuilder() {
+        // No initialization required.
+    }
+
     private static final String CHARSET_UTF8 = "UTF-8";
 
     /**

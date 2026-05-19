@@ -33,6 +33,13 @@ import java.util.concurrent.locks.ReadWriteLock;
 public class NoReadWriteLock implements ReadWriteLock {
 
     /**
+     * Constructs a new NoReadWriteLock instance.
+     */
+    public NoReadWriteLock() {
+        // No initialization required.
+    }
+
+    /**
      * Returns a no-operation read lock.
      *
      * @return A singleton instance of {@link NoLock}.

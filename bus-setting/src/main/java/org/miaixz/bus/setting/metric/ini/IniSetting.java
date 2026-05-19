@@ -46,6 +46,7 @@ public class IniSetting extends ArrayList<IniElement> {
      * Constructs an empty list with an initial capacity of ten.
      */
     public IniSetting() {
+        // No initialization required.
     }
 
     /**

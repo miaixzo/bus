@@ -31,6 +31,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class AbstractEvent implements Event {
 
+    /**
+     * Constructs a new AbstractEvent instance.
+     */
+    public AbstractEvent() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852230011506L;
 
@@ -39,18 +46,40 @@ public abstract class AbstractEvent implements Event {
     private String requestQueryString;
     private String secretToken;
 
+    /**
+     * Returns the webhook event type.
+     *
+     * @return the webhook event type
+     */
     public String getEventType() {
         return eventType;
     }
 
+    /**
+     * Sets the webhook event type.
+     *
+     * @param eventType the webhook event type
+     */
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
+
+    /**
+     * Sets the request url.
+     *
+     * @param requestUrl the request url value
+     */
 
     @Override
     public void setRequestUrl(String requestUrl) {
         this.requestUrl = requestUrl;
     }
+
+    /**
+     * Returns the request url.
+     *
+     * @return the result
+     */
 
     @Override
     @JsonIgnore
@@ -58,10 +87,22 @@ public abstract class AbstractEvent implements Event {
         return (requestUrl);
     }
 
+    /**
+     * Sets the request query string.
+     *
+     * @param requestQueryString the request query string value
+     */
+
     @Override
     public void setRequestQueryString(String requestQueryString) {
         this.requestQueryString = requestQueryString;
     }
+
+    /**
+     * Returns the request query string.
+     *
+     * @return the result
+     */
 
     @Override
     @JsonIgnore
@@ -69,10 +110,22 @@ public abstract class AbstractEvent implements Event {
         return (requestQueryString);
     }
 
+    /**
+     * Sets the request secret token.
+     *
+     * @param secretToken the secret token value
+     */
+
     @Override
     public void setRequestSecretToken(String secretToken) {
         this.secretToken = secretToken;
     }
+
+    /**
+     * Returns the request secret token.
+     *
+     * @return the result
+     */
 
     @Override
     @JsonIgnore

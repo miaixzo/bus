@@ -34,6 +34,7 @@ public class AnsiEncoder {
      * Constructs a new AnsiEncoder. Utility class constructor for static access.
      */
     private AnsiEncoder() {
+        // No initialization required.
     }
 
     /**

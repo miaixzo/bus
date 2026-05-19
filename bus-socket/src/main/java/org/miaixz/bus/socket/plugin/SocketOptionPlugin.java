@@ -42,6 +42,13 @@ import org.miaixz.bus.logger.Logger;
 public class SocketOptionPlugin<T> extends AbstractPlugin<T> {
 
     /**
+     * Constructs a new SocketOptionPlugin instance.
+     */
+    public SocketOptionPlugin() {
+        // No initialization required.
+    }
+
+    /**
      * A map storing the socket options and their corresponding values to be applied.
      */
     private Map<SocketOption<Object>, Object> optionMap = new HashMap<>();

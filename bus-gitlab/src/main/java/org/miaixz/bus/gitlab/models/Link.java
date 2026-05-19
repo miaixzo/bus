@@ -41,37 +41,91 @@ public class Link implements Serializable {
 
     private String linkType;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Integer getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Integer id) {
         this.id = id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the url.
+     *
+     * @return the result
+     */
+
     public String getUrl() {
         return url;
     }
+
+    /**
+     * Sets the url.
+     *
+     * @param url the url value
+     */
 
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * Returns the link type.
+     *
+     * @return the result
+     */
+
     public String getLinkType() {
         return linkType;
     }
 
+    /**
+     * Sets the link type.
+     *
+     * @param linkType the link type value
+     */
+
     public void setLinkType(String linkType) {
         this.linkType = linkType;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

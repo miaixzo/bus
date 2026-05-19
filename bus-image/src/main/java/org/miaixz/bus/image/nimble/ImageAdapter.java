@@ -268,6 +268,9 @@ public class ImageAdapter {
     }
 
     /**
+     * Returns the minimum value after modality pixel transformation and pixel padding when present.
+     *
+     * @param wl Window and level presentation.
      * @return The minimum value after modality pixel transformation and pixel padding when present.
      */
     public double getMinValue(WlPresentation wl) {
@@ -275,6 +278,9 @@ public class ImageAdapter {
     }
 
     /**
+     * Returns the maximum value after modality pixel transformation and pixel padding when present.
+     *
+     * @param wl Window and level presentation.
      * @return The maximum value after modality pixel transformation and pixel padding when present.
      */
     public double getMaxValue(WlPresentation wl) {
@@ -356,6 +362,9 @@ public class ImageAdapter {
     }
 
     /**
+     * Returns the default preset as the first preset list element.
+     *
+     * @param wlp Window and level presentation.
      * @return The default preset as the first preset list element. This should never be null because at least one auto
      *         preset exists.
      */
@@ -587,8 +596,10 @@ public class ImageAdapter {
     }
 
     /**
-     * @return 8-bit unsigned lookup table.
+     * Returns an 8-bit unsigned VOI lookup table.
+     *
      * @param wl Window and level parameters.
+     * @return 8-bit unsigned lookup table.
      */
     public LookupTableCV getVOILookup(WlParams wl) {
         if (wl == null || wl.getLutShape() == null) {

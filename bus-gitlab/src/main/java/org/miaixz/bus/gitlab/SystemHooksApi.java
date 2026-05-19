@@ -35,6 +35,12 @@ import org.miaixz.bus.gitlab.models.SystemHook;
  */
 public class SystemHooksApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code SystemHooksApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public SystemHooksApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

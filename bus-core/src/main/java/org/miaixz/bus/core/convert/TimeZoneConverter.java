@@ -41,6 +41,7 @@ public class TimeZoneConverter extends AbstractConverter implements MatcherConve
      * Constructs a new time-zone converter.
      */
     public TimeZoneConverter() {
+        // No initialization required.
     }
 
     /**

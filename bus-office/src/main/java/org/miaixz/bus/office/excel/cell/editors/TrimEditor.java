@@ -32,6 +32,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TrimEditor implements CellEditor {
 
     /**
+     * Constructs a new TrimEditor instance.
+     */
+    public TrimEditor() {
+        // No initialization required.
+    }
+
+    /**
      * Implements the behavior defined by the supertype.
      *
      * @param cell  the cell being edited

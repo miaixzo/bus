@@ -142,6 +142,11 @@ public abstract class AbstractElement implements IniElement {
         return originalValue;
     }
 
+    /**
+     * Sets the original source-line value.
+     *
+     * @param newOriginalValue original source-line value
+     */
     protected void setOriginalValue(String newOriginalValue) {
         this.originalValue = newOriginalValue;
     }

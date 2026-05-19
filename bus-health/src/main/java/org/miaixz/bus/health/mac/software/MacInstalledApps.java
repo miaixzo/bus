@@ -46,7 +46,7 @@ public final class MacInstalledApps {
      * Creates a new MacInstalledApps instance.
      */
     private MacInstalledApps() {
-
+        // No initialization required.
     }
 
     /**

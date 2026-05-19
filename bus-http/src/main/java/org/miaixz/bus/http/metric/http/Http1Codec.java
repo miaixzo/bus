@@ -113,6 +113,14 @@ public class Http1Codec implements HttpCodec {
      */
     private Headers trailers;
 
+    /**
+     * Creates an HTTP/1 codec.
+     *
+     * @param httpd          the HTTP client
+     * @param realConnection the real connection
+     * @param source         the response source
+     * @param sink           the request sink
+     */
     public Http1Codec(Httpd httpd, RealConnection realConnection, BufferSource source, BufferSink sink) {
         this.httpd = httpd;
         this.realConnection = realConnection;
@@ -484,6 +492,7 @@ public class Http1Codec implements HttpCodec {
         private boolean closed;
 
         ChunkedSink() {
+            // No initialization required.
         }
 
         /**

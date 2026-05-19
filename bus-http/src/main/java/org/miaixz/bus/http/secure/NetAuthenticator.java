@@ -41,6 +41,13 @@ import org.miaixz.bus.http.UnoUrl;
  */
 public class NetAuthenticator implements Authenticator {
 
+    /**
+     * Constructs a new NetAuthenticator instance.
+     */
+    public NetAuthenticator() {
+        // No initialization required.
+    }
+
     @Override
     public Request authenticate(Route route, Response response) throws IOException {
         List<Challenge> challenges = response.challenges();

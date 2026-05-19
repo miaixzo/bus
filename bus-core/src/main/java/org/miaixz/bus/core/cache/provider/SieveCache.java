@@ -304,6 +304,8 @@ public class SieveCache<K, V> extends LockedCache<K, V> {
      *
      * @author Kimi Liu
      * @since Java 21+
+     * @param <K> the value type
+     * @param <V> the value type
      */
     private static class SieveCacheObject<K, V> extends CacheObject<K, V> {
 

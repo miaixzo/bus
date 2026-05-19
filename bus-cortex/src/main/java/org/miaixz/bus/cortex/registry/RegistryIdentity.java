@@ -39,7 +39,7 @@ public final class RegistryIdentity {
      * Creates the registry-identity utility holder.
      */
     private RegistryIdentity() {
-
+        // No initialization required.
     }
 
     /**

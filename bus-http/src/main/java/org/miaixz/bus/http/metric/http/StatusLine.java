@@ -50,6 +50,13 @@ public class StatusLine {
      */
     public final String message;
 
+    /**
+     * Executes the status line operation.
+     *
+     * @param protocol the protocol value
+     * @param code     the code value
+     * @param message  the message value
+     */
     public StatusLine(Protocol protocol, int code, String message) {
         this.protocol = protocol;
         this.code = code;

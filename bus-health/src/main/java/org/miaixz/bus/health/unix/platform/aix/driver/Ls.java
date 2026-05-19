@@ -41,6 +41,7 @@ public final class Ls {
      * Creates a new Ls instance.
      */
     private Ls() {
+        // No initialization required.
     }
 
     /**

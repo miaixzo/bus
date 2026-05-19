@@ -31,6 +31,13 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
+     * Constructs a new ErrorCode instance.
+     */
+    public ErrorCode() {
+        // No initialization required.
+    }
+
+    /**
      * Incomplete notification parameters.
      */
     public static final Errors _PARAMETER_INCOMPLETE = ErrorRegistry.builder().key("112001")

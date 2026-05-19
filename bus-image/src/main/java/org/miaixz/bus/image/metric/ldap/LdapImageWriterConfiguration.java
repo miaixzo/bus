@@ -49,6 +49,13 @@ import org.miaixz.bus.image.nimble.extend.ImageWriterExtension;
 public class LdapImageWriterConfiguration extends LdapDicomConfigurationExtension {
 
     /**
+     * Constructs a new LdapImageWriterConfiguration instance.
+     */
+    public LdapImageWriterConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * The cn image writer factory value.
      */
     private static final String CN_IMAGE_WRITER_FACTORY = "cn=Image Writer Factory,";

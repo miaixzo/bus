@@ -46,7 +46,7 @@ public class NatLoader extends StdLoader implements Loader {
      * Constructs a new {@code NatLoader}.
      */
     public NatLoader() {
-
+        // No initialization required.
     }
 
     /**

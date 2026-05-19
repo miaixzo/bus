@@ -43,6 +43,7 @@ public class AsyncTimeout extends Timeout {
      * Constructs a new AsyncTimeout. Utility class constructor for static access.
      */
     public AsyncTimeout() {
+        // No initialization required.
     }
 
     /**

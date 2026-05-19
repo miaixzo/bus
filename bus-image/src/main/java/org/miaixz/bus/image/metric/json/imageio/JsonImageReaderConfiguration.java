@@ -40,6 +40,13 @@ import org.miaixz.bus.image.nimble.extend.ImageReaderExtension;
 public class JsonImageReaderConfiguration extends JsonConfigurationExtension {
 
     /**
+     * Constructs a new JsonImageReaderConfiguration instance.
+     */
+    public JsonImageReaderConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Stores the to.
      *
      * @param device the device.

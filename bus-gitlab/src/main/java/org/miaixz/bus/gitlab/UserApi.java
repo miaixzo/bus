@@ -47,6 +47,12 @@ public class UserApi extends AbstractApi {
 
     private boolean customAttributesEnabled = false;
 
+    /**
+     * Constructs a new {@code UserApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public UserApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
@@ -1417,6 +1423,8 @@ public class UserApi extends AbstractApi {
      * </pre>
      *
      * @throws GitLabApiException if any exception occurs
+     *
+     * @return the result
      */
     public List<GpgKey> listGpgKeys() throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "user", "gpg_keys");
@@ -1433,6 +1441,8 @@ public class UserApi extends AbstractApi {
      *
      * @param key the ASCII-armored exported public GPG key to add
      * @throws GitLabApiException if any exception occurs
+     *
+     * @return the result
      */
     public GpgKey addGpgKey(final String key) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("key", key, true);
@@ -1463,6 +1473,8 @@ public class UserApi extends AbstractApi {
      *
      * @param userId the user in the form of an Long(ID)
      * @throws GitLabApiException if any exception occurs
+     *
+     * @return the result
      */
     public List<GpgKey> listGpgKeys(final Long userId) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "users", userId, "gpg_keys");
@@ -1480,6 +1492,8 @@ public class UserApi extends AbstractApi {
      * @param userId the user in the form of an Long(ID)
      * @param key    the ASCII-armored exported public GPG key to add
      * @throws GitLabApiException if any exception occurs
+     *
+     * @return the result
      */
     public GpgKey addGpgKey(final Long userId, final String key) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("key", key, true);
@@ -1599,6 +1613,8 @@ public class UserApi extends AbstractApi {
      *
      * @param username the name of the user to check
      * @throws GitLabApiException if any exception occurs.
+     *
+     * @return the result
      */
     public boolean exists(String username) throws GitLabApiException {
         if (username == null) {

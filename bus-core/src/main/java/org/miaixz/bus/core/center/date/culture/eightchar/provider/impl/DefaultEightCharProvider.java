@@ -36,6 +36,7 @@ public class DefaultEightCharProvider implements EightCharProvider {
      * Constructs a new DefaultEightCharProvider. Utility class constructor for static access.
      */
     public DefaultEightCharProvider() {
+        // No initialization required.
     }
 
     /**

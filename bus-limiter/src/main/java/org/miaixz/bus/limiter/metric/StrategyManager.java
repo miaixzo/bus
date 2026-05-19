@@ -37,6 +37,13 @@ import org.miaixz.bus.logger.Logger;
 public class StrategyManager {
 
     /**
+     * Constructs a new StrategyManager instance.
+     */
+    public StrategyManager() {
+        // No initialization required.
+    }
+
+    /**
      * A static map to cache {@link Provider} instances, keyed by their {@link StrategyMode}. This allows for quick
      * retrieval of the appropriate strategy executor.
      */

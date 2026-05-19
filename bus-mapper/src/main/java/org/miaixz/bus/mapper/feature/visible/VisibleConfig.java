@@ -22,7 +22,6 @@ package org.miaixz.bus.mapper.feature.visible;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,7 +60,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class VisibleConfig {
 
     /**
@@ -74,6 +72,17 @@ public class VisibleConfig {
      */
     @Builder.Default
     private final List<String> ignore = Collections.emptyList();
+
+    /**
+     * Creates a visible-control configuration.
+     *
+     * @param provider the visible information provider
+     * @param ignore tables excluded from visible checking
+     */
+    public VisibleConfig(VisibleProvider provider, List<String> ignore) {
+        this.provider = provider;
+        this.ignore = ignore;
+    }
 
     /**
      * Create a VisibleConfig with perimeter provider and default settings.

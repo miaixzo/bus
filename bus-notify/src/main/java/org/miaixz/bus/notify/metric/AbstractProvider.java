@@ -42,6 +42,13 @@ import org.miaixz.bus.notify.magic.Notice;
 public abstract class AbstractProvider<T extends Notice, K extends Context> implements Provider<T> {
 
     /**
+     * Constructs a new {@code AbstractProvider} instance.
+     */
+    public AbstractProvider() {
+        // No initialization required.
+    }
+
+    /**
      * The context containing configuration information for the provider.
      */
     protected K context;

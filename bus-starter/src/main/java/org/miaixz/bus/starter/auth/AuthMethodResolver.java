@@ -66,6 +66,13 @@ import org.miaixz.bus.spring.ContextBuilder;
 public class AuthMethodResolver implements HandlerMethodArgumentResolver {
 
     /**
+     * Constructs a new AuthMethodResolver instance.
+     */
+    public AuthMethodResolver() {
+        // No initialization required.
+    }
+
+    /**
      * Determines if this resolver supports the given method parameter.
      * <p>
      * This method returns {@code true} if and only if the following conditions are met:

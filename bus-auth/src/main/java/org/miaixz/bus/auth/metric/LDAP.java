@@ -27,4 +27,11 @@ package org.miaixz.bus.auth.metric;
  */
 public class LDAP {
 
+    /**
+     * Constructs a new LDAP instance.
+     */
+    public LDAP() {
+        // No initialization required.
+    }
+
 }

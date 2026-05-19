@@ -31,6 +31,13 @@ import java.util.Map;
 public class TemplateKit {
 
     /**
+     * Constructs a new TemplateKit instance.
+     */
+    public TemplateKit() {
+        // No initialization required.
+    }
+
+    /**
      * Retrieves a singleton instance of the template engine.
      *
      * @return The singleton {@link TemplateProvider} instance.

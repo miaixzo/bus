@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.mapper.feature.audit;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -55,7 +54,6 @@ import lombok.experimental.SuperBuilder;
  */
 @Getter
 @SuperBuilder
-@AllArgsConstructor
 public class AuditConfig {
 
     /**
@@ -97,6 +95,26 @@ public class AuditConfig {
      * Audit logger
      */
     private final AuditProvider provider;
+
+    /**
+     * Creates a full audit configuration.
+     *
+     * @param slowSqlThreshold slow SQL threshold in milliseconds
+     * @param logParameters whether SQL parameters are logged
+     * @param logResults whether SQL results are logged
+     * @param logAllSql whether all SQL statements are logged
+     * @param printConsole whether audit information is printed to the console
+     * @param provider audit logger provider
+     */
+    public AuditConfig(long slowSqlThreshold, boolean logParameters, boolean logResults, boolean logAllSql,
+            boolean printConsole, AuditProvider provider) {
+        this.slowSqlThreshold = slowSqlThreshold;
+        this.logParameters = logParameters;
+        this.logResults = logResults;
+        this.logAllSql = logAllSql;
+        this.printConsole = printConsole;
+        this.provider = provider;
+    }
 
     /**
      * Determine whether it is slow SQL

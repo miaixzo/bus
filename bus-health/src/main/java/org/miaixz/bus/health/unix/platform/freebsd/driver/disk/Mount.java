@@ -50,6 +50,7 @@ public final class Mount {
      * Creates a new Mount instance.
      */
     private Mount() {
+        // No initialization required.
     }
 
     /**

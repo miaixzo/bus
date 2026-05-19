@@ -32,6 +32,13 @@ import org.miaixz.bus.health.builtin.hardware.Baseboard;
 public abstract class AbstractBaseboard implements Baseboard {
 
     /**
+     * Constructs a new AbstractBaseboard instance.
+     */
+    public AbstractBaseboard() {
+        // No initialization required.
+    }
+
+    /**
      * Returns the to string result.
      *
      * @return the to string result

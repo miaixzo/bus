@@ -59,6 +59,7 @@ public interface OperatingSystem {
          * Private constructor to prevent instantiation.
          */
         private ProcessFiltering() {
+            // No initialization required.
         }
 
         /**
@@ -102,6 +103,7 @@ public interface OperatingSystem {
          * Private constructor to prevent instantiation.
          */
         private ProcessSorting() {
+            // No initialization required.
         }
 
         /**

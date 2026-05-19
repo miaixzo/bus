@@ -43,6 +43,13 @@ import org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit;
 public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
     /**
+     * Constructs a new FreeBsdInternetProtocolStats instance.
+     */
+    public FreeBsdInternetProtocolStats() {
+        // No initialization required.
+    }
+
+    /**
      * The establishedv4v6 value.
      */
     private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer

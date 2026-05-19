@@ -43,6 +43,13 @@ import org.miaixz.bus.logger.Logger;
 public final class HkeyPerformanceDataKit {
 
     /**
+     * Constructs a new HkeyPerformanceDataKit instance.
+     */
+    public HkeyPerformanceDataKit() {
+        // No initialization required.
+    }
+
+    /**
      * Do a one-time lookup of the HKEY_PERFORMANCE_TEXT counter indices and store in a map for efficient lookups
      * on-demand.
      */

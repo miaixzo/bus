@@ -35,6 +35,12 @@ import org.miaixz.bus.logger.Logger;
  */
 public class HealthCheckApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code HealthCheckApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public HealthCheckApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

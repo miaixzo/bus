@@ -30,24 +30,51 @@ import java.util.Date;
  */
 public class AccessRequest extends AbstractUser<AccessRequest> {
 
+    /**
+     * Constructs a new AccessRequest instance.
+     */
+    public AccessRequest() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852235619209L;
 
     private Date requestedAt;
     private AccessLevel accessLevel;
 
+    /**
+     * Returns the requested at.
+     *
+     * @return the result
+     */
     public Date getRequestedAt() {
         return requestedAt;
     }
 
+    /**
+     * Sets the requested at.
+     *
+     * @param requestedAt the requested at value
+     */
     public void setRequestedAt(Date requestedAt) {
         this.requestedAt = requestedAt;
     }
 
+    /**
+     * Returns the access level.
+     *
+     * @return the result
+     */
     public AccessLevel getAccessLevel() {
         return accessLevel;
     }
 
+    /**
+     * Sets the access level.
+     *
+     * @param accessLevel the access level value
+     */
     public void setAccessLevel(AccessLevel accessLevel) {
         this.accessLevel = accessLevel;
     }

@@ -116,7 +116,7 @@ public final class AdlKit {
      * Creates a new AdlKit instance.
      */
     private AdlKit() {
-
+        // No initialization required.
     }
 
     // Lazy adapter enumeration state — written once, read-only thereafter

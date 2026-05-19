@@ -33,7 +33,53 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum PipelineStatus {
 
-    CREATED, WAITING_FOR_RESOURCE, PREPARING, PENDING, RUNNING, SUCCESS, FAILED, CANCELED, CANCELING, SKIPPED, MANUAL,
+    /**
+     * The created pipeline status.
+     */
+    CREATED,
+    /**
+     * The waiting for resource pipeline status.
+     */
+    WAITING_FOR_RESOURCE,
+    /**
+     * The preparing pipeline status.
+     */
+    PREPARING,
+    /**
+     * The pending pipeline status.
+     */
+    PENDING,
+    /**
+     * The running pipeline status.
+     */
+    RUNNING,
+    /**
+     * The success pipeline status.
+     */
+    SUCCESS,
+    /**
+     * The failed pipeline status.
+     */
+    FAILED,
+    /**
+     * The canceled pipeline status.
+     */
+    CANCELED,
+    /**
+     * The canceling pipeline status.
+     */
+    CANCELING,
+    /**
+     * The skipped pipeline status.
+     */
+    SKIPPED,
+    /**
+     * The manual pipeline status.
+     */
+    MANUAL,
+    /**
+     * The scheduled pipeline status.
+     */
     SCHEDULED;
 
     private static Map<String, PipelineStatus> valuesMap = new HashMap<>(11);
@@ -43,15 +89,34 @@ public enum PipelineStatus {
             valuesMap.put(status.toValue(), status);
     }
 
+    /**
+     * Returns the value.
+     *
+     * @param value the value value
+     * @return the result
+     */
+
     @JsonCreator
     public static PipelineStatus forValue(String value) {
         return valuesMap.get(value);
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     @JsonValue
     public String toValue() {
         return (name().toLowerCase());
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

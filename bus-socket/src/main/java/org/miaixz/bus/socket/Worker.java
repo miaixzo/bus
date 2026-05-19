@@ -76,12 +76,30 @@ public final class Worker implements Runnable {
      * Buffer page for read operations.
      */
     private BufferPage readBufferPage = null;
+    /**
+     * Standby read buffer reused across UDP receive attempts.
+     */
     private VirtualBuffer standbyBuffer;
 
+    /**
+     * Creates a worker that allocates its read buffer page from the write buffer pool.
+     *
+     * @param writeBufferPool write buffer pool
+     * @param threadNum       worker thread number
+     * @throws IOException if selector initialization fails
+     */
     public Worker(BufferPagePool writeBufferPool, int threadNum) throws IOException {
         this(writeBufferPool.allocateBufferPage(), writeBufferPool, threadNum);
     }
 
+    /**
+     * Creates a worker with explicit read and write buffer resources.
+     *
+     * @param readBufferPage  read buffer page
+     * @param writeBufferPool write buffer pool
+     * @param threadNum       worker thread number
+     * @throws IOException if selector initialization fails
+     */
     public Worker(BufferPage readBufferPage, BufferPagePool writeBufferPool, int threadNum) throws IOException {
         this.readBufferPage = readBufferPage;
         this.writeBufferPool = writeBufferPool;
@@ -164,6 +182,11 @@ public final class Worker implements Runnable {
         }
     }
 
+    /**
+     * Processes pending channel registrations and selected UDP events.
+     *
+     * @throws IOException if selector processing fails
+     */
     public void doSelector() throws IOException {
         Consumer<Selector> register;
         while ((register = registers.poll()) != null) {
@@ -193,6 +216,13 @@ public final class Worker implements Runnable {
         }
     }
 
+    /**
+     * Reads datagrams for the supplied UDP channel.
+     *
+     * @param channel UDP channel
+     * @return {@code true} when the read loop can continue
+     * @throws IOException if the channel read fails
+     */
     public boolean doRead(UdpChannel channel) throws IOException {
         int count = Normal._16;
         Context context = channel.context;

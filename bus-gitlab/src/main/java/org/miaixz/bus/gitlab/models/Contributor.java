@@ -37,25 +37,61 @@ public class Contributor extends AbstractUser<Contributor> {
     private Integer additions;
     private Integer deletions;
 
+    /**
+     * Returns the commits.
+     *
+     * @return the result
+     */
+
     public Integer getCommits() {
         return commits;
     }
+
+    /**
+     * Sets the commits.
+     *
+     * @param commits the commits value
+     */
 
     public void setCommits(Integer commits) {
         this.commits = commits;
     }
 
+    /**
+     * Returns the additions.
+     *
+     * @return the result
+     */
+
     public Integer getAdditions() {
         return additions;
     }
+
+    /**
+     * Sets the additions.
+     *
+     * @param additions the additions value
+     */
 
     public void setAdditions(Integer additions) {
         this.additions = additions;
     }
 
+    /**
+     * Returns the deletions.
+     *
+     * @return the result
+     */
+
     public Integer getDeletions() {
         return deletions;
     }
+
+    /**
+     * Sets the deletions.
+     *
+     * @param deletions the deletions value
+     */
 
     public void setDeletions(Integer deletions) {
         this.deletions = deletions;

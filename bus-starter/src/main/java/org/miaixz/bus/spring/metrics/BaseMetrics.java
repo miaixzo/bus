@@ -40,6 +40,13 @@ import lombok.Setter;
 public class BaseMetrics {
 
     /**
+     * Constructs a new BaseMetrics instance.
+     */
+    public BaseMetrics() {
+        // No initialization required.
+    }
+
+    /**
      * A map to store custom attributes as key-value pairs.
      */
     private final Map<String, String> attributes = new HashMap<>();

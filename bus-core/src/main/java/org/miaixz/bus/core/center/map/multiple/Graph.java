@@ -40,6 +40,7 @@ public class Graph<T> extends SetValueMap<T, T> {
      * Constructs a new Graph. Utility class constructor for static access.
      */
     public Graph() {
+        // No initialization required.
     }
 
     @Serial

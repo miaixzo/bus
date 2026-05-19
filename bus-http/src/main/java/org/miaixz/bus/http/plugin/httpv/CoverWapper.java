@@ -30,70 +30,94 @@ import java.util.Set;
 public interface CoverWapper {
 
     /**
+     * Returns the number of key-value pairs.
+     *
      * @return The number of key-value pairs.
      */
     int size();
 
     /**
+     * Tests whether the map is empty.
+     *
      * @return True if the map is empty.
      */
     boolean isEmpty();
 
     /**
+     * Returns the value for the key as an object wrapper.
+     *
      * @param key The key name.
      * @return The sub-object as a CoverWapper.
      */
     CoverWapper getWappers(String key);
 
     /**
+     * Returns the value for the key as an array wrapper.
+     *
      * @param key The key name.
      * @return The sub-array as a CoverArray.
      */
     CoverArray getArray(String key);
 
     /**
+     * Returns the value for the key as a boolean.
+     *
      * @param key The key name.
      * @return The boolean value.
      */
     boolean getBool(String key);
 
     /**
+     * Returns the value for the key as an int.
+     *
      * @param key The key name.
      * @return The int value.
      */
     int getInt(String key);
 
     /**
+     * Returns the value for the key as a long.
+     *
      * @param key The key name.
      * @return The long value.
      */
     long getLong(String key);
 
     /**
+     * Returns the value for the key as a float.
+     *
      * @param key The key name.
      * @return The float value.
      */
     float getFloat(String key);
 
     /**
+     * Returns the value for the key as a double.
+     *
      * @param key The key name.
      * @return The double value.
      */
     double getDouble(String key);
 
     /**
+     * Returns the value for the key as a string.
+     *
      * @param key The key name.
      * @return The String value.
      */
     String getString(String key);
 
     /**
+     * Tests whether the key exists.
+     *
      * @param key The key name.
      * @return True if the key exists.
      */
     boolean has(String key);
 
     /**
+     * Returns the set of keys.
+     *
      * @return The set of keys.
      */
     Set<String> keySet();

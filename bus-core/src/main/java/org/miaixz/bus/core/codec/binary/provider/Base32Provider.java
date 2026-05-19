@@ -51,6 +51,7 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
      * Constructs a new Base32Provider. Utility class constructor for static access.
      */
     private Base32Provider() {
+        // No initialization required.
     }
 
     @Serial

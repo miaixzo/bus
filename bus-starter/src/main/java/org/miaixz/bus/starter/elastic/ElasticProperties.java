@@ -44,6 +44,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class ElasticProperties {
 
     /**
+     * Constructs a new ElasticProperties instance.
+     */
+    public ElasticProperties() {
+        // No initialization required.
+    }
+
+    /**
      * Comma-separated list of cluster host addresses. Format: ip1:port,ip2:port
      */
     private String hosts;

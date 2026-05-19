@@ -30,6 +30,13 @@ import org.springframework.core.env.Environment;
 public class DefaultPlaceHolderBinder implements PlaceHolderBinder {
 
     /**
+     * Constructs a new {@code DefaultPlaceHolderBinder} instance.
+     */
+    public DefaultPlaceHolderBinder() {
+        // No initialization required.
+    }
+
+    /**
      * Singleton instance of {@code DefaultPlaceHolderBinder}.
      */
     public static final DefaultPlaceHolderBinder INSTANCE = new DefaultPlaceHolderBinder();

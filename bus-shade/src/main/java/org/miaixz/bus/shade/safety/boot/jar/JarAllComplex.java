@@ -33,6 +33,13 @@ import org.miaixz.bus.shade.safety.Complex;
 public class JarAllComplex implements Complex<JarArchiveEntry> {
 
     /**
+     * Constructs a new JarAllComplex instance.
+     */
+    public JarAllComplex() {
+        // No initialization required.
+    }
+
+    /**
      * Always returns {@code true}, indicating that the given JAR archive entry should be processed.
      *
      * @param entry The {@link JarArchiveEntry} to check.

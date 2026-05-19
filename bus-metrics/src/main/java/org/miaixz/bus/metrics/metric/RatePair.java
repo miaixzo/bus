@@ -40,26 +40,36 @@ public interface RatePair {
 
     /**
      * error.oneMinuteRate() / total.oneMinuteRate(); returns 0 if no events.
+     *
+     * @return error rate
      */
     double errorRate();
 
     /**
      * success.oneMinuteRate() / total.oneMinuteRate(); returns 1 if no events.
+     *
+     * @return success rate
      */
     double successRate();
 
     /**
      * Returns the combined total meter (successes + errors).
+     *
+     * @return total meter
      */
     Meter total();
 
     /**
      * Returns the error-only meter.
+     *
+     * @return error meter
      */
     Meter errors();
 
     /**
      * Returns the success-only meter.
+     *
+     * @return success meter
      */
     Meter successes();
 

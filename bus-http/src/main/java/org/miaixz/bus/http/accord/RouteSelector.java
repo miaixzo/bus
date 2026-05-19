@@ -60,6 +60,14 @@ public class RouteSelector {
      */
     private List<InetSocketAddress> inetSocketAddresses = Collections.emptyList();
 
+    /**
+     * Executes the route selector operation.
+     *
+     * @param address       the address value
+     * @param routeDatabase the route database value
+     * @param call          the call value
+     * @param eventListener the event listener value
+     */
     public RouteSelector(Address address, RouteDatabase routeDatabase, NewCall call, EventListener eventListener) {
         this.address = address;
         this.routeDatabase = routeDatabase;

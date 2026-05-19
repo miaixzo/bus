@@ -37,7 +37,7 @@ public class SecretMasker {
      * Creates a secret masker.
      */
     public SecretMasker() {
-
+        // No initialization required.
     }
 
     /**

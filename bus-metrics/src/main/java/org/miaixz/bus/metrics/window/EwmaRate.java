@@ -91,6 +91,8 @@ public class EwmaRate {
 
     /**
      * Returns a new EWMA configured for a 1-minute moving average, ticked every 5 seconds.
+     *
+     * @return one-minute EWMA rate
      */
     public static EwmaRate oneMinute() {
         return new EwmaRate(M1_ALPHA, 5, TimeUnit.SECONDS);
@@ -98,6 +100,8 @@ public class EwmaRate {
 
     /**
      * Returns a new EWMA configured for a 5-minute moving average, ticked every 5 seconds.
+     *
+     * @return five-minute EWMA rate
      */
     public static EwmaRate fiveMinutes() {
         return new EwmaRate(M5_ALPHA, 5, TimeUnit.SECONDS);
@@ -105,6 +109,8 @@ public class EwmaRate {
 
     /**
      * Returns a new EWMA configured for a 15-minute moving average, ticked every 5 seconds.
+     *
+     * @return fifteen-minute EWMA rate
      */
     public static EwmaRate fifteenMinutes() {
         return new EwmaRate(M15_ALPHA, 5, TimeUnit.SECONDS);
@@ -134,6 +140,8 @@ public class EwmaRate {
 
     /**
      * Returns the current EWMA rate in events/second.
+     *
+     * @return current EWMA rate
      */
     public double rate() {
         return rate;

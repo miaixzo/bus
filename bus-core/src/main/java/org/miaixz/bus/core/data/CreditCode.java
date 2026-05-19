@@ -51,6 +51,7 @@ public class CreditCode {
      * Constructs a new CreditCode. Utility class constructor for static access.
      */
     private CreditCode() {
+        // No initialization required.
     }
 
     /**

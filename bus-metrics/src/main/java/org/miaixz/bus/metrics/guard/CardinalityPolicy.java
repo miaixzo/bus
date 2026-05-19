@@ -212,6 +212,7 @@ public sealed interface CardinalityPolicy
          * Private constructor; use {@link #INSTANCE} singleton.
          */
         private Deny() {
+            // No initialization required.
         }
 
         /**

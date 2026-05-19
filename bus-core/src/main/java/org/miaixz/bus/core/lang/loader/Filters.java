@@ -33,6 +33,7 @@ public abstract class Filters {
      * Constructs a new Filters. Utility class constructor for static access.
      */
     private Filters() {
+        // No initialization required.
     }
 
     /**

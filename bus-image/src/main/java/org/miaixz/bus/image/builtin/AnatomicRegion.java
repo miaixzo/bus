@@ -41,6 +41,13 @@ import org.miaixz.bus.image.galaxy.data.VR;
 public class AnatomicRegion {
 
     /**
+     * Constructs a new AnatomicRegion instance.
+     */
+    public AnatomicRegion() {
+        // No initialization required.
+    }
+
+    /**
      * The abdomen value.
      */
     public static final Code Abdomen = new Code("818981001", "SCT", null, "Abdomen");

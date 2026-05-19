@@ -39,18 +39,42 @@ public class IssuesStatistics implements Serializable {
 
     private Statistics statistics;
 
+    /**
+     * Returns the statistics.
+     *
+     * @return the result
+     */
+
     public Statistics getStatistics() {
         return statistics;
     }
+
+    /**
+     * Sets the statistics.
+     *
+     * @param statistics the statistics value
+     */
 
     public void setStatistics(Statistics statistics) {
         this.statistics = statistics;
     }
 
+    /**
+     * Returns the counts.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public Counts getCounts() {
         return (statistics != null ? statistics.counts : null);
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {
@@ -70,9 +94,21 @@ public class IssuesStatistics implements Serializable {
 
         private Counts counts;
 
+        /**
+         * Returns the counts.
+         *
+         * @return the result
+         */
+
         public Counts getCounts() {
             return counts;
         }
+
+        /**
+         * Sets the counts.
+         *
+         * @param counts the counts value
+         */
 
         public void setCounts(Counts counts) {
             this.counts = counts;
@@ -95,25 +131,61 @@ public class IssuesStatistics implements Serializable {
         private Integer closed;
         private Integer opened;
 
+        /**
+         * Returns the all.
+         *
+         * @return the result
+         */
+
         public Integer getAll() {
             return all;
         }
+
+        /**
+         * Sets the all.
+         *
+         * @param all the all value
+         */
 
         public void setAll(Integer all) {
             this.all = all;
         }
 
+        /**
+         * Returns the closed.
+         *
+         * @return the result
+         */
+
         public Integer getClosed() {
             return closed;
         }
+
+        /**
+         * Sets the closed.
+         *
+         * @param closed the closed value
+         */
 
         public void setClosed(Integer closed) {
             this.closed = closed;
         }
 
+        /**
+         * Returns the opened.
+         *
+         * @return the result
+         */
+
         public Integer getOpened() {
             return opened;
         }
+
+        /**
+         * Sets the opened.
+         *
+         * @param opened the opened value
+         */
 
         public void setOpened(Integer opened) {
             this.opened = opened;

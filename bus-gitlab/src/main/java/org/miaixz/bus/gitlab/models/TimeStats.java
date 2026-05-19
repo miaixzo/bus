@@ -40,37 +40,91 @@ public class TimeStats implements Serializable {
     private Duration humanTimeEstimate;
     private Duration humanTotalTimeSpent;
 
+    /**
+     * Returns the time estimate.
+     *
+     * @return the result
+     */
+
     public Integer getTimeEstimate() {
         return timeEstimate;
     }
+
+    /**
+     * Sets the time estimate.
+     *
+     * @param timeEstimate the time estimate value
+     */
 
     public void setTimeEstimate(Integer timeEstimate) {
         this.timeEstimate = timeEstimate;
     }
 
+    /**
+     * Returns the total time spent.
+     *
+     * @return the result
+     */
+
     public Integer getTotalTimeSpent() {
         return totalTimeSpent;
     }
+
+    /**
+     * Sets the total time spent.
+     *
+     * @param totalTimeSpent the total time spent value
+     */
 
     public void setTotalTimeSpent(Integer totalTimeSpent) {
         this.totalTimeSpent = totalTimeSpent;
     }
 
+    /**
+     * Returns the human time estimate.
+     *
+     * @return the result
+     */
+
     public Duration getHumanTimeEstimate() {
         return humanTimeEstimate;
     }
+
+    /**
+     * Sets the human time estimate.
+     *
+     * @param humanTimeEstimate the human time estimate value
+     */
 
     public void setHumanTimeEstimate(Duration humanTimeEstimate) {
         this.humanTimeEstimate = humanTimeEstimate;
     }
 
+    /**
+     * Returns the human total time spent.
+     *
+     * @return the result
+     */
+
     public Duration getHumanTotalTimeSpent() {
         return humanTotalTimeSpent;
     }
 
+    /**
+     * Sets the human total time spent.
+     *
+     * @param humanTotalTimeSpent the human total time spent value
+     */
+
     public void setHumanTotalTimeSpent(Duration humanTotalTimeSpent) {
         this.humanTotalTimeSpent = humanTotalTimeSpent;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

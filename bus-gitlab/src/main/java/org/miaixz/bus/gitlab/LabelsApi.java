@@ -37,6 +37,12 @@ import org.miaixz.bus.gitlab.models.Label;
  */
 public class LabelsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code LabelsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public LabelsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

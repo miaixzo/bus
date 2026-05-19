@@ -34,6 +34,13 @@ import java.util.concurrent.locks.StampedLock;
 public class Lock {
 
     /**
+     * Constructs a new Lock instance.
+     */
+    public Lock() {
+        // No initialization required.
+    }
+
+    /**
      * A singleton instance of {@link NoLock} representing a no-operation lock.
      */
     private static final NoLock NO_LOCK = new NoLock();

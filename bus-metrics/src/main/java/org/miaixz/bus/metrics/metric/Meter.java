@@ -30,21 +30,29 @@ public interface Meter extends Counter {
 
     /**
      * Rolling 1-minute average event rate (events/second).
+     *
+     * @return one-minute event rate
      */
     double oneMinuteRate();
 
     /**
      * Rolling 5-minute average event rate (events/second).
+     *
+     * @return five-minute event rate
      */
     double fiveMinuteRate();
 
     /**
      * Rolling 15-minute average event rate (events/second).
+     *
+     * @return fifteen-minute event rate
      */
     double fifteenMinuteRate();
 
     /**
      * Mean rate since creation (events/second).
+     *
+     * @return mean event rate
      */
     double meanRate();
 

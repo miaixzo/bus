@@ -34,7 +34,7 @@ public final class Charter {
      * Creates no instances.
      */
     private Charter() {
-
+        // No initialization required.
     }
 
     /**

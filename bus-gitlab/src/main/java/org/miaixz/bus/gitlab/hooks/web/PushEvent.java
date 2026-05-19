@@ -33,20 +33,44 @@ public class PushEvent extends AbstractPushEvent implements Event {
 
     @Serial
     private static final long serialVersionUID = 2852233073088L;
+    /**
+     * The x gitlab event value.
+     */
 
     public static final String X_GITLAB_EVENT = "Push Hook";
+    /**
+     * The object kind value.
+     */
     public static final String OBJECT_KIND = "push";
+
+    /**
+     * Returns the object kind.
+     *
+     * @return the result
+     */
 
     @Override
     public String getObjectKind() {
         return (OBJECT_KIND);
     }
 
+    /**
+     * Sets the object kind.
+     *
+     * @param objectKind the object kind value
+     */
+
     public void setObjectKind(String objectKind) {
         if (!OBJECT_KIND.equals(objectKind)) {
             throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + "'");
         }
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

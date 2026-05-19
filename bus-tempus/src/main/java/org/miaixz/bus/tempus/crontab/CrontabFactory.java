@@ -32,6 +32,13 @@ import org.miaixz.bus.tempus.Repertoire;
 public class CrontabFactory {
 
     /**
+     * Constructs a new CrontabFactory instance.
+     */
+    public CrontabFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a task table.
      *
      * @param config The cron task configuration.

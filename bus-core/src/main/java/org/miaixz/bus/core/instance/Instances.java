@@ -51,7 +51,7 @@ public final class Instances {
      * Private constructor to prevent instantiation.
      */
     private Instances() {
-
+        // No initialization required.
     }
 
     /**

@@ -37,6 +37,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class EmailProvider extends AbstractProvider {
 
     /**
+     * Constructs a new EmailProvider instance.
+     */
+    public EmailProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Applies email-specific desensitization logic to the provided value.
      *
      * @param object  The object containing the email string to be desensitized.

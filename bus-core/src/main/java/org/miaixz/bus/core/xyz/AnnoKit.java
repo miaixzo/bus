@@ -55,6 +55,7 @@ public class AnnoKit {
      * Constructs a new AnnoKit. Utility class constructor for static access.
      */
     private AnnoKit() {
+        // No initialization required.
     }
 
     /**

@@ -59,7 +59,7 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
      * Creates the default registry key generator.
      */
     public RegistryGenerator() {
-
+        // No initialization required.
     }
 
     /**

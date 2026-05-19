@@ -39,6 +39,13 @@ import org.miaixz.bus.logger.Logger;
 public class JschKit {
 
     /**
+     * Constructs a new JschKit instance.
+     */
+    public JschKit() {
+        // No initialization required.
+    }
+
+    /**
      * Opens an SSH session with the specified connection details. This method configures the session with the host,
      * port, user, password, and timeout from the provided {@link Connector}. It also sets default configurations for
      * host key checking and authentication methods.

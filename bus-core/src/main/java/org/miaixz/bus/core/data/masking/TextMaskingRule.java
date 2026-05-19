@@ -87,7 +87,7 @@ public class TextMaskingRule {
      * Constructor.
      */
     public TextMaskingRule() {
-
+        // No initialization required.
     }
 
     /**

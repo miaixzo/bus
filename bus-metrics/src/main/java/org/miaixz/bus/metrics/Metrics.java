@@ -58,6 +58,13 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
 public class Metrics {
 
     /**
+     * Constructs a new Metrics instance.
+     */
+    public Metrics() {
+        // No initialization required.
+    }
+
+    /**
      * Active metrics provider; lazily initialised via SPI on first access.
      */
     private static volatile Provider PROVIDER;
@@ -86,6 +93,8 @@ public class Metrics {
 
     /**
      * Override the provider. Typically called by Spring auto-configuration.
+     *
+     * @param provider metrics provider
      */
     public static void setProvider(Provider provider) {
         Logger.info(

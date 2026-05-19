@@ -42,6 +42,7 @@ public final class PerfstatConfig {
      * Creates a new PerfstatConfig instance.
      */
     private PerfstatConfig() {
+        // No initialization required.
     }
 
     /**

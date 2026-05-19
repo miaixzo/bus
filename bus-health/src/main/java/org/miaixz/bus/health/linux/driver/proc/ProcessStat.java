@@ -68,6 +68,7 @@ public final class ProcessStat {
      * Creates a new ProcessStat instance.
      */
     private ProcessStat() {
+        // No initialization required.
     }
 
     /**

@@ -45,6 +45,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class IteratorValidator {
 
     /**
+     * Constructs a new IteratorValidator instance.
+     */
+    public IteratorValidator() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given {@link Iterable} is empty.
      *
      * @param iterable the {@link Iterable} object to check

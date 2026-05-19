@@ -42,6 +42,7 @@ public class EmptyOutputStream extends OutputStream {
      * Private constructor to enforce the singleton pattern.
      */
     private EmptyOutputStream() {
+        // No initialization required.
     }
 
     /**

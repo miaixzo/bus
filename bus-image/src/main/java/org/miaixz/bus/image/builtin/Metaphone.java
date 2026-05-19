@@ -31,6 +31,13 @@ import org.miaixz.bus.core.lang.Normal;
 public class Metaphone implements FuzzyString {
 
     /**
+     * Constructs a new Metaphone instance.
+     */
+    public Metaphone() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if a given character is a vowel (A, E, I, O, U).
      *
      * @param ch The character to check.

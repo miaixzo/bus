@@ -38,21 +38,51 @@ public class ProjectAccess implements Serializable {
     private AccessLevel accessLevel;
     private int notificationLevel;
 
+    /**
+     * Returns the access level.
+     *
+     * @return the result
+     */
+
     public AccessLevel getAccessLevel() {
         return (accessLevel);
     }
+
+    /**
+     * Sets the access level.
+     *
+     * @param accessLevel the access level value
+     */
 
     public void setAccessLevel(AccessLevel accessLevel) {
         this.accessLevel = accessLevel;
     }
 
+    /**
+     * Returns the notification level.
+     *
+     * @return the result
+     */
+
     public int getNotificationLevel() {
         return (notificationLevel);
     }
 
+    /**
+     * Sets the notification level.
+     *
+     * @param notificationLevel the notification level value
+     */
+
     public void setNotificationLevel(int notificationLevel) {
         this.notificationLevel = notificationLevel;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

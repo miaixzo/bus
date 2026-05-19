@@ -48,52 +48,128 @@ public class CustomIssueTrackerService extends NotificationService {
         return formData;
     }
 
+    /**
+     * Returns the new issue url.
+     *
+     * @return the result
+     */
+
     public String getNewIssueUrl() {
         return this.getProperty(NEW_ISSUE_URL_PROP);
     }
 
+    /**
+     * Sets the new issue url.
+     *
+     * @param endpoint the endpoint value
+     */
+
     public void setNewIssueUrl(String endpoint) {
         this.setProperty(NEW_ISSUE_URL_PROP, endpoint);
     }
+
+    /**
+     * Sets the new issue url and returns this instance.
+     *
+     * @param endpoint the endpoint value
+     * @return the result
+     */
 
     public CustomIssueTrackerService withNewIssueUrl(String endpoint) {
         setNewIssueUrl(endpoint);
         return this;
     }
 
+    /**
+     * Returns the issues url.
+     *
+     * @return the result
+     */
+
     public String getIssuesUrl() {
         return this.getProperty(ISSUES_URL_PROP);
     }
 
+    /**
+     * Sets the issues url.
+     *
+     * @param endpoint the endpoint value
+     */
+
     public void setIssuesUrl(String endpoint) {
         this.setProperty(ISSUES_URL_PROP, endpoint);
     }
+
+    /**
+     * Sets the issues url and returns this instance.
+     *
+     * @param endpoint the endpoint value
+     * @return the result
+     */
 
     public CustomIssueTrackerService withIssuesUrl(String endpoint) {
         setIssuesUrl(endpoint);
         return this;
     }
 
+    /**
+     * Returns the project url.
+     *
+     * @return the result
+     */
+
     public String getProjectUrl() {
         return this.getProperty(PROJECT_URL_PROP);
     }
 
+    /**
+     * Sets the project url.
+     *
+     * @param endpoint the endpoint value
+     */
+
     public void setProjectUrl(String endpoint) {
         this.setProperty(PROJECT_URL_PROP, endpoint);
     }
+
+    /**
+     * Sets the project url and returns this instance.
+     *
+     * @param endpoint the endpoint value
+     * @return the result
+     */
 
     public CustomIssueTrackerService withProjectUrl(String endpoint) {
         setProjectUrl(endpoint);
         return this;
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return this.getProperty(DESCRIPTION_PROP);
     }
 
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
+
     public void setDescription(String description) {
         this.setProperty(DESCRIPTION_PROP, description);
     }
+
+    /**
+     * Sets the description and returns this instance.
+     *
+     * @param description the description value
+     * @return the result
+     */
 
     public CustomIssueTrackerService withDescription(String description) {
         setDescription(description);

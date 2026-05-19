@@ -265,6 +265,11 @@ public final class ConnectionSuite {
             this.tls = tls;
         }
 
+        /**
+         * Creates a builder initialized from an existing connection suite.
+         *
+         * @param connectionSuite the source connection suite
+         */
         public Builder(ConnectionSuite connectionSuite) {
             this.tls = connectionSuite.tls;
             this.cipherSuites = connectionSuite.cipherSuites;

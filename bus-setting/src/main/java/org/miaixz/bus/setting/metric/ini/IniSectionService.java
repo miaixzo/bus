@@ -41,32 +41,77 @@ public class IniSectionService extends AbstractElement implements IniSection {
      */
     private List<IniProperty> properties;
 
+    /**
+     * Creates a section from a normalized value.
+     *
+     * @param value      normalized section value
+     * @param lineNumber source line number
+     */
     public IniSectionService(String value, int lineNumber) {
         super(value, Symbol.C_BRACKET_LEFT + value + Symbol.C_BRACKET_RIGHT, lineNumber);
         properties = new ArrayList<>();
     }
 
+    /**
+     * Creates a section with an explicit original source line.
+     *
+     * @param value         normalized section value
+     * @param originalValue original section line
+     * @param lineNumber    source line number
+     */
     public IniSectionService(String value, String originalValue, int lineNumber) {
         super(value, originalValue, lineNumber);
         properties = new ArrayList<>();
     }
 
+    /**
+     * Creates a section with an explicit property-list supplier.
+     *
+     * @param value         normalized section value
+     * @param originalValue original section line
+     * @param lineNumber    source line number
+     * @param listSupplier  property-list supplier
+     */
     public IniSectionService(String value, String originalValue, int lineNumber,
             Supplier<List<IniProperty>> listSupplier) {
         super(value, originalValue, lineNumber);
         properties = listSupplier.get();
     }
 
+    /**
+     * Creates a section with an attached comment.
+     *
+     * @param value      normalized section value
+     * @param lineNumber source line number
+     * @param comment    section comment
+     */
     public IniSectionService(String value, int lineNumber, IniComment comment) {
         super(value, Symbol.C_BRACKET_LEFT + value + Symbol.C_BRACKET_RIGHT, lineNumber, comment);
         properties = new ArrayList<>();
     }
 
+    /**
+     * Creates a section with an original source line and attached comment.
+     *
+     * @param value         normalized section value
+     * @param originalValue original section line
+     * @param lineNumber    source line number
+     * @param comment       section comment
+     */
     public IniSectionService(String value, String originalValue, int lineNumber, IniComment comment) {
         super(value, originalValue, lineNumber, comment);
         properties = new ArrayList<>();
     }
 
+    /**
+     * Creates a section with an original source line, attached comment, and property-list supplier.
+     *
+     * @param value         normalized section value
+     * @param originalValue original section line
+     * @param lineNumber    source line number
+     * @param comment       section comment
+     * @param listSupplier  property-list supplier
+     */
     public IniSectionService(String value, String originalValue, int lineNumber, IniComment comment,
             Supplier<List<IniProperty>> listSupplier) {
         super(value, originalValue, lineNumber, comment);

@@ -34,6 +34,12 @@ public class Assignee extends AbstractUser<Assignee> {
     @Serial
     private static final long serialVersionUID = 2852237318105L;
 
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));

@@ -39,6 +39,13 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public class SAXReader {
 
     /**
+     * Constructs a new {@code SAXReader} instance.
+     */
+    public SAXReader() {
+        // No initialization required.
+    }
+
+    /**
      * Executes the parse operation.
      *
      * @param uri   the uri.

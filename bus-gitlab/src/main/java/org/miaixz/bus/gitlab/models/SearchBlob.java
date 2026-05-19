@@ -43,61 +43,151 @@ public class SearchBlob implements Serializable {
     private Integer startline;
     private Long projectId;
 
+    /**
+     * Returns the basename.
+     *
+     * @return the result
+     */
+
     public String getBasename() {
         return basename;
     }
+
+    /**
+     * Sets the basename.
+     *
+     * @param basename the basename value
+     */
 
     public void setBasename(String basename) {
         this.basename = basename;
     }
 
+    /**
+     * Returns the data.
+     *
+     * @return the result
+     */
+
     public String getData() {
         return data;
     }
+
+    /**
+     * Sets the data.
+     *
+     * @param data the data value
+     */
 
     public void setData(String data) {
         this.data = data;
     }
 
+    /**
+     * Returns the filename.
+     *
+     * @return the result
+     */
+
     public String getFilename() {
         return filename;
     }
+
+    /**
+     * Sets the filename.
+     *
+     * @param filename the filename value
+     */
 
     public void setFilename(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public String getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Returns the ref.
+     *
+     * @return the result
+     */
+
     public String getRef() {
         return ref;
     }
+
+    /**
+     * Sets the ref.
+     *
+     * @param ref the ref value
+     */
 
     public void setRef(String ref) {
         this.ref = ref;
     }
 
+    /**
+     * Returns the startline.
+     *
+     * @return the result
+     */
+
     public Integer getStartline() {
         return startline;
     }
+
+    /**
+     * Sets the startline.
+     *
+     * @param startline the startline value
+     */
 
     public void setStartline(Integer startline) {
         this.startline = startline;
     }
 
+    /**
+     * Returns the project id.
+     *
+     * @return the result
+     */
+
     public Long getProjectId() {
         return projectId;
     }
 
+    /**
+     * Sets the project id.
+     *
+     * @param projectId the project id value
+     */
+
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

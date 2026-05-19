@@ -83,6 +83,7 @@ public class CharsBacker extends CharsValidator {
      * Constructs a new CharsBacker. Utility class constructor for static access.
      */
     public CharsBacker() {
+        // No initialization required.
     }
 
     /**

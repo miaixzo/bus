@@ -35,6 +35,13 @@ import org.miaixz.bus.validate.magic.annotation.Email;
 public class EmailMatcher implements Matcher<Object, Email> {
 
     /**
+     * Constructs a new EmailMatcher instance.
+     */
+    public EmailMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object, when converted to a string, is a valid email address.
      *
      * @param object     The object to validate.

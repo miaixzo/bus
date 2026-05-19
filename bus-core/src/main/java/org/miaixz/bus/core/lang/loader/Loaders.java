@@ -33,6 +33,13 @@ import java.util.jar.JarFile;
 public abstract class Loaders {
 
     /**
+     * Constructs a new Loaders instance.
+     */
+    public Loaders() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a classpath resource loader, which is an enhanced encapsulation of
      * {@link ClassLoader#getResources(String)}. By default, it uses the {@link Thread#currentThread()}'s
      * {@link Thread#getContextClassLoader()} as the ClassLoader. If the current thread's context class loader is
@@ -128,7 +135,6 @@ public abstract class Loaders {
      * <p>
      * 3. {@code Loaders.pkg(Loaders.ant()).load("org.miaixz.bus.core.load???.*");} Loads all resources under
      * subpackages of {@code io} that start with "load" followed by three characters.
-     *
      *
      * @param delegate The delegate loader.
      * @return A package-name-based resource loader.

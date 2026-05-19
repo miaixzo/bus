@@ -75,7 +75,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * the executor focused on request forwarding.
      */
     public McpExecutor() {
-
+        // No initialization required.
     }
 
     /**

@@ -35,6 +35,7 @@ public class CRC16Modbus extends CRC16Checksum {
      * Constructs a new CRC16Modbus. Utility class constructor for static access.
      */
     private CRC16Modbus() {
+        // No initialization required.
     }
 
     @Serial

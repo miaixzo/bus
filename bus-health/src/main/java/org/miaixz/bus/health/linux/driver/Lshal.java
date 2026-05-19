@@ -35,6 +35,13 @@ import org.miaixz.bus.health.Parsing;
 public final class Lshal {
 
     /**
+     * Constructs a new {@code Lshal} instance.
+     */
+    public Lshal() {
+        // No initialization required.
+    }
+
+    /**
      * Query the serial number from lshal
      *
      * @return The serial number if available, null otherwise

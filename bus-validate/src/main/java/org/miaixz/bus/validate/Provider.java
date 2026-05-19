@@ -46,6 +46,13 @@ import org.miaixz.bus.validate.magic.annotation.Complex;
 public class Provider {
 
     /**
+     * Constructs a new Provider instance.
+     */
+    public Provider() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a new validation instance for the given object. A new object is created each time to avoid thread safety
      * issues. {@link ThreadLocal} can be used for optimization.
      *

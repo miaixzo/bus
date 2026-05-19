@@ -47,6 +47,13 @@ import org.miaixz.bus.office.excel.style.StyleSet;
 public class RowKit {
 
     /**
+     * Constructs a new RowKit instance.
+     */
+    public RowKit() {
+        // No initialization required.
+    }
+
+    /**
      * Gets an existing row or creates a new one if it does not exist.
      *
      * @param sheet    The Excel sheet.

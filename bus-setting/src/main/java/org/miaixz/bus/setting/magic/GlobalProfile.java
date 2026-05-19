@@ -36,6 +36,7 @@ public class GlobalProfile {
      * Private constructor to prevent instantiation.
      */
     private GlobalProfile() {
+        // No initialization required.
     }
 
     /**

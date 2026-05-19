@@ -40,6 +40,7 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
      * Constructs a new thread factory builder.
      */
     public ThreadFactoryBuilder() {
+        // No initialization required.
     }
 
     @Serial

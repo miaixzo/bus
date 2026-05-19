@@ -41,7 +41,7 @@ public class Watch<T> implements Change<T> {
      * Creates an empty watch event.
      */
     public Watch() {
-
+        // No initialization required.
     }
 
     /**
@@ -67,16 +67,19 @@ public class Watch<T> implements Change<T> {
     /**
      * Values newly observed by the subscription.
      */
+    @lombok.Builder.Default
     private List<T> added = List.of();
 
     /**
      * Values removed from the subscription result set.
      */
+    @lombok.Builder.Default
     private List<T> removed = List.of();
 
     /**
      * Values whose content changed while remaining in the result set.
      */
+    @lombok.Builder.Default
     private List<T> updated = List.of();
 
     /**

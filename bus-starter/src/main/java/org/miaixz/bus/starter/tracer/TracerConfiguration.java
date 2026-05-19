@@ -40,6 +40,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class TracerConfiguration {
 
     /**
+     * Constructs a new TracerConfiguration instance.
+     */
+    public TracerConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected distributed tracing configuration properties.
      */
     @Resource

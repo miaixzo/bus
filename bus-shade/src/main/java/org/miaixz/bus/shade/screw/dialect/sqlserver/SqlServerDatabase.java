@@ -36,6 +36,13 @@ import org.miaixz.bus.shade.screw.metadata.Database;
 public class SqlServerDatabase implements Database {
 
     /**
+     * Constructs a new SqlServerDatabase instance.
+     */
+    public SqlServerDatabase() {
+        // No initialization required.
+    }
+
+    /**
      * The name of the database.
      */
     @MappingField(value = "TABLE_CAT")

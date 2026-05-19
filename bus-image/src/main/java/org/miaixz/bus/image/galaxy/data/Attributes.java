@@ -4089,6 +4089,7 @@ public class Attributes implements Serializable {
     /**
      * Adds selected attributes
      *
+     * @param other          source attributes
      * @param privateCreator private creator
      * @param tag            tag
      * @return result
@@ -4546,10 +4547,11 @@ public class Attributes implements Serializable {
      * non-empty attributes in another attribute object. The specified tag array must be sorted before this call, for
      * example by {@link java.util.Arrays#sort(int[])} method).
      *
-     * @param newAttrs  other attribute object
-     * @param modified  attribute object used to collectoverwritten non-empty attributes and their original values, or
-     *                  null
-     * @param selection sorted tag values
+     * @param newAttrs     other attribute object
+     * @param modified     attribute object used to collectoverwritten non-empty attributes and their original values,
+     *                     or null
+     * @param updatePolicy update policy used to merge attributes
+     * @param selection    sorted tag values
      * @return {@code true} if one or more attributes were added or overwritten
      */
     public boolean updateSelected(
@@ -4564,10 +4566,11 @@ public class Attributes implements Serializable {
     /**
      * Tests whether {@link #updateSelected} would modify attributes without modifying this instance.
      *
-     * @param newAttrs  other attribute object
-     * @param modified  attribute object used to collectoverwritten non-empty attributes and their original values, or
-     *                  null
-     * @param selection sorted tag values
+     * @param newAttrs     other attribute object
+     * @param modified     attribute object used to collectoverwritten non-empty attributes and their original values,
+     *                     or null
+     * @param updatePolicy update policy used to test the merge
+     * @param selection    sorted tag values
      * @return {@code true} if one or more attributes would be added or overwritten
      */
     public boolean testUpdateSelected(
@@ -4583,10 +4586,11 @@ public class Attributes implements Serializable {
      * existing non-empty attributes in another attribute object. The specified tag array must be sorted before this
      * call, for example by {@link java.util.Arrays#sort(int[])} method).
      *
-     * @param newAttrs  other attribute object
-     * @param modified  attribute object used to collectoverwritten non-empty attributes and their original values, or
-     *                  null
-     * @param selection sorted tag values
+     * @param newAttrs     other attribute object
+     * @param modified     attribute object used to collectoverwritten non-empty attributes and their original values,
+     *                     or null
+     * @param updatePolicy update policy used to merge attributes
+     * @param selection    sorted tag values
      * @return {@code true} if one or more attributes were added or overwritten
      */
     public boolean updateNotSelected(
@@ -4601,10 +4605,11 @@ public class Attributes implements Serializable {
     /**
      * Tests whether {@link #updateNotSelected} would modify attributes without modifying this instance.
      *
-     * @param newAttrs  other attribute object
-     * @param modified  attribute object used to collectoverwritten non-empty attributes and their original values, or
-     *                  null
-     * @param selection sorted tag values
+     * @param newAttrs     other attribute object
+     * @param modified     attribute object used to collectoverwritten non-empty attributes and their original values,
+     *                     or null
+     * @param updatePolicy update policy used to test the merge
+     * @param selection    sorted tag values
      * @return {@code true} if one or more attributes would be added or overwritten
      */
     public boolean testUpdateNotSelected(

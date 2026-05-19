@@ -44,6 +44,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class OfficeConfiguration {
 
     /**
+     * Constructs a new OfficeConfiguration instance.
+     */
+    public OfficeConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected office configuration properties.
      */
     @Resource

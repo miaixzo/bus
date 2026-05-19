@@ -358,6 +358,12 @@ public final class Expression implements Serializable, Cloneable {
         return cronExpression;
     }
 
+    /**
+     * Parses and stores all fields of the cron expression.
+     *
+     * @param expression cron expression
+     * @throws ParseException if the expression cannot be parsed
+     */
     protected void buildExpression(String expression) throws ParseException {
         expressionParsed = true;
 
@@ -447,6 +453,15 @@ public final class Expression implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * Stores the next parsed expression value for the supplied cron field type.
+     *
+     * @param pos  current parse position
+     * @param s    expression segment
+     * @param type cron field type
+     * @return next parse position
+     * @throws ParseException if the value cannot be parsed
+     */
     protected int storeExpressionVals(int pos, String s, int type) throws ParseException {
 
         int incr = 0;
@@ -626,6 +641,16 @@ public final class Expression implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * Checks the next modifier after a parsed numeric value.
+     *
+     * @param pos  current parse position
+     * @param s    expression segment
+     * @param val  parsed numeric value
+     * @param type cron field type
+     * @return next parse position
+     * @throws ParseException if the modifier is invalid
+     */
     protected int checkNext(int pos, String s, int val, int type) throws ParseException {
 
         int end = -1;
@@ -816,6 +841,12 @@ public final class Expression implements Serializable, Cloneable {
         return buf.toString();
     }
 
+    /**
+     * Builds a summary string for one expression set.
+     *
+     * @param set expression values
+     * @return summary string
+     */
     protected String getExpressionSetSummary(java.util.Set<Integer> set) {
 
         if (set.contains(NO_SPEC)) {
@@ -842,6 +873,12 @@ public final class Expression implements Serializable, Cloneable {
         return buf.toString();
     }
 
+    /**
+     * Builds a summary string for one expression value list.
+     *
+     * @param list expression values
+     * @return summary string
+     */
     protected String getExpressionSetSummary(java.util.ArrayList<Integer> list) {
 
         if (list.contains(NO_SPEC)) {
@@ -868,6 +905,13 @@ public final class Expression implements Serializable, Cloneable {
         return buf.toString();
     }
 
+    /**
+     * Skips whitespace from the supplied index.
+     *
+     * @param i start index
+     * @param s source string
+     * @return first non-whitespace index
+     */
     protected int skipWhiteSpace(int i, String s) {
         for (; i < s.length() && (s.charAt(i) == Symbol.C_SPACE || s.charAt(i) == Symbol.C_HT); i++) {
         }
@@ -875,6 +919,13 @@ public final class Expression implements Serializable, Cloneable {
         return i;
     }
 
+    /**
+     * Finds the next whitespace position from the supplied index.
+     *
+     * @param i start index
+     * @param s source string
+     * @return next whitespace index
+     */
     protected int findNextWhiteSpace(int i, String s) {
         for (; i < s.length() && (s.charAt(i) != Symbol.C_SPACE || s.charAt(i) != Symbol.C_HT); i++) {
         }
@@ -882,6 +933,15 @@ public final class Expression implements Serializable, Cloneable {
         return i;
     }
 
+    /**
+     * Adds one parsed value or range to the field set.
+     *
+     * @param val  start value
+     * @param end  end value
+     * @param incr increment
+     * @param type cron field type
+     * @throws ParseException if the range is invalid
+     */
     protected void addToSet(int val, int end, int incr, int type) throws ParseException {
 
         TreeSet<Integer> set = getSet(type);
@@ -1055,6 +1115,14 @@ public final class Expression implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * Parses a multi-digit value.
+     *
+     * @param v first digit
+     * @param s source string
+     * @param i current index
+     * @return parsed value set
+     */
     protected ValueSet getValue(int v, String s, int i) {
         char c = s.charAt(i);
         StringBuilder s1 = new StringBuilder(String.valueOf(v));
@@ -1073,12 +1141,25 @@ public final class Expression implements Serializable, Cloneable {
         return val;
     }
 
+    /**
+     * Parses a numeric value beginning at the supplied index.
+     *
+     * @param s source string
+     * @param i current index
+     * @return parsed numeric value
+     */
     protected int getNumericValue(String s, int i) {
         int endOfVal = findNextWhiteSpace(i, s);
         String val = s.substring(i, endOfVal);
         return Integer.parseInt(val);
     }
 
+    /**
+     * Resolves a month abbreviation to a numeric value.
+     *
+     * @param s month abbreviation
+     * @return month number or {@code -1} when not found
+     */
     protected int getMonthNumber(String s) {
         Integer integer = monthMap.get(s);
 
@@ -1089,6 +1170,12 @@ public final class Expression implements Serializable, Cloneable {
         return integer;
     }
 
+    /**
+     * Resolves a day-of-week abbreviation to a numeric value.
+     *
+     * @param s day-of-week abbreviation
+     * @return day-of-week number or {@code -1} when not found
+     */
     protected int getDayOfWeekNumber(String s) {
         Integer integer = dayMap.get(s);
 
@@ -1535,6 +1622,13 @@ public final class Expression implements Serializable, Cloneable {
         return null;
     }
 
+    /**
+     * Returns the last day for the supplied month and year.
+     *
+     * @param monthNum month number
+     * @param year     year
+     * @return last day of the month
+     */
     protected int getLastDayOfMonth(int monthNum, int year) {
 
         switch (monthNum) {
@@ -1579,6 +1673,13 @@ public final class Expression implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * Restores transient parsed state after deserialization.
+     *
+     * @param stream object input stream
+     * @throws java.io.IOException    if reading fails
+     * @throws ClassNotFoundException if a serialized class cannot be found
+     */
     private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException {
 
         stream.defaultReadObject();

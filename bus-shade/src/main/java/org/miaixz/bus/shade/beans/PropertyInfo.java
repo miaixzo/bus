@@ -36,6 +36,13 @@ import lombok.Setter;
 @Setter
 public class PropertyInfo implements Serializable {
 
+    /**
+     * Constructs a new PropertyInfo instance.
+     */
+    public PropertyInfo() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = -1L;
 

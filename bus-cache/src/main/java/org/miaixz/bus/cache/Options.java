@@ -56,6 +56,7 @@ public class Options {
      * Creates an options holder with the module defaults.
      */
     public Options() {
+        // No initialization required.
     }
 
     /**
@@ -200,6 +201,7 @@ public class Options {
          * Creates a Redis options holder with the module defaults.
          */
         public Redis() {
+            // No initialization required.
         }
 
         /**

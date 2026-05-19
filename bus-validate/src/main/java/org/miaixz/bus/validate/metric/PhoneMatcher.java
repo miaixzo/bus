@@ -34,6 +34,13 @@ import org.miaixz.bus.validate.magic.annotation.Phone;
 public class PhoneMatcher implements Matcher<Object, Phone> {
 
     /**
+     * Constructs a new PhoneMatcher instance.
+     */
+    public PhoneMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object, when converted to a string, is a valid landline phone number.
      *
      * @param object     The object to validate.

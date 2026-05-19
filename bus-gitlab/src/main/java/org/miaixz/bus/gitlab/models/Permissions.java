@@ -38,21 +38,51 @@ public class Permissions implements Serializable {
     private ProjectAccess projectAccess;
     private ProjectAccess groupAccess;
 
+    /**
+     * Returns the project access.
+     *
+     * @return the result
+     */
+
     public ProjectAccess getProjectAccess() {
         return projectAccess;
     }
+
+    /**
+     * Sets the project access.
+     *
+     * @param projectAccess the project access value
+     */
 
     public void setProjectAccess(ProjectAccess projectAccess) {
         this.projectAccess = projectAccess;
     }
 
+    /**
+     * Returns the group access.
+     *
+     * @return the result
+     */
+
     public ProjectAccess getGroupAccess() {
         return groupAccess;
     }
 
+    /**
+     * Sets the group access.
+     *
+     * @param groupAccess the group access value
+     */
+
     public void setGroupAccess(ProjectAccess groupAccess) {
         this.groupAccess = groupAccess;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

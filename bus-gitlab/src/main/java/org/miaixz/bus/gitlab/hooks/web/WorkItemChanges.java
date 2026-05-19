@@ -32,17 +32,41 @@ public class WorkItemChanges extends EventChanges {
     private ChangeContainer<String> heathStatus;
     private ChangeContainer<Date> lastEditedAt;
 
+    /**
+     * Returns the heath status.
+     *
+     * @return the result
+     */
+
     public ChangeContainer<String> getHeathStatus() {
         return heathStatus;
     }
+
+    /**
+     * Sets the heath status.
+     *
+     * @param heathStatus the heath status value
+     */
 
     public void setHeathStatus(ChangeContainer<String> heathStatus) {
         this.heathStatus = heathStatus;
     }
 
+    /**
+     * Returns the last edited at.
+     *
+     * @return the result
+     */
+
     public ChangeContainer<Date> getLastEditedAt() {
         return lastEditedAt;
     }
+
+    /**
+     * Sets the last edited at.
+     *
+     * @param lastEditedAt the last edited at value
+     */
 
     public void setLastEditedAt(ChangeContainer<Date> lastEditedAt) {
         this.lastEditedAt = lastEditedAt;

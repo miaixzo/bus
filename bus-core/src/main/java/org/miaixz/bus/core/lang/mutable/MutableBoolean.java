@@ -43,7 +43,7 @@ public class MutableBoolean implements Comparable<MutableBoolean>, Mutable<Boole
      * Constructs a new MutableBoolean with a default value of {@code false}.
      */
     public MutableBoolean() {
-
+        // No initialization required.
     }
 
     /**

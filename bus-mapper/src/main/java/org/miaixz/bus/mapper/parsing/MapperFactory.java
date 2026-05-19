@@ -43,6 +43,13 @@ import org.miaixz.bus.mapper.builder.ClassMetaResolver;
 public abstract class MapperFactory {
 
     /**
+     * Constructs a new MapperFactory instance.
+     */
+    public MapperFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Gets the entity metadata for a given mapper interface and method.
      *
      * @param mapperType   The Mapper interface.

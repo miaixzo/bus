@@ -45,96 +45,235 @@ public class ReleaseParams implements Serializable {
     private Assets assets;
     private Date releasedAt;
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
+
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Sets the name and returns this instance.
+     *
+     * @param name the name value
+     * @return the result
+     */
 
     public ReleaseParams withName(String name) {
         this.name = name;
         return (this);
     }
 
+    /**
+     * Returns the tag name.
+     *
+     * @return the result
+     */
+
     public String getTagName() {
         return tagName;
     }
 
+    /**
+     * Sets the tag name.
+     *
+     * @param tagName the tag name value
+     */
+
     public void setTagName(String tagName) {
         this.tagName = tagName;
     }
+
+    /**
+     * Sets the tag name and returns this instance.
+     *
+     * @param tagName the tag name value
+     * @return the result
+     */
 
     public ReleaseParams withTagName(String tagName) {
         this.tagName = tagName;
         return (this);
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
+
     public void setDescription(String description) {
         this.description = description;
     }
+
+    /**
+     * Sets the description and returns this instance.
+     *
+     * @param description the description value
+     * @return the result
+     */
 
     public ReleaseParams withDescription(String description) {
         this.description = description;
         return (this);
     }
 
+    /**
+     * Returns the milestones.
+     *
+     * @return the result
+     */
+
     public List<String> getMilestones() {
         return milestones;
     }
 
+    /**
+     * Sets the milestones.
+     *
+     * @param milestones the milestones value
+     */
+
     public void setMilestones(List<String> milestones) {
         this.milestones = milestones;
     }
+
+    /**
+     * Sets the milestones and returns this instance.
+     *
+     * @param milestones the milestones value
+     * @return the result
+     */
 
     public ReleaseParams withMilestones(List<String> milestones) {
         this.milestones = milestones;
         return (this);
     }
 
+    /**
+     * Returns the ref.
+     *
+     * @return the result
+     */
+
     public String getRef() {
         return ref;
     }
 
+    /**
+     * Sets the ref.
+     *
+     * @param ref the ref value
+     */
+
     public void setRef(String ref) {
         this.ref = ref;
     }
+
+    /**
+     * Sets the ref and returns this instance.
+     *
+     * @param ref the ref value
+     * @return the result
+     */
 
     public ReleaseParams withRef(String ref) {
         this.ref = ref;
         return (this);
     }
 
+    /**
+     * Returns the assets.
+     *
+     * @return the result
+     */
+
     public Assets getAssets() {
         return assets;
     }
 
+    /**
+     * Sets the assets.
+     *
+     * @param assets the assets value
+     */
+
     public void setAssets(Assets assets) {
         this.assets = assets;
     }
+
+    /**
+     * Sets the assets and returns this instance.
+     *
+     * @param assets the assets value
+     * @return the result
+     */
 
     public ReleaseParams withAssets(Assets assets) {
         this.assets = assets;
         return (this);
     }
 
+    /**
+     * Returns the released at.
+     *
+     * @return the result
+     */
+
     public Date getReleasedAt() {
         return releasedAt;
     }
+
+    /**
+     * Sets the released at.
+     *
+     * @param releasedAt the released at value
+     */
 
     public void setReleasedAt(Date releasedAt) {
         this.releasedAt = releasedAt;
     }
 
+    /**
+     * Sets the released at and returns this instance.
+     *
+     * @param releasedAt the released at value
+     * @return the result
+     */
+
     public ReleaseParams withReleasedAt(Date releasedAt) {
         this.releasedAt = releasedAt;
         return (this);
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

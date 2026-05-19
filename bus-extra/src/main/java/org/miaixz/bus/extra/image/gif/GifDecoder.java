@@ -56,6 +56,13 @@ import java.util.ArrayList;
 public class GifDecoder {
 
     /**
+     * Constructs a new GifDecoder instance.
+     */
+    public GifDecoder() {
+        // No initialization required.
+    }
+
+    /**
      * File read status: No errors.
      */
     public static final int STATUS_OK = 0;

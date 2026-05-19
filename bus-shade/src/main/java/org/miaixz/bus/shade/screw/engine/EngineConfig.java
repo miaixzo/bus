@@ -22,8 +22,10 @@ package org.miaixz.bus.shade.screw.engine;
 import java.io.Serial;
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -35,6 +37,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EngineConfig implements Serializable {
 
     @Serial

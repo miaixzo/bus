@@ -33,6 +33,7 @@ import org.miaixz.bus.socket.metric.channel.AsynchronousSocketChannelProxy;
 /**
  * A plugin for monitoring idle I/O states.
  *
+ * @param <T> session type
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -48,10 +49,22 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
     private final boolean writeMonitor;
     private final boolean readMonitor;
 
+    /**
+     * Creates an idle-state plugin that monitors both read and write inactivity.
+     *
+     * @param idleTimeout idle timeout in seconds
+     */
     public IdleStatePlugin(int idleTimeout) {
         this(idleTimeout, true, true);
     }
 
+    /**
+     * Creates an idle-state plugin with explicit read/write monitoring switches.
+     *
+     * @param idleTimeout  idle timeout in seconds
+     * @param readMonitor  whether read inactivity is monitored
+     * @param writeMonitor whether write inactivity is monitored
+     */
     public IdleStatePlugin(int idleTimeout, boolean readMonitor, boolean writeMonitor) {
         if (idleTimeout <= 0) {
             throw new IllegalArgumentException("invalid idleTimeout");

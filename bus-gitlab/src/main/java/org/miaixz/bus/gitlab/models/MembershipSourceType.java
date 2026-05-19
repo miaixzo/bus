@@ -32,25 +32,46 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
  */
 public enum MembershipSourceType {
 
-    PROJECT,
-
     /**
-     * Representing a group
+     * The project membership source type.
+     */
+    PROJECT,
+    /**
+     * The namespace membership source type.
      */
     NAMESPACE;
 
     private static JacksonJsonEnumHelper<MembershipSourceType> enumHelper = new JacksonJsonEnumHelper<>(
             MembershipSourceType.class, true);
 
+    /**
+     * Returns the value.
+     *
+     * @param value the value value
+     * @return the result
+     */
+
     @JsonCreator
     public static MembershipSourceType forValue(String value) {
         return enumHelper.forValue(value);
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     @JsonValue
     public String toValue() {
         return (enumHelper.toString(this));
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

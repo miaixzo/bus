@@ -66,6 +66,13 @@ import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 public class MapperPluginBuilder {
 
     /**
+     * Constructs a new MapperPluginBuilder instance.
+     */
+    public MapperPluginBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Builds and configures the primary {@link MybatisInterceptor}.
      *
      * @param environment The Spring {@link Environment} object, used to retrieve configuration properties.

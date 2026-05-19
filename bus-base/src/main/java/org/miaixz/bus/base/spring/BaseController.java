@@ -47,6 +47,13 @@ import org.miaixz.bus.validate.magic.annotation.Valid;
 public class BaseController<T, Service extends BaseService<T>> extends Controller {
 
     /**
+     * Constructs a new BaseController instance.
+     */
+    public BaseController() {
+        // No initialization required.
+    }
+
+    /**
      * The service instance for performing business logic operations.
      */
     @Autowired

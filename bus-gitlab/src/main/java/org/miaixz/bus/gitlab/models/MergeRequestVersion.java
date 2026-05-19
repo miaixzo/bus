@@ -45,69 +45,171 @@ public class MergeRequestVersion implements Serializable {
     private String state;
     private String realSize;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the head commit sha.
+     *
+     * @return the result
+     */
+
     public String getHeadCommitSha() {
         return headCommitSha;
     }
+
+    /**
+     * Sets the head commit sha.
+     *
+     * @param headCommitSha the head commit sha value
+     */
 
     public void setHeadCommitSha(String headCommitSha) {
         this.headCommitSha = headCommitSha;
     }
 
+    /**
+     * Returns the base commit sha.
+     *
+     * @return the result
+     */
+
     public String getBaseCommitSha() {
         return baseCommitSha;
     }
+
+    /**
+     * Sets the base commit sha.
+     *
+     * @param baseCommitSha the base commit sha value
+     */
 
     public void setBaseCommitSha(String baseCommitSha) {
         this.baseCommitSha = baseCommitSha;
     }
 
+    /**
+     * Returns the start commit sha.
+     *
+     * @return the result
+     */
+
     public String getStartCommitSha() {
         return startCommitSha;
     }
+
+    /**
+     * Sets the start commit sha.
+     *
+     * @param startCommitSha the start commit sha value
+     */
 
     public void setStartCommitSha(String startCommitSha) {
         this.startCommitSha = startCommitSha;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the merge request id.
+     *
+     * @return the result
+     */
+
     public Long getMergeRequestId() {
         return mergeRequestId;
     }
+
+    /**
+     * Sets the merge request id.
+     *
+     * @param mergeRequestId the merge request id value
+     */
 
     public void setMergeRequestId(Long mergeRequestId) {
         this.mergeRequestId = mergeRequestId;
     }
 
+    /**
+     * Returns the state.
+     *
+     * @return the result
+     */
+
     public String getState() {
         return state;
     }
+
+    /**
+     * Sets the state.
+     *
+     * @param state the state value
+     */
 
     public void setState(String state) {
         this.state = state;
     }
 
+    /**
+     * Returns the real size.
+     *
+     * @return the result
+     */
+
     public String getRealSize() {
         return realSize;
     }
 
+    /**
+     * Sets the real size.
+     *
+     * @param realSize the real size value
+     */
+
     public void setRealSize(String realSize) {
         this.realSize = realSize;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

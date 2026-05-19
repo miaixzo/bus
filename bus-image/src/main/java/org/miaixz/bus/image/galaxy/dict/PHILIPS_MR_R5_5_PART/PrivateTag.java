@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_R5_5_PART;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "PHILIPS MR R5.5/PART";

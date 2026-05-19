@@ -43,6 +43,13 @@ import org.miaixz.bus.core.lang.loader.Loaders;
 public class Injector {
 
     /**
+     * Constructs a new Injector instance.
+     */
+    public Injector() {
+        // No initialization required.
+    }
+
+    /**
      * Injects framework classes and resources into the provided JAR output stream. It scans for resources within the
      * {@link Builder#XJAR_SRC_DIR} and adds them as entries to the JAR archive, creating necessary directory entries
      * along the way.

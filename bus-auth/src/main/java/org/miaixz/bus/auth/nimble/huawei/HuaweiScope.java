@@ -56,6 +56,9 @@ public enum HuaweiScope implements AuthorizeScope {
      */
     SCOPE_DRIVE_FILE("https://www.huawei.com/auth/drive.file",
             "Only allows access to files created or opened by the application", false),
+    /**
+     * Allows access to application data files created or opened by the application.
+     */
     SCOPE_DRIVE_APPDATA("https://www.huawei.com/auth/drive.appdata",
             "Only allows access to files created or opened by the application", false),
     /**
@@ -66,10 +69,19 @@ public enum HuaweiScope implements AuthorizeScope {
      */
     SCOPE_DRIVE("https://www.huawei.com/auth/drive", "Only allows access to files created or opened by the application",
             false),
+    /**
+     * Allows read-only access to drive files created or opened by the application.
+     */
     SCOPE_DRIVE_READONLY("https://www.huawei.com/auth/drive.readonly",
             "Only allows access to files created or opened by the application", false),
+    /**
+     * Allows access to drive file metadata created or opened by the application.
+     */
     SCOPE_DRIVE_METADATA("https://www.huawei.com/auth/drive.metadata",
             "Only allows access to files created or opened by the application", false),
+    /**
+     * Allows read-only access to drive file metadata created or opened by the application.
+     */
     SCOPE_DRIVE_METADATA_READONLY("https://www.huawei.com/auth/drive.metadata.readonly",
             "Only allows access to files created or opened by the application", false),
 

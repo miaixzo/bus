@@ -35,6 +35,7 @@ public class CharsetConverter extends AbstractConverter {
      * Constructs a new CharsetConverter. Utility class constructor for static access.
      */
     public CharsetConverter() {
+        // No initialization required.
     }
 
     @Serial

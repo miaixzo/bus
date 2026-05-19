@@ -31,6 +31,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class AbstractSystemHookEvent implements SystemHookEvent {
 
+    /**
+     * Constructs a new AbstractSystemHookEvent instance.
+     */
+    public AbstractSystemHookEvent() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852292516603L;
 
@@ -38,16 +45,34 @@ public abstract class AbstractSystemHookEvent implements SystemHookEvent {
     private String requestQueryString;
     private String requestSecretToken;
 
+    /**
+     * Returns the request url.
+     *
+     * @return the result
+     */
+
     @Override
     @JsonIgnore
     public String getRequestUrl() {
         return (requestUrl);
     }
 
+    /**
+     * Sets the request url.
+     *
+     * @param requestUrl the request url value
+     */
+
     @Override
     public void setRequestUrl(String requestUrl) {
         this.requestUrl = requestUrl;
     }
+
+    /**
+     * Returns the request query string.
+     *
+     * @return the result
+     */
 
     @Override
     @JsonIgnore
@@ -55,16 +80,34 @@ public abstract class AbstractSystemHookEvent implements SystemHookEvent {
         return (requestQueryString);
     }
 
+    /**
+     * Sets the request query string.
+     *
+     * @param requestQueryString the request query string value
+     */
+
     @Override
     public void setRequestQueryString(String requestQueryString) {
         this.requestQueryString = requestQueryString;
     }
+
+    /**
+     * Returns the request secret token.
+     *
+     * @return the result
+     */
 
     @Override
     @JsonIgnore
     public String getRequestSecretToken() {
         return (requestSecretToken);
     }
+
+    /**
+     * Sets the request secret token.
+     *
+     * @param requestSecretToken the request secret token value
+     */
 
     @Override
     public void setRequestSecretToken(String requestSecretToken) {

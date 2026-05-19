@@ -30,16 +30,22 @@ import java.awt.Color;
 public sealed interface Orientation permits PatientOrientation.Biped, PatientOrientation.Quadruped {
 
     /**
+     * Executes the code operation.
+     *
      * @return orientation code
      */
     String name();
 
     /**
+     * Executes the name operation.
+     *
      * @return display name
      */
     String getFullName();
 
     /**
+     * Executes the color operation.
+     *
      * @return display color
      */
     Color getColor();

@@ -28,4 +28,11 @@ package org.miaixz.bus.tracer;
  */
 public class Tracer {
 
+    /**
+     * Constructs a new Tracer instance.
+     */
+    public Tracer() {
+        // No initialization required.
+    }
+
 }

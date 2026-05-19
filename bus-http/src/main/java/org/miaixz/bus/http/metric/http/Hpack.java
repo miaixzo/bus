@@ -43,6 +43,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Hpack {
 
     /**
+     * Constructs a new Hpack instance.
+     */
+    public Hpack() {
+        // No initialization required.
+    }
+
+    /**
      * The static header table.
      */
     static final Http2Header[] STATIC_HEADER_TABLE = new Http2Header[] {

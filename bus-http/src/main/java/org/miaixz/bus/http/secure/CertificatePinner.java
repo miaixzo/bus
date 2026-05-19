@@ -294,6 +294,13 @@ public class CertificatePinner {
      */
     public static final class Builder {
 
+        /**
+         * Constructs a new Builder instance.
+         */
+        public Builder() {
+            // No initialization required.
+        }
+
         private final List<Pin> pins = new ArrayList<>();
 
         /**

@@ -34,6 +34,13 @@ import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleHour;
 public class LunarSect2EightCharProvider implements EightCharProvider {
 
     /**
+     * Constructs a new LunarSect2EightCharProvider instance.
+     */
+    public LunarSect2EightCharProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Calculates the Eight Characters (八字) from a Lunar Hour according to Lunar Sect 2 rules.
      *
      * @param hour The Lunar Hour.

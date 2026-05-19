@@ -39,6 +39,13 @@ import org.miaixz.bus.validate.magic.annotation.IntRange;
 public class IntRangeMatcher implements Matcher<Object, IntRange> {
 
     /**
+     * Constructs a new IntRangeMatcher instance.
+     */
+    public IntRangeMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * A set of supported numeric types for validation.
      */
     private static final Set<Class<?>> NUMBER_TYPES = new HashSet<>();

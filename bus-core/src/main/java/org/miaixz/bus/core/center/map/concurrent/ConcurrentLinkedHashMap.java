@@ -1084,10 +1084,21 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    /**
+     * Executes the write replace operation.
+     *
+     * @return the result
+     */
     Object writeReplace() {
         return new SerializationProxy<>(this);
     }
 
+    /**
+     * Executes the read object operation.
+     *
+     * @param stream the stream value
+     * @throws InvalidObjectException if the operation fails
+     */
     private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }
@@ -1241,6 +1252,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      *
      * @author Kimi Liu
      * @since Java 21+
+     * @param <K> the value type
+     * @param <V> the value type
      */
     static final class Node<K, V> extends AtomicReference<WeightedValue<V>> implements Linked<Node<K, V>> {
 
@@ -1320,6 +1333,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      *
      * @author Kimi Liu
      * @since Java 21+
+     * @param <K> the value type
+     * @param <V> the value type
      */
     static final class BoundedEntryWeigher<K, V> implements EntryWeigher<K, V>, Serializable {
 
@@ -1361,6 +1376,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      *
      * @author Kimi Liu
      * @since Java 21+
+     * @param <K> the value type
+     * @param <V> the value type
      */
     static final class SerializationProxy<K, V> implements Serializable {
 

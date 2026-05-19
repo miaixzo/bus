@@ -45,6 +45,13 @@ import org.miaixz.bus.logger.Logger;
 public class CStore {
 
     /**
+     * Constructs a new CStore instance.
+     */
+    public CStore() {
+        // No initialization required.
+    }
+
+    /**
      * Performs a DICOM C-STORE operation.
      *
      * @param callingNode the configuration of the calling DICOM node.

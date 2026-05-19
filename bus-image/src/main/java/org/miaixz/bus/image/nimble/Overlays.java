@@ -39,6 +39,13 @@ import org.miaixz.bus.logger.Logger;
 public class Overlays {
 
     /**
+     * Constructs a new {@code Overlays} instance.
+     */
+    public Overlays() {
+        // No initialization required.
+    }
+
+    /**
      * Gets the active overlay group offsets.
      *
      * @param psattrs the psattrs.

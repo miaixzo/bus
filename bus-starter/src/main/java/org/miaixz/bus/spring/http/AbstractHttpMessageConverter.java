@@ -45,6 +45,13 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public abstract class AbstractHttpMessageConverter implements HttpMessageConverter {
 
     /**
+     * Constructs a new AbstractHttpMessageConverter instance.
+     */
+    public AbstractHttpMessageConverter() {
+        // No initialization required.
+    }
+
+    /**
      * Determines if an entire class should be skipped during serialization.
      * <p>
      * This is a safeguard to prevent serialization of framework-generated or internal classes that are not part of the

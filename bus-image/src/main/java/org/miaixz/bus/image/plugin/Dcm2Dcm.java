@@ -55,6 +55,13 @@ import org.miaixz.bus.logger.Logger;
 public class Dcm2Dcm {
 
     /**
+     * Constructs a new Dcm2Dcm instance.
+     */
+    public Dcm2Dcm() {
+        // No initialization required.
+    }
+
+    /**
      * List of compression parameters.
      */
     private final List<Property> params = new ArrayList<>();

@@ -32,6 +32,13 @@ import org.miaixz.bus.image.UID;
 public class HashUIDMapper implements UIDMapper {
 
     /**
+     * Constructs a new HashUIDMapper instance.
+     */
+    public HashUIDMapper() {
+        // No initialization required.
+    }
+
+    /**
      * Generates a name-based UID by hashing the input UID. The generated UID is consistent for the same input UID.
      *
      * @param uid The original UID string to be hashed.

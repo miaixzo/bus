@@ -31,6 +31,13 @@ import org.miaixz.bus.socket.Session;
 public class ByteArrayMessage extends FixedLengthBytesMessage<byte[]> {
 
     /**
+     * Constructs a new ByteArrayMessage instance.
+     */
+    public ByteArrayMessage() {
+        // No initialization required.
+    }
+
+    /**
      * Decodes the given byte array into a message. In this implementation, the byte array itself is the message.
      *
      * @param bytes   the byte array to decode

@@ -30,4 +30,11 @@ import org.miaixz.bus.core.center.date.Culture;
  */
 public abstract class Loops extends Tradition implements Culture {
 
+    /**
+     * Constructs a new Loops instance.
+     */
+    public Loops() {
+        // No initialization required.
+    }
+
 }

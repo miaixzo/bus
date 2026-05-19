@@ -50,6 +50,7 @@ public abstract class AbstractConverter implements Converter, Serializable {
      * Constructs a new AbstractConverter. Utility class constructor for static access.
      */
     public AbstractConverter() {
+        // No initialization required.
     }
 
     @Serial

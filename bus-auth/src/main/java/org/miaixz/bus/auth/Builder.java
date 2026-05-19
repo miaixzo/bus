@@ -69,7 +69,7 @@ public class Builder {
      * Private constructor to prevent direct instantiation.
      */
     private Builder() {
-
+        // No initialization required.
     }
 
     /**

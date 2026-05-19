@@ -36,6 +36,13 @@ import org.miaixz.bus.core.xyz.ClassKit;
 public class JdkProxy {
 
     /**
+     * Constructs a new JdkProxy instance.
+     */
+    public JdkProxy() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a dynamic proxy object. The creation principle of a dynamic proxy object is as follows: Assuming the
      * created proxy object is named $Proxy0:
      * <ol>

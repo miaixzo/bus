@@ -224,6 +224,13 @@ public interface CLibrary extends LibCAPI, Library {
     class Sockaddr extends Structure {
 
         /**
+         * Constructs a new Sockaddr instance.
+         */
+        public Sockaddr() {
+            // No initialization required.
+        }
+
+        /**
          * Address family.
          */
         public short sa_family;
@@ -241,6 +248,13 @@ public interface CLibrary extends LibCAPI, Library {
          */
         public static class ByReference extends Sockaddr implements Structure.ByReference {
 
+            /**
+             * Constructs a new ByReference instance.
+             */
+            public ByReference() {
+                // No initialization required.
+            }
+
         }
 
     }
@@ -252,6 +266,13 @@ public interface CLibrary extends LibCAPI, Library {
      * @since Java 21+
      */
     class BsdTcpstat {
+
+        /**
+         * Constructs a new BsdTcpstat instance.
+         */
+        public BsdTcpstat() {
+            // No initialization required.
+        }
 
         /**
          * Connections initiated.
@@ -319,6 +340,13 @@ public interface CLibrary extends LibCAPI, Library {
     class BsdUdpstat {
 
         /**
+         * Constructs a new BsdUdpstat instance.
+         */
+        public BsdUdpstat() {
+            // No initialization required.
+        }
+
+        /**
          * Total input packets.
          */
         public int udps_ipackets;
@@ -369,6 +397,13 @@ public interface CLibrary extends LibCAPI, Library {
     class BsdIpstat {
 
         /**
+         * Constructs a new BsdIpstat instance.
+         */
+        public BsdIpstat() {
+            // No initialization required.
+        }
+
+        /**
          * Total packets received.
          */
         public int ips_total;
@@ -412,6 +447,13 @@ public interface CLibrary extends LibCAPI, Library {
      * @since Java 21+
      */
     class BsdIp6stat {
+
+        /**
+         * Constructs a new BsdIp6stat instance.
+         */
+        public BsdIp6stat() {
+            // No initialization required.
+        }
 
         /**
          * Total packets received.
@@ -479,6 +521,7 @@ public interface CLibrary extends LibCAPI, Library {
          * Constructs an {@code Addrinfo} object.
          */
         public Addrinfo() {
+            // No initialization required.
         }
 
         /**
@@ -506,6 +549,13 @@ public interface CLibrary extends LibCAPI, Library {
          * @since Java 21+
          */
         public static class ByReference extends Addrinfo implements Structure.ByReference {
+
+            /**
+             * Constructs a new ByReference instance.
+             */
+            public ByReference() {
+                // No initialization required.
+            }
 
         }
 

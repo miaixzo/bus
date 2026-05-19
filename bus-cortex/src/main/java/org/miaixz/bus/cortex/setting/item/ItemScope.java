@@ -52,6 +52,7 @@ public class ItemScope {
      * Creates an empty setting scope.
      */
     public ItemScope() {
+        // No initialization required.
     }
 
     /**
@@ -97,6 +98,7 @@ public class ItemScope {
     /**
      * Maximum number of entries to return.
      */
+    @lombok.Builder.Default
     private int limit = 100;
 
     /**

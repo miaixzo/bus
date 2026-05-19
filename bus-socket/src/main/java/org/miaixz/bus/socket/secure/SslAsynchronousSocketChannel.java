@@ -65,8 +65,18 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
      * Adaptive size for write operations.
      */
     private int adaptiveWriteSize = -1;
+    /**
+     * Whether this SSL channel has been closed.
+     */
     private boolean closed = false;
 
+    /**
+     * Creates an SSL channel wrapper around an asynchronous socket channel.
+     *
+     * @param asynchronousSocketChannel wrapped socket channel
+     * @param sslService                SSL service
+     * @param bufferPage                buffer page used by the handshake model
+     */
     public SslAsynchronousSocketChannel(AsynchronousSocketChannel asynchronousSocketChannel, SslService sslService,
             BufferPage bufferPage) {
         super(asynchronousSocketChannel);

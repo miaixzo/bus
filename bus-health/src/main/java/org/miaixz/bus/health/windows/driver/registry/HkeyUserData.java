@@ -44,6 +44,13 @@ import org.miaixz.bus.logger.Logger;
 public final class HkeyUserData {
 
     /**
+     * Constructs a new HkeyUserData instance.
+     */
+    public HkeyUserData() {
+        // No initialization required.
+    }
+
+    /**
      * The PATH_DELIMITER constant.
      */
     private static final String PATH_DELIMITER = "\\";

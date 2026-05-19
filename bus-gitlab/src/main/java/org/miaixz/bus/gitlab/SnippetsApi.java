@@ -37,6 +37,12 @@ import org.miaixz.bus.gitlab.models.Visibility;
  */
 public class SnippetsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code SnippetsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public SnippetsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

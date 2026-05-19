@@ -74,6 +74,7 @@ public final class Privilege {
      * Creates a new Privilege instance.
      */
     private Privilege() {
+        // No initialization required.
     }
 
     /**

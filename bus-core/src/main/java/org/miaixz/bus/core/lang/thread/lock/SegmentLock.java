@@ -67,6 +67,13 @@ import org.miaixz.bus.core.xyz.ListKit;
 public abstract class SegmentLock<L> {
 
     /**
+     * Constructs a new SegmentLock instance.
+     */
+    public SegmentLock() {
+        // No initialization required.
+    }
+
+    /**
      * When the number of segments exceeds this threshold, a {@link ConcurrentMap} is used instead of a large array to
      * save memory (applicable in lazy-loading scenarios).
      */

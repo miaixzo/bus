@@ -35,6 +35,13 @@ import org.miaixz.bus.logger.Logger;
 public final class Builder {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * Gets the default dynamic proxy provider.
      *
      * @return The default {@link Provider} instance.

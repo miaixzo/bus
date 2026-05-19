@@ -32,19 +32,69 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
  */
 public enum BuildStatus {
 
-    CREATED, RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED, MANUAL;
+    /**
+     * The created build status.
+     */
+    CREATED,
+    /**
+     * The running build status.
+     */
+    RUNNING,
+    /**
+     * The pending build status.
+     */
+    PENDING,
+    /**
+     * The success build status.
+     */
+    SUCCESS,
+    /**
+     * The failed build status.
+     */
+    FAILED,
+    /**
+     * The canceled build status.
+     */
+    CANCELED,
+    /**
+     * The skipped build status.
+     */
+    SKIPPED,
+    /**
+     * The manual build status.
+     */
+    MANUAL;
 
     private static JacksonJsonEnumHelper<BuildStatus> enumHelper = new JacksonJsonEnumHelper<>(BuildStatus.class);
+
+    /**
+     * Returns the value.
+     *
+     * @param value the value value
+     * @return the result
+     */
 
     @JsonCreator
     public static BuildStatus forValue(String value) {
         return enumHelper.forValue(value);
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     @JsonValue
     public String toValue() {
         return (enumHelper.toString(this));
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

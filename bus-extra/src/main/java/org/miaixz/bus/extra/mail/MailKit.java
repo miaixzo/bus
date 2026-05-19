@@ -43,6 +43,13 @@ import org.miaixz.bus.core.xyz.*;
 public class MailKit {
 
     /**
+     * Constructs a new MailKit instance.
+     */
+    public MailKit() {
+        // No initialization required.
+    }
+
+    /**
      * Sends a plain text email to one or more recipients using the default account from the configuration. Multiple
      * recipients can be separated by commas (,) or semicolons (;).
      *

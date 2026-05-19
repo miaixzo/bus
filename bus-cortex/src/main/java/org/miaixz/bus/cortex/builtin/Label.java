@@ -36,6 +36,7 @@ public class Label {
      * Creates an empty label.
      */
     public Label() {
+        // No initialization required.
     }
 
     /**

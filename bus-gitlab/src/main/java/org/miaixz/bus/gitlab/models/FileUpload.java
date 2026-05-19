@@ -39,29 +39,71 @@ public class FileUpload implements Serializable {
     private String url;
     private String markdown;
 
+    /**
+     * Returns the alt.
+     *
+     * @return the result
+     */
+
     public String getAlt() {
         return alt;
     }
+
+    /**
+     * Sets the alt.
+     *
+     * @param alt the alt value
+     */
 
     public void setAlt(String alt) {
         this.alt = alt;
     }
 
+    /**
+     * Returns the url.
+     *
+     * @return the result
+     */
+
     public String getUrl() {
         return url;
     }
+
+    /**
+     * Sets the url.
+     *
+     * @param url the url value
+     */
 
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * Returns the markdown.
+     *
+     * @return the result
+     */
+
     public String getMarkdown() {
         return markdown;
     }
 
+    /**
+     * Sets the markdown.
+     *
+     * @param markdown the markdown value
+     */
+
     public void setMarkdown(String markdown) {
         this.markdown = markdown;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

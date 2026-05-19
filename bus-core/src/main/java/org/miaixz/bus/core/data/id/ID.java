@@ -44,6 +44,7 @@ public class ID {
      * Constructs a new ID. Utility class constructor for static access.
      */
     private ID() {
+        // No initialization required.
     }
 
     /**

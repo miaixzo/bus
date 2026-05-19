@@ -27,4 +27,11 @@ package org.miaixz.bus.office.builtin;
  */
 public abstract class AbstractOffice implements MadeInOffice {
 
+    /**
+     * Constructs a new AbstractOffice instance.
+     */
+    public AbstractOffice() {
+        // No initialization required.
+    }
+
 }

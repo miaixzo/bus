@@ -46,6 +46,7 @@ public class FileName {
      * Constructs a new FileName. Utility class constructor for static access.
      */
     private FileName() {
+        // No initialization required.
     }
 
     /**

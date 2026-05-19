@@ -98,6 +98,7 @@ public class AnnotatedElements {
      * Constructs a new AnnotatedElements. Utility class constructor for static access.
      */
     private AnnotatedElements() {
+        // No initialization required.
     }
 
     /**

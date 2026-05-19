@@ -34,6 +34,13 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
 public class NopEncryptorProvider implements EncryptorProvider {
 
     /**
+     * Constructs a new NopEncryptorProvider instance.
+     */
+    public NopEncryptorProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Copies the source file to the destination file without any encryption.
      *
      * @param key  The encryption key (ignored).

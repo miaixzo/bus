@@ -40,37 +40,91 @@ public class Repository implements Serializable {
     private String name;
     private String url;
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return this.description;
     }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Returns the homepage.
+     *
+     * @return the result
+     */
+
     public String getHomepage() {
         return this.homepage;
     }
+
+    /**
+     * Sets the homepage.
+     *
+     * @param homepage the homepage value
+     */
 
     public void setHomepage(String homepage) {
         this.homepage = homepage;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return this.name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the url.
+     *
+     * @return the result
+     */
+
     public String getUrl() {
         return this.url;
     }
 
+    /**
+     * Sets the url.
+     *
+     * @param url the url value
+     */
+
     public void setUrl(String url) {
         this.url = url;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

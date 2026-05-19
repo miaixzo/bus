@@ -47,6 +47,7 @@ public final class BsdSysctlKit {
      * Creates a new BsdSysctlKit instance.
      */
     private BsdSysctlKit() {
+        // No initialization required.
     }
 
     /**

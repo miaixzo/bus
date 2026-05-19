@@ -35,6 +35,13 @@ import org.miaixz.bus.core.bean.copier.ValueProvider;
 public class RecordKit {
 
     /**
+     * Constructs a new RecordKit instance.
+     */
+    public RecordKit() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given class is a Record.
      *
      * @param clazz The class.

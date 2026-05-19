@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.notify.metric.cloopen;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -36,8 +35,14 @@ import org.miaixz.bus.notify.magic.Notice;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class CloopenNotice extends Notice {
+
+    /**
+     * Creates a Cloopen Cloud SMS notice.
+     */
+    public CloopenNotice() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.

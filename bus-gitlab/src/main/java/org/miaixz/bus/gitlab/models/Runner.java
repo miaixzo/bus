@@ -51,49 +51,121 @@ public class Runner implements Serializable {
     private RunnerStatus status;
     private String ipAddress;
 
+    /**
+     * Returns the runner type.
+     *
+     * @return the result
+     */
+
     public RunnerType getRunnerType() {
         return runnerType;
     }
+
+    /**
+     * Sets the runner type.
+     *
+     * @param runnerType the runner type value
+     */
 
     public void setRunnerType(RunnerType runnerType) {
         this.runnerType = runnerType;
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return description;
     }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Returns the tags.
+     *
+     * @return the result
+     */
+
     public List<String> getTags() {
         return tags;
     }
+
+    /**
+     * Sets the tags.
+     *
+     * @param tags the tags value
+     */
 
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
 
+    /**
+     * Returns the active.
+     *
+     * @return the result
+     */
+
     public Boolean getActive() {
         return active;
     }
+
+    /**
+     * Sets the active.
+     *
+     * @param active the active value
+     */
 
     public void setActive(Boolean active) {
         this.active = active;
     }
 
+    /**
+     * Returns the is shared.
+     *
+     * @return the result
+     */
+
     public Boolean getIs_shared() {
         return isShared;
     }
+
+    /**
+     * Sets the is shared.
+     *
+     * @param is_shared the is shared value
+     */
 
     public void setIs_shared(Boolean is_shared) {
         this.isShared = is_shared;
@@ -107,19 +179,53 @@ public class Runner implements Serializable {
      */
     public enum RunnerStatus {
 
-        ACTIVE, ONLINE, PAUSED, OFFLINE;
+        /**
+         * The active runner status.
+         */
+        ACTIVE,
+        /**
+         * The online runner status.
+         */
+        ONLINE,
+        /**
+         * The paused runner status.
+         */
+        PAUSED,
+        /**
+         * The offline runner status.
+         */
+        OFFLINE;
 
         private static JacksonJsonEnumHelper<RunnerStatus> enumHelper = new JacksonJsonEnumHelper<>(RunnerStatus.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static RunnerStatus forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -136,19 +242,49 @@ public class Runner implements Serializable {
      */
     public enum RunnerType {
 
-        INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE;
+        /**
+         * The instance type runner type.
+         */
+        INSTANCE_TYPE,
+        /**
+         * The group type runner type.
+         */
+        GROUP_TYPE,
+        /**
+         * The project type runner type.
+         */
+        PROJECT_TYPE;
 
         private static JacksonJsonEnumHelper<RunnerType> enumHelper = new JacksonJsonEnumHelper<>(RunnerType.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static RunnerType forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -157,77 +293,187 @@ public class Runner implements Serializable {
 
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the online.
+     *
+     * @return the result
+     */
+
     public Boolean getOnline() {
         return this.online;
     }
+
+    /**
+     * Sets the online.
+     *
+     * @param online the online value
+     */
 
     public void setOnline(Boolean online) {
         this.online = online;
     }
 
+    /**
+     * Returns the status.
+     *
+     * @return the result
+     */
+
     public RunnerStatus getStatus() {
         return this.status;
     }
+
+    /**
+     * Sets the status.
+     *
+     * @param status the status value
+     */
 
     public void setStatus(RunnerStatus status) {
         this.status = status;
     }
 
+    /**
+     * Returns the ip address.
+     *
+     * @return the result
+     */
+
     public String getIpAddress() {
         return ipAddress;
     }
 
+    /**
+     * Sets the ip address.
+     *
+     * @param ipAddress the ip address value
+     */
+
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
+
+    /**
+     * Sets the id and returns this instance.
+     *
+     * @param id the id value
+     * @return the result
+     */
 
     public Runner withId(Long id) {
         this.id = id;
         return this;
     }
 
+    /**
+     * Sets the description and returns this instance.
+     *
+     * @param description the description value
+     * @return the result
+     */
+
     public Runner withDescription(String description) {
         this.description = description;
         return this;
     }
+
+    /**
+     * Sets the active and returns this instance.
+     *
+     * @param active the active value
+     * @return the result
+     */
 
     public Runner withActive(Boolean active) {
         this.active = active;
         return this;
     }
 
+    /**
+     * Sets the is shared and returns this instance.
+     *
+     * @param isShared the is shared value
+     * @return the result
+     */
+
     public Runner withIsShared(Boolean isShared) {
         this.isShared = isShared;
         return this;
     }
+
+    /**
+     * Sets the name and returns this instance.
+     *
+     * @param name the name value
+     * @return the result
+     */
 
     public Runner withName(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Sets the online and returns this instance.
+     *
+     * @param online the online value
+     * @return the result
+     */
+
     public Runner withOnline(Boolean online) {
         this.online = online;
         return this;
     }
+
+    /**
+     * Sets the status and returns this instance.
+     *
+     * @param status the status value
+     * @return the result
+     */
 
     public Runner withStatus(RunnerStatus status) {
         this.status = status;
         return this;
     }
 
+    /**
+     * Sets the ip address and returns this instance.
+     *
+     * @param ipAddress the ip address value
+     * @return the result
+     */
+
     public Runner withIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
         return this;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

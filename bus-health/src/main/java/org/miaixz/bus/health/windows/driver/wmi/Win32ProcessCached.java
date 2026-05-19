@@ -63,6 +63,7 @@ public final class Win32ProcessCached {
      * Creates a new Win32ProcessCached instance.
      */
     private Win32ProcessCached() {
+        // No initialization required.
     }
 
     /**

@@ -71,88 +71,216 @@ public class DeploymentFilter implements Serializable {
      */
     private DeploymentStatus status;
 
+    /**
+     * Returns the order by.
+     *
+     * @return the result
+     */
+
     public DeploymentOrderBy getOrderBy() {
         return orderBy;
     }
+
+    /**
+     * Sets the order by.
+     *
+     * @param orderBy the order by value
+     */
 
     public void setOrderBy(DeploymentOrderBy orderBy) {
         this.orderBy = orderBy;
     }
 
+    /**
+     * Returns the sort order.
+     *
+     * @return the result
+     */
+
     public SortOrder getSortOrder() {
         return sortOrder;
     }
+
+    /**
+     * Sets the sort order.
+     *
+     * @param sortOrder the sort order value
+     */
 
     public void setSortOrder(SortOrder sortOrder) {
         this.sortOrder = sortOrder;
     }
 
+    /**
+     * Returns the updated after.
+     *
+     * @return the result
+     */
+
     public Date getUpdatedAfter() {
         return updatedAfter;
     }
+
+    /**
+     * Sets the updated after.
+     *
+     * @param updatedAfter the updated after value
+     */
 
     public void setUpdatedAfter(Date updatedAfter) {
         this.updatedAfter = updatedAfter;
     }
 
+    /**
+     * Returns the updated before.
+     *
+     * @return the result
+     */
+
     public Date getUpdatedBefore() {
         return updatedBefore;
     }
+
+    /**
+     * Sets the updated before.
+     *
+     * @param updatedBefore the updated before value
+     */
 
     public void setUpdatedBefore(Date updatedBefore) {
         this.updatedBefore = updatedBefore;
     }
 
+    /**
+     * Returns the environment.
+     *
+     * @return the result
+     */
+
     public String getEnvironment() {
         return environment;
     }
+
+    /**
+     * Sets the environment.
+     *
+     * @param environment the environment value
+     */
 
     public void setEnvironment(String environment) {
         this.environment = environment;
     }
 
+    /**
+     * Returns the status.
+     *
+     * @return the result
+     */
+
     public DeploymentStatus getStatus() {
         return status;
     }
 
+    /**
+     * Sets the status.
+     *
+     * @param status the status value
+     */
+
     public void setStatus(DeploymentStatus status) {
         this.status = status;
     }
+
+    /**
+     * Sets the order by and returns this instance.
+     *
+     * @param orderBy the order by value
+     * @return the result
+     */
 
     public DeploymentFilter withOrderBy(DeploymentOrderBy orderBy) {
         this.orderBy = orderBy;
         return (this);
     }
 
+    /**
+     * Sets the sort order and returns this instance.
+     *
+     * @param sortOrder the sort order value
+     * @return the result
+     */
+
     public DeploymentFilter withSortOrder(SortOrder sortOrder) {
         this.sortOrder = sortOrder;
         return (this);
     }
+
+    /**
+     * Sets the updated after and returns this instance.
+     *
+     * @param updatedAfter the updated after value
+     * @return the result
+     */
 
     public DeploymentFilter withUpdatedAfter(Date updatedAfter) {
         this.updatedAfter = updatedAfter;
         return (this);
     }
 
+    /**
+     * Sets the updated before and returns this instance.
+     *
+     * @param updatedBefore the updated before value
+     * @return the result
+     */
+
     public DeploymentFilter withUpdatedBefore(Date updatedBefore) {
         this.updatedBefore = updatedBefore;
         return (this);
     }
+
+    /**
+     * Sets the environment and returns this instance.
+     *
+     * @param environment the environment value
+     * @return the result
+     */
 
     public DeploymentFilter withEnvironment(String environment) {
         this.environment = environment;
         return (this);
     }
 
+    /**
+     * Sets the status and returns this instance.
+     *
+     * @param status the status value
+     * @return the result
+     */
+
     public DeploymentFilter withStatus(DeploymentStatus status) {
         this.status = status;
         return (this);
     }
 
+    /**
+     * Returns the query params.
+     *
+     * @param page    the page value
+     * @param perPage the per page value
+     * @return the result
+     */
+
     @JsonIgnore
     public GitLabForm getQueryParams(int page, int perPage) {
         return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
+
+    /**
+     * Returns the query params.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     public GitLabForm getQueryParams() {

@@ -54,6 +54,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     /**
+     * Constructs a new ScenesEnvironmentPostProcessor instance.
+     */
+    public ScenesEnvironmentPostProcessor() {
+        // No initialization required.
+    }
+
+    /**
      * Post-processes the environment to load scene-specific configuration properties.
      * <p>
      * It retrieves the {@code bus.scenes} property, and if present, loads corresponding configuration files (e.g.,

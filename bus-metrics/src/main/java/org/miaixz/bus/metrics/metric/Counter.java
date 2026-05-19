@@ -41,6 +41,8 @@ public interface Counter {
 
     /**
      * Returns the cumulative count since creation.
+     *
+     * @return cumulative count
      */
     long count();
 

@@ -50,6 +50,7 @@ public class CollectionValidator {
      * Constructs a new CollectionValidator. Utility class constructor for static access.
      */
     public CollectionValidator() {
+        // No initialization required.
     }
 
     /**

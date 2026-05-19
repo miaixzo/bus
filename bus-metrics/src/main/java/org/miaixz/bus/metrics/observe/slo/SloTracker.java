@@ -60,16 +60,25 @@ public interface SloTracker {
 
     /**
      * Current compliance ratio (0.0–1.0) for the given SLO. Returns 1.0 if unknown.
+     *
+     * @param sloName SLO name
+     * @return compliance ratio
      */
     double compliance(String sloName);
 
     /**
      * Remaining error budget fraction (1.0 = full, 0.0 = exhausted). Returns 1.0 if unknown.
+     *
+     * @param sloName SLO name
+     * @return remaining error budget
      */
     double errorBudgetRemaining(String sloName);
 
     /**
      * Error burn rate: > 1.0 means budget is burning faster than the SLO allows. Returns 0.0 if unknown.
+     *
+     * @param sloName SLO name
+     * @return burn rate
      */
     double burnRate(String sloName);
 

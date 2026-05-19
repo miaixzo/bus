@@ -47,6 +47,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 @ConditionalOnProperty(prefix = GeniusBuilder.LIMITER, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class LimiterConfiguration {
 
+    /**
+     * Constructs a new LimiterConfiguration instance.
+     */
+    public LimiterConfiguration() {
+        // No initialization required.
+    }
+
     @Resource
     private LimiterProperties properties;
 

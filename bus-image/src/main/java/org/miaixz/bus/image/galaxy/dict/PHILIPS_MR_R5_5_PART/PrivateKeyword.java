@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_R5_5_PART;
 public class PrivateKeyword {
 
     /**
+     * Constructs a new {@code PrivateKeyword} instance.
+     */
+    public PrivateKeyword() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "";

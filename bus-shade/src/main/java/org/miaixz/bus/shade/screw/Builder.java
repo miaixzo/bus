@@ -31,6 +31,13 @@ import org.miaixz.bus.shade.screw.execute.ProduceExecute;
 public class Builder {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * The percent sign symbol (%).
      */
     public static final String PERCENT_SIGN = Symbol.PERCENT;

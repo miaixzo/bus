@@ -44,6 +44,13 @@ import org.miaixz.bus.health.builtin.jna.Struct;
 public final class DeviceTree {
 
     /**
+     * Constructs a new DeviceTree instance.
+     */
+    public DeviceTree() {
+        // No initialization required.
+    }
+
+    /**
      * The MAX_PATH constant.
      */
     private static final int MAX_PATH = 260;

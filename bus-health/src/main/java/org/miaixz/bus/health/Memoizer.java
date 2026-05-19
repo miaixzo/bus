@@ -35,6 +35,13 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class Memoizer {
 
     /**
+     * Constructs a new {@code Memoizer} instance.
+     */
+    public Memoizer() {
+        // No initialization required.
+    }
+
+    /**
      * Supplier for the default expiration time (in nanoseconds) for memoized values, configured via {@link Config}.
      */
     private static final Supplier<Long> DEFAULT_EXPIRATION_NANOS = memoize(

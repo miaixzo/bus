@@ -35,6 +35,13 @@ import org.miaixz.bus.validate.magic.annotation.Chinese;
 public class ChineseMatcher implements Matcher<Object, Chinese> {
 
     /**
+     * Constructs a new ChineseMatcher instance.
+     */
+    public ChineseMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object, when converted to a string, contains only Chinese characters.
      *
      * @param object     The object to validate.

@@ -43,6 +43,13 @@ import org.miaixz.bus.http.Builder;
 public abstract class ResponseBody implements Closeable {
 
     /**
+     * Constructs a new ResponseBody instance.
+     */
+    public ResponseBody() {
+        // No initialization required.
+    }
+
+    /**
      * The character stream reader.
      */
     private Reader reader;

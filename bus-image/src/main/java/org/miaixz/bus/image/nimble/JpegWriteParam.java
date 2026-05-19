@@ -202,6 +202,8 @@ public class JpegWriteParam {
     }
 
     /**
+     * Executes the 100 operation.
+     *
      * @param compressionQuality between 1 and 100 (100 is the best lossy quality).
      */
     public void setCompressionQuality(int compressionQuality) {

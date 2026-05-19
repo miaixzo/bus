@@ -44,53 +44,131 @@ public class DeployToken implements Serializable {
     private List<Constants.DeployTokenScope> scopes;
     private String token;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the username.
+     *
+     * @return the result
+     */
+
     public String getUsername() {
         return username;
     }
+
+    /**
+     * Sets the username.
+     *
+     * @param username the username value
+     */
 
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * Returns the expires at.
+     *
+     * @return the result
+     */
+
     public Date getExpiresAt() {
         return expiresAt;
     }
+
+    /**
+     * Sets the expires at.
+     *
+     * @param expiresAt the expires at value
+     */
 
     public void setExpiresAt(Date expiresAt) {
         this.expiresAt = expiresAt;
     }
 
+    /**
+     * Returns the scopes.
+     *
+     * @return the result
+     */
+
     public List<Constants.DeployTokenScope> getScopes() {
         return scopes;
     }
+
+    /**
+     * Sets the scopes.
+     *
+     * @param scopes the scopes value
+     */
 
     public void setScopes(List<Constants.DeployTokenScope> scopes) {
         this.scopes = scopes;
     }
 
+    /**
+     * Returns the token.
+     *
+     * @return the result
+     */
+
     public String getToken() {
         return token;
     }
 
+    /**
+     * Sets the token.
+     *
+     * @param token the token value
+     */
+
     public void setToken(String token) {
         this.token = token;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

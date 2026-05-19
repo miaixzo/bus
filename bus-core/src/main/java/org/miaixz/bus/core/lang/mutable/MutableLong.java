@@ -44,7 +44,7 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
      * Constructs a new MutableLong with a default value of 0.
      */
     public MutableLong() {
-
+        // No initialization required.
     }
 
     /**

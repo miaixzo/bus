@@ -45,6 +45,13 @@ import org.miaixz.bus.logger.Logger;
 public class Modality {
 
     /**
+     * Constructs a new Modality instance.
+     */
+    public Modality() {
+        // No initialization required.
+    }
+
+    /**
      * The AE Title of the called application entity. Used for logging purposes.
      */
     private static String calledAET;

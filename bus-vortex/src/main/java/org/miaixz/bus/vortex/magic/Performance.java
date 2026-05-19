@@ -70,7 +70,7 @@ public class Performance {
      * Creates a performance configuration with default values.
      */
     public Performance() {
-
+        // No initialization required.
     }
 
     /**

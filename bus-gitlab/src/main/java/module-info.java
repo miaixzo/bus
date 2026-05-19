@@ -27,6 +27,8 @@ module bus.gitlab {
 
     requires java.logging;
 
+    requires lombok;
+
     requires bus.core;
     requires bus.logger;
 

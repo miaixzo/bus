@@ -34,6 +34,13 @@ import org.miaixz.bus.auth.metric.JWT;
 public class JWTParser {
 
     /**
+     * Constructs a new JWTParser instance.
+     */
+    public JWTParser() {
+        // No initialization required.
+    }
+
+    /**
      * Parses a JWT token.
      * <p>
      * Parses the input JWT token string into a {@link JWT} object, including the header, payload, and signature parts.

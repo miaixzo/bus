@@ -92,6 +92,13 @@ import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 public class WrapperConfiguration implements WebMvcRegistrations {
 
     /**
+     * Constructs a new {@code WrapperConfiguration} instance.
+     */
+    public WrapperConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected wrapper configuration properties.
      */
     @Resource
@@ -118,6 +125,8 @@ public class WrapperConfiguration implements WebMvcRegistrations {
      * </p>
      *
      * @return A configured {@link FilterRegistrationBean} for the body cache filter.
+     *
+     * @param options the options value
      */
     @Bean("registrationBodyCacheFilter")
     public FilterRegistrationBean<RuntimeContextBindingFilter> registrationBodyCacheFilter(
@@ -170,6 +179,10 @@ public class WrapperConfiguration implements WebMvcRegistrations {
      * Creates a {@link org.springframework.web.servlet.config.annotation.WebMvcConfigurer} bean.
      *
      * @return A new {@link AwareWebMvcConfigurer} instance.
+     *
+     * @param requestHandler the request handler value
+     *
+     * @param options        the options value
      */
     @Bean("supportWebMvcConfigurer")
     public org.springframework.web.servlet.config.annotation.WebMvcConfigurer supportWebMvcConfigurer(

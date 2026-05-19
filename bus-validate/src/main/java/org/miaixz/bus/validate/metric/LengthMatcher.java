@@ -36,6 +36,13 @@ import org.miaixz.bus.validate.magic.annotation.Length;
 public class LengthMatcher implements Matcher<Object, Length> {
 
     /**
+     * Constructs a new LengthMatcher instance.
+     */
+    public LengthMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the length or size of the given object is within the range specified by the {@link Length} annotation.
      *
      * @param object     The object to validate. Supported types are {@link String}, arrays ({@code Object[]}),

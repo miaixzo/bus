@@ -41,9 +41,19 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  */
 public class GitLabApiForm extends Form {
 
+    /**
+     * Constructs a new {@code GitLabApiForm} instance.
+     */
+
     public GitLabApiForm() {
         super();
     }
+
+    /**
+     * Constructs a new {@code GitLabApiForm} instance.
+     *
+     * @param map the map value
+     */
 
     public GitLabApiForm(MultivaluedHashMap<String, String> map) {
         super(map);
@@ -60,6 +70,12 @@ public class GitLabApiForm extends Form {
         withParam(AbstractApi.PAGE_PARAM, page);
         withParam(AbstractApi.PER_PAGE_PARAM, perPage);
     }
+
+    /**
+     * Constructs a new {@code GitLabApiForm} instance.
+     *
+     * @param form the form value
+     */
 
     public GitLabApiForm(GitLabForm form) {
         super();

@@ -83,11 +83,31 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * Property name for the logging record id property
      */
     protected static final String LOGGING_ID_PROPERTY = MaskingLoggingFilter.class.getName() + ".id";
+    /**
+     * The logger value.
+     */
 
     protected final Logger logger;
+    /**
+     * The level value.
+     */
     protected final Level level;
+    /**
+     * The max entity size value.
+     */
     protected final int maxEntitySize;
+    /**
+     * Executes the atomic long operation.
+     *
+     * @param 0 the 0 value
+     * @return the result
+     */
     protected final AtomicLong _id = new AtomicLong(0);
+    /**
+     * Executes the hash set<string> operation.
+     *
+     * @return the result
+     */
     protected Set<String> maskedHeaderNames = new HashSet<String>();
 
     /**
@@ -175,16 +195,40 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         }
     }
 
+    /**
+     * Executes the log operation.
+     *
+     * @param sb the sb value
+     */
+
     protected void log(final StringBuilder sb) {
         if (logger != null) {
             logger.log(level, sb.toString());
         }
     }
 
+    /**
+     * Executes the append id operation.
+     *
+     * @param sb the sb value
+     * @param id the id value
+     * @return the result
+     */
+
     protected StringBuilder appendId(final StringBuilder sb, final long id) {
         sb.append(Long.toString(id)).append(' ');
         return (sb);
     }
+
+    /**
+     * Executes the print request line operation.
+     *
+     * @param sb     the sb value
+     * @param note   the note value
+     * @param id     the id value
+     * @param method the method value
+     * @param uri    the uri value
+     */
 
     protected void printRequestLine(
             final StringBuilder sb,
@@ -197,11 +241,27 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         appendId(sb, id).append(REQUEST_PREFIX).append(method).append(' ').append(uri.toASCIIString()).append('\n');
     }
 
+    /**
+     * Executes the print response line operation.
+     *
+     * @param sb     the sb value
+     * @param note   the note value
+     * @param id     the id value
+     * @param status the status value
+     */
+
     protected void printResponseLine(final StringBuilder sb, final String note, final long id, final int status) {
         appendId(sb, id).append(SECTION_PREFIX).append(note).append(" on thread ")
                 .append(Thread.currentThread().getName()).append('\n');
         appendId(sb, id).append(RESPONSE_PREFIX).append(Integer.toString(status)).append('\n');
     }
+
+    /**
+     * Returns the sorted headers.
+     *
+     * @param headers the headers value
+     * @return the result
+     */
 
     protected Set<Entry<String, List<String>>> getSortedHeaders(final Set<Entry<String, List<String>>> headers) {
         final TreeSet<Entry<String, List<String>>> sortedHeaders = new TreeSet<Entry<String, List<String>>>(
@@ -250,6 +310,15 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         });
     }
 
+    /**
+     * Executes the build entity log string operation.
+     *
+     * @param sb         the sb value
+     * @param entity     the entity value
+     * @param entitySize the entity size value
+     * @param charset    the charset value
+     */
+
     protected void buildEntityLogString(StringBuilder sb, byte[] entity, int entitySize, Charset charset) {
 
         sb.append(new String(entity, 0, Math.min(entitySize, maxEntitySize), charset));
@@ -279,6 +348,13 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         return stream;
     }
 
+    /**
+     * Executes the filter operation.
+     *
+     * @param requestContext the request context value
+     * @throws IOException if the operation fails
+     */
+
     @Override
     public void filter(ClientRequestContext requestContext) throws IOException {
 
@@ -301,6 +377,14 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             log(sb);
         }
     }
+
+    /**
+     * Executes the filter operation.
+     *
+     * @param requestContext  the request context value
+     * @param responseContext the response context value
+     * @throws IOException if the operation fails
+     */
 
     @Override
     public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
@@ -326,6 +410,14 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
 
         log(sb);
     }
+
+    /**
+     * Executes the around write to operation.
+     *
+     * @param context the context value
+     * @throws IOException             if the operation fails
+     * @throws WebApplicationException if the operation fails
+     */
 
     @Override
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
@@ -365,6 +457,13 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             buildEntityLogString(sb, entity, entity.length, charset);
             return (sb);
         }
+
+        /**
+         * Executes the write operation.
+         *
+         * @param i the i value
+         * @throws IOException if the operation fails
+         */
 
         @Override
         public void write(final int i) throws IOException {

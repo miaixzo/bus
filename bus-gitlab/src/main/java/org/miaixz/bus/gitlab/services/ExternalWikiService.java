@@ -33,6 +33,9 @@ public class ExternalWikiService extends NotificationService {
 
     @Serial
     private static final long serialVersionUID = 2852285037171L;
+    /**
+     * The wikiurl key prop value.
+     */
 
     public static final String WIKIURL_KEY_PROP = "external_wiki_url";
 
@@ -47,13 +50,32 @@ public class ExternalWikiService extends NotificationService {
         return formData;
     }
 
+    /**
+     * Returns the external wiki url.
+     *
+     * @return the result
+     */
+
     public String getExternalWikiUrl() {
         return this.getProperty(WIKIURL_KEY_PROP);
     }
 
+    /**
+     * Sets the external wiki url.
+     *
+     * @param endpoint the endpoint value
+     */
+
     public void setExternalWikiUrl(String endpoint) {
         this.setProperty(WIKIURL_KEY_PROP, endpoint);
     }
+
+    /**
+     * Sets the external wiki url and returns this instance.
+     *
+     * @param endpoint the endpoint value
+     * @return the result
+     */
 
     public ExternalWikiService withExternalWikiUrl(String endpoint) {
         setExternalWikiUrl(endpoint);

@@ -31,6 +31,7 @@ public class Symbol {
      * Constructs a new symbol constants holder.
      */
     public Symbol() {
+        // No initialization required.
     }
 
     /**

@@ -91,6 +91,7 @@ public class Dispatcher {
      * Default constructor.
      */
     public Dispatcher() {
+        // No initialization required.
     }
 
     /**

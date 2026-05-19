@@ -44,6 +44,7 @@ public class Calculator {
      * Constructs a new Calculator. Utility class constructor for static access.
      */
     private Calculator() {
+        // No initialization required.
     }
 
     /**

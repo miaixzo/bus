@@ -278,6 +278,8 @@ public class CoverCall implements Cancelable {
         }
 
         /**
+         * Returns the closing status code.
+         *
          * @return The closing status code.
          */
         public int getCode() {
@@ -285,6 +287,8 @@ public class CoverCall implements Cancelable {
         }
 
         /**
+         * Returns the reason for closing.
+         *
          * @return The reason for closing.
          */
         public String getReason() {
@@ -292,6 +296,8 @@ public class CoverCall implements Cancelable {
         }
 
         /**
+         * Tests whether the WebSocket was closed due to cancellation.
+         *
          * @return True if the WebSocket was closed due to cancellation.
          */
         public boolean isCanceled() {
@@ -299,6 +305,8 @@ public class CoverCall implements Cancelable {
         }
 
         /**
+         * Tests whether the WebSocket was closed due to an exception.
+         *
          * @return True if the WebSocket was closed due to an exception.
          */
         public boolean isException() {
@@ -306,6 +314,8 @@ public class CoverCall implements Cancelable {
         }
 
         /**
+         * Tests whether the WebSocket was closed due to a network error.
+         *
          * @return True if the WebSocket was closed due to a network error.
          */
         public boolean isNetworkError() {
@@ -313,6 +323,8 @@ public class CoverCall implements Cancelable {
         }
 
         /**
+         * Tests whether the WebSocket was closed due to a network timeout.
+         *
          * @return True if the WebSocket was closed due to a network timeout.
          */
         public boolean isTimeout() {
@@ -663,6 +675,8 @@ public class CoverCall implements Cancelable {
         }
 
         /**
+         * Returns the configured client-to-server ping interval in seconds.
+         *
          * @return The configured client-to-server ping interval in seconds.
          */
         public int pingSeconds() {
@@ -670,6 +684,8 @@ public class CoverCall implements Cancelable {
         }
 
         /**
+         * Returns the configured expected server-to-client pong interval in seconds.
+         *
          * @return The configured expected server-to-client pong interval in seconds.
          */
         public int pongSeconds() {
@@ -716,6 +732,8 @@ public class CoverCall implements Cancelable {
         }
 
         /**
+         * Tests whether this message contains text.
+         *
          * @return {@code true} if this is a text message, {@code false} otherwise.
          */
         public boolean isText() {

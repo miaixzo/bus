@@ -216,6 +216,7 @@ public final class DicomStowConfig {
          * Creates a new instance.
          */
         private Builder() {
+            // No initialization required.
         }
 
         /**

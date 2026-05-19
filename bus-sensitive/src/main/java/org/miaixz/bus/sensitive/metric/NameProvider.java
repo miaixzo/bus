@@ -39,6 +39,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class NameProvider extends AbstractProvider {
 
     /**
+     * Constructs a new NameProvider instance.
+     */
+    public NameProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Masks the given Chinese name according to the defined rules.
      *
      * @param value  The Chinese name to desensitize.

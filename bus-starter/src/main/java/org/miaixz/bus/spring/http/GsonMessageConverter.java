@@ -51,6 +51,13 @@ import org.miaixz.bus.logger.Logger;
 @ConditionalOnClass({ Gson.class })
 public class GsonMessageConverter extends AbstractHttpMessageConverter {
 
+    /**
+     * Constructs a new GsonMessageConverter instance.
+     */
+    public GsonMessageConverter() {
+        // No initialization required.
+    }
+
     private AutoBindingTypeMatcher autoTypeMatcher;
 
     /**

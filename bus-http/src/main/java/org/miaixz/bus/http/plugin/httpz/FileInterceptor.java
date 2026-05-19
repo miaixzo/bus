@@ -42,6 +42,13 @@ import org.miaixz.bus.http.metric.NewChain;
 public abstract class FileInterceptor implements Interceptor, ProgressListener {
 
     /**
+     * Constructs a new FileInterceptor instance.
+     */
+    public FileInterceptor() {
+        // No initialization required.
+    }
+
+    /**
      * Intercepts the network response to wrap the original response body with a progress-monitoring body.
      *
      * @param chain The interceptor chain.

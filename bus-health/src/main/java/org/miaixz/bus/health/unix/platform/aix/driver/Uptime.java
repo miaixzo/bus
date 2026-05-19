@@ -63,6 +63,7 @@ public final class Uptime {
      * Creates a new Uptime instance.
      */
     private Uptime() {
+        // No initialization required.
     }
 
     /**

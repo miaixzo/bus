@@ -110,6 +110,7 @@ public final class Http2 {
     }
 
     private Http2() {
+        // No initialization required.
     }
 
     /**

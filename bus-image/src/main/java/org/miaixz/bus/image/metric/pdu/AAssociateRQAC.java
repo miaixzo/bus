@@ -37,6 +37,13 @@ import org.miaixz.bus.image.metric.Connection;
 public abstract class AAssociateRQAC {
 
     /**
+     * Constructs a new AAssociateRQAC instance.
+     */
+    public AAssociateRQAC() {
+        // No initialization required.
+    }
+
+    /**
      * The pcs value.
      */
     protected final List<PresentationContext> pcs = new ArrayList<>();

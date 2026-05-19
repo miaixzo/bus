@@ -59,6 +59,7 @@ public class DateKit extends Calendar {
      * Constructs a new DateKit. Utility class constructor for static access.
      */
     private DateKit() {
+        // No initialization required.
     }
 
     /**
@@ -1732,6 +1733,7 @@ public class DateKit extends Calendar {
          * Constructs a new SQL. Utility class constructor for static access.
          */
         private SQL() {
+            // No initialization required.
         }
 
         /**

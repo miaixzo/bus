@@ -37,6 +37,13 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public abstract class SAXTransformer {
 
     /**
+     * Constructs a new {@code SAXTransformer} instance.
+     */
+    public SAXTransformer() {
+        // No initialization required.
+    }
+
+    /**
      * The factory value.
      */
     private static final SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory.newInstance();

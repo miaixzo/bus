@@ -35,7 +35,7 @@ public class ErrorAdvice {
      * Constructs a new ErrorAdvice. Utility class constructor for static access.
      */
     public ErrorAdvice() {
-
+        // No initialization required.
     }
 
     /**

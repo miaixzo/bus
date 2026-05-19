@@ -44,37 +44,91 @@ public class ErrorTrackingClientKey implements Serializable {
     @JsonProperty("sentry_dsn")
     private String sentryDsn;
 
+    /**
+     * Returns the public key.
+     *
+     * @return the result
+     */
+
     public String getPublicKey() {
         return publicKey;
     }
+
+    /**
+     * Sets the public key.
+     *
+     * @param publicKey the public key value
+     */
 
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the active.
+     *
+     * @return the result
+     */
+
     public Boolean getActive() {
         return active;
     }
+
+    /**
+     * Sets the active.
+     *
+     * @param active the active value
+     */
 
     public void setActive(Boolean active) {
         this.active = active;
     }
 
+    /**
+     * Returns the sentry dsn.
+     *
+     * @return the result
+     */
+
     public String getSentryDsn() {
         return sentryDsn;
     }
 
+    /**
+     * Sets the sentry dsn.
+     *
+     * @param sentryDsn the sentry dsn value
+     */
+
     public void setSentryDsn(String sentryDsn) {
         this.sentryDsn = sentryDsn;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

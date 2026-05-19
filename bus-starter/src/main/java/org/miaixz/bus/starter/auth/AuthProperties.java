@@ -48,6 +48,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class AuthProperties {
 
     /**
+     * Constructs a new AuthProperties instance.
+     */
+    public AuthProperties() {
+        // No initialization required.
+    }
+
+    /**
      * A map of authorization provider configurations, where the key is the provider {@link Registry} type and the value
      * is the {@link Context} containing the specific configuration for that provider.
      */

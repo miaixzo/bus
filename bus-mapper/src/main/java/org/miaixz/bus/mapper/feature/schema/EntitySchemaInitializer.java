@@ -57,6 +57,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class EntitySchemaInitializer {
 
     /**
+     * Constructs a new EntitySchemaInitializer instance.
+     */
+    public EntitySchemaInitializer() {
+        // No initialization required.
+    }
+
+    /**
      * Initializes schema structures for entity classes.
      *
      * @param dataSource    the datasource used for metadata reads and DDL execution

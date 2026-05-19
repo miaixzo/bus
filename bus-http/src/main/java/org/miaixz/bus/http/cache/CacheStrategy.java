@@ -145,6 +145,13 @@ public class CacheStrategy {
          */
         private int ageSeconds = -1;
 
+        /**
+         * Creates a cache strategy factory.
+         *
+         * @param nowMillis     the current time in milliseconds
+         * @param request       the request to satisfy
+         * @param cacheResponse the candidate cached response
+         */
         public Factory(long nowMillis, Request request, Response cacheResponse) {
             this.nowMillis = nowMillis;
             this.request = request;

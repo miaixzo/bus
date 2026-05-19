@@ -284,19 +284,49 @@ public class EpicFilter implements Serializable {
      */
     public enum EpicField {
 
-        AUTHOR_ID, AUTHOR_USERNAME, LABELS;
+        /**
+         * The author id epic field.
+         */
+        AUTHOR_ID,
+        /**
+         * The author username epic field.
+         */
+        AUTHOR_USERNAME,
+        /**
+         * The labels epic field.
+         */
+        LABELS;
 
         private static JacksonJsonEnumHelper<EpicField> enumHelper = new JacksonJsonEnumHelper<>(EpicField.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static EpicField forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {

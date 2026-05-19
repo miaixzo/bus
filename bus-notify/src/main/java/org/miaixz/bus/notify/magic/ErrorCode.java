@@ -27,4 +27,11 @@ package org.miaixz.bus.notify.magic;
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
+    /**
+     * Constructs a new ErrorCode instance.
+     */
+    public ErrorCode() {
+        // No initialization required.
+    }
+
 }

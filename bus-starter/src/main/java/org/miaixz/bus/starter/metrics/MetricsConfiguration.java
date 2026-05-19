@@ -54,6 +54,19 @@ import io.micrometer.core.instrument.MeterRegistry;
 @ConditionalOnProperty(prefix = GeniusBuilder.METRICS, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MetricsConfiguration {
 
+    /**
+     * Constructs a new MetricsConfiguration instance.
+     */
+    public MetricsConfiguration() {
+        // No initialization required.
+    }
+
+    /**
+     * Creates the native metrics provider.
+     *
+     * @param props metrics properties
+     * @return native metrics provider
+     */
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "bus.metrics", name = "provider", havingValue = "native", matchIfMissing = true)
@@ -65,6 +78,13 @@ public class MetricsConfiguration {
         return provider;
     }
 
+    /**
+     * Creates the Micrometer-backed metrics provider.
+     *
+     * @param props    metrics properties
+     * @param registry Micrometer meter registry
+     * @return Micrometer-backed metrics provider
+     */
     @Bean
     @ConditionalOnBean(MeterRegistry.class)
     @ConditionalOnMissingBean(Provider.class)
@@ -85,6 +105,8 @@ public class MetricsConfiguration {
      * Inject this bean into the bus-cache {@code Context} via {@code Context.newBuilder().hitting(adapter)} to activate
      * automatic hit-rate tracking for all {@code @Cached} methods. Skipped when the application provides its own
      * {@link org.miaixz.bus.cache.Collector} bean.
+     *
+     * @return cache metrics adapter
      */
     @Bean
     @ConditionalOnClass(name = "org.miaixz.bus.cache.Collector")
@@ -93,6 +115,12 @@ public class MetricsConfiguration {
         return new CacheMetricsAdapter();
     }
 
+    /**
+     * Creates the metrics scrape endpoint.
+     *
+     * @param props metrics properties
+     * @return metrics endpoint
+     */
     @Bean
     @ConditionalOnProperty(prefix = "bus.metrics", name = "endpoint", havingValue = "true", matchIfMissing = true)
     public MetricsEndpoint metricsEndpoint(MetricsProperties props) {

@@ -38,6 +38,7 @@ public final class SystemInformation {
      * Creates a new SystemInformation instance.
      */
     private SystemInformation() {
+        // No initialization required.
     }
 
     /**

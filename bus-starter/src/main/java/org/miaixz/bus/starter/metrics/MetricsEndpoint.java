@@ -47,10 +47,20 @@ public class MetricsEndpoint {
 
     private final MetricsProperties properties;
 
+    /**
+     * Creates a metrics endpoint.
+     *
+     * @param properties metrics properties
+     */
     public MetricsEndpoint(MetricsProperties properties) {
         this.properties = properties;
     }
 
+    /**
+     * Scrapes metrics in Prometheus text format.
+     *
+     * @return Prometheus text response
+     */
     @ResponseBody
     @GetMapping(path = "${bus.metrics.path:/metricz}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String scrape() {

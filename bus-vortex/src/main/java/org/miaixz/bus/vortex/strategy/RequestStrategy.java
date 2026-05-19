@@ -62,7 +62,7 @@ public class RequestStrategy extends AbstractStrategy {
      * Creates a request strategy.
      */
     public RequestStrategy() {
-
+        // No initialization required.
     }
 
     /**

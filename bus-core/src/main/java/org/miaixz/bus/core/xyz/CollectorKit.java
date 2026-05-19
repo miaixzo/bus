@@ -43,6 +43,7 @@ public class CollectorKit {
      * Constructs a new CollectorKit. Utility class constructor for static access.
      */
     private CollectorKit() {
+        // No initialization required.
     }
 
     /**

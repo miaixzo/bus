@@ -35,6 +35,13 @@ import org.miaixz.bus.http.Route;
 public final class RouteDatabase {
 
     /**
+     * Constructs a new RouteDatabase instance.
+     */
+    public RouteDatabase() {
+        // No initialization required.
+    }
+
+    /**
      * The set of failed routes.
      */
     private final Set<Route> failedRoutes = new LinkedHashSet<>();

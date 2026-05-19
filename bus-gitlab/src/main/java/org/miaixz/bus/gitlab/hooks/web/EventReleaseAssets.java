@@ -35,29 +35,71 @@ public class EventReleaseAssets {
     private List<EventReleaseLink> links;
     private List<EventReleaseSource> sources;
 
+    /**
+     * Returns the count.
+     *
+     * @return the result
+     */
+
     public Integer getCount() {
         return count;
     }
+
+    /**
+     * Sets the count.
+     *
+     * @param count the count value
+     */
 
     public void setCount(Integer count) {
         this.count = count;
     }
 
+    /**
+     * Returns the links.
+     *
+     * @return the result
+     */
+
     public List<EventReleaseLink> getLinks() {
         return links;
     }
+
+    /**
+     * Sets the links.
+     *
+     * @param links the links value
+     */
 
     public void setLinks(List<EventReleaseLink> links) {
         this.links = links;
     }
 
+    /**
+     * Returns the sources.
+     *
+     * @return the result
+     */
+
     public List<EventReleaseSource> getSources() {
         return sources;
     }
 
+    /**
+     * Sets the sources.
+     *
+     * @param sources the sources value
+     */
+
     public void setSources(List<EventReleaseSource> sources) {
         this.sources = sources;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

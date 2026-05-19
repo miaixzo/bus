@@ -22,8 +22,6 @@ package org.miaixz.bus.mapper.builder;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import lombok.RequiredArgsConstructor;
-
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
@@ -98,7 +96,6 @@ public interface ClassMetaResolver extends Order {
      * @author Kimi Liu
      * @since Java 21+
      */
-    @RequiredArgsConstructor
     class MapperTypeMethod {
 
         /**
@@ -110,6 +107,17 @@ public interface ClassMetaResolver extends Order {
          * The Mapper interface method.
          */
         private final Method mapperMethod;
+
+        /**
+         * Creates a mapper-method cache key.
+         *
+         * @param mapperType the mapper interface class
+         * @param mapperMethod the mapper interface method
+         */
+        public MapperTypeMethod(Class<?> mapperType, Method mapperMethod) {
+            this.mapperType = mapperType;
+            this.mapperMethod = mapperMethod;
+        }
 
         /**
          * Compares this MapperTypeMethod with another object for equality.
@@ -157,6 +165,13 @@ public interface ClassMetaResolver extends Order {
      * @since Java 21+
      */
     class ClassFinderInstance {
+
+        /**
+         * Constructs a new ClassFinderInstance instance.
+         */
+        public ClassFinderInstance() {
+            // No initialization required.
+        }
 
         /**
          * Gets extended implementations via SPI or uses the default implementation.

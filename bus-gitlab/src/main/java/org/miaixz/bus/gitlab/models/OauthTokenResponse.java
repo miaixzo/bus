@@ -39,41 +39,101 @@ public class OauthTokenResponse implements Serializable {
     private String scope;
     private Long createdAt;
 
+    /**
+     * Returns the access token.
+     *
+     * @return the result
+     */
+
     public String getAccessToken() {
         return accessToken;
     }
+
+    /**
+     * Sets the access token.
+     *
+     * @param accessToken the access token value
+     */
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
 
+    /**
+     * Returns the token type.
+     *
+     * @return the result
+     */
+
     public String getTokenType() {
         return tokenType;
     }
+
+    /**
+     * Sets the token type.
+     *
+     * @param tokenType the token type value
+     */
 
     public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
     }
 
+    /**
+     * Returns the refresh token.
+     *
+     * @return the result
+     */
+
     public String getRefreshToken() {
         return refreshToken;
     }
+
+    /**
+     * Sets the refresh token.
+     *
+     * @param refreshToken the refresh token value
+     */
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
+    /**
+     * Returns the scope.
+     *
+     * @return the result
+     */
+
     public String getScope() {
         return scope;
     }
+
+    /**
+     * Sets the scope.
+     *
+     * @param scope the scope value
+     */
 
     public void setScope(String scope) {
         this.scope = scope;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Long getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Long createdAt) {
         this.createdAt = createdAt;

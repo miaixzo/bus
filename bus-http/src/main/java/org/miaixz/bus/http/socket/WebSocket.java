@@ -34,6 +34,8 @@ import org.miaixz.bus.http.Request;
 public interface WebSocket {
 
     /**
+     * Executes the web socket. operation.
+     *
      * @return The original request that initiated this WebSocket.
      */
     Request request();

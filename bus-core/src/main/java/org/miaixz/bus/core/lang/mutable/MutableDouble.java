@@ -44,6 +44,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      * Constructs a new MutableDouble with a default value of 0.
      */
     public MutableDouble() {
+        // No initialization required.
     }
 
     /**

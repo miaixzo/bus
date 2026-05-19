@@ -128,6 +128,7 @@ public class ErrorRegistry implements Errors {
          * Constructs a new Builder.
          */
         public Builder() {
+            // No initialization required.
         }
 
         /**

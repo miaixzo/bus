@@ -33,6 +33,13 @@ import java.lang.reflect.Method;
 public abstract class Supplier {
 
     /**
+     * Constructs a new Supplier instance.
+     */
+    public Supplier() {
+        // No initialization required.
+    }
+
+    /**
      * Retrieves the current user or request identifier. This method must be implemented by concrete subclasses to
      * provide the specific identification logic.
      *

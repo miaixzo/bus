@@ -41,7 +41,14 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 @Getter
 @Setter
 @Accessors(fluent = true)
-public class PropertyMeta<T extends PropertyMeta> {
+public class PropertyMeta<T extends PropertyMeta<T>> {
+
+    /**
+     * Constructs a new PropertyMeta instance.
+     */
+    public PropertyMeta() {
+        // No initialization required.
+    }
 
     /**
      * Additional properties for extension.
@@ -130,6 +137,7 @@ public class PropertyMeta<T extends PropertyMeta> {
      * @param value The property value.
      * @return The current instance for fluent-style chaining.
      */
+    @SuppressWarnings("unchecked")
     public T put(String prop, String value) {
         if (this.props == null) {
             synchronized (this) {
@@ -148,6 +156,7 @@ public class PropertyMeta<T extends PropertyMeta> {
      * @param props The map of properties.
      * @return The current instance for fluent-style chaining.
      */
+    @SuppressWarnings("unchecked")
     public T put(Map<String, String> props) {
         if (props != null && !props.isEmpty()) {
             for (Map.Entry<String, String> entry : props.entrySet()) {

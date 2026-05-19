@@ -40,7 +40,7 @@ public class Binding extends Namespace {
      * Creates an empty setting binding.
      */
     public Binding() {
-
+        // No initialization required.
     }
 
     /**

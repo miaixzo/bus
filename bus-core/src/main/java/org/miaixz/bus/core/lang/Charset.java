@@ -42,6 +42,7 @@ public class Charset {
      * Constructs a new Charset. Utility class constructor for static access.
      */
     private Charset() {
+        // No initialization required.
     }
 
     /**

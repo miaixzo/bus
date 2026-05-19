@@ -47,6 +47,13 @@ import org.miaixz.bus.image.galaxy.io.ContentHandlerAdapter;
 public class RecordFactory {
 
     /**
+     * Constructs a new {@code RecordFactory} instance.
+     */
+    public RecordFactory() {
+        // No initialization required.
+    }
+
+    /**
      * The in use value.
      */
     private static final int IN_USE = 0xffff;

@@ -50,81 +50,201 @@ public class RepositoryFile implements Serializable {
     private String commitId;
     private String lastCommitId;
 
+    /**
+     * Returns the file name.
+     *
+     * @return the result
+     */
+
     public String getFileName() {
         return fileName;
     }
+
+    /**
+     * Sets the file name.
+     *
+     * @param fileName the file name value
+     */
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+    /**
+     * Returns the file path.
+     *
+     * @return the result
+     */
+
     public String getFilePath() {
         return filePath;
     }
+
+    /**
+     * Sets the file path.
+     *
+     * @param filePath the file path value
+     */
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Returns the size.
+     *
+     * @return the result
+     */
+
     public Integer getSize() {
         return size;
     }
+
+    /**
+     * Sets the size.
+     *
+     * @param size the size value
+     */
 
     public void setSize(Integer size) {
         this.size = size;
     }
 
+    /**
+     * Returns the encoding.
+     *
+     * @return the result
+     */
+
     public Encoding getEncoding() {
         return encoding;
     }
+
+    /**
+     * Sets the encoding.
+     *
+     * @param encoding the encoding value
+     */
 
     public void setEncoding(Encoding encoding) {
         this.encoding = encoding;
     }
 
+    /**
+     * Returns the content.
+     *
+     * @return the result
+     */
+
     public String getContent() {
         return content;
     }
+
+    /**
+     * Sets the content.
+     *
+     * @param content the content value
+     */
 
     public void setContent(String content) {
         this.content = content;
     }
 
+    /**
+     * Returns the content sha256.
+     *
+     * @return the result
+     */
+
     public String getContentSha256() {
         return contentSha256;
     }
+
+    /**
+     * Sets the content sha256.
+     *
+     * @param contentSha256 the content sha256 value
+     */
 
     public void setContentSha256(String contentSha256) {
         this.contentSha256 = contentSha256;
     }
 
+    /**
+     * Returns the ref.
+     *
+     * @return the result
+     */
+
     public String getRef() {
         return ref;
     }
+
+    /**
+     * Sets the ref.
+     *
+     * @param ref the ref value
+     */
 
     public void setRef(String ref) {
         this.ref = ref;
     }
 
+    /**
+     * Returns the blob id.
+     *
+     * @return the result
+     */
+
     public String getBlobId() {
         return blobId;
     }
+
+    /**
+     * Sets the blob id.
+     *
+     * @param blobId the blob id value
+     */
 
     public void setBlobId(String blobId) {
         this.blobId = blobId;
     }
 
+    /**
+     * Returns the commit id.
+     *
+     * @return the result
+     */
+
     public String getCommitId() {
         return commitId;
     }
+
+    /**
+     * Sets the commit id.
+     *
+     * @param commitId the commit id value
+     */
 
     public void setCommitId(String commitId) {
         this.commitId = commitId;
     }
 
+    /**
+     * Returns the last commit id.
+     *
+     * @return the result
+     */
+
     public String getLastCommitId() {
         return lastCommitId;
     }
+
+    /**
+     * Sets the last commit id.
+     *
+     * @param lastCommitId the last commit id value
+     */
 
     public void setLastCommitId(String lastCommitId) {
         this.lastCommitId = lastCommitId;
@@ -198,6 +318,12 @@ public class RepositoryFile implements Serializable {
         this.content = Base64.getEncoder().encodeToString(byteContent);
         encoding = Encoding.BASE64;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

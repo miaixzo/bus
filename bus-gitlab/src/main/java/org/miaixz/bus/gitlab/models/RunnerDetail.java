@@ -64,36 +64,45 @@ public class RunnerDetail extends Runner {
     public enum RunnerAccessLevel {
 
         /**
-         * Indicates the runner is not protected.
-         * <p>
-         * This runner can execute jobs for all projects regardless of their visibility, including public and internal
-         * projects. It is the default access level for shared runners and provides no access restrictions.
-         * </p>
+         * The not protected defines.
          */
         NOT_PROTECTED,
-
         /**
-         * Indicates the runner is reference protected.
-         * <p>
-         * This runner can only execute jobs for protected references (branches and tags) in projects. Protected
-         * references are typically main branches or release tags that have additional security restrictions. This
-         * access level is useful for runners with access to sensitive resources or deployment credentials.
-         * </p>
+         * The ref protected defines.
          */
         REF_PROTECTED;
 
         private static JacksonJsonEnumHelper<RunnerAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(
                 RunnerAccessLevel.class);
 
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
         @JsonCreator
         public static RunnerAccessLevel forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -102,122 +111,299 @@ public class RunnerDetail extends Runner {
 
     }
 
+    /**
+     * Returns the architecture.
+     *
+     * @return the result
+     */
+
     public String getArchitecture() {
         return architecture;
     }
+
+    /**
+     * Sets the architecture.
+     *
+     * @param architecture the architecture value
+     */
 
     public void setArchitecture(String architecture) {
         this.architecture = architecture;
     }
 
+    /**
+     * Returns the platform.
+     *
+     * @return the result
+     */
+
     public String getPlatform() {
         return this.platform;
     }
+
+    /**
+     * Sets the platform.
+     *
+     * @param platform the platform value
+     */
 
     public void setPlatform(String platform) {
         this.platform = platform;
     }
 
+    /**
+     * Returns the contacted at.
+     *
+     * @return the result
+     */
+
     public Date getContactedAt() {
         return contactedAt;
     }
+
+    /**
+     * Sets the contacted at.
+     *
+     * @param contactedAt the contacted at value
+     */
 
     public void setContactedAt(Date contactedAt) {
         this.contactedAt = contactedAt;
     }
 
+    /**
+     * Returns the projects.
+     *
+     * @return the result
+     */
+
     public List<Project> getProjects() {
         return this.projects;
     }
+
+    /**
+     * Sets the projects.
+     *
+     * @param projects the projects value
+     */
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
     }
 
+    /**
+     * Returns the token.
+     *
+     * @return the result
+     */
+
     public String getToken() {
         return this.token;
     }
+
+    /**
+     * Sets the token.
+     *
+     * @param token the token value
+     */
 
     public void setToken(String token) {
         this.token = token;
     }
 
+    /**
+     * Returns the revision.
+     *
+     * @return the result
+     */
+
     public String getRevision() {
         return this.revision;
     }
+
+    /**
+     * Sets the revision.
+     *
+     * @param revision the revision value
+     */
 
     public void setRevision(String revision) {
         this.revision = revision;
     }
 
+    /**
+     * Returns the tag list.
+     *
+     * @return the result
+     */
+
     public List<String> getTagList() {
         return this.tagList;
     }
+
+    /**
+     * Sets the tag list.
+     *
+     * @param tagList the tag list value
+     */
 
     public void setTagList(List<String> tagList) {
         this.tagList = tagList;
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return the result
+     */
+
     public String getVersion() {
         return this.version;
     }
+
+    /**
+     * Sets the version.
+     *
+     * @param version the version value
+     */
 
     public void setVersion(String version) {
         this.version = version;
     }
 
+    /**
+     * Returns the access level.
+     *
+     * @return the result
+     */
+
     public RunnerAccessLevel getAccessLevel() {
         return this.accessLevel;
     }
 
+    /**
+     * Sets the access level.
+     *
+     * @param accessLevel the access level value
+     */
+
     public void setAccessLevel(RunnerAccessLevel accessLevel) {
         this.accessLevel = accessLevel;
     }
+
+    /**
+     * Sets the architecture and returns this instance.
+     *
+     * @param architecture the architecture value
+     * @return the result
+     */
 
     public RunnerDetail withArchitecture(String architecture) {
         this.architecture = architecture;
         return this;
     }
 
+    /**
+     * Sets the platform and returns this instance.
+     *
+     * @param platform the platform value
+     * @return the result
+     */
+
     public RunnerDetail withPlatform(String platform) {
         this.platform = platform;
         return this;
     }
+
+    /**
+     * Sets the contacted at and returns this instance.
+     *
+     * @param contactedAt the contacted at value
+     * @return the result
+     */
 
     public RunnerDetail withContactedAt(Date contactedAt) {
         this.contactedAt = contactedAt;
         return this;
     }
 
+    /**
+     * Sets the projects and returns this instance.
+     *
+     * @param projects the projects value
+     * @return the result
+     */
+
     public RunnerDetail withProjects(List<Project> projects) {
         this.projects = projects;
         return this;
     }
+
+    /**
+     * Sets the token and returns this instance.
+     *
+     * @param token the token value
+     * @return the result
+     */
 
     public RunnerDetail withToken(String token) {
         this.token = token;
         return this;
     }
 
+    /**
+     * Sets the revision and returns this instance.
+     *
+     * @param revision the revision value
+     * @return the result
+     */
+
     public RunnerDetail withRevision(String revision) {
         this.revision = revision;
         return this;
     }
+
+    /**
+     * Sets the tag list and returns this instance.
+     *
+     * @param tagList the tag list value
+     * @return the result
+     */
 
     public RunnerDetail withTagList(List<String> tagList) {
         this.tagList = tagList;
         return this;
     }
 
+    /**
+     * Sets the version and returns this instance.
+     *
+     * @param version the version value
+     * @return the result
+     */
+
     public RunnerDetail withVersion(String version) {
         this.version = version;
         return this;
     }
 
+    /**
+     * Sets the access level and returns this instance.
+     *
+     * @param accessLevel the access level value
+     * @return the result
+     */
+
     public RunnerDetail withAccessLevel(RunnerAccessLevel accessLevel) {
         this.accessLevel = accessLevel;
         return this;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

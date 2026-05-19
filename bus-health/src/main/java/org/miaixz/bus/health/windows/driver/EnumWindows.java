@@ -45,6 +45,13 @@ import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
 public final class EnumWindows {
 
     /**
+     * Constructs a new EnumWindows instance.
+     */
+    public EnumWindows() {
+        // No initialization required.
+    }
+
+    /**
      * The GW_HWNDNEXT constant.
      */
     private static final DWORD GW_HWNDNEXT = new DWORD(2);

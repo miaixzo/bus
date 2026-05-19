@@ -37,6 +37,7 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
      * Creates a gateway error-code registry holder.
      */
     public ErrorCode() {
+        // No initialization required.
     }
 
     /**

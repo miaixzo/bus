@@ -34,6 +34,13 @@ import org.miaixz.bus.image.galaxy.data.VR;
 public class Commands {
 
     /**
+     * Constructs a new Commands instance.
+     */
+    public Commands() {
+        // No initialization required.
+    }
+
+    /**
      * The no dataset value.
      */
     public static final int NO_DATASET = 0x0101;

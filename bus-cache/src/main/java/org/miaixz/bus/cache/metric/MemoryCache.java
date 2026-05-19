@@ -493,6 +493,8 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
 
     /**
      * Schedules a periodic task to prune expired entries from the cache.
+     *
+     * @param delay delay in milliseconds before the prune task runs
      */
     public void schedulePrune(long delay) {
         Logger.info(false, "Cache", "Memory cache prune scheduled: delayMs={}", delay);

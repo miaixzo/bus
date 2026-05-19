@@ -31,6 +31,8 @@ public class EmailChecker {
 
     /**
      * Java regular expression for validating an email address.
+     *
+     * @return the result
      */
 
     public static final String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\""
@@ -40,6 +42,9 @@ public class EmailChecker {
 
     /**
      * Java Pattern instance for validating an email address.
+     *
+     * @param EMAIL_REGEX the email regex value
+     * @return the result
      */
     public static final Pattern EMAIL_REGEX_PATTERN = Pattern.compile(EMAIL_REGEX);
 

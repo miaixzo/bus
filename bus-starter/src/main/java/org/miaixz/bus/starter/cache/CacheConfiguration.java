@@ -71,6 +71,13 @@ import org.miaixz.bus.starter.jdbc.JdbcProperties;
 public class CacheConfiguration {
 
     /**
+     * Constructs a new CacheConfiguration instance.
+     */
+    public CacheConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected cache configuration properties.
      */
     @Resource
@@ -96,6 +103,8 @@ public class CacheConfiguration {
      * Returns {@code null} when no cache backend is configured, leaving caching inactive.
      * </p>
      *
+     * @param factory              cache factory
+     * @param defaultCacheProvider optional default cache provider
      * @return configured proxy, or {@code null} if no configuration is present
      * @throws IllegalArgumentException on unknown type values or missing required properties
      */

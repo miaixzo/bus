@@ -40,6 +40,7 @@ public class HTTP {
      * Constructs a new HTTP. Utility class constructor for static access.
      */
     private HTTP() {
+        // No initialization required.
     }
 
     /**

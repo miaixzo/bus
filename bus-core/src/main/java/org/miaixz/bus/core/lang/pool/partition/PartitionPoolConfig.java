@@ -36,6 +36,13 @@ public class PartitionPoolConfig extends PoolConfig {
     private static final long serialVersionUID = 2852272551279L;
 
     /**
+     * Constructs a new {@code PartitionPoolConfig} instance.
+     */
+    public PartitionPoolConfig() {
+        // No initialization required.
+    }
+
+    /**
      * The number of partitions in the partitioned object pool. Each partition acts as an independent sub-pool.
      */
     private int partitionSize = 4;

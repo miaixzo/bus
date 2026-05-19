@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.QUASAR_INTERNAL_USE;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "QUASAR_INTERNAL_USE";

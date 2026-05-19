@@ -30,6 +30,13 @@ import org.apache.poi.openxml4j.util.ZipSecureFile;
 public class Context {
 
     /**
+     * Constructs a new Context instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
+
+    /**
      * Sets the minimum inflation ratio during decompression. To avoid `Zip Bomb` attacks, POI sets a minimum
      * compression ratio, which is:
      *

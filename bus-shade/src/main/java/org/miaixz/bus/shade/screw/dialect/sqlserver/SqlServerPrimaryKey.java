@@ -36,6 +36,13 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 public class SqlServerPrimaryKey implements PrimaryKey {
 
     /**
+     * Constructs a new SqlServerPrimaryKey instance.
+     */
+    public SqlServerPrimaryKey() {
+        // No initialization required.
+    }
+
+    /**
      * The name of the table.
      */
     @MappingField(value = "TABLE_NAME")

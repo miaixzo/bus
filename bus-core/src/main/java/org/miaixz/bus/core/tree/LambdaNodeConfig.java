@@ -36,6 +36,13 @@ import org.miaixz.bus.core.xyz.LambdaKit;
  */
 public class LambdaNodeConfig<T, R> extends NodeConfig {
 
+    /**
+     * Constructs a new LambdaNodeConfig instance.
+     */
+    public LambdaNodeConfig() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852250050652L;
 

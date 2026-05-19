@@ -25,6 +25,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,10 +40,20 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 /**
  * The abstract epic class.
  *
+ * @param <E> the concrete epic model type
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
+@Setter
 public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic<E> implements Serializable {
+
+    /**
+     * Constructs a new AbstractEpic instance.
+     */
+    public AbstractEpic() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852233623053L;
@@ -60,6 +73,12 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date endDate;
 
+    /**
+     * Sets the description and returns this epic model.
+     *
+     * @param description the epic description
+     * @return this epic model
+     */
     public E withDescription(String description) {
         this.description = description;
         return (E) (this);
@@ -75,104 +94,48 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
     @JsonProperty("_links")
     private Map<String, String> links;
 
-    public Long getParentIid() {
-        return parentIid;
-    }
-
-    public void setParentIid(Long parentIid) {
-        this.parentIid = parentIid;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
+    /**
+     * Sets the author and returns this epic model.
+     *
+     * @param author the epic author
+     * @return this epic model
+     */
     public E withAuthor(Author author) {
         this.author = author;
         return (E) (this);
     }
 
-    public EpicState getState() {
-        return state;
-    }
-
-    public void setState(EpicState state) {
-        this.state = state;
-    }
-
-    public String getWebUrl() {
-        return webUrl;
-    }
-
-    public void setWebUrl(String webUrl) {
-        this.webUrl = webUrl;
-    }
-
-    public References getReferences() {
-        return references;
-    }
-
-    public void setReferences(References references) {
-        this.references = references;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
-
+    /**
+     * Sets the labels and returns this epic model.
+     *
+     * @param labels the epic labels
+     * @return this epic model
+     */
     public E withLabels(List<String> labels) {
         this.labels = labels;
         return (E) (this);
     }
 
-    public List<String> getLabels() {
-        return labels;
-    }
-
-    public void setLabels(List<String> labels) {
-        this.labels = labels;
-    }
-
+    /**
+     * Sets the start date and returns this epic model.
+     *
+     * @param startDate the epic start date
+     * @return this epic model
+     */
     public E withStartDate(Date startDate) {
         this.startDate = startDate;
         return (E) (this);
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
+    /**
+     * Sets the end date and returns this epic model.
+     *
+     * @param endDate the epic end date
+     * @return this epic model
+     */
     public E withEndDate(Date endDate) {
         this.endDate = endDate;
         return (E) (this);
-    }
-
-    public Date getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
     }
 
     /**
@@ -183,19 +146,47 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
      */
     public enum EpicState {
 
-        OPENED, CLOSED, ALL;
+        /**
+         * The opened epic state.
+         */
+        OPENED,
+        /**
+         * The closed epic state.
+         */
+        CLOSED,
+        /**
+         * The all epic state.
+         */
+        ALL;
 
         private static JacksonJsonEnumHelper<EpicState> enumHelper = new JacksonJsonEnumHelper<>(EpicState.class);
 
+        /**
+         * Resolves the epic state from the API value.
+         *
+         * @param value the API value
+         * @return the epic state
+         */
         @JsonCreator
         public static EpicState forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the API value for this epic state.
+         *
+         * @return the API value
+         */
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -204,62 +195,12 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
 
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Date getClosedAt() {
-        return closedAt;
-    }
-
-    public void setClosedAt(Date closedAt) {
-        this.closedAt = closedAt;
-    }
-
-    public Integer getDownvotes() {
-        return downvotes;
-    }
-
-    public void setDownvotes(Integer downvotes) {
-        this.downvotes = downvotes;
-    }
-
-    public Integer getUpvotes() {
-        return upvotes;
-    }
-
-    public void setUpvotes(Integer upvotes) {
-        this.upvotes = upvotes;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public Map<String, String> getLinks() {
-        return links;
-    }
-
-    public void setLinks(Map<String, String> links) {
-        this.links = links;
-    }
-
+    /**
+     * Returns a link by its API link name.
+     *
+     * @param name the link name
+     * @return the matching link or {@code null}
+     */
     @JsonIgnore
     public String getLinkByName(String name) {
         if (links == null || links.isEmpty()) {
@@ -269,6 +210,13 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         return (links.get(name));
     }
 
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
+    @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }

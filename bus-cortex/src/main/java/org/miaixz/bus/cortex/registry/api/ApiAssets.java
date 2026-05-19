@@ -234,6 +234,7 @@ public class ApiAssets extends Assets {
          * Creates an empty API metadata view.
          */
         public Meta() {
+            // No initialization required.
         }
 
         /**

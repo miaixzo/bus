@@ -102,6 +102,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class BatchProvider extends BasicProvider {
 
     /**
+     * Constructs a new BatchProvider instance.
+     */
+    public BatchProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Build Multi-Values INSERT SQL.
      *
      * <p>

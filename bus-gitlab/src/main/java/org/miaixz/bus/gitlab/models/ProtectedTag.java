@@ -50,17 +50,41 @@ public class ProtectedTag implements Serializable {
         private AccessLevel access_level;
         private String accessLevelDescription;
 
+        /**
+         * Returns the access level.
+         *
+         * @return the result
+         */
+
         public AccessLevel getAccess_level() {
             return access_level;
         }
+
+        /**
+         * Sets the access level.
+         *
+         * @param access_level the access level value
+         */
 
         public void setAccess_level(AccessLevel access_level) {
             this.access_level = access_level;
         }
 
+        /**
+         * Returns the access level description.
+         *
+         * @return the result
+         */
+
         public String getAccessLevelDescription() {
             return accessLevelDescription;
         }
+
+        /**
+         * Sets the access level description.
+         *
+         * @param accessLevelDescription the access level description value
+         */
 
         public void setAccessLevelDescription(String accessLevelDescription) {
             this.accessLevelDescription = accessLevelDescription;
@@ -71,21 +95,51 @@ public class ProtectedTag implements Serializable {
     private String name;
     private List<CreateAccessLevel> createAccessLevels;
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the create access levels.
+     *
+     * @return the result
+     */
+
     public List<CreateAccessLevel> getCreateAccessLevels() {
         return createAccessLevels;
     }
 
+    /**
+     * Sets the create access levels.
+     *
+     * @param createAccessLevels the create access levels value
+     */
+
     public void setCreateAccessLevels(List<CreateAccessLevel> createAccessLevels) {
         this.createAccessLevels = createAccessLevels;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

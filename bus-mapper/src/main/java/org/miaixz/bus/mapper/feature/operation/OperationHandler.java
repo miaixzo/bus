@@ -53,6 +53,13 @@ import org.miaixz.bus.mapper.handler.MapperHandler;
 public class OperationHandler<T> extends AbstractSqlHandler implements MapperHandler<T> {
 
     /**
+     * Constructs a new OperationHandler instance.
+     */
+    public OperationHandler() {
+        // No initialization required.
+    }
+
+    /**
      * Pattern to detect WHERE clause in SQL statements (case-insensitive)
      */
     private static final Pattern WHERE_PATTERN = Pattern.compile("\\bWHERE\\b", Pattern.CASE_INSENSITIVE);

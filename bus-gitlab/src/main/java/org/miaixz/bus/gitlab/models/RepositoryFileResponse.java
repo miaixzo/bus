@@ -38,21 +38,51 @@ public class RepositoryFileResponse implements Serializable {
     private String filePath; // full path to file. Ex. lib/class.rb
     private String branch;
 
+    /**
+     * Returns the file path.
+     *
+     * @return the result
+     */
+
     public String getFilePath() {
         return filePath;
     }
+
+    /**
+     * Sets the file path.
+     *
+     * @param filePath the file path value
+     */
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Returns the branch.
+     *
+     * @return the result
+     */
+
     public String getBranch() {
         return branch;
     }
 
+    /**
+     * Sets the branch.
+     *
+     * @param branch the branch value
+     */
+
     public void setBranch(String branch) {
         this.branch = branch;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

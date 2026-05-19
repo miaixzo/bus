@@ -69,6 +69,8 @@ public final class GpuTicks {
     }
 
     /**
+     * Returns cumulative GPU active ticks in platform-native units.
+     *
      * @return cumulative GPU active ticks in platform-native units
      */
     public long getActiveTicks() {
@@ -76,6 +78,8 @@ public final class GpuTicks {
     }
 
     /**
+     * Returns cumulative GPU idle ticks in platform-native units.
+     *
      * @return cumulative GPU idle ticks in platform-native units
      */
     public long getIdleTicks() {

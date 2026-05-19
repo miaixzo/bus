@@ -256,6 +256,7 @@ public final class Builder {
      * Private constructor; this is a static constants class.
      */
     private Builder() {
+        // No initialization required.
     }
 
 }

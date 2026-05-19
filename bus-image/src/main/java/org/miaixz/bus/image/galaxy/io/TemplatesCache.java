@@ -34,6 +34,13 @@ import javax.xml.transform.stream.StreamSource;
 public class TemplatesCache {
 
     /**
+     * Constructs a new {@code TemplatesCache} instance.
+     */
+    public TemplatesCache() {
+        // No initialization required.
+    }
+
+    /**
      * The default cache value.
      */
     private static TemplatesCache defaultCache;

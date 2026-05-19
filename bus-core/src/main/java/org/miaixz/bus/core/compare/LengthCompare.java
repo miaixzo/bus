@@ -33,6 +33,13 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class LengthCompare implements Comparator<CharSequence> {
 
     /**
+     * Constructs a new {@code LengthCompare} instance.
+     */
+    public LengthCompare() {
+        // No initialization required.
+    }
+
+    /**
      * Singleton instance of {@code LengthCompare}, which sorts shorter sequences first.
      */
     public static final LengthCompare INSTANCE = new LengthCompare();

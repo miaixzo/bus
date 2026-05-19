@@ -45,12 +45,19 @@ import org.miaixz.bus.logger.Logger;
  * The gensalt method provides an optional parameter (log_rounds) to define how much the salt is, which also determines
  * the complexity of the encryption:
  * {@code  String strong_salt = BCrypt.gensalt(10);  String stronger_salt = BCrypt.gensalt(12); }
- * <p>
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class BCrypt {
+
+    /**
+     * Constructs a new BCrypt instance.
+     */
+    public BCrypt() {
+        // No initialization required.
+    }
 
     /**
      * Initial contents of data schedule.

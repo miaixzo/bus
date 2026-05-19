@@ -119,7 +119,7 @@ public class CopyOptions implements Serializable {
      * Default constructor.
      */
     public CopyOptions() {
-
+        // No initialization required.
     }
 
     /**

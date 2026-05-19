@@ -34,6 +34,13 @@ import org.miaixz.bus.image.metric.Connection;
 public class ApplicationEntityInfo implements Serializable {
 
     /**
+     * Constructs a new ApplicationEntityInfo instance.
+     */
+    public ApplicationEntityInfo() {
+        // No initialization required.
+    }
+
+    /**
      * The conns value.
      */
     private final List<Connection> conns = new ArrayList<>(1);

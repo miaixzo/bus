@@ -37,6 +37,7 @@ public class BoundedOperation {
      * Constructs a new BoundedOperation. Utility class constructor for static access.
      */
     private BoundedOperation() {
+        // No initialization required.
     }
 
     /**

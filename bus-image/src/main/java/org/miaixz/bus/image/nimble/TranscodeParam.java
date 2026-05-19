@@ -220,6 +220,8 @@ public class TranscodeParam {
     }
 
     /**
+     * Executes the 100 operation.
+     *
      * @param jpegCompressionQuality between 1 to 100 (100 is the best lossy quality).
      */
     public void setJpegCompressionQuality(int jpegCompressionQuality) {

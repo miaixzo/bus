@@ -39,6 +39,13 @@ import org.miaixz.bus.logger.Logger;
 public final class Registry {
 
     /**
+     * Constructs a new Registry instance.
+     */
+    public Registry() {
+        // No initialization required.
+    }
+
+    /**
      * Cache for cryptographic algorithm providers, mapping algorithm names to {@link Provider} instances.
      */
     private static Map<String, Provider> ALGORITHM_CACHE = new ConcurrentHashMap<>();

@@ -388,6 +388,13 @@ public class CacheControl {
      */
     public static final class Builder {
 
+        /**
+         * Constructs a new Builder instance.
+         */
+        public Builder() {
+            // No initialization required.
+        }
+
         boolean noCache;
         boolean noStore;
         int maxAgeSeconds = -1;

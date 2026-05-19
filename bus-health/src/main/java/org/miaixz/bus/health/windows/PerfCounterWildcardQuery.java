@@ -280,6 +280,8 @@ public final class PerfCounterWildcardQuery {
     public interface PdhCounterWildcardProperty {
 
         /**
+         * Returns the counter name or instance filter.
+         *
          * @return Returns the counter. The first element of the enum will return the instance filter rather than a
          *         counter.
          */

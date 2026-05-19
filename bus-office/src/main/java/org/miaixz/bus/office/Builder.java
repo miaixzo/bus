@@ -42,6 +42,13 @@ import org.miaixz.bus.logger.Logger;
 public class Builder {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * Content type for XLS files.
      */
     public static final String XLS_CONTENT_TYPE = "application/vnd.ms-excel";

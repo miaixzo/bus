@@ -70,6 +70,13 @@ import org.springframework.core.annotation.Order;
 public class AspectjValidateProxy {
 
     /**
+     * Constructs a new AspectjValidateProxy instance.
+     */
+    public AspectjValidateProxy() {
+        // No initialization required.
+    }
+
+    /**
      * Defines the pointcut that matches all methods annotated with Spring Web annotations or methods with parameters
      * annotated with {@code @Valid}.
      * <p>

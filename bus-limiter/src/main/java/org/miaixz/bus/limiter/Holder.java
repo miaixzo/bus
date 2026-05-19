@@ -29,6 +29,13 @@ package org.miaixz.bus.limiter;
 public class Holder {
 
     /**
+     * Constructs a new Holder instance.
+     */
+    public Holder() {
+        // No initialization required.
+    }
+
+    /**
      * The global {@link Context} instance for the limiter module. This instance holds configuration and shared
      * resources.
      */

@@ -37,6 +37,7 @@ public class DependencyGraph {
      * Creates an empty dependency graph.
      */
     public DependencyGraph() {
+        // No initialization required.
     }
 
     /**

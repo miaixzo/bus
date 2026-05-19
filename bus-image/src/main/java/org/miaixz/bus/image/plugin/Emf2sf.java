@@ -40,6 +40,13 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 public class Emf2sf {
 
     /**
+     * Constructs a new Emf2sf instance.
+     */
+    public Emf2sf() {
+        // No initialization required.
+    }
+
+    /**
      * The core component for extracting frames.
      */
     private final MultiframeExtractor extractor = new MultiframeExtractor();

@@ -421,6 +421,7 @@ public class Association {
     /**
      * Gets the property.
      *
+     * @param <T>   the property type
      * @param clazz the clazz.
      * @return the property.
      */
@@ -431,6 +432,7 @@ public class Association {
     /**
      * Sets the property.
      *
+     * @param <T>   the property type
      * @param clazz the clazz.
      * @param value the value.
      */

@@ -73,6 +73,13 @@ import org.miaixz.bus.storage.cache.StorageCache;
 public class StorageConfiguration {
 
     /**
+     * Constructs a new StorageConfiguration instance.
+     */
+    public StorageConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Storage configuration properties, which include settings for various storage providers. This is automatically
      * injected by Spring Boot via the {@link EnableConfigurationProperties} annotation.
      */

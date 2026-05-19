@@ -33,29 +33,71 @@ public class RepositoryChange {
     private String before;
     private String ref;
 
+    /**
+     * Returns the after.
+     *
+     * @return the result
+     */
+
     public String getAfter() {
         return this.after;
     }
+
+    /**
+     * Sets the after.
+     *
+     * @param after the after value
+     */
 
     public void setAfter(String after) {
         this.after = after;
     }
 
+    /**
+     * Returns the before.
+     *
+     * @return the result
+     */
+
     public String getBefore() {
         return this.before;
     }
+
+    /**
+     * Sets the before.
+     *
+     * @param before the before value
+     */
 
     public void setBefore(String before) {
         this.before = before;
     }
 
+    /**
+     * Returns the ref.
+     *
+     * @return the result
+     */
+
     public String getRef() {
         return this.ref;
     }
 
+    /**
+     * Sets the ref.
+     *
+     * @param ref the ref value
+     */
+
     public void setRef(String ref) {
         this.ref = ref;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

@@ -34,6 +34,13 @@ import org.apache.poi.sl.usermodel.ShapeType;
  */
 public class ShapeConfig implements Serializable {
 
+    /**
+     * Constructs a new ShapeConfig instance.
+     */
+    public ShapeConfig() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852286218800L;
 

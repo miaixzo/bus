@@ -38,6 +38,7 @@ public class CastConverter implements MatcherConverter, Serializable {
      * Constructs a new CastConverter. Utility class constructor for static access.
      */
     private CastConverter() {
+        // No initialization required.
     }
 
     /**

@@ -43,6 +43,13 @@ import org.miaixz.bus.mapper.Charter.Schema;
 public class SchemaConfig {
 
     /**
+     * Constructs a new SchemaConfig instance.
+     */
+    public SchemaConfig() {
+        // No initialization required.
+    }
+
+    /**
      * Whether entity schema initialization is enabled.
      */
     private boolean enabled = false;

@@ -38,6 +38,12 @@ import org.miaixz.bus.gitlab.models.DeployToken;
  */
 public class DeployTokensApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code DeployTokensApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public DeployTokensApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

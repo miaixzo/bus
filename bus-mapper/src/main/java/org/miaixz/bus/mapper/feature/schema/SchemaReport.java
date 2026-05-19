@@ -38,6 +38,13 @@ import lombok.experimental.Accessors;
 public class SchemaReport {
 
     /**
+     * Constructs a new SchemaReport instance.
+     */
+    public SchemaReport() {
+        // No initialization required.
+    }
+
+    /**
      * SQL statements executed successfully.
      */
     private List<String> executedSqls = new ArrayList<>();

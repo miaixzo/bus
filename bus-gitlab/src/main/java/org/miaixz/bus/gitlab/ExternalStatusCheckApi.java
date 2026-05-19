@@ -41,6 +41,12 @@ import org.miaixz.bus.gitlab.models.ExternalStatusCheckStatus.Status;
  */
 public class ExternalStatusCheckApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code ExternalStatusCheckApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ExternalStatusCheckApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

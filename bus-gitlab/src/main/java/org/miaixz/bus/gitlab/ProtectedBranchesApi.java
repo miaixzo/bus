@@ -40,6 +40,12 @@ import org.miaixz.bus.gitlab.models.ProtectedBranch;
  */
 public class ProtectedBranchesApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code ProtectedBranchesApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ProtectedBranchesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

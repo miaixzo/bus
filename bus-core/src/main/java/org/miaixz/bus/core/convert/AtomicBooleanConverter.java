@@ -36,6 +36,7 @@ public class AtomicBooleanConverter extends AbstractConverter {
      * Constructs a new AtomicBooleanConverter. Utility class constructor for static access.
      */
     public AtomicBooleanConverter() {
+        // No initialization required.
     }
 
     /**

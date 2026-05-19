@@ -82,6 +82,7 @@ public final class WindowsDxgi {
      * Creates a new WindowsDxgi instance.
      */
     private WindowsDxgi() {
+        // No initialization required.
     }
 
     // -------------------------------------------------------------------------

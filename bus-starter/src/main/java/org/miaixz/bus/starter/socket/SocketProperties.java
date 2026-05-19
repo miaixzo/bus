@@ -41,6 +41,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class SocketProperties {
 
     /**
+     * Constructs a new SocketProperties instance.
+     */
+    public SocketProperties() {
+        // No initialization required.
+    }
+
+    /**
      * The port on which the socket server will listen. Defaults to 7890.
      */
     private int port = 7890;

@@ -76,6 +76,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the archived.
+     *
+     * @return the result
+     */
+
     public Boolean getArchived() {
         return archived;
     }
@@ -90,6 +96,12 @@ public class ProjectFilter implements Serializable {
         this.visibility = visibility;
         return (this);
     }
+
+    /**
+     * Returns the visibility.
+     *
+     * @return the result
+     */
 
     public Visibility getVisibility() {
         return visibility;
@@ -107,6 +119,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the order by.
+     *
+     * @return the result
+     */
+
     public ProjectOrderBy getOrderBy() {
         return orderBy;
     }
@@ -121,6 +139,12 @@ public class ProjectFilter implements Serializable {
         this.sort = sort;
         return (this);
     }
+
+    /**
+     * Returns the sort.
+     *
+     * @return the result
+     */
 
     public SortOrder getSort() {
         return sort;
@@ -137,6 +161,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the search.
+     *
+     * @return the result
+     */
+
     public String getSearch() {
         return search;
     }
@@ -151,6 +181,12 @@ public class ProjectFilter implements Serializable {
         this.searchNamespaces = searchNamespaces;
         return (this);
     }
+
+    /**
+     * Returns the search namespaces.
+     *
+     * @return the result
+     */
 
     public Boolean getSearchNamespaces() {
         return searchNamespaces;
@@ -168,6 +204,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the simple.
+     *
+     * @return the result
+     */
+
     public Boolean getSimple() {
         return simple;
     }
@@ -182,6 +224,12 @@ public class ProjectFilter implements Serializable {
         this.owned = owned;
         return (this);
     }
+
+    /**
+     * Returns the owned.
+     *
+     * @return the result
+     */
 
     public Boolean getOwned() {
         return owned;
@@ -198,6 +246,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the membership.
+     *
+     * @return the result
+     */
+
     public Boolean getMembership() {
         return membership;
     }
@@ -212,6 +266,12 @@ public class ProjectFilter implements Serializable {
         this.starred = starred;
         return (this);
     }
+
+    /**
+     * Returns the starred.
+     *
+     * @return the result
+     */
 
     public Boolean getStarred() {
         return starred;
@@ -228,6 +288,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the statistics.
+     *
+     * @return the result
+     */
+
     public Boolean getStatistics() {
         return statistics;
     }
@@ -242,6 +308,12 @@ public class ProjectFilter implements Serializable {
         this.withCustomAttributes = withCustomAttributes;
         return (this);
     }
+
+    /**
+     * Returns the with custom attributes.
+     *
+     * @return the result
+     */
 
     public Boolean getWithCustomAttributes() {
         return withCustomAttributes;
@@ -258,6 +330,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the with issues enabled.
+     *
+     * @return the result
+     */
+
     public Boolean getWithIssuesEnabled() {
         return withIssuesEnabled;
     }
@@ -273,6 +351,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the with merge requests enabled.
+     *
+     * @return the result
+     */
+
     public Boolean getWithMergeRequestsEnabled() {
         return withMergeRequestsEnabled;
     }
@@ -287,6 +371,12 @@ public class ProjectFilter implements Serializable {
         this.withProgrammingLanguage = withProgrammingLanguage;
         return (this);
     }
+
+    /**
+     * Returns the with programming language.
+     *
+     * @return the result
+     */
 
     public String getWithProgrammingLanguage() {
         return withProgrammingLanguage;
@@ -304,6 +394,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the wiki checksum failed.
+     *
+     * @return the result
+     */
+
     public Boolean getWikiChecksumFailed() {
         return wikiChecksumFailed;
     }
@@ -320,6 +416,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the repository checksum failed.
+     *
+     * @return the result
+     */
+
     public Boolean getRepositoryChecksumFailed() {
         return repositoryChecksumFailed;
     }
@@ -334,6 +436,12 @@ public class ProjectFilter implements Serializable {
         this.minAccessLevel = minAccessLevel;
         return (this);
     }
+
+    /**
+     * Returns the min access level.
+     *
+     * @return the result
+     */
 
     public AccessLevel getMinAccessLevel() {
         return minAccessLevel;
@@ -350,6 +458,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the id after.
+     *
+     * @return the result
+     */
+
     public Long getIdAfter() {
         return idAfter;
     }
@@ -364,6 +478,12 @@ public class ProjectFilter implements Serializable {
         this.idBefore = idBefore;
         return (this);
     }
+
+    /**
+     * Returns the id before.
+     *
+     * @return the result
+     */
 
     public Long getIdBefore() {
         return idBefore;
@@ -380,6 +500,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the last activity after.
+     *
+     * @return the result
+     */
+
     public Date getLastActivityAfter() {
         return lastActivityAfter;
     }
@@ -394,6 +520,12 @@ public class ProjectFilter implements Serializable {
         this.lastActivityBefore = lastActivityBefore;
         return (this);
     }
+
+    /**
+     * Returns the last activity before.
+     *
+     * @return the result
+     */
 
     public Date getLastActivityBefore() {
         return lastActivityBefore;
@@ -410,6 +542,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the repository storage.
+     *
+     * @return the result
+     */
+
     public String getRepositoryStorage() {
         return repositoryStorage;
     }
@@ -424,6 +562,12 @@ public class ProjectFilter implements Serializable {
         this.imported = imported;
         return (this);
     }
+
+    /**
+     * Returns the imported.
+     *
+     * @return the result
+     */
 
     public Boolean getImported() {
         return imported;
@@ -440,6 +584,12 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the topic.
+     *
+     * @return the result
+     */
+
     public String getTopic() {
         return topic;
     }
@@ -454,6 +604,12 @@ public class ProjectFilter implements Serializable {
         this.topic_id = topic_id;
         return (this);
     }
+
+    /**
+     * Returns the topic id.
+     *
+     * @return the result
+     */
 
     public Integer getTopicId() {
         return topic_id;
@@ -493,6 +649,12 @@ public class ProjectFilter implements Serializable {
                 .withParam("repository_storage", repositoryStorage).withParam("imported", imported)
                 .withParam("topic", topic).withParam("topic_id", topic_id));
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

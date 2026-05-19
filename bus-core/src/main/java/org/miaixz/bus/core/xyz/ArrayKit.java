@@ -48,6 +48,7 @@ public class ArrayKit extends PrimitiveArray {
      * Constructs a new ArrayKit. Utility class constructor for static access.
      */
     private ArrayKit() {
+        // No initialization required.
     }
 
     /**

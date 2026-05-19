@@ -51,6 +51,17 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * Applications should use the alternate functions listed in this topic. However, there is no other way to get this
      * information, it's been officially non-API for over a decade, and many many programs including windows sysinternal
      * tools rely on this behavior, so the odds of it going away are small.
+     *
+     * @param ProcessHandle            the process handle value
+     * @param ProcessInformation       the process information value
+     *
+     * @param ProcessInformationClass  the process information class value
+     *
+     * @param ProcessInformationLength the process information length value
+     *
+     * @param ReturnLength             the return length value
+     *
+     * @return the result
      */
     int NtQueryInformationProcess(
             HANDLE ProcessHandle,

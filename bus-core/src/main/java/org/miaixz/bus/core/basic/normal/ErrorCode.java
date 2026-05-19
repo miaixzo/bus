@@ -33,7 +33,7 @@ public class ErrorCode {
      * Constructs a new AbstractProvider with default settings.
      */
     public ErrorCode() {
-
+        // No initialization required.
     }
 
     // =================================================================================================================

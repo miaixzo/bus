@@ -147,6 +147,8 @@ public class RequestCall {
     }
 
     /**
+     * Executes the instance. operation.
+     *
      * @return The underlying Httpd {@link NewCall} instance.
      */
     public NewCall getNewCall() {
@@ -154,6 +156,8 @@ public class RequestCall {
     }
 
     /**
+     * Executes the object. operation.
+     *
      * @return The final, built Httpd {@link Request} object.
      */
     public Request getRequest() {
@@ -161,6 +165,8 @@ public class RequestCall {
     }
 
     /**
+     * Executes the configuration. operation.
+     *
      * @return The abstract {@link HttpRequest} configuration.
      */
     public HttpRequest getHttpRequest() {

@@ -45,6 +45,7 @@ public final class Disklabel {
      * Creates a new Disklabel instance.
      */
     private Disklabel() {
+        // No initialization required.
     }
 
     /**

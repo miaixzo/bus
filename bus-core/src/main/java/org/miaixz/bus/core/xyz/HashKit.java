@@ -37,6 +37,7 @@ public class HashKit {
      * Constructs a new HashKit. Utility class constructor for static access.
      */
     private HashKit() {
+        // No initialization required.
     }
 
     /**

@@ -43,6 +43,13 @@ import org.miaixz.bus.image.metric.net.KeycloakClient;
 public class JsonConfiguration {
 
     /**
+     * Constructs a new JsonConfiguration instance.
+     */
+    public JsonConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * The extensions value.
      */
     private final List<JsonConfigurationExtension> extensions = new ArrayList<>();
@@ -76,6 +83,7 @@ public class JsonConfiguration {
      *
      * @param clazz the clazz.
      * @return the json configuration extension.
+     * @param <T> the value type
      */
     public <T extends JsonConfigurationExtension> T getJsonConfigurationExtension(Class<T> clazz) {
         for (JsonConfigurationExtension extension : extensions) {

@@ -39,6 +39,13 @@ import org.miaixz.bus.proxy.Provider;
 public class SpringCglibProvider implements Provider {
 
     /**
+     * Constructs a new SpringCglibProvider instance.
+     */
+    public SpringCglibProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a proxy instance using the provided {@link Enhancer}. This method attempts to find a suitable constructor
      * on the target class, iterating through them and trying to instantiate with default parameter values. This is
      * necessary for classes that do not have a default (no-argument) constructor.
@@ -92,7 +99,6 @@ public class SpringCglibProvider implements Provider {
         throw new IllegalArgumentException("No constructor could be used for creating a proxy for " + targetClass);
     }
 
-    @Override
     /**
      * Creates a proxy object for the given target, applying the specified aspect.
      *
@@ -101,6 +107,8 @@ public class SpringCglibProvider implements Provider {
      * @param aspect The aspect implementation containing the advice logic.
      * @return The proxied object.
      */
+
+    @Override
     public <T> T proxy(final T target, final Aspect aspect) {
         final Class<?> targetClass = target.getClass();
         Logger.debug(

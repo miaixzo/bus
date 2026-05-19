@@ -33,6 +33,7 @@ public class CacheKit {
      * Constructs a new CacheKit. Utility class constructor for static access.
      */
     private CacheKit() {
+        // No initialization required.
     }
 
     /**

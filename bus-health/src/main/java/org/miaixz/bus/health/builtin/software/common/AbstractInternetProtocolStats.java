@@ -33,6 +33,13 @@ import org.miaixz.bus.health.unix.driver.NetStat;
 public abstract class AbstractInternetProtocolStats implements InternetProtocolStats {
 
     /**
+     * Constructs a new AbstractInternetProtocolStats instance.
+     */
+    public AbstractInternetProtocolStats() {
+        // No initialization required.
+    }
+
+    /**
      * Returns the tc pv6 stats.
      *
      * @return the get tc pv6 stats result

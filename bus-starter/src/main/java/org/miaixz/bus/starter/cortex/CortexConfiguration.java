@@ -102,6 +102,13 @@ import org.miaixz.bus.starter.cache.CacheFactoryProvider;
 public class CortexConfiguration {
 
     /**
+     * Constructs a new CortexConfiguration instance.
+     */
+    public CortexConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected cache configuration properties.
      */
     @Resource
@@ -267,6 +274,7 @@ public class CortexConfiguration {
      * @param storeProvider       optional registry store provider
      * @param sharedStoreProvider optional shared registry store provider
      * @param syncListeners       post-commit API listeners
+     * @param keyingProvider      optional registry keying provider
      * @return API registry
      */
     @Bean
@@ -293,6 +301,7 @@ public class CortexConfiguration {
      * @param watchManager        watch manager
      * @param storeProvider       optional registry store provider
      * @param sharedStoreProvider optional shared registry store provider
+     * @param keyingProvider      optional registry keying provider
      * @return MCP registry
      */
     @Bean
@@ -318,6 +327,7 @@ public class CortexConfiguration {
      * @param watchManager        watch manager
      * @param storeProvider       optional registry store provider
      * @param sharedStoreProvider optional shared registry store provider
+     * @param keyingProvider      optional registry keying provider
      * @return prompt registry
      */
     @Bean
@@ -413,8 +423,9 @@ public class CortexConfiguration {
     /**
      * Creates the store-backed current-state setting coordinator.
      *
-     * @param cache         shared cache abstraction
-     * @param storeProvider optional durable current-state store
+     * @param cache          shared cache abstraction
+     * @param storeProvider  optional durable current-state store
+     * @param keyingProvider optional setting keying provider
      * @return store-backed current-state setting coordinator
      */
     @Bean
@@ -454,6 +465,7 @@ public class CortexConfiguration {
      * @param secretCodec     secret codec
      * @param settingEnforcer optional setting relation enforcer provider
      * @param cortexGuard     optional Cortex guard provider
+     * @param keyingProvider  optional setting keying provider
      * @return curator application service
      */
     @Bean
@@ -481,8 +493,9 @@ public class CortexConfiguration {
     /**
      * Creates the lightweight runtime overlay service backed by the shared cache.
      *
-     * @param cache        shared cache abstraction
-     * @param watchManager watch manager
+     * @param cache          shared cache abstraction
+     * @param watchManager   watch manager
+     * @param keyingProvider optional setting keying provider
      * @return runtime overlay service
      */
     @Bean

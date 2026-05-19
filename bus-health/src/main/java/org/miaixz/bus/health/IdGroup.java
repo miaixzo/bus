@@ -40,6 +40,13 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class IdGroup {
 
     /**
+     * Constructs a new IdGroup instance.
+     */
+    public IdGroup() {
+        // No initialization required.
+    }
+
+    /**
      * Supplier for a map of user IDs to usernames, with the cache fully refreshed after 5 minutes.
      */
     private static final Supplier<Map<String, String>> USERS_ID_MAP = Memoizer

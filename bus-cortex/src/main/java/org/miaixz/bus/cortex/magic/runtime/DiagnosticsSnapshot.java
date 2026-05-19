@@ -38,6 +38,7 @@ public class DiagnosticsSnapshot {
      * Creates an empty diagnostics snapshot.
      */
     public DiagnosticsSnapshot() {
+        // No initialization required.
     }
 
     /**

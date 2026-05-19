@@ -43,6 +43,13 @@ import org.miaixz.bus.http.Builder;
 public abstract class RequestBody {
 
     /**
+     * Constructs a new RequestBody instance.
+     */
+    public RequestBody() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a new request body from a string.
      * <p>
      * If {@code contentType} is non-null and lacks a charset, UTF-8 will be used.

@@ -35,6 +35,13 @@ import org.miaixz.bus.socket.buffer.VirtualBuffer;
 public class HandshakeModel {
 
     /**
+     * Constructs a new HandshakeModel instance.
+     */
+    public HandshakeModel() {
+        // No initialization required.
+    }
+
+    /**
      * The underlying {@link AsynchronousSocketChannel} for communication.
      */
     private AsynchronousSocketChannel socketChannel;

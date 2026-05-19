@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.Philips_X_ray_Imaging_DD_001;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Philips X-ray Imaging DD 001";

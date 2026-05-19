@@ -37,6 +37,7 @@ public class Controller {
      * Constructs a new Controller. Utility class constructor for static access.
      */
     public Controller() {
+        // No initialization required.
     }
 
     /**

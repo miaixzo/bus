@@ -57,6 +57,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class KeySqlRegistry implements Registry {
 
     /**
+     * Constructs a new KeySqlRegistry instance.
+     */
+    public KeySqlRegistry() {
+        // No initialization required.
+    }
+
+    /**
      * Customizes the primary key strategy, checking and applying primary key generation logic on entity classes.
      *
      * @param entity  The entity table information.

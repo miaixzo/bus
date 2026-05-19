@@ -71,7 +71,7 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
      * Default constructor (uses default configuration).
      */
     public TablePrefixHandler() {
-
+        // No initialization required.
     }
 
     /**

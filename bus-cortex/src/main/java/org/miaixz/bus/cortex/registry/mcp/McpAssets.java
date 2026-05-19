@@ -213,6 +213,7 @@ public class McpAssets extends Assets {
          * Creates an empty MCP metadata view.
          */
         public Meta() {
+            // No initialization required.
         }
 
         /**

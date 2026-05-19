@@ -25,6 +25,13 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * Atomic snapshot of a Timer or Histogram's state, suitable for serialisation and cross-instance aggregation via
  * CortexExporter.
  *
+ * @param name         metric name
+ * @param tags         metric tags
+ * @param count        recorded event count
+ * @param totalNanos   total recorded duration in nanoseconds
+ * @param maxNanos     maximum recorded duration in nanoseconds
+ * @param bucketCounts histogram bucket counts
+ * @param bucketBounds histogram bucket bounds
  * @author Kimi Liu
  * @since Java 21+
  */

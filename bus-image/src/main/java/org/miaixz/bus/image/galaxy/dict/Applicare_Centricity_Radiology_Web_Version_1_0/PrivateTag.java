@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.Applicare_Centricity_Radiology_Web_Vers
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Applicare/Centricity Radiology Web/Version 1.0";

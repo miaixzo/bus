@@ -36,6 +36,9 @@ public class IniPropertyService extends AbstractElement implements IniProperty {
      */
     private IniSection section;
 
+    /**
+     * Property key.
+     */
     private String key;
 
     /**
@@ -54,15 +57,13 @@ public class IniPropertyService extends AbstractElement implements IniProperty {
     }
 
     /**
-     * IniProperty constructor without section. maybe init later
+     * IniProperty constructor without section. maybe init later.
      *
-     * @see #IniPropertyService(IniSection, String, String, String, int)
-     */
-    /**
      * @param key           the property's key, not null
      * @param value         the property's value, null able
      * @param originalValue the property's original value
      * @param lineNumber    line number
+     * @see #IniPropertyService(IniSection, String, String, String, int)
      */
     public IniPropertyService(String key, String value, String originalValue, int lineNumber) {
         super(value, originalValue, lineNumber);
@@ -83,6 +84,13 @@ public class IniPropertyService extends AbstractElement implements IniProperty {
         this.key = key;
     }
 
+    /**
+     * IniProperty constructor without section and original source value.
+     *
+     * @param key        the property's key, not null
+     * @param value      the property's value, null able
+     * @param lineNumber line number
+     */
     public IniPropertyService(String key, String value, int lineNumber) {
         super(value, key + Symbol.C_EQUAL + value, lineNumber);
         this.key = key;

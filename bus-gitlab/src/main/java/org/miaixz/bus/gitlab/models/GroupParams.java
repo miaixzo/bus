@@ -94,90 +94,216 @@ public class GroupParams implements Serializable {
         return (this);
     }
 
+    /**
+     * Sets the name and returns this instance.
+     *
+     * @param name the name value
+     * @return the result
+     */
+
     public GroupParams withName(String name) {
         this.name = name;
         return (this);
     }
+
+    /**
+     * Sets the path and returns this instance.
+     *
+     * @param path the path value
+     * @return the result
+     */
 
     public GroupParams withPath(String path) {
         this.path = path;
         return (this);
     }
 
+    /**
+     * Sets the description and returns this instance.
+     *
+     * @param description the description value
+     * @return the result
+     */
+
     public GroupParams withDescription(String description) {
         this.description = description;
         return (this);
     }
+
+    /**
+     * Sets the visibility and returns this instance.
+     *
+     * @param visibility the visibility value
+     * @return the result
+     */
 
     public GroupParams withVisibility(String visibility) {
         this.visibility = visibility;
         return (this);
     }
 
+    /**
+     * Sets the share with group lock and returns this instance.
+     *
+     * @param shareWithGroupLock the share with group lock value
+     * @return the result
+     */
+
     public GroupParams withShareWithGroupLock(Boolean shareWithGroupLock) {
         this.shareWithGroupLock = shareWithGroupLock;
         return (this);
     }
+
+    /**
+     * Sets the require two factor authentication and returns this instance.
+     *
+     * @param requireTwoFactorAuthentication the require two factor authentication value
+     * @return the result
+     */
 
     public GroupParams withRequireTwoFactorAuthentication(Boolean requireTwoFactorAuthentication) {
         this.requireTwoFactorAuthentication = requireTwoFactorAuthentication;
         return (this);
     }
 
+    /**
+     * Sets the two factor grace period and returns this instance.
+     *
+     * @param twoFactorGracePeriod the two factor grace period value
+     * @return the result
+     */
+
     public GroupParams withTwoFactorGracePeriod(Integer twoFactorGracePeriod) {
         this.twoFactorGracePeriod = twoFactorGracePeriod;
         return (this);
     }
+
+    /**
+     * Sets the project creation level and returns this instance.
+     *
+     * @param projectCreationLevel the project creation level value
+     * @return the result
+     */
 
     public GroupParams withProjectCreationLevel(ProjectCreationLevel projectCreationLevel) {
         this.projectCreationLevel = projectCreationLevel;
         return (this);
     }
 
+    /**
+     * Sets the auto devops enabled and returns this instance.
+     *
+     * @param autoDevopsEnabled the auto devops enabled value
+     * @return the result
+     */
+
     public GroupParams withAutoDevopsEnabled(Boolean autoDevopsEnabled) {
         this.autoDevopsEnabled = autoDevopsEnabled;
         return (this);
     }
+
+    /**
+     * Sets the subgroup creation level and returns this instance.
+     *
+     * @param subgroupCreationLevel the subgroup creation level value
+     * @return the result
+     */
 
     public GroupParams withSubgroupCreationLevel(SubgroupCreationLevel subgroupCreationLevel) {
         this.subgroupCreationLevel = subgroupCreationLevel;
         return (this);
     }
 
+    /**
+     * Sets the emails disabled and returns this instance.
+     *
+     * @param emailsDisabled the emails disabled value
+     * @return the result
+     */
+
     public GroupParams withEmailsDisabled(Boolean emailsDisabled) {
         this.emailsDisabled = emailsDisabled;
         return (this);
     }
+
+    /**
+     * Sets the lfs enabled and returns this instance.
+     *
+     * @param lfsEnabled the lfs enabled value
+     * @return the result
+     */
 
     public GroupParams withLfsEnabled(Boolean lfsEnabled) {
         this.lfsEnabled = lfsEnabled;
         return (this);
     }
 
+    /**
+     * Sets the request access enabled and returns this instance.
+     *
+     * @param requestAccessEnabled the request access enabled value
+     * @return the result
+     */
+
     public GroupParams withRequestAccessEnabled(Boolean requestAccessEnabled) {
         this.requestAccessEnabled = requestAccessEnabled;
         return (this);
     }
+
+    /**
+     * Sets the shared runners minutes limit and returns this instance.
+     *
+     * @param sharedRunnersMinutesLimit the shared runners minutes limit value
+     * @return the result
+     */
 
     public GroupParams withSharedRunnersMinutesLimit(Integer sharedRunnersMinutesLimit) {
         this.sharedRunnersMinutesLimit = sharedRunnersMinutesLimit;
         return (this);
     }
 
+    /**
+     * Sets the extra shared runners minutes limit and returns this instance.
+     *
+     * @param extraSharedRunnersMinutesLimit the extra shared runners minutes limit value
+     * @return the result
+     */
+
     public GroupParams withExtraSharedRunnersMinutesLimit(Integer extraSharedRunnersMinutesLimit) {
         this.extraSharedRunnersMinutesLimit = extraSharedRunnersMinutesLimit;
         return (this);
     }
+
+    /**
+     * Sets the default branch protection and returns this instance.
+     *
+     * @param defaultBranchProtection the default branch protection value
+     * @return the result
+     */
 
     public GroupParams withDefaultBranchProtection(DefaultBranchProtectionLevel defaultBranchProtection) {
         this.defaultBranchProtection = defaultBranchProtection;
         return (this);
     }
 
+    /**
+     * Sets the prevent sharing groups outside hierarchy and returns this instance.
+     *
+     * @param preventSharingGroupsOutsideHierarchy the prevent sharing groups outside hierarchy value
+     * @return the result
+     */
+
     public GroupParams withPreventSharingGroupsOutsideHierarchy(Boolean preventSharingGroupsOutsideHierarchy) {
         this.preventSharingGroupsOutsideHierarchy = preventSharingGroupsOutsideHierarchy;
         return (this);
     }
+
+    /**
+     * Sets the prevent forking outside group and returns this instance.
+     *
+     * @param preventForkingOutsideGroup the prevent forking outside group value
+     * @return the result
+     */
 
     public GroupParams withPreventForkingOutsideGroup(Boolean preventForkingOutsideGroup) {
         this.preventForkingOutsideGroup = preventForkingOutsideGroup;

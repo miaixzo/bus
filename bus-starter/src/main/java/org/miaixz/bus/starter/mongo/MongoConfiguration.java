@@ -48,6 +48,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class MongoConfiguration {
 
     /**
+     * Constructs a new MongoConfiguration instance.
+     */
+    public MongoConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected MongoDB configuration properties.
      */
     @Resource

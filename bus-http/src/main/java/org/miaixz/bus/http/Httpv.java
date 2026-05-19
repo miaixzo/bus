@@ -827,6 +827,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the underlying {@link Httpd} instance.
+         *
          * @return The underlying {@link Httpd} instance.
          */
         public Httpd httpd() {
@@ -834,6 +836,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the configured base URL.
+         *
          * @return The configured base URL.
          */
         public String baseUrl() {
@@ -841,6 +845,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the media type map.
+         *
          * @return The map of media types.
          */
         public Map<String, String> getMediaTypes() {
@@ -848,6 +854,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the main executor for callbacks.
+         *
          * @return The main executor for callbacks.
          */
         public java.util.concurrent.Executor mainExecutor() {
@@ -855,6 +863,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the configured preprocessors.
+         *
          * @return An array of configured preprocessors.
          */
         public Preprocessor[] preprocessors() {
@@ -862,6 +872,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the download listener.
+         *
          * @return The download listener.
          */
         public Downloads.Listener downloadListener() {
@@ -869,6 +881,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the response listener.
+         *
          * @return The response listener.
          */
         public CoverTasks.Listener<CoverResult> responseListener() {
@@ -876,6 +890,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the exception listener.
+         *
          * @return The exception listener.
          */
         public CoverTasks.Listener<IOException> exceptionListener() {
@@ -883,6 +899,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the completion listener.
+         *
          * @return The completion listener.
          */
         public CoverTasks.Listener<CoverResult.State> completeListener() {
@@ -890,6 +908,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the configured message converters.
+         *
          * @return An array of configured message converters.
          */
         public Convertor[] msgConvertors() {
@@ -897,6 +917,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the pre-processing timeout multiplier.
+         *
          * @return The pre-processing timeout multiplier.
          */
         public int preprocTimeoutTimes() {
@@ -904,6 +926,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the default charset.
+         *
          * @return The default charset.
          */
         public Charset charset() {
@@ -911,6 +935,8 @@ public class Httpv {
         }
 
         /**
+         * Returns the default body type.
+         *
          * @return The default body type.
          */
         public String bodyType() {

@@ -48,6 +48,13 @@ import org.miaixz.bus.sensitive.metric.StrategyProvider;
 public class Provider<T> {
 
     /**
+     * Constructs a new Provider instance.
+     */
+    public Provider() {
+        // No initialization required.
+    }
+
+    /**
      * An array of specific field names to desensitize. If not null, only these fields are considered.
      */
     private String[] value;

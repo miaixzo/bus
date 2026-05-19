@@ -45,6 +45,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class NotifyProperties {
 
     /**
+     * Constructs a new NotifyProperties instance.
+     */
+    public NotifyProperties() {
+        // No initialization required.
+    }
+
+    /**
      * A map of notification provider configurations, where the key is the provider {@link Registry} type and the value
      * is the {@link Context} containing the specific configuration for that provider.
      */

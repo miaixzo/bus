@@ -594,6 +594,7 @@ public class JSONReader {
      *
      * @param enumType the enum type.
      * @return the operation result.
+     * @param <T> the value type
      */
     public <T extends Enum<T>> T[] enumArray(Class<T> enumType) {
         next();

@@ -37,6 +37,12 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  */
 public class PersonalAccessTokenApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code PersonalAccessTokenApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public PersonalAccessTokenApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

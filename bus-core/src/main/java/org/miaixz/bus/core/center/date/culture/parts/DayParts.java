@@ -36,6 +36,7 @@ public abstract class DayParts extends MonthParts {
      * Constructs day-based date parts.
      */
     protected DayParts() {
+        // No initialization required.
     }
 
     /**

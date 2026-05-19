@@ -36,6 +36,12 @@ import org.miaixz.bus.gitlab.models.Event;
  */
 public class EventsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code EventsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public EventsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

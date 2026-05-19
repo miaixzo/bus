@@ -49,6 +49,13 @@ import org.miaixz.bus.logger.Logger;
 public class OfdConverter {
 
     /**
+     * Constructs a new OfdConverter instance.
+     */
+    public OfdConverter() {
+        // No initialization required.
+    }
+
+    /**
      * Converts a PDF file to an OFD file.
      *
      * @param src    The path to the source PDF file.

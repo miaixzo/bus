@@ -39,7 +39,7 @@ public abstract class AbstractProvider implements Provider {
      * Constructs a new AbstractProvider with default settings.
      */
     protected AbstractProvider() {
-
+        // No initialization required.
     }
 
 }

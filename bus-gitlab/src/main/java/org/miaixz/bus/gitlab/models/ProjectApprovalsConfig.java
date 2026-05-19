@@ -43,52 +43,128 @@ public class ProjectApprovalsConfig implements Serializable {
     private Boolean mergeRequestsDisableCommittersApproval;
     private Boolean requirePasswordToApprove;
 
+    /**
+     * Returns the approvals before merge.
+     *
+     * @return the result
+     */
+
     public Integer getApprovalsBeforeMerge() {
         return approvalsBeforeMerge;
     }
 
+    /**
+     * Sets the approvals before merge.
+     *
+     * @param approvalsBeforeMerge the approvals before merge value
+     */
+
     public void setApprovalsBeforeMerge(Integer approvalsBeforeMerge) {
         this.approvalsBeforeMerge = approvalsBeforeMerge;
     }
+
+    /**
+     * Sets the approvals before merge and returns this instance.
+     *
+     * @param approvalsBeforeMerge the approvals before merge value
+     * @return the result
+     */
 
     public ProjectApprovalsConfig withApprovalsBeforeMerge(Integer approvalsBeforeMerge) {
         this.approvalsBeforeMerge = approvalsBeforeMerge;
         return (this);
     }
 
+    /**
+     * Returns the reset approvals on push.
+     *
+     * @return the result
+     */
+
     public Boolean getResetApprovalsOnPush() {
         return resetApprovalsOnPush;
     }
 
+    /**
+     * Sets the reset approvals on push.
+     *
+     * @param resetApprovalsOnPush the reset approvals on push value
+     */
+
     public void setResetApprovalsOnPush(Boolean resetApprovalsOnPush) {
         this.resetApprovalsOnPush = resetApprovalsOnPush;
     }
+
+    /**
+     * Sets the reset approvals on push and returns this instance.
+     *
+     * @param resetApprovalsOnPush the reset approvals on push value
+     * @return the result
+     */
 
     public ProjectApprovalsConfig withResetApprovalsOnPush(Boolean resetApprovalsOnPush) {
         this.resetApprovalsOnPush = resetApprovalsOnPush;
         return (this);
     }
 
+    /**
+     * Returns the selective code owner removals.
+     *
+     * @return the result
+     */
+
     public Boolean getSelectiveCodeOwnerRemovals() {
         return selectiveCodeOwnerRemovals;
     }
 
+    /**
+     * Sets the selective code owner removals.
+     *
+     * @param selectiveCodeOwnerRemovals the selective code owner removals value
+     */
+
     public void setSelectiveCodeOwnerRemovals(Boolean selectiveCodeOwnerRemovals) {
         this.selectiveCodeOwnerRemovals = selectiveCodeOwnerRemovals;
     }
+
+    /**
+     * Sets the selective code owner removals and returns this instance.
+     *
+     * @param selectiveCodeOwnerRemovals the selective code owner removals value
+     * @return the result
+     */
 
     public ProjectApprovalsConfig withSelectiveCodeOwnerRemovals(Boolean selectiveCodeOwnerRemovals) {
         this.selectiveCodeOwnerRemovals = selectiveCodeOwnerRemovals;
         return this;
     }
 
+    /**
+     * Returns the disable overriding approvers per merge request.
+     *
+     * @return the result
+     */
+
     public Boolean getDisableOverridingApproversPerMergeRequest() {
         return disableOverridingApproversPerMergeRequest;
     }
 
+    /**
+     * Sets the disable overriding approvers per merge request.
+     *
+     * @param disableOverridingApproversPerMergeRequest the disable overriding approvers per merge request value
+     */
+
     public void setDisableOverridingApproversPerMergeRequest(Boolean disableOverridingApproversPerMergeRequest) {
         this.disableOverridingApproversPerMergeRequest = disableOverridingApproversPerMergeRequest;
     }
+
+    /**
+     * Sets the disable overriding approvers per merge request and returns this instance.
+     *
+     * @param disableOverridingApproversPerMergeRequest the disable overriding approvers per merge request value
+     * @return the result
+     */
 
     public ProjectApprovalsConfig withDisableOverridingApproversPerMergeRequest(
             Boolean disableOverridingApproversPerMergeRequest) {
@@ -96,26 +172,64 @@ public class ProjectApprovalsConfig implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the merge requests author approval.
+     *
+     * @return the result
+     */
+
     public Boolean getMergeRequestsAuthorApproval() {
         return mergeRequestsAuthorApproval;
     }
 
+    /**
+     * Sets the merge requests author approval.
+     *
+     * @param mergeRequestsAuthorApproval the merge requests author approval value
+     */
+
     public void setMergeRequestsAuthorApproval(Boolean mergeRequestsAuthorApproval) {
         this.mergeRequestsAuthorApproval = mergeRequestsAuthorApproval;
     }
+
+    /**
+     * Sets the merge requests author approval and returns this instance.
+     *
+     * @param mergeRequestsAuthorApproval the merge requests author approval value
+     * @return the result
+     */
 
     public ProjectApprovalsConfig withMergeRequestsAuthorApproval(Boolean mergeRequestsAuthorApproval) {
         this.mergeRequestsAuthorApproval = mergeRequestsAuthorApproval;
         return (this);
     }
 
+    /**
+     * Returns the merge requests disable committers approval.
+     *
+     * @return the result
+     */
+
     public Boolean getMergeRequestsDisableCommittersApproval() {
         return mergeRequestsDisableCommittersApproval;
     }
 
+    /**
+     * Sets the merge requests disable committers approval.
+     *
+     * @param mergeRequestsDisableCommittersApproval the merge requests disable committers approval value
+     */
+
     public void setMergeRequestsDisableCommittersApproval(Boolean mergeRequestsDisableCommittersApproval) {
         this.mergeRequestsDisableCommittersApproval = mergeRequestsDisableCommittersApproval;
     }
+
+    /**
+     * Sets the merge requests disable committers approval and returns this instance.
+     *
+     * @param mergeRequestsDisableCommittersApproval the merge requests disable committers approval value
+     * @return the result
+     */
 
     public ProjectApprovalsConfig withMergeRequestsDisableCommittersApproval(
             Boolean mergeRequestsDisableCommittersApproval) {
@@ -123,13 +237,32 @@ public class ProjectApprovalsConfig implements Serializable {
         return (this);
     }
 
+    /**
+     * Returns the require password to approve.
+     *
+     * @return the result
+     */
+
     public Boolean getRequirePasswordToApprove() {
         return requirePasswordToApprove;
     }
 
+    /**
+     * Sets the require password to approve.
+     *
+     * @param requirePasswordToApprove the require password to approve value
+     */
+
     public void setRequirePasswordToApprove(Boolean requirePasswordToApprove) {
         this.requirePasswordToApprove = requirePasswordToApprove;
     }
+
+    /**
+     * Sets the require password to approve and returns this instance.
+     *
+     * @param requirePasswordToApprove the require password to approve value
+     * @return the result
+     */
 
     public ProjectApprovalsConfig withRequirePasswordToApprove(Boolean requirePasswordToApprove) {
         this.requirePasswordToApprove = requirePasswordToApprove;

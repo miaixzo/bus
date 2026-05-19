@@ -36,6 +36,7 @@ public class Calculate extends Resolver {
      * Constructs a new Calculate. Utility class constructor for static access.
      */
     public Calculate() {
+        // No initialization required.
     }
 
     /**

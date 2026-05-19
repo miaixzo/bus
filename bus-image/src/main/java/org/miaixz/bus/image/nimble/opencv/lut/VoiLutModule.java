@@ -78,6 +78,8 @@ public class VoiLutModule {
      *
      * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.html">C.11.2 VOI LUT
      *      Module</a>
+     *
+     * @param dcm the dcm value
      */
     public VoiLutModule(Attributes dcm) {
         this.windowCenter = Collections.emptyList();

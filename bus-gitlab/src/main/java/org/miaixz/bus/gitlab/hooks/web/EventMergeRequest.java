@@ -101,289 +101,721 @@ public class EventMergeRequest {
     private List<Long> reviewerIds;
     private String oldrev;
 
+    /**
+     * Returns the assignee id.
+     *
+     * @return the result
+     */
+
     public Long getAssigneeId() {
         return this.assigneeId;
     }
+
+    /**
+     * Sets the assignee id.
+     *
+     * @param assigneeId the assignee id value
+     */
 
     public void setAssigneeId(Long assigneeId) {
         this.assigneeId = assigneeId;
     }
 
+    /**
+     * Returns the author id.
+     *
+     * @return the result
+     */
+
     public Long getAuthorId() {
         return this.authorId;
     }
+
+    /**
+     * Sets the author id.
+     *
+     * @param authorId the author id value
+     */
 
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 
+    /**
+     * Returns the branch name.
+     *
+     * @return the result
+     */
+
     public String getBranchName() {
         return this.branchName;
     }
+
+    /**
+     * Sets the branch name.
+     *
+     * @param branchName the branch name value
+     */
 
     public void setBranchName(String branchName) {
         this.branchName = branchName;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return this.createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return this.description;
     }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return this.id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the iid.
+     *
+     * @return the result
+     */
+
     public Long getIid() {
         return this.iid;
     }
+
+    /**
+     * Sets the iid.
+     *
+     * @param iid the iid value
+     */
 
     public void setIid(Long iid) {
         this.iid = iid;
     }
 
+    /**
+     * Returns the merge commit sha.
+     *
+     * @return the result
+     */
+
     public String getMergeCommitSha() {
         return mergeCommitSha;
     }
+
+    /**
+     * Sets the merge commit sha.
+     *
+     * @param mergeCommitSha the merge commit sha value
+     */
 
     public void setMergeCommitSha(String mergeCommitSha) {
         this.mergeCommitSha = mergeCommitSha;
     }
 
+    /**
+     * Returns the merge status.
+     *
+     * @return the result
+     */
+
     public String getMergeStatus() {
         return this.mergeStatus;
     }
+
+    /**
+     * Sets the merge status.
+     *
+     * @param mergeStatus the merge status value
+     */
 
     public void setMergeStatus(String mergeStatus) {
         this.mergeStatus = mergeStatus;
     }
 
+    /**
+     * Returns the detailed merge status.
+     *
+     * @return the result
+     */
+
     public String getDetailedMergeStatus() {
         return detailedMergeStatus;
     }
+
+    /**
+     * Sets the detailed merge status.
+     *
+     * @param detailedMergeStatus the detailed merge status value
+     */
 
     public void setDetailedMergeStatus(String detailedMergeStatus) {
         this.detailedMergeStatus = detailedMergeStatus;
     }
 
+    /**
+     * Returns the milestone id.
+     *
+     * @return the result
+     */
+
     public Long getMilestoneId() {
         return this.milestoneId;
     }
+
+    /**
+     * Sets the milestone id.
+     *
+     * @param milestoneId the milestone id value
+     */
 
     public void setMilestoneId(Long milestoneId) {
         this.milestoneId = milestoneId;
     }
 
+    /**
+     * Returns the position.
+     *
+     * @return the result
+     */
+
     public Integer getPosition() {
         return this.position;
     }
+
+    /**
+     * Sets the position.
+     *
+     * @param position the position value
+     */
 
     public void setPosition(Integer position) {
         this.position = position;
     }
 
+    /**
+     * Returns the locked at.
+     *
+     * @return the result
+     */
+
     public Date getLockedAt() {
         return lockedAt;
     }
+
+    /**
+     * Sets the locked at.
+     *
+     * @param lockedAt the locked at value
+     */
 
     public void setLockedAt(Date lockedAt) {
         this.lockedAt = lockedAt;
     }
 
+    /**
+     * Returns the project id.
+     *
+     * @return the result
+     */
+
     public Long getProjectId() {
         return this.projectId;
     }
+
+    /**
+     * Sets the project id.
+     *
+     * @param projectId the project id value
+     */
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
 
+    /**
+     * Returns the source branch.
+     *
+     * @return the result
+     */
+
     public String getSourceBranch() {
         return this.sourceBranch;
     }
+
+    /**
+     * Sets the source branch.
+     *
+     * @param sourceBranch the source branch value
+     */
 
     public void setSourceBranch(String sourceBranch) {
         this.sourceBranch = sourceBranch;
     }
 
+    /**
+     * Returns the source project id.
+     *
+     * @return the result
+     */
+
     public Long getSourceProjectId() {
         return this.sourceProjectId;
     }
+
+    /**
+     * Sets the source project id.
+     *
+     * @param sourceProjectId the source project id value
+     */
 
     public void setSourceProjectId(Long sourceProjectId) {
         this.sourceProjectId = sourceProjectId;
     }
 
+    /**
+     * Returns the st commits.
+     *
+     * @return the result
+     */
+
     public String getStCommits() {
         return this.stCommits;
     }
+
+    /**
+     * Sets the st commits.
+     *
+     * @param stCommits the st commits value
+     */
 
     public void setStCommits(String stCommits) {
         this.stCommits = stCommits;
     }
 
+    /**
+     * Returns the st diffs.
+     *
+     * @return the result
+     */
+
     public String getStDiffs() {
         return this.stDiffs;
     }
+
+    /**
+     * Sets the st diffs.
+     *
+     * @param stDiffs the st diffs value
+     */
 
     public void setStDiffs(String stDiffs) {
         this.stDiffs = stDiffs;
     }
 
+    /**
+     * Returns the state.
+     *
+     * @return the result
+     */
+
     public String getState() {
         return this.state;
     }
+
+    /**
+     * Sets the state.
+     *
+     * @param state the state value
+     */
 
     public void setState(String state) {
         this.state = state;
     }
 
+    /**
+     * Returns the state id.
+     *
+     * @return the result
+     */
+
     public Long getStateId() {
         return stateId;
     }
+
+    /**
+     * Sets the state id.
+     *
+     * @param stateId the state id value
+     */
 
     public void setStateId(Long stateId) {
         this.stateId = stateId;
     }
 
+    /**
+     * Returns the target branch.
+     *
+     * @return the result
+     */
+
     public String getTargetBranch() {
         return this.targetBranch;
     }
+
+    /**
+     * Sets the target branch.
+     *
+     * @param targetBranch the target branch value
+     */
 
     public void setTargetBranch(String targetBranch) {
         this.targetBranch = targetBranch;
     }
 
+    /**
+     * Returns the target project id.
+     *
+     * @return the result
+     */
+
     public Long getTargetProjectId() {
         return this.targetProjectId;
     }
+
+    /**
+     * Sets the target project id.
+     *
+     * @param targetProjectId the target project id value
+     */
 
     public void setTargetProjectId(Long targetProjectId) {
         this.targetProjectId = targetProjectId;
     }
 
+    /**
+     * Returns the title.
+     *
+     * @return the result
+     */
+
     public String getTitle() {
         return this.title;
     }
+
+    /**
+     * Sets the title.
+     *
+     * @param title the title value
+     */
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Returns the updated at.
+     *
+     * @return the result
+     */
+
     public Date getUpdatedAt() {
         return this.updatedAt;
     }
+
+    /**
+     * Sets the updated at.
+     *
+     * @param updatedAt the updated at value
+     */
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
+    /**
+     * Returns the source.
+     *
+     * @return the result
+     */
+
     public EventProject getSource() {
         return source;
     }
+
+    /**
+     * Sets the source.
+     *
+     * @param source the source value
+     */
 
     public void setSource(EventProject source) {
         this.source = source;
     }
 
+    /**
+     * Returns the target.
+     *
+     * @return the result
+     */
+
     public EventProject getTarget() {
         return target;
     }
+
+    /**
+     * Sets the target.
+     *
+     * @param target the target value
+     */
 
     public void setTarget(EventProject target) {
         this.target = target;
     }
 
+    /**
+     * Returns the last commit.
+     *
+     * @return the result
+     */
+
     public EventCommit getLastCommit() {
         return lastCommit;
     }
+
+    /**
+     * Sets the last commit.
+     *
+     * @param lastCommit the last commit value
+     */
 
     public void setLastCommit(EventCommit lastCommit) {
         this.lastCommit = lastCommit;
     }
 
+    /**
+     * Returns the blocking discussions resolved.
+     *
+     * @return the result
+     */
+
     public Boolean getBlockingDiscussionsResolved() {
         return blockingDiscussionsResolved;
     }
+
+    /**
+     * Sets the blocking discussions resolved.
+     *
+     * @param blockingDiscussionsResolved the blocking discussions resolved value
+     */
 
     public void setBlockingDiscussionsResolved(Boolean blockingDiscussionsResolved) {
         this.blockingDiscussionsResolved = blockingDiscussionsResolved;
     }
 
+    /**
+     * Returns the work in progress.
+     *
+     * @return the result
+     */
+
     public Boolean getWorkInProgress() {
         return workInProgress;
     }
+
+    /**
+     * Sets the work in progress.
+     *
+     * @param workInProgress the work in progress value
+     */
 
     public void setWorkInProgress(Boolean workInProgress) {
         this.workInProgress = workInProgress;
     }
 
+    /**
+     * Returns the first contribution.
+     *
+     * @return the result
+     */
+
     public Boolean getFirstContribution() {
         return firstContribution;
     }
+
+    /**
+     * Sets the first contribution.
+     *
+     * @param firstContribution the first contribution value
+     */
 
     public void setFirstContribution(Boolean firstContribution) {
         this.firstContribution = firstContribution;
     }
 
+    /**
+     * Returns the url.
+     *
+     * @return the result
+     */
+
     public String getUrl() {
         return url;
     }
+
+    /**
+     * Sets the url.
+     *
+     * @param url the url value
+     */
 
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * Returns the labels.
+     *
+     * @return the result
+     */
+
     public List<EventLabel> getLabels() {
         return labels;
     }
+
+    /**
+     * Sets the labels.
+     *
+     * @param labels the labels value
+     */
 
     public void setLabels(List<EventLabel> labels) {
         this.labels = labels;
     }
 
+    /**
+     * Returns the action.
+     *
+     * @return the result
+     */
+
     public String getAction() {
         return action;
     }
+
+    /**
+     * Sets the action.
+     *
+     * @param action the action value
+     */
 
     public void setAction(String action) {
         this.action = action;
     }
 
+    /**
+     * Returns the assignee.
+     *
+     * @return the result
+     */
+
     public Assignee getAssignee() {
         return assignee;
     }
+
+    /**
+     * Sets the assignee.
+     *
+     * @param assignee the assignee value
+     */
 
     public void setAssignee(Assignee assignee) {
         this.assignee = assignee;
     }
 
+    /**
+     * Returns the updated by id.
+     *
+     * @return the result
+     */
+
     public Long getUpdatedById() {
         return updatedById;
     }
+
+    /**
+     * Sets the updated by id.
+     *
+     * @param updatedById the updated by id value
+     */
 
     public void setUpdatedById(Long updatedById) {
         this.updatedById = updatedById;
     }
 
+    /**
+     * Returns the merge error.
+     *
+     * @return the result
+     */
+
     public String getMergeError() {
         return mergeError;
     }
+
+    /**
+     * Sets the merge error.
+     *
+     * @param mergeError the merge error value
+     */
 
     public void setMergeError(String mergeError) {
         this.mergeError = mergeError;
@@ -407,153 +839,381 @@ public class EventMergeRequest {
         this.mergeParams = mergeParams;
     }
 
+    /**
+     * Returns the merge when pipeline succeeds.
+     *
+     * @return the result
+     */
+
     public Boolean getMergeWhenPipelineSucceeds() {
         return mergeWhenPipelineSucceeds;
     }
+
+    /**
+     * Sets the merge when pipeline succeeds.
+     *
+     * @param mergeWhenPipelineSucceeds the merge when pipeline succeeds value
+     */
 
     public void setMergeWhenPipelineSucceeds(Boolean mergeWhenPipelineSucceeds) {
         this.mergeWhenPipelineSucceeds = mergeWhenPipelineSucceeds;
     }
 
+    /**
+     * Returns the merge user id.
+     *
+     * @return the result
+     */
+
     public Long getMergeUserId() {
         return mergeUserId;
     }
+
+    /**
+     * Sets the merge user id.
+     *
+     * @param mergeUserId the merge user id value
+     */
 
     public void setMergeUserId(Long mergeUserId) {
         this.mergeUserId = mergeUserId;
     }
 
+    /**
+     * Returns the deleted at.
+     *
+     * @return the result
+     */
+
     public Date getDeletedAt() {
         return deletedAt;
     }
+
+    /**
+     * Sets the deleted at.
+     *
+     * @param deletedAt the deleted at value
+     */
 
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
     }
 
+    /**
+     * Returns the in progress merge commit sha.
+     *
+     * @return the result
+     */
+
     public String getInProgressMergeCommitSha() {
         return inProgressMergeCommitSha;
     }
+
+    /**
+     * Sets the in progress merge commit sha.
+     *
+     * @param inProgressMergeCommitSha the in progress merge commit sha value
+     */
 
     public void setInProgressMergeCommitSha(String inProgressMergeCommitSha) {
         this.inProgressMergeCommitSha = inProgressMergeCommitSha;
     }
 
+    /**
+     * Returns the lock version.
+     *
+     * @return the result
+     */
+
     public Integer getLockVersion() {
         return lockVersion;
     }
+
+    /**
+     * Sets the lock version.
+     *
+     * @param lockVersion the lock version value
+     */
 
     public void setLockVersion(Integer lockVersion) {
         this.lockVersion = lockVersion;
     }
 
+    /**
+     * Returns the last edited at.
+     *
+     * @return the result
+     */
+
     public Date getLastEditedAt() {
         return lastEditedAt;
     }
+
+    /**
+     * Sets the last edited at.
+     *
+     * @param lastEditedAt the last edited at value
+     */
 
     public void setLastEditedAt(Date lastEditedAt) {
         this.lastEditedAt = lastEditedAt;
     }
 
+    /**
+     * Returns the last edited by id.
+     *
+     * @return the result
+     */
+
     public Long getLastEditedById() {
         return lastEditedById;
     }
+
+    /**
+     * Sets the last edited by id.
+     *
+     * @param lastEditedById the last edited by id value
+     */
 
     public void setLastEditedById(Long lastEditedById) {
         this.lastEditedById = lastEditedById;
     }
 
+    /**
+     * Returns the head pipeline id.
+     *
+     * @return the result
+     */
+
     public Long getHeadPipelineId() {
         return headPipelineId;
     }
+
+    /**
+     * Sets the head pipeline id.
+     *
+     * @param headPipelineId the head pipeline id value
+     */
 
     public void setHeadPipelineId(Long headPipelineId) {
         this.headPipelineId = headPipelineId;
     }
 
+    /**
+     * Returns the ref fetched.
+     *
+     * @return the result
+     */
+
     public Boolean getRefFetched() {
         return refFetched;
     }
+
+    /**
+     * Sets the ref fetched.
+     *
+     * @param refFetched the ref fetched value
+     */
 
     public void setRefFetched(Boolean refFetched) {
         this.refFetched = refFetched;
     }
 
+    /**
+     * Returns the merge iid.
+     *
+     * @return the result
+     */
+
     public Long getMergeIid() {
         return mergeIid;
     }
+
+    /**
+     * Sets the merge iid.
+     *
+     * @param mergeIid the merge iid value
+     */
 
     public void setMergeIid(Long mergeIid) {
         this.mergeIid = mergeIid;
     }
 
+    /**
+     * Returns the total time spent.
+     *
+     * @return the result
+     */
+
     public Integer getTotalTimeSpent() {
         return totalTimeSpent;
     }
+
+    /**
+     * Sets the total time spent.
+     *
+     * @param totalTimeSpent the total time spent value
+     */
 
     public void setTotalTimeSpent(Integer totalTimeSpent) {
         this.totalTimeSpent = totalTimeSpent;
     }
 
+    /**
+     * Returns the human total time spent.
+     *
+     * @return the result
+     */
+
     public Duration getHumanTotalTimeSpent() {
         return humanTotalTimeSpent;
     }
+
+    /**
+     * Sets the human total time spent.
+     *
+     * @param humanTotalTimeSpent the human total time spent value
+     */
 
     public void setHumanTotalTimeSpent(Duration humanTotalTimeSpent) {
         this.humanTotalTimeSpent = humanTotalTimeSpent;
     }
 
+    /**
+     * Returns the time change.
+     *
+     * @return the result
+     */
+
     public Integer getTimeChange() {
         return timeChange;
     }
+
+    /**
+     * Sets the time change.
+     *
+     * @param timeChange the time change value
+     */
 
     public void setTimeChange(Integer timeChange) {
         this.timeChange = timeChange;
     }
 
+    /**
+     * Returns the time estimate.
+     *
+     * @return the result
+     */
+
     public Integer getTimeEstimate() {
         return timeEstimate;
     }
+
+    /**
+     * Sets the time estimate.
+     *
+     * @param timeEstimate the time estimate value
+     */
 
     public void setTimeEstimate(Integer timeEstimate) {
         this.timeEstimate = timeEstimate;
     }
 
+    /**
+     * Returns the human time estimate.
+     *
+     * @return the result
+     */
+
     public Duration getHumanTimeEstimate() {
         return humanTimeEstimate;
     }
+
+    /**
+     * Sets the human time estimate.
+     *
+     * @param humanTimeEstimate the human time estimate value
+     */
 
     public void setHumanTimeEstimate(Duration humanTimeEstimate) {
         this.humanTimeEstimate = humanTimeEstimate;
     }
 
+    /**
+     * Returns the human time change.
+     *
+     * @return the result
+     */
+
     public Duration getHumanTimeChange() {
         return humanTimeChange;
     }
+
+    /**
+     * Sets the human time change.
+     *
+     * @param humanTimeChange the human time change value
+     */
 
     public void setHumanTimeChange(Duration humanTimeChange) {
         this.humanTimeChange = humanTimeChange;
     }
 
+    /**
+     * Returns the assignee ids.
+     *
+     * @return the result
+     */
+
     public List<Long> getAssigneeIds() {
         return assigneeIds;
     }
+
+    /**
+     * Sets the assignee ids.
+     *
+     * @param assigneeIds the assignee ids value
+     */
 
     public void setAssigneeIds(List<Long> assigneeIds) {
         this.assigneeIds = assigneeIds;
     }
 
+    /**
+     * Returns the reviewer ids.
+     *
+     * @return the result
+     */
+
     public List<Long> getReviewerIds() {
         return reviewerIds;
     }
+
+    /**
+     * Sets the reviewer ids.
+     *
+     * @param reviewerIds the reviewer ids value
+     */
 
     public void setReviewerIds(List<Long> reviewerIds) {
         this.reviewerIds = reviewerIds;
     }
 
+    /**
+     * Returns the oldrev.
+     *
+     * @return the result
+     */
+
     public String getOldrev() {
         return oldrev;
     }
+
+    /**
+     * Sets the oldrev.
+     *
+     * @param oldrev the oldrev value
+     */
 
     public void setOldrev(String oldrev) {
         this.oldrev = oldrev;
@@ -805,6 +1465,12 @@ public class EventMergeRequest {
         }
 
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

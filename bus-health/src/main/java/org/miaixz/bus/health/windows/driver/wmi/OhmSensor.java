@@ -80,6 +80,9 @@ public final class OhmSensor {
      * @since Java 21+
      */
     public enum ValueProperty {
+        /**
+         * Executes the value operation.
+         */
         VALUE
 
     }

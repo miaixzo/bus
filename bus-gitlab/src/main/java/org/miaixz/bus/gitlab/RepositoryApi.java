@@ -48,6 +48,12 @@ import org.miaixz.bus.logger.Logger;
  */
 public class RepositoryApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code RepositoryApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public RepositoryApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

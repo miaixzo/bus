@@ -40,6 +40,7 @@ public class SimpleWatcher implements Watcher, Serializable {
      * Constructs a new simple watcher.
      */
     public SimpleWatcher() {
+        // No initialization required.
     }
 
     /**

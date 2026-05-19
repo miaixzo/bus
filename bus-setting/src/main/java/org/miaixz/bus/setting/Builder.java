@@ -49,6 +49,7 @@ public class Builder {
      * Private constructor to prevent instantiation of this utility class.
      */
     private Builder() {
+        // No initialization required.
     }
 
     /**

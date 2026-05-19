@@ -66,7 +66,7 @@ public abstract class AbstractProcess implements Process {
      * Default constructor.
      */
     protected AbstractProcess() {
-
+        // No initialization required.
     }
 
     /**

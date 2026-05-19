@@ -32,6 +32,13 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class LunarSect2ChildLimitProvider extends AbstractChildLimitProvider {
 
     /**
+     * Constructs a new LunarSect2ChildLimitProvider instance.
+     */
+    public LunarSect2ChildLimitProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Calculates and returns the Child Limit information based on Lunar Sect 2 rules.
      *
      * @param birthTime The Gregorian birth time.

@@ -958,6 +958,13 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
          */
         public final BufferSink sink;
 
+        /**
+         * Executes the streams operation.
+         *
+         * @param client the client value
+         * @param source the source value
+         * @param sink   the sink value
+         */
         public Streams(boolean client, BufferSource source, BufferSink sink) {
             this.client = client;
             this.source = source;
@@ -975,6 +982,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
     private final class PingRunnable implements Runnable {
 
         PingRunnable() {
+            // No initialization required.
         }
 
         /**

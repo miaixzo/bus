@@ -35,6 +35,13 @@ import org.miaixz.bus.validate.magic.annotation.Equals;
 public class EqualsMatcher implements Matcher<Object, Equals> {
 
     /**
+     * Constructs a new EqualsMatcher instance.
+     */
+    public EqualsMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object is equal to the value specified in the {@link Equals} annotation.
      *
      * @param object     The object to validate.

@@ -63,6 +63,7 @@ public class IPv4 {
      * Constructs a new IPv4. Utility class constructor for static access.
      */
     public IPv4() {
+        // No initialization required.
     }
 
     /**

@@ -34,24 +34,6 @@ import org.miaixz.bus.cortex.Type;
  * @param verb         HTTP verb code
  * @since Java 21+
  */
-/**
- * The type field.
- *
- * @author Kimi Liu
- * @since Java 21+
- */
-/**
- * The type field.
- *
- * @author Kimi Liu
- * @since Java 21+
- */
-/**
- * The type field.
- *
- * @author Kimi Liu
- * @since Java 21+
- */
 public record RegistryRouteKey(String namespace_id, String app_id, Integer type, String method, String version,
         Integer verb) {
 

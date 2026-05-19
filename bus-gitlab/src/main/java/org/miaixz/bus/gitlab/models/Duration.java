@@ -90,11 +90,24 @@ public class Duration implements Serializable {
         this.seconds = seconds;
     }
 
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
     @JsonValue
     @Override
     public String toString() {
         return (durationString);
     }
+
+    /**
+     * Returns the value.
+     *
+     * @param value the value value
+     * @return the result
+     */
 
     @JsonCreator
     public static Duration forValue(String value) {

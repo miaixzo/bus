@@ -41,6 +41,12 @@ import org.miaixz.bus.gitlab.models.BoardList;
  */
 public class BoardsApi extends AbstractApi {
 
+    /**
+     * Executes the boards api operation.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public BoardsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

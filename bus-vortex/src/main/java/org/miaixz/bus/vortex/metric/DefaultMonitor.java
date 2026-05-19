@@ -74,6 +74,7 @@ public class DefaultMonitor implements Monitor {
      * Creates an in-memory monitor.
      */
     public DefaultMonitor() {
+        // No initialization required.
     }
 
     /**

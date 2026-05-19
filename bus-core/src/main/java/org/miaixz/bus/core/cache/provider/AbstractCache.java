@@ -56,6 +56,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * Constructs a new AbstractCache. Utility class constructor for static access.
      */
     public AbstractCache() {
+        // No initialization required.
     }
 
     @Serial

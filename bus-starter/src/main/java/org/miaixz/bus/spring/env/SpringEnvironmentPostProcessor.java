@@ -44,6 +44,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class SpringEnvironmentPostProcessor implements org.springframework.boot.env.EnvironmentPostProcessor, Ordered {
 
     /**
+     * Constructs a new SpringEnvironmentPostProcessor instance.
+     */
+    public SpringEnvironmentPostProcessor() {
+        // No initialization required.
+    }
+
+    /**
      * Post-processes the environment to add default properties.
      * <p>
      * If the property source {@code GeniusBuilder.BUS_PROPERTY_SOURCE} is not already present, it adds the application

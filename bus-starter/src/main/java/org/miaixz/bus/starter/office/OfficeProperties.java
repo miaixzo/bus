@@ -41,4 +41,11 @@ import org.miaixz.bus.spring.GeniusBuilder;
 @ConfigurationProperties(prefix = GeniusBuilder.OFFICE)
 public class OfficeProperties {
 
+    /**
+     * Constructs a new OfficeProperties instance.
+     */
+    public OfficeProperties() {
+        // No initialization required.
+    }
+
 }

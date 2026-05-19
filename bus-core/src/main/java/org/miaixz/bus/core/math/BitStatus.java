@@ -32,6 +32,7 @@ public class BitStatus {
      * Constructs a new BitStatus. Utility class constructor for static access.
      */
     private BitStatus() {
+        // No initialization required.
     }
 
     /**

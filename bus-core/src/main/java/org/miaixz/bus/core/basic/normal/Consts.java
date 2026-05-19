@@ -37,6 +37,7 @@ public class Consts extends Normal {
      * Constructs a new Consts. Utility class constructor for static access.
      */
     public Consts() {
+        // No initialization required.
     }
 
     /**

@@ -36,6 +36,7 @@ public class CortexChangeRecord {
      * Creates an empty change-log record.
      */
     public CortexChangeRecord() {
+        // No initialization required.
     }
 
     /**

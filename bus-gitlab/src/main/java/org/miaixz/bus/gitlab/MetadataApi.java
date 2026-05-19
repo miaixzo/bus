@@ -33,6 +33,12 @@ import org.miaixz.bus.gitlab.models.Metadata;
  */
 public class MetadataApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code MetadataApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public MetadataApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -51,6 +51,13 @@ import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
  */
 public class JdPayBuilder {
 
+    /**
+     * Constructs a new JdPayBuilder instance.
+     */
+    public JdPayBuilder() {
+        // No initialization required.
+    }
+
     private static final String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     private static final String XML_JDPAY_START = "<jdpay>";
     private static final String XML_JDPAY_END = "</jdpay>";
@@ -272,7 +279,7 @@ public class JdPayBuilder {
      * @throws IllegalArgumentException if an error occurs.
      */
     public static String signString(Object object, List<String> list) throws IllegalArgumentException {
-        Map<String, Object> map = BeanKit.beanToMap(object, null);
+        Map<String, Object> map = BeanKit.beanToMap(object, (String[]) null);
         StringBuilder sb = new StringBuilder();
         for (String text : list) {
             map.remove(text);

@@ -33,6 +33,13 @@ import org.miaixz.bus.mapper.OGNL;
 public class SchemaClassParser extends SchemaTypeParser {
 
     /**
+     * Constructs a new SchemaClassParser instance.
+     */
+    public SchemaClassParser() {
+        // No initialization required.
+    }
+
+    /**
      * Determines if the specified class is an entity class.
      *
      * @param clazz The class to check.

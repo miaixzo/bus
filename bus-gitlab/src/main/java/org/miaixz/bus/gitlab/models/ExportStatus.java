@@ -51,26 +51,53 @@ public class ExportStatus implements Serializable {
      */
     public enum Status {
 
-        NONE, STARTED, FINISHED,
-
         /**
-         * Represents that the export process has been completed successfully and the platform is performing some
-         * actions on the resulted file. For example, sending an email notifying the user to download the file,
-         * uploading the exported file to a web server, etc.
+         * The none status.
+         */
+        NONE,
+        /**
+         * The started status.
+         */
+        STARTED,
+        /**
+         * The finished status.
+         */
+        FINISHED,
+        /**
+         * The after export action status.
          */
         AFTER_EXPORT_ACTION;
 
         private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static Status forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -91,77 +118,192 @@ public class ExportStatus implements Serializable {
     @JsonProperty("_links")
     private Map<String, String> links;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return description;
     }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the name with namespace.
+     *
+     * @return the result
+     */
+
     public String getNameWithNamespace() {
         return nameWithNamespace;
     }
+
+    /**
+     * Sets the name with namespace.
+     *
+     * @param nameWithNamespace the name with namespace value
+     */
 
     public void setNameWithNamespace(String nameWithNamespace) {
         this.nameWithNamespace = nameWithNamespace;
     }
 
+    /**
+     * Returns the path.
+     *
+     * @return the result
+     */
+
     public String getPath() {
         return path;
     }
+
+    /**
+     * Sets the path.
+     *
+     * @param path the path value
+     */
 
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Returns the path with namespace.
+     *
+     * @return the result
+     */
+
     public String getPathWithNamespace() {
         return pathWithNamespace;
     }
+
+    /**
+     * Sets the path with namespace.
+     *
+     * @param pathWithNamespace the path with namespace value
+     */
 
     public void setPathWithNamespace(String pathWithNamespace) {
         this.pathWithNamespace = pathWithNamespace;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the export status.
+     *
+     * @return the result
+     */
+
     public Status getExportStatus() {
         return exportStatus;
     }
+
+    /**
+     * Sets the export status.
+     *
+     * @param exportStatus the export status value
+     */
 
     public void setExportStatus(Status exportStatus) {
         this.exportStatus = exportStatus;
     }
 
+    /**
+     * Returns the links.
+     *
+     * @return the result
+     */
+
     public Map<String, String> getLinks() {
         return links;
     }
 
+    /**
+     * Sets the links.
+     *
+     * @param links the links value
+     */
+
     public void setLinks(Map<String, String> links) {
         this.links = links;
     }
+
+    /**
+     * Returns the link by name.
+     *
+     * @param name the name value
+     * @return the result
+     */
 
     @JsonIgnore
     public String getLinkByName(String name) {
@@ -171,6 +313,12 @@ public class ExportStatus implements Serializable {
 
         return (links.get(name));
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

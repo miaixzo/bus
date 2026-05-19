@@ -46,85 +46,211 @@ public class BoardList implements Serializable {
     private Integer limitMetric;
     private String listType;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the label.
+     *
+     * @return the result
+     */
+
     public Label getLabel() {
         return label;
     }
+
+    /**
+     * Sets the label.
+     *
+     * @param label the label value
+     */
 
     public void setLabel(Label label) {
         this.label = label;
     }
 
+    /**
+     * Returns the position.
+     *
+     * @return the result
+     */
+
     public Integer getPosition() {
         return position;
     }
+
+    /**
+     * Sets the position.
+     *
+     * @param position the position value
+     */
 
     public void setPosition(Integer position) {
         this.position = position;
     }
 
+    /**
+     * Returns the assignee.
+     *
+     * @return the result
+     */
+
     public Assignee getAssignee() {
         return assignee;
     }
+
+    /**
+     * Sets the assignee.
+     *
+     * @param assignee the assignee value
+     */
 
     public void setAssignee(Assignee assignee) {
         this.assignee = assignee;
     }
 
+    /**
+     * Returns the milestone.
+     *
+     * @return the result
+     */
+
     public Milestone getMilestone() {
         return milestone;
     }
+
+    /**
+     * Sets the milestone.
+     *
+     * @param milestone the milestone value
+     */
 
     public void setMilestone(Milestone milestone) {
         this.milestone = milestone;
     }
 
+    /**
+     * Returns the iteration.
+     *
+     * @return the result
+     */
+
     public Iteration getIteration() {
         return iteration;
     }
+
+    /**
+     * Sets the iteration.
+     *
+     * @param iteration the iteration value
+     */
 
     public void setIteration(Iteration iteration) {
         this.iteration = iteration;
     }
 
+    /**
+     * Returns the max issue count.
+     *
+     * @return the result
+     */
+
     public Integer getMaxIssueCount() {
         return maxIssueCount;
     }
+
+    /**
+     * Sets the max issue count.
+     *
+     * @param maxIssueCount the max issue count value
+     */
 
     public void setMaxIssueCount(Integer maxIssueCount) {
         this.maxIssueCount = maxIssueCount;
     }
 
+    /**
+     * Returns the max issue weight.
+     *
+     * @return the result
+     */
+
     public Integer getMaxIssueWeight() {
         return maxIssueWeight;
     }
+
+    /**
+     * Sets the max issue weight.
+     *
+     * @param maxIssueWeight the max issue weight value
+     */
 
     public void setMaxIssueWeight(Integer maxIssueWeight) {
         this.maxIssueWeight = maxIssueWeight;
     }
 
+    /**
+     * Returns the limit metric.
+     *
+     * @return the result
+     */
+
     public Integer getLimitMetric() {
         return limitMetric;
     }
+
+    /**
+     * Sets the limit metric.
+     *
+     * @param limitMetric the limit metric value
+     */
 
     public void setLimitMetric(Integer limitMetric) {
         this.limitMetric = limitMetric;
     }
 
+    /**
+     * Returns the list type.
+     *
+     * @return the result
+     */
+
     public String getListType() {
         return listType;
     }
 
+    /**
+     * Sets the list type.
+     *
+     * @param listType the list type value
+     */
+
     public void setListType(String listType) {
         this.listType = listType;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

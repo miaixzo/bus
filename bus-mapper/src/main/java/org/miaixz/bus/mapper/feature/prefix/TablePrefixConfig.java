@@ -22,7 +22,6 @@ package org.miaixz.bus.mapper.feature.prefix;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,7 +60,6 @@ import org.miaixz.bus.core.lang.Assert;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class TablePrefixConfig {
 
     /**
@@ -74,6 +72,17 @@ public class TablePrefixConfig {
      */
     @Builder.Default
     private final List<String> ignore = Collections.emptyList();
+
+    /**
+     * Creates a table prefix configuration.
+     *
+     * @param provider the prefix provider
+     * @param ignore table names excluded from prefixing
+     */
+    public TablePrefixConfig(TablePrefixProvider provider, List<String> ignore) {
+        this.provider = provider;
+        this.ignore = ignore;
+    }
 
     /**
      * Create a TablePrefixConfig with provider and default settings.

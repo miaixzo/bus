@@ -600,6 +600,7 @@ public class DatePattern {
         static final UnpaddedMonthField INSTANCE = new UnpaddedMonthField();
 
         UnpaddedMonthField() {
+            // No initialization required.
         }
 
         /**
@@ -774,6 +775,7 @@ public class DatePattern {
         static final TwoDigitYearField INSTANCE = new TwoDigitYearField();
 
         TwoDigitYearField() {
+            // No initialization required.
         }
 
         /**
@@ -827,6 +829,7 @@ public class DatePattern {
         static final TwoDigitMonthField INSTANCE = new TwoDigitMonthField();
 
         TwoDigitMonthField() {
+            // No initialization required.
         }
 
         /**

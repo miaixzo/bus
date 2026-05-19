@@ -28,6 +28,13 @@ package org.miaixz.bus.image.metric.net;
 public class ItemType {
 
     /**
+     * Constructs a new ItemType instance.
+     */
+    public ItemType() {
+        // No initialization required.
+    }
+
+    /**
      * The app context value.
      */
     public static final int APP_CONTEXT = 0x10;

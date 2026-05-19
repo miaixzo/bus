@@ -40,6 +40,13 @@ import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatProtocol;
 public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
 
     /**
+     * Constructs a new AixInternetProtocolStats instance.
+     */
+    public AixInternetProtocolStats() {
+        // No initialization required.
+    }
+
+    /**
      * The ipstats value.
      */
     private final Supplier<perfstat_protocol_t[]> ipstats = Memoizer

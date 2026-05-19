@@ -47,6 +47,7 @@ public final class Lpstat {
      * Creates a new Lpstat instance.
      */
     private Lpstat() {
+        // No initialization required.
     }
 
     /**

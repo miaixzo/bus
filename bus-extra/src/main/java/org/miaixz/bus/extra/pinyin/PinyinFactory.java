@@ -36,6 +36,13 @@ import org.miaixz.bus.logger.Logger;
 public class PinyinFactory {
 
     /**
+     * Constructs a new PinyinFactory instance.
+     */
+    public PinyinFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Retrieves a singleton instance of {@link PinyinProvider}. The first available Pinyin provider found via SPI will
      * be used.
      *

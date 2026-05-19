@@ -73,7 +73,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * Default constructor.
      */
     public RestExecutor() {
-
+        // No initialization required.
     }
 
     /**

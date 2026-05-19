@@ -40,4 +40,11 @@ import org.miaixz.bus.spring.GeniusBuilder;
 @ConfigurationProperties(prefix = GeniusBuilder.TRACER)
 public class TracerProperties {
 
+    /**
+     * Constructs a new TracerProperties instance.
+     */
+    public TracerProperties() {
+        // No initialization required.
+    }
+
 }

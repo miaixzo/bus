@@ -37,6 +37,13 @@ import org.miaixz.bus.core.lang.Assert;
 public class RadixKit {
 
     /**
+     * Constructs a new RadixKit instance.
+     */
+    public RadixKit() {
+        // No initialization required.
+    }
+
+    /**
      * Encodes an integer into a custom radix string. The length of the `radixs` string determines the base.
      *
      * @param radixs The custom character set for the radix (e.g., "0123456789abcdef"). Must not contain duplicate

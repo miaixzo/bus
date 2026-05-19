@@ -44,6 +44,13 @@ import org.miaixz.bus.image.galaxy.data.*;
 public class MultiframeExtractor {
 
     /**
+     * Constructs a new MultiframeExtractor instance.
+     */
+    public MultiframeExtractor() {
+        // No initialization required.
+    }
+
+    /**
      * The impls value.
      */
     private static final HashMap<String, Impl> impls = new HashMap<>(8);

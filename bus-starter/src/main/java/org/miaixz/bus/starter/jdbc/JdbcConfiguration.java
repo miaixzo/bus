@@ -72,6 +72,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class JdbcConfiguration {
 
     /**
+     * Constructs a new JdbcConfiguration instance.
+     */
+    public JdbcConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected JDBC configuration properties.
      */
     @Resource

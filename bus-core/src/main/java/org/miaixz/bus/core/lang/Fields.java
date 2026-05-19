@@ -59,6 +59,7 @@ public class Fields {
      * Constructs a new Fields. Utility class constructor for static access.
      */
     private Fields() {
+        // No initialization required.
     }
 
     /**

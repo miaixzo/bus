@@ -236,6 +236,12 @@ public class GitLabApiException extends Exception {
         return (headers);
     }
 
+    /**
+     * Executes the hash code operation.
+     *
+     * @return the result
+     */
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -247,6 +253,13 @@ public class GitLabApiException extends Exception {
         result = prime * result + ((headers == null) ? 0 : headers.hashCode());
         return result;
     }
+
+    /**
+     * Executes the equals operation.
+     *
+     * @param obj the obj value
+     * @return the result
+     */
 
     @Override
     public boolean equals(Object obj) {

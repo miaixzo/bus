@@ -32,6 +32,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class NumberValidator {
 
     /**
+     * Constructs a new NumberValidator instance.
+     */
+    public NumberValidator() {
+        // No initialization required.
+    }
+
+    /**
      * The tolerance value for double comparison. Two double values are considered equal if their absolute difference is
      * less than this value.
      */

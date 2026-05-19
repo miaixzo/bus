@@ -40,6 +40,13 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class Claims implements Serializable {
 
+    /**
+     * Constructs a new Claims instance.
+     */
+    public Claims() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852289137231L;
 

@@ -38,6 +38,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class I18nProperties {
 
     /**
+     * Constructs a new I18nProperties instance.
+     */
+    public I18nProperties() {
+        // No initialization required.
+    }
+
+    /**
      * The default character encoding for the message bundles. If not specified, the system's default encoding will be
      * used. It is recommended to set this to UTF-8.
      * <p>

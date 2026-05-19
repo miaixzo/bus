@@ -37,6 +37,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class ConditionProvider {
 
     /**
+     * Constructs a new ConditionProvider instance.
+     */
+    public ConditionProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Deletes records based on a Condition object.
      *
      * @param context The provider context, containing method and interface information.

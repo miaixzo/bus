@@ -41,15 +41,36 @@ public class TopicParams implements Serializable {
     private String title;
     private String description;
 
+    /**
+     * Sets the name and returns this instance.
+     *
+     * @param name the name value
+     * @return the result
+     */
+
     public TopicParams withName(String name) {
         this.name = name;
         return (this);
     }
 
+    /**
+     * Sets the title and returns this instance.
+     *
+     * @param title the title value
+     * @return the result
+     */
+
     public TopicParams withTitle(String title) {
         this.title = title;
         return (this);
     }
+
+    /**
+     * Sets the description and returns this instance.
+     *
+     * @param description the description value
+     * @return the result
+     */
 
     public TopicParams withDescription(String description) {
         this.description = description;

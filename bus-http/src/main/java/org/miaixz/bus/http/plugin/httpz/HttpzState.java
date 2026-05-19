@@ -37,6 +37,13 @@ import org.miaixz.bus.core.xyz.DateKit;
 public class HttpzState {
 
     /**
+     * Constructs a new HttpzState instance.
+     */
+    public HttpzState() {
+        // No initialization required.
+    }
+
+    /**
      * The maximum number of error messages to store.
      */
     private static final int MAX_ERROR_MSG_COUNT = 100;
@@ -84,6 +91,8 @@ public class HttpzState {
     }
 
     /**
+     * Returns the total number of requests initiated.
+     *
      * @return The total number of requests initiated.
      */
     public static int getReqTotalCount() {
@@ -91,6 +100,8 @@ public class HttpzState {
     }
 
     /**
+     * Returns the total number of failed requests.
+     *
      * @return The total number of failed requests.
      */
     public static int getReqFailureCount() {
@@ -98,6 +109,8 @@ public class HttpzState {
     }
 
     /**
+     * Returns the total number of requests that threw an exception.
+     *
      * @return The total number of requests that threw an exception.
      */
     public static int getReqExceptionCount() {
@@ -105,6 +118,8 @@ public class HttpzState {
     }
 
     /**
+     * Returns the start time of the statistics collection.
+     *
      * @return The start time of the statistics collection.
      */
     public static Date getStartTime() {
@@ -112,6 +127,8 @@ public class HttpzState {
     }
 
     /**
+     * Returns the timestamp of the last request activity.
+     *
      * @return The timestamp of the last request activity.
      */
     public static Date getLastAccessTime() {
@@ -119,6 +136,8 @@ public class HttpzState {
     }
 
     /**
+     * Returns recent error messages.
+     *
      * @return A deque containing the most recent error messages.
      */
     public static LinkedBlockingDeque<String> getErrorMsgs() {

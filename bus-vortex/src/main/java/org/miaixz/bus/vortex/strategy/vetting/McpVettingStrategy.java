@@ -73,7 +73,7 @@ public class McpVettingStrategy extends VettingStrategy {
      * Creates an MCP vetting strategy.
      */
     public McpVettingStrategy() {
-
+        // No initialization required.
     }
 
     /**

@@ -47,6 +47,7 @@ public class XmlProvider implements Provider<Object, String> {
      * Creates an XML provider instance.
      */
     public XmlProvider() {
+        // No initialization required.
     }
 
     /**

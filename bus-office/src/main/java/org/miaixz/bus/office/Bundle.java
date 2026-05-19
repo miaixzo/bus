@@ -37,7 +37,7 @@ import lombok.Setter;
 public final class Bundle {
 
     private Bundle() {
-
+        // No initialization required.
     }
 
     /**

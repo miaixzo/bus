@@ -55,11 +55,19 @@ public final class GpuInformation {
      */
     public enum GpuEngineProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
-        // First element: instance filter (all instances)
+        /**
+         * Instance filter for all GPU engine instances.
+         */
         NAME("*"),
-        // Running time in 100ns units (raw cumulative counter)
+
+        /**
+         * Running time in 100ns units.
+         */
         RUNNING_TIME("Running Time"),
-        // Total elapsed time in 100ns units (SecondValue of Running Time counter; idle = base - active)
+
+        /**
+         * Total elapsed time in 100ns units.
+         */
         RUNNING_TIME_BASE("Running Time_Base");
 
         /**
@@ -96,8 +104,20 @@ public final class GpuInformation {
      */
     public enum GpuAdapterMemoryProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
-        // First element: instance filter (all instances)
-        NAME("*"), DEDICATED_USAGE("Dedicated Usage"), SHARED_USAGE("Shared Usage");
+        /**
+         * Instance filter for all GPU adapter memory instances.
+         */
+        NAME("*"),
+
+        /**
+         * Dedicated memory usage counter.
+         */
+        DEDICATED_USAGE("Dedicated Usage"),
+
+        /**
+         * Shared memory usage counter.
+         */
+        SHARED_USAGE("Shared Usage");
 
         /**
          * The counter value.
@@ -129,6 +149,7 @@ public final class GpuInformation {
      * Creates a new GpuInformation instance.
      */
     private GpuInformation() {
+        // No initialization required.
     }
 
     /**

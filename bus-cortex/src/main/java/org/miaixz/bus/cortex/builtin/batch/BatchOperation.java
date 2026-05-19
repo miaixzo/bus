@@ -42,6 +42,7 @@ public class BatchOperation {
      * Creates an empty batch operation descriptor.
      */
     public BatchOperation() {
+        // No initialization required.
     }
 
     /**

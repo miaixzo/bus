@@ -88,7 +88,7 @@ public class Timeout {
      * Constructs a new {@code Timeout} instance with no timeout and no deadline set.
      */
     public Timeout() {
-
+        // No initialization required.
     }
 
     /**

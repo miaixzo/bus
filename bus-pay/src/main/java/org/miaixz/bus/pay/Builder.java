@@ -66,6 +66,13 @@ import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
 public class Builder {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * Gets the SM private key.
      *
      * @param privateKey The private key string.

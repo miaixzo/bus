@@ -42,6 +42,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class SensitiveConfiguration {
 
     /**
+     * Constructs a new SensitiveConfiguration instance.
+     */
+    public SensitiveConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected sensitive data configuration properties.
      */
     @Resource

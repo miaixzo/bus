@@ -34,6 +34,13 @@ import org.miaixz.bus.image.metric.Connection;
 public class DeviceExtension implements Serializable {
 
     /**
+     * Constructs a new DeviceExtension instance.
+     */
+    public DeviceExtension() {
+        // No initialization required.
+    }
+
+    /**
      * The serial version uid value.
      */
     @Serial

@@ -45,7 +45,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
      * Creates a new instance.
      */
     public HL7Message() {
-
+        // No initialization required.
     }
 
     /**

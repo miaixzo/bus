@@ -103,7 +103,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * Creates a new empty buffer with no initial capacity.
      */
     public Buffer() {
-
+        // No initialization required.
     }
 
     /**
@@ -2803,6 +2803,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
          * Constructs a new UnsafeCursor.
          */
         public UnsafeCursor() {
+            // No initialization required.
         }
 
         /**

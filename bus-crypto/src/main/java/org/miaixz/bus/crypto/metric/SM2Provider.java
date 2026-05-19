@@ -37,6 +37,13 @@ import org.miaixz.bus.crypto.center.SM2;
 public class SM2Provider implements Provider {
 
     /**
+     * Constructs a new SM2Provider instance.
+     */
+    public SM2Provider() {
+        // No initialization required.
+    }
+
+    /**
      * Encrypts the given content.
      *
      * @param key     The key.

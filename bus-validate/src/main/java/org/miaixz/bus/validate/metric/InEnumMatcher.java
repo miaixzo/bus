@@ -39,6 +39,13 @@ import org.miaixz.bus.validate.magic.annotation.InEnum;
 public class InEnumMatcher implements Matcher<Object, InEnum> {
 
     /**
+     * Constructs a new InEnumMatcher instance.
+     */
+    public InEnumMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object's value is present in the specified enum.
      *
      * @param object     The object to validate.

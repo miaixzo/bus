@@ -49,6 +49,13 @@ import org.miaixz.bus.image.galaxy.data.VR;
 public class IOD extends ArrayList<IOD.DataElement> {
 
     /**
+     * Constructs a new IOD instance.
+     */
+    public IOD() {
+        // No initialization required.
+    }
+
+    /**
      * The serial version uid value.
      */
     @Serial
@@ -421,6 +428,13 @@ public class IOD extends ArrayList<IOD.DataElement> {
     public abstract static class Condition {
 
         /**
+         * Constructs a new Condition instance.
+         */
+        public Condition() {
+            // No initialization required.
+        }
+
+        /**
          * An optional identifier for the condition, used for referencing.
          */
         protected String id;
@@ -563,6 +577,13 @@ public class IOD extends ArrayList<IOD.DataElement> {
     public static class And extends CompositeCondition {
 
         /**
+         * Constructs a new And instance.
+         */
+        public And() {
+            // No initialization required.
+        }
+
+        /**
          * Checks if the condition matches the given attributes.
          *
          * @param attrs the attributes to check
@@ -585,6 +606,13 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * @since Java 21+
      */
     public static class Or extends CompositeCondition {
+
+        /**
+         * Constructs a new Or instance.
+         */
+        public Or() {
+            // No initialization required.
+        }
 
         /**
          * Checks if the condition matches the given attributes.

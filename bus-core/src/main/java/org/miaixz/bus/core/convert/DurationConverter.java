@@ -35,6 +35,7 @@ public class DurationConverter extends AbstractConverter {
      * Constructs a new DurationConverter. Utility class constructor for static access.
      */
     public DurationConverter() {
+        // No initialization required.
     }
 
     @Serial

@@ -32,6 +32,7 @@ public class ASCIIStrCache {
      * Constructs a new ASCIIStrCache. Utility class constructor for static access.
      */
     private ASCIIStrCache() {
+        // No initialization required.
     }
 
     /**

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.notify.metric.baidu;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -36,8 +35,14 @@ import org.miaixz.bus.notify.magic.Notice;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class BaiduNotice extends Notice {
+
+    /**
+     * Creates a Baidu Cloud SMS notice.
+     */
+    public BaiduNotice() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the API default request address. This address is used when the {@link Context} endpoint is empty.

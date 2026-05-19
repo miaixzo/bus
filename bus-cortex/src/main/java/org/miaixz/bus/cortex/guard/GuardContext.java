@@ -41,6 +41,7 @@ public class GuardContext {
      * Creates an empty guard evaluation context.
      */
     public GuardContext() {
+        // No initialization required.
     }
 
     /**

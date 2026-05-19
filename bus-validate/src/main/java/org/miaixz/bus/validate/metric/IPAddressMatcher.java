@@ -34,6 +34,13 @@ import org.miaixz.bus.validate.magic.annotation.IPAddress;
 public class IPAddressMatcher implements Matcher<Object, IPAddress> {
 
     /**
+     * Constructs a new IPAddressMatcher instance.
+     */
+    public IPAddressMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object, when converted to a string, is a valid IPv4 or IPv6 address.
      *
      * @param object     The object to validate.

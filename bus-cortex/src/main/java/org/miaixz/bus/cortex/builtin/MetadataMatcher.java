@@ -39,7 +39,7 @@ public class MetadataMatcher {
      * Creates a new MetadataMatcher.
      */
     private MetadataMatcher() {
-
+        // No initialization required.
     }
 
     /**

@@ -50,6 +50,13 @@ import org.miaixz.bus.logger.Logger;
 public class RGBImageVoiLut {
 
     /**
+     * Constructs a new {@code RGBImageVoiLut} instance.
+     */
+    public RGBImageVoiLut() {
+        // No initialization required.
+    }
+
+    /**
      * Executes the BGR 2 RGB operation.
      *
      * @param img the img.

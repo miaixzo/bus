@@ -42,6 +42,13 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class XPath {
 
     /**
+     * Constructs a new {@code XPath} instance.
+     */
+    public XPath() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a new {@link javax.xml.xpath.XPath} instance.
      *
      * @return A new {@link javax.xml.xpath.XPath} instance.

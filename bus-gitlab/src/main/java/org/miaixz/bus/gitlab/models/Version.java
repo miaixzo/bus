@@ -38,21 +38,51 @@ public class Version implements Serializable {
     private String version;
     private String revision;
 
+    /**
+     * Returns the version.
+     *
+     * @return the result
+     */
+
     public String getVersion() {
         return version;
     }
+
+    /**
+     * Sets the version.
+     *
+     * @param version the version value
+     */
 
     public void setVersion(String version) {
         this.version = version;
     }
 
+    /**
+     * Returns the revision.
+     *
+     * @return the result
+     */
+
     public String getRevision() {
         return revision;
     }
 
+    /**
+     * Sets the revision.
+     *
+     * @param revision the revision value
+     */
+
     public void setRevision(String revision) {
         this.revision = revision;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

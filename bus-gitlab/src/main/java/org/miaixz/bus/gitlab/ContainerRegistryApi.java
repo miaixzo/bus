@@ -41,6 +41,12 @@ import org.miaixz.bus.gitlab.models.RegistryRepositoryTag;
  */
 public class ContainerRegistryApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code ContainerRegistryApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ContainerRegistryApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

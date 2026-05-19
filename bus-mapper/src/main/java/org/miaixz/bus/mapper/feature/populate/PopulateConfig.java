@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.mapper.feature.populate;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -56,7 +55,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class PopulateConfig {
 
     /**
@@ -87,6 +85,24 @@ public class PopulateConfig {
      * User information provider.
      */
     private final PopulateProvider provider;
+
+    /**
+     * Creates a full populate configuration.
+     *
+     * @param created whether create time auto-fill is enabled
+     * @param modified whether update time auto-fill is enabled
+     * @param creator whether creator auto-fill is enabled
+     * @param modifier whether modifier auto-fill is enabled
+     * @param provider user information provider
+     */
+    public PopulateConfig(boolean created, boolean modified, boolean creator, boolean modifier,
+            PopulateProvider provider) {
+        this.created = created;
+        this.modified = modified;
+        this.creator = creator;
+        this.modifier = modifier;
+        this.provider = provider;
+    }
 
     /**
      * Create a PopulateConfig with user provider and default settings.

@@ -41,6 +41,13 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class WatchKit {
 
     /**
+     * Constructs a new WatchKit instance.
+     */
+    public WatchKit() {
+        // No initialization required.
+    }
+
+    /**
      * Creates and initializes a file watcher.
      *
      * @param url    The URL of the file or directory to watch.

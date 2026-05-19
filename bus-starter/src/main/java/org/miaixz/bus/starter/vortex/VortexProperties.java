@@ -43,7 +43,7 @@ public class VortexProperties {
      * Creates an empty Vortex configuration property holder.
      */
     public VortexProperties() {
-
+        // No initialization required.
     }
 
     /**
@@ -87,6 +87,13 @@ public class VortexProperties {
     @Getter
     @Setter
     public static class Assets {
+
+        /**
+         * Constructs a new {@code Assets} instance.
+         */
+        public Assets() {
+            // No initialization required.
+        }
 
         /**
          * Whether periodic asset registry refresh is enabled.

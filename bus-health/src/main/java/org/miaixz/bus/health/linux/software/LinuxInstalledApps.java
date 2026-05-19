@@ -48,6 +48,7 @@ public final class LinuxInstalledApps {
      * Creates a new LinuxInstalledApps instance.
      */
     private LinuxInstalledApps() {
+        // No initialization required.
     }
 
     /**

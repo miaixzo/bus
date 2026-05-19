@@ -45,6 +45,13 @@ import org.miaixz.bus.core.xyz.*;
 public class ObjectValidator {
 
     /**
+     * Constructs a new ObjectValidator instance.
+     */
+    public ObjectValidator() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object is {@code null}.
      *
      * @param object The object to check.
@@ -165,7 +172,6 @@ public class ObjectValidator {
      * <p>
      * Note: The difference between this method and {@link #isBlankIfString(Object)} is that this method does not check
      * for blank characters.
-     *
      *
      * @param object The object to check.
      * @return {@code true} if the object is {@code null} or an empty {@link CharSequence}, {@code false} otherwise.

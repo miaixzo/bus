@@ -43,6 +43,7 @@ public class CharsValidator {
      * Constructs a new CharsValidator. Utility class constructor for static access.
      */
     public CharsValidator() {
+        // No initialization required.
     }
 
     /**

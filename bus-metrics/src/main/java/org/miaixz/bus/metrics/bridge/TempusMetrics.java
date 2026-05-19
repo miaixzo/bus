@@ -37,7 +37,7 @@ public class TempusMetrics {
      * Private constructor; this is a static utility class.
      */
     private TempusMetrics() {
-
+        // No initialization required.
     }
 
     /**

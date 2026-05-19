@@ -29,6 +29,8 @@ public interface ImageSize {
 
     /**
      * Returns the physical memory size in bytes.
+     *
+     * @return the physical memory size in bytes
      */
     long physicalBytes();
 

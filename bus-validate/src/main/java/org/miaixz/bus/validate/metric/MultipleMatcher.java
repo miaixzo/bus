@@ -37,6 +37,13 @@ import org.miaixz.bus.validate.magic.annotation.Multiple;
 public class MultipleMatcher implements Matcher<Object, Multiple> {
 
     /**
+     * Constructs a new MultipleMatcher instance.
+     */
+    public MultipleMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Applies multiple validators to the given object. Validation stops and returns {@code false} upon the first
      * failure.
      *

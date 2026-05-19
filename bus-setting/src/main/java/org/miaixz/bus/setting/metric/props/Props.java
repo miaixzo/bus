@@ -82,6 +82,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * Constructs a new, empty {@code Props} object.
      */
     public Props() {
+        // No initialization required.
     }
 
     /**

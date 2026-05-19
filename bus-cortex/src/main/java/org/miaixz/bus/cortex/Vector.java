@@ -52,7 +52,7 @@ public class Vector extends Nature {
      * Creates an empty shared query vector.
      */
     public Vector() {
-
+        // No initialization required.
     }
 
     /**
@@ -113,11 +113,13 @@ public class Vector extends Nature {
     /**
      * Maximum number of results to return.
      */
+    @lombok.Builder.Default
     private int limit = 100;
 
     /**
      * Number of results to skip.
      */
+    @lombok.Builder.Default
     private int offset = 0;
 
     /**
@@ -182,6 +184,7 @@ public class Vector extends Nature {
          * Creates a new fluent vector builder.
          */
         public Builder() {
+            // No initialization required.
         }
 
         /**

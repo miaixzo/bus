@@ -35,6 +35,12 @@ import org.miaixz.bus.gitlab.models.AwardEmoji;
  */
 public class AwardEmojiApi extends AbstractApi {
 
+    /**
+     * Executes the award emoji api operation.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public AwardEmojiApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

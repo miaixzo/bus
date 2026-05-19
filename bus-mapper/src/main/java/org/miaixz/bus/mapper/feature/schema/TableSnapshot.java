@@ -41,6 +41,13 @@ import org.miaixz.bus.mapper.parsing.IndexMeta;
 public class TableSnapshot {
 
     /**
+     * Constructs a new TableSnapshot instance.
+     */
+    public TableSnapshot() {
+        // No initialization required.
+    }
+
+    /**
      * Database table name.
      */
     private String name;

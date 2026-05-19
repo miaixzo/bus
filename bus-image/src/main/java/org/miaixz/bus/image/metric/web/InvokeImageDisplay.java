@@ -136,6 +136,7 @@ public final class InvokeImageDisplay {
      * Creates a new instance.
      */
     private InvokeImageDisplay() {
+        // No initialization required.
     }
 
 }

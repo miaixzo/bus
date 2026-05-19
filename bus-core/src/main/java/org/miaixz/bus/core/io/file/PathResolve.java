@@ -49,6 +49,13 @@ import org.miaixz.bus.core.xyz.PredicateKit;
 public class PathResolve {
 
     /**
+     * Constructs a new PathResolve instance.
+     */
+    public PathResolve() {
+        // No initialization required.
+    }
+
+    /**
      * Joins multiple path strings into a single {@link Path}.
      *
      * @param firstPath The first path component.

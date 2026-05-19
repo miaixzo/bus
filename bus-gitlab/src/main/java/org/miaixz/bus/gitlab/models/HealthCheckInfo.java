@@ -65,61 +65,151 @@ public class HealthCheckInfo implements Serializable {
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem gitalyCheck;
 
+    /**
+     * Returns the db check.
+     *
+     * @return the result
+     */
+
     public HealthCheckItem getDbCheck() {
         return this.dbCheck;
     }
+
+    /**
+     * Sets the db check.
+     *
+     * @param dbCheck the db check value
+     */
 
     public void setDbCheck(HealthCheckItem dbCheck) {
         this.dbCheck = dbCheck;
     }
 
+    /**
+     * Returns the redis check.
+     *
+     * @return the result
+     */
+
     public HealthCheckItem getRedisCheck() {
         return this.redisCheck;
     }
+
+    /**
+     * Sets the redis check.
+     *
+     * @param redisCheck the redis check value
+     */
 
     public void setRedisCheck(HealthCheckItem redisCheck) {
         this.redisCheck = redisCheck;
     }
 
+    /**
+     * Returns the cache check.
+     *
+     * @return the result
+     */
+
     public HealthCheckItem getCacheCheck() {
         return this.cacheCheck;
     }
+
+    /**
+     * Sets the cache check.
+     *
+     * @param cacheCheck the cache check value
+     */
 
     public void setCacheCheck(HealthCheckItem cacheCheck) {
         this.cacheCheck = cacheCheck;
     }
 
+    /**
+     * Returns the queues check.
+     *
+     * @return the result
+     */
+
     public HealthCheckItem getQueuesCheck() {
         return this.queuesCheck;
     }
+
+    /**
+     * Sets the queues check.
+     *
+     * @param queuesCheck the queues check value
+     */
 
     public void setQueuesCheck(HealthCheckItem queuesCheck) {
         this.queuesCheck = queuesCheck;
     }
 
+    /**
+     * Returns the shared state check.
+     *
+     * @return the result
+     */
+
     public HealthCheckItem getSharedStateCheck() {
         return this.sharedStateCheck;
     }
+
+    /**
+     * Sets the shared state check.
+     *
+     * @param sharedStateCheck the shared state check value
+     */
 
     public void setSharedStateCheck(HealthCheckItem sharedStateCheck) {
         this.sharedStateCheck = sharedStateCheck;
     }
 
+    /**
+     * Returns the fs shards check.
+     *
+     * @return the result
+     */
+
     public HealthCheckItem getFsShardsCheck() {
         return this.fsShardsCheck;
     }
+
+    /**
+     * Sets the fs shards check.
+     *
+     * @param fsShardsCheck the fs shards check value
+     */
 
     public void setFsShardsCheck(HealthCheckItem fsShardsCheck) {
         this.fsShardsCheck = fsShardsCheck;
     }
 
+    /**
+     * Returns the gitaly check.
+     *
+     * @return the result
+     */
+
     public HealthCheckItem getGitalyCheck() {
         return this.gitalyCheck;
     }
 
+    /**
+     * Sets the gitaly check.
+     *
+     * @param gitalyCheck the gitaly check value
+     */
+
     public void setGitalyCheck(HealthCheckItem gitalyCheck) {
         this.gitalyCheck = gitalyCheck;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {
@@ -136,6 +226,16 @@ public class HealthCheckInfo implements Serializable {
     private static class HealthCheckItemDeserializer extends JsonDeserializer<HealthCheckItem> {
 
         private static final ObjectMapper mapper = new JacksonJson().getObjectMapper();
+
+        /**
+         * Executes the deserialize operation.
+         *
+         * @param jsonParser the json parser value
+         * @param ctx        the ctx value
+         * @return the result
+         * @throws IOException             if the operation fails
+         * @throws JsonProcessingException if the operation fails
+         */
 
         @Override
         public HealthCheckItem deserialize(JsonParser jsonParser, DeserializationContext ctx)

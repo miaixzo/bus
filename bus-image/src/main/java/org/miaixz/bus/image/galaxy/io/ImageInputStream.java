@@ -1155,6 +1155,11 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     /**
      * Use one of the other {@link #readDataset()} methods instead. If you want to specify a length limit, you may
      * supply a {@link LimitedInputStream} or use {@link #createWithLimit} or {@link #createWithLimitFromFileLength}.
+     *
+     * @param len     the encoded length limit
+     * @param stopTag the tag at which reading should stop
+     * @return the read dataset attributes
+     * @throws IOException if the operation cannot be completed
      */
     public Attributes readDataset(int len, int stopTag) throws IOException {
         return readDataset(len, tagEqualOrGreater(stopTag));
@@ -1185,6 +1190,11 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     /**
      * Use one of the other {@link #readDataset()} methods instead. If you want to specify a length limit, you may
      * supply a {@link LimitedInputStream} or use {@link #createWithLimit} or {@link #createWithLimitFromFileLength}.
+     *
+     * @param len           the encoded length limit
+     * @param stopPredicate the predicate that decides when reading should stop
+     * @return the read dataset attributes
+     * @throws IOException if the operation cannot be completed
      */
     public Attributes readDataset(long len, Predicate<ImageInputStream> stopPredicate) throws IOException {
         handler.startDataset(this);

@@ -41,6 +41,13 @@ import org.miaixz.bus.logger.Logger;
 public class SaltMagic {
 
     /**
+     * Constructs a new SaltMagic instance.
+     */
+    public SaltMagic() {
+        // No initialization required.
+    }
+
+    /**
      * The length of the salt value in bytes.
      */
     public static final byte SALT_LEN = 8;

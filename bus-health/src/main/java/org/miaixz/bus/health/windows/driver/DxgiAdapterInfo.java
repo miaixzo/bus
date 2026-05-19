@@ -69,6 +69,8 @@ public final class DxgiAdapterInfo {
     private final int luidHighPart;
 
     /**
+     * Creates a DXGI adapter information snapshot.
+     *
      * @param description          adapter description string from {@code DXGI_ADAPTER_DESC.Description}
      * @param vendorId             PCI vendor ID
      * @param deviceId             PCI device ID

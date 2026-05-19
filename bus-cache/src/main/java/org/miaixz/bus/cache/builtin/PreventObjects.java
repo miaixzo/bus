@@ -37,6 +37,13 @@ import java.io.Serializable;
 public class PreventObjects {
 
     /**
+     * Constructs a new PreventObjects instance.
+     */
+    public PreventObjects() {
+        // No initialization required.
+    }
+
+    /**
      * Returns the singleton marker object used for cache penetration prevention.
      * <p>
      * This object serves as a placeholder in the cache for keys that correspond to non-existent data.
@@ -83,6 +90,7 @@ public class PreventObjects {
         private static final NullMarker INSTANCE = new NullMarker();
 
         private NullMarker() {
+            // No initialization required.
         }
 
         @Serial

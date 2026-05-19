@@ -251,11 +251,15 @@ public final class PerfCounterQuery {
     public interface PdhCounterProperty {
 
         /**
+         * Executes the instance. operation.
+         *
          * @return Returns the instance.
          */
         String getInstance();
 
         /**
+         * Executes the counter. operation.
+         *
          * @return Returns the counter.
          */
         String getCounter();

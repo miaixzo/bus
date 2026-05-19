@@ -39,6 +39,7 @@ public class ClobStringer implements Function<Object, String> {
      * Constructs a new ClobStringer. Utility class constructor for static access.
      */
     private ClobStringer() {
+        // No initialization required.
     }
 
     /**

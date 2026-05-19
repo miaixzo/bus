@@ -48,7 +48,7 @@ public class MaskingProcessor {
      * Constructor.
      */
     public MaskingProcessor() {
-
+        // No initialization required.
     }
 
     /**

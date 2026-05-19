@@ -50,7 +50,7 @@ public class Setting extends Nature {
      * Creates a shared setting-domain base entry.
      */
     public Setting() {
-
+        // No initialization required.
     }
 
 }

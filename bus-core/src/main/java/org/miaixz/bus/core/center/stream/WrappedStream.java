@@ -654,7 +654,6 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * A stream that is unordered does not have an encounter order. This can sometimes improve the performance of
      * parallel operations.
      *
-     *
      * @return an unordered stream
      */
     @Override

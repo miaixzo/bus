@@ -32,6 +32,13 @@ import java.io.OutputStream;
 public abstract class PDVOutputStream extends OutputStream {
 
     /**
+     * Constructs a new {@code PDVOutputStream} instance.
+     */
+    public PDVOutputStream() {
+        // No initialization required.
+    }
+
+    /**
      * Copies the from.
      *
      * @param in     the in.

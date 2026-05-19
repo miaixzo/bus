@@ -64,6 +64,7 @@ public final class ImageTransformer {
      * Creates a new instance.
      */
     private ImageTransformer() {
+        // No initialization required.
     }
 
     /**

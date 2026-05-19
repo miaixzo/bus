@@ -44,6 +44,8 @@ public record VolumeSize(int x, int y, int z) {
     }
 
     /**
+     * Executes the voxel operation.
+     *
      * @param channels number of samples per voxel
      * @return total number of stored primitive values
      */
@@ -53,6 +55,8 @@ public record VolumeSize(int x, int y, int z) {
     }
 
     /**
+     * Executes the expansion operation.
+     *
      * @return number of voxels without channel expansion
      */
     public long voxelCount() {

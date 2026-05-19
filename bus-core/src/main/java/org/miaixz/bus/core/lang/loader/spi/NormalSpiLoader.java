@@ -44,6 +44,13 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class NormalSpiLoader {
 
     /**
+     * Constructs a new NormalSpiLoader instance.
+     */
+    public NormalSpiLoader() {
+        // No initialization required.
+    }
+
+    /**
      * Loads the first available service. If multiple implementations are defined, it returns the first one that can be
      * instantiated without errors.
      *

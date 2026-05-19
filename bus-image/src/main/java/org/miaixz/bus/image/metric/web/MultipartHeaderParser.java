@@ -35,6 +35,7 @@ public final class MultipartHeaderParser {
      * Creates a new instance.
      */
     private MultipartHeaderParser() {
+        // No initialization required.
     }
 
     /**

@@ -63,7 +63,7 @@ public class Authorizer {
      * Private constructor to prevent direct instantiation.
      */
     private Authorizer() {
-
+        // No initialization required.
     }
 
     /**

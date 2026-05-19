@@ -32,6 +32,13 @@ import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 public class Tag {
 
     /**
+     * Constructs a new {@code Tag} instance.
+     */
+    public Tag() {
+        // No initialization required.
+    }
+
+    /**
      * (0000,0000) UL Command Group Length
      */
     public static final int CommandGroupLength = 0;

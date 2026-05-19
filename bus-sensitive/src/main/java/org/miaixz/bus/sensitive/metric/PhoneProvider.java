@@ -35,6 +35,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class PhoneProvider extends AbstractProvider {
 
     /**
+     * Constructs a new PhoneProvider instance.
+     */
+    public PhoneProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Masks the given phone number, keeping the first 3 and last 4 digits visible.
      *
      * @param phone  The phone number to mask.

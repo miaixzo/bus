@@ -109,6 +109,8 @@ public interface ManifestXml {
     void toXml(Writer writer) throws IOException;
 
     /**
+     * Executes the name operation.
+     *
      * @return XML charset name
      */
     default String getCharsetEncoding() {

@@ -42,6 +42,13 @@ import org.miaixz.bus.logger.Logger;
 public class CFind {
 
     /**
+     * Constructs a new CFind instance.
+     */
+    public CFind() {
+        // No initialization required.
+    }
+
+    /**
      * Represents the Patient ID (0010,0020) DICOM tag.
      */
     public static final ImageParam PatientID = new ImageParam(Tag.PatientID);

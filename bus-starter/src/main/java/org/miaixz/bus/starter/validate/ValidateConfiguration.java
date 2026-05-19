@@ -38,4 +38,11 @@ import org.miaixz.bus.spring.GeniusBuilder;
 @Import(AspectjValidateProxy.class)
 public class ValidateConfiguration {
 
+    /**
+     * Constructs a new ValidateConfiguration instance.
+     */
+    public ValidateConfiguration() {
+        // No initialization required.
+    }
+
 }

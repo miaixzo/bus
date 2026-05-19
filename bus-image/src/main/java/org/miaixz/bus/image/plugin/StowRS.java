@@ -74,6 +74,13 @@ import org.miaixz.bus.logger.Logger;
 public class StowRS {
 
     /**
+     * Constructs a new {@code StowRS} instance.
+     */
+    public StowRS() {
+        // No initialization required.
+    }
+
+    /**
      * The boundary string for the multipart request.
      */
     private static final String boundary = "myboundary";
