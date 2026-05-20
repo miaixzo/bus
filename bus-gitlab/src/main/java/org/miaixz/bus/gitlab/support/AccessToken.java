@@ -143,82 +143,58 @@ public final class AccessToken {
     protected static final String COOKIES_HEADER = "Set-Cookie";
 
     /**
-     * Executes the "\"new user\".*name=\\\"authenticity token\\\"\\svalue=\\\" operation.
-     *
-     * @return the result
+     * Regular expression used to extract an authenticity token from a new user page.
      */
     protected static final String NEW_USER_AUTHENTICITY_TOKEN_REGEX = "\"new_user\".*name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\".*new_new_user";
     /**
-     * The new user authenticity token pattern value.
+     * Compiled pattern for {@link #NEW_USER_AUTHENTICITY_TOKEN_REGEX}.
      */
     protected static final Pattern NEW_USER_AUTHENTICITY_TOKEN_PATTERN = Pattern
             .compile(NEW_USER_AUTHENTICITY_TOKEN_REGEX);
 
     /**
-     * Executes the "name=\\\"authenticity token\\\"\\svalue=\\\" operation.
-     *
-     * @return the result
+     * Regular expression used to extract an authenticity token from a page.
      */
     protected static final String AUTHENTICITY_TOKEN_REGEX = "name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\"";
     /**
-     * Executes the pattern.compile operation.
-     *
-     * @param AUTHENTICITY_TOKEN_REGEX the authenticity token regex value
-     * @return the result
+     * Compiled pattern for {@link #AUTHENTICITY_TOKEN_REGEX}.
      */
     protected static final Pattern AUTHENTICITY_TOKEN_PATTERN = Pattern.compile(AUTHENTICITY_TOKEN_REGEX);
 
     /**
-     * Executes the "name=\\\"created-personal-access-token\\\".*data-clipboard-text=\\\" operation.
-     *
-     * @return the result
+     * Regular expression used to extract a created personal access token.
      */
     protected static final String PERSONAL_ACCESS_TOKEN_REGEX = "name=\\\"created-personal-access-token\\\".*data-clipboard-text=\\\"([^\\\"]*)\\\".*\\/>";
     /**
-     * Executes the pattern.compile operation.
-     *
-     * @param PERSONAL_ACCESS_TOKEN_REGEX the personal access token regex value
-     * @return the result
+     * Compiled pattern for {@link #PERSONAL_ACCESS_TOKEN_REGEX}.
      */
     protected static final Pattern PERSONAL_ACCESS_TOKEN_PATTERN = Pattern.compile(PERSONAL_ACCESS_TOKEN_REGEX);
 
     /**
-     * Executes the "href=\\\" operation.
-     *
-     * @return the result
+     * Regular expression used to extract a revoke personal access token link.
      */
     protected static final String REVOKE_PERSONAL_ACCESS_TOKEN_REGEX = "href=\\\"([^\\\"]*)\\\"";
     /**
-     * The revoke personal access token pattern value.
+     * Compiled pattern for {@link #REVOKE_PERSONAL_ACCESS_TOKEN_REGEX}.
      */
     protected static final Pattern REVOKE_PERSONAL_ACCESS_TOKEN_PATTERN = Pattern
             .compile(REVOKE_PERSONAL_ACCESS_TOKEN_REGEX);
 
     /**
-     * Executes the "name=\\\"feed token\\\".*value=\\\" operation.
-     *
-     * @return the result
+     * Regular expression used to extract a feed token.
      */
     protected static final String FEED_TOKEN_REGEX = "name=\\\"feed_token\\\".*value=\\\"([^\\\"]*)\\\".*\\/>";
     /**
-     * Executes the pattern.compile operation.
-     *
-     * @param FEED_TOKEN_REGEX the feed token regex value
-     * @return the result
+     * Compiled pattern for {@link #FEED_TOKEN_REGEX}.
      */
     protected static final Pattern FEED_TOKEN_PATTERN = Pattern.compile(FEED_TOKEN_REGEX);
 
     /**
-     * Executes the "id=\"health-check-token\"> operation.
-     *
-     * @return the result
+     * Regular expression used to extract the health check access token.
      */
     protected static final String HEALTH_CHECK_ACCESS_TOKEN_REGEX = "id=\"health-check-token\">([^<]*)<\\/code>";
     /**
-     * Executes the pattern.compile operation.
-     *
-     * @param HEALTH_CHECK_ACCESS_TOKEN_REGEX the health check access token regex value
-     * @return the result
+     * Compiled pattern for {@link #HEALTH_CHECK_ACCESS_TOKEN_REGEX}.
      */
     protected static final Pattern HEALTH_CHECK_ACCESS_TOKEN_PATTERN = Pattern.compile(HEALTH_CHECK_ACCESS_TOKEN_REGEX);
 

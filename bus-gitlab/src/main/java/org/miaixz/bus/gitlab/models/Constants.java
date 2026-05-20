@@ -2776,22 +2776,46 @@ public interface Constants {
      */
     public static class SearchScope<T> {
 
+        /**
+         * Search scope for projects.
+         */
         public static final SearchScope<Project> PROJECTS = new SearchScope<>("projects", Project.class);
+        /**
+         * Search scope for issues.
+         */
         public static final SearchScope<Issue> ISSUES = new SearchScope<>("issues", Issue.class);
         /**
-         * Executes the search scope<> operation.
-         *
-         * @param MergeRequest the merge request value
-         * @return the result
+         * Search scope for merge requests.
          */
         public static final SearchScope<MergeRequest> MERGE_REQUESTS = new SearchScope<>("merge_requests",
                 MergeRequest.class);
+        /**
+         * Search scope for milestones.
+         */
         public static final SearchScope<Milestone> MILESTONES = new SearchScope<>("milestones", Milestone.class);
+        /**
+         * Search scope for snippet titles.
+         */
         public static final SearchScope<Snippet> SNIPPET_TITLES = new SearchScope<>("snippet_titles", Snippet.class);
+        /**
+         * Search scope for snippet blobs.
+         */
         public static final SearchScope<Snippet> SNIPPET_BLOBS = new SearchScope<>("snippet_blobs", Snippet.class);
+        /**
+         * Search scope for users.
+         */
         public static final SearchScope<User> USERS = new SearchScope<>("users", User.class);
+        /**
+         * Search scope for blobs.
+         */
         public static final SearchScope<SearchBlob> BLOBS = new SearchScope<>("blobs", SearchBlob.class);
+        /**
+         * Search scope for commits.
+         */
         public static final SearchScope<Commit> COMMITS = new SearchScope<>("commits", Commit.class);
+        /**
+         * Search scope for wiki blobs.
+         */
         public static final SearchScope<SearchBlob> WIKI_BLOBS = new SearchScope<>("wiki_blobs", SearchBlob.class);
         private static final Map jsonLookup = Arrays
                 .stream(
@@ -2809,6 +2833,7 @@ public interface Constants {
         /**
          * Returns the value.
          *
+         * @param <T>   the search result type
          * @param value the value value
          * @return the result
          */
@@ -3200,35 +3225,44 @@ public interface Constants {
      */
     public static class GroupSearchScope<T> {
 
+        /**
+         * Group search scope for projects.
+         */
         public static final GroupSearchScope<Project> PROJECTS = new GroupSearchScope<>("projects", Project.class);
+        /**
+         * Group search scope for issues.
+         */
         public static final GroupSearchScope<Issue> ISSUES = new GroupSearchScope<>("issues", Issue.class);
         /**
-         * Executes the group search scope<> operation.
-         *
-         * @param MergeRequest the merge request value
-         * @return the result
+         * Group search scope for merge requests.
          */
         public static final GroupSearchScope<MergeRequest> MERGE_REQUESTS = new GroupSearchScope<>("merge_requests",
                 MergeRequest.class);
         /**
-         * Executes the group search scope<> operation.
-         *
-         * @param Milestone the milestone value
-         * @return the result
+         * Group search scope for milestones.
          */
         public static final GroupSearchScope<Milestone> MILESTONES = new GroupSearchScope<>("milestones",
                 Milestone.class);
         /**
-         * Executes the group search scope<> operation.
-         *
-         * @param SearchBlob the search blob value
-         * @return the result
+         * Group search scope for wiki blobs.
          */
         public static final GroupSearchScope<SearchBlob> WIKI_BLOBS = new GroupSearchScope<>("wiki_blobs",
                 SearchBlob.class);
+        /**
+         * Group search scope for commits.
+         */
         public static final GroupSearchScope<Commit> COMMITS = new GroupSearchScope<>("commits", Commit.class);
+        /**
+         * Group search scope for blobs.
+         */
         public static final GroupSearchScope<SearchBlob> BLOBS = new GroupSearchScope<>("blobs", SearchBlob.class);
+        /**
+         * Group search scope for notes.
+         */
         public static final GroupSearchScope<Note> NOTES = new GroupSearchScope<>("notes", Note.class);
+        /**
+         * Group search scope for users.
+         */
         public static final GroupSearchScope<User> USERS = new GroupSearchScope<>("users", User.class);
         private static final Map jsonLookup = Arrays
                 .stream(
@@ -3239,11 +3273,10 @@ public interface Constants {
         private final Class<T> resultType;
 
         /**
-         * Executes the group search scope operation.
+         * Creates a group search scope.
          *
          * @param jsonName   the json name value
          * @param resultType the result type value
-         * @return the result
          */
 
         public GroupSearchScope(String jsonName, Class<T> resultType) {
@@ -3254,6 +3287,7 @@ public interface Constants {
         /**
          * Returns the value.
          *
+         * @param <T>   the search result type
          * @param value the value value
          * @return the result
          */
@@ -3316,34 +3350,40 @@ public interface Constants {
      */
     public static class ProjectSearchScope<T> {
 
+        /**
+         * Project search scope for blobs.
+         */
         public static final ProjectSearchScope<SearchBlob> BLOBS = new ProjectSearchScope<>("blobs", SearchBlob.class);
+        /**
+         * Project search scope for commits.
+         */
         public static final ProjectSearchScope<Commit> COMMITS = new ProjectSearchScope<>("commits", Commit.class);
+        /**
+         * Project search scope for issues.
+         */
         public static final ProjectSearchScope<Issue> ISSUES = new ProjectSearchScope<>("issues", Issue.class);
         /**
-         * Executes the project search scope<> operation.
-         *
-         * @param MergeRequest the merge request value
-         * @return the result
+         * Project search scope for merge requests.
          */
         public static final ProjectSearchScope<MergeRequest> MERGE_REQUESTS = new ProjectSearchScope<>("merge_requests",
                 MergeRequest.class);
         /**
-         * Executes the project search scope<> operation.
-         *
-         * @param Milestone the milestone value
-         * @return the result
+         * Project search scope for milestones.
          */
         public static final ProjectSearchScope<Milestone> MILESTONES = new ProjectSearchScope<>("milestones",
                 Milestone.class);
+        /**
+         * Project search scope for notes.
+         */
         public static final ProjectSearchScope<Note> NOTES = new ProjectSearchScope<>("notes", Note.class);
         /**
-         * Executes the project search scope<> operation.
-         *
-         * @param SearchBlob the search blob value
-         * @return the result
+         * Project search scope for wiki blobs.
          */
         public static final ProjectSearchScope<SearchBlob> WIKI_BLOBS = new ProjectSearchScope<>("wiki_blobs",
                 SearchBlob.class);
+        /**
+         * Project search scope for users.
+         */
         public static final ProjectSearchScope<User> USERS = new ProjectSearchScope<>("users", User.class);
         private static final Map jsonLookup = Arrays
                 .stream(
@@ -3354,11 +3394,10 @@ public interface Constants {
         private final Class<T> resultType;
 
         /**
-         * Executes the project search scope operation.
+         * Creates a project search scope.
          *
          * @param jsonName   the json name value
          * @param resultType the result type value
-         * @return the result
          */
 
         public ProjectSearchScope(String jsonName, Class<T> resultType) {
@@ -3369,6 +3408,7 @@ public interface Constants {
         /**
          * Returns the value.
          *
+         * @param <T>   the search result type
          * @param value the value value
          * @return the result
          */

@@ -195,8 +195,6 @@ public abstract class AbstractIssue implements Serializable {
 
         /**
          * Constructs a new TaskCompletionStatus instance.
-         *
-         * @return the result
          */
         public TaskCompletionStatus() {
             // No initialization required.

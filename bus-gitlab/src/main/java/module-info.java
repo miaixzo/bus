@@ -27,19 +27,18 @@ module bus.gitlab {
 
     requires java.logging;
 
-    requires lombok;
-
     requires bus.core;
     requires bus.logger;
 
-    requires jakarta.ws.rs;
-    requires jakarta.servlet;
+    requires lombok;
     requires jakarta.annotation;
-    requires jersey.client;
-    requires jersey.media.multipart;
-    requires jersey.common;
+    requires jakarta.servlet;
+    requires jakarta.ws.rs;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
+    requires jersey.client;
+    requires jersey.common;
+    requires jersey.media.multipart;
 
     exports org.miaixz.bus.gitlab;
     exports org.miaixz.bus.gitlab.hooks.system;

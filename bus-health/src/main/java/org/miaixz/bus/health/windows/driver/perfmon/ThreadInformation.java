@@ -87,19 +87,10 @@ public final class ThreadInformation {
      */
     public enum ThreadPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
-        // First element defines WMI instance name field and PDH instance filter
-        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
-        // Remaining elements define counters
-        PERCENTUSERTIME("% User Time"), //
-        PERCENTPRIVILEGEDTIME("% Privileged Time"), //
-        ELAPSEDTIME("Elapsed Time"), //
-        PRIORITYCURRENT("Priority Current"), //
-        STARTADDRESS("Start Address"), //
-        THREADSTATE("Thread State"), //
-        THREADWAITREASON("Thread Wait Reason"), // 5 is SUSPENDED
-        IDPROCESS("ID Process"), //
-        IDTHREAD("ID Thread"), //
-        CONTEXTSWITCHESPERSEC("Context Switches/sec");
+        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES), PERCENTUSERTIME("% User Time"),
+        PERCENTPRIVILEGEDTIME("% Privileged Time"), ELAPSEDTIME("Elapsed Time"), PRIORITYCURRENT("Priority Current"),
+        STARTADDRESS("Start Address"), THREADSTATE("Thread State"), THREADWAITREASON("Thread Wait Reason"),
+        IDPROCESS("ID Process"), IDTHREAD("ID Thread"), CONTEXTSWITCHESPERSEC("Context Switches/sec");
 
         /**
          * The counter value.

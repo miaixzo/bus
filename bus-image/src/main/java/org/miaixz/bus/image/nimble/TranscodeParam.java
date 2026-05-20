@@ -241,7 +241,7 @@ public class TranscodeParam {
      * It preserves the raw data when the pixel depth is more than 8 bit. The default value applies the W/L and is
      * FALSE, the output image will be always a 8-bit per sample image.
      *
-     * @param preserveRawImage
+     * @param preserveRawImage whether to preserve the raw image data
      */
     public void setPreserveRawImage(Boolean preserveRawImage) {
         this.preserveRawImage = preserveRawImage;

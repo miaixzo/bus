@@ -1,14 +1,14 @@
 # Bus Framework
 
 <p align="center">
-  <strong>现代化、模块化的 Java 企业级框架 — 基于 Java 17+</strong>
+  <strong>现代化、模块化的 Java 企业级框架 — 基于 Java 21+</strong>
 </p>
 
 <p align="center">
   <a href="https://github.com/818000/bus"><img src="https://img.shields.io/badge/GitHub-miaixz%2Fbus-blue?logo=github" alt="GitHub"/></a>
   <a href="https://mvnrepository.com/artifact/org.miaixz"><img src="https://img.shields.io/maven-central/v/org.miaixz/bus-core?label=Maven%20Central" alt="Maven Central"/></a>
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" alt="License"/></a>
-  <img src="https://img.shields.io/badge/Java-17%2B-orange" alt="Java 17+"/>
+  <img src="https://img.shields.io/badge/Java-21%2B-orange" alt="Java 21+"/>
   <img src="https://img.shields.io/badge/Spring%20Boot-3.5.x-brightgreen" alt="Spring Boot 3.5.x"/>
 </p>
 
@@ -247,9 +247,7 @@
 
 ```xml
 <properties>
-    <java.version>21</java.version>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 </properties>
@@ -259,21 +257,31 @@
 
 | 组件 | 版本 |
 | :--- | :--- |
-| Spring Boot | 3.5.x |
-| MyBatis | 3.5.x |
-| MyBatis-Spring | 3.0.x |
-| Java 最低版本 | 17+ |
+| Java 最低版本 | 21+ |
+| Maven 编译版本 | 21 |
+| Spring Boot | 3.5.13 |
+| MyBatis | 3.5.19 |
+| MyBatis-Spring | 3.0.5 |
 
-### 预配置插件
+### 管理与预配置插件
 
 | 插件 | 用途 |
 | :--- | :--- |
-| `maven-compiler-plugin` | 使用 `--release 17` 编译 Java 代码 |
-| `maven-surefire-plugin` | 运行单元测试 |
-| `maven-failsafe-plugin` | 运行集成测试 |
+| `maven-compiler-plugin` | 使用 `--release 21` 编译 Java 代码，保留参数名，并配置 Lombok 注解处理 |
+| `maven-resources-plugin` | 使用 UTF-8 和 Bus 资源占位符进行资源过滤 |
+| `maven-jar-plugin` | 生成标准 JAR Manifest，并避免写入 `META-INF/maven` 描述信息 |
+| `maven-war-plugin` | 生成标准 WAR Manifest，并避免写入 `META-INF/maven` 描述信息 |
+| `maven-surefire-plugin` | 运行单元测试，并关闭测试阶段 module-path 以提升兼容性 |
+| `maven-failsafe-plugin` | 运行集成测试，绑定 `integration-test` 和 `verify` 阶段 |
 | `maven-source-plugin` | 打包源代码 JAR（发布用） |
 | `maven-javadoc-plugin` | 生成 Javadoc JAR（发布用） |
+| `spotless-maven-plugin` | 格式化源码、XML、Markdown、YAML、JSON、properties、SVG、service 和 POM 文件 |
+| `groom-maven-plugin` | 规范化 Bus 模块和父 POM 的发布 POM |
 | `maven-gpg-plugin` | GPG 签名（发布到 Maven Central） |
+| `central-publishing-maven-plugin` | 通过 Central Portal 发布到 Maven Central |
+| `git-commit-id-maven-plugin` | 构建阶段生成 `git.properties` |
+| `spring-boot-maven-plugin` | 重新打包 Spring Boot 可执行归档 |
+| `native-maven-plugin` | 集成 GraalVM reachability metadata 和 native image 构建 |
 
 ---
 
@@ -319,7 +327,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.10</version>  <!-- 覆盖父项目管理的版本 -->
+    <version>8.x.x</version>  <!-- 覆盖父项目管理的版本 -->
 </dependency>
 ```
 
@@ -345,11 +353,11 @@ mvn help:effective-pom
 
 **Q：最低 Java 版本要求是什么？**
 
-Bus 8.x 要求 **Java 17** 或更高版本。如需支持 Java 11，请使用 Bus 7.x 系列。
+Bus 8.x 要求 **Java 21** 或更高版本。如需支持 Java 11，请使用 Bus 7.x 系列。
 
 **Q：是否支持 GraalVM 原生镜像？**
 
-支持。`bus-shade` 包含 GraalVM 原生编译所需的 `reflect-config` 和 `resource-config` 配置文件。
+支持。Bus 各模块在 `META-INF/native-image` 下提供 GraalVM 元数据，`bus-all` 在打包阶段会将各模块元数据合并为一份聚合 native-image 配置。
 
 ---
 
@@ -357,8 +365,8 @@ Bus 8.x 要求 **Java 17** 或更高版本。如需支持 Java 11，请使用 Bu
 
 | Bus 版本 | Java | Spring Boot | 状态 |
 | :--- | :--- | :--- | :--- |
-| **8.5.x** | 17+ | 3.5.x | **维护中** |
-| 8.0.x – 8.4.x | 17+ | 3.x | 维护中 |
+| **8.6.x** | 21+ | 3.5.x | **维护中** |
+| 8.0.x - 8.5.x | 21+ | 3.x | 维护中 |
 | 7.x | 11+ | 2.x | 已停止维护 |
 
 ---
@@ -373,7 +381,7 @@ Copyright © 2015–2026 [miaixz.org](https://miaixz.org) 及贡献者。
 
 ## 相关链接
 
-* [GitHub 仓库](https://github.com/miaixz/bus)
+* [GitHub 仓库](https://github.com/818000/bus)
 * [Maven Central](https://mvnrepository.com/artifact/org.miaixz)
-* [问题反馈](https://github.com/miaixz/bus/issues)
-* [版本记录](https://github.com/miaixz/bus/releases)
+* [问题反馈](https://github.com/818000/bus/issues)
+* [版本记录](https://github.com/818000/bus/releases)

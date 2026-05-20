@@ -111,7 +111,7 @@ public class JoinPointInvoker implements ProxyChain {
     /**
      * Proceeds with the invocation, but with a new set of arguments.
      *
-     * @param arguments The new arguments to use for the method invocation.
+     * @param args The new arguments to use for the method invocation.
      * @return The result of the method invocation.
      * @throws Throwable if the underlying method throws an exception.
      */

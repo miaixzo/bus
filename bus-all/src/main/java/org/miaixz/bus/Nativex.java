@@ -459,24 +459,57 @@ public class Nativex {
      */
     private static class Metadata {
 
+        /**
+         * Maven group identifier of the current project.
+         */
         private final String groupId;
+
+        /**
+         * Maven artifact identifier of the current project.
+         */
         private final String artifactId;
+
+        /**
+         * Maven version of the current project.
+         */
         private final String version;
 
+        /**
+         * Constructs metadata for the current Maven project.
+         *
+         * @param groupId    the Maven group identifier
+         * @param artifactId the Maven artifact identifier
+         * @param version    the Maven project version
+         */
         public Metadata(String groupId, String artifactId, String version) {
             this.groupId = groupId;
             this.artifactId = artifactId;
             this.version = version;
         }
 
+        /**
+         * Returns the Maven group identifier.
+         *
+         * @return the Maven group identifier
+         */
         public String getGroupId() {
             return groupId;
         }
 
+        /**
+         * Returns the Maven artifact identifier.
+         *
+         * @return the Maven artifact identifier
+         */
         public String getArtifactId() {
             return artifactId;
         }
 
+        /**
+         * Returns the Maven project version.
+         *
+         * @return the Maven project version
+         */
         public String getVersion() {
             return version;
         }

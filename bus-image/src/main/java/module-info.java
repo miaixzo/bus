@@ -26,17 +26,17 @@
 module bus.image {
 
     requires java.desktop;
-    requires java.net.http;
     requires java.naming;
+    requires java.net.http;
     requires java.xml;
 
     requires bus.core;
     requires bus.crypto;
-    requires bus.logger;
     requires bus.health;
+    requires bus.logger;
+    requires bus.opencv;
     requires bus.setting;
 
-    requires bus.opencv;
     requires lombok;
     requires jakarta.json;
 

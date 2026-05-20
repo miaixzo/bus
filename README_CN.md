@@ -58,6 +58,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-bom](bus-bom)             | 依赖管理模块，统一版本控制，支持按需加载组件                         |
 | [√]  | [bus-cache](bus-cache)         | 分布式缓存服务，支持Redis/Memcached/Hessian等多级缓存方案       |
 | [√]  | [bus-core](bus-core)           | 核心工具库，包含并发/反射/日期/集合等20+常用工具类                   |
+| [√]  | [bus-cortex](bus-cortex)       | 统一注册与配置中心，支持API/MCP/Prompt注册、健康探测及命名空间隔离       |
 | [√]  | [bus-crypto](bus-crypto)       | 加密解密组件，支持AES/DES/SM4/MD5等算法及国密套件               |
 | [√]  | [bus-extra](bus-extra)         | 扩展功能包，集成FTP/二维码/MQ/文件处理等外围服务                   |
 | [√]  | [bus-gitlab](bus-gitlab)       | GitLab深度集成，提供CI/CD/仓库/问题等全生命周期管理               |
@@ -67,6 +68,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-limiter](bus-limiter)     | 高性能限流组件，支持令牌桶/滑动窗口/分布式限流策略                     |
 | [√]  | [bus-logger](bus-logger)       | 日志增强模块，支持动态日志级别/链路追踪ID/敏感数据过滤                  |
 | [√]  | [bus-mapper](bus-mapper)       | MyBatis增强工具，提供代码生成/多租户/逻辑删除等扩展功能               |
+| [√]  | [bus-metrics](bus-metrics)     | 生产级指标框架，支持基数守卫/EWMA速率/SLO追踪/LLM可观测性            |
 | [√]  | [bus-notify](bus-notify)       | 多通道通知中心，支持邮件/短信/钉钉/企业微信等推送方式                   |
 | [√]  | [bus-office](bus-office)       | Office文档处理引擎，基于POI实现Excel/Word/PPT操作           |
 | [√]  | [bus-opencv](bus-opencv)       | 计算机视觉库，封装OpenCV提供图像识别/人脸检测/视频分析能力              |

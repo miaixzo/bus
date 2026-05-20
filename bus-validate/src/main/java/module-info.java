@@ -25,8 +25,8 @@
  */
 module bus.validate {
 
-    requires bus.logger;
     requires bus.core;
+    requires bus.logger;
 
     requires lombok;
 

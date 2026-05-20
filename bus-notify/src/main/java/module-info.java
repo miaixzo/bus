@@ -28,9 +28,9 @@ module bus.notify {
     requires bus.cache;
     requires bus.core;
     requires bus.crypto;
-    requires bus.logger;
     requires bus.extra;
     requires bus.http;
+    requires bus.logger;
 
     requires lombok;
     requires jakarta.activation;

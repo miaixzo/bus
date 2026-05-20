@@ -97,16 +97,11 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      */
     protected final int maxEntitySize;
     /**
-     * Executes the atomic long operation.
-     *
-     * @param 0 the 0 value
-     * @return the result
+     * Counter used to assign logging identifiers.
      */
     protected final AtomicLong _id = new AtomicLong(0);
     /**
-     * Executes the hash set<string> operation.
-     *
-     * @return the result
+     * Header names whose values are masked in log output.
      */
     protected Set<String> maskedHeaderNames = new HashSet<String>();
 

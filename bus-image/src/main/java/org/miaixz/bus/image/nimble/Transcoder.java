@@ -82,8 +82,8 @@ public class Transcoder {
      * @param dstPath the path of the destination image or the path of a directory in which the source image filename
      *                will be used
      * @param params  the standard image conversion parameters
-     * @return
-     * @throws Exception
+     * @return the converted image paths
+     * @throws Exception if the image conversion fails
      */
     public static List<Path> dcm2image(Path srcPath, Path dstPath, TranscodeParam params) throws Exception {
         List<Path> outFiles = new ArrayList<>();

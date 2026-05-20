@@ -24,7 +24,7 @@
 # 2. Updating root native-image index.json tested-versions.
 #
 # Usage:
-#   bash .github/scripts/version.sh <new-version>
+#   bash .github/scripts/version.sh <version>
 #
 # Examples:
 #   bash .github/scripts/version.sh 8.6.8

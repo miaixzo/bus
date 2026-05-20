@@ -49,8 +49,8 @@
  */
 module bus.vortex {
 
-    requires bus.core;
     requires bus.cache;
+    requires bus.core;
     requires bus.cortex;
     requires bus.crypto;
     requires bus.extra;
@@ -61,14 +61,14 @@ module bus.vortex {
     requires lombok;
     requires jakarta.annotation;
     requires jakarta.servlet;
-    requires spring.core;
     requires spring.beans;
     requires spring.context;
+    requires spring.core;
     requires spring.web;
     requires spring.webflux;
     requires reactor.core;
-    requires reactor.netty.http;
     requires reactor.netty.core;
+    requires reactor.netty.http;
     requires io.netty.handler;
     requires org.reactivestreams;
 

@@ -1,14 +1,14 @@
 # Bus Framework
 
 <p align="center">
-  <strong>A Modern, Modular Java Enterprise Framework — Built for Java 17+</strong>
+  <strong>A Modern, Modular Java Enterprise Framework — Built for Java 21+</strong>
 </p>
 
 <p align="center">
   <a href="https://github.com/818000/bus"><img src="https://img.shields.io/badge/GitHub-miaixz%2Fbus-blue?logo=github" alt="GitHub"/></a>
   <a href="https://mvnrepository.com/artifact/org.miaixz"><img src="https://img.shields.io/maven-central/v/org.miaixz/bus-core?label=Maven%20Central" alt="Maven Central"/></a>
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" alt="License"/></a>
-  <img src="https://img.shields.io/badge/Java-17%2B-orange" alt="Java 17+"/>
+  <img src="https://img.shields.io/badge/Java-21%2B-orange" alt="Java 21+"/>
   <img src="https://img.shields.io/badge/Spring%20Boot-3.5.x-brightgreen" alt="Spring Boot 3.5.x"/>
 </p>
 
@@ -247,9 +247,7 @@ Then declare only the modules you need — no version tags required:
 
 ```xml
 <properties>
-    <java.version>17</java.version>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 </properties>
@@ -259,21 +257,31 @@ Then declare only the modules you need — no version tags required:
 
 | Component | Version |
 | :--- | :--- |
-| Spring Boot | 3.5.x |
-| MyBatis | 3.5.x |
-| MyBatis-Spring | 3.0.x |
-| Java baseline | 17+ |
+| Java baseline | 21+ |
+| Maven compiler release | 21 |
+| Spring Boot | 3.5.13 |
+| MyBatis | 3.5.19 |
+| MyBatis-Spring | 3.0.5 |
 
-### Preconfigured Plugins
+### Managed and Preconfigured Plugins
 
 | Plugin | Purpose |
 | :--- | :--- |
-| `maven-compiler-plugin` | Java compilation with `--release 17` |
-| `maven-surefire-plugin` | Unit test runner |
-| `maven-failsafe-plugin` | Integration test runner |
+| `maven-compiler-plugin` | Java compilation with `--release 21`, parameter metadata, and Lombok annotation processing |
+| `maven-resources-plugin` | UTF-8 resource filtering with the Bus resource delimiter |
+| `maven-jar-plugin` | Standard JAR manifest entries without embedding `META-INF/maven` descriptors |
+| `maven-war-plugin` | Standard WAR manifest entries without embedding `META-INF/maven` descriptors |
+| `maven-surefire-plugin` | Unit test runner with module-path disabled for test compatibility |
+| `maven-failsafe-plugin` | Integration test runner bound to `integration-test` and `verify` |
 | `maven-source-plugin` | Source JAR for release |
 | `maven-javadoc-plugin` | Javadoc JAR for release |
+| `spotless-maven-plugin` | Source, XML, Markdown, YAML, JSON, properties, SVG, service, and POM formatting |
+| `groom-maven-plugin` | Published POM normalization for Bus modules and parent POMs |
 | `maven-gpg-plugin` | GPG signing for Maven Central |
+| `central-publishing-maven-plugin` | Maven Central publishing through the Central Portal |
+| `git-commit-id-maven-plugin` | Build-time `git.properties` generation |
+| `spring-boot-maven-plugin` | Spring Boot executable archive repackaging |
+| `native-maven-plugin` | GraalVM reachability metadata and native image build integration |
 
 ---
 
@@ -319,7 +327,7 @@ Then declare only the modules you need — no version tags required:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.10</version>  <!-- overrides the parent-managed version -->
+    <version>8.x.x</version>  <!-- overrides the parent-managed version -->
 </dependency>
 ```
 
@@ -345,11 +353,12 @@ mvn help:effective-pom
 
 **Q: What is the minimum Java version?**
 
-Bus 8.x requires **Java 17** or higher. Older Bus 7.x series supports Java 11.
+Bus 8.x requires **Java 21** or higher. Older Bus 7.x series supports Java 11.
 
 **Q: Is GraalVM native image supported?**
 
-Yes. `bus-shade` includes the necessary GraalVM reflect-config and resource-config hints for native compilation.
+Yes. Bus modules ship GraalVM metadata under `META-INF/native-image`, and `bus-all` consolidates module metadata into
+one aggregated native-image configuration during packaging.
 
 ---
 
@@ -357,8 +366,8 @@ Yes. `bus-shade` includes the necessary GraalVM reflect-config and resource-conf
 
 | Bus Version | Java | Spring Boot | Status |
 | :--- | :--- | :--- | :--- |
-| **8.5.x** | 17+ | 3.5.x | **Active** |
-| 8.0.x – 8.4.x | 17+ | 3.x | Maintenance |
+| **8.6.x** | 21+ | 3.5.x | **Active** |
+| 8.0.x - 8.5.x | 21+ | 3.x | Maintenance |
 | 7.x | 11+ | 2.x | End of Life |
 
 ---
@@ -373,7 +382,7 @@ Copyright © 2015–2026 [miaixz.org](https://miaixz.org) and contributors.
 
 ## Links
 
-* [GitHub Repository](https://github.com/miaixz/bus)
+* [GitHub Repository](https://github.com/818000/bus)
 * [Maven Central](https://mvnrepository.com/artifact/org.miaixz)
-* [Issue Tracker](https://github.com/miaixz/bus/issues)
-* [Changelog](https://github.com/miaixz/bus/releases)
+* [Issue Tracker](https://github.com/818000/bus/issues)
+* [Changelog](https://github.com/818000/bus/releases)

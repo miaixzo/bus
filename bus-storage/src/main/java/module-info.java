@@ -25,27 +25,28 @@
  */
 module bus.storage {
 
+    requires java.net.http;
+
     requires bus.cache;
     requires bus.core;
     requires bus.crypto;
     requires bus.extra;
-    requires bus.logger;
     requires bus.gitlab;
     requires bus.http;
+    requires bus.logger;
 
     requires lombok;
     requires com.github.sardine;
-    requires com.jcraft.jsch;
     requires com.hierynomus.smbj;
+    requires com.jcraft.jsch;
     requires org.reactivestreams;
     requires software.amazon.awssdk.auth;
     requires software.amazon.awssdk.core;
+    requires software.amazon.awssdk.http;
+    requires software.amazon.awssdk.http.auth;
     requires software.amazon.awssdk.regions;
     requires software.amazon.awssdk.services.s3;
-    requires software.amazon.awssdk.http.auth;
-    requires software.amazon.awssdk.http;
     requires software.amazon.awssdk.utils;
-    requires java.net.http;
 
     exports org.miaixz.bus.storage;
     exports org.miaixz.bus.storage.cache;

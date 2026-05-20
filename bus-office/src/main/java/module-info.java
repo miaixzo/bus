@@ -25,19 +25,19 @@
  */
 module bus.office {
 
-    requires java.sql;
     requires java.desktop;
+    requires java.sql;
 
     requires bus.core;
     requires bus.logger;
 
     requires lombok;
+    requires ofdrw.converter;
+    requires ofdrw.font;
+    requires ofdrw.layout;
+    requires ofdrw.reader;
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
-    requires ofdrw.converter;
-    requires ofdrw.layout;
-    requires ofdrw.font;
-    requires ofdrw.reader;
 
     exports org.miaixz.bus.office;
     exports org.miaixz.bus.office.builtin;

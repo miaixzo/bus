@@ -27,6 +27,7 @@ module bus.health {
 
     requires java.desktop;
     requires java.management;
+
     requires bus.core;
     requires bus.logger;
     requires bus.setting;

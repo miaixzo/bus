@@ -26,10 +26,12 @@
 module bus.proxy {
 
     requires java.base;
+
     requires bus.core;
     requires bus.logger;
-    requires spring.core;
+
     requires org.aspectj.weaver;
+    requires spring.core;
 
     exports org.miaixz.bus.proxy;
     exports org.miaixz.bus.proxy.invoker;

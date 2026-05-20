@@ -155,10 +155,7 @@ public final class ProcessorInformation {
 
         /**
          * Executes the interruptspersec operation.
-         *
-         * @param PerfCounterQuery the perf counter query value
          */
-
         INTERRUPTSPERSEC(PerfCounterQuery.TOTAL_INSTANCE, "Interrupts/sec");
 
         /**
@@ -215,15 +212,11 @@ public final class ProcessorInformation {
         // First element defines WMI instance name field and PDH instance filter
         /**
          * Executes the name operation.
-         *
-         * @param PerfCounterQuery the perf counter query value
          */
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
         /**
          * Executes the percentofmaximumfrequency operation.
-         *
-         * @param Frequency the frequency value
          */
         PERCENTOFMAXIMUMFREQUENCY("% of Maximum Frequency");
 
@@ -264,15 +257,11 @@ public final class ProcessorInformation {
         // First element defines WMI instance name field and PDH instance filter
         /**
          * Executes the name operation.
-         *
-         * @param PerfCounterQuery the perf counter query value
          */
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
         /**
          * Executes the percentprocessorperformance operation.
-         *
-         * @param Performance the performance value
          */
         PERCENTPROCESSORPERFORMANCE("% Processor Performance");
 
@@ -313,39 +302,27 @@ public final class ProcessorInformation {
         // First element defines WMI instance name field and PDH instance filter
         /**
          * Executes the name operation.
-         *
-         * @param PerfCounterQuery the perf counter query value
          */
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
         /**
          * Executes the percentdpctime operation.
-         *
-         * @param Time the time value
          */
         PERCENTDPCTIME("% DPC Time"), //
         /**
          * Executes the percentinterrupttime operation.
-         *
-         * @param Time the time value
          */
         PERCENTINTERRUPTTIME("% Interrupt Time"), //
         /**
          * Executes the percentprivilegedtime operation.
-         *
-         * @param Time the time value
          */
         PERCENTPRIVILEGEDTIME("% Privileged Time"), //
         /**
          * Executes the percentprocessortime operation.
-         *
-         * @param Time the time value
          */
         PERCENTPROCESSORTIME("% Processor Time"), //
         /**
          * Executes the percentusertime operation.
-         *
-         * @param Time the time value
          */
         PERCENTUSERTIME("% User Time");
 
@@ -386,65 +363,45 @@ public final class ProcessorInformation {
         // First element defines WMI instance name field and PDH instance filter
         /**
          * Executes the name operation.
-         *
-         * @param PerfCounterQuery the perf counter query value
          */
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
         /**
          * Executes the percentdpctime operation.
-         *
-         * @param Time the time value
          */
         PERCENTDPCTIME("% DPC Time"), //
         /**
          * Executes the percentinterrupttime operation.
-         *
-         * @param Time the time value
          */
         PERCENTINTERRUPTTIME("% Interrupt Time"), //
         /**
          * Executes the percentprivilegedtime operation.
-         *
-         * @param Time the time value
          */
         PERCENTPRIVILEGEDTIME("% Privileged Time"), //
         /**
          * Executes the percentprocessortime operation.
-         *
-         * @param Time the time value
          */
         PERCENTPROCESSORTIME("% Processor Time"), //
         // The above 3 counters are 100ns base type
         // For PDH accessible as secondary counter in any of them
         /**
          * Executes the timestamp sys100 ns operation.
-         *
-         * @param Time_Base the time base value
          */
         TIMESTAMP_SYS100NS("% Processor Time_Base"), //
         /**
          * Executes the percentprivilegedutility operation.
-         *
-         * @param Utility the utility value
          */
         PERCENTPRIVILEGEDUTILITY("% Privileged Utility"), //
         /**
          * Executes the percentprocessorutility operation.
-         *
-         * @param Utility the utility value
          */
         PERCENTPROCESSORUTILITY("% Processor Utility"), //
         /**
          * Executes the percentprocessorutility base operation.
-         *
-         * @param Utility_Base the utility base value
          */
         PERCENTPROCESSORUTILITY_BASE("% Processor Utility_Base"), //
         /**
          * Executes the percentusertime operation.
-         *
-         * @param Time the time value
          */
         PERCENTUSERTIME("% User Time");
 
@@ -484,17 +441,11 @@ public final class ProcessorInformation {
 
         /**
          * Executes the percentdpctime operation.
-         *
-         * @param PerfCounterQuery the perf counter query value
-         * @param Time             the time value
          */
 
         PERCENTDPCTIME(PerfCounterQuery.TOTAL_INSTANCE, "% DPC Time"), //
         /**
          * Executes the percentinterrupttime operation.
-         *
-         * @param PerfCounterQuery the perf counter query value
-         * @param Time             the time value
          */
         PERCENTINTERRUPTTIME(PerfCounterQuery.TOTAL_INSTANCE, "% Interrupt Time");
 

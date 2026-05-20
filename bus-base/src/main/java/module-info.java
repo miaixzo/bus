@@ -33,11 +33,11 @@ module bus.base {
     requires lombok;
     requires jakarta.persistence;
     requires jakarta.servlet;
-    requires spring.beans;
-    requires spring.web;
-    requires spring.context;
-    requires spring.webmvc;
     requires spring.boot.autoconfigure;
+    requires spring.beans;
+    requires spring.context;
+    requires spring.web;
+    requires spring.webmvc;
 
     exports org.miaixz.bus.base.advice;
     exports org.miaixz.bus.base.entity;
