@@ -50,6 +50,13 @@ import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 public class WrapperProperties {
 
     /**
+     * Constructs a new {@code WrapperProperties} instance.
+     */
+    public WrapperProperties() {
+        // No initialization required.
+    }
+
+    /**
      * The name of this registration. If not specified, the bean name will be used.
      */
     private String name = "_wrapper";

@@ -48,61 +48,151 @@ public class RelatedEpic extends AbstractEpic<RelatedEpic> {
     private Date linkCreatedAt;
     private Date linkUpdatedAt;
 
+    /**
+     * Returns the start date is fixed.
+     *
+     * @return the result
+     */
+
     public Boolean getStartDateIsFixed() {
         return startDateIsFixed;
     }
+
+    /**
+     * Sets the start date is fixed.
+     *
+     * @param startDateIsFixed the start date is fixed value
+     */
 
     public void setStartDateIsFixed(Boolean startDateIsFixed) {
         this.startDateIsFixed = startDateIsFixed;
     }
 
+    /**
+     * Returns the due date is fixed.
+     *
+     * @return the result
+     */
+
     public Boolean getDueDateIsFixed() {
         return dueDateIsFixed;
     }
+
+    /**
+     * Sets the due date is fixed.
+     *
+     * @param dueDateIsFixed the due date is fixed value
+     */
 
     public void setDueDateIsFixed(Boolean dueDateIsFixed) {
         this.dueDateIsFixed = dueDateIsFixed;
     }
 
+    /**
+     * Returns the due date from inherited source.
+     *
+     * @return the result
+     */
+
     public Date getDueDateFromInheritedSource() {
         return dueDateFromInheritedSource;
     }
+
+    /**
+     * Sets the due date from inherited source.
+     *
+     * @param dueDateFromInheritedSource the due date from inherited source value
+     */
 
     public void setDueDateFromInheritedSource(Date dueDateFromInheritedSource) {
         this.dueDateFromInheritedSource = dueDateFromInheritedSource;
     }
 
+    /**
+     * Returns the related epic link id.
+     *
+     * @return the result
+     */
+
     public Long getRelatedEpicLinkId() {
         return relatedEpicLinkId;
     }
+
+    /**
+     * Sets the related epic link id.
+     *
+     * @param relatedEpicLinkId the related epic link id value
+     */
 
     public void setRelatedEpicLinkId(Long relatedEpicLinkId) {
         this.relatedEpicLinkId = relatedEpicLinkId;
     }
 
+    /**
+     * Returns the link type.
+     *
+     * @return the result
+     */
+
     public LinkType getLinkType() {
         return linkType;
     }
+
+    /**
+     * Sets the link type.
+     *
+     * @param linkType the link type value
+     */
 
     public void setLinkType(LinkType linkType) {
         this.linkType = linkType;
     }
 
+    /**
+     * Returns the link created at.
+     *
+     * @return the result
+     */
+
     public Date getLinkCreatedAt() {
         return linkCreatedAt;
     }
+
+    /**
+     * Sets the link created at.
+     *
+     * @param linkCreatedAt the link created at value
+     */
 
     public void setLinkCreatedAt(Date linkCreatedAt) {
         this.linkCreatedAt = linkCreatedAt;
     }
 
+    /**
+     * Returns the link updated at.
+     *
+     * @return the result
+     */
+
     public Date getLinkUpdatedAt() {
         return linkUpdatedAt;
     }
 
+    /**
+     * Sets the link updated at.
+     *
+     * @param linkUpdatedAt the link updated at value
+     */
+
     public void setLinkUpdatedAt(Date linkUpdatedAt) {
         this.linkUpdatedAt = linkUpdatedAt;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

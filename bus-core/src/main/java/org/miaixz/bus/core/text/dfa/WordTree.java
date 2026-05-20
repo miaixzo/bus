@@ -55,6 +55,7 @@ public class WordTree extends HashMap<Character, WordTree> {
      * Default constructor.
      */
     public WordTree() {
+        // No initialization required.
     }
 
     /**

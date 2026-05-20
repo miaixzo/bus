@@ -26,11 +26,11 @@
 module bus.core {
 
     requires java.base;
-    requires java.sql;
-    requires java.naming;
     requires java.compiler;
     requires java.desktop;
     requires java.management;
+    requires java.naming;
+    requires java.sql;
 
     requires lombok;
     requires jakarta.persistence;

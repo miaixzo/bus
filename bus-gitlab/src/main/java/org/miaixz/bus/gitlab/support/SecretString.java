@@ -32,6 +32,12 @@ public class SecretString implements CharSequence, AutoCloseable {
 
     private final char[] chars;
 
+    /**
+     * Constructs a new {@code SecretString} instance.
+     *
+     * @param charSequence the char sequence value
+     */
+
     public SecretString(CharSequence charSequence) {
 
         int length = charSequence.length();
@@ -41,29 +47,68 @@ public class SecretString implements CharSequence, AutoCloseable {
         }
     }
 
+    /**
+     * Constructs a new {@code SecretString} instance.
+     *
+     * @param chars the chars value
+     */
+
     public SecretString(char[] chars) {
         this(chars, 0, chars.length);
     }
+
+    /**
+     * Constructs a new {@code SecretString} instance.
+     *
+     * @param chars the chars value
+     * @param start the start value
+     * @param end   the end value
+     */
 
     public SecretString(char[] chars, int start, int end) {
         this.chars = new char[end - start];
         System.arraycopy(chars, start, this.chars, 0, this.chars.length);
     }
 
+    /**
+     * Executes the char at operation.
+     *
+     * @param index the index value
+     * @return the result
+     */
+
     @Override
     public char charAt(int index) {
         return chars[index];
     }
+
+    /**
+     * Executes the close operation.
+     */
 
     @Override
     public void close() {
         clear();
     }
 
+    /**
+     * Executes the length operation.
+     *
+     * @return the result
+     */
+
     @Override
     public int length() {
         return chars.length;
     }
+
+    /**
+     * Executes the sub sequence operation.
+     *
+     * @param start the start value
+     * @param end   the end value
+     * @return the result
+     */
 
     @Override
     public CharSequence subSequence(int start, int end) {
@@ -71,17 +116,10 @@ public class SecretString implements CharSequence, AutoCloseable {
     }
 
     /**
-     * Clear the contents of this SecretString instance by setting each character to 0. This is automatically done in
-     * the finalize() method.
+     * Clear the contents of this SecretString instance by setting each character to 0.
      */
     public void clear() {
         Arrays.fill(chars, '\0');
-    }
-
-    @Override
-    public void finalize() throws Throwable {
-        clear();
-        super.finalize();
     }
 
 }

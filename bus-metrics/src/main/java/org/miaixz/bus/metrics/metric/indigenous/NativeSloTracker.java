@@ -37,6 +37,13 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
 public class NativeSloTracker implements SloTracker {
 
     /**
+     * Constructs a new NativeSloTracker instance.
+     */
+    public NativeSloTracker() {
+        // No initialization required.
+    }
+
+    /**
      * Registered SLO definitions keyed by SLO name.
      */
     private final ConcurrentHashMap<String, SloDefinition> definitions = new ConcurrentHashMap<>();

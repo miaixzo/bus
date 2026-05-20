@@ -31,6 +31,13 @@ import java.util.stream.Stream;
 public class PredicateKit {
 
     /**
+     * Constructs a new PredicateKit instance.
+     */
+    public PredicateKit() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a predicate that always returns true.
      *
      * @param <T> The parameter type.

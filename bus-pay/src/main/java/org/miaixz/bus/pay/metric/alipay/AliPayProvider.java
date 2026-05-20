@@ -48,14 +48,32 @@ import org.miaixz.bus.pay.metric.AbstractProvider;
  */
 public class AliPayProvider extends AbstractProvider<Voucher, Context> {
 
+    /**
+     * Creates an Alipay provider with the default API endpoint.
+     *
+     * @param context Alipay request context
+     */
     public AliPayProvider(Context context) {
         this(context, null);
     }
 
+    /**
+     * Creates an Alipay provider with a specific API endpoint.
+     *
+     * @param context Alipay request context
+     * @param complex API endpoint descriptor
+     */
     public AliPayProvider(Context context, Complex complex) {
         this(context, complex, null);
     }
 
+    /**
+     * Creates an Alipay provider with a specific API endpoint and response cache.
+     *
+     * @param context Alipay request context
+     * @param complex API endpoint descriptor
+     * @param cache   response cache
+     */
     public AliPayProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
         Assert.notBlank(this.context.getAppId(), "[appId] not defined");

@@ -83,6 +83,21 @@ public class NativeImageReader extends ImageReader implements Closeable {
     /**
      * Creates a <code>ImageTypeSpecifier</code> from the <code>ImageParameters</code>. The default sample model is
      * pixel interleaved and the default color model is CS_GRAY or CS_sRGB and IndexColorModel with palettes.
+     *
+     * @param alphaPalette the alpha palette value
+     * @param bluePalette  the blue palette value
+     *
+     * @param params       the params value
+     *
+     * @param colorSpace   the color space value
+     *
+     * @param redPalette   the red palette value
+     *
+     * @param greenPalette the green palette value
+     *
+     * @return the result
+     *
+     * @throws IOException if the operation fails
      */
     protected static final ImageTypeSpecifier createImageType(
             ImageParameters params,

@@ -36,6 +36,7 @@ public class EnglishNumberFormatter {
      * Constructs a new EnglishNumberFormatter. Utility class constructor for static access.
      */
     private EnglishNumberFormatter() {
+        // No initialization required.
     }
 
     /**

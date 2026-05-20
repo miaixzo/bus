@@ -33,6 +33,7 @@ public class RomanNumberFormatter {
      * Constructs a new Roman numeral formatter.
      */
     public RomanNumberFormatter() {
+        // No initialization required.
     }
 
     /**

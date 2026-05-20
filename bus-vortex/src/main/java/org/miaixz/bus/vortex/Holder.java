@@ -114,6 +114,8 @@ public final class Holder {
                 "- Max Multipart Request Size: {} MB",
                 performance.getMaxMultipartRequestSize() / (1024 * 1024));
         Logger.info(true, "Vortex", "- Max Connections: {}", performance.getMaxConnections());
+        Logger.info(true, "Vortex", "- Pending Acquire Timeout: {} seconds", pendingAcquireTimeoutSeconds(performance));
+        Logger.info(true, "Vortex", "- Pending Acquire Max Count: {}", pendingAcquireMaxCount(performance));
         Logger.info(true, "Vortex", "- Max Producer Cache Size: {}", performance.getMaxProducerCacheSize());
         Logger.info(true, "Vortex", "- L2 Cache Size: {}", performance.getCacheSize());
         Logger.info(true, "Vortex", "- L2 Cache Expire: {} ms", performance.getCacheExpireMs());
@@ -134,13 +136,42 @@ public final class Holder {
     public static ConnectionProvider connectionProvider() {
         return Instances.get(CONNECTION_PROVIDER_KEY, () -> {
             Performance perf = get();
+            int pendingAcquireMaxCount = pendingAcquireMaxCount(perf);
+            int pendingAcquireTimeoutSeconds = pendingAcquireTimeoutSeconds(perf);
             Logger.info(true, "Vortex", "HTTP connection pool initialized");
             Logger.info(true, "Vortex", "  - Pool Name: vortex-http-pool");
             Logger.info(true, "Vortex", "  - Max Connections: {}", perf.getMaxConnections());
+            Logger.info(true, "Vortex", "  - Pending Acquire Timeout: {} seconds", pendingAcquireTimeoutSeconds);
+            Logger.info(true, "Vortex", "  - Pending Acquire Max Count: {}", pendingAcquireMaxCount);
             return ConnectionProvider.builder("vortex-http-pool").maxConnections(perf.getMaxConnections())
-                    .pendingAcquireTimeout(Duration.ofSeconds(45)).pendingAcquireMaxCount(-1)
-                    .maxIdleTime(Duration.ofSeconds(20)).maxLifeTime(Duration.ofMinutes(5)).build();
+                    .pendingAcquireTimeout(Duration.ofSeconds(pendingAcquireTimeoutSeconds))
+                    .pendingAcquireMaxCount(pendingAcquireMaxCount).maxIdleTime(Duration.ofSeconds(20))
+                    .maxLifeTime(Duration.ofMinutes(5)).build();
         });
+    }
+
+    /**
+     * Resolves the pending connection acquisition timeout.
+     *
+     * @param performance performance configuration
+     * @return timeout in seconds
+     */
+    private static int pendingAcquireTimeoutSeconds(Performance performance) {
+        return performance.getPendingAcquireTimeoutSeconds() > 0 ? performance.getPendingAcquireTimeoutSeconds() : 45;
+    }
+
+    /**
+     * Resolves the bounded pending connection acquisition queue size.
+     *
+     * @param performance performance configuration
+     * @return pending acquisition queue size
+     */
+    private static int pendingAcquireMaxCount(Performance performance) {
+        if (performance.getPendingAcquireMaxCount() > 0) {
+            return performance.getPendingAcquireMaxCount();
+        }
+        long derived = Math.max(1L, performance.getMaxConnections()) * 2L;
+        return derived > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) derived;
     }
 
     /**

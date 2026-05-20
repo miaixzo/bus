@@ -41,6 +41,7 @@ public class BatchResult {
      * Creates an empty batch result aggregate.
      */
     public BatchResult() {
+        // No initialization required.
     }
 
     /**
@@ -181,6 +182,7 @@ public class BatchResult {
          * Creates an empty failure descriptor.
          */
         public Failure() {
+            // No initialization required.
         }
 
         /**

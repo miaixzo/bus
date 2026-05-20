@@ -124,7 +124,7 @@ public class HL7Application implements Serializable {
      * Creates an empty HL7 application.
      */
     public HL7Application() {
-
+        // No initialization required.
     }
 
     /**

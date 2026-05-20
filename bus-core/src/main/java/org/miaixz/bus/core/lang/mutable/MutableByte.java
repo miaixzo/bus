@@ -44,6 +44,7 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
      * Constructs a new MutableByte with a default value of 0.
      */
     public MutableByte() {
+        // No initialization required.
     }
 
     /**

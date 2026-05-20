@@ -64,6 +64,13 @@ import org.miaixz.bus.logger.Logger;
 public class SpringBuilder implements ApplicationContextAware {
 
     /**
+     * Constructs a new SpringBuilder instance.
+     */
+    public SpringBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * The Spring {@link ConfigurableApplicationContext} instance. This is set via
      * {@link #setApplicationContext(ApplicationContext)}.
      */

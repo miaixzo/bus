@@ -36,7 +36,7 @@ public final class LabelMapper {
      * Creates a new mapper.
      */
     private LabelMapper() {
-
+        // No initialization required.
     }
 
     /**

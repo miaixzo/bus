@@ -37,6 +37,13 @@ import org.miaixz.bus.health.builtin.hardware.Firmware;
 public abstract class AbstractComputerSystem implements ComputerSystem {
 
     /**
+     * Constructs a new AbstractComputerSystem instance.
+     */
+    public AbstractComputerSystem() {
+        // No initialization required.
+    }
+
+    /**
      * The firmware value.
      */
     private final Supplier<Firmware> firmware = Memoizer.memoize(this::createFirmware);

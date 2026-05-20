@@ -41,6 +41,13 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
 public abstract class AbstractReader {
 
     /**
+     * Constructs a new AbstractReader instance.
+     */
+    public AbstractReader() {
+        // No initialization required.
+    }
+
+    /**
      * The manager for all registered cache instances.
      */
     protected Manage manage;

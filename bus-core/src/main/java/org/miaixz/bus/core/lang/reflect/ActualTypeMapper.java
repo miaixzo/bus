@@ -44,6 +44,7 @@ public class ActualTypeMapper {
      * Constructs a new ActualTypeMapper. Utility class constructor for static access.
      */
     private ActualTypeMapper() {
+        // No initialization required.
     }
 
     /**

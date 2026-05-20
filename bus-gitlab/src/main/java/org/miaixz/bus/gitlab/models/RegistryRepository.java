@@ -42,45 +42,111 @@ public class RegistryRepository implements Serializable {
     private String location;
     private Date createdAt;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the path.
+     *
+     * @return the result
+     */
+
     public String getPath() {
         return path;
     }
+
+    /**
+     * Sets the path.
+     *
+     * @param path the path value
+     */
 
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Returns the location.
+     *
+     * @return the result
+     */
+
     public String getLocation() {
         return location;
     }
+
+    /**
+     * Sets the location.
+     *
+     * @param location the location value
+     */
 
     public void setLocation(String location) {
         this.location = location;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
+
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

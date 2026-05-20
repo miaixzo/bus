@@ -49,85 +49,211 @@ public class ExternalStatusCheckEvent implements Serializable {
     private List<Assignee> assignees;
     private EventExternalStatusCheck externalApprovalRule;
 
+    /**
+     * Returns the object kind.
+     *
+     * @return the result
+     */
+
     public String getObjectKind() {
         return objectKind;
     }
+
+    /**
+     * Sets the object kind.
+     *
+     * @param objectKind the object kind value
+     */
 
     public void setObjectKind(String objectKind) {
         this.objectKind = objectKind;
     }
 
+    /**
+     * Returns the event type.
+     *
+     * @return the result
+     */
+
     public String getEventType() {
         return eventType;
     }
+
+    /**
+     * Sets the event type.
+     *
+     * @param eventType the event type value
+     */
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
 
+    /**
+     * Returns the user.
+     *
+     * @return the result
+     */
+
     public EventUser getUser() {
         return user;
     }
+
+    /**
+     * Sets the user.
+     *
+     * @param user the user value
+     */
 
     public void setUser(EventUser user) {
         this.user = user;
     }
 
+    /**
+     * Returns the project.
+     *
+     * @return the result
+     */
+
     public EventProject getProject() {
         return project;
     }
+
+    /**
+     * Sets the project.
+     *
+     * @param project the project value
+     */
 
     public void setProject(EventProject project) {
         this.project = project;
     }
 
+    /**
+     * Returns the repository.
+     *
+     * @return the result
+     */
+
     public EventRepository getRepository() {
         return repository;
     }
+
+    /**
+     * Sets the repository.
+     *
+     * @param repository the repository value
+     */
 
     public void setRepository(EventRepository repository) {
         this.repository = repository;
     }
 
+    /**
+     * Returns the object attributes.
+     *
+     * @return the result
+     */
+
     public ObjectAttributes getObjectAttributes() {
         return this.objectAttributes;
     }
+
+    /**
+     * Sets the object attributes.
+     *
+     * @param objectAttributes the object attributes value
+     */
 
     public void setObjectAttributes(ObjectAttributes objectAttributes) {
         this.objectAttributes = objectAttributes;
     }
 
+    /**
+     * Returns the labels.
+     *
+     * @return the result
+     */
+
     public List<EventLabel> getLabels() {
         return labels;
     }
+
+    /**
+     * Sets the labels.
+     *
+     * @param labels the labels value
+     */
 
     public void setLabels(List<EventLabel> labels) {
         this.labels = labels;
     }
 
+    /**
+     * Returns the changes.
+     *
+     * @return the result
+     */
+
     public MergeRequestChanges getChanges() {
         return changes;
     }
+
+    /**
+     * Sets the changes.
+     *
+     * @param changes the changes value
+     */
 
     public void setChanges(MergeRequestChanges changes) {
         this.changes = changes;
     }
 
+    /**
+     * Returns the assignees.
+     *
+     * @return the result
+     */
+
     public List<Assignee> getAssignees() {
         return assignees;
     }
+
+    /**
+     * Sets the assignees.
+     *
+     * @param assignees the assignees value
+     */
 
     public void setAssignees(List<Assignee> assignees) {
         this.assignees = assignees;
     }
 
+    /**
+     * Returns the external approval rule.
+     *
+     * @return the result
+     */
+
     public EventExternalStatusCheck getExternalApprovalRule() {
         return externalApprovalRule;
     }
 
+    /**
+     * Sets the external approval rule.
+     *
+     * @param externalApprovalRule the external approval rule value
+     */
+
     public void setExternalApprovalRule(EventExternalStatusCheck externalApprovalRule) {
         this.externalApprovalRule = externalApprovalRule;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

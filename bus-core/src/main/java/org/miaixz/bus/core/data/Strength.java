@@ -35,6 +35,7 @@ public class Strength {
      * Constructs a new password strength checker.
      */
     public Strength() {
+        // No initialization required.
     }
 
     /**

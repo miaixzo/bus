@@ -35,11 +35,19 @@ import org.miaixz.bus.gitlab.models.Key;
  */
 public class KeysApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code KeysApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public KeysApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
 
     /**
+     * Returns the user by sshkey fingerprint.
+     *
      * @param fingerprint The md5 hash of a ssh public key with : separating the bytes Or SHA256:$base64hash
      * @return The Key which includes the user who owns the key
      * @throws GitLabApiException If anything goes wrong

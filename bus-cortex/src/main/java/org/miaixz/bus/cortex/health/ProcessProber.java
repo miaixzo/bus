@@ -35,6 +35,7 @@ public class ProcessProber implements Prober {
      * Creates a process-based health prober.
      */
     public ProcessProber() {
+        // No initialization required.
     }
 
     /**

@@ -48,9 +48,21 @@ public class ChangelogPayload implements Serializable {
     private String file;
     private String message;
 
+    /**
+     * Constructs a new {@code ChangelogPayload} instance.
+     *
+     * @param version the version value
+     */
+
     public ChangelogPayload(String version) {
         this.version = version;
     }
+
+    /**
+     * Returns the form data.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     public GitLabForm getFormData() {
@@ -59,69 +71,171 @@ public class ChangelogPayload implements Serializable {
                 .withParam("file", file).withParam("message", message);
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return the result
+     */
+
     public String getVersion() {
         return version;
     }
+
+    /**
+     * Sets the version.
+     *
+     * @param version the version value
+     */
 
     public void setVersion(String version) {
         this.version = version;
     }
 
+    /**
+     * Returns the from.
+     *
+     * @return the result
+     */
+
     public String getFrom() {
         return from;
     }
+
+    /**
+     * Sets the from.
+     *
+     * @param from the from value
+     */
 
     public void setFrom(String from) {
         this.from = from;
     }
 
+    /**
+     * Returns the to.
+     *
+     * @return the result
+     */
+
     public String getTo() {
         return to;
     }
+
+    /**
+     * Sets the to.
+     *
+     * @param to the to value
+     */
 
     public void setTo(String to) {
         this.to = to;
     }
 
+    /**
+     * Returns the date.
+     *
+     * @return the result
+     */
+
     public Date getDate() {
         return date;
     }
+
+    /**
+     * Sets the date.
+     *
+     * @param date the date value
+     */
 
     public void setDate(Date date) {
         this.date = date;
     }
 
+    /**
+     * Returns the branch.
+     *
+     * @return the result
+     */
+
     public String getBranch() {
         return branch;
     }
+
+    /**
+     * Sets the branch.
+     *
+     * @param branch the branch value
+     */
 
     public void setBranch(String branch) {
         this.branch = branch;
     }
 
+    /**
+     * Returns the trailer.
+     *
+     * @return the result
+     */
+
     public String getTrailer() {
         return trailer;
     }
+
+    /**
+     * Sets the trailer.
+     *
+     * @param trailer the trailer value
+     */
 
     public void setTrailer(String trailer) {
         this.trailer = trailer;
     }
 
+    /**
+     * Returns the file.
+     *
+     * @return the result
+     */
+
     public String getFile() {
         return file;
     }
+
+    /**
+     * Sets the file.
+     *
+     * @param file the file value
+     */
 
     public void setFile(String file) {
         this.file = file;
     }
 
+    /**
+     * Returns the message.
+     *
+     * @return the result
+     */
+
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Sets the message.
+     *
+     * @param message the message value
+     */
+
     public void setMessage(String message) {
         this.message = message;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

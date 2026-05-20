@@ -45,6 +45,13 @@ import org.miaixz.bus.core.math.*;
 public class MathKit extends NumberValidator {
 
     /**
+     * Constructs a new MathKit instance.
+     */
+    public MathKit() {
+        // No initialization required.
+    }
+
+    /**
      * Factorials for numbers 0-20. Factorials above 20 will exceed Long.MAX_VALUE.
      */
     private static final long[] FACTORIALS = new long[] { 1L, 1L, 2L, 6L, 24L, 120L, 720L, 5040L, 40320L, 362880L,

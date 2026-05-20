@@ -49,6 +49,13 @@ public interface GenId<T> {
     class NULL implements GenId<Object> {
 
         /**
+         * Constructs a new NULL instance.
+         */
+        public NULL() {
+            // No initialization required.
+        }
+
+        /**
          * Default implementation, throws an {@link UnsupportedOperationException}.
          *
          * @param table  The entity table information.

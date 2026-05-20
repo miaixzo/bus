@@ -52,6 +52,13 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ZipKit {
 
     /**
+     * Constructs a new {@code ZipKit} instance.
+     */
+    public ZipKit() {
+        // No initialization required.
+    }
+
+    /**
      * Default charset, using the platform's default charset.
      */
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.defaultCharset();

@@ -68,6 +68,7 @@ public abstract class Coordinator<I, O> implements Executor<I, O> {
      * Creates an abstract coordinator.
      */
     protected Coordinator() {
+        // No initialization required.
     }
 
     /**

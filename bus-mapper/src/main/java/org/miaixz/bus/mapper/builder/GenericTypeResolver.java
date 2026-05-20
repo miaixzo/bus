@@ -23,9 +23,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.ResultType;
@@ -585,7 +583,6 @@ public class GenericTypeResolver {
      * @since Java 21+
      */
     @Getter
-    @RequiredArgsConstructor
     public static class ParameterizedTypes implements ParameterizedType {
 
         /**
@@ -602,6 +599,19 @@ public class GenericTypeResolver {
          * The actual type arguments (e.g., {@code [String.class]} for {@code List<String>}).
          */
         private final Type[] actualTypeArguments;
+
+        /**
+         * Creates a parameterized type descriptor.
+         *
+         * @param rawType             the raw class
+         * @param ownerType           the owning type
+         * @param actualTypeArguments the actual type arguments
+         */
+        public ParameterizedTypes(Class<?> rawType, Type ownerType, Type[] actualTypeArguments) {
+            this.rawType = rawType;
+            this.ownerType = ownerType;
+            this.actualTypeArguments = actualTypeArguments;
+        }
 
         /**
          * Returns a string representation of this parameterized type, mainly for debugging purposes.
@@ -624,7 +634,6 @@ public class GenericTypeResolver {
      * @since Java 21+
      */
     @Getter
-    @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
     public static class WildcardTypes implements WildcardType {
 
         /**
@@ -636,6 +645,17 @@ public class GenericTypeResolver {
          * The array of upper bounds (types preceded by {@code extends} or default to {@code Object}).
          */
         private final Type[] upperBounds;
+
+        /**
+         * Creates a wildcard type descriptor.
+         *
+         * @param lowerBounds lower type bounds
+         * @param upperBounds upper type bounds
+         */
+        WildcardTypes(Type[] lowerBounds, Type[] upperBounds) {
+            this.lowerBounds = lowerBounds;
+            this.upperBounds = upperBounds;
+        }
 
         // Omitted toString(), hashCode(), equals() for brevity, but should typically be included in production code
 
@@ -649,13 +669,21 @@ public class GenericTypeResolver {
      * @since Java 21+
      */
     @Getter
-    @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
     public static class GenericArrayTypes implements GenericArrayType {
 
         /**
          * The generic component type (e.g., {@code T} in {@code T[]}).
          */
         private final Type genericComponentType;
+
+        /**
+         * Creates a generic array type descriptor.
+         *
+         * @param genericComponentType the generic component type
+         */
+        GenericArrayTypes(Type genericComponentType) {
+            this.genericComponentType = genericComponentType;
+        }
 
     }
 

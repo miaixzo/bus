@@ -47,6 +47,7 @@ public class StringConverter extends AbstractConverter {
      * Constructs a new string converter.
      */
     public StringConverter() {
+        // No initialization required.
     }
 
     /**

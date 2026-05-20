@@ -39,6 +39,13 @@ import org.miaixz.bus.core.lang.reflect.kotlin.KParameter;
 public class KotlinKit {
 
     /**
+     * Constructs a new KotlinKit instance.
+     */
+    public KotlinKit() {
+        // No initialization required.
+    }
+
+    /**
      * The Kotlin Metadata annotation class.
      */
     private static final Class<? extends Annotation> META_DATA_CLASS = (Class<? extends Annotation>) Optional

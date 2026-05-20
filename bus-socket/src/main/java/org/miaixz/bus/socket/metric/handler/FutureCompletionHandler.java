@@ -37,6 +37,13 @@ import java.util.concurrent.TimeoutException;
  */
 public final class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, Future<V> {
 
+    /**
+     * Constructs a new FutureCompletionHandler instance.
+     */
+    public FutureCompletionHandler() {
+        // No initialization required.
+    }
+
     private V result;
     private boolean done = false;
     private boolean cancel = false;

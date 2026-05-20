@@ -35,6 +35,13 @@ import org.miaixz.bus.validate.magic.annotation.Date;
 public class DateMatcher implements Matcher<Object, Date> {
 
     /**
+     * Constructs a new DateMatcher instance.
+     */
+    public DateMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object is a valid date according to the format specified in the annotation.
      *
      * @param object     The object to validate. It can be a {@code java.util.Date} or a {@code String} representing a

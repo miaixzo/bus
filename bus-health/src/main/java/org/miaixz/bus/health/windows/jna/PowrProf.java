@@ -47,9 +47,42 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      * @since Java 21+
      */
     enum BATTERY_QUERY_INFORMATION_LEVEL {
-        BatteryInformation, BatteryGranularityInformation, BatteryTemperature, BatteryEstimatedTime, BatteryDeviceName,
-        BatteryManufactureDate, BatteryManufactureName, BatteryUniqueID, BatterySerialNumber
-
+        /**
+         * The battery information battery query information level.
+         */
+        BatteryInformation,
+        /**
+         * The battery granularity information battery query information level.
+         */
+        BatteryGranularityInformation,
+        /**
+         * The battery temperature battery query information level.
+         */
+        BatteryTemperature,
+        /**
+         * The battery estimated time battery query information level.
+         */
+        BatteryEstimatedTime,
+        /**
+         * The battery device name battery query information level.
+         */
+        BatteryDeviceName,
+        /**
+         * The battery manufacture date battery query information level.
+         */
+        BatteryManufactureDate,
+        /**
+         * The battery manufacture name battery query information level.
+         */
+        BatteryManufactureName,
+        /**
+         * The battery unique id battery query information level.
+         */
+        BatteryUniqueID,
+        /**
+         * The battery serial number battery query information level.
+         */
+        BatterySerialNumber;
     }
 
     /**

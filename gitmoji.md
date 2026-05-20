@@ -40,7 +40,7 @@
 * 💡 `:bulb:` 在源代码中添加或更新注释 (Add or update comments in source code.)
 * 🍻 `:beers:` 醉醺醺地写代码 (Write code drunkenly.)
 * 💬 `:speech_balloon:` 添加或更新文本和文字 (Add or update text and literals.)
-* 🗃️ `:card_file_box:` 执行与数据库相关的更改 (Perform database related changes.)
+* 🗃️ `:card_file_box:` 执行与数据库相关更改 (Perform database related changes.)
 * 🔊 `:loud_sound:` 添加或更新日志 (Add or update logs.)
 * 🔇 `:mute:` 删除日志 (Remove logs.)
 * 👥 `:busts_in_silhouette:` 添加或更新贡献者 (Add or update contributors.)

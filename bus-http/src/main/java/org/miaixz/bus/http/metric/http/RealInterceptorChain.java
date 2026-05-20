@@ -53,6 +53,19 @@ public class RealInterceptorChain implements NewChain {
     private final int writeTimeout;
     private int calls;
 
+    /**
+     * Creates a real interceptor chain.
+     *
+     * @param interceptors   the interceptor list
+     * @param transmitter    the transmitter
+     * @param exchange       the active exchange
+     * @param index          the current interceptor index
+     * @param request        the current request
+     * @param call           the owning call
+     * @param connectTimeout the connect timeout in milliseconds
+     * @param readTimeout    the read timeout in milliseconds
+     * @param writeTimeout   the write timeout in milliseconds
+     */
     public RealInterceptorChain(List<Interceptor> interceptors, Transmitter transmitter, Exchange exchange, int index,
             Request request, NewCall call, int connectTimeout, int readTimeout, int writeTimeout) {
         this.interceptors = interceptors;
@@ -107,10 +120,20 @@ public class RealInterceptorChain implements NewChain {
                 readTimeout, millis);
     }
 
+    /**
+     * Returns the chain transmitter.
+     *
+     * @return the chain transmitter
+     */
     public Transmitter transmitter() {
         return transmitter;
     }
 
+    /**
+     * Returns the active exchange.
+     *
+     * @return the active exchange
+     */
     public Exchange exchange() {
         if (exchange == null)
             throw new IllegalStateException();
@@ -132,6 +155,15 @@ public class RealInterceptorChain implements NewChain {
         return proceed(request, transmitter, exchange);
     }
 
+    /**
+     * Proceeds to the next interceptor with explicit transmitter and exchange.
+     *
+     * @param request     the request to proceed with
+     * @param transmitter the transmitter
+     * @param exchange    the active exchange
+     * @return the response returned by the next interceptor
+     * @throws IOException if the next interceptor fails
+     */
     public Response proceed(Request request, Transmitter transmitter, Exchange exchange) throws IOException {
         if (index >= interceptors.size())
             throw new AssertionError();

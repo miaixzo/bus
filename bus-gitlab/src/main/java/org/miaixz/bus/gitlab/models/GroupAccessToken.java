@@ -36,13 +36,31 @@ public class GroupAccessToken extends ImpersonationToken {
 
     private AccessLevel accessLevel;
 
+    /**
+     * Returns the access level.
+     *
+     * @return the result
+     */
+
     public AccessLevel getAccessLevel() {
         return accessLevel;
     }
 
+    /**
+     * Sets the access level.
+     *
+     * @param accessLevel the access level value
+     */
+
     public void setAccessLevel(AccessLevel accessLevel) {
         this.accessLevel = accessLevel;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

@@ -38,6 +38,13 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ObjectKit extends ObjectValidator {
 
     /**
+     * Constructs a new ObjectKit instance.
+     */
+    public ObjectKit() {
+        // No initialization required.
+    }
+
+    /**
      * Calculates the length of an object. Supported types include:
      * <ul>
      * <li>{@code null}: returns {@code 0} by default.</li>

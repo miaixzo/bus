@@ -43,6 +43,13 @@ import org.miaixz.bus.mapper.Charter.Schema;
 public class SchemaConfig {
 
     /**
+     * Constructs a new SchemaConfig instance.
+     */
+    public SchemaConfig() {
+        // No initialization required.
+    }
+
+    /**
      * Whether entity schema initialization is enabled.
      */
     private boolean enabled = false;
@@ -161,6 +168,26 @@ public class SchemaConfig {
      * Whether unmapped database unique constraints may be dropped.
      */
     private boolean allowDropUnique = false;
+
+    /**
+     * Whether missing primary key constraints may be created.
+     */
+    private boolean allowCreatePrimaryKey = false;
+
+    /**
+     * Whether unmapped database primary key constraints may be dropped.
+     */
+    private boolean allowDropPrimaryKey = false;
+
+    /**
+     * Whether missing foreign key constraints may be created.
+     */
+    private boolean allowCreateForeignKey = false;
+
+    /**
+     * Whether unmapped database foreign key constraints may be dropped.
+     */
+    private boolean allowDropForeignKey = false;
 
     /**
      * Whether dangerous schema changes may be executed.

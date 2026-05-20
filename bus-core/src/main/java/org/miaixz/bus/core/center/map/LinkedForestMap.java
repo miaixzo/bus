@@ -456,6 +456,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
+         * Tests whether this node is the root node of its tree.
+         *
          * @return {@code true} if this node is a root node (has no parent).
          */
         public boolean isRoot() {

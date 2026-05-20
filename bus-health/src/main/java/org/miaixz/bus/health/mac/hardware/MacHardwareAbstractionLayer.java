@@ -39,6 +39,13 @@ import org.miaixz.bus.health.unix.hardware.CupsPrinter;
 public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
+     * Constructs a new {@code MacHardwareAbstractionLayer} instance.
+     */
+    public MacHardwareAbstractionLayer() {
+        // No initialization required.
+    }
+
+    /**
      * Description inherited from parent class or interface.
      */
     @Override

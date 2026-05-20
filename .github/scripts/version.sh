@@ -19,14 +19,12 @@
 #############################################################################
 
 #-------------------------------------------------------------------
-# This script upgrades the project version. It includes:
-# 1. Updating bus-bom parent versions in pom.xml files.
-# 2. Updating the VERSION file.
-# 3. Updating the Version class _VERSION constant.
-# 4. Adding the version to native-image index.json tested-versions.
+# This script updates the release version metadata. It includes:
+# 1. Updating the VERSION file.
+# 2. Updating root native-image index.json tested-versions.
 #
 # Usage:
-#   bash .github/scripts/version.sh <new-version>
+#   bash .github/scripts/version.sh <version>
 #
 # Examples:
 #   bash .github/scripts/version.sh 8.6.8
@@ -45,59 +43,78 @@ set -o pipefail
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 
 # Display the LOGO
+echo
 "$(dirname ${BASH_SOURCE[0]})"/logo.sh
+echo
 
 if [ -z "$1" ]; then
-        echo "ERROR: New version not specified. Please provide it as the first argument."
-        exit 1
+    echo "ERROR: New version not specified. Please provide it as the first argument."
+    exit 1
 fi
 
-# Get the version number without the -SNAPSHOT suffix for use elsewhere
 version=${1%-SNAPSHOT}
 
-# Replace the version number in other files
-echo "Current path: ${root}"
-
-if [ -n "$1" ];then
-    old_version=$(cat "${root}"/VERSION)
-    echo "Replacing old version ${old_version} with new version ${version}"
-else
-    # Argument error, exit
-    echo "ERROR: Please specify the new version!"
+if [ ! -f "${root}/VERSION" ]; then
+    echo "ERROR: VERSION file not found."
     exit 1
 fi
 
-if [ -z "$old_version" ]; then
-    echo "ERROR: Old version not found. Please verify the contents of the /VERSION file."
+current_version=$(tr -d '[:space:]' < "${root}/VERSION")
+
+echo "Version: ${current_version} -> ${version}"
+
+if [[ ! "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Updated native-image index.json files: 0"
+    echo "ERROR: Version must use the MAJOR.MINOR.PATCH format."
     exit 1
 fi
 
-export OLD_VERSION="${old_version}"
+if [[ ! "${current_version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Updated native-image index.json files: 0"
+    echo "ERROR: Current VERSION must use the MAJOR.MINOR.PATCH format."
+    exit 1
+fi
+
+version_greater_than_current=$(awk -v current="${current_version}" -v candidate="${version}" '
+    BEGIN {
+        split(current, current_parts, ".");
+        split(candidate, candidate_parts, ".");
+        for (i = 1; i <= 3; i++) {
+            current_part = current_parts[i] + 0;
+            candidate_part = candidate_parts[i] + 0;
+            if (candidate_part > current_part) {
+                print "true";
+                exit;
+            }
+            if (candidate_part < current_part) {
+                print "false";
+                exit;
+            }
+        }
+        print "false";
+    }
+')
+
+if [ "${version_greater_than_current}" != "true" ]; then
+    echo "Updated native-image index.json files: 0"
+    echo "ERROR: New version ${version} must be greater than current VERSION ${current_version}."
+    exit 1
+fi
+
 export NEW_VERSION="${version}"
 
-# Replace bus-bom parent versions and the owning bus-bom/bus-parent project versions in pom.xml files.
-find "${root}" -path '*/target/*' -prune -o -name 'pom.xml' -print0 | while IFS= read -r -d '' pom; do
-    perl -0pi -e '
-        s{(<parent>\s*<groupId>org\.miaixz</groupId>\s*<artifactId>bus-bom</artifactId>\s*<version>)[^<]+(</version>)}{$1 . $ENV{"NEW_VERSION"} . $2}eg;
-        s{(<groupId>org\.miaixz</groupId>\s*<artifactId>bus-bom</artifactId>\s*<version>)[^<]+(</version>)}{$1 . $ENV{"NEW_VERSION"} . $2}eg;
-        s{(<groupId>org\.miaixz</groupId>\s*<artifactId>bus-parent</artifactId>\s*<version>)[^<]+(</version>)}{$1 . $ENV{"NEW_VERSION"} . $2}eg;
-    ' "${pom}"
-done
-
-# Replace the version in README files when they contain the previous release number.
-for readme in "${root}"/README.md "${root}"/README_CN.md; do
-    if [ -f "${readme}" ]; then
-        perl -0pi -e 's/\Q$ENV{"OLD_VERSION"}\E/$ENV{"NEW_VERSION"}/g' "${readme}"
+# Update root native-image indexes only. Versioned metadata folders such as 8.5.0/index.json are not changed.
+updated_indexes=0
+while IFS= read -r -d '' index_file; do
+    relative_path=${index_file#"${root}/"}
+    if [[ ! "${relative_path}" =~ ^bus-[^/]+/src/main/resources/META-INF/native-image/org\.miaixz/[^/]+/index\.json$ ]]; then
+        continue
     fi
-done
 
-# Replace the _VERSION constant in Version.java files.
-find "${root}" -path '*/target/*' -prune -o -name 'Version.java' -print0 | while IFS= read -r -d '' version_file; do
-    perl -0pi -e 's{(public\s+static\s+final\s+String\s+_VERSION\s*=\s*")[^"]+(")}{$1 . $ENV{"NEW_VERSION"} . $2}eg' "${version_file}"
-done
+    if grep -Fq "\"${version}\"" "${index_file}"; then
+        continue
+    fi
 
-# Add the new version to every native-image tested-versions list without duplicating existing entries.
-find "${root}" -path '*/target/*' -prune -o -name 'index.json' -print0 | while IFS= read -r -d '' index_file; do
     perl -0pi -e '
         my $version = $ENV{"NEW_VERSION"};
         s{("tested-versions"\s*:\s*\[)(.*?)(\n\s*\])}{
@@ -110,7 +127,10 @@ find "${root}" -path '*/target/*' -prune -o -name 'index.json' -print0 | while I
             }
         }egs;
     ' "${index_file}"
-done
+    updated_indexes=$((updated_indexes + 1))
+done < <(find "${root}" -path '*/target/*' -prune -o -name 'index.json' -print0)
 
-# Save the new version number to the VERSION file
-echo "$version" > "${root}"/VERSION
+printf "%s\n" "${version}" > "${root}/VERSION"
+
+echo "Updated native-image index.json files: ${updated_indexes}"
+echo "Updated VERSION file: ${root}/VERSION"

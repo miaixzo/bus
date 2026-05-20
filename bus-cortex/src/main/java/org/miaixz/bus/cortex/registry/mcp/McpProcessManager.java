@@ -36,6 +36,7 @@ public class McpProcessManager {
      * Creates an empty MCP process manager.
      */
     public McpProcessManager() {
+        // No initialization required.
     }
 
     /**

@@ -32,19 +32,49 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
  */
 public enum LinkType {
 
-    RELATES_TO, BLOCKS, IS_BLOCKED_BY;
+    /**
+     * The relates to link type.
+     */
+    RELATES_TO,
+    /**
+     * The blocks link type.
+     */
+    BLOCKS,
+    /**
+     * The is blocked by link type.
+     */
+    IS_BLOCKED_BY;
 
     private static JacksonJsonEnumHelper<LinkType> enumHelper = new JacksonJsonEnumHelper<>(LinkType.class);
+
+    /**
+     * Returns the value.
+     *
+     * @param value the value value
+     * @return the result
+     */
 
     @JsonCreator
     public static LinkType forValue(String value) {
         return enumHelper.forValue(value);
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     @JsonValue
     public String toValue() {
         return (enumHelper.toString(this));
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

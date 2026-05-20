@@ -79,6 +79,12 @@ public class Transmitter {
     private boolean timeoutEarlyExit;
     private boolean noMoreExchanges;
 
+    /**
+     * Executes the transmitter operation.
+     *
+     * @param client the client value
+     * @param call   the call value
+     */
     public Transmitter(Httpd client, NewCall call) {
         this.client = client;
         this.connectionPool = Internal.instance.realConnectionPool(client.connectionPool());
@@ -87,10 +93,18 @@ public class Transmitter {
         this.timeout.timeout(client.callTimeoutMillis(), TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Executes the timeout operation.
+     *
+     * @return the result
+     */
     public Timeout timeout() {
         return timeout;
     }
 
+    /**
+     * Executes the timeout enter operation.
+     */
     public void timeoutEnter() {
         timeout.enter();
     }

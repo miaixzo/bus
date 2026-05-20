@@ -39,6 +39,17 @@ import org.miaixz.bus.core.xyz.PatternKit;
  */
 public class ExcludeBeanNameAutoProxy extends BeanNameAutoProxyCreator {
 
+    /**
+     * Constructs a new ExcludeBeanNameAutoProxy instance.
+     */
+    public ExcludeBeanNameAutoProxy() {
+        // No initialization required.
+    }
+
+    /**
+     * The exclude bean names value.
+     *
+     */
     private List<String> excludeBeanNames;
 
     /**

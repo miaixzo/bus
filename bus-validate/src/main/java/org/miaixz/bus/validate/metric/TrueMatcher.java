@@ -33,6 +33,13 @@ import org.miaixz.bus.validate.magic.annotation.True;
 public class TrueMatcher implements Matcher<Boolean, True> {
 
     /**
+     * Constructs a new TrueMatcher instance.
+     */
+    public TrueMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given Boolean object is {@code true}.
      *
      * @param object     The Boolean object to validate.

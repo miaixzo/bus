@@ -38,6 +38,13 @@ import org.miaixz.bus.http.Callback;
 public class CoverTasks {
 
     /**
+     * Constructs a new CoverTasks instance.
+     */
+    public CoverTasks() {
+        // No initialization required.
+    }
+
+    /**
      * A generic listener interface for intercepting task lifecycle events.
      *
      * @param <T> The type of data associated with the event.
@@ -342,6 +349,8 @@ public class CoverTasks {
         }
 
         /**
+         * Returns the I/O executor.
+         *
          * @return The I/O executor.
          */
         public java.util.concurrent.Executor getIoExecutor() {
@@ -349,6 +358,8 @@ public class CoverTasks {
         }
 
         /**
+         * Returns the main-thread executor.
+         *
          * @return The main-thread executor.
          */
         public java.util.concurrent.Executor getMainExecutor() {
@@ -356,6 +367,8 @@ public class CoverTasks {
         }
 
         /**
+         * Returns the global download listener.
+         *
          * @return The global download listener.
          */
         public Downloads.Listener getDownloadListener() {
@@ -363,6 +376,8 @@ public class CoverTasks {
         }
 
         /**
+         * Returns the global response listener.
+         *
          * @return The global response listener.
          */
         public Listener<CoverResult> getResponseListener() {
@@ -370,6 +385,8 @@ public class CoverTasks {
         }
 
         /**
+         * Returns the global exception listener.
+         *
          * @return The global exception listener.
          */
         public Listener<IOException> getExceptionListener() {
@@ -377,6 +394,8 @@ public class CoverTasks {
         }
 
         /**
+         * Returns the global completion listener.
+         *
          * @return The global completion listener.
          */
         public Listener<CoverResult.State> getCompleteListener() {
@@ -384,6 +403,8 @@ public class CoverTasks {
         }
 
         /**
+         * Returns the array of configured data converters.
+         *
          * @return The array of configured data converters.
          */
         public Convertor[] getConvertors() {

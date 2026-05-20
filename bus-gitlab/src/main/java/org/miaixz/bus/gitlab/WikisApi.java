@@ -41,6 +41,12 @@ import org.miaixz.bus.logger.Logger;
  */
 public class WikisApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code WikisApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public WikisApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

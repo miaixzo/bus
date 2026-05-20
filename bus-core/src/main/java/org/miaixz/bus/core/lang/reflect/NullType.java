@@ -39,6 +39,7 @@ public class NullType implements Type {
      * Private constructor to enforce the singleton pattern.
      */
     private NullType() {
+        // No initialization required.
     }
 
     /**

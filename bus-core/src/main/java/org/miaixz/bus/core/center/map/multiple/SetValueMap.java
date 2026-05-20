@@ -66,6 +66,7 @@ public class SetValueMap<K, V> extends AbstractCollValueMap<K, V> {
      * each key will be stored in a {@link LinkedHashSet}.
      */
     public SetValueMap() {
+        // No initialization required.
     }
 
     /**

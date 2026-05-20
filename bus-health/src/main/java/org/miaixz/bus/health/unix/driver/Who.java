@@ -82,6 +82,7 @@ public final class Who {
      * Creates a new Who instance.
      */
     private Who() {
+        // No initialization required.
     }
 
     /**

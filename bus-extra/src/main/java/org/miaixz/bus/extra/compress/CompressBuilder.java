@@ -52,6 +52,13 @@ import org.miaixz.bus.extra.compress.extractor.StreamExtractor;
 public class CompressBuilder {
 
     /**
+     * Constructs a new CompressBuilder instance.
+     */
+    public CompressBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Gets a compression output stream for compressing specified content. Supported formats include:
      * <ul>
      * <li>{@value CompressorStreamFactory#GZIP}</li>

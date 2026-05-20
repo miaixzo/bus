@@ -37,7 +37,7 @@ public final class RegistryScopeMapping {
      * Prevents utility class instantiation.
      */
     private RegistryScopeMapping() {
-
+        // No initialization required.
     }
 
     /**

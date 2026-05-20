@@ -36,6 +36,7 @@ public class Caesar {
      * Constructs a new Caesar. Utility class constructor for static access.
      */
     private Caesar() {
+        // No initialization required.
     }
 
     /**

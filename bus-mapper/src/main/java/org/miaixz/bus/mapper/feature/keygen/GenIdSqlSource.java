@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.mapper.feature.keygen;
 
-import lombok.RequiredArgsConstructor;
-
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.SqlSource;
 
@@ -30,7 +28,6 @@ import org.apache.ibatis.mapping.SqlSource;
  * @author Kimi Liu
  * @since Java 21+
  */
-@RequiredArgsConstructor
 public class GenIdSqlSource implements SqlSource {
 
     /**
@@ -42,6 +39,17 @@ public class GenIdSqlSource implements SqlSource {
      * The primary key generator.
      */
     private final GenIdKeyGenerator keyGenerator;
+
+    /**
+     * Creates a SQL source wrapper that prepares generated ids before SQL execution.
+     *
+     * @param sqlSource    the original SQL source
+     * @param keyGenerator the generated id key generator
+     */
+    public GenIdSqlSource(SqlSource sqlSource, GenIdKeyGenerator keyGenerator) {
+        this.sqlSource = sqlSource;
+        this.keyGenerator = keyGenerator;
+    }
 
     /**
      * Gets the bound SQL and generates the primary key if necessary before execution.

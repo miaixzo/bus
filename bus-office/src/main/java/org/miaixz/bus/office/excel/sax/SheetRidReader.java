@@ -58,6 +58,13 @@ import org.miaixz.bus.office.excel.ExcelSaxKit;
 public class SheetRidReader extends DefaultHandler {
 
     /**
+     * Constructs a new SheetRidReader instance.
+     */
+    public SheetRidReader() {
+        // No initialization required.
+    }
+
+    /**
      * The tag name for a sheet element in the Excel XML.
      */
     private final static String TAG_NAME = "sheet";

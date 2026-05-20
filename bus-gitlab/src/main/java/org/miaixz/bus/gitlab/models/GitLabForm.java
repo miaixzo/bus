@@ -34,6 +34,10 @@ public class GitLabForm {
 
     private Map<String, GitLabFormValue> formValues = new LinkedHashMap<>();
 
+    /**
+     * Constructs a new {@code GitLabForm} instance.
+     */
+
     public GitLabForm() {
         super();
     }
@@ -158,6 +162,12 @@ public class GitLabForm {
         formValues.put(name, new GitLabFormValue(value, GitLabFormValueType.OBJECT, required));
         return this;
     }
+
+    /**
+     * Returns the form values.
+     *
+     * @return the result
+     */
 
     public Map<String, GitLabFormValue> getFormValues() {
         return formValues;

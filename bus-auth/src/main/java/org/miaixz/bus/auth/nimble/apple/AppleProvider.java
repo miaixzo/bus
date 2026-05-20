@@ -55,8 +55,10 @@ import org.miaixz.bus.logger.Logger;
  */
 public class AppleProvider extends AbstractProvider {
 
-    private static final String AUD = "https://appleid.apple.com";
-
+    /**
+     * The private key value.
+     *
+     */
     private volatile PrivateKey privateKey;
 
     /**

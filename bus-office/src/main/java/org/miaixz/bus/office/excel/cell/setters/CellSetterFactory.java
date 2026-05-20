@@ -37,6 +37,13 @@ import org.apache.poi.ss.usermodel.RichTextString;
 public class CellSetterFactory {
 
     /**
+     * Constructs a new CellSetterFactory instance.
+     */
+    public CellSetterFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a {@link CellSetter} for the given value's type.
      *
      * @param value The value to be set in the cell.

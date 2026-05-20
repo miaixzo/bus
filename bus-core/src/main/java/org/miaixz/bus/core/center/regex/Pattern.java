@@ -34,6 +34,13 @@ import org.miaixz.bus.core.lang.Regex;
 public class Pattern {
 
     /**
+     * Constructs a new Pattern instance.
+     */
+    public Pattern() {
+        // No initialization required.
+    }
+
+    /**
      * Regular expression for English letters, numbers, and underscores.
      */
     public static final java.util.regex.Pattern GENERAL_PATTERN = java.util.regex.Pattern.compile(Regex.GENERAL);

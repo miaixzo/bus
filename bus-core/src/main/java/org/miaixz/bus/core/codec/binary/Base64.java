@@ -47,6 +47,7 @@ public class Base64 {
      * Constructs a new Base64. Utility class constructor for static access.
      */
     private Base64() {
+        // No initialization required.
     }
 
     /**

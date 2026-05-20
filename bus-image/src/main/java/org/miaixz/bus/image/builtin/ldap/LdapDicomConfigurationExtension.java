@@ -40,6 +40,13 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
 public class LdapDicomConfigurationExtension {
 
     /**
+     * Constructs a new LdapDicomConfigurationExtension instance.
+     */
+    public LdapDicomConfigurationExtension() {
+        // No initialization required.
+    }
+
+    /**
      * The config value.
      */
     protected LdapDicomConfiguration config;

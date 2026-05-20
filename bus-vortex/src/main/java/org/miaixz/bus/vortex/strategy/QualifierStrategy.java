@@ -49,7 +49,6 @@ import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * Basic qualifier strategy for routes without protocol-specific qualification rules.
@@ -111,60 +110,59 @@ public class QualifierStrategy extends AbstractStrategy {
             String version = requestRoute.versionPart();
             Integer verb = requestRoute.verbPart();
 
-            return Mono.fromCallable(() -> this.registry.get(requestRoute)).subscribeOn(Schedulers.boundedElastic())
-                    .switchIfEmpty(Mono.defer(() -> {
-                        Logger.warn(
-                                false,
-                                "Vortex",
-                                "Asset not found: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}",
-                                context.getX_request_ip(),
-                                namespace,
-                                type,
-                                appId,
-                                method,
-                                version,
-                                verb);
-                        return Mono.error(new ValidateException(ErrorCode._100800));
-                    })).flatMap(match -> {
-                        Assets assets = match.assets();
-                        context.setAssets(assets);
-                        Logger.info(
-                                true,
-                                "Vortex",
-                                "Asset resolved: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
-                                context.getX_request_ip(),
-                                assets.getNamespace_id(),
-                                assets.getType(),
-                                assets.getApp_id(),
-                                assets.getMethod(),
-                                assets.getVersion(),
-                                assets.getVerb(),
-                                assets.getPolicy(),
-                                assets.getSign(),
-                                assets.getProtocol(),
-                                assets.getHost(),
-                                assets.getPort(),
-                                assets.getPath(),
-                                assets.getUrl());
-                        Mono<Void> validationMono = this.method(context, assets);
-                        Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? this.authorize(
+            return Mono.defer(() -> Mono.justOrEmpty(this.registry.get(requestRoute))).switchIfEmpty(Mono.defer(() -> {
+                Logger.warn(
+                        false,
+                        "Vortex",
+                        "Asset not found: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}",
+                        context.getX_request_ip(),
+                        namespace,
+                        type,
+                        appId,
+                        method,
+                        version,
+                        verb);
+                return Mono.error(new ValidateException(ErrorCode._100800));
+            })).flatMap(match -> {
+                Assets assets = match.assets();
+                context.setAssets(assets);
+                Logger.info(
+                        true,
+                        "Vortex",
+                        "Asset resolved: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
+                        context.getX_request_ip(),
+                        assets.getNamespace_id(),
+                        assets.getType(),
+                        assets.getApp_id(),
+                        assets.getMethod(),
+                        assets.getVersion(),
+                        assets.getVerb(),
+                        assets.getPolicy(),
+                        assets.getSign(),
+                        assets.getProtocol(),
+                        assets.getHost(),
+                        assets.getPort(),
+                        assets.getPath(),
+                        assets.getUrl());
+                Mono<Void> validationMono = this.method(context, assets);
+                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy())
+                        ? this.authorize(
                                 context,
                                 attributes -> exchange.getAttributes().put(AUTHORIZATION_ATTRIBUTES, attributes))
-                                : Mono.empty();
-                        return validationMono.then(authMono);
-                    })
-                    .then(
-                            Mono.fromRunnable(
-                                    () -> Logger.info(
-                                            true,
-                                            "Vortex",
-                                            "Qualifier completed: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}",
-                                            context.getX_request_ip(),
-                                            namespace,
-                                            type,
-                                            appId,
-                                            method,
-                                            version)))
+                        : Mono.empty();
+                return validationMono.then(authMono);
+            }).then(
+                    Mono.fromRunnable(
+                            () -> Logger.info(
+                                    true,
+                                    "Vortex",
+                                    "Qualifier completed: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}",
+                                    context.getX_request_ip(),
+                                    namespace,
+                                    type,
+                                    appId,
+                                    method,
+                                    version)))
                     .then(chain.apply(exchange));
         });
     }

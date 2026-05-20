@@ -45,6 +45,13 @@ import org.miaixz.bus.image.metric.json.JSONReader;
 public class Json2Dcm {
 
     /**
+     * Constructs a new Json2Dcm instance.
+     */
+    public Json2Dcm() {
+        // No initialization required.
+    }
+
+    /**
      * Descriptor for handling bulk data.
      */
     private final BasicBulkDataDescriptor bulkDataDescriptor = new BasicBulkDataDescriptor();

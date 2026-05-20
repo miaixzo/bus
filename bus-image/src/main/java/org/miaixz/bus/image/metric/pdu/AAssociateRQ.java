@@ -30,6 +30,13 @@ import org.miaixz.bus.core.lang.Normal;
 public class AAssociateRQ extends AAssociateRQAC {
 
     /**
+     * Constructs a new AAssociateRQ instance.
+     */
+    public AAssociateRQ() {
+        // No initialization required.
+    }
+
+    /**
      * Sets the identity ac.
      *
      * @param identityAC the identity ac.

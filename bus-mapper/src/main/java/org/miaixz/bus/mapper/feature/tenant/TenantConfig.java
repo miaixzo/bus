@@ -22,7 +22,6 @@ package org.miaixz.bus.mapper.feature.tenant;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -81,7 +80,6 @@ import org.miaixz.bus.mapper.Charter.Isolation;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class TenantConfig {
 
     /**
@@ -123,6 +121,28 @@ public class TenantConfig {
      * Tenant ID resolver.
      */
     private final TenantProvider provider;
+
+    /**
+     * Creates a tenant configuration.
+     *
+     * @param mode           the tenant isolation strategy
+     * @param column         the tenant id column name
+     * @param ignore         ignored table names
+     * @param ignoreMappers  ignored mapper class names
+     * @param tablePrefix    table prefix applied before tenant filtering
+     * @param enableSqlCache whether SQL cache is enabled
+     * @param provider       tenant id resolver
+     */
+    public TenantConfig(Isolation mode, String column, List<String> ignore, List<String> ignoreMappers,
+            String tablePrefix, boolean enableSqlCache, TenantProvider provider) {
+        this.mode = mode;
+        this.column = column;
+        this.ignore = ignore;
+        this.ignoreMappers = ignoreMappers;
+        this.tablePrefix = tablePrefix;
+        this.enableSqlCache = enableSqlCache;
+        this.provider = provider;
+    }
 
     /**
      * Create a TenantConfig with custom provider and default settings.

@@ -43,29 +43,71 @@ public class References implements Serializable {
     private String relative;
     private String full;
 
+    /**
+     * Returns the short.
+     *
+     * @return the result
+     */
+
     public String getShort() {
         return _short;
     }
+
+    /**
+     * Sets the short.
+     *
+     * @param _short the short value
+     */
 
     public void setShort(String _short) {
         this._short = _short;
     }
 
+    /**
+     * Returns the relative.
+     *
+     * @return the result
+     */
+
     public String getRelative() {
         return relative;
     }
+
+    /**
+     * Sets the relative.
+     *
+     * @param relative the relative value
+     */
 
     public void setRelative(String relative) {
         this.relative = relative;
     }
 
+    /**
+     * Returns the full.
+     *
+     * @return the result
+     */
+
     public String getFull() {
         return full;
     }
 
+    /**
+     * Sets the full.
+     *
+     * @param full the full value
+     */
+
     public void setFull(String full) {
         this.full = full;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

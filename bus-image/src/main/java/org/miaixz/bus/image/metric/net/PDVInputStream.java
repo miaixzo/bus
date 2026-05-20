@@ -34,6 +34,13 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public abstract class PDVInputStream extends InputStream {
 
     /**
+     * Constructs a new {@code PDVInputStream} instance.
+     */
+    public PDVInputStream() {
+        // No initialization required.
+    }
+
+    /**
      * Reads the dataset.
      *
      * @param tsuid the tsuid.

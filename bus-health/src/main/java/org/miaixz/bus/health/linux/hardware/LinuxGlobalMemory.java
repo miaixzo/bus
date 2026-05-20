@@ -43,6 +43,13 @@ import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 public final class LinuxGlobalMemory extends AbstractGlobalMemory {
 
     /**
+     * Constructs a new {@code LinuxGlobalMemory} instance.
+     */
+    public LinuxGlobalMemory() {
+        // No initialization required.
+    }
+
+    /**
      * The PAGE_SIZE constant.
      */
     private static final long PAGE_SIZE = LinuxOperatingSystem.getPageSize();

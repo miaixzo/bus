@@ -41,6 +41,12 @@ import org.miaixz.bus.gitlab.models.Milestone;
  */
 public class MilestonesApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code MilestonesApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public MilestonesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
@@ -671,6 +677,8 @@ public class MilestonesApi extends AbstractApi {
      * @param milestoneId     the milestone ID to get the merge requests for
      * @return a Pager of merge requests associated with the specified milestone
      * @throws GitLabApiException if any exception occurs
+     *
+     * @param itemsPerPage the items per page value
      */
     public Pager<MergeRequest> getMergeRequest(Object projectIdOrPath, Long milestoneId, int itemsPerPage)
             throws GitLabApiException {

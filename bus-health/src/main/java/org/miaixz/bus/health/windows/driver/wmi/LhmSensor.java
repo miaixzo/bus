@@ -63,7 +63,18 @@ public final class LhmSensor {
      * @since Java 21+
      */
     public enum LhmSensorProperty {
-        NAME, VALUE, PARENT;
+        /**
+         * The name lhm sensor property.
+         */
+        NAME,
+        /**
+         * The value lhm sensor property.
+         */
+        VALUE,
+        /**
+         * The parent lhm sensor property.
+         */
+        PARENT;
 
     }
 
@@ -74,7 +85,14 @@ public final class LhmSensor {
      * @since Java 21+
      */
     public enum LhmHardwareProperty {
-        IDENTIFIER, NAME;
+        /**
+         * The identifier lhm hardware property.
+         */
+        IDENTIFIER,
+        /**
+         * The name lhm hardware property.
+         */
+        NAME;
 
     }
 
@@ -82,6 +100,7 @@ public final class LhmSensor {
      * Creates a new LhmSensor instance.
      */
     private LhmSensor() {
+        // No initialization required.
     }
 
     /**

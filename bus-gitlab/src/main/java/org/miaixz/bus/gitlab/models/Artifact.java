@@ -44,37 +44,91 @@ public class Artifact implements Serializable {
     private String filename;
     private String fileFormat;
 
+    /**
+     * Returns the file type.
+     *
+     * @return the result
+     */
+
     public FileType getFileType() {
         return fileType;
     }
+
+    /**
+     * Sets the file type.
+     *
+     * @param fileType the file type value
+     */
 
     public void setFileType(FileType fileType) {
         this.fileType = fileType;
     }
 
+    /**
+     * Returns the size.
+     *
+     * @return the result
+     */
+
     public Long getSize() {
         return size;
     }
+
+    /**
+     * Sets the size.
+     *
+     * @param size the size value
+     */
 
     public void setSize(Long size) {
         this.size = size;
     }
 
+    /**
+     * Returns the filename.
+     *
+     * @return the result
+     */
+
     public String getFilename() {
         return filename;
     }
+
+    /**
+     * Sets the filename.
+     *
+     * @param filename the filename value
+     */
 
     public void setFilename(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Returns the file format.
+     *
+     * @return the result
+     */
+
     public String getFileFormat() {
         return fileFormat;
     }
 
+    /**
+     * Sets the file format.
+     *
+     * @param fileFormat the file format value
+     */
+
     public void setFileFormat(String fileFormat) {
         this.fileFormat = fileFormat;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {
@@ -89,19 +143,53 @@ public class Artifact implements Serializable {
      */
     public enum FileType {
 
-        ARCHIVE, METADATA, TRACE, JUNIT;
+        /**
+         * The archive file type.
+         */
+        ARCHIVE,
+        /**
+         * The metadata file type.
+         */
+        METADATA,
+        /**
+         * The trace file type.
+         */
+        TRACE,
+        /**
+         * The junit file type.
+         */
+        JUNIT;
 
         private static JacksonJsonEnumHelper<FileType> enumHelper = new JacksonJsonEnumHelper<>(FileType.class);
+
+        /**
+         * Executes the for value operation.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static FileType forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Executes the to value operation.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {

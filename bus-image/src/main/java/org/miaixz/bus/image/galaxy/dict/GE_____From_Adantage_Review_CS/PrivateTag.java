@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.GE_____From_Adantage_Review_CS;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GE ??? From Adantage Review CS";

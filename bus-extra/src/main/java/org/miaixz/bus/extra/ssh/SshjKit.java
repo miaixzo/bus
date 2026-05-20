@@ -38,6 +38,13 @@ import org.miaixz.bus.logger.Logger;
 public class SshjKit {
 
     /**
+     * Constructs a new SshjKit instance.
+     */
+    public SshjKit() {
+        // No initialization required.
+    }
+
+    /**
      * Opens and authenticates an SSH client connection using the provided connection details. This method configures
      * the client with a promiscuous host key verifier, sets timeouts, connects to the server, and authenticates using a
      * password.

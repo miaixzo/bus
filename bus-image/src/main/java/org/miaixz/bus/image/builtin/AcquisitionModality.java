@@ -34,6 +34,13 @@ import org.miaixz.bus.image.galaxy.data.Code;
 public class AcquisitionModality {
 
     /**
+     * Constructs a new AcquisitionModality instance.
+     */
+    public AcquisitionModality() {
+        // No initialization required.
+    }
+
+    /**
      * The autorefraction value.
      */
     public static final Code Autorefraction = new Code("AR", "DCM", null, "Autorefraction");

@@ -35,6 +35,13 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class MSFTStorage {
 
     /**
+     * Constructs a new {@code MSFTStorage} instance.
+     */
+    public MSFTStorage() {
+        // No initialization required.
+    }
+
+    /**
      * The WMI namespace for storage.
      */
     public static final String STORAGE_NAMESPACE = "ROOT\\Microsoft\\Windows\\Storage";
@@ -115,8 +122,14 @@ public final class MSFTStorage {
      * @since Java 21+
      */
     public enum StoragePoolProperty {
-        FRIENDLYNAME, OBJECTID
-
+        /**
+         * The friendlyname storage pool property.
+         */
+        FRIENDLYNAME,
+        /**
+         * The objectid storage pool property.
+         */
+        OBJECTID;
     }
 
     /**
@@ -127,8 +140,14 @@ public final class MSFTStorage {
      * @since Java 21+
      */
     public enum StoragePoolToPhysicalDiskProperty {
-        STORAGEPOOL, PHYSICALDISK
-
+        /**
+         * The storagepool storage pool to physical disk property.
+         */
+        STORAGEPOOL,
+        /**
+         * The physicaldisk storage pool to physical disk property.
+         */
+        PHYSICALDISK;
     }
 
     /**
@@ -138,8 +157,18 @@ public final class MSFTStorage {
      * @since Java 21+
      */
     public enum PhysicalDiskProperty {
-        FRIENDLYNAME, PHYSICALLOCATION, OBJECTID
-
+        /**
+         * The friendlyname physical disk property.
+         */
+        FRIENDLYNAME,
+        /**
+         * The physicallocation physical disk property.
+         */
+        PHYSICALLOCATION,
+        /**
+         * The objectid physical disk property.
+         */
+        OBJECTID;
     }
 
     /**
@@ -149,8 +178,14 @@ public final class MSFTStorage {
      * @since Java 21+
      */
     public enum VirtualDiskProperty {
-        FRIENDLYNAME, OBJECTID
-
+        /**
+         * The friendlyname virtual disk property.
+         */
+        FRIENDLYNAME,
+        /**
+         * The objectid virtual disk property.
+         */
+        OBJECTID;
     }
 
 }

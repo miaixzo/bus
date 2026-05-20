@@ -279,6 +279,8 @@ public final class PerfDataKit {
         }
 
         /**
+         * Executes the object. operation.
+         *
          * @return Returns the object.
          */
         public String getObject() {
@@ -286,6 +288,8 @@ public final class PerfDataKit {
         }
 
         /**
+         * Executes the instance. operation.
+         *
          * @return Returns the instance.
          */
         public String getInstance() {
@@ -293,6 +297,8 @@ public final class PerfDataKit {
         }
 
         /**
+         * Executes the counter. operation.
+         *
          * @return Returns the counter.
          */
         public String getCounter() {
@@ -300,6 +306,8 @@ public final class PerfDataKit {
         }
 
         /**
+         * Executes the counter operation.
+         *
          * @return Returns whether the counter is a base counter
          */
         public boolean isBaseCounter() {

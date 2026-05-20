@@ -45,6 +45,13 @@ class PagerSpliterator<T> implements Spliterator<T> {
         }
     }
 
+    /**
+     * Executes the try advance operation.
+     *
+     * @param action the action value
+     * @return the result
+     */
+
     @Override
     public boolean tryAdvance(Consumer<? super T> action) {
         if (action == null) {
@@ -63,15 +70,33 @@ class PagerSpliterator<T> implements Spliterator<T> {
         return false;
     }
 
+    /**
+     * Executes the try split operation.
+     *
+     * @return the result
+     */
+
     @Override
     public Spliterator<T> trySplit() {
         return null;
     }
 
+    /**
+     * Executes the estimate size operation.
+     *
+     * @return the result
+     */
+
     @Override
     public long estimateSize() {
         return pager.getTotalItems();
     }
+
+    /**
+     * Executes the characteristics operation.
+     *
+     * @return the result
+     */
 
     @Override
     public int characteristics() {

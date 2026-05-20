@@ -36,6 +36,13 @@ import org.miaixz.bus.validate.magic.annotation.Regex;
 public class RegexMatcher implements Matcher<Object, Regex> {
 
     /**
+     * Constructs a new RegexMatcher instance.
+     */
+    public RegexMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object, when converted to a string, matches the regular expression specified in the
      * {@link Regex} annotation.
      *

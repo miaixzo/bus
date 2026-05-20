@@ -54,7 +54,7 @@ public class FastJsonProvider extends AbstractJsonProvider {
      * Constructs a new {@code FastJsonProvider} instance.
      */
     public FastJsonProvider() {
-
+        // No initialization required.
     }
 
     /**

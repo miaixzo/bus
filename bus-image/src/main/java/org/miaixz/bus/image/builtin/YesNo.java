@@ -31,6 +31,13 @@ import org.miaixz.bus.image.galaxy.data.Code;
 public class YesNo {
 
     /**
+     * Constructs a new {@code YesNo} instance.
+     */
+    public YesNo() {
+        // No initialization required.
+    }
+
+    /**
      * Code representing a 'Yes' response.
      */
     public static final Code Yes = new Code("373066001", "SCT", null, "Yes");

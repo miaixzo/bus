@@ -32,20 +32,46 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
  */
 public enum HealthCheckStatus {
 
-    OK, FAILED;
+    /**
+     * The ok health check status.
+     */
+    OK,
+    /**
+     * The failed health check status.
+     */
+    FAILED;
 
     private static JacksonJsonEnumHelper<HealthCheckStatus> enumHelper = new JacksonJsonEnumHelper<>(
             HealthCheckStatus.class);
+
+    /**
+     * Returns the value.
+     *
+     * @param value the value value
+     * @return the result
+     */
 
     @JsonCreator
     public static HealthCheckStatus forValue(String value) {
         return enumHelper.forValue(value);
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     @JsonValue
     public String toValue() {
         return enumHelper.toString(this);
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

@@ -34,6 +34,13 @@ import org.miaixz.bus.health.linux.SysPath;
 public final class Devicetree {
 
     /**
+     * Constructs a new Devicetree instance.
+     */
+    public Devicetree() {
+        // No initialization required.
+    }
+
+    /**
      * Query the model from the devicetree
      *
      * @return The model if available, null otherwise

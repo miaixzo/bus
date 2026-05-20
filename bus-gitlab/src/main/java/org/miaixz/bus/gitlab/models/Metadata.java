@@ -42,37 +42,91 @@ public class Metadata implements Serializable {
     private Kas kas;
     private Boolean enterprise;
 
+    /**
+     * Returns the version.
+     *
+     * @return the result
+     */
+
     public String getVersion() {
         return version;
     }
+
+    /**
+     * Sets the version.
+     *
+     * @param version the version value
+     */
 
     public void setVersion(String version) {
         this.version = version;
     }
 
+    /**
+     * Returns the revision.
+     *
+     * @return the result
+     */
+
     public String getRevision() {
         return revision;
     }
+
+    /**
+     * Sets the revision.
+     *
+     * @param revision the revision value
+     */
 
     public void setRevision(String revision) {
         this.revision = revision;
     }
 
+    /**
+     * Returns the kas.
+     *
+     * @return the result
+     */
+
     public Kas getKas() {
         return kas;
     }
+
+    /**
+     * Sets the kas.
+     *
+     * @param kas the kas value
+     */
 
     public void setKas(Kas kas) {
         this.kas = kas;
     }
 
+    /**
+     * Returns the enterprise.
+     *
+     * @return the result
+     */
+
     public Boolean getEnterprise() {
         return enterprise;
     }
 
+    /**
+     * Sets the enterprise.
+     *
+     * @param enterprise the enterprise value
+     */
+
     public void setEnterprise(Boolean enterprise) {
         this.enterprise = enterprise;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {
@@ -94,29 +148,71 @@ public class Metadata implements Serializable {
 
         private String version;
 
+        /**
+         * Returns the enabled.
+         *
+         * @return the result
+         */
+
         public Boolean getEnabled() {
             return enabled;
         }
+
+        /**
+         * Sets the enabled.
+         *
+         * @param enabled the enabled value
+         */
 
         public void setEnabled(Boolean enabled) {
             this.enabled = enabled;
         }
 
+        /**
+         * Returns the external url.
+         *
+         * @return the result
+         */
+
         public String getExternalUrl() {
             return externalUrl;
         }
+
+        /**
+         * Sets the external url.
+         *
+         * @param externalUrl the external url value
+         */
 
         public void setExternalUrl(String externalUrl) {
             this.externalUrl = externalUrl;
         }
 
+        /**
+         * Returns the version.
+         *
+         * @return the result
+         */
+
         public String getVersion() {
             return version;
         }
 
+        /**
+         * Sets the version.
+         *
+         * @param version the version value
+         */
+
         public void setVersion(String version) {
             this.version = version;
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {

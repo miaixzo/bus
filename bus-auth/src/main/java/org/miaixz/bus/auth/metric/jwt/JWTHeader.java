@@ -31,6 +31,13 @@ import java.util.Map;
  */
 public class JWTHeader extends Claims {
 
+    /**
+     * Constructs a new JWTHeader instance.
+     */
+    public JWTHeader() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852289258085L;
 

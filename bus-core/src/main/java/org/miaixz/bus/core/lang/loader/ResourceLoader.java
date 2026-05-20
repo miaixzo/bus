@@ -37,7 +37,7 @@ public abstract class ResourceLoader implements Loader {
      * Constructs a resource loader.
      */
     protected ResourceLoader() {
-
+        // No initialization required.
     }
 
     /**
@@ -93,7 +93,7 @@ public abstract class ResourceLoader implements Loader {
          * Constructs a resource enumerator.
          */
         protected ResourceEnumerator() {
-
+            // No initialization required.
         }
 
         /**

@@ -31,7 +31,6 @@
  * transitively.</li>
  * <li>{@code spring.webflux}, {@code reactor.core}: The reactive foundation for the entire gateway, marked as as this
  * is a framework.</li>
- * <li>{@code com.google.common}: Used for utilities like the {@code RateLimiter}.</li>
  * </ul>
  * <p>
  * Exported API Packages:
@@ -50,8 +49,8 @@
  */
 module bus.vortex {
 
-    requires bus.core;
     requires bus.cache;
+    requires bus.core;
     requires bus.cortex;
     requires bus.crypto;
     requires bus.extra;
@@ -62,17 +61,16 @@ module bus.vortex {
     requires lombok;
     requires jakarta.annotation;
     requires jakarta.servlet;
-    requires spring.core;
     requires spring.beans;
     requires spring.context;
+    requires spring.core;
     requires spring.web;
     requires spring.webflux;
     requires reactor.core;
-    requires reactor.netty.http;
     requires reactor.netty.core;
+    requires reactor.netty.http;
     requires io.netty.handler;
     requires org.reactivestreams;
-    requires com.google.common;
 
     exports org.miaixz.bus.vortex;
     exports org.miaixz.bus.vortex.filter;

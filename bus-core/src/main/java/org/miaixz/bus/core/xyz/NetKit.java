@@ -50,6 +50,13 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class NetKit {
 
     /**
+     * Constructs a new NetKit instance.
+     */
+    public NetKit() {
+        // No initialization required.
+    }
+
+    /**
      * Converts a long value to an IPv4 address string.
      *
      * @param longIP The long representation of the IP address.

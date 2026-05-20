@@ -57,6 +57,7 @@ public class ByteKit {
      * Constructs a new ByteKit. Utility class constructor for static access.
      */
     private ByteKit() {
+        // No initialization required.
     }
 
     /**

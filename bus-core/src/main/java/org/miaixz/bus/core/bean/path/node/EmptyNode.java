@@ -32,6 +32,7 @@ public class EmptyNode implements Node {
      * Constructs a new EmptyNode. Utility class constructor for static access.
      */
     private EmptyNode() {
+        // No initialization required.
     }
 
     /**

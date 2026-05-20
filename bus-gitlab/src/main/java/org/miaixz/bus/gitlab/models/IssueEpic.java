@@ -34,6 +34,12 @@ public class IssueEpic extends AbstractMinimalEpic<IssueEpic> {
     @Serial
     private static final long serialVersionUID = 2852257290207L;
 
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));

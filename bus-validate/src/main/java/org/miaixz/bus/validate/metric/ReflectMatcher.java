@@ -41,6 +41,13 @@ import org.miaixz.bus.validate.magic.annotation.Reflect;
 public class ReflectMatcher implements Matcher<Object, Reflect> {
 
     /**
+     * Constructs a new ReflectMatcher instance.
+     */
+    public ReflectMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Performs validation by invoking a method reflectively and then applying other validators to its result.
      *
      * @param object     The object on which the method will be invoked.

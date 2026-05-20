@@ -44,6 +44,13 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class NanoId {
 
     /**
+     * Constructs a new NanoId instance.
+     */
+    public NanoId() {
+        // No initialization required.
+    }
+
+    /**
      * The default length of the ID.
      */
     public static final int DEFAULT_SIZE = 21;

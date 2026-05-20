@@ -72,6 +72,7 @@ public final class KstatKit {
      * Creates a new KstatKit instance.
      */
     private KstatKit() {
+        // No initialization required.
     }
 
     /**

@@ -41,6 +41,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class DubboConfiguration {
 
     /**
+     * Constructs a new DubboConfiguration instance.
+     */
+    public DubboConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected Dubbo configuration properties.
      */
     @Resource

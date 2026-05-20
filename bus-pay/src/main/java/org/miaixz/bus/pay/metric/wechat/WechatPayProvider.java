@@ -208,6 +208,16 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
         return doPostSslByProtocol(getUrl(complex), params, certFile, certPass, protocol);
     }
 
+    /**
+     * Executes an SSL upload request.
+     *
+     * @param complex  API endpoint descriptor
+     * @param params   request parameters
+     * @param certPath certificate file path
+     * @param certPass certificate password
+     * @param filePath upload file path
+     * @return request result
+     */
     public String execution(
             Complex complex,
             Map<String, String> params,
@@ -217,6 +227,23 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
         return doUploadSsl(getUrl(complex), params, certPath, certPass, filePath);
     }
 
+    /**
+     * Executes the execution by protocol operation.
+     *
+     * @return the result
+     *
+     * @param complex  the complex value
+     *
+     * @param params   the params value
+     *
+     * @param certPath the cert path value
+     *
+     * @param certPass the cert pass value
+     *
+     * @param filePath the file path value
+     *
+     * @param protocol the protocol value
+     */
     public String executionByProtocol(
             Complex complex,
             Map<String, String> params,
@@ -811,6 +838,7 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @param params    The request parameters.
      * @param certPath  The path to the certificate file.
      * @param certPass  The certificate password.
+     * @param protocol  The SSL protocol.
      * @return The result of the request.
      */
     public String orderRefundByProtocol(

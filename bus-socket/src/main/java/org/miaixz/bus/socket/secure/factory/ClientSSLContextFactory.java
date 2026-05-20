@@ -55,6 +55,7 @@ public class ClientSSLContextFactory implements SSLContextFactory {
      * Constructs a default {@code ClientSSLContextFactory} that trusts all server certificates.
      */
     public ClientSSLContextFactory() {
+        // No initialization required.
     }
 
     /**

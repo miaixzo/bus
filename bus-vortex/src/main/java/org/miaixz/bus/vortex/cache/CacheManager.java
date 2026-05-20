@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.metric.CaffeineCache;
-import org.miaixz.bus.cache.metric.GuavaCache;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.Monitor;
@@ -101,12 +100,12 @@ public class CacheManager<K, V> {
         this.cacheExpireMs = Holder.getCacheExpireMs();
 
         this.cache = new ConcurrentHashMap<>();
-        this.cachex = new GuavaCache<>(cacheSize, cacheExpireMs);
+        this.cachex = new CaffeineCache<>(cacheSize, cacheExpireMs);
 
         Logger.debug(
                 false,
                 "Vortex",
-                "Cache initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
+                "Cache initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
@@ -122,7 +121,7 @@ public class CacheManager<K, V> {
         this.cacheExpireMs = cacheExpireMs;
 
         this.cache = new ConcurrentHashMap<>();
-        this.cachex = new CaffeineCache(cacheSize, cacheExpireMs);
+        this.cachex = new CaffeineCache<>(cacheSize, cacheExpireMs);
 
         Logger.debug(
                 false,

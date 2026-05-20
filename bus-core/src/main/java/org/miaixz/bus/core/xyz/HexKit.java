@@ -45,6 +45,7 @@ public class HexKit extends Hex {
      * Constructs a new HexKit. Utility class constructor for static access.
      */
     private HexKit() {
+        // No initialization required.
     }
 
     /**

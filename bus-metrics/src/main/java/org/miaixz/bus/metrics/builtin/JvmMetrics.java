@@ -37,6 +37,13 @@ import org.miaixz.bus.metrics.Metrics;
 public class JvmMetrics {
 
     /**
+     * Constructs a new JvmMetrics instance.
+     */
+    public JvmMetrics() {
+        // No initialization required.
+    }
+
+    /**
      * Register standard JVM gauges: heap/non-heap memory, thread counts, and GC collection stats. Safe to call multiple
      * times; subsequent calls are no-ops due to provider-level deduplication.
      */

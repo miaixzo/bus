@@ -61,7 +61,7 @@ public final class Cortex {
      * Creates the static facade holder.
      */
     private Cortex() {
-
+        // No initialization required.
     }
 
     /**

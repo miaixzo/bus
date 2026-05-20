@@ -46,6 +46,14 @@ public class CommitAction implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852239693533L;
 
+    /**
+     * Sets the file content and returns this instance.
+     *
+     * @param filePath the file path value
+     * @param encoding the encoding value
+     * @return the result
+     */
+
     public CommitAction withFileContent(String filePath, Encoding encoding) {
         File file = new File(filePath);
         return (withFileContent(file, filePath, encoding));
@@ -82,96 +90,238 @@ public class CommitAction implements Serializable {
         }
     }
 
+    /**
+     * Returns the action.
+     *
+     * @return the result
+     */
+
     public Action getAction() {
         return action;
     }
 
+    /**
+     * Sets the action.
+     *
+     * @param action the action value
+     */
+
     public void setAction(Action action) {
         this.action = action;
     }
+
+    /**
+     * Sets the action and returns this instance.
+     *
+     * @param action the action value
+     * @return the result
+     */
 
     public CommitAction withAction(Action action) {
         this.action = action;
         return this;
     }
 
+    /**
+     * Returns the file path.
+     *
+     * @return the result
+     */
+
     public String getFilePath() {
         return filePath;
     }
 
+    /**
+     * Sets the file path.
+     *
+     * @param filePath the file path value
+     */
+
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+
+    /**
+     * Sets the file path and returns this instance.
+     *
+     * @param filePath the file path value
+     * @return the result
+     */
 
     public CommitAction withFilePath(String filePath) {
         this.filePath = filePath;
         return this;
     }
 
+    /**
+     * Returns the previous path.
+     *
+     * @return the result
+     */
+
     public String getPreviousPath() {
         return previousPath;
     }
 
+    /**
+     * Sets the previous path.
+     *
+     * @param previousPath the previous path value
+     */
+
     public void setPreviousPath(String previousPath) {
         this.previousPath = previousPath;
     }
+
+    /**
+     * Sets the previous path and returns this instance.
+     *
+     * @param previousPath the previous path value
+     * @return the result
+     */
 
     public CommitAction withPreviousPath(String previousPath) {
         this.previousPath = previousPath;
         return this;
     }
 
+    /**
+     * Returns the content.
+     *
+     * @return the result
+     */
+
     public String getContent() {
         return content;
     }
 
+    /**
+     * Sets the content.
+     *
+     * @param content the content value
+     */
+
     public void setContent(String content) {
         this.content = content;
     }
+
+    /**
+     * Sets the content and returns this instance.
+     *
+     * @param content the content value
+     * @return the result
+     */
 
     public CommitAction withContent(String content) {
         this.content = content;
         return this;
     }
 
+    /**
+     * Returns the encoding.
+     *
+     * @return the result
+     */
+
     public Encoding getEncoding() {
         return encoding;
     }
 
+    /**
+     * Sets the encoding.
+     *
+     * @param encoding the encoding value
+     */
+
     public void setEncoding(Encoding encoding) {
         this.encoding = encoding;
     }
+
+    /**
+     * Sets the encoding and returns this instance.
+     *
+     * @param encoding the encoding value
+     * @return the result
+     */
 
     public CommitAction withEncoding(Encoding encoding) {
         this.encoding = encoding;
         return this;
     }
 
+    /**
+     * Returns the last commit id.
+     *
+     * @return the result
+     */
+
     public String getLastCommitId() {
         return lastCommitId;
     }
 
+    /**
+     * Sets the last commit id.
+     *
+     * @param lastCommitId the last commit id value
+     */
+
     public void setLastCommitId(String lastCommitId) {
         this.lastCommitId = lastCommitId;
     }
+
+    /**
+     * Sets the last commit id and returns this instance.
+     *
+     * @param lastCommitId the last commit id value
+     * @return the result
+     */
 
     public CommitAction withLastCommitId(String lastCommitId) {
         this.lastCommitId = lastCommitId;
         return this;
     }
 
+    /**
+     * Returns the execute filemode.
+     *
+     * @return the result
+     */
+
     public Boolean getExecuteFilemode() {
         return executeFilemode;
     }
+
+    /**
+     * Sets the execute filemode.
+     *
+     * @param executeFilemode the execute filemode value
+     */
 
     public void setExecuteFilemode(Boolean executeFilemode) {
         this.executeFilemode = executeFilemode;
     }
 
+    /**
+     * Sets the execute filemode and returns this instance.
+     *
+     * @param executeFilemode the execute filemode value
+     * @return the result
+     */
+
     public CommitAction withExecuteFilemode(Boolean executeFilemode) {
         this.executeFilemode = executeFilemode;
         return this;
     }
+
+    /**
+     * Sets the file content and returns this instance.
+     *
+     * @param file     the file value
+     * @param filePath the file path value
+     * @param encoding the encoding value
+     * @return the result
+     */
 
     public CommitAction withFileContent(File file, String filePath, Encoding encoding) {
 
@@ -204,19 +354,57 @@ public class CommitAction implements Serializable {
      */
     public enum Action {
 
-        CREATE, DELETE, MOVE, UPDATE, CHMOD;
+        /**
+         * The create action.
+         */
+        CREATE,
+        /**
+         * The delete action.
+         */
+        DELETE,
+        /**
+         * The move action.
+         */
+        MOVE,
+        /**
+         * The update action.
+         */
+        UPDATE,
+        /**
+         * The chmod action.
+         */
+        CHMOD;
 
         private static JacksonJsonEnumHelper<Action> enumHelper = new JacksonJsonEnumHelper<>(Action.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static Action forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -224,6 +412,12 @@ public class CommitAction implements Serializable {
         }
 
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

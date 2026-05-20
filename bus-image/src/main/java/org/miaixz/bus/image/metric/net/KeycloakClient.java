@@ -83,6 +83,7 @@ public class KeycloakClient {
      * Creates a new instance.
      */
     public KeycloakClient() {
+        // No initialization required.
     }
 
     /**

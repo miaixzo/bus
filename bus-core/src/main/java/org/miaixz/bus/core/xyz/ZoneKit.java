@@ -34,6 +34,13 @@ import org.miaixz.bus.core.lang.Keys;
 public class ZoneKit {
 
     /**
+     * Constructs a new {@code ZoneKit} instance.
+     */
+    public ZoneKit() {
+        // No initialization required.
+    }
+
+    /**
      * Converts a {@link TimeZone} to a {@link ZoneId}.
      *
      * @param timeZone The `TimeZone`. If `null`, returns the system default `ZoneId`.

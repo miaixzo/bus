@@ -41,6 +41,13 @@ import org.miaixz.bus.core.xyz.FileKit;
 public class PptKit {
 
     /**
+     * Constructs a new PptKit instance.
+     */
+    public PptKit() {
+        // No initialization required.
+    }
+
+    /**
      * Creates an {@link XMLSlideShow} instance. If the file already exists, it will be opened; otherwise, a new
      * presentation will be created.
      *

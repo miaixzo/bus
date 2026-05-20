@@ -87,7 +87,7 @@ public class UserAgent {
      * Default constructor.
      */
     public UserAgent() {
-
+        // No initialization required.
     }
 
     /**

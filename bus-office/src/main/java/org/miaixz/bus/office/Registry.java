@@ -60,7 +60,7 @@ public class Registry {
      * Constructs a new Registry instance.
      */
     public Registry() {
-
+        // No initialization required.
     }
 
     /**

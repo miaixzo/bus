@@ -45,6 +45,7 @@ public class LlmResponse {
      * Creates an empty LLM response.
      */
     public LlmResponse() {
+        // No initialization required.
     }
 
     /**
@@ -91,6 +92,7 @@ public class LlmResponse {
          * Creates an empty LLM choice.
          */
         public Choice() {
+            // No initialization required.
         }
 
         /**
@@ -124,6 +126,7 @@ public class LlmResponse {
          * Creates an empty LLM response message.
          */
         public Message() {
+            // No initialization required.
         }
 
         /**
@@ -152,6 +155,7 @@ public class LlmResponse {
          * Creates an empty token usage snapshot.
          */
         public Usage() {
+            // No initialization required.
         }
 
         /**

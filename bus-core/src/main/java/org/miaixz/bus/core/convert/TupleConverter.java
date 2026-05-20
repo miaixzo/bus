@@ -36,6 +36,7 @@ public class TupleConverter implements Converter {
      * Constructs a new tuple converter.
      */
     public TupleConverter() {
+        // No initialization required.
     }
 
     /**

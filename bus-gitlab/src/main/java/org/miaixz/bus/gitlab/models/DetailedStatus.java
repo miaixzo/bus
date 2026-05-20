@@ -45,77 +45,191 @@ public class DetailedStatus implements Serializable {
     private String illustration;
     private String favicon;
 
+    /**
+     * Returns the icon.
+     *
+     * @return the result
+     */
+
     public String getIcon() {
         return icon;
     }
+
+    /**
+     * Sets the icon.
+     *
+     * @param icon the icon value
+     */
 
     public void setIcon(String icon) {
         this.icon = icon;
     }
 
+    /**
+     * Returns the text.
+     *
+     * @return the result
+     */
+
     public String getText() {
         return text;
     }
+
+    /**
+     * Sets the text.
+     *
+     * @param text the text value
+     */
 
     public void setText(String text) {
         this.text = text;
     }
 
+    /**
+     * Returns the label.
+     *
+     * @return the result
+     */
+
     public String getLabel() {
         return label;
     }
+
+    /**
+     * Sets the label.
+     *
+     * @param label the label value
+     */
 
     public void setLabel(String label) {
         this.label = label;
     }
 
+    /**
+     * Returns the group.
+     *
+     * @return the result
+     */
+
     public String getGroup() {
         return group;
     }
+
+    /**
+     * Sets the group.
+     *
+     * @param group the group value
+     */
 
     public void setGroup(String group) {
         this.group = group;
     }
 
+    /**
+     * Returns the tooltip.
+     *
+     * @return the result
+     */
+
     public String getTooltip() {
         return tooltip;
     }
+
+    /**
+     * Sets the tooltip.
+     *
+     * @param tooltip the tooltip value
+     */
 
     public void setTooltip(String tooltip) {
         this.tooltip = tooltip;
     }
 
+    /**
+     * Returns the has details.
+     *
+     * @return the result
+     */
+
     public Boolean getHasDetails() {
         return hasDetails;
     }
+
+    /**
+     * Sets the has details.
+     *
+     * @param hasDetails the has details value
+     */
 
     public void setHasDetails(Boolean hasDetails) {
         this.hasDetails = hasDetails;
     }
 
+    /**
+     * Returns the details path.
+     *
+     * @return the result
+     */
+
     public String getDetailsPath() {
         return detailsPath;
     }
+
+    /**
+     * Sets the details path.
+     *
+     * @param detailsPath the details path value
+     */
 
     public void setDetailsPath(String detailsPath) {
         this.detailsPath = detailsPath;
     }
 
+    /**
+     * Returns the illustration.
+     *
+     * @return the result
+     */
+
     public String getIllustration() {
         return illustration;
     }
+
+    /**
+     * Sets the illustration.
+     *
+     * @param illustration the illustration value
+     */
 
     public void setIllustration(String illustration) {
         this.illustration = illustration;
     }
 
+    /**
+     * Returns the favicon.
+     *
+     * @return the result
+     */
+
     public String getFavicon() {
         return favicon;
     }
 
+    /**
+     * Sets the favicon.
+     *
+     * @param favicon the favicon value
+     */
+
     public void setFavicon(String favicon) {
         this.favicon = favicon;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

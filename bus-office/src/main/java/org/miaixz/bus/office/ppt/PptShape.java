@@ -358,6 +358,13 @@ public class PptShape {
     public static class Data {
 
         /**
+         * Constructs a new Data instance.
+         */
+        public Data() {
+            // No initialization required.
+        }
+
+        /**
          * The shape type.
          */
         private Type type;

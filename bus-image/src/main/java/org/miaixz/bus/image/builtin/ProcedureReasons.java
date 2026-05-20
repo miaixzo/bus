@@ -31,6 +31,13 @@ import org.miaixz.bus.image.galaxy.data.Code;
 public class ProcedureReasons {
 
     /**
+     * Constructs a new {@code ProcedureReasons} instance.
+     */
+    public ProcedureReasons() {
+        // No initialization required.
+    }
+
+    /**
      * Code for Equipment failure as a reason for procedure discontinuation.
      */
     public static final Code EquipmentFailure = new Code("110501", "DCM", null, "Equipment failure");

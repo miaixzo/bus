@@ -23,9 +23,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import org.miaixz.bus.core.lang.Symbol;
 
@@ -481,7 +479,6 @@ public final class TableNameParser {
      * @since Java 21+
      */
     @Getter
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SqlToken implements Comparable<SqlToken> {
 
         /**
@@ -498,6 +495,19 @@ public final class TableNameParser {
          * The value of the token.
          */
         private final String value;
+
+        /**
+         * Creates an SQL token.
+         *
+         * @param start the starting position of the token
+         * @param end   the ending position of the token
+         * @param value the token value
+         */
+        private SqlToken(int start, int end, String value) {
+            this.start = start;
+            this.end = end;
+            this.value = value;
+        }
 
         /**
          * Compares this token with another for ordering based on their starting positions.

@@ -70,6 +70,7 @@ public class CacheStats {
      * Creates an empty cache statistics snapshot.
      */
     public CacheStats() {
+        // No initialization required.
     }
 
     /**

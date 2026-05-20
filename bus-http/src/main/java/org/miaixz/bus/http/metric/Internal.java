@@ -37,6 +37,13 @@ import org.miaixz.bus.http.accord.RealConnectionPool;
 public abstract class Internal {
 
     /**
+     * Constructs a new Internal instance.
+     */
+    public Internal() {
+        // No initialization required.
+    }
+
+    /**
      * The singleton instance of this internal API.
      */
     public static Internal instance;

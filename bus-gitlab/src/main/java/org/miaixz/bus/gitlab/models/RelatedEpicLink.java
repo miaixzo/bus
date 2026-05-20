@@ -43,53 +43,131 @@ public class RelatedEpicLink implements Serializable {
     private Date createdAt;
     private Date updatedAt;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the source epic.
+     *
+     * @return the result
+     */
+
     public EpicInLink getSourceEpic() {
         return sourceEpic;
     }
+
+    /**
+     * Sets the source epic.
+     *
+     * @param sourceEpic the source epic value
+     */
 
     public void setSourceEpic(EpicInLink sourceEpic) {
         this.sourceEpic = sourceEpic;
     }
 
+    /**
+     * Returns the target epic.
+     *
+     * @return the result
+     */
+
     public EpicInLink getTargetEpic() {
         return targetEpic;
     }
+
+    /**
+     * Sets the target epic.
+     *
+     * @param targetEpic the target epic value
+     */
 
     public void setTargetEpic(EpicInLink targetEpic) {
         this.targetEpic = targetEpic;
     }
 
+    /**
+     * Returns the link type.
+     *
+     * @return the result
+     */
+
     public LinkType getLinkType() {
         return linkType;
     }
+
+    /**
+     * Sets the link type.
+     *
+     * @param linkType the link type value
+     */
 
     public void setLinkType(LinkType linkType) {
         this.linkType = linkType;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the updated at.
+     *
+     * @return the result
+     */
+
     public Date getUpdatedAt() {
         return updatedAt;
     }
 
+    /**
+     * Sets the updated at.
+     *
+     * @param updatedAt the updated at value
+     */
+
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

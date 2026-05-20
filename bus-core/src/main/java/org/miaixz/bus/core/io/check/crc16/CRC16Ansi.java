@@ -33,6 +33,7 @@ public class CRC16Ansi extends CRC16Checksum {
      * Constructs a new CRC16Ansi. Utility class constructor for static access.
      */
     private CRC16Ansi() {
+        // No initialization required.
     }
 
     @Serial

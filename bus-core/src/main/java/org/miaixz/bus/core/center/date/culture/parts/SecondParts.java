@@ -37,6 +37,7 @@ public abstract class SecondParts extends DayParts {
      * Constructs second-based date parts.
      */
     protected SecondParts() {
+        // No initialization required.
     }
 
     /**

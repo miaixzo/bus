@@ -30,7 +30,6 @@
  * <p>
  * The hierarchy for multi-value maps is as follows:
  *
- *
  * <pre>
  *                   MultiValueMap
  *                         |
@@ -41,7 +40,6 @@
  *
  * <p>
  * The hierarchy for table-like maps is as follows:
- *
  *
  * <pre>
  *                       Table

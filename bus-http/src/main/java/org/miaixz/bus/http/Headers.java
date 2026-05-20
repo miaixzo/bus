@@ -792,6 +792,13 @@ public class Headers {
     public static class Builder {
 
         /**
+         * Constructs a new Builder instance.
+         */
+        public Builder() {
+            // No initialization required.
+        }
+
+        /**
          * List of header names and values.
          */
         final List<String> namesAndValues = new ArrayList<>(20);

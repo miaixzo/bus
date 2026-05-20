@@ -27,9 +27,12 @@ import jakarta.persistence.*;
 import org.apache.ibatis.type.TypeHandler;
 
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
+import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
+import org.miaixz.bus.mapper.parsing.MapperFactory;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.provider.NamingProvider;
 
@@ -41,6 +44,13 @@ import org.miaixz.bus.mapper.provider.NamingProvider;
  * @since Java 21+
  */
 public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
+
+    /**
+     * Constructs a new ColumnAnnotationBuilder instance.
+     */
+    public ColumnAnnotationBuilder() {
+        // No initialization required.
+    }
 
     /**
      * A marker to indicate that a field should not be mapped to a database column.
@@ -64,6 +74,10 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
         // First, invoke the next processor in the chain of responsibility.
         Optional<List<ColumnMeta>> columns = chain.createColumn(tableMeta, fieldMeta);
         if (columns == IGNORE || fieldMeta.isAnnotationPresent(Transient.class)) {
+            return IGNORE;
+        }
+        if (hasJoinColumn(fieldMeta)) {
+            processForeignKeys(tableMeta, fieldMeta);
             return IGNORE;
         }
 
@@ -92,6 +106,7 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
      * @param columnMeta The column metadata object.
      * @param fieldMeta  The field metadata object.
      */
+    @SuppressWarnings("unchecked")
     protected void processAnnotations(ColumnMeta columnMeta, FieldMeta fieldMeta) {
         // Process the primary key annotation.
         if (!columnMeta.id() && fieldMeta.isAnnotationPresent(Id.class)) {
@@ -152,6 +167,89 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
                 columnMeta.typeHandler(converter);
             }
         }
+    }
+
+    /**
+     * Tests whether a field declares explicit join columns.
+     *
+     * @param fieldMeta the field metadata
+     * @return {@code true} when join column metadata is present
+     */
+    private boolean hasJoinColumn(FieldMeta fieldMeta) {
+        return fieldMeta.isAnnotationPresent(JoinColumn.class) || fieldMeta.isAnnotationPresent(JoinColumns.class);
+    }
+
+    /**
+     * Processes foreign key annotations without mapping the relationship field as a CRUD column.
+     *
+     * @param tableMeta the owner table metadata
+     * @param fieldMeta the relationship field metadata
+     */
+    private void processForeignKeys(TableMeta tableMeta, FieldMeta fieldMeta) {
+        JoinColumn[] joinColumns = joinColumns(fieldMeta);
+        if (joinColumns.length == 0) {
+            return;
+        }
+        String referencedTable = MapperFactory.of(fieldMeta.getType()).tableName();
+        String name = foreignKeyName(tableMeta, fieldMeta, joinColumns);
+        if (StringKit.isEmpty(name)) {
+            name = tableMeta.table() + "_" + fieldMeta.getName() + "_fk";
+        }
+        ForeignKeyMeta foreignKey = new ForeignKeyMeta().name(name).referencedTable(referencedTable);
+        for (JoinColumn joinColumn : joinColumns) {
+            if (joinColumn.foreignKey().value() == ConstraintMode.NO_CONSTRAINT) {
+                continue;
+            }
+            String column = joinColumn.name();
+            if (StringKit.isEmpty(column)) {
+                continue;
+            }
+            String referencedColumn = StringKit.isEmpty(joinColumn.referencedColumnName()) ? "id"
+                    : joinColumn.referencedColumnName();
+            foreignKey.columns().add(column);
+            foreignKey.referencedColumns().add(referencedColumn);
+        }
+        if (!foreignKey.columns().isEmpty()) {
+            tableMeta.addForeignKey(foreignKey);
+        }
+    }
+
+    /**
+     * Resolves join columns declared on a field.
+     *
+     * @param fieldMeta the relationship field metadata
+     * @return the join columns
+     */
+    private JoinColumn[] joinColumns(FieldMeta fieldMeta) {
+        JoinColumns joinColumns = fieldMeta.getAnnotation(JoinColumns.class);
+        if (joinColumns != null) {
+            return joinColumns.value();
+        }
+        JoinColumn joinColumn = fieldMeta.getAnnotation(JoinColumn.class);
+        return joinColumn == null ? new JoinColumn[0] : new JoinColumn[] { joinColumn };
+    }
+
+    /**
+     * Resolves the foreign key name declared on join annotations.
+     *
+     * @param tableMeta   the owner table metadata
+     * @param fieldMeta   the relationship field metadata
+     * @param joinColumns the join column annotations
+     * @return the resolved foreign key name
+     */
+    private String foreignKeyName(TableMeta tableMeta, FieldMeta fieldMeta, JoinColumn[] joinColumns) {
+        JoinColumns columns = fieldMeta.getAnnotation(JoinColumns.class);
+        if (columns != null && columns.foreignKey().value() != ConstraintMode.NO_CONSTRAINT
+                && StringKit.isNotEmpty(columns.foreignKey().name())) {
+            return columns.foreignKey().name();
+        }
+        for (JoinColumn joinColumn : joinColumns) {
+            if (joinColumn.foreignKey().value() != ConstraintMode.NO_CONSTRAINT
+                    && StringKit.isNotEmpty(joinColumn.foreignKey().name())) {
+                return joinColumn.foreignKey().name();
+            }
+        }
+        return tableMeta.table() + "_" + fieldMeta.getName() + "_fk";
     }
 
 }

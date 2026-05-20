@@ -39,29 +39,71 @@ public class UploadedByUser implements Serializable {
     private String username;
     private String name;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the username.
+     *
+     * @return the result
+     */
+
     public String getUsername() {
         return username;
     }
+
+    /**
+     * Sets the username.
+     *
+     * @param username the username value
+     */
 
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
+
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

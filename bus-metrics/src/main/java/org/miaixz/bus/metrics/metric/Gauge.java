@@ -29,6 +29,8 @@ public interface Gauge {
 
     /**
      * Returns the current gauge value, or {@link Double#NaN} if the state object has been GC'd.
+     *
+     * @return current gauge value
      */
     double value();
 

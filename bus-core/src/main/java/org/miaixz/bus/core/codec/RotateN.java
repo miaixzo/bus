@@ -35,7 +35,7 @@ public class RotateN {
      * Constructs a new RotN codec.
      */
     public RotateN() {
-
+        // No initialization required.
     }
 
     /**

@@ -36,6 +36,13 @@ import org.miaixz.bus.shade.screw.metadata.Column;
 public class OracleColumn implements Column {
 
     /**
+     * Constructs a new OracleColumn instance.
+     */
+    public OracleColumn() {
+        // No initialization required.
+    }
+
+    /**
      * The name of the table that is the scope of a REFERENCE attribute (null if DATA_TYPE is not REF).
      */
     @MappingField(value = "SCOPE_TABLE")

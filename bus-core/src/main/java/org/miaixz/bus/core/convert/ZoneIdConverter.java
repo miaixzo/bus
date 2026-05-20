@@ -34,6 +34,13 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  */
 public class ZoneIdConverter extends AbstractConverter implements MatcherConverter {
 
+    /**
+     * Constructs a new {@code ZoneIdConverter} instance.
+     */
+    public ZoneIdConverter() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852273106332L;
 

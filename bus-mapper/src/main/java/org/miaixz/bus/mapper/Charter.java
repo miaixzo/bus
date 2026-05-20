@@ -34,7 +34,7 @@ public final class Charter {
      * Creates no instances.
      */
     private Charter() {
-
+        // No initialization required.
     }
 
     /**
@@ -178,6 +178,26 @@ public final class Charter {
         DROP_UNIQUE(Group.SCHEMA),
 
         /**
+         * Create primary key constraint operation.
+         */
+        CREATE_PRIMARY_KEY(Group.SCHEMA),
+
+        /**
+         * Drop primary key constraint operation.
+         */
+        DROP_PRIMARY_KEY(Group.SCHEMA),
+
+        /**
+         * Create foreign key constraint operation.
+         */
+        CREATE_FOREIGN_KEY(Group.SCHEMA),
+
+        /**
+         * Drop foreign key constraint operation.
+         */
+        DROP_FOREIGN_KEY(Group.SCHEMA),
+
+        /**
          * Read table metadata operation.
          */
         READ_TABLE_METADATA(Group.METADATA),
@@ -190,7 +210,17 @@ public final class Charter {
         /**
          * Read index metadata operation.
          */
-        READ_INDEX_METADATA(Group.METADATA);
+        READ_INDEX_METADATA(Group.METADATA),
+
+        /**
+         * Read primary key metadata operation.
+         */
+        READ_PRIMARY_KEY_METADATA(Group.METADATA),
+
+        /**
+         * Read foreign key metadata operation.
+         */
+        READ_FOREIGN_KEY_METADATA(Group.METADATA);
 
         /**
          * Operation group for the behavior type.

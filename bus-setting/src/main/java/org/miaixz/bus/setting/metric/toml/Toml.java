@@ -36,6 +36,13 @@ import org.miaixz.bus.logger.Logger;
 public class Toml {
 
     /**
+     * Constructs a new Toml instance.
+     */
+    public Toml() {
+        // No initialization required.
+    }
+
+    /**
      * A {@link DateTimeFormatter} that parses and formats dates and times according to the TOML specification.
      */
     public static final DateTimeFormatter DATE_FORMATTER = new DateTimeFormatterBuilder()

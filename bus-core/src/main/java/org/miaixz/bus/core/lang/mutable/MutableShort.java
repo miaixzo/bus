@@ -44,7 +44,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * Constructs a new MutableShort with a default value of 0.
      */
     public MutableShort() {
-
+        // No initialization required.
     }
 
     /**

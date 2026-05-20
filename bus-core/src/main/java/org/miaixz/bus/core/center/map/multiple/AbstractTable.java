@@ -45,6 +45,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
      * Constructs a new AbstractTable. Utility class constructor for static access.
      */
     protected AbstractTable() {
+        // No initialization required.
     }
 
     /**

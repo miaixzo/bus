@@ -35,6 +35,13 @@ import io.temporal.worker.WorkerOptions;
 public class WorkflowSubscriberOptionsFactory {
 
     /**
+     * Constructs a new WorkflowSubscriberOptionsFactory instance.
+     */
+    public WorkflowSubscriberOptionsFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Creates worker options with the specified concurrency limit.
      *
      * @param maxConcurrent the maximum number of concurrent activity and workflow task executions

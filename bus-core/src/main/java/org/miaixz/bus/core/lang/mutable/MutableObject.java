@@ -46,7 +46,7 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
      * Constructs a new MutableObject with a {@code null} value.
      */
     public MutableObject() {
-
+        // No initialization required.
     }
 
     /**

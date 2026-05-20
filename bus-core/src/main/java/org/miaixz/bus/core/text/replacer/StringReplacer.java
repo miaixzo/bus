@@ -41,6 +41,7 @@ public abstract class StringReplacer implements UnaryOperator<CharSequence>, Ser
      * Constructs a string replacer.
      */
     protected StringReplacer() {
+        // No initialization required.
     }
 
     /**

@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.NetKit;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -78,6 +77,13 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 public class SentinelRequestHandler implements HandlerInterceptor {
+
+    /**
+     * Constructs a new SentinelRequestHandler instance.
+     */
+    public SentinelRequestHandler() {
+        // No initialization required.
+    }
 
     /**
      * Called before the target handler is executed. This method can be used for pre-processing tasks like
@@ -182,7 +188,7 @@ public class SentinelRequestHandler implements HandlerInterceptor {
         for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
             String[] values = entry.getValue();
             if (values != null && values.length > 0) {
-                params.put(entry.getKey(), StringKit.join(Symbol.COMMA, values));
+                params.put(entry.getKey(), String.join(Symbol.COMMA, values));
             }
         }
         Logger.debug(

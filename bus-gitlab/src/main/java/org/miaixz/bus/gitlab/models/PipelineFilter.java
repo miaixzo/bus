@@ -103,113 +103,275 @@ public class PipelineFilter implements Serializable {
      */
     private SortOrder sort;
 
+    /**
+     * Sets the scope.
+     *
+     * @param scope the scope value
+     */
+
     public void setScope(PipelineScope scope) {
         this.scope = scope;
     }
+
+    /**
+     * Sets the status.
+     *
+     * @param status the status value
+     */
 
     public void setStatus(PipelineStatus status) {
         this.status = status;
     }
 
+    /**
+     * Sets the source.
+     *
+     * @param source the source value
+     */
+
     public void setSource(PipelineSource source) {
         this.source = source;
     }
+
+    /**
+     * Sets the ref.
+     *
+     * @param ref the ref value
+     */
 
     public void setRef(String ref) {
         this.ref = ref;
     }
 
+    /**
+     * Sets the sha.
+     *
+     * @param sha the sha value
+     */
+
     public void setSha(String sha) {
         this.sha = sha;
     }
+
+    /**
+     * Sets the yaml errors.
+     *
+     * @param yamlErrors the yaml errors value
+     */
 
     public void setYamlErrors(Boolean yamlErrors) {
         this.yamlErrors = yamlErrors;
     }
 
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
+
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Sets the username.
+     *
+     * @param username the username value
+     */
 
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * Sets the updated after.
+     *
+     * @param updatedAfter the updated after value
+     */
+
     public void setUpdatedAfter(Date updatedAfter) {
         this.updatedAfter = updatedAfter;
     }
+
+    /**
+     * Sets the updated before.
+     *
+     * @param updatedBefore the updated before value
+     */
 
     public void setUpdatedBefore(Date updatedBefore) {
         this.updatedBefore = updatedBefore;
     }
 
+    /**
+     * Sets the order by.
+     *
+     * @param orderBy the order by value
+     */
+
     public void setOrderBy(PipelineOrderBy orderBy) {
         this.orderBy = orderBy;
     }
 
+    /**
+     * Sets the sort.
+     *
+     * @param sort the sort value
+     */
+
     public void setSort(SortOrder sort) {
         this.sort = sort;
     }
+
+    /**
+     * Sets the scope and returns this instance.
+     *
+     * @param scope the scope value
+     * @return the result
+     */
 
     public PipelineFilter withScope(PipelineScope scope) {
         this.scope = scope;
         return this;
     }
 
+    /**
+     * Sets the status and returns this instance.
+     *
+     * @param status the status value
+     * @return the result
+     */
+
     public PipelineFilter withStatus(PipelineStatus status) {
         this.status = status;
         return this;
     }
+
+    /**
+     * Sets the source and returns this instance.
+     *
+     * @param source the source value
+     * @return the result
+     */
 
     public PipelineFilter withSource(PipelineSource source) {
         this.source = source;
         return this;
     }
 
+    /**
+     * Sets the ref and returns this instance.
+     *
+     * @param ref the ref value
+     * @return the result
+     */
+
     public PipelineFilter withRef(String ref) {
         this.ref = ref;
         return this;
     }
+
+    /**
+     * Sets the sha and returns this instance.
+     *
+     * @param sha the sha value
+     * @return the result
+     */
 
     public PipelineFilter withSha(String sha) {
         this.sha = sha;
         return this;
     }
 
+    /**
+     * Sets the yaml errors and returns this instance.
+     *
+     * @param yamlErrors the yaml errors value
+     * @return the result
+     */
+
     public PipelineFilter withYamlErrors(Boolean yamlErrors) {
         this.yamlErrors = yamlErrors;
         return this;
     }
+
+    /**
+     * Sets the name and returns this instance.
+     *
+     * @param name the name value
+     * @return the result
+     */
 
     public PipelineFilter withName(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Sets the username and returns this instance.
+     *
+     * @param username the username value
+     * @return the result
+     */
+
     public PipelineFilter withUsername(String username) {
         this.username = username;
         return this;
     }
+
+    /**
+     * Sets the updated after and returns this instance.
+     *
+     * @param updatedAfter the updated after value
+     * @return the result
+     */
 
     public PipelineFilter withUpdatedAfter(Date updatedAfter) {
         this.updatedAfter = updatedAfter;
         return this;
     }
 
+    /**
+     * Sets the updated before and returns this instance.
+     *
+     * @param updatedBefore the updated before value
+     * @return the result
+     */
+
     public PipelineFilter withUpdatedBefore(Date updatedBefore) {
         this.updatedBefore = updatedBefore;
         return this;
     }
+
+    /**
+     * Sets the order by and returns this instance.
+     *
+     * @param orderBy the order by value
+     * @return the result
+     */
 
     public PipelineFilter withOrderBy(PipelineOrderBy orderBy) {
         this.orderBy = orderBy;
         return this;
     }
 
+    /**
+     * Sets the sort and returns this instance.
+     *
+     * @param sort the sort value
+     * @return the result
+     */
+
     public PipelineFilter withSort(SortOrder sort) {
         this.sort = sort;
         return this;
     }
+
+    /**
+     * Returns the query params.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     public GitLabForm getQueryParams() {
@@ -218,6 +380,12 @@ public class PipelineFilter implements Serializable {
                 .withParam("name", name).withParam("username", username).withParam("updated_after", updatedAfter)
                 .withParam("updated_before", updatedBefore).withParam("order_by", orderBy).withParam("sort", sort));
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

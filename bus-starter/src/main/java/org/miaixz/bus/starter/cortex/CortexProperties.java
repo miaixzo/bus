@@ -49,6 +49,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class CortexProperties {
 
     /**
+     * Constructs a new CortexProperties instance.
+     */
+    public CortexProperties() {
+        // No initialization required.
+    }
+
+    /**
      * Enables the Cortex starter.
      */
     private boolean enabled = true;
@@ -225,6 +232,7 @@ public class CortexProperties {
          * Creates the nested watch-property holder.
          */
         public Watch() {
+            // No initialization required.
         }
 
         /**
@@ -248,6 +256,7 @@ public class CortexProperties {
          * Creates the nested bridge-property holder.
          */
         public Bridge() {
+            // No initialization required.
         }
 
         /**
@@ -326,6 +335,7 @@ public class CortexProperties {
          * Creates the nested guard-property holder.
          */
         public Guard() {
+            // No initialization required.
         }
 
         /**
@@ -354,6 +364,7 @@ public class CortexProperties {
          * Creates the nested token-property holder.
          */
         public Token() {
+            // No initialization required.
         }
 
     }
@@ -372,6 +383,7 @@ public class CortexProperties {
          * Creates the nested audit-property holder.
          */
         public Audit() {
+            // No initialization required.
         }
 
         /**
@@ -395,6 +407,7 @@ public class CortexProperties {
          * Creates the nested version-property holder.
          */
         public Version() {
+            // No initialization required.
         }
 
         /**

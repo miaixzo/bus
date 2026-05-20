@@ -32,19 +32,73 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
  */
 public enum PackageType {
 
-    MAVEN, NPM, CONAN, PYPI, COMPOSER, NUGET, HELM, GOLANG, GENERIC;
+    /**
+     * The maven package type.
+     */
+    MAVEN,
+    /**
+     * The npm package type.
+     */
+    NPM,
+    /**
+     * The conan package type.
+     */
+    CONAN,
+    /**
+     * The pypi package type.
+     */
+    PYPI,
+    /**
+     * The composer package type.
+     */
+    COMPOSER,
+    /**
+     * The nuget package type.
+     */
+    NUGET,
+    /**
+     * The helm package type.
+     */
+    HELM,
+    /**
+     * The golang package type.
+     */
+    GOLANG,
+    /**
+     * The generic package type.
+     */
+    GENERIC;
 
     private static JacksonJsonEnumHelper<PackageType> enumHelper = new JacksonJsonEnumHelper<>(PackageType.class);
+
+    /**
+     * Returns the value.
+     *
+     * @param value the value value
+     * @return the result
+     */
 
     @JsonCreator
     public static PackageType forValue(String value) {
         return enumHelper.forValue(value);
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     @JsonValue
     public String toValue() {
         return (enumHelper.toString(this));
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

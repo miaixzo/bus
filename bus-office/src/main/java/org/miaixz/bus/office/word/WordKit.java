@@ -40,6 +40,13 @@ import org.miaixz.bus.core.xyz.FileKit;
 public class WordKit {
 
     /**
+     * Constructs a new WordKit instance.
+     */
+    public WordKit() {
+        // No initialization required.
+    }
+
+    /**
      * Creates an {@link XWPFDocument} instance. If the file already exists, it will be opened; otherwise, a new
      * document will be created.
      *

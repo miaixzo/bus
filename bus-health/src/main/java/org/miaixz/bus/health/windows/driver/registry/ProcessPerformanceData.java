@@ -260,6 +260,8 @@ public final class ProcessPerformanceData {
         }
 
         /**
+         * Executes the name operation.
+         *
          * @return the name
          */
         public String getName() {
@@ -267,6 +269,8 @@ public final class ProcessPerformanceData {
         }
 
         /**
+         * Executes the parent process id operation.
+         *
          * @return the parentProcessID
          */
         public int getParentProcessID() {
@@ -274,6 +278,8 @@ public final class ProcessPerformanceData {
         }
 
         /**
+         * Executes the priority operation.
+         *
          * @return the priority
          */
         public int getPriority() {
@@ -281,6 +287,8 @@ public final class ProcessPerformanceData {
         }
 
         /**
+         * Executes the size operation.
+         *
          * @return the Private Working Set size
          */
         public long getPrivateWorkingSetSize() {
@@ -288,6 +296,8 @@ public final class ProcessPerformanceData {
         }
 
         /**
+         * Executes the size operation.
+         *
          * @return the Working Set size (RSS)
          */
         public long getWorkingSetSize() {
@@ -295,6 +305,8 @@ public final class ProcessPerformanceData {
         }
 
         /**
+         * Executes the start time operation.
+         *
          * @return the startTime
          */
         public long getStartTime() {
@@ -302,6 +314,8 @@ public final class ProcessPerformanceData {
         }
 
         /**
+         * Executes the up time operation.
+         *
          * @return the upTime
          */
         public long getUpTime() {
@@ -309,6 +323,8 @@ public final class ProcessPerformanceData {
         }
 
         /**
+         * Executes the bytes read operation.
+         *
          * @return the bytesRead
          */
         public long getBytesRead() {
@@ -316,6 +332,8 @@ public final class ProcessPerformanceData {
         }
 
         /**
+         * Executes the bytes written operation.
+         *
          * @return the bytesWritten
          */
         public long getBytesWritten() {
@@ -323,6 +341,8 @@ public final class ProcessPerformanceData {
         }
 
         /**
+         * Executes the page faults operation.
+         *
          * @return the pageFaults
          */
         public long getPageFaults() {

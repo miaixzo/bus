@@ -51,7 +51,7 @@ public class StreamKit {
      * Constructs a new stream utility instance.
      */
     public StreamKit() {
-
+        // No initialization required.
     }
 
     /**

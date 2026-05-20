@@ -33,7 +33,7 @@ public class InlineSourceAdapter implements ItemSourceAdapter {
      * Creates an inline setting adapter.
      */
     public InlineSourceAdapter() {
-
+        // No initialization required.
     }
 
     /**

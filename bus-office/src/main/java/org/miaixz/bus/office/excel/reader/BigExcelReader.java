@@ -62,6 +62,7 @@ public class BigExcelReader implements AutoCloseable {
          * Creates the end-of-read signal exception.
          */
         private EndOfReadException() {
+            // No initialization required.
         }
 
         /**

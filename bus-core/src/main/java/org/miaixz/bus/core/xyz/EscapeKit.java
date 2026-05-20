@@ -41,6 +41,7 @@ public class EscapeKit {
      * Constructs a new EscapeKit. Utility class constructor for static access.
      */
     private EscapeKit() {
+        // No initialization required.
     }
 
     /**

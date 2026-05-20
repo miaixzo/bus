@@ -28,6 +28,9 @@ package org.miaixz.bus.setting.metric.ini;
 @FunctionalInterface
 public interface IniCommentCreator {
 
+    /**
+     * Default comment creator.
+     */
     IniCommentCreator DEFAULT = IniCommentService::byValue;
 
     /**

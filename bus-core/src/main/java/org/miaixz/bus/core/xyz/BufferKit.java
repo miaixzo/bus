@@ -40,6 +40,7 @@ public class BufferKit {
      * Constructs a new BufferKit. Utility class constructor for static access.
      */
     private BufferKit() {
+        // No initialization required.
     }
 
     /**

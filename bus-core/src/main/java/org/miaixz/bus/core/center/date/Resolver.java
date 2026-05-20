@@ -49,6 +49,7 @@ public class Resolver extends Converter {
      * Constructs a new Resolver. Utility class constructor for static access.
      */
     public Resolver() {
+        // No initialization required.
     }
 
     /**

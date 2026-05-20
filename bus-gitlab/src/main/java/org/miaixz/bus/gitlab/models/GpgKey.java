@@ -33,25 +33,61 @@ public class GpgKey {
     private String key;
     private Date createdAt;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the key.
+     *
+     * @return the result
+     */
+
     public String getKey() {
         return key;
     }
+
+    /**
+     * Sets the key.
+     *
+     * @param key the key value
+     */
 
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;

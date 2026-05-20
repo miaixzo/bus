@@ -35,7 +35,7 @@ public class GrayRuleMatcher {
      * Creates a stateless gray-rule matcher.
      */
     public GrayRuleMatcher() {
-
+        // No initialization required.
     }
 
     /**

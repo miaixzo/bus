@@ -38,6 +38,7 @@ public abstract class ComputeIterator<T> implements Iterator<T> {
      * Constructs a new ComputeIterator. Utility class constructor for static access.
      */
     public ComputeIterator() {
+        // No initialization required.
     }
 
     /**

@@ -32,6 +32,13 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
+     * Constructs a new ErrorCode instance.
+     */
+    public ErrorCode() {
+        // No initialization required.
+    }
+
+    /**
      * Indicates that the requested operation is not implemented.
      */
     public static final Errors _110001 = ErrorRegistry.builder().key("110001").value("Operation not implemented")
@@ -112,6 +119,13 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
      * @since Java 21+
      */
     public static class Toutiao {
+
+        /**
+         * Constructs a new Toutiao instance.
+         */
+        public Toutiao() {
+            // No initialization required.
+        }
 
         /**
          * Indicates that the API call was successful.

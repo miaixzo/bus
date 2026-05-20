@@ -33,7 +33,7 @@ public class Regex {
      * Constructs a new regular expression constants holder.
      */
     public Regex() {
-
+        // No initialization required.
     }
 
     /**

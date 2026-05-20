@@ -40,37 +40,91 @@ public class EpicIssueLink implements Serializable {
     private Epic epic;
     private Issue issue;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param epicIssueId the epic issue id value
+     */
 
     public void setId(Long epicIssueId) {
         this.id = epicIssueId;
     }
 
+    /**
+     * Returns the relative position.
+     *
+     * @return the result
+     */
+
     public Integer getRelativePosition() {
         return relativePosition;
     }
+
+    /**
+     * Sets the relative position.
+     *
+     * @param relativePosition the relative position value
+     */
 
     public void setRelativePosition(Integer relativePosition) {
         this.relativePosition = relativePosition;
     }
 
+    /**
+     * Returns the epic.
+     *
+     * @return the result
+     */
+
     public Epic getEpic() {
         return epic;
     }
+
+    /**
+     * Sets the epic.
+     *
+     * @param epic the epic value
+     */
 
     public void setEpic(Epic epic) {
         this.epic = epic;
     }
 
+    /**
+     * Returns the issue.
+     *
+     * @return the result
+     */
+
     public Issue getIssue() {
         return issue;
     }
 
+    /**
+     * Sets the issue.
+     *
+     * @param issue the issue value
+     */
+
     public void setIssue(Issue issue) {
         this.issue = issue;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

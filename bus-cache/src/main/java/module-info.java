@@ -25,26 +25,26 @@
  */
 module bus.cache {
 
-    requires java.desktop;
-    requires java.sql;
-    requires java.management;
     requires java.compiler;
+    requires java.desktop;
+    requires java.management;
     requires java.naming;
+    requires java.sql;
 
     requires bus.core;
-    requires bus.logger;
     requires bus.extra;
-    requires bus.setting;
+    requires bus.logger;
     requires bus.proxy;
+    requires bus.setting;
 
     requires lombok;
     requires jakarta.annotation;
+    requires com.github.benmanes.caffeine;
+    requires com.google.common;
     requires com.zaxxer.hikari;
+    requires hessian;
     requires redis.clients.jedis;
     requires xmemcached;
-    requires hessian;
-    requires com.google.common;
-    requires com.github.benmanes.caffeine;
 
     exports org.miaixz.bus.cache;
     exports org.miaixz.bus.cache.builtin;

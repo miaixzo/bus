@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.PMI_Private_Calibration_Module_Version_
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "PMI Private Calibration Module Version 2.0";

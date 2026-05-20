@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.data;
 public class TypeOfPatientID {
 
     /**
+     * Constructs a new {@code TypeOfPatientID} instance.
+     */
+    public TypeOfPatientID() {
+        // No initialization required.
+    }
+
+    /**
      * The text value.
      */
     public static final String TEXT = "TEXT";

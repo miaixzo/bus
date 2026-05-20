@@ -58,6 +58,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-bom](bus-bom)            | Dependency management module, unified version control, supporting on-demand component loading |
 | [√]    | [bus-cache](bus-cache)        | Distributed caching service, supporting Redis/Memcached/Hessian multi-level caching solutions |
 | [√]    | [bus-core](bus-core)          | Core utility library, containing 20+ common utility classes for concurrency/reflection/date/collections |
+| [√]    | [bus-cortex](bus-cortex)      | Unified registry and configuration center for API/MCP/Prompt entries, with health probing and namespace isolation |
 | [√]    | [bus-crypto](bus-crypto)      | Encryption/decryption component, supporting AES/DES/SM4/MD5 algorithms and national cipher suites |
 | [√]    | [bus-extra](bus-extra)        | Extended functionality package, integrating peripheral services like FTP/QR code/MQ/file processing |
 | [√]    | [bus-gitlab](bus-gitlab)      | Deep GitLab integration, providing full lifecycle management for CI/CD/repositories/issues |
@@ -67,6 +68,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-limiter](bus-limiter)    | High-performance rate limiting component, supporting token bucket/sliding window/distributed rate limiting strategies |
 | [√]    | [bus-logger](bus-logger)      | Log enhancement module, supporting dynamic log levels/trace ID/sensitive data filtering |
 | [√]    | [bus-mapper](bus-mapper)      | MyBatis enhancement tool, providing code generation/multi-tenancy/logical deletion extensions |
+| [√]    | [bus-metrics](bus-metrics)    | Production-grade metrics framework, supporting cardinality guard/EWMA rates/SLO tracking/LLM observability |
 | [√]    | [bus-notify](bus-notify)      | Multi-channel notification center, supporting push methods like email/SMS/DingTalk/WeChat Work |
 | [√]    | [bus-office](bus-office)      | Office document processing engine, implementing Excel/Word/PPT operations based on POI |
 | [√]    | [bus-opencv](bus-opencv)      | Computer vision library, wrapping OpenCV to provide image recognition/face detection/video analysis capabilities |

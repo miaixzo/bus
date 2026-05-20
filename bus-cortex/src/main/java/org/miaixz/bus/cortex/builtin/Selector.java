@@ -41,6 +41,7 @@ public class Selector {
      * Creates an empty metadata selector.
      */
     public Selector() {
+        // No initialization required.
     }
 
     /**

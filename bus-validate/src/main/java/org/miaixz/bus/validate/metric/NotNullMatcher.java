@@ -33,6 +33,13 @@ import org.miaixz.bus.validate.magic.annotation.NotNull;
 public class NotNullMatcher implements Matcher<Object, NotNull> {
 
     /**
+     * Constructs a new NotNullMatcher instance.
+     */
+    public NotNullMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object is not null.
      *
      * @param object     The object to validate.

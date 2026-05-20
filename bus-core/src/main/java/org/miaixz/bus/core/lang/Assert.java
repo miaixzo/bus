@@ -37,6 +37,7 @@ public class Assert {
      * Constructs a new Assert. Utility class constructor for static access.
      */
     private Assert() {
+        // No initialization required.
     }
 
     /**

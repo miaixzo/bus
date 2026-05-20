@@ -37,6 +37,12 @@ import org.miaixz.bus.gitlab.models.GitLabCiTemplateElement;
  */
 public class GitLabCiYamlApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code GitLabCiYamlApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public GitLabCiYamlApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

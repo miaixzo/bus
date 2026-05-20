@@ -37,6 +37,12 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  */
 public class NotesApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code NotesApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public NotesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
@@ -499,6 +505,8 @@ public class NotesApi extends AbstractApi {
      * @param createdAt       date the discussion was created (requires admin or project/group owner rights) (Optional)
      * @return the created Note instance
      * @throws GitLabApiException if any exception occurs
+     *
+     * @param internal the internal value
      */
     public Note createMergeRequestNote(
             Object projectIdOrPath,

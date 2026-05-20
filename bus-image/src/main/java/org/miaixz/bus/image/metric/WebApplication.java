@@ -104,6 +104,7 @@ public class WebApplication {
      * Creates a new instance.
      */
     public WebApplication() {
+        // No initialization required.
     }
 
     /**

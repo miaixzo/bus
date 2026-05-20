@@ -45,6 +45,13 @@ import java.io.OutputStream;
 public class AnimatedGifEncoder {
 
     /**
+     * Constructs a new AnimatedGifEncoder instance.
+     */
+    public AnimatedGifEncoder() {
+        // No initialization required.
+    }
+
+    /**
      * The width of the image frames.
      */
     protected int width;

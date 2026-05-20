@@ -31,6 +31,13 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
+     * Constructs a new ErrorCode instance.
+     */
+    public ErrorCode() {
+        // No initialization required.
+    }
+
+    /**
      * Parameter validation failed. This error is returned when a validation rule fails for any input parameter. The
      * error message is generic and can be customized through the validation context or annotation.
      */

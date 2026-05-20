@@ -25,19 +25,19 @@
  */
 module bus.metrics {
 
-    requires bus.core;
+    requires java.management;
+
     requires bus.cache;
+    requires bus.core;
     requires bus.health;
     requires bus.logger;
 
-    requires java.management;
     requires lombok;
     requires jakarta.servlet;
-
-    requires micrometer.core;
     requires io.opentelemetry.api;
-    requires io.prometheus.metrics.model;
     requires io.prometheus.metrics.core;
+    requires io.prometheus.metrics.model;
+    requires micrometer.core;
 
     exports org.miaixz.bus.metrics.bridge;
     exports org.miaixz.bus.metrics.builtin;

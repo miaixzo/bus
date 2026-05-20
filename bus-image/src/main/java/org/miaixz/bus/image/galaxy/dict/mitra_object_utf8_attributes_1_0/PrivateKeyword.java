@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.mitra_object_utf8_attributes_1_0;
 public class PrivateKeyword {
 
     /**
+     * Constructs a new {@code PrivateKeyword} instance.
+     */
+    public PrivateKeyword() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "";

@@ -33,6 +33,12 @@ import org.miaixz.bus.gitlab.models.IssueEvent;
  */
 public class ResourceStateEventsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code ResourceStateEventsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ResourceStateEventsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -60,6 +60,13 @@ import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberMana
 public class TempusConfiguration {
 
     /**
+     * Constructs a new TempusConfiguration instance.
+     */
+    public TempusConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Bound Temporal starter properties used to construct the default framework beans.
      */
     @Resource

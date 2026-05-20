@@ -35,6 +35,12 @@ import org.miaixz.bus.gitlab.models.Commit;
  */
 public class RepositorySubmodulesApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code RepositorySubmodulesApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public RepositorySubmodulesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

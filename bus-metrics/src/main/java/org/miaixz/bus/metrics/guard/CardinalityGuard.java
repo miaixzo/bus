@@ -65,10 +65,14 @@ public final class CardinalityGuard {
      * Private constructor; this is a static utility class.
      */
     private CardinalityGuard() {
+        // No initialization required.
     }
 
     /**
      * Register a policy for the given tag key.
+     *
+     * @param tagKey tag key
+     * @param policy cardinality policy
      */
     public static void policy(String tagKey, CardinalityPolicy policy) {
         POLICIES.put(tagKey, policy);

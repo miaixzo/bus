@@ -91,6 +91,7 @@ public class Context {
      * Default constructor for creating a new validation context.
      */
     public Context() {
+        // No initialization required.
     }
 
     /**

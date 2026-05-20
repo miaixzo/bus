@@ -34,6 +34,13 @@ import org.miaixz.bus.logger.Logger;
 public class OnlineOfficeProvider extends AbstractProvider {
 
     /**
+     * Constructs a new OnlineOfficeProvider instance.
+     */
+    public OnlineOfficeProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Implements the behavior defined by the supertype.
      *
      * @param source the source file to convert

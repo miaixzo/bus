@@ -42,6 +42,7 @@ public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
      * Constructs a new Base64Decoder. Utility class constructor for static access.
      */
     private Base64Decoder() {
+        // No initialization required.
     }
 
     @Serial

@@ -41,4 +41,11 @@ import org.miaixz.bus.mapper.Holder;
  */
 public class DataSourceHolder<T> extends Holder<T> {
 
+    /**
+     * Constructs a new DataSourceHolder instance.
+     */
+    public DataSourceHolder() {
+        // No initialization required.
+    }
+
 }

@@ -41,6 +41,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class TempusProperties {
 
     /**
+     * Constructs a new TempusProperties instance.
+     */
+    public TempusProperties() {
+        // No initialization required.
+    }
+
+    /**
      * Whether to enable the Temporal worker.
      */
     private boolean enabled = false;

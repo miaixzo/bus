@@ -57,6 +57,11 @@ public final class PagingFile {
      */
     public enum PagingPercentProperty implements PerfCounterQuery.PdhCounterProperty {
 
+        /**
+         * Executes the percentusage operation.
+         *
+         */
+
         PERCENTUSAGE(PerfCounterQuery.TOTAL_INSTANCE, "% Usage");
 
         /**

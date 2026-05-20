@@ -32,6 +32,13 @@ import java.io.Serializable;
  */
 public class AcceptMergeRequestParams implements Serializable {
 
+    /**
+     * Constructs a new AcceptMergeRequestParams instance.
+     */
+    public AcceptMergeRequestParams() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852235380976L;
 

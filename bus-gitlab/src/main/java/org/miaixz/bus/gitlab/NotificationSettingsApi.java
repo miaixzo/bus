@@ -32,6 +32,12 @@ import org.miaixz.bus.gitlab.models.NotificationSettings.Events;
  */
 public class NotificationSettingsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code NotificationSettingsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public NotificationSettingsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

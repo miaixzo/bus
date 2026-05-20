@@ -48,6 +48,7 @@ public class WebHookManager implements HookManager {
      * Create a HookManager to handle GitLab webhook events.
      */
     public WebHookManager() {
+        // No initialization required.
     }
 
     /**
@@ -365,11 +366,23 @@ public class WebHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire build event operation.
+     *
+     * @param buildEvent the build event value
+     */
+
     protected void fireBuildEvent(BuildEvent buildEvent) {
         for (WebHookListener listener : webhookListeners) {
             listener.onBuildEvent(buildEvent);
         }
     }
+
+    /**
+     * Executes the fire issue event operation.
+     *
+     * @param issueEvent the issue event value
+     */
 
     protected void fireIssueEvent(IssueEvent issueEvent) {
         for (WebHookListener listener : webhookListeners) {
@@ -377,11 +390,23 @@ public class WebHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire job event operation.
+     *
+     * @param jobEvent the job event value
+     */
+
     protected void fireJobEvent(JobEvent jobEvent) {
         for (WebHookListener listener : webhookListeners) {
             listener.onJobEvent(jobEvent);
         }
     }
+
+    /**
+     * Executes the fire merge request event operation.
+     *
+     * @param mergeRequestEvent the merge request event value
+     */
 
     protected void fireMergeRequestEvent(MergeRequestEvent mergeRequestEvent) {
         for (WebHookListener listener : webhookListeners) {
@@ -389,11 +414,23 @@ public class WebHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire note event operation.
+     *
+     * @param noteEvent the note event value
+     */
+
     protected void fireNoteEvent(NoteEvent noteEvent) {
         for (WebHookListener listener : webhookListeners) {
             listener.onNoteEvent(noteEvent);
         }
     }
+
+    /**
+     * Executes the fire pipeline event operation.
+     *
+     * @param pipelineEvent the pipeline event value
+     */
 
     protected void firePipelineEvent(PipelineEvent pipelineEvent) {
         for (WebHookListener listener : webhookListeners) {
@@ -401,11 +438,23 @@ public class WebHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire push event operation.
+     *
+     * @param pushEvent the push event value
+     */
+
     protected void firePushEvent(PushEvent pushEvent) {
         for (WebHookListener listener : webhookListeners) {
             listener.onPushEvent(pushEvent);
         }
     }
+
+    /**
+     * Executes the fire tag push event operation.
+     *
+     * @param tagPushEvent the tag push event value
+     */
 
     protected void fireTagPushEvent(TagPushEvent tagPushEvent) {
         for (WebHookListener listener : webhookListeners) {
@@ -413,11 +462,23 @@ public class WebHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire wiki page event operation.
+     *
+     * @param wikiPageEvent the wiki page event value
+     */
+
     protected void fireWikiPageEvent(WikiPageEvent wikiPageEvent) {
         for (WebHookListener listener : webhookListeners) {
             listener.onWikiPageEvent(wikiPageEvent);
         }
     }
+
+    /**
+     * Executes the fire deployment event operation.
+     *
+     * @param deploymentEvent the deployment event value
+     */
 
     protected void fireDeploymentEvent(DeploymentEvent deploymentEvent) {
         for (WebHookListener listener : webhookListeners) {
@@ -425,11 +486,23 @@ public class WebHookManager implements HookManager {
         }
     }
 
+    /**
+     * Executes the fire work item event operation.
+     *
+     * @param workItemEvent the work item event value
+     */
+
     protected void fireWorkItemEvent(WorkItemEvent workItemEvent) {
         for (WebHookListener listener : webhookListeners) {
             listener.onWorkItemEvent(workItemEvent);
         }
     }
+
+    /**
+     * Executes the fire release event operation.
+     *
+     * @param releaseEvent the release event value
+     */
 
     protected void fireReleaseEvent(ReleaseEvent releaseEvent) {
         for (WebHookListener listener : webhookListeners) {

@@ -35,7 +35,6 @@ import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * Qualifies MCP ingress requests by resolving the registered MCP service route asset.
@@ -91,55 +90,52 @@ public class McpQualifierStrategy extends QualifierStrategy {
             String version = requestRoute.versionPart();
             Integer verb = requestRoute.verbPart();
 
-            return Mono.fromCallable(() -> this.registry.get(requestRoute)).subscribeOn(Schedulers.boundedElastic())
-                    .switchIfEmpty(Mono.defer(() -> {
-                        Logger.warn(
-                                false,
-                                "Vortex",
-                                "MCP route asset not found: strategy=mcp-qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}",
-                                context.getX_request_ip(),
-                                namespace,
-                                type,
-                                appId,
-                                method,
-                                version,
-                                verb);
-                        return Mono.error(new ValidateException(ErrorCode._100800));
-                    })).flatMap(match -> {
-                        org.miaixz.bus.cortex.Assets assets = match.assets();
-                        context.setAssets(assets);
-                        context.setRemainingPath(match.remainingPath());
-                        Logger.info(
-                                true,
-                                "Vortex",
-                                "MCP route asset resolved: strategy=mcp-qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, sign={}, remainingPath={}",
-                                context.getX_request_ip(),
-                                assets.getNamespace_id(),
-                                assets.getType(),
-                                assets.getApp_id(),
-                                assets.getMethod(),
-                                assets.getVersion(),
-                                assets.getVerb(),
-                                assets.getPolicy(),
-                                assets.getSign(),
-                                match.remainingPath());
-                        Mono<Void> validationMono = this.method(context, assets);
-                        Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? this.authorize(context)
-                                : Mono.empty();
-                        return validationMono.then(authMono);
-                    })
-                    .then(
-                            Mono.fromRunnable(
-                                    () -> Logger.info(
-                                            true,
-                                            "Vortex",
-                                            "MCP qualifier completed: strategy=mcp-qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}",
-                                            context.getX_request_ip(),
-                                            namespace,
-                                            type,
-                                            appId,
-                                            method,
-                                            version)))
+            return Mono.defer(() -> Mono.justOrEmpty(this.registry.get(requestRoute))).switchIfEmpty(Mono.defer(() -> {
+                Logger.warn(
+                        false,
+                        "Vortex",
+                        "MCP route asset not found: strategy=mcp-qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}",
+                        context.getX_request_ip(),
+                        namespace,
+                        type,
+                        appId,
+                        method,
+                        version,
+                        verb);
+                return Mono.error(new ValidateException(ErrorCode._100800));
+            })).flatMap(match -> {
+                org.miaixz.bus.cortex.Assets assets = match.assets();
+                context.setAssets(assets);
+                context.setRemainingPath(match.remainingPath());
+                Logger.info(
+                        true,
+                        "Vortex",
+                        "MCP route asset resolved: strategy=mcp-qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, sign={}, remainingPath={}",
+                        context.getX_request_ip(),
+                        assets.getNamespace_id(),
+                        assets.getType(),
+                        assets.getApp_id(),
+                        assets.getMethod(),
+                        assets.getVersion(),
+                        assets.getVerb(),
+                        assets.getPolicy(),
+                        assets.getSign(),
+                        match.remainingPath());
+                Mono<Void> validationMono = this.method(context, assets);
+                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? this.authorize(context) : Mono.empty();
+                return validationMono.then(authMono);
+            }).then(
+                    Mono.fromRunnable(
+                            () -> Logger.info(
+                                    true,
+                                    "Vortex",
+                                    "MCP qualifier completed: strategy=mcp-qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}",
+                                    context.getX_request_ip(),
+                                    namespace,
+                                    type,
+                                    appId,
+                                    method,
+                                    version)))
                     .then(chain.apply(exchange));
         });
     }

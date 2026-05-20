@@ -24,6 +24,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.node.IntNode;
@@ -40,7 +43,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
+@Setter
 public abstract class AbstractIssue implements Serializable {
+
+    /**
+     * Constructs a new AbstractIssue instance.
+     */
+    public AbstractIssue() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852235017309L;
@@ -93,70 +105,20 @@ public abstract class AbstractIssue implements Serializable {
     private Iteration iteration;
     private TaskCompletionStatus taskCompletionStatus;
 
-    public References getReferences() {
-        return references;
-    }
-
-    public Assignee getAssignee() {
-        return assignee;
-    }
-
-    public void setAssignee(Assignee assignee) {
-        this.assignee = assignee;
-    }
-
-    public List<Assignee> getAssignees() {
-        return assignees;
-    }
-
-    public void setAssignees(List<Assignee> assignees) {
-        this.assignees = assignees;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
-
-    public Boolean getConfidential() {
-        return confidential;
-    }
-
-    public void setConfidential(Boolean confidential) {
-        this.confidential = confidential;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Date getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-    }
-
+    /**
+     * Returns the raw issue ID node.
+     *
+     * @return the raw issue ID node
+     */
     public ValueNode getActualId() {
         return actualId;
     }
 
+    /**
+     * Sets the raw issue ID node and updates the numeric or external ID mirror.
+     *
+     * @param id the raw issue ID node
+     */
     public void setActualId(ValueNode id) {
         actualId = id;
         if (actualId instanceof TextNode) {
@@ -166,10 +128,20 @@ public abstract class AbstractIssue implements Serializable {
         }
     }
 
+    /**
+     * Returns the numeric issue ID.
+     *
+     * @return the numeric issue ID
+     */
     public Long getId() {
         return (id);
     }
 
+    /**
+     * Sets the numeric issue ID and updates the raw issue ID node.
+     *
+     * @param id the numeric issue ID
+     */
     public void setId(Long id) {
         this.id = id;
         if (id != null) {
@@ -178,10 +150,20 @@ public abstract class AbstractIssue implements Serializable {
         }
     }
 
+    /**
+     * Returns the external issue ID.
+     *
+     * @return the external issue ID
+     */
     public String getExternalId() {
         return (externalId);
     }
 
+    /**
+     * Sets the external issue ID and updates the raw issue ID node.
+     *
+     * @param externalId the external issue ID
+     */
     public void setExternalId(String externalId) {
         this.externalId = externalId;
         if (externalId != null) {
@@ -190,225 +172,11 @@ public abstract class AbstractIssue implements Serializable {
         }
     }
 
-    public Long getIid() {
-        return iid;
-    }
-
-    public void setIid(Long iid) {
-        this.iid = iid;
-    }
-
-    public List<String> getLabels() {
-        return labels;
-    }
-
-    public void setLabels(List<String> labels) {
-        this.labels = labels;
-    }
-
-    public Milestone getMilestone() {
-        return milestone;
-    }
-
-    public void setMilestone(Milestone milestone) {
-        this.milestone = milestone;
-    }
-
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    public IssueState getState() {
-        return state;
-    }
-
-    public void setState(IssueState state) {
-        this.state = state;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Date getClosedAt() {
-        return closedAt;
-    }
-
-    public void setClosedAt(Date closedAt) {
-        this.closedAt = closedAt;
-    }
-
-    public User getClosedBy() {
-        return closedBy;
-    }
-
-    public void setClosedBy(User closedBy) {
-        this.closedBy = closedBy;
-    }
-
-    public Integer getUserNotesCount() {
-        return userNotesCount;
-    }
-
-    public void setUserNotesCount(Integer userNotesCount) {
-        this.userNotesCount = userNotesCount;
-    }
-
-    public String getWebUrl() {
-        return webUrl;
-    }
-
-    public void setWebUrl(String webUrl) {
-        this.webUrl = webUrl;
-    }
-
-    public void setReferences(References references) {
-        this.references = references;
-    }
-
-    public Boolean getImported() {
-        return imported;
-    }
-
-    public Integer getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Integer weight) {
-        this.weight = weight;
-    }
-
-    public Boolean getDiscussionLocked() {
-        return discussionLocked;
-    }
-
-    public void setDiscussionLocked(Boolean discussionLocked) {
-        this.discussionLocked = discussionLocked;
-    }
-
-    public TimeStats getTimeStats() {
-        return timeStats;
-    }
-
-    public void setTimeStats(TimeStats timeStats) {
-        this.timeStats = timeStats;
-    }
-
-    public Integer getUpvotes() {
-        return upvotes;
-    }
-
-    public void setUpvotes(Integer upvotes) {
-        this.upvotes = upvotes;
-    }
-
-    public Integer getDownvotes() {
-        return downvotes;
-    }
-
-    public void setDownvotes(Integer downvotes) {
-        this.downvotes = downvotes;
-    }
-
-    public Integer getMergeRequestsCount() {
-        return mergeRequestsCount;
-    }
-
-    public void setMergeRequestsCount(Integer mergeRequestsCount) {
-        this.mergeRequestsCount = mergeRequestsCount;
-    }
-
-    public Boolean getHasTasks() {
-        return hasTasks;
-    }
-
-    public void setHasTasks(Boolean hasTasks) {
-        this.hasTasks = hasTasks;
-    }
-
-    public String getTaskStatus() {
-        return taskStatus;
-    }
-
-    public void setTaskStatus(String taskStatus) {
-        this.taskStatus = taskStatus;
-    }
-
-    public void setImported(Boolean imported) {
-        this.imported = imported;
-    }
-
-    public String getImportedFrom() {
-        return importedFrom;
-    }
-
-    public void setImportedFrom(String importedFrom) {
-        this.importedFrom = importedFrom;
-    }
-
-    public String getIssueType() {
-        return issueType;
-    }
-
-    public Iteration getIteration() {
-        return iteration;
-    }
-
-    public void setIteration(Iteration iteration) {
-        this.iteration = iteration;
-    }
-
-    public TaskCompletionStatus getTaskCompletionStatus() {
-        return taskCompletionStatus;
-    }
-
-    public void setTaskCompletionStatus(TaskCompletionStatus taskCompletionStatus) {
-        this.taskCompletionStatus = taskCompletionStatus;
-    }
-
-    public void setIssueType(String issueType) {
-        this.issueType = issueType;
-    }
-
-    public String getSeverity() {
-        return severity;
-    }
-
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
-
-    public IssueEpic getEpic() {
-        return epic;
-    }
-
-    public void setEpic(IssueEpic epic) {
-        this.epic = epic;
-    }
-
-    public String getHealthStatus() {
-        return healthStatus;
-    }
-
-    public void setHealthStatus(String healthStatus) {
-        this.healthStatus = healthStatus;
-    }
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {
@@ -421,7 +189,16 @@ public abstract class AbstractIssue implements Serializable {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
+    @Setter
     public static class TaskCompletionStatus implements Serializable {
+
+        /**
+         * Constructs a new TaskCompletionStatus instance.
+         */
+        public TaskCompletionStatus() {
+            // No initialization required.
+        }
 
         @Serial
         private static final long serialVersionUID = 2852235115381L;
@@ -429,21 +206,11 @@ public abstract class AbstractIssue implements Serializable {
         private Integer count;
         private Integer completedCount;
 
-        public Integer getCount() {
-            return count;
-        }
-
-        public void setCount(Integer count) {
-            this.count = count;
-        }
-
-        public Integer getCompletedCount() {
-            return completedCount;
-        }
-
-        public void setCompletedCount(Integer completedCount) {
-            this.completedCount = completedCount;
-        }
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {

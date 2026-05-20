@@ -41,6 +41,7 @@ public class BooleanConverter extends AbstractConverter {
      * Constructs a new BooleanConverter. Utility class constructor for static access.
      */
     public BooleanConverter() {
+        // No initialization required.
     }
 
     /**

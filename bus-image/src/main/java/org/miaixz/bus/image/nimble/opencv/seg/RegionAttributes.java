@@ -387,6 +387,8 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
      *
      * @param regions the regions.
      * @return the operation result.
+     *
+     * @param <E> the region attribute type
      */
     public static <E extends RegionAttributes> Map<String, List<E>> groupRegions(Collection<E> regions) {
         if (regions == null || regions.isEmpty()) {

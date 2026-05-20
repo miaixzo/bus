@@ -33,6 +33,13 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class LocaleConverter extends AbstractConverter {
 
+    /**
+     * Constructs a new LocaleConverter instance.
+     */
+    public LocaleConverter() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852269079839L;
 

@@ -28,58 +28,78 @@ package org.miaixz.bus.http.plugin.httpv;
 public interface CoverArray {
 
     /**
+     * Returns the number of elements in the array.
+     *
      * @return The number of elements in the array.
      */
     int size();
 
     /**
+     * Tests whether the array is empty.
+     *
      * @return True if the array is empty.
      */
     boolean isEmpty();
 
     /**
+     * Returns the indexed element as an object wrapper.
+     *
      * @param index The element index.
      * @return The sub-object as a CoverWapper.
      */
     CoverWapper getMapper(int index);
 
     /**
+     * Returns the indexed element as an array wrapper.
+     *
      * @param index The element index.
      * @return The sub-array as a CoverArray.
      */
     CoverArray getArray(int index);
 
     /**
+     * Returns the indexed element as a boolean.
+     *
      * @param index The element index.
      * @return The boolean value.
      */
     boolean getBool(int index);
 
     /**
+     * Returns the indexed element as an int.
+     *
      * @param index The element index.
      * @return The int value.
      */
     int getInt(int index);
 
     /**
+     * Returns the indexed element as a long.
+     *
      * @param index The element index.
      * @return The long value.
      */
     long getLong(int index);
 
     /**
+     * Returns the indexed element as a float.
+     *
      * @param index The element index.
      * @return The float value.
      */
     float getFloat(int index);
 
     /**
+     * Returns the indexed element as a double.
+     *
      * @param index The element index.
      * @return The double value.
      */
     double getDouble(int index);
 
     /**
+     * Returns the indexed element as a string.
+     *
      * @param index The element index.
      * @return The String value.
      */

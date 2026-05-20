@@ -35,6 +35,13 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class CFKit {
 
     /**
+     * Constructs a new CFKit instance.
+     */
+    public CFKit() {
+        // No initialization required.
+    }
+
+    /**
      * /** Convert a pointer to a CFString into a String.
      *
      * @param result Pointer to the CFString

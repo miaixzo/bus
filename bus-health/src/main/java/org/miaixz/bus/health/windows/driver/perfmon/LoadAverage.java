@@ -37,6 +37,13 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 public final class LoadAverage {
 
     /**
+     * Constructs a new {@code LoadAverage} instance.
+     */
+    public LoadAverage() {
+        // No initialization required.
+    }
+
+    /**
      * The EXP_WEIGHT constant.
      */
     private static final double[] EXP_WEIGHT = new double[] {

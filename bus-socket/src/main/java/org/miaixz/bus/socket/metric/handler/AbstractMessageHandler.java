@@ -40,6 +40,13 @@ import org.miaixz.bus.socket.Status;
 public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
 
     /**
+     * Constructs a new AbstractMessageHandler instance.
+     */
+    public AbstractMessageHandler() {
+        // No initialization required.
+    }
+
+    /**
      * A list of plugins registered with this message handler.
      */
     private final List<Plugin<T>> plugins = new ArrayList<>();

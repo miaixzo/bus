@@ -49,21 +49,51 @@ public class WikiAttachment implements Serializable {
         private String url;
         private String markdown;
 
+        /**
+         * Returns the url.
+         *
+         * @return the result
+         */
+
         public String getUrl() {
             return url;
         }
+
+        /**
+         * Sets the url.
+         *
+         * @param url the url value
+         */
 
         public void setUrl(String url) {
             this.url = url;
         }
 
+        /**
+         * Returns the markdown.
+         *
+         * @return the result
+         */
+
         public String getMarkdown() {
             return markdown;
         }
 
+        /**
+         * Sets the markdown.
+         *
+         * @param markdown the markdown value
+         */
+
         public void setMarkdown(String markdown) {
             this.markdown = markdown;
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -77,37 +107,91 @@ public class WikiAttachment implements Serializable {
     private String branch;
     private Link link;
 
+    /**
+     * Returns the file name.
+     *
+     * @return the result
+     */
+
     public String getFileName() {
         return fileName;
     }
+
+    /**
+     * Sets the file name.
+     *
+     * @param fileName the file name value
+     */
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+    /**
+     * Returns the file path.
+     *
+     * @return the result
+     */
+
     public String getFilePath() {
         return filePath;
     }
+
+    /**
+     * Sets the file path.
+     *
+     * @param filePath the file path value
+     */
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Returns the branch.
+     *
+     * @return the result
+     */
+
     public String getBranch() {
         return branch;
     }
+
+    /**
+     * Sets the branch.
+     *
+     * @param branch the branch value
+     */
 
     public void setBranch(String branch) {
         this.branch = branch;
     }
 
+    /**
+     * Returns the link.
+     *
+     * @return the result
+     */
+
     public Link getLink() {
         return link;
     }
 
+    /**
+     * Sets the link.
+     *
+     * @param link the link value
+     */
+
     public void setLink(Link link) {
         this.link = link;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

@@ -63,6 +63,13 @@ import org.miaixz.bus.logger.Logger;
 public class MacFileSystem extends AbstractFileSystem {
 
     /**
+     * Constructs a new {@code MacFileSystem} instance.
+     */
+    public MacFileSystem() {
+        // No initialization required.
+    }
+
+    /**
      * The FS_PATH_EXCLUDES constant.
      */
     protected static final List<PathMatcher> FS_PATH_EXCLUDES = Builder

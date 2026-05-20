@@ -88,6 +88,14 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
     /**
      * Create a segmented input stream, that updates the bulk data entries as required, frameIndex of -1 means the
      * entire object/value.
+     *
+     * @param stream             the stream value
+     *
+     * @param pixeldataFragments the pixeldata fragments value
+     *
+     * @param frameIndex         the frame index value
+     *
+     * @throws IOException if the operation fails
      */
     public SegmentedInputImageStream(ImageInputStream stream, Fragments pixeldataFragments, int frameIndex)
             throws IOException {
@@ -128,6 +136,10 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
      * Just read from the raw data segment - this gets converted to an in-memory fragments object, which is then handled
      * as a single fragment, with no basic offset table. Basically just an easy way to get an image input stream on a
      * byte array.
+     *
+     * @param data the data value
+     *
+     * @throws IOException if the operation fails
      */
     public SegmentedInputImageStream(byte[] data) throws IOException {
         stream = null;

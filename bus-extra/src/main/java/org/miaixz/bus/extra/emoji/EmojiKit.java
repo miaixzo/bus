@@ -38,6 +38,13 @@ import com.vdurmont.emoji.EmojiParser.FitzpatrickAction;
 public class EmojiKit {
 
     /**
+     * Constructs a new EmojiKit instance.
+     */
+    public EmojiKit() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given string consists of a single emoji character.
      *
      * @param text The string to be tested.

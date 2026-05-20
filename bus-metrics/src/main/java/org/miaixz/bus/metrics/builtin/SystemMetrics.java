@@ -34,6 +34,13 @@ import org.miaixz.bus.metrics.Metrics;
 public class SystemMetrics {
 
     /**
+     * Constructs a new SystemMetrics instance.
+     */
+    public SystemMetrics() {
+        // No initialization required.
+    }
+
+    /**
      * Register OS-level gauges: system CPU load average, available processors, and process uptime. Safe to call
      * multiple times; subsequent calls are no-ops due to provider-level deduplication.
      */

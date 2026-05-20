@@ -226,6 +226,8 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
+     * Returns the path of the loaded settings file.
+     *
      * @return The path of the loaded settings file.
      */
     public String getPath() {
@@ -233,6 +235,8 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
+     * Returns all group names.
+     *
      * @return A set of all group names.
      */
     public Set<String> getGroups() {

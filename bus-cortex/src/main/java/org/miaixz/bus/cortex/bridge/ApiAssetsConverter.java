@@ -36,7 +36,7 @@ public final class ApiAssetsConverter {
      * Creates a new ApiAssetsConverter.
      */
     private ApiAssetsConverter() {
-
+        // No initialization required.
     }
 
     /**

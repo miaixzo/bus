@@ -45,69 +45,171 @@ public class RegistryRepositoryTag implements Serializable {
     private Date createdAt;
     private Long totalSize;
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the path.
+     *
+     * @return the result
+     */
+
     public String getPath() {
         return path;
     }
+
+    /**
+     * Sets the path.
+     *
+     * @param path the path value
+     */
 
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Returns the location.
+     *
+     * @return the result
+     */
+
     public String getLocation() {
         return location;
     }
+
+    /**
+     * Sets the location.
+     *
+     * @param location the location value
+     */
 
     public void setLocation(String location) {
         this.location = location;
     }
 
+    /**
+     * Returns the revision.
+     *
+     * @return the result
+     */
+
     public String getRevision() {
         return revision;
     }
+
+    /**
+     * Sets the revision.
+     *
+     * @param revision the revision value
+     */
 
     public void setRevision(String revision) {
         this.revision = revision;
     }
 
+    /**
+     * Returns the short revision.
+     *
+     * @return the result
+     */
+
     public String getShortRevision() {
         return shortRevision;
     }
+
+    /**
+     * Sets the short revision.
+     *
+     * @param shortRevision the short revision value
+     */
 
     public void setShortRevision(String shortRevision) {
         this.shortRevision = shortRevision;
     }
 
+    /**
+     * Returns the digest.
+     *
+     * @return the result
+     */
+
     public String getDigest() {
         return digest;
     }
+
+    /**
+     * Sets the digest.
+     *
+     * @param digest the digest value
+     */
 
     public void setDigest(String digest) {
         this.digest = digest;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the total size.
+     *
+     * @return the result
+     */
+
     public Long getTotalSize() {
         return totalSize;
     }
 
+    /**
+     * Sets the total size.
+     *
+     * @param totalSize the total size value
+     */
+
     public void setTotalSize(Long totalSize) {
         this.totalSize = totalSize;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

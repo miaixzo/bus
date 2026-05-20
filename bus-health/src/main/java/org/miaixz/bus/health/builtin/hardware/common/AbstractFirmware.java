@@ -33,6 +33,13 @@ import org.miaixz.bus.health.builtin.hardware.Firmware;
 public abstract class AbstractFirmware implements Firmware {
 
     /**
+     * Constructs a new AbstractFirmware instance.
+     */
+    public AbstractFirmware() {
+        // No initialization required.
+    }
+
+    /**
      * Multiple classes don't have these, set defaults here
      */
     @Override

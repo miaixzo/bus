@@ -56,6 +56,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      * Constructs a new ExecutorBuilder. Utility class constructor for static access.
      */
     private ExecutorBuilder() {
+        // No initialization required.
     }
 
     /**

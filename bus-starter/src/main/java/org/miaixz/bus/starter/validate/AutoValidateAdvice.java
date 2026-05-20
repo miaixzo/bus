@@ -45,6 +45,13 @@ import org.miaixz.bus.validate.Context;
 public class AutoValidateAdvice {
 
     /**
+     * Constructs a new AutoValidateAdvice instance.
+     */
+    public AutoValidateAdvice() {
+        // No initialization required.
+    }
+
+    /**
      * The core advice method that performs automatic parameter validation.
      * <p>
      * It intercepts the method call, resolves the target method (handling interfaces), discovers parameter names and

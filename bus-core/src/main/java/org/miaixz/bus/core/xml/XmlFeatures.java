@@ -29,6 +29,13 @@ package org.miaixz.bus.core.xml;
 public class XmlFeatures {
 
     /**
+     * Constructs a new XmlFeatures instance.
+     */
+    public XmlFeatures() {
+        // No initialization required.
+    }
+
+    /**
      * Feature to disallow DOCTYPE declarations in XML. This prevents XML External Entity (XXE) attacks by not allowing
      * external entities to be included in the XML document.
      */

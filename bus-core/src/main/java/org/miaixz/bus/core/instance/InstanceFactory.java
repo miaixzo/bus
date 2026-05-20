@@ -51,7 +51,7 @@ public final class InstanceFactory implements Instance {
      * Private constructor to prevent instantiation.
      */
     private InstanceFactory() {
-
+        // No initialization required.
     }
 
     /**

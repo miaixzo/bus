@@ -55,6 +55,7 @@ public class ConfigurationChanges {
     /**
      * Executes the nullify if not verbose operation.
      *
+     * @param <T>    the object type
      * @param diffs  the diffs.
      * @param object the object.
      * @return the operation result.

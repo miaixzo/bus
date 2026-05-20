@@ -45,6 +45,16 @@ import org.miaixz.bus.http.socket.Handshake;
  */
 public abstract class EventListener {
 
+    /**
+     * Constructs a new {@code EventListener} instance.
+     */
+    public EventListener() {
+        // No initialization required.
+    }
+
+    /**
+     * No-op event listener instance.
+     */
     public static final EventListener NONE = new EventListener() {
 
     };

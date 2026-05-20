@@ -35,45 +35,111 @@ public class EventReleaseLink {
     private String name;
     private String url;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(final Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the external.
+     *
+     * @return the result
+     */
+
     public Boolean getExternal() {
         return external;
     }
+
+    /**
+     * Sets the external.
+     *
+     * @param external the external value
+     */
 
     public void setExternal(final Boolean external) {
         this.external = external;
     }
 
+    /**
+     * Returns the link type.
+     *
+     * @return the result
+     */
+
     public String getLinkType() {
         return linkType;
     }
+
+    /**
+     * Sets the link type.
+     *
+     * @param linkType the link type value
+     */
 
     public void setLinkType(final String linkType) {
         this.linkType = linkType;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(final String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the url.
+     *
+     * @return the result
+     */
+
     public String getUrl() {
         return url;
     }
 
+    /**
+     * Sets the url.
+     *
+     * @param url the url value
+     */
+
     public void setUrl(final String url) {
         this.url = url;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

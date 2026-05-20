@@ -42,6 +42,13 @@ import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatDisk;
 @ThreadSafe
 public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
+    /**
+     * Constructs a new AixHardwareAbstractionLayer instance.
+     */
+    public AixHardwareAbstractionLayer() {
+        // No initialization required.
+    }
+
     // Memoized hardware listing
     /**
      * The lscfg value.

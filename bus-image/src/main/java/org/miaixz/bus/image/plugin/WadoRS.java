@@ -57,6 +57,13 @@ import org.miaixz.bus.logger.Logger;
 public class WadoRS {
 
     /**
+     * Constructs a new {@code WadoRS} instance.
+     */
+    public WadoRS() {
+        // No initialization required.
+    }
+
+    /**
      * A flag indicating whether to use the Accept header or a URL parameter for content negotiation.
      */
     private static boolean header;

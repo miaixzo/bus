@@ -40,6 +40,7 @@ public class BlobStringer implements Function<Object, String> {
      * Constructs a new BlobStringer. Utility class constructor for static access.
      */
     private BlobStringer() {
+        // No initialization required.
     }
 
     /**

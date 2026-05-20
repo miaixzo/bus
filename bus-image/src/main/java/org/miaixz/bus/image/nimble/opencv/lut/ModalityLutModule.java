@@ -76,6 +76,7 @@ public class ModalityLutModule {
      *
      * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.11.html">C.11.1 Modality LUT
      *      Module</a>
+     * @param dcm the dcm value
      */
     public ModalityLutModule(Attributes dcm) {
         this.rescaleSlope = OptionalDouble.empty();

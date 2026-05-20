@@ -39,6 +39,13 @@ import org.miaixz.bus.health.unix.hardware.UnixDisplay;
 public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
+     * Constructs a new {@code LinuxHardwareAbstractionLayer} instance.
+     */
+    public LinuxHardwareAbstractionLayer() {
+        // No initialization required.
+    }
+
+    /**
      * Creates the computer system.
      *
      * @return the create computer system result

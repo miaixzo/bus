@@ -48,6 +48,7 @@ public class FieldMeta {
      * Default constructor.
      */
     public FieldMeta() {
+        // No initialization required.
     }
 
     /**

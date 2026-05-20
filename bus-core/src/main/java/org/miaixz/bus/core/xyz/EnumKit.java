@@ -41,6 +41,7 @@ public class EnumKit {
      * Constructs a new EnumKit. Utility class constructor for static access.
      */
     private EnumKit() {
+        // No initialization required.
     }
 
     /**

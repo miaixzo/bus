@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_IT_Centricity_RA600_7_0;
 public class PrivateKeyword {
 
     /**
+     * Constructs a new {@code PrivateKeyword} instance.
+     */
+    public PrivateKeyword() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "";

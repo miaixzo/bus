@@ -45,6 +45,13 @@ import org.miaixz.bus.spring.SpringBuilder;
 public class BannerPrinter {
 
     /**
+     * Constructs a new BannerPrinter instance.
+     */
+    public BannerPrinter() {
+        // No initialization required.
+    }
+
+    /**
      * Prints the application banner.
      * <p>
      * This method disables the default Spring Boot banner printing and checks for an existing {@link Banner} bean, a

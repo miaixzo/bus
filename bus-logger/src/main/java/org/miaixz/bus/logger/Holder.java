@@ -46,7 +46,7 @@ public class Holder {
      * Default constructor.
      */
     public Holder() {
-
+        // No initialization required.
     }
 
     /**

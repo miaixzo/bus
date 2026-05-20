@@ -34,6 +34,13 @@ import org.miaixz.bus.core.center.iterator.ComputeIterator;
 public abstract class AbstractResult extends ComputeIterator<NLPWord> implements NLPResult {
 
     /**
+     * Constructs a new AbstractResult instance.
+     */
+    public AbstractResult() {
+        // No initialization required.
+    }
+
+    /**
      * Retrieves the next word from the word segmentation result. This method should be implemented by subclasses to
      * provide the logic for fetching the next {@link NLPWord}. Returns {@code null} when there are no more words to be
      * processed.

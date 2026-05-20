@@ -63,6 +63,7 @@ public class ListValueMap<K, V> extends AbstractCollValueMap<K, V> {
      * Constructs a new {@code ListValueMap} backed by a standard {@link java.util.HashMap}.
      */
     public ListValueMap() {
+        // No initialization required.
     }
 
     /**

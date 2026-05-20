@@ -36,6 +36,13 @@ import org.miaixz.bus.socket.buffer.WriteBuffer;
 public abstract class Session {
 
     /**
+     * Constructs a new Session instance.
+     */
+    public Session() {
+        // No initialization required.
+    }
+
+    /**
      * Session status: closed.
      */
     protected static final byte SESSION_STATUS_CLOSED = 1;
@@ -63,6 +70,9 @@ public abstract class Session {
      * Whether the read channel has reached the end-of-stream.
      */
     protected boolean eof;
+    /**
+     * Modification counter for session state changes.
+     */
     protected int modCount = 0;
 
     /**

@@ -11,6 +11,7 @@ inputs:
     required: false
     default: >-
       bus-bom
+      bus-parent
       bus-core
       bus-opencv
       bus-logger
@@ -42,7 +43,6 @@ inputs:
       bus-vortex
       bus-starter
       bus-all
-      bus-parent
   maven-args:
     description: 'Additional Maven arguments.'
     required: false
@@ -127,6 +127,16 @@ runs:
 
         failed=0
 
+        for module in $MODULES; do
+          case "$module" in
+            bus-*) ;;
+            *)
+              echo "::error::Non-Bus module '$module' is not supported by the Bus build action"
+              failed=1
+              ;;
+          esac
+        done
+
         for pom in bus-*/pom.xml; do
           module="${pom%/pom.xml}"
           case " $MODULES " in
@@ -143,18 +153,23 @@ runs:
           require 'rexml/document'
 
           modules = ENV.fetch('MODULES').split
-          special_last = ['bus-parent']
           module_index = modules.each_with_index.to_h
           module_set = module_index.keys.to_h { |module_name| [module_name, true] }
 
           failed = false
 
-          modules.each do |module_name|
-            next if special_last.include?(module_name)
-
+          dependencies_for = lambda do |module_name|
             pom = "#{module_name}/pom.xml"
             document = REXML::Document.new(File.read(pom))
             dependencies = []
+
+            REXML::XPath.each(document, '/project/parent/artifactId') do |element|
+              artifact_id = element.text
+              next unless module_set[artifact_id]
+              next if artifact_id == module_name
+
+              dependencies << artifact_id
+            end
 
             REXML::XPath.each(document, '/project/dependencies/dependency/artifactId') do |element|
               artifact_id = element.text
@@ -164,9 +179,13 @@ runs:
               dependencies << artifact_id
             end
 
-            dependencies.uniq.each do |dependency|
-              next if special_last.include?(dependency)
+            dependencies.uniq
+          end
 
+          modules.each do |module_name|
+            pom = "#{module_name}/pom.xml"
+
+            dependencies_for.call(module_name).each do |dependency|
               if module_index[dependency] > module_index[module_name]
                 warn "::error file=#{pom}::#{module_name} must be built after dependency #{dependency}"
                 failed = true
@@ -175,24 +194,12 @@ runs:
           end
 
           derived_order = []
-          remaining = modules - special_last
+          remaining = modules.dup
           built = {}
 
           until remaining.empty?
             ready = remaining.select do |module_name|
-              pom = "#{module_name}/pom.xml"
-              document = REXML::Document.new(File.read(pom))
-              dependencies = []
-
-              REXML::XPath.each(document, '/project/dependencies/dependency/artifactId') do |element|
-                artifact_id = element.text
-                next unless module_set[artifact_id]
-                next if special_last.include?(artifact_id)
-
-                dependencies << artifact_id
-              end
-
-              dependencies.uniq.all? { |dependency| built[dependency] }
+              dependencies_for.call(module_name).all? { |dependency| built[dependency] }
             end.sort
 
             if ready.empty?
@@ -207,8 +214,6 @@ runs:
               remaining.delete(module_name)
             end
           end
-
-          derived_order.concat(special_last)
 
           if modules != derived_order
             warn "::error::Module order must follow dependencies and alphabetical order"
@@ -238,12 +243,14 @@ runs:
             !in_parent && /<version>/ { print $3; exit }
           ' "$pom")"
 
-          if [ -n "$project_version" ] && [ "$project_version" != "$VERSION" ]; then
+          if [ -n "$project_version" ] && [ "$project_version" != "$VERSION" ] && [ "$project_version" != "\${revision}" ]; then
             echo "::error file=$pom::POM version '$project_version' does not match $VERSION"
             failed=1
           fi
 
-          if grep -q "<bus.version>" "$pom" && ! grep -q "<bus.version>${VERSION}</bus.version>" "$pom"; then
+          if grep -q "<bus.version>" "$pom" \
+              && ! grep -q "<bus.version>${VERSION}</bus.version>" "$pom" \
+              && ! grep -q "<bus.version>\\${revision}</bus.version>" "$pom"; then
             echo "::error file=$pom::bus.version does not match $VERSION"
             failed=1
           fi
@@ -273,10 +280,15 @@ runs:
 
         for module in $MODULES; do
           echo "::group::Build $module"
+          GROOM_ARGS=""
+          if [ "$module" = "bus-parent" ]; then
+            GROOM_ARGS="-Dgroom.skip=true"
+          fi
+
           if [ "$GPG_SKIP" = "true" ]; then
-            mvn $MAVEN_ARGS -Dgpg.skip=true -f "$module/pom.xml" $GOALS
+            mvn $MAVEN_ARGS -Dgpg.skip=true $GROOM_ARGS -f "$module/pom.xml" $GOALS
           else
-            mvn $MAVEN_ARGS -f "$module/pom.xml" $GOALS
+            mvn $MAVEN_ARGS $GROOM_ARGS -f "$module/pom.xml" $GOALS
           fi
           echo "::endgroup::"
         done

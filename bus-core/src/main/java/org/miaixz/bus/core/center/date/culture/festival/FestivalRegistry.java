@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.center.date.culture.festival;
 
+import org.miaixz.bus.core.lang.Normal;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +39,9 @@ public class FestivalRegistry {
 
     /**
      * Full festival data string. Format: @[1] rule type[1] content[3] day offset(-31 to 31)[1] start year[3] name[n]
-     * <h3>Content</h3>
+     * <p>
+     * Content:
+     * </p>
      * <ul>
      * <li>0.SOLAR_DAY: month(1-12, &gt;12 rolls to next Jan)[1] day(1-31)[1] delay days(-31 to 31)[1]</li>
      * <li>1.SOLAR_WEEK: month(1-12, &gt;12 rolls to next Jan)[1] occurrence(-6 to -1, 1 to 6)[1] weekday(0-6)[1]</li>
@@ -47,7 +51,7 @@ public class FestivalRegistry {
      * <li>5.TERM_EB: term index(0-23)[1] earth branch index(0-11)[1] day offset(-31 to 31)[1]</li>
      * </ul>
      */
-    public static String DATA = "";
+    public static String DATA = Normal.EMPTY;
 
     /**
      * Regex pattern for matching festival data entries.

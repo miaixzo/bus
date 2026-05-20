@@ -55,6 +55,13 @@ import org.miaixz.bus.core.net.url.UrlQuery;
 public class UrlKit {
 
     /**
+     * Constructs a new UrlKit instance.
+     */
+    public UrlKit() {
+        // No initialization required.
+    }
+
+    /**
      * Converts a {@link URI} to a {@link URL}.
      *
      * @param uri The {@link URI} to convert.

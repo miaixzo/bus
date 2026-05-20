@@ -37,6 +37,13 @@ import org.miaixz.bus.health.Executor;
 @ThreadSafe
 public final class Dmidecode {
 
+    /**
+     * Constructs a new Dmidecode instance.
+     */
+    public Dmidecode() {
+        // No initialization required.
+    }
+
     // $ sudo dmidecode -t bios
     // # dmidecode 2.11
     // SMBIOS 2.4 present.

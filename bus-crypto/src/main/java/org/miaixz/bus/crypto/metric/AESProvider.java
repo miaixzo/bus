@@ -37,6 +37,13 @@ import org.miaixz.bus.crypto.center.AES;
 public class AESProvider implements Provider {
 
     /**
+     * Constructs a new AESProvider instance.
+     */
+    public AESProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Encrypts the given content using AES with the provided key.
      *
      * @param key     The encryption key as a string. It will be converted to bytes using the platform's default

@@ -37,6 +37,12 @@ import org.miaixz.bus.gitlab.models.DeployKey;
  */
 public class DeployKeysApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code DeployKeysApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public DeployKeysApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

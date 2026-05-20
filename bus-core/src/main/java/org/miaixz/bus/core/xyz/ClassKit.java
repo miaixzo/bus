@@ -54,6 +54,7 @@ public class ClassKit {
      * Constructs a new ClassKit. Utility class constructor for static access.
      */
     private ClassKit() {
+        // No initialization required.
     }
 
     /**

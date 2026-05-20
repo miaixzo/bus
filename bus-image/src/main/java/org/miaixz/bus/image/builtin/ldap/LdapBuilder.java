@@ -46,6 +46,13 @@ import org.miaixz.bus.image.metric.api.ConfigurationChanges;
 public class LdapBuilder {
 
     /**
+     * Constructs a new LdapBuilder instance.
+     */
+    public LdapBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * An empty array of {@link Code} objects, used as a default or placeholder.
      */
     private static final Code[] EMPTY_CODES = {};

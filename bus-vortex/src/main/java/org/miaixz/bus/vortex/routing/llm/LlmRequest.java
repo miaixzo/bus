@@ -45,6 +45,7 @@ public class LlmRequest {
      * Creates an empty LLM request.
      */
     public LlmRequest() {
+        // No initialization required.
     }
 
     /**
@@ -60,6 +61,7 @@ public class LlmRequest {
     /**
      * Whether to stream the response (default: false).
      */
+    @lombok.Builder.Default
     private boolean stream = false;
 
     /**
@@ -111,6 +113,7 @@ public class LlmRequest {
          * Creates an empty LLM request message.
          */
         public Message() {
+            // No initialization required.
         }
 
         /**

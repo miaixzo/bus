@@ -34,6 +34,13 @@ import org.miaixz.bus.validate.magic.annotation.In;
 public class InMatcher implements Matcher<Object, In> {
 
     /**
+     * Constructs a new InMatcher instance.
+     */
+    public InMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object is present in the array of strings specified in the {@link In} annotation.
      *
      * @param object     The object to validate.

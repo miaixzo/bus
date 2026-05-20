@@ -40,6 +40,13 @@ import org.miaixz.bus.validate.magic.annotation.Compare;
 public class CompareMatcher implements Matcher<Object, Compare> {
 
     /**
+     * Constructs a new CompareMatcher instance.
+     */
+    public CompareMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Performs the comparison validation.
      *
      * @param object     The object to be validated. This is expected to be the bean containing the fields to compare.

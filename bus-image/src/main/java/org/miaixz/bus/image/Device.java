@@ -352,6 +352,7 @@ public class Device implements Serializable {
      * Default constructor for creating a Device.
      */
     public Device() {
+        // No initialization required.
     }
 
     /**

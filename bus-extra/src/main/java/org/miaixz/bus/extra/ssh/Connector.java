@@ -64,6 +64,7 @@ public class Connector {
      * Constructs a new, empty {@code Connector} instance.
      */
     public Connector() {
+        // No initialization required.
     }
 
     /**

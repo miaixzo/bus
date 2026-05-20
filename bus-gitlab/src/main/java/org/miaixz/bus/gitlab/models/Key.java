@@ -42,45 +42,111 @@ public class Key implements Serializable {
     private String title;
     private User user;
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return this.createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return this.id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the key.
+     *
+     * @return the result
+     */
+
     public String getKey() {
         return this.key;
     }
+
+    /**
+     * Sets the key.
+     *
+     * @param key the key value
+     */
 
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Returns the title.
+     *
+     * @return the result
+     */
+
     public String getTitle() {
         return this.title;
     }
+
+    /**
+     * Sets the title.
+     *
+     * @param title the title value
+     */
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Returns the user.
+     *
+     * @return the result
+     */
+
     public User getUser() {
         return user;
     }
 
+    /**
+     * Sets the user.
+     *
+     * @param user the user value
+     */
+
     public void setUser(User user) {
         this.user = user;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

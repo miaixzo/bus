@@ -35,6 +35,13 @@ import org.miaixz.bus.validate.magic.annotation.CitizenId;
 public class CitizenIdMatcher implements Matcher<Object, CitizenId> {
 
     /**
+     * Constructs a new CitizenIdMatcher instance.
+     */
+    public CitizenIdMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object, when converted to a string, is a valid Chinese citizen ID number.
      *
      * @param object     The object to validate.

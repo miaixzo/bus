@@ -42,45 +42,111 @@ public class UploadedFile implements Serializable {
     private Date createdAt;
     private UploadedByUser uploadedBy;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the size.
+     *
+     * @return the result
+     */
+
     public Long getSize() {
         return size;
     }
+
+    /**
+     * Sets the size.
+     *
+     * @param size the size value
+     */
 
     public void setSize(Long size) {
         this.size = size;
     }
 
+    /**
+     * Returns the filename.
+     *
+     * @return the result
+     */
+
     public String getFilename() {
         return filename;
     }
+
+    /**
+     * Sets the filename.
+     *
+     * @param filename the filename value
+     */
 
     public void setFilename(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the uploaded by.
+     *
+     * @return the result
+     */
+
     public UploadedByUser getUploadedBy() {
         return uploadedBy;
     }
 
+    /**
+     * Sets the uploaded by.
+     *
+     * @param uploadedBy the uploaded by value
+     */
+
     public void setUploadedBy(UploadedByUser uploadedBy) {
         this.uploadedBy = uploadedBy;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

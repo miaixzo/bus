@@ -85,8 +85,8 @@ public class ReaderWriterCopier extends IoCopier<Reader, Writer> {
      */
     @Override
     public long copy(final Reader source, final Writer target) {
-        Assert.notNull(source, "InputStream is null !"); // Should be Reader, not InputStream
-        Assert.notNull(target, "OutputStream is null !"); // Should be Writer, not OutputStream
+        Assert.notNull(source, "Reader is null !");
+        Assert.notNull(target, "Writer is null !");
 
         final StreamProgress progress = this.progress;
         if (null != progress) {

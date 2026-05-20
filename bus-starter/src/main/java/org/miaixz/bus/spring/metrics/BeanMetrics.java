@@ -38,6 +38,13 @@ import lombok.Setter;
 public class BeanMetrics extends ChildrenMetrics<BeanMetrics> {
 
     /**
+     * Constructs a new BeanMetrics instance.
+     */
+    public BeanMetrics() {
+        // No initialization required.
+    }
+
+    /**
      * The type information of the Bean, recording the bean's class name or type identifier.
      */
     private String type;

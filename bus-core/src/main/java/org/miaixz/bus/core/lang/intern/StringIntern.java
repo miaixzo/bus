@@ -33,6 +33,7 @@ public class StringIntern implements Intern<String> {
      * Constructs a new string interner.
      */
     public StringIntern() {
+        // No initialization required.
     }
 
     /**

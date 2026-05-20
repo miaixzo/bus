@@ -43,6 +43,7 @@ public class PersonName {
      * Creates a new instance.
      */
     public PersonName() {
+        // No initialization required.
     }
 
     /**

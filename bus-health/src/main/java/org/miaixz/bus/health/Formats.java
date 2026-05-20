@@ -36,6 +36,13 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class Formats {
 
     /**
+     * Constructs a new Formats instance.
+     */
+    public Formats() {
+        // No initialization required.
+    }
+
+    /**
      * Formats bytes as a rounded string representation using IEC standard (matches Mac/Linux). For hard drive capacity,
      * use {@link #formatBytesDecimal(long)}. For Windows KB, MB, and GB display, edit the returned string to remove the
      * 'i' to display (incorrect) JEDEC units.

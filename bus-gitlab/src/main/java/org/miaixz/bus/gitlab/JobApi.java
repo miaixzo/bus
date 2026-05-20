@@ -48,6 +48,12 @@ import org.miaixz.bus.logger.Logger;
  */
 public class JobApi extends AbstractApi implements Constants {
 
+    /**
+     * Constructs a new {@code JobApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public JobApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
@@ -380,6 +386,8 @@ public class JobApi extends AbstractApi implements Constants {
      *
      * @return a single job corresponding to the token passed as query parameter
      * @throws GitLabApiException if any exception occurs during execution
+     *
+     * @param ciJobToken the ci job token value
      */
     public Job getJob(final String ciJobToken) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("job_token", ciJobToken, true);

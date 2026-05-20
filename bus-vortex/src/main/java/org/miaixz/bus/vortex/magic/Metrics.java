@@ -50,7 +50,7 @@ public class Metrics {
      * Creates an empty metrics snapshot.
      */
     public Metrics() {
-
+        // No initialization required.
     }
 
     /**

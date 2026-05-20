@@ -26,6 +26,7 @@
 module bus.logger {
 
     requires java.logging;
+
     requires bus.core;
 
     requires org.jboss.logging;

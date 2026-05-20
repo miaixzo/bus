@@ -27,6 +27,7 @@ module bus.setting {
 
     requires bus.core;
     requires bus.logger;
+
     requires org.yaml.snakeyaml;
 
     exports org.miaixz.bus.setting;

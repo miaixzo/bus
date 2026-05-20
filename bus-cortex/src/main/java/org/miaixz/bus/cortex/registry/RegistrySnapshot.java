@@ -41,7 +41,7 @@ public class RegistrySnapshot {
      * Creates an empty registry snapshot.
      */
     public RegistrySnapshot() {
-
+        // No initialization required.
     }
 
     /**

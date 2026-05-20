@@ -73,7 +73,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * Default constructor.
      */
     public RestExecutor() {
-
+        // No initialization required.
     }
 
     /**
@@ -225,7 +225,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "Using ATOMIC mode (stream=1, retrieve.toEntity): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_STRATEGY",
+                    "Using ATOMIC mode (stream=1, exchangeToMono passthrough): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_STRATEGY",
                     ip,
                     method,
                     path);
@@ -547,23 +547,33 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     }
 
     /**
-     * **New private method.** Handles the execution for a UNARY request (e.g., Servlet API). This uses the compatible
-     * `retrieve().toEntity()` buffering method.
+     * Handles the execution for an ATOMIC request using streamed downstream response passthrough.
+     * <p>
+     * The route mode remains ATOMIC for compatibility with existing assets, but the downstream {@link DataBuffer} body
+     * is no longer materialized through entity buffering. Keeping the body as a {@link Flux} allows WebFlux to own
+     * cancellation, error, and release handling.
+     * </p>
+     *
+     * @param bodySpec the downstream request specification
+     * @param ip       the client IP for logging
+     * @param method   the incoming request method for logging
+     * @param path     the incoming request path for logging
+     * @return a streamed {@link ServerResponse}
      */
     private Mono<ServerResponse> executeBuffering(
             WebClient.RequestBodySpec bodySpec,
             String ip,
             String method,
             String path) {
-        return bodySpec.retrieve().toEntity(DataBuffer.class).flatMap(responseEntity -> {
+        return bodySpec.exchangeToMono(clientResponse -> {
             Logger.info(
                     false,
                     "Vortex",
-                    "Received buffered status: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_BUFFERED, {}",
+                    "Received downstream status: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_PASSTHROUGH, {}",
                     ip,
                     method,
                     path,
-                    responseEntity.getStatusCode());
+                    clientResponse.statusCode());
             Logger.info(
                     false,
                     "Vortex",
@@ -571,41 +581,28 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     ip,
                     method,
                     path,
-                    responseEntity.getHeaders());
+                    clientResponse.headers().asHttpHeaders());
 
-            DataBuffer body = responseEntity.getBody();
-            if (body != null && body.readableByteCount() > 0) {
-                Logger.info(
-                        false,
-                        "Vortex",
-                        "Received buffered content: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
-                        ip,
-                        method,
-                        path,
-                        body.readableByteCount());
-            } else {
-                Logger.warn(
-                        false,
-                        "Vortex",
-                        "Received buffered content is empty: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED",
-                        ip,
-                        method,
-                        path);
-            }
-
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
             responseBuilder.headers(headers -> {
-                headers.addAll(responseEntity.getHeaders());
+                headers.addAll(clientResponse.headers().asHttpHeaders());
                 headers.remove(HttpHeaders.HOST);
                 headers.remove(HttpHeaders.TRANSFER_ENCODING);
                 headers.remove(HttpHeaders.CONTENT_LENGTH);
             });
 
-            if (body != null && body.readableByteCount() > 0) {
-                return responseBuilder.body(Mono.just(body), DataBuffer.class);
-            } else {
-                return responseBuilder.build();
-            }
+            Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
+                Logger.debug(
+                        false,
+                        "Vortex",
+                        "Received data chunk, size: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_PASSTHROUGH_CHUNK, {} bytes",
+                        ip,
+                        method,
+                        path,
+                        dataBuffer.readableByteCount());
+            });
+
+            return responseBuilder.body(bodyFlux, DataBuffer.class);
         }).doOnSubscribe(
                 subscription -> Logger.info(
                         true,
@@ -627,7 +624,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         error -> Logger.error(
                                 false,
                                 "Vortex",
-                                "Request FAILED (Buffering): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROOVER_ERROR, {}",
+                                "Request FAILED (Buffering): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_ERROR, {}",
                                 ip,
                                 method,
                                 path,

@@ -30,6 +30,13 @@ package org.miaixz.bus.image.builtin;
 public class NumberOfFramesAccessor {
 
     /**
+     * Constructs a new {@code NumberOfFramesAccessor} instance.
+     */
+    public NumberOfFramesAccessor() {
+        // No initialization required.
+    }
+
+    /**
      * Retrieves the number of frames for a given DICOM instance UID. By default, this implementation returns 1,
      * assuming a single-frame image. Subclasses or configurations may override this behavior to provide actual frame
      * counts based on external information or by parsing the DICOM data itself.

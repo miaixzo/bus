@@ -33,6 +33,12 @@ import org.miaixz.bus.gitlab.services.*;
  */
 public class ServicesApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code ServicesApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ServicesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

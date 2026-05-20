@@ -39,6 +39,7 @@ public final class ImageOrientation {
      * Creates a new instance.
      */
     private ImageOrientation() {
+        // No initialization required.
     }
 
     /**

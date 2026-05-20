@@ -50,7 +50,7 @@ public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, Iterato
      * {@link #addChain(Iterator)} method.
      */
     public IteratorChain() {
-
+        // No initialization required.
     }
 
     /**

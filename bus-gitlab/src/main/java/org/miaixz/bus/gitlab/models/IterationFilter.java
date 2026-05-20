@@ -41,10 +41,24 @@ public class IterationFilter implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852259338991L;
 
+    /**
+     * Returns the query params.
+     *
+     * @param page    the page value
+     * @param perPage the per page value
+     * @return the result
+     */
+
     @JsonIgnore
     public GitLabForm getQueryParams(int page, int perPage) {
         return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
+
+    /**
+     * Returns the query params.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     public GitLabForm getQueryParams() {
@@ -84,78 +98,192 @@ public class IterationFilter implements Serializable {
      */
     private Date updatedBefore;
 
+    /**
+     * Returns the state.
+     *
+     * @return the result
+     */
+
     public IterationFilterState getState() {
         return state;
     }
+
+    /**
+     * Sets the state.
+     *
+     * @param state the state value
+     */
 
     public void setState(IterationFilterState state) {
         this.state = state;
     }
 
+    /**
+     * Returns the search.
+     *
+     * @return the result
+     */
+
     public String getSearch() {
         return search;
     }
+
+    /**
+     * Sets the search.
+     *
+     * @param search the search value
+     */
 
     public void setSearch(String search) {
         this.search = search;
     }
 
+    /**
+     * Returns the in.
+     *
+     * @return the result
+     */
+
     public IterationFilterIn getIn() {
         return in;
     }
+
+    /**
+     * Sets the in.
+     *
+     * @param in the in value
+     */
 
     public void setIn(IterationFilterIn in) {
         this.in = in;
     }
 
+    /**
+     * Returns the include ancestors.
+     *
+     * @return the result
+     */
+
     public Boolean getIncludeAncestors() {
         return includeAncestors;
     }
+
+    /**
+     * Sets the include ancestors.
+     *
+     * @param includeAncestors the include ancestors value
+     */
 
     public void setIncludeAncestors(Boolean includeAncestors) {
         this.includeAncestors = includeAncestors;
     }
 
+    /**
+     * Returns the updated after.
+     *
+     * @return the result
+     */
+
     public Date getUpdatedAfter() {
         return updatedAfter;
     }
+
+    /**
+     * Sets the updated after.
+     *
+     * @param updatedAfter the updated after value
+     */
 
     public void setUpdatedAfter(Date updatedAfter) {
         this.updatedAfter = updatedAfter;
     }
 
+    /**
+     * Returns the updated before.
+     *
+     * @return the result
+     */
+
     public Date getUpdatedBefore() {
         return updatedBefore;
     }
 
+    /**
+     * Sets the updated before.
+     *
+     * @param updatedBefore the updated before value
+     */
+
     public void setUpdatedBefore(Date updatedBefore) {
         this.updatedBefore = updatedBefore;
     }
+
+    /**
+     * Sets the state and returns this instance.
+     *
+     * @param state the state value
+     * @return the result
+     */
 
     public IterationFilter withState(IterationFilterState state) {
         this.state = state;
         return (this);
     }
 
+    /**
+     * Sets the search and returns this instance.
+     *
+     * @param search the search value
+     * @return the result
+     */
+
     public IterationFilter withSearch(String search) {
         this.search = search;
         return (this);
     }
+
+    /**
+     * Sets the in and returns this instance.
+     *
+     * @param in the in value
+     * @return the result
+     */
 
     public IterationFilter withIn(IterationFilterIn in) {
         this.in = in;
         return (this);
     }
 
+    /**
+     * Sets the include ancestors and returns this instance.
+     *
+     * @param includeAncestors the include ancestors value
+     * @return the result
+     */
+
     public IterationFilter withIncludeAncestors(Boolean includeAncestors) {
         this.includeAncestors = includeAncestors;
         return (this);
     }
 
+    /**
+     * Sets the updated after and returns this instance.
+     *
+     * @param updatedAfter the updated after value
+     * @return the result
+     */
+
     public IterationFilter withUpdatedAfter(Date updatedAfter) {
         this.updatedAfter = updatedAfter;
         return (this);
     }
+
+    /**
+     * Sets the updated before and returns this instance.
+     *
+     * @param updatedBefore the updated before value
+     * @return the result
+     */
 
     public IterationFilter withUpdatedBefore(Date updatedBefore) {
         this.updatedBefore = updatedBefore;
@@ -170,20 +298,58 @@ public class IterationFilter implements Serializable {
      */
     public enum IterationFilterState {
 
-        OPENED, UPCOMING, CURRENT, CLOSED, ALL;
+        /**
+         * The opened iteration filter state.
+         */
+        OPENED,
+        /**
+         * The upcoming iteration filter state.
+         */
+        UPCOMING,
+        /**
+         * The current iteration filter state.
+         */
+        CURRENT,
+        /**
+         * The closed iteration filter state.
+         */
+        CLOSED,
+        /**
+         * The all iteration filter state.
+         */
+        ALL;
 
         private static JacksonJsonEnumHelper<IterationFilterState> enumHelper = new JacksonJsonEnumHelper<>(
                 IterationFilterState.class, false, true);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static IterationFilterState forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -200,20 +366,46 @@ public class IterationFilter implements Serializable {
      */
     public enum IterationFilterIn {
 
-        TITLE, CADENCE_TITLE;
+        /**
+         * The title iteration filter in.
+         */
+        TITLE,
+        /**
+         * The cadence title iteration filter in.
+         */
+        CADENCE_TITLE;
 
         private static JacksonJsonEnumHelper<IterationFilterIn> enumHelper = new JacksonJsonEnumHelper<>(
                 IterationFilterIn.class, false, false, true);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static IterationFilterIn forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {

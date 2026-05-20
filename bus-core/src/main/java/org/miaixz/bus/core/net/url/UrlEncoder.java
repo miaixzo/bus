@@ -31,6 +31,13 @@ import org.miaixz.bus.core.xyz.CharKit;
  */
 public class UrlEncoder {
 
+    /**
+     * Constructs a new UrlEncoder instance.
+     */
+    public UrlEncoder() {
+        // No initialization required.
+    }
+
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
 
     /**

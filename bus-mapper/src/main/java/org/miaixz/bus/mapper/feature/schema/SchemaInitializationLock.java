@@ -45,7 +45,7 @@ final class SchemaInitializationLock {
      * Prevents instantiation.
      */
     private SchemaInitializationLock() {
-
+        // No initialization required.
     }
 
     /**

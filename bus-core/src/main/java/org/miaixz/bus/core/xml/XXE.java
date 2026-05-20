@@ -44,6 +44,13 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class XXE {
 
     /**
+     * Constructs a new {@code XXE} instance.
+     */
+    public XXE() {
+        // No initialization required.
+    }
+
+    /**
      * Disables XXE to prevent vulnerability attacks. See: <a href=
      * "https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J">
      * OWASP XXE Prevention Cheat Sheet</a>

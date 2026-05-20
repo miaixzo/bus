@@ -37,6 +37,13 @@ import org.miaixz.bus.crypto.center.SM4;
 public class SM4Provider implements Provider {
 
     /**
+     * Constructs a new SM4Provider instance.
+     */
+    public SM4Provider() {
+        // No initialization required.
+    }
+
+    /**
      * Encrypts the given content using SM4 with the provided key. The key is expected to be a hexadecimal string.
      *
      * @param key     The encryption key as a hexadecimal string.

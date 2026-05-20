@@ -47,6 +47,13 @@ import org.miaixz.bus.logger.Logger;
 public class CGet {
 
     /**
+     * Constructs a new CGet instance.
+     */
+    public CGet() {
+        // No initialization required.
+    }
+
+    /**
      * Performs a DICOM C-GET operation.
      *
      * @param callingNode the configuration of the calling DICOM node.

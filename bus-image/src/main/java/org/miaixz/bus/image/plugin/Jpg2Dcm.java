@@ -58,6 +58,13 @@ import org.miaixz.bus.logger.Logger;
 public class Jpg2Dcm {
 
     /**
+     * Constructs a new Jpg2Dcm instance.
+     */
+    public Jpg2Dcm() {
+        // No initialization required.
+    }
+
+    /**
      * The buffer size for copying data.
      */
     private static final int BUFFER_SIZE = 8162;

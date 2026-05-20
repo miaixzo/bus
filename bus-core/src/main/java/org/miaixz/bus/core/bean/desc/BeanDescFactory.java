@@ -43,6 +43,7 @@ public class BeanDescFactory {
      * Constructs a new BeanDescFactory. Utility class constructor for static access.
      */
     private BeanDescFactory() {
+        // No initialization required.
     }
 
     /**

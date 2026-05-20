@@ -63,6 +63,7 @@ public final class PsInfo {
      * Creates a new PsInfo instance.
      */
     private PsInfo() {
+        // No initialization required.
     }
 
     /**

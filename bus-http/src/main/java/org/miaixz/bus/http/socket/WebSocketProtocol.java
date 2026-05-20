@@ -140,6 +140,9 @@ public final class WebSocketProtocol {
      */
     static final int CLOSE_NO_STATUS_CODE = 1005;
 
+    /**
+     * Executes the web socket protocol operation.
+     */
     public WebSocketProtocol() {
         throw new AssertionError("No instances.");
     }

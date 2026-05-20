@@ -866,9 +866,10 @@ int delete(T entity);                      // 根据实体属性删除
 
 ## 实体表结构初始化
 
-Bus Mapper 支持根据实体元数据初始化数据表结构。能力由 `bus-mapper` 实现，Spring Boot 只负责绑定
-`bus.mapper.schema` 配置并在启动时触发执行。`Dialect` 是唯一数据库能力入口，由 `PagingBehavior`、
-`OptionsBehavior`、`SchemaBehavior` 三类行为组成。
+Bus Mapper 支持根据实体元数据初始化数据库表结构。启动时可以创建缺失表、创建缺失字段、创建主键、创建外键、创建普通索引、创建唯一索引，并执行明确放行的字段类型或字段长度变更。
+
+该能力由 `bus-mapper` 实现。Spring Boot 只负责绑定 `bus.mapper.schema` 配置并在启动时触发执行。`Dialect` 是唯一数据库能力入口，由
+`PagingBehavior`、`OptionsBehavior`、`UpsertBehavior`、`SchemaBehavior` 组成。
 
 默认关闭：
 
@@ -878,6 +879,23 @@ bus:
     schema:
       enabled: false
 ```
+
+### 支持的表结构变更
+
+| 变更 | 是否支持 | 必须开启的配置 |
+| :--- | :--- | :--- |
+| 创建缺失表 | 支持 | `allow-create-table: true` |
+| 添加缺失字段 | 支持 | `allow-add-column: true` |
+| 创建主键 | 支持 | `allow-create-primary-key: true` |
+| 创建组合主键 | 支持 | `allow-create-primary-key: true` |
+| 创建普通索引 | 支持 | `allow-create-index: true` |
+| 创建唯一索引 | 支持 | `allow-create-unique: true` |
+| 创建组合索引 | 支持 | `allow-create-index: true` |
+| 创建外键 | 支持 | `allow-create-foreign-key: true` |
+| 修改 SQL 类型 | 支持 | `allow-modify-type: true` |
+| 扩大 varchar 长度 | 支持 | `allow-expand-length: true` |
+| 缩小 varchar 长度 | 默认阻止 | `allow-shrink-length: true`、`allow-dangerous: true`、白名单 |
+| 删除字段、索引、主键、外键 | 默认阻止 | 对应 drop 开关、`allow-dangerous: true`、白名单 |
 
 支持模式：
 
@@ -889,15 +907,249 @@ bus:
 | `VALIDATE` | 读取元数据并输出差异报告，不执行 DDL。 |
 | `UPDATE` | 只执行配置明确放行的结构差异。 |
 
+### 已存在表的处理规则
+
+当数据表已经存在时，Bus Mapper 会读取当前数据库元数据，并与实体元数据进行差异比较。只有同时满足“当前方言支持”和“配置明确放行”的差异才会执行。已有表缺少索引、唯一索引、主键、外键时，可以在启动初始化时补齐。已有字段类型变更必须开启
+`allow-modify-type: true`，字段长度扩展必须开启 `allow-expand-length: true`。
+
+破坏性变更默认全部阻止。删除字段、删除索引、删除主键、删除外键、缩小字段长度等操作，必须同时满足对应操作开关、`allow-dangerous: true` 和
+`dangerous-whitelist` 白名单。
+
+### Spring Boot 启动配置示例
+
+```yaml
+bus:
+  mapper:
+    basePackage:
+      ai.deepparser.nexus.mapper
+    schema:
+      enabled: true
+      mode: UPDATE
+      dry-run: false
+      print-sql: true
+      fail-fast: true
+      entity-packages:
+        - ai.deepparser.nexus.entity
+      allow-create-table: true
+      allow-add-column: true
+      allow-create-primary-key: true
+      allow-create-index: true
+      allow-create-unique: true
+      allow-create-foreign-key: true
+      allow-modify-type: true
+      allow-expand-length: true
+```
+
+生产环境或类生产环境首次启用时，先使用 `SCRIPT` 模式生成 SQL 脚本并人工确认：
+
+```yaml
+bus:
+  mapper:
+    schema:
+      enabled: true
+      mode: SCRIPT
+      dry-run: false
+      script-location: ./target/bus-mapper-schema.sql
+      entity-packages:
+        - ai.deepparser.nexus.entity
+      allow-create-table: true
+      allow-create-primary-key: true
+      allow-create-index: true
+      allow-create-unique: true
+      allow-create-foreign-key: true
+```
+
+### 实体示例
+
+```java
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "dp_user")
+public class UserEntity {
+
+    @Id
+    @Column(nullable = false)
+    private Long id;
+
+    @Column(length = 128)
+    private String name;
+}
+```
+
+```java
+@Data
+@Entity
+@Table(
+    name = "dp_order",
+    indexes = @Index(name = "idx_dp_order_user_code", columnList = "user_id, code"),
+    uniqueConstraints = @UniqueConstraint(name = "uk_dp_order_code", columnNames = "code")
+)
+public class OrderEntity {
+
+    @Id
+    @Column(nullable = false)
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(length = 64, unique = true)
+    private String code;
+
+    @Column(length = 512)
+    private String remark;
+
+    private Long amount;
+
+    @ManyToOne
+    @JoinColumn(
+        name = "user_id",
+        referencedColumnName = "id",
+        foreignKey = @ForeignKey(name = "fk_dp_order_user")
+    )
+    private UserEntity user;
+}
+```
+
+上述实体会生成或补齐：
+
+* `dp_user` 和 `dp_order` 表。
+* `id` 主键。
+* 普通组合索引 `idx_dp_order_user_code(user_id, code)`。
+* 唯一索引 `uk_dp_order_code(code)`。
+* 外键 `fk_dp_order_user(user_id) references dp_user(id)`。
+* `remark VARCHAR(512)`，来源于 `@Column(length = 512)`。
+* `amount BIGINT`，来源于 Java 类型 `Long`。
+
+`@JoinColumn` 标注的关系字段用于生成外键。实体中仍然保留真实物理字段，例如 `userId`，用于 mapper 读写数据库列值。
+
+### 组合主键示例
+
+```java
+@Data
+@Entity
+@Table(
+    name = "dp_role_permission",
+    indexes = @Index(name = "idx_dp_role_permission_role_perm", columnList = "role_id, permission_id")
+)
+public class RolePermissionEntity {
+
+    @Id
+    @Column(name = "role_id", nullable = false)
+    private Long roleId;
+
+    @Id
+    @Column(name = "permission_id", nullable = false)
+    private Long permissionId;
+}
+```
+
+该实体会生成 `PRIMARY KEY (role_id, permission_id)`，并生成 `role_id, permission_id` 组合索引。
+
+### 字段类型和长度变更示例
+
+```java
+@Data
+@Entity
+@Table(name = "dp_schema_type")
+public class SchemaTypeEntity {
+
+    @Id
+    @Column(nullable = false)
+    private Integer id;
+
+    @Column(name = "text_value", length = 512)
+    private String textValue;
+
+    @Column(name = "big_value")
+    private Long bigValue;
+
+    @Column(name = "wide_value", length = 512)
+    private String wideValue;
+}
+```
+
+在 `mode: UPDATE`、`allow-modify-type: true`、`allow-expand-length: true` 同时开启时，Bus Mapper 可以将已有表中的
+`text_value INTEGER` 修改为 `VARCHAR(512)`，将 `big_value INTEGER` 修改为 `BIGINT`，将 `wide_value VARCHAR(32)` 扩展为
+`VARCHAR(512)`。
+
+类型映射基于 Java 类型。`int(4)`、`int(8)` 不属于 Java 类型长度映射，默认不会生成。`VARCHAR(512)` 通过
+`@Column(length = 512)` 生成。需要数据库原生类型时使用 `@Column(columnDefinition = "...")`，例如
+`int(8) unsigned`。
+
+### 程序化初始化示例
+
+```java
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.miaixz.bus.mapper.Charter.Schema;
+import org.miaixz.bus.mapper.feature.schema.EntitySchemaInitializer;
+import org.miaixz.bus.mapper.feature.schema.SchemaConfig;
+import org.miaixz.bus.mapper.feature.schema.SchemaReport;
+
+public class SchemaBootstrap {
+
+    public SchemaReport initialize(DataSource dataSource) throws Exception {
+        SchemaConfig config = new SchemaConfig()
+            .enabled(true)
+            .mode(Schema.UPDATE)
+            .dryRun(false)
+            .printSql(true)
+            .allowCreateTable(true)
+            .allowAddColumn(true)
+            .allowCreatePrimaryKey(true)
+            .allowCreateIndex(true)
+            .allowCreateUnique(true)
+            .allowCreateForeignKey(true)
+            .allowModifyType(true)
+            .allowExpandLength(true);
+
+        return new EntitySchemaInitializer().initialize(
+            dataSource,
+            List.of(UserEntity.class, OrderEntity.class, RolePermissionEntity.class, SchemaTypeEntity.class),
+            config
+        );
+    }
+}
+```
+
+### PostgreSQL 集成测试示例
+
+`bus-mapper` 已包含 PostgreSQL 集成测试，该测试会保留可见测试表和测试数据：
+
+```bash
+BUS_MAPPER_POSTGRES_PASSWORD='your-password' mvn -B -ntp -f bus-mapper/pom.xml \
+  -Dtest=PostgreSqlEntitySchemaInitializerIntegrationTest \
+  -Dbus.mapper.postgres.it=true \
+  -Dbus.mapper.postgres.url='jdbc:postgresql://localhost:5432/example?connectTimeout=8&socketTimeout=30&sslmode=disable' \
+  -Dbus.mapper.postgres.user=postgres \
+  test
+```
+
+该测试只写入 `dp_postgres_test_parent`、`dp_postgres_test_child`、`dp_postgres_test_composite`、`dp_postgres_test_type`，
+不会删表、不会清表、不会删除数据。
+
+### 方言覆盖
+
 所有内置方言均提供 schema 操作：MySQL、PostgreSQL、H2、SQLite、Firebird、Oscar、Oracle9i、SQL Server、
 Polardb、HerdDB、SQL Server 2012、DB2、AS/400、HSQLDB、CirroData、Informix、Oracle、XuguDB、Dameng。每个方言保留原有分页与
 UPSERT 行为，同时通过 `OptionsBehavior.types()` 与各方言直接实现的 `SchemaBehavior` 方法暴露 schema 和 metadata 能力。schema SQL
 规则直接归属于 `org.miaixz.bus.mapper.dialect` 下的对应方言类，例如 MySQL DDL 位于 `MySql`，PostgreSQL DDL 位于
 `PostgreSql`，H2 DDL 位于 `H2`。
-
-类型映射基于 Java 类型。`int(4)`、`int(8)` 不属于 Java 类型长度映射，默认不会生成。`VARCHAR(512)` 通过
-`@Column(length = 512)` 生成。需要数据库原生类型时使用 `@Column(columnDefinition = "...")`，例如
-`int(8) unsigned`。
 
 本方案不使用 Flyway，不使用 Liquibase，也不创建迁移记录表。
 

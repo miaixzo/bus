@@ -41,6 +41,7 @@ public class DefaultNodeBeanFactory implements NodeBeanFactory<Object> {
      * Constructs a new DefaultNodeBeanFactory. Utility class constructor for static access.
      */
     private DefaultNodeBeanFactory() {
+        // No initialization required.
     }
 
     /**

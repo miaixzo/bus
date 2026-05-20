@@ -34,8 +34,17 @@ public class TagPushSystemHookEvent extends AbstractPushEvent implements SystemH
 
     @Serial
     private static final long serialVersionUID = 2852229727686L;
+    /**
+     * The tag push event value.
+     */
 
     public static final String TAG_PUSH_EVENT = "tag_push";
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

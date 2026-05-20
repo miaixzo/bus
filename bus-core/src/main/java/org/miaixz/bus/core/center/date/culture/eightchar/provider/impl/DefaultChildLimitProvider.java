@@ -35,6 +35,7 @@ public class DefaultChildLimitProvider extends AbstractChildLimitProvider {
      * Constructs a new DefaultChildLimitProvider. Utility class constructor for static access.
      */
     public DefaultChildLimitProvider() {
+        // No initialization required.
     }
 
     /**

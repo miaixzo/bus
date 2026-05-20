@@ -45,6 +45,13 @@ import org.miaixz.bus.logger.Logger;
 public class InternalMail {
 
     /**
+     * Constructs a new InternalMail instance.
+     */
+    public InternalMail() {
+        // No initialization required.
+    }
+
+    /**
      * Parses an array of email address strings into an array of {@link InternetAddress} objects. Each string in the
      * input array can contain multiple addresses separated by standard delimiters.
      *

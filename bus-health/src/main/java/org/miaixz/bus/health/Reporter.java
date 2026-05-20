@@ -72,6 +72,7 @@ public final class Reporter {
      * Creates a new Reporter instance.
      */
     private Reporter() {
+        // No initialization required.
     }
 
     /**

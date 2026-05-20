@@ -40,6 +40,13 @@ import java.util.zip.GZIPOutputStream;
 public class JdkGzipSerializer extends AbstractSerializer {
 
     /**
+     * Constructs a new JdkGzipSerializer instance.
+     */
+    public JdkGzipSerializer() {
+        // No initialization required.
+    }
+
+    /**
      * Performs serialization by first using Java serialization and then GZIP compressing the result.
      * <p>
      * The {@link ByteArrayOutputStream} is intentionally kept outside the try-with-resources block so that

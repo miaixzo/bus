@@ -36,6 +36,7 @@ public class SetValidator {
      * Constructs a new set validator.
      */
     public SetValidator() {
+        // No initialization required.
     }
 
 }

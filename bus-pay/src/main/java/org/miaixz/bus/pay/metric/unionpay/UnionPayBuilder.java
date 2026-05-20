@@ -30,6 +30,13 @@ import org.miaixz.bus.pay.Registry;
 public class UnionPayBuilder {
 
     /**
+     * Constructs a new UnionPayBuilder instance.
+     */
+    public UnionPayBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Builds the user authorization URL.
      *
      * @param url The callback URL.

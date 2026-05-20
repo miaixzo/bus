@@ -43,7 +43,7 @@ public final class DrmEdid {
      * Creates a new DrmEdid instance.
      */
     private DrmEdid() {
-
+        // No initialization required.
     }
 
     /**

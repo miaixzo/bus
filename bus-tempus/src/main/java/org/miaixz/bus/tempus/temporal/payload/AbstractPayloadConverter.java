@@ -40,6 +40,13 @@ import org.miaixz.bus.logger.Logger;
 public abstract class AbstractPayloadConverter implements PayloadConverter {
 
     /**
+     * Constructs a new AbstractPayloadConverter instance.
+     */
+    public AbstractPayloadConverter() {
+        // No initialization required.
+    }
+
+    /**
      * Returns a preferred adapter to use.
      * <p>
      * Default is {@code null}, meaning auto-detection is used.
@@ -455,6 +462,7 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
          * Creates the holder type.
          */
         private DefaultPayloadAdapterHolder() {
+            // No initialization required.
         }
 
     }

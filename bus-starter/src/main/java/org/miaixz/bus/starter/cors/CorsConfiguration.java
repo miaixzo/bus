@@ -46,6 +46,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class CorsConfiguration {
 
     /**
+     * Constructs a new CorsConfiguration instance.
+     */
+    public CorsConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected CORS configuration properties.
      */
     @Resource

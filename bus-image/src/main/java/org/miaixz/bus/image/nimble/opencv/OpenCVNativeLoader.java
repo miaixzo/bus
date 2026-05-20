@@ -38,6 +38,13 @@ import org.miaixz.bus.logger.Logger;
 public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
 
     /**
+     * Constructs a new {@code OpenCVNativeLoader} instance.
+     */
+    public OpenCVNativeLoader() {
+        // No initialization required.
+    }
+
+    /**
      * Loads the er.
      */
     public static void loader() {

@@ -41,6 +41,7 @@ public class StackTraceCaller implements Caller, Serializable {
      * Constructs a stack-trace-based caller resolver.
      */
     public StackTraceCaller() {
+        // No initialization required.
     }
 
     /**

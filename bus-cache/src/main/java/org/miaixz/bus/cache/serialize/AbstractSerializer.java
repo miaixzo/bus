@@ -36,6 +36,13 @@ import org.miaixz.bus.logger.Logger;
 public abstract class AbstractSerializer implements Serializer {
 
     /**
+     * Constructs a new AbstractSerializer instance.
+     */
+    public AbstractSerializer() {
+        // No initialization required.
+    }
+
+    /**
      * Performs the actual serialization of the object.
      *
      * @param object The object to be serialized.

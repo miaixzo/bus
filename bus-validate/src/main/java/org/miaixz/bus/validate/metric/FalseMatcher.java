@@ -33,6 +33,13 @@ import org.miaixz.bus.validate.magic.annotation.False;
 public class FalseMatcher implements Matcher<Boolean, False> {
 
     /**
+     * Constructs a new FalseMatcher instance.
+     */
+    public FalseMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given Boolean object is {@code false}.
      *
      * @param object     The Boolean object to validate.

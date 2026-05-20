@@ -36,6 +36,13 @@ import org.miaixz.bus.health.builtin.hardware.Sensors;
 public abstract class AbstractSensors implements Sensors {
 
     /**
+     * Constructs a new AbstractSensors instance.
+     */
+    public AbstractSensors() {
+        // No initialization required.
+    }
+
+    /**
      * The cpuTemperature value.
      */
     private final Supplier<Double> cpuTemperature = Memoizer

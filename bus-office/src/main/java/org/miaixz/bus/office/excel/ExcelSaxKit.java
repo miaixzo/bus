@@ -63,6 +63,13 @@ import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 public class ExcelSaxKit {
 
     /**
+     * Constructs a new ExcelSaxKit instance.
+     */
+    public ExcelSaxKit() {
+        // No initialization required.
+    }
+
+    /**
      * Creates an {@link ExcelSaxReader} instance.
      *
      * @param isXlsx     {@code true} if the Excel file is in XLSX format (07 format), {@code false} otherwise.

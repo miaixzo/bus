@@ -47,6 +47,7 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
      * Constructs a new AnyTrustManager. Utility class constructor for static access.
      */
     private AnyTrustManager() {
+        // No initialization required.
     }
 
     /**

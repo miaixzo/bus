@@ -37,6 +37,13 @@ import org.miaixz.bus.logger.Logger;
 public class NLPFactory {
 
     /**
+     * Constructs a new NLPFactory instance.
+     */
+    public NLPFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Automatically creates and retrieves a singleton instance of the corresponding word segmentation engine object.
      * The engine is determined based on the NLP engine JARs introduced by the user via SPI mechanism. The chosen
      * engine's simple name (without "Engine" suffix) is logged for informational purposes.

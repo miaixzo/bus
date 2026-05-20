@@ -44,6 +44,13 @@ import org.miaixz.bus.logger.Logger;
 public class WorkbookKit {
 
     /**
+     * Constructs a new WorkbookKit instance.
+     */
+    public WorkbookKit() {
+        // No initialization required.
+    }
+
+    /**
      * Creates or loads a workbook (read-write mode).
      *
      * @param excelFilePath The path to the Excel file, absolute or relative to the classpath.

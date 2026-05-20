@@ -34,6 +34,13 @@ import org.miaixz.bus.validate.magic.annotation.Mobile;
 public class MobileMatcher implements Matcher<Object, Mobile> {
 
     /**
+     * Constructs a new MobileMatcher instance.
+     */
+    public MobileMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object, when converted to a string, is a valid mobile phone number.
      *
      * @param object     The object to validate.

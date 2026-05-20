@@ -57,6 +57,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class EntitySchemaInitializer {
 
     /**
+     * Constructs a new EntitySchemaInitializer instance.
+     */
+    public EntitySchemaInitializer() {
+        // No initialization required.
+    }
+
+    /**
      * Initializes schema structures for entity classes.
      *
      * @param dataSource    the datasource used for metadata reads and DDL execution
@@ -76,15 +83,29 @@ public class EntitySchemaInitializer {
         SchemaBehavior operations = dialect;
         List<String> scriptSqls = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
-            for (Class<?> entityClass : entityClasses) {
-                if (excluded(entityClass, config)) {
-                    continue;
+            List<AutoCloseable> locks = new ArrayList<>();
+            List<SchemaPlan> plans = new ArrayList<>();
+            try {
+                for (Class<?> entityClass : entityClasses) {
+                    if (excluded(entityClass, config)) {
+                        continue;
+                    }
+                    TableMeta table = MapperFactory.of(entityClass);
+                    if (excluded(table, config)) {
+                        continue;
+                    }
+                    locks.add(SchemaInitializationLock.acquire(dataSource, table));
+                    locks.add(operations.acquireSchemaInitializationLock(connection, table));
+                    TableSnapshot snapshot = operations.readTable(connection, table);
+                    if (config.mode() == Schema.CREATE && snapshot.exists()) {
+                        report.skippedSqls().add("Table already exists: " + table.tableName());
+                        continue;
+                    }
+                    plans.add(new SchemaPlan(table, new SchemaDiffer(operations, config).diff(table, snapshot)));
                 }
-                TableMeta table = MapperFactory.of(entityClass);
-                if (excluded(table, config)) {
-                    continue;
-                }
-                initializeTable(dataSource, connection, dialect, operations, config, report, scriptSqls, table);
+                executePlans(connection, dialect, operations, config, report, scriptSqls, plans);
+            } finally {
+                closeLocks(locks);
             }
         }
         writeScript(config, scriptSqls);
@@ -92,45 +113,46 @@ public class EntitySchemaInitializer {
     }
 
     /**
-     * Initializes one table while holding JVM-local and database-native temporary locks.
+     * Executes schema plans in dependency-safe phases.
      *
-     * @param dataSource the datasource being initialized
      * @param connection the active database connection
      * @param dialect    the active dialect
      * @param operations the schema behavior
      * @param config     the schema configuration
      * @param report     the execution report
      * @param scriptSqls the generated script SQL collector
-     * @param table      the table metadata
-     * @throws SQLException when metadata reads, lock handling, or DDL execution fails
+     * @param plans      the schema plans
+     * @throws SQLException when DDL execution fails
      */
-    private void initializeTable(
-            DataSource dataSource,
+    private void executePlans(
             Connection connection,
             Dialect dialect,
             SchemaBehavior operations,
             SchemaConfig config,
             SchemaReport report,
             List<String> scriptSqls,
-            TableMeta table) throws SQLException {
-        AutoCloseable jvmLock = SchemaInitializationLock.acquire(dataSource, table);
-        try {
-            AutoCloseable databaseLock = operations.acquireSchemaInitializationLock(connection, table);
-            try {
-                TableSnapshot snapshot = operations.readTable(connection, table);
-                if (config.mode() == Schema.CREATE && snapshot.exists()) {
-                    report.skippedSqls().add("Table already exists: " + table.tableName());
-                    return;
-                }
-                List<SchemaDiff> diffs = new SchemaDiffer(operations, config).diff(table, snapshot);
-                for (SchemaDiff diff : diffs) {
+            List<SchemaPlan> plans) throws SQLException {
+        for (SchemaPhase phase : SchemaPhase.values()) {
+            for (SchemaPlan plan : plans) {
+                for (SchemaDiff diff : plan.diffs()) {
+                    if (phase != SchemaPhase.of(diff.type())) {
+                        continue;
+                    }
                     handleDiff(connection, dialect, operations, config, report, scriptSqls, diff);
                 }
-            } finally {
-                closeLock(databaseLock);
             }
-        } finally {
-            closeLock(jvmLock);
+        }
+    }
+
+    /**
+     * Closes schema initialization locks in reverse acquisition order.
+     *
+     * @param locks the locks to close
+     * @throws SQLException when lock release fails
+     */
+    private void closeLocks(List<AutoCloseable> locks) throws SQLException {
+        for (int i = locks.size() - 1; i >= 0; i--) {
+            closeLock(locks.get(i));
         }
     }
 
@@ -229,7 +251,14 @@ public class EntitySchemaInitializer {
             return false;
         }
         if (config.mode() == Schema.CREATE) {
-            return diff.type() == Behavior.CREATE_TABLE && config.allowCreateTable();
+            return switch (diff.type()) {
+                case CREATE_TABLE -> config.allowCreateTable();
+                case CREATE_PRIMARY_KEY -> config.allowCreatePrimaryKey();
+                case CREATE_UNIQUE -> config.allowCreateUnique();
+                case CREATE_INDEX -> config.allowCreateIndex();
+                case CREATE_FOREIGN_KEY -> config.allowCreateForeignKey();
+                default -> false;
+            };
         }
         if (config.mode() != Schema.UPDATE && config.mode() != Schema.SCRIPT) {
             return false;
@@ -253,6 +282,10 @@ public class EntitySchemaInitializer {
             case DROP_INDEX -> config.allowDropIndex();
             case CREATE_UNIQUE -> config.allowCreateUnique();
             case DROP_UNIQUE -> config.allowDropUnique();
+            case CREATE_PRIMARY_KEY -> config.allowCreatePrimaryKey();
+            case DROP_PRIMARY_KEY -> config.allowDropPrimaryKey();
+            case CREATE_FOREIGN_KEY -> config.allowCreateForeignKey();
+            case DROP_FOREIGN_KEY -> config.allowDropForeignKey();
             default -> false;
         };
         if (!allowed) {
@@ -292,6 +325,10 @@ public class EntitySchemaInitializer {
             case DROP_INDEX -> operations.dropIndex(diff.tableMeta(), diff.index());
             case CREATE_UNIQUE -> operations.createUnique(diff.tableMeta(), diff.index());
             case DROP_UNIQUE -> operations.dropUnique(diff.tableMeta(), diff.index());
+            case CREATE_PRIMARY_KEY -> operations.createPrimaryKey(diff.tableMeta(), diff.primaryKey());
+            case DROP_PRIMARY_KEY -> operations.dropPrimaryKey(diff.tableMeta(), diff.primaryKey());
+            case CREATE_FOREIGN_KEY -> operations.createForeignKey(diff.tableMeta(), diff.foreignKey());
+            case DROP_FOREIGN_KEY -> operations.dropForeignKey(diff.tableMeta(), diff.foreignKey());
             default -> null;
         };
     }
@@ -387,6 +424,61 @@ public class EntitySchemaInitializer {
             Files.createDirectories(path.getParent());
         }
         Files.writeString(path, String.join(";\n", sqls) + ";\n");
+    }
+
+    /**
+     * Schema execution phase.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private enum SchemaPhase {
+
+        /**
+         * Table creation phase.
+         */
+        TABLE,
+
+        /**
+         * Column and primary key phase.
+         */
+        STRUCTURE,
+
+        /**
+         * Unique constraint and index phase.
+         */
+        INDEX,
+
+        /**
+         * Foreign key phase.
+         */
+        FOREIGN_KEY;
+
+        /**
+         * Resolves the execution phase for a behavior.
+         *
+         * @param behavior the schema behavior
+         * @return the execution phase
+         */
+        private static SchemaPhase of(Behavior behavior) {
+            return switch (behavior) {
+                case CREATE_TABLE -> TABLE;
+                case CREATE_UNIQUE, DROP_UNIQUE, CREATE_INDEX, DROP_INDEX -> INDEX;
+                case CREATE_FOREIGN_KEY, DROP_FOREIGN_KEY -> FOREIGN_KEY;
+                default -> STRUCTURE;
+            };
+        }
+
+    }
+
+    /**
+     * Table schema execution plan.
+     *
+     * @param table the table metadata
+     * @param diffs the schema differences
+     */
+    private record SchemaPlan(TableMeta table, List<SchemaDiff> diffs) {
+
     }
 
 }

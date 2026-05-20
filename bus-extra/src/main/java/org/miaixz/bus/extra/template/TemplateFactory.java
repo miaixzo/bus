@@ -36,6 +36,13 @@ import org.miaixz.bus.logger.Logger;
 public class TemplateFactory {
 
     /**
+     * Constructs a new TemplateFactory instance.
+     */
+    public TemplateFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Retrieves a singleton instance of {@link TemplateProvider} based on the available template engine JARs. The first
      * available template engine found via SPI will be used.
      *

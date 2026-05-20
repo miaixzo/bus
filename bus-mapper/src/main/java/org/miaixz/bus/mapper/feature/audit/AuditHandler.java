@@ -83,7 +83,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
      * Default constructor (uses default configuration).
      */
     public AuditHandler() {
-
+        // No initialization required.
     }
 
     /**

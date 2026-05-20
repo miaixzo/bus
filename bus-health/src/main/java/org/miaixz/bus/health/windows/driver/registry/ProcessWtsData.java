@@ -212,6 +212,8 @@ public final class ProcessWtsData {
         }
 
         /**
+         * Executes the name operation.
+         *
          * @return the name
          */
         public String getName() {
@@ -219,6 +221,8 @@ public final class ProcessWtsData {
         }
 
         /**
+         * Executes the path operation.
+         *
          * @return the path
          */
         public String getPath() {
@@ -226,6 +230,8 @@ public final class ProcessWtsData {
         }
 
         /**
+         * Executes the thread count operation.
+         *
          * @return the threadCount
          */
         public int getThreadCount() {
@@ -233,6 +239,8 @@ public final class ProcessWtsData {
         }
 
         /**
+         * Executes the virtual size operation.
+         *
          * @return the virtualSize
          */
         public long getVirtualSize() {
@@ -240,6 +248,8 @@ public final class ProcessWtsData {
         }
 
         /**
+         * Executes the kernel time operation.
+         *
          * @return the kernelTime
          */
         public long getKernelTime() {
@@ -247,6 +257,8 @@ public final class ProcessWtsData {
         }
 
         /**
+         * Executes the user time operation.
+         *
          * @return the userTime
          */
         public long getUserTime() {
@@ -254,6 +266,8 @@ public final class ProcessWtsData {
         }
 
         /**
+         * Executes the open files operation.
+         *
          * @return the openFiles
          */
         public long getOpenFiles() {

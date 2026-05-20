@@ -37,6 +37,13 @@ import org.miaixz.bus.cache.Factory;
 public class CacheFactoryProvider {
 
     /**
+     * Constructs a new CacheFactoryProvider instance.
+     */
+    public CacheFactoryProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Exposes the shared cache factory when the host application does not provide one.
      *
      * @return cache factory

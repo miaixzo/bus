@@ -34,6 +34,13 @@ import java.nio.Buffer;
 public class SafeBuffer {
 
     /**
+     * Constructs a new {@code SafeBuffer} instance.
+     */
+    public SafeBuffer() {
+        // No initialization required.
+    }
+
+    /**
      * Executes the clear operation.
      *
      * @param buf the buf.

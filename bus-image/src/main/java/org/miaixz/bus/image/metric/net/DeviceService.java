@@ -34,6 +34,13 @@ import org.miaixz.bus.image.Device;
 public class DeviceService implements DeviceServiceInterface {
 
     /**
+     * Constructs a new DeviceService instance.
+     */
+    public DeviceService() {
+        // No initialization required.
+    }
+
+    /**
      * The device value.
      */
     protected Device device;

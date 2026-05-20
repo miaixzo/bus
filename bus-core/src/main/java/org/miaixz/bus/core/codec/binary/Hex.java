@@ -44,6 +44,7 @@ public class Hex {
      * Constructs a new Hex. Utility class constructor for static access.
      */
     public Hex() {
+        // No initialization required.
     }
 
     /**

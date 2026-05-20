@@ -38,6 +38,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class SensitiveProperties {
 
     /**
+     * Constructs a new SensitiveProperties instance.
+     */
+    public SensitiveProperties() {
+        // No initialization required.
+    }
+
+    /**
      * Configuration for encryption.
      */
     private Encrypt encrypt = new Encrypt();
@@ -63,6 +70,13 @@ public class SensitiveProperties {
     public static class Encrypt {
 
         /**
+         * Constructs a new Encrypt instance.
+         */
+        public Encrypt() {
+            // No initialization required.
+        }
+
+        /**
          * The encryption key.
          */
         private String key;
@@ -83,6 +97,13 @@ public class SensitiveProperties {
     @Getter
     @Setter
     public static class Decrypt {
+
+        /**
+         * Constructs a new Decrypt instance.
+         */
+        public Decrypt() {
+            // No initialization required.
+        }
 
         /**
          * The decryption key.

@@ -35,6 +35,7 @@ public class CRC16IBM extends CRC16Checksum {
      * Constructs a new CRC16IBM. Utility class constructor for static access.
      */
     public CRC16IBM() {
+        // No initialization required.
     }
 
     @Serial

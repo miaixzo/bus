@@ -40,6 +40,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class ListProvider {
 
     /**
+     * Constructs a new ListProvider instance.
+     */
+    public ListProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Batch inserts a list of entities.
      *
      * @param context The provider context, containing method and interface information.

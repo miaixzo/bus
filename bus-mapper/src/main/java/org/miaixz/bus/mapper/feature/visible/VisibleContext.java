@@ -71,6 +71,7 @@ public class VisibleContext {
      * Private constructor to prevent instantiation.
      */
     private VisibleContext() {
+        // No initialization required.
     }
 
     /**

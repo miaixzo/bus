@@ -35,7 +35,7 @@ public class Builder {
      * Constructs a new AbstractProvider with default settings.
      */
     private Builder() {
-
+        // No initialization required.
     }
 
     /**

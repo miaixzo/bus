@@ -81,6 +81,15 @@ public final class Exchange {
      */
     private boolean duplex;
 
+    /**
+     * Creates an exchange for a single request and response pair.
+     *
+     * @param transmitter   the transmitter owning the exchange
+     * @param call          the call using the exchange
+     * @param eventListener the event listener
+     * @param finder        the exchange finder
+     * @param codec         the HTTP codec
+     */
     public Exchange(Transmitter transmitter, NewCall call, EventListener eventListener, ExchangeFinder finder,
             HttpCodec codec) {
         this.transmitter = transmitter;

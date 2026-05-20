@@ -27,4 +27,11 @@ package org.miaixz.bus.pay.metric.tenpay;
  */
 public class TenpayBuilder {
 
+    /**
+     * Constructs a new TenpayBuilder instance.
+     */
+    public TenpayBuilder() {
+        // No initialization required.
+    }
+
 }

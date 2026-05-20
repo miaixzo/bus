@@ -69,7 +69,7 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
      * Default constructor (uses default configuration).
      */
     public PopulateHandler() {
-
+        // No initialization required.
     }
 
     /**

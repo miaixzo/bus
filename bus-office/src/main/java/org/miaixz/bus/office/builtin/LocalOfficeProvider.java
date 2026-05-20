@@ -34,6 +34,13 @@ import org.miaixz.bus.logger.Logger;
 public class LocalOfficeProvider extends AbstractProvider {
 
     /**
+     * Constructs a new LocalOfficeProvider instance.
+     */
+    public LocalOfficeProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Implements the behavior defined by the supertype.
      *
      * @param source the source file to convert

@@ -43,6 +43,13 @@ import org.miaixz.bus.logger.Logger;
 public class AspectjJdbcProxy {
 
     /**
+     * Constructs a new AspectjJdbcProxy instance.
+     */
+    public AspectjJdbcProxy() {
+        // No initialization required.
+    }
+
+    /**
      * Advice that executes before a method annotated with {@link DataSource}.
      * <p>
      * It sets the data source context based on the value specified in the annotation. If no data source name is

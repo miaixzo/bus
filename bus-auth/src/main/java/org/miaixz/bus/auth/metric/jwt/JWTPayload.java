@@ -31,12 +31,18 @@ import java.util.Map;
  * <li>Public claims</li>
  * <li>Private claims</li>
  * </ul>
- * <p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JWTPayload extends Claims implements JWTRegister<JWTPayload> {
+
+    /**
+     * Constructs a new JWTPayload instance.
+     */
+    public JWTPayload() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852289330860L;
@@ -53,8 +59,6 @@ public class JWTPayload extends Claims implements JWTRegister<JWTPayload> {
     }
 
     /**
-     *
-     *
      * Sets a specific payload claim with the given name and value.
      *
      * @param name  the name of the claim

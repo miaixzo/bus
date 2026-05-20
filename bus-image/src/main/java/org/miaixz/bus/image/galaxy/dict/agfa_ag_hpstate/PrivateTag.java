@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.agfa_ag_hpstate;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AGFA-AG_HPState";

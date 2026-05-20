@@ -35,6 +35,7 @@ public class CRC16X25 extends CRC16Checksum {
      * Constructs a new CRC16X25. Utility class constructor for static access.
      */
     private CRC16X25() {
+        // No initialization required.
     }
 
     @Serial

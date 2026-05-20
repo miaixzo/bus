@@ -64,7 +64,7 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
      * Default constructor (uses default configuration).
      */
     public VisibleHandler() {
-
+        // No initialization required.
     }
 
     /**

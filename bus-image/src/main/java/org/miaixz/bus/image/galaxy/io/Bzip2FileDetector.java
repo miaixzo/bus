@@ -38,6 +38,13 @@ import org.miaixz.bus.core.xyz.StreamKit;
 public class Bzip2FileDetector extends FileTypeDetector {
 
     /**
+     * Constructs a new Bzip2FileDetector instance.
+     */
+    public Bzip2FileDetector() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given filename ends with any of the specified extensions (case-insensitive).
      *
      * @param filename The name of the file.

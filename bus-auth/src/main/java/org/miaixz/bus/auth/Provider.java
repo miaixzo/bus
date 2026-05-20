@@ -53,7 +53,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message build(String state) {
-        throw new AuthorizedException(ErrorCode._110001.getKey());
+        throw new AuthorizedException(ErrorCode._110001);
     }
 
     /**
@@ -64,7 +64,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message authorize(Callback callback) {
-        throw new AuthorizedException(ErrorCode._110001.getKey());
+        throw new AuthorizedException(ErrorCode._110001);
     }
 
     /**
@@ -93,7 +93,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message refresh(Authorization authorization) {
-        throw new AuthorizedException(ErrorCode._110001.getKey());
+        throw new AuthorizedException(ErrorCode._110001);
     }
 
     /**
@@ -104,7 +104,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message revoke(Authorization authorization) {
-        throw new AuthorizedException(ErrorCode._110001.getKey());
+        throw new AuthorizedException(ErrorCode._110001);
     }
 
     /**

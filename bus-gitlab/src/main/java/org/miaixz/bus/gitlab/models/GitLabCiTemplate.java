@@ -38,21 +38,51 @@ public class GitLabCiTemplate implements Serializable {
     private String name;
     private String content;
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the content.
+     *
+     * @return the result
+     */
+
     public String getContent() {
         return content;
     }
 
+    /**
+     * Sets the content.
+     *
+     * @param content the content value
+     */
+
     public void setContent(String content) {
         this.content = content;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

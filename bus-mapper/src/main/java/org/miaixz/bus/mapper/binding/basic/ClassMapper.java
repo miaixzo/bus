@@ -41,6 +41,7 @@ public interface ClassMapper<T> {
      *
      * @return The entity class type.
      */
+    @SuppressWarnings("unchecked")
     default Class<T> entityClass() {
         return (Class<T>) CachingEntityClass.getEntityClass(getClass());
     }
@@ -61,6 +62,13 @@ public interface ClassMapper<T> {
      * @since Java 21+
      */
     class CachingEntityClass {
+
+        /**
+         * Constructs a new CachingEntityClass instance.
+         */
+        public CachingEntityClass() {
+            // No initialization required.
+        }
 
         /**
          * A map to store the mapping between interface classes and their corresponding entity class types.

@@ -53,7 +53,7 @@ public class Configure {
      * Default constructor.
      */
     public Configure() {
-
+        // No initialization required.
     }
 
     /**

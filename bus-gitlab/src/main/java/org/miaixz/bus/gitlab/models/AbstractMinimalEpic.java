@@ -22,15 +22,28 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serial;
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * The abstract minimal epic class.
  *
+ * @param <E> the concrete epic model type
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
+@Setter
 public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Serializable {
+
+    /**
+     * Constructs a new AbstractMinimalEpic instance.
+     */
+    public AbstractMinimalEpic() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852235180659L;
@@ -43,66 +56,22 @@ public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Se
     private String reference;
     private String url;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getIid() {
-        return iid;
-    }
-
-    public void setIid(Long iid) {
-        this.iid = iid;
-    }
-
-    public Long getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
-    }
-
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
+    /**
+     * Sets the title and returns this minimal epic model.
+     *
+     * @param title the epic title
+     * @return this minimal epic model
+     */
     public E withTitle(String title) {
         this.title = title;
         return (E) (this);
     }
 
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

@@ -32,6 +32,13 @@ import org.miaixz.bus.sensitive.Context;
 public class PasswordProvider extends AbstractProvider {
 
     /**
+     * Constructs a new PasswordProvider instance.
+     */
+    public PasswordProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Returns an empty string, effectively removing the password from the output.
      *
      * @param object  The original password object (ignored).

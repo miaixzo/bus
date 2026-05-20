@@ -43,6 +43,13 @@ import org.miaixz.bus.core.xyz.MapKit;
 public class WordTable {
 
     /**
+     * Constructs a new WordTable instance.
+     */
+    public WordTable() {
+        // No initialization required.
+    }
+
+    /**
      * Creates an empty table with a single row.
      *
      * @param doc The {@link XWPFDocument} to which the table will be added.

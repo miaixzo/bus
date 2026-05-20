@@ -25,8 +25,8 @@
  */
 module bus.limiter {
 
-    requires bus.core;
     requires bus.cache;
+    requires bus.core;
     requires bus.crypto;
     requires bus.extra;
     requires bus.logger;

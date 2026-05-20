@@ -30,4 +30,11 @@ import org.miaixz.bus.extra.json.JsonProvider;
  */
 public abstract class AbstractJsonProvider implements JsonProvider {
 
+    /**
+     * Constructs a new AbstractJsonProvider instance.
+     */
+    public AbstractJsonProvider() {
+        // No initialization required.
+    }
+
 }

@@ -100,8 +100,18 @@ public class OSService {
      * @since Java 21+
      */
     public enum State {
-        RUNNING, STOPPED, OTHER
-
+        /**
+         * The running state.
+         */
+        RUNNING,
+        /**
+         * The stopped state.
+         */
+        STOPPED,
+        /**
+         * The other state.
+         */
+        OTHER;
     }
 
 }

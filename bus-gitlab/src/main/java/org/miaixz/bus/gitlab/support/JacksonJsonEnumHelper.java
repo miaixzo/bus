@@ -27,18 +27,37 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 /**
  * The jackson JSON enum helper class.
  *
+ * @param <E> the enum type
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JacksonJsonEnumHelper<E extends Enum<E>> {
 
+    /**
+     * Maps serialized enum names to enum values.
+     */
     private Map<String, E> valuesMap;
+
+    /**
+     * Maps enum values to serialized enum names.
+     */
     private Map<E, String> namesMap;
 
+    /**
+     * Creates a JSON enum helper for lower-case enum values.
+     *
+     * @param enumType the enum type
+     */
     public JacksonJsonEnumHelper(Class<E> enumType) {
         this(enumType, false);
     }
 
+    /**
+     * Creates a JSON enum helper.
+     *
+     * @param enumType               the enum type
+     * @param firstLetterCapitalized whether the first letter is capitalized
+     */
     public JacksonJsonEnumHelper(Class<E> enumType, boolean firstLetterCapitalized) {
 
         valuesMap = new HashMap<>();
@@ -56,10 +75,25 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
         }
     }
 
+    /**
+     * Creates a JSON enum helper with optional camel-case values.
+     *
+     * @param enumType               the enum type
+     * @param firstLetterCapitalized whether the first letter is capitalized
+     * @param camelCased             whether underscore-separated names are converted to camel case
+     */
     public JacksonJsonEnumHelper(Class<E> enumType, boolean firstLetterCapitalized, boolean camelCased) {
         this(enumType, firstLetterCapitalized, camelCased, false);
     }
 
+    /**
+     * Creates a JSON enum helper with optional camel-case values and underscore preservation.
+     *
+     * @param enumType               the enum type
+     * @param firstLetterCapitalized whether the first letter is capitalized
+     * @param camelCased             whether underscore-separated names are converted to camel case
+     * @param preserveUnderscores    whether underscores are preserved
+     */
     public JacksonJsonEnumHelper(Class<E> enumType, boolean firstLetterCapitalized, boolean camelCased,
             boolean preserveUnderscores) {
 
@@ -107,6 +141,12 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
         namesMap.put(e, name);
     }
 
+    /**
+     * Resolves the enum constant from a JSON value.
+     *
+     * @param value the JSON value
+     * @return the matching enum constant
+     */
     @JsonCreator
     public E forValue(String value) {
         return valuesMap.get(value);

@@ -35,6 +35,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class CitizenIdProvider extends AbstractProvider {
 
     /**
+     * Constructs a new CitizenIdProvider instance.
+     */
+    public CitizenIdProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Masks the given ID card number.
      *
      * @param cardId The ID card number to mask.

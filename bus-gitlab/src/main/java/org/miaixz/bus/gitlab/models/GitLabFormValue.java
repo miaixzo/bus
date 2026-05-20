@@ -35,6 +35,14 @@ public class GitLabFormValue {
     private GitLabFormValueType type;
     private boolean required;
 
+    /**
+     * Constructs a new {@code GitLabFormValue} instance.
+     *
+     * @param value    the value value
+     * @param type     the type value
+     * @param required the required value
+     */
+
     public GitLabFormValue(Object value, GitLabFormValueType type, boolean required) {
         super();
         this.value = value;
@@ -42,17 +50,41 @@ public class GitLabFormValue {
         this.required = required;
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     public Object getValue() {
         return value;
     }
+
+    /**
+     * Returns the type.
+     *
+     * @return the result
+     */
 
     public GitLabFormValueType getType() {
         return type;
     }
 
+    /**
+     * Returns whether the required is enabled.
+     *
+     * @return the result
+     */
+
     public boolean isRequired() {
         return required;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

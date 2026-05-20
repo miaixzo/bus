@@ -33,6 +33,13 @@ import org.miaixz.bus.core.lang.Validator;
 public class Builder extends Validator {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * Default attribute name.
      */
     public static final String DEFAULT_FIELD = "field";
@@ -57,35 +64,59 @@ public class Builder extends Validator {
      */
     public static final String GROUP = "group";
 
-    /**
-     * Parameter validation constants.
-     */
+    /** Always validator name. */
     public static final String _ALWAYS = "Always";
+    /** Blank validator name. */
     public static final String _BLANK = "Blank";
+    /** Chinese validator name. */
     public static final String _CHINESE = "Chinese";
+    /** Citizen identity validator name. */
     public static final String _CITIZENID = "CitizenId";
+    /** Date validator name. */
     public static final String _DATE = "Date";
+    /** Each validator name. */
     public static final String _EACH = "Each";
+    /** Email validator name. */
     public static final String _EMAIL = "Email";
+    /** English validator name. */
     public static final String _ENGLISH = "English";
+    /** Equality validator name. */
     public static final String _EQUALS = "Equals";
+    /** False validator name. */
     public static final String _FALSE = "False";
+    /** Enum inclusion validator name. */
     public static final String _IN_ENUM = "InEnum";
+    /** Inclusion validator name. */
     public static final String _IN = "In";
+    /** Integer range validator name. */
     public static final String _INT_RANGE = "IntRange";
+    /** IP address validator name. */
     public static final String _IP_ADDRESS = "IPAddress";
+    /** Length validator name. */
     public static final String _LENGTH = "Length";
+    /** Mobile number validator name. */
     public static final String _MOBILE = "Mobile";
+    /** Composite validator name. */
     public static final String _MULTI = "Multi";
+    /** Not blank validator name. */
     public static final String _NOT_BLANK = "NotBlank";
+    /** Not empty validator name. */
     public static final String _NOT_EMPTY = "NotEmpty";
+    /** Not-in validator name. */
     public static final String _NOT_IN = "NotIn";
+    /** Not null validator name. */
     public static final String _NOT_NULL = "NotNull";
+    /** Null validator name. */
     public static final String _NULL = "Null";
+    /** Phone validator name. */
     public static final String _PHONE = "Phone";
+    /** Reflective validator name. */
     public static final String _REFLECT = "Reflect";
+    /** Regular expression validator name. */
     public static final String _REGEX = "Regex";
+    /** Size validator name. */
     public static final String _SIZE = "Size";
+    /** True validator name. */
     public static final String _TRUE = "True";
 
     /**

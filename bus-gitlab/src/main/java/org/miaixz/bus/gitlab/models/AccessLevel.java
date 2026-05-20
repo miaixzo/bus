@@ -26,17 +26,55 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * The access level enum.
+ * GitLab access levels.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum AccessLevel {
 
-    INVALID(-1), NONE(0), MINIMAL_ACCESS(5), GUEST(10), REPORTER(20), DEVELOPER(30), MAINTAINER(40), OWNER(50),
+    /**
+     * The invalid access level.
+     */
+    INVALID(-1),
+    /**
+     * The none access level.
+     */
+    NONE(0),
+    /**
+     * The minimal access access level.
+     */
+    MINIMAL_ACCESS(5),
+    /**
+     * The guest access level.
+     */
+    GUEST(10),
+    /**
+     * The reporter access level.
+     */
+    REPORTER(20),
+    /**
+     * The developer access level.
+     */
+    DEVELOPER(30),
+    /**
+     * The maintainer access level.
+     */
+    MAINTAINER(40),
+    /**
+     * The owner access level.
+     */
+    OWNER(50),
+    /**
+     * The admin access level.
+     */
     ADMIN(60);
 
-    private static Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
+    private static final Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
+
+    /**
+     * Numeric GitLab access level value.
+     */
     public final Integer value;
 
     AccessLevel(int value) {
@@ -44,13 +82,18 @@ public enum AccessLevel {
     }
 
     static {
-        for (AccessLevel accessLevel : AccessLevel.values())
+        for (AccessLevel accessLevel : AccessLevel.values()) {
             valuesMap.put(accessLevel.value, accessLevel);
-
-        // Make sure MAINTAINER is mapped to 40 and not MASTER (MASTER is deprecated)
+        }
         valuesMap.put(MAINTAINER.value, MAINTAINER);
     }
 
+    /**
+     * Returns the access level for the numeric GitLab value.
+     *
+     * @param value the numeric GitLab access level value
+     * @return the matching access level, {@link #INVALID}, or {@code null}
+     */
     @JsonCreator
     public static AccessLevel forValue(Integer value) {
 
@@ -62,10 +105,21 @@ public enum AccessLevel {
         return (value == null ? null : INVALID);
     }
 
+    /**
+     * Returns the numeric GitLab access level value.
+     *
+     * @return the numeric GitLab access level value
+     */
     @JsonValue
     public Integer toValue() {
         return (value);
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

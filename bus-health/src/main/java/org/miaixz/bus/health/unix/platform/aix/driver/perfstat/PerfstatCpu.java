@@ -44,6 +44,7 @@ public final class PerfstatCpu {
      * Creates a new PerfstatCpu instance.
      */
     private PerfstatCpu() {
+        // No initialization required.
     }
 
     /**

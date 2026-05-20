@@ -47,6 +47,13 @@ public final class ConnectionPool {
         this(5, 5, TimeUnit.MINUTES);
     }
 
+    /**
+     * Creates a connection pool with custom idle connection limits.
+     *
+     * @param maxIdleConnections the maximum number of idle connections
+     * @param keepAliveDuration  the keep-alive duration
+     * @param timeUnit           the keep-alive duration unit
+     */
     public ConnectionPool(int maxIdleConnections, long keepAliveDuration, TimeUnit timeUnit) {
         this.delegate = new RealConnectionPool(maxIdleConnections, keepAliveDuration, timeUnit);
     }

@@ -44,6 +44,13 @@ import org.miaixz.bus.logger.Logger;
 public final class NetStat {
 
     /**
+     * Constructs a new {@code NetStat} instance.
+     */
+    public NetStat() {
+        // No initialization required.
+    }
+
+    /**
      * Control Network (CTL_NET) MIB value.
      */
     private static final int CTL_NET = 4;

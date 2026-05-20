@@ -43,6 +43,13 @@ import org.miaixz.bus.core.lang.reflect.creator.AdaptiveObjectCreator;
 public class ListKit {
 
     /**
+     * Constructs a new ListKit instance.
+     */
+    public ListKit() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a new {@link ArrayList}.
      *
      * @param <T>    The element type.

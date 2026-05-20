@@ -213,6 +213,13 @@ public interface LinuxLibc extends LibC, CLibrary {
     class LinuxUtmpx extends Structure {
 
         /**
+         * Constructs a new {@code LinuxUtmpx} instance.
+         */
+        LinuxUtmpx() {
+            // No initialization required.
+        }
+
+        /**
          * The ut_type value.
          */
         public short ut_type; // Type of login.
@@ -272,6 +279,13 @@ public interface LinuxLibc extends LibC, CLibrary {
     class Exit_status extends Structure {
 
         /**
+         * Constructs a new {@code Exit_status} instance.
+         */
+        Exit_status() {
+            // No initialization required.
+        }
+
+        /**
          * The e_termination value.
          */
         public short e_termination; // Process termination status
@@ -293,6 +307,13 @@ public interface LinuxLibc extends LibC, CLibrary {
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Ut_Tv extends Structure {
+
+        /**
+         * Constructs a new {@code Ut_Tv} instance.
+         */
+        Ut_Tv() {
+            // No initialization required.
+        }
 
         /**
          * The tv_sec value.

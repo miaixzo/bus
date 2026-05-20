@@ -44,6 +44,13 @@ import org.miaixz.bus.logger.Logger;
 public class Yaml {
 
     /**
+     * Constructs a new Yaml instance.
+     */
+    public Yaml() {
+        // No initialization required.
+    }
+
+    /**
      * Loads a YAML file from the classpath or an absolute path into a {@link Dictionary}.
      *
      * @param path The path to the YAML file (relative to the classpath or absolute).

@@ -73,7 +73,7 @@ public class McpVettingStrategy extends VettingStrategy {
      * Creates an MCP vetting strategy.
      */
     public McpVettingStrategy() {
-
+        // No initialization required.
     }
 
     /**
@@ -180,18 +180,11 @@ public class McpVettingStrategy extends VettingStrategy {
             }
             return bytes;
         } finally {
-            buffers.forEach(this::releaseIfPooled);
-        }
-    }
-
-    /**
-     * Releases a pooled buffer directly.
-     *
-     * @param dataBuffer data buffer to release when it is pooled
-     */
-    private void releaseIfPooled(DataBuffer dataBuffer) {
-        if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
-            pooledDataBuffer.release();
+            buffers.forEach(dataBuffer -> {
+                if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
+                    pooledDataBuffer.release();
+                }
+            });
         }
     }
 

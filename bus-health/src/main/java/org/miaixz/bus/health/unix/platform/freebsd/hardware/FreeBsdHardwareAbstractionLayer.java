@@ -38,6 +38,13 @@ import org.miaixz.bus.health.unix.hardware.UnixDisplay;
 public final class FreeBsdHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
+     * Constructs a new FreeBsdHardwareAbstractionLayer instance.
+     */
+    public FreeBsdHardwareAbstractionLayer() {
+        // No initialization required.
+    }
+
+    /**
      * Creates the computer system.
      *
      * @return the create computer system result

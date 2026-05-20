@@ -25,8 +25,8 @@
  */
 module bus.shade {
 
-    requires java.sql;
     requires java.desktop;
+    requires java.sql;
 
     requires bus.core;
     requires bus.logger;

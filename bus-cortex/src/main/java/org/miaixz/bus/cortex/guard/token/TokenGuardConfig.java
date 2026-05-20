@@ -41,6 +41,7 @@ public class TokenGuardConfig {
      * Creates a token-guard configuration with default policy values.
      */
     public TokenGuardConfig() {
+        // No initialization required.
     }
 
     /**

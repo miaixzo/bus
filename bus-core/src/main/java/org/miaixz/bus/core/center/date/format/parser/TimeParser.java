@@ -51,6 +51,7 @@ public class TimeParser implements PredicateDateParser, Serializable {
      * Constructs a new time parser.
      */
     public TimeParser() {
+        // No initialization required.
     }
 
     /**

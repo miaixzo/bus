@@ -37,6 +37,13 @@ import org.miaixz.bus.core.lang.reflect.ClassMember;
 public class ModifierKit {
 
     /**
+     * Constructs a new ModifierKit instance.
+     */
+    public ModifierKit() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if a class has any of the specified modifiers.
      *
      * @param clazz         The class.

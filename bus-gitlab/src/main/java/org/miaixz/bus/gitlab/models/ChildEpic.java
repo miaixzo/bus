@@ -34,6 +34,12 @@ public class ChildEpic extends AbstractEpic<ChildEpic> {
     @Serial
     private static final long serialVersionUID = 2852239105250L;
 
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));

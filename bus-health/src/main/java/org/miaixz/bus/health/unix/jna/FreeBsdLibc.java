@@ -139,6 +139,13 @@ public interface FreeBsdLibc extends CLibrary {
     class FreeBsdUtmpx extends Structure {
 
         /**
+         * Constructs a new FreeBsdUtmpx instance.
+         */
+        public FreeBsdUtmpx() {
+            // No initialization required.
+        }
+
+        /**
          * Type of entry.
          */
         public short ut_type;
@@ -194,6 +201,13 @@ public interface FreeBsdLibc extends CLibrary {
     class Timeval extends Structure {
 
         /**
+         * Constructs a new Timeval instance.
+         */
+        public Timeval() {
+            // No initialization required.
+        }
+
+        /**
          * Seconds.
          */
         public long tv_sec;
@@ -216,6 +230,13 @@ public interface FreeBsdLibc extends CLibrary {
      */
     @FieldOrder({ "cpu_ticks" })
     class CpTime extends Structure implements AutoCloseable {
+
+        /**
+         * Constructs a new CpTime instance.
+         */
+        public CpTime() {
+            // No initialization required.
+        }
 
         /**
          * CPU ticks.

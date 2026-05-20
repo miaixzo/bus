@@ -36,7 +36,7 @@ public class ReleaseArtifact {
      * Creates an empty release artifact.
      */
     public ReleaseArtifact() {
-
+        // No initialization required.
     }
 
     /**

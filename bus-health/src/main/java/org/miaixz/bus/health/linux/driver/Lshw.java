@@ -88,6 +88,7 @@ public final class Lshw {
      * Creates a new Lshw instance.
      */
     private Lshw() {
+        // No initialization required.
     }
 
     /**

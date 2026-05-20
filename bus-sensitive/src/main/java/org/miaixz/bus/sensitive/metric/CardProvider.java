@@ -34,6 +34,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class CardProvider extends AbstractProvider {
 
     /**
+     * Constructs a new CardProvider instance.
+     */
+    public CardProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Applies desensitization logic for contract numbers to the provided value.
      *
      * @param object  The object containing the contract number string to be desensitized.

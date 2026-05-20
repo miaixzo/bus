@@ -36,6 +36,13 @@ import org.miaixz.bus.core.lang.reflect.TypeReference;
 public class MapGets extends MapValidator {
 
     /**
+     * Constructs a new MapGets instance.
+     */
+    public MapGets() {
+        // No initialization required.
+    }
+
+    /**
      * Retrieves the value for the specified key and converts it to a {@code String}.
      *
      * @param map The map to query.

@@ -35,6 +35,7 @@ public class CRC16DNP extends CRC16Checksum {
      * Constructs a new CRC16DNP. Utility class constructor for static access.
      */
     private CRC16DNP() {
+        // No initialization required.
     }
 
     @Serial

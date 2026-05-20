@@ -55,6 +55,13 @@ import org.miaixz.bus.logger.Logger;
 public class Transcoder {
 
     /**
+     * Constructs a new {@code Transcoder} instance.
+     */
+    public Transcoder() {
+        // No initialization required.
+    }
+
+    /**
      * The image reader spi value.
      */
     public static final ImageReaderSpi IMAGE_READER_SPI = new ImageReaderSpi();
@@ -75,8 +82,8 @@ public class Transcoder {
      * @param dstPath the path of the destination image or the path of a directory in which the source image filename
      *                will be used
      * @param params  the standard image conversion parameters
-     * @return
-     * @throws Exception
+     * @return the converted image paths
+     * @throws Exception if the image conversion fails
      */
     public static List<Path> dcm2image(Path srcPath, Path dstPath, TranscodeParam params) throws Exception {
         List<Path> outFiles = new ArrayList<>();
@@ -116,6 +123,8 @@ public class Transcoder {
      *                will be used
      * @param params  the DICOM conversion parameters
      * @throws IOException if an I/O error occurs
+     *
+     * @return the result
      */
     public static Path dcm2dcm(Path srcPath, Path dstPath, TranscodeParam params) throws IOException {
         Path outPath = adaptFileExtension(getOutputPath(srcPath, dstPath), ".dcm", ".dcm");

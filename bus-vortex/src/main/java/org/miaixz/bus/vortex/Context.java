@@ -51,6 +51,7 @@ public class Context extends Tracer {
      * Creates an empty request context.
      */
     public Context() {
+        // No initialization required.
     }
 
     /**

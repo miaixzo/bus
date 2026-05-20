@@ -94,6 +94,7 @@ public interface BasicMapper<T, I extends Serializable> extends EntityMapper<T, 
      * @param <F>            The type of the field.
      * @return A list of entities that match the condition.
      */
+    @SuppressWarnings("unchecked")
     default <F> List<T> selectByFieldList(Fn<T, F> field, Collection<F> fieldValueList) {
         Condition<T> condition = new Condition<>();
         condition.createCriteria().andIn((Fn<T, Object>) field.in(entityClass()), fieldValueList);
@@ -109,6 +110,7 @@ public interface BasicMapper<T, I extends Serializable> extends EntityMapper<T, 
      * @param <F>            The type of the field.
      * @return The number of deleted records.
      */
+    @SuppressWarnings("unchecked")
     default <F> int deleteByFieldList(Fn<T, F> field, Collection<F> fieldValueList) {
         Condition<T> condition = new Condition<>();
         condition.createCriteria().andIn((Fn<T, Object>) field.in(entityClass()), fieldValueList);

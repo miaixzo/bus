@@ -44,6 +44,7 @@ public class Base32 {
      * Constructs a new Base32. Utility class constructor for static access.
      */
     private Base32() {
+        // No initialization required.
     }
 
     /**

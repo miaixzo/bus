@@ -61,6 +61,7 @@ public abstract class AbstractSetting
      * Default constructor.
      */
     protected AbstractSetting() {
+        // No initialization required.
     }
 
     @Override

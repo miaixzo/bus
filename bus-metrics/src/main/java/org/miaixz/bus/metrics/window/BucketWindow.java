@@ -76,6 +76,9 @@ public class BucketWindow {
 
     /**
      * Sum of all values in the last {@code seconds} seconds.
+     *
+     * @param seconds time window in seconds
+     * @return sum of all values in the selected window
      */
     public long sum(int seconds) {
         int cur = currentBucket;
@@ -89,6 +92,8 @@ public class BucketWindow {
 
     /**
      * Returns the sum of all values recorded in the last 60 seconds.
+     *
+     * @return one-minute sum
      */
     public long oneMinuteSum() {
         return sum(60);
@@ -96,6 +101,8 @@ public class BucketWindow {
 
     /**
      * Returns the sum of all values recorded in the last 300 seconds.
+     *
+     * @return five-minute sum
      */
     public long fiveMinuteSum() {
         return sum(300);

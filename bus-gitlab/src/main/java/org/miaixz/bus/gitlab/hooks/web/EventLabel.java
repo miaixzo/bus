@@ -48,20 +48,46 @@ public class EventLabel implements Serializable {
      */
     public enum LabelType {
 
-        PROJECT_LABEL, GROUP_LABEL;
+        /**
+         * The project label label type.
+         */
+        PROJECT_LABEL,
+        /**
+         * The group label label type.
+         */
+        GROUP_LABEL;
 
         private static JacksonJsonEnumHelper<LabelType> enumHelper = new JacksonJsonEnumHelper<>(LabelType.class, true,
                 true);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static LabelType forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -85,85 +111,211 @@ public class EventLabel implements Serializable {
     private LabelType type;
     private Long groupId;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the title.
+     *
+     * @return the result
+     */
+
     public String getTitle() {
         return title;
     }
+
+    /**
+     * Sets the title.
+     *
+     * @param title the title value
+     */
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Returns the color.
+     *
+     * @return the result
+     */
+
     public String getColor() {
         return color;
     }
+
+    /**
+     * Sets the color.
+     *
+     * @param color the color value
+     */
 
     public void setColor(String color) {
         this.color = color;
     }
 
+    /**
+     * Returns the project id.
+     *
+     * @return the result
+     */
+
     public Long getProjectId() {
         return projectId;
     }
+
+    /**
+     * Sets the project id.
+     *
+     * @param projectId the project id value
+     */
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the updated at.
+     *
+     * @return the result
+     */
+
     public Date getUpdatedAt() {
         return updatedAt;
     }
+
+    /**
+     * Sets the updated at.
+     *
+     * @param updatedAt the updated at value
+     */
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
+    /**
+     * Returns the template.
+     *
+     * @return the result
+     */
+
     public Boolean getTemplate() {
         return template;
     }
+
+    /**
+     * Sets the template.
+     *
+     * @param template the template value
+     */
 
     public void setTemplate(Boolean template) {
         this.template = template;
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return description;
     }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Returns the type.
+     *
+     * @return the result
+     */
+
     public LabelType getType() {
         return type;
     }
+
+    /**
+     * Sets the type.
+     *
+     * @param type the type value
+     */
 
     public void setType(LabelType type) {
         this.type = type;
     }
 
+    /**
+     * Returns the group id.
+     *
+     * @return the result
+     */
+
     public Long getGroupId() {
         return groupId;
     }
 
+    /**
+     * Sets the group id.
+     *
+     * @param groupId the group id value
+     */
+
     public void setGroupId(Long groupId) {
         this.groupId = groupId;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

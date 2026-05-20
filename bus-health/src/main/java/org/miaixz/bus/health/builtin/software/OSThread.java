@@ -185,6 +185,7 @@ public interface OSThread {
          * Creates a new ThreadFiltering instance.
          */
         private ThreadFiltering() {
+            // No initialization required.
         }
 
     }

@@ -534,6 +534,8 @@ public class Loader {
     }
 
     /**
+     * Returns the supplier for the comment formatter.
+     *
      * @return The supplier for the comment formatter.
      */
     public Supplier<ElementFormatter<IniComment>> getCommentElementFormatterSupplier() {
@@ -551,6 +553,8 @@ public class Loader {
     }
 
     /**
+     * Returns the supplier for the section formatter.
+     *
      * @return The supplier for the section formatter.
      */
     public Supplier<ElementFormatter<IniSection>> getSectionElementFormatterSupplier() {
@@ -568,6 +572,8 @@ public class Loader {
     }
 
     /**
+     * Returns the supplier for the property formatter.
+     *
      * @return The supplier for the property formatter.
      */
     public Supplier<ElementFormatter<IniProperty>> getPropertyElementFormatterSupplier() {

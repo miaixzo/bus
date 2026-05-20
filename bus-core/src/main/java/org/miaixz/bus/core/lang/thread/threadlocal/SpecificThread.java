@@ -38,6 +38,7 @@ public class SpecificThread extends Thread {
      * Constructs a new {@code SpecificThread} instance. This constructor is equivalent to {@code new Thread()}.
      */
     public SpecificThread() {
+        // No initialization required.
     }
 
     /**

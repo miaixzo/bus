@@ -424,7 +424,6 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * <p>
      * Example: {@code dict.setFields(user::getName, user::getAge);}
      *
-     *
      * @param fields An array of getter method references (e.g., {@code user::getNickname}).
      * @return This {@code Dictionary} instance for method chaining.
      */

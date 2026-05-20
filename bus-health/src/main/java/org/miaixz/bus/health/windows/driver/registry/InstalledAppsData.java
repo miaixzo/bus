@@ -45,7 +45,7 @@ public final class InstalledAppsData {
      * Creates a new InstalledAppsData instance.
      */
     private InstalledAppsData() {
-
+        // No initialization required.
     }
 
     /**

@@ -57,6 +57,13 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
 @ConditionalOnProperty(prefix = GeniusBuilder.ELASTIC, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class ElasticConfiguration {
 
+    /**
+     * Constructs a new ElasticConfiguration instance.
+     */
+    public ElasticConfiguration() {
+        // No initialization required.
+    }
+
     @Resource
     private ElasticProperties properties;
 

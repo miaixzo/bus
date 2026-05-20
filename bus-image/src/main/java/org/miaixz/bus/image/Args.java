@@ -167,7 +167,7 @@ public class Args {
      * @param bindCallingAet If {@code true}, binds the listener to the specified calling AET.
      */
     public Args(boolean bindCallingAet) {
-        this(null, bindCallingAet, null, null);
+        this(null, bindCallingAet, null, (String[]) null);
     }
 
     /**

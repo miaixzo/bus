@@ -44,61 +44,151 @@ public class ProjectStatistics implements Serializable {
     long jobArtifactsSize;
     long packagesSize;
 
+    /**
+     * Returns the commit count.
+     *
+     * @return the result
+     */
+
     public long getCommitCount() {
         return commitCount;
     }
+
+    /**
+     * Sets the commit count.
+     *
+     * @param commitCount the commit count value
+     */
 
     public void setCommitCount(long commitCount) {
         this.commitCount = commitCount;
     }
 
+    /**
+     * Returns the storage size.
+     *
+     * @return the result
+     */
+
     public long getStorageSize() {
         return storageSize;
     }
+
+    /**
+     * Sets the storage size.
+     *
+     * @param storageSize the storage size value
+     */
 
     public void setStorageSize(long storageSize) {
         this.storageSize = storageSize;
     }
 
+    /**
+     * Returns the repository size.
+     *
+     * @return the result
+     */
+
     public long getRepositorySize() {
         return repositorySize;
     }
+
+    /**
+     * Sets the repository size.
+     *
+     * @param repositorySize the repository size value
+     */
 
     public void setRepositorySize(long repositorySize) {
         this.repositorySize = repositorySize;
     }
 
+    /**
+     * Returns the wiki size.
+     *
+     * @return the result
+     */
+
     public long getWikiSize() {
         return wikiSize;
     }
+
+    /**
+     * Sets the wiki size.
+     *
+     * @param wikiSize the wiki size value
+     */
 
     public void setWikiSize(long wikiSize) {
         this.wikiSize = wikiSize;
     }
 
+    /**
+     * Returns the lfs objects size.
+     *
+     * @return the result
+     */
+
     public long getLfsObjectsSize() {
         return lfsObjectsSize;
     }
+
+    /**
+     * Sets the lfs objects size.
+     *
+     * @param lfsObjectsSize the lfs objects size value
+     */
 
     public void setLfsObjectsSize(long lfsObjectsSize) {
         this.lfsObjectsSize = lfsObjectsSize;
     }
 
+    /**
+     * Returns the job artifacts size.
+     *
+     * @return the result
+     */
+
     public long getJobArtifactsSize() {
         return jobArtifactsSize;
     }
+
+    /**
+     * Sets the job artifacts size.
+     *
+     * @param jobArtifactsSize the job artifacts size value
+     */
 
     public void setJobArtifactsSize(long jobArtifactsSize) {
         this.jobArtifactsSize = jobArtifactsSize;
     }
 
+    /**
+     * Returns the packages size.
+     *
+     * @return the result
+     */
+
     public long getPackagesSize() {
         return packagesSize;
     }
 
+    /**
+     * Sets the packages size.
+     *
+     * @param packagesSize the packages size value
+     */
+
     public void setPackagesSize(long packagesSize) {
         this.packagesSize = packagesSize;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

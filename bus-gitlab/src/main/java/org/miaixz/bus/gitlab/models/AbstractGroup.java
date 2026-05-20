@@ -22,6 +22,9 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serial;
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -29,11 +32,21 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 /**
  * The abstract group class.
  *
+ * @param <G> the concrete group model type
  * @author Kimi Liu
  * @since Java 21+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
+@Setter
 public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Serializable {
+
+    /**
+     * Constructs a new AbstractGroup instance.
+     */
+    public AbstractGroup() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852233810677L;
@@ -45,83 +58,77 @@ public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Seria
     private String fullName;
     private String fullPath;
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public String getWebUrl() {
-        return webUrl;
-    }
-
-    public void setWebUrl(String webUrl) {
-        this.webUrl = webUrl;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getFullPath() {
-        return fullPath;
-    }
-
-    public void setFullPath(String fullPath) {
-        this.fullPath = fullPath;
-    }
-
+    /**
+     * Sets the group ID and returns this group model.
+     *
+     * @param id the group ID
+     * @return this group model
+     */
     public G withId(Long id) {
         this.id = id;
         return (G) this;
     }
 
+    /**
+     * Sets the group name and returns this group model.
+     *
+     * @param name the group name
+     * @return this group model
+     */
     public G withName(String name) {
         this.name = name;
         return (G) this;
     }
 
+    /**
+     * Sets the avatar URL and returns this group model.
+     *
+     * @param avatarUrl the avatar URL
+     * @return this group model
+     */
     public G withAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
         return (G) this;
     }
 
+    /**
+     * Sets the web URL and returns this group model.
+     *
+     * @param url the web URL
+     * @return this group model
+     */
     public G withWebUrl(String url) {
         this.webUrl = url;
         return (G) this;
     }
 
+    /**
+     * Sets the full group name and returns this group model.
+     *
+     * @param fullName the full group name
+     * @return this group model
+     */
     public G withFullName(String fullName) {
         this.fullName = fullName;
         return (G) this;
     }
 
+    /**
+     * Sets the full group path and returns this group model.
+     *
+     * @param fullPath the full group path
+     * @return this group model
+     */
     public G withFullPath(String fullPath) {
         this.fullPath = fullPath;
         return (G) this;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

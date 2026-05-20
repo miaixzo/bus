@@ -47,6 +47,13 @@ import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 public class ImageRendering {
 
     /**
+     * Constructs a new ImageRendering instance.
+     */
+    public ImageRendering() {
+        // No initialization required.
+    }
+
+    /**
      * Returns the raw rendered image with the Modality LUT applied, after clearing any embedded overlay bits.
      *
      * @param imageSource The source image.

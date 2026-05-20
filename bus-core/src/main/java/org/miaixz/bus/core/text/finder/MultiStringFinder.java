@@ -244,6 +244,7 @@ public class MultiStringFinder {
          * Default constructor for a Node.
          */
         public Node() {
+            // No initialization required.
         }
 
         /**

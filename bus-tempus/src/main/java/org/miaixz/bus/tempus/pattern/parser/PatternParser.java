@@ -39,6 +39,13 @@ import org.miaixz.bus.tempus.pattern.matcher.PatternMatcher;
  */
 public class PatternParser {
 
+    /**
+     * Constructs a new PatternParser instance.
+     */
+    public PatternParser() {
+        // No initialization required.
+    }
+
     private static final PartParser SECOND_VALUE_PARSER = PartParser.of(Part.SECOND);
     private static final PartParser MINUTE_VALUE_PARSER = PartParser.of(Part.MINUTE);
     private static final PartParser HOUR_VALUE_PARSER = PartParser.of(Part.HOUR);

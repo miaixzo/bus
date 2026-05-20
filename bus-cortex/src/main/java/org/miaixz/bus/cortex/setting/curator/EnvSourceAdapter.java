@@ -34,6 +34,7 @@ public class EnvSourceAdapter implements ItemSourceAdapter {
      * Creates an environment-backed setting adapter.
      */
     public EnvSourceAdapter() {
+        // No initialization required.
     }
 
     /**

@@ -48,6 +48,7 @@ public class Base58 {
      * Constructs a new Base58. Utility class constructor for static access.
      */
     private Base58() {
+        // No initialization required.
     }
 
     /**

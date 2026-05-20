@@ -59,6 +59,7 @@ public final class MetadataCodec {
      * Creates the metadata codec utility holder.
      */
     private MetadataCodec() {
+        // No initialization required.
     }
 
     /**

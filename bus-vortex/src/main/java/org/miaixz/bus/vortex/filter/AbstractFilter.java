@@ -38,6 +38,7 @@ public abstract class AbstractFilter implements Filter {
      * Creates an abstract filter.
      */
     protected AbstractFilter() {
+        // No initialization required.
     }
 
     /**

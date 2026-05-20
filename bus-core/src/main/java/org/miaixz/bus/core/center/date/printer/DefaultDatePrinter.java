@@ -41,6 +41,7 @@ public class DefaultDatePrinter implements DatePrinter, Serializable {
      * Constructs a new DefaultDatePrinter. Utility class constructor for static access.
      */
     private DefaultDatePrinter() {
+        // No initialization required.
     }
 
     @Serial

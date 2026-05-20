@@ -44,6 +44,7 @@ public class AsyncKit {
      * Constructs a new AsyncKit. Utility class constructor for static access.
      */
     private AsyncKit() {
+        // No initialization required.
     }
 
     /**

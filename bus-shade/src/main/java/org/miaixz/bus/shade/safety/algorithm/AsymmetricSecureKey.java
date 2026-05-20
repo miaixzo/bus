@@ -28,7 +28,14 @@ package org.miaixz.bus.shade.safety.algorithm;
  */
 public final class AsymmetricSecureKey extends SecureKey implements AsymmetricKey {
 
+    /**
+     * Encoded public key bytes.
+     */
     private final byte[] publicKey;
+
+    /**
+     * Encoded private key bytes.
+     */
     private final byte[] privateKey;
 
     /**

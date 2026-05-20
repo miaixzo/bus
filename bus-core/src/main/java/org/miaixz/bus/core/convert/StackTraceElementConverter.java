@@ -40,6 +40,7 @@ public class StackTraceElementConverter extends AbstractConverter {
      * Constructs a new stack trace element converter.
      */
     public StackTraceElementConverter() {
+        // No initialization required.
     }
 
     /**

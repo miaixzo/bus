@@ -38,6 +38,13 @@ import com.caucho.hessian.io.Hessian2Output;
 public class Hessian2Serializer extends AbstractSerializer {
 
     /**
+     * Constructs a new Hessian2Serializer instance.
+     */
+    public Hessian2Serializer() {
+        // No initialization required.
+    }
+
+    /**
      * Performs serialization using Hessian 2.
      *
      * @param object The object to be serialized.

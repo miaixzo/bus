@@ -34,6 +34,13 @@ import java.nio.file.Paths;
  */
 public class PathConverter extends AbstractConverter {
 
+    /**
+     * Constructs a new PathConverter instance.
+     */
+    public PathConverter() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852270693527L;
 

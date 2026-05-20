@@ -35,6 +35,13 @@ import org.miaixz.bus.core.xyz.MapKit;
 public class JWTCreator {
 
     /**
+     * Constructs a new JWTCreator instance.
+     */
+    public JWTCreator() {
+        // No initialization required.
+    }
+
+    /**
      * Creates an HS256 (HmacSHA256) JWT Token.
      *
      * @param payload the payload claims of the JWT

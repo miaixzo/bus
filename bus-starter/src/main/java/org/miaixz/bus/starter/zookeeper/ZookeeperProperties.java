@@ -38,6 +38,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class ZookeeperProperties {
 
     /**
+     * Constructs a new {@code ZookeeperProperties} instance.
+     */
+    public ZookeeperProperties() {
+        // No initialization required.
+    }
+
+    /**
      * The connection string for the ZooKeeper server(s). Multiple servers can be specified, separated by commas (e.g.,
      * "host1:port1,host2:port2").
      */

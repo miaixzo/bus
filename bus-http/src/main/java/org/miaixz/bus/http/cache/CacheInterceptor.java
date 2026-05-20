@@ -51,8 +51,16 @@ import org.miaixz.bus.logger.Logger;
  */
 public class CacheInterceptor implements Interceptor {
 
+    /**
+     * The internal cache used by this interceptor.
+     */
     final InternalCache cache;
 
+    /**
+     * Creates a cache interceptor.
+     *
+     * @param cache the internal cache
+     */
     public CacheInterceptor(InternalCache cache) {
         this.cache = cache;
     }

@@ -49,6 +49,13 @@ import org.w3c.dom.Element;
 public class Tpl2Xml {
 
     /**
+     * Constructs a new {@code Tpl2Xml} instance.
+     */
+    public Tpl2Xml() {
+        // No initialization required.
+    }
+
+    /**
      * Constant for XML version 1.0.
      */
     private static final String XML_1_0 = "1.0";

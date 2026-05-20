@@ -36,6 +36,12 @@ import org.miaixz.bus.gitlab.models.LabelEvent;
  */
 public class ResourceLabelEventsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code ResourceLabelEventsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ResourceLabelEventsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

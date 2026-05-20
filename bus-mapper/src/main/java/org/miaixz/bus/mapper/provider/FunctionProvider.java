@@ -36,6 +36,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class FunctionProvider {
 
     /**
+     * Constructs a new FunctionProvider instance.
+     */
+    public FunctionProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Updates non-null fields of an entity by its primary key, and forcibly updates specified fields (regardless of
      * nullness).
      *

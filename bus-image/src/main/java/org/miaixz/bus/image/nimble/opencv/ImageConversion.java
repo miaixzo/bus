@@ -157,6 +157,9 @@ public final class ImageConversion {
 
     /**
      * Converts a PlanarImage to a BufferedImage by delegating to Mat conversion.
+     *
+     * @param matrix the planar image to convert
+     * @return a BufferedImage representation of the image, or {@code null} when the input is {@code null}
      */
     public static BufferedImage toBufferedImage(PlanarImage matrix) {
         return matrix == null ? null : toBufferedImage(matrix.toMat());
@@ -165,6 +168,8 @@ public final class ImageConversion {
     /**
      * Releases the native memory associated with an OpenCV Mat object. Important for preventing memory leaks when
      * working with large images.
+     *
+     * @param mat the OpenCV Mat to release
      */
     public static void releaseMat(Mat mat) {
         if (mat != null) {
@@ -174,6 +179,8 @@ public final class ImageConversion {
 
     /**
      * Releases the native memory associated with a PlanarImage object.
+     *
+     * @param img the planar image to release
      */
     public static void releasePlanarImage(PlanarImage img) {
         if (img != null) {
@@ -199,6 +206,9 @@ public final class ImageConversion {
 
     /**
      * Converts a RenderedImage to an OpenCV Mat with default settings (full image, BGR format).
+     *
+     * @param img the rendered image to convert
+     * @return the converted OpenCV image
      */
     public static ImageCV toMat(RenderedImage img) {
         return toMat(img, null, true, false);
@@ -206,6 +216,10 @@ public final class ImageConversion {
 
     /**
      * Converts a specific region of a RenderedImage to an OpenCV Mat with default BGR format.
+     *
+     * @param img    the rendered image to convert
+     * @param region the image region to convert
+     * @return the converted OpenCV image
      */
     public static ImageCV toMat(RenderedImage img, Rectangle region) {
         return toMat(img, region, true, false);
@@ -213,6 +227,11 @@ public final class ImageConversion {
 
     /**
      * Converts a RenderedImage to an OpenCV Mat with specified color format.
+     *
+     * @param img    the rendered image to convert
+     * @param region the image region to convert
+     * @param toBGR  whether the converted image should use BGR channel order
+     * @return the converted OpenCV image
      */
     public static ImageCV toMat(RenderedImage img, Rectangle region, boolean toBGR) {
         return toMat(img, region, toBGR, false);
@@ -258,6 +277,9 @@ public final class ImageConversion {
 
     /**
      * Calculates and returns the bounding rectangle of a PlanarImage.
+     *
+     * @param img the planar image
+     * @return the image bounds
      */
     public static Rectangle getBounds(PlanarImage img) {
         return new Rectangle(0, 0, img.width(), img.height());
@@ -266,6 +288,10 @@ public final class ImageConversion {
     /**
      * Converts a RenderedImage to a BufferedImage with a specific image type. Uses Graphics2D rendering for format
      * conversion.
+     *
+     * @param src       the source rendered image
+     * @param imageType the target BufferedImage type
+     * @return the converted BufferedImage
      */
     public static BufferedImage convertTo(RenderedImage src, int imageType) {
         var dst = new BufferedImage(src.getWidth(), src.getHeight(), imageType);
@@ -280,6 +306,9 @@ public final class ImageConversion {
 
     /**
      * Determines if a SampleModel represents binary (1-bit per pixel) data.
+     *
+     * @param sm the sample model to inspect
+     * @return {@code true} when the sample model is binary
      */
     public static boolean isBinary(SampleModel sm) {
         return sm instanceof MultiPixelPackedSampleModel model && model.getPixelBitStride() == 1
@@ -289,6 +318,9 @@ public final class ImageConversion {
     /**
      * Converts a RenderedImage to a BufferedImage, handling various input types. Returns null for null input, same
      * object if already BufferedImage, or creates new instance.
+     *
+     * @param img the rendered image to convert
+     * @return the converted BufferedImage, or {@code null} when the input is {@code null}
      */
     public static BufferedImage convertRenderedImage(RenderedImage img) {
         if (img == null) {
@@ -311,6 +343,10 @@ public final class ImageConversion {
     /**
      * Unpacks binary raster data into a standard byte array format. Converts packed binary data (multiple pixels per
      * byte) to one byte per pixel format.
+     *
+     * @param raster the binary raster
+     * @param rect   the region to unpack
+     * @return the unpacked binary data
      */
     public static byte[] getUnpackedBinaryData(Raster raster, Rectangle rect) {
         SampleModel sm = raster.getSampleModel();

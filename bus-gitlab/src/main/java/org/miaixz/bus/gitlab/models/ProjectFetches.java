@@ -40,13 +40,31 @@ public class ProjectFetches implements Serializable {
     private static final long serialVersionUID = 2852271365267L;
     private Fetches fetches;
 
+    /**
+     * Returns the fetches.
+     *
+     * @return the result
+     */
+
     public Fetches getFetches() {
         return fetches;
     }
 
+    /**
+     * Sets the fetches.
+     *
+     * @param fetches the fetches value
+     */
+
     public void setFetches(Fetches fetches) {
         this.fetches = fetches;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {
@@ -69,17 +87,41 @@ public class ProjectFetches implements Serializable {
         @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
         private Date date;
 
+        /**
+         * Returns the count.
+         *
+         * @return the result
+         */
+
         public Integer getCount() {
             return count;
         }
+
+        /**
+         * Sets the count.
+         *
+         * @param count the count value
+         */
 
         public void setCount(Integer count) {
             this.count = count;
         }
 
+        /**
+         * Returns the date.
+         *
+         * @return the result
+         */
+
         public Date getDate() {
             return date;
         }
+
+        /**
+         * Sets the date.
+         *
+         * @param date the date value
+         */
 
         public void setDate(Date date) {
             this.date = date;
@@ -101,17 +143,41 @@ public class ProjectFetches implements Serializable {
         private Integer total;
         private List<DateCount> days;
 
+        /**
+         * Returns the total.
+         *
+         * @return the result
+         */
+
         public Integer getTotal() {
             return total;
         }
+
+        /**
+         * Sets the total.
+         *
+         * @param total the total value
+         */
 
         public void setTotal(Integer total) {
             this.total = total;
         }
 
+        /**
+         * Returns the days.
+         *
+         * @return the result
+         */
+
         public List<DateCount> getDays() {
             return days;
         }
+
+        /**
+         * Sets the days.
+         *
+         * @param days the days value
+         */
 
         public void setDays(List<DateCount> days) {
             this.days = days;

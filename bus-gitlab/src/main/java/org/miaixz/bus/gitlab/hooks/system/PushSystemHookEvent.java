@@ -34,8 +34,17 @@ public class PushSystemHookEvent extends AbstractPushEvent implements SystemHook
 
     @Serial
     private static final long serialVersionUID = 2852227399553L;
+    /**
+     * The push event value.
+     */
 
     public static final String PUSH_EVENT = "push";
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

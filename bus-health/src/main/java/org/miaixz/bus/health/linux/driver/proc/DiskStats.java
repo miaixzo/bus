@@ -40,6 +40,13 @@ import org.miaixz.bus.health.linux.ProcPath;
 public final class DiskStats {
 
     /**
+     * Constructs a new DiskStats instance.
+     */
+    public DiskStats() {
+        // No initialization required.
+    }
+
+    /**
      * Reads the statistics in {@code /proc/diskstats} and returns the results.
      *
      * @return A map with each disk's name as the key, and an EnumMap as the value, where the numeric values in

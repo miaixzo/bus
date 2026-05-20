@@ -42,6 +42,13 @@ import org.miaixz.bus.logger.Logger;
 public class Dcm2Pdf {
 
     /**
+     * Constructs a new Dcm2Pdf instance.
+     */
+    public Dcm2Pdf() {
+        // No initialization required.
+    }
+
+    /**
      * Processes a list of source files/directories and extracts encapsulated documents to a destination.
      *
      * @param args A list of strings where the last element is the destination path, and the preceding elements are

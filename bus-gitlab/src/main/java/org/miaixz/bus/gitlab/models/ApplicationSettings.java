@@ -39,6 +39,13 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ApplicationSettings implements Serializable {
 
+    /**
+     * Constructs a new {@code ApplicationSettings} instance.
+     */
+    public ApplicationSettings() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852235962768L;
 
@@ -47,37 +54,92 @@ public class ApplicationSettings implements Serializable {
     private Date updatedAt;
     private Map<String, Object> settings = new HashMap<>();
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the updated at.
+     *
+     * @return the result
+     */
+
     public Date getUpdatedAt() {
         return updatedAt;
     }
+
+    /**
+     * Sets the updated at.
+     *
+     * @param updatedAt the updated at value
+     */
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
+    /**
+     * Returns the settings.
+     *
+     * @return the result
+     */
+
     public Map<String, Object> getSettings() {
         return settings;
     }
 
+    /**
+     * Sets the settings.
+     *
+     * @param settings the settings value
+     */
+
     public void setSettings(Map<String, Object> settings) {
         this.settings = settings;
     }
+
+    /**
+     * Returns the setting.
+     *
+     * @param setting the setting value
+     * @return the result
+     */
 
     @JsonIgnore
     public Object getSetting(Setting setting) {
@@ -90,6 +152,13 @@ public class ApplicationSettings implements Serializable {
         return (settings.get(name));
     }
 
+    /**
+     * Returns the setting.
+     *
+     * @param setting the setting value
+     * @return the result
+     */
+
     @JsonIgnore
     public Object getSetting(String setting) {
 
@@ -100,6 +169,13 @@ public class ApplicationSettings implements Serializable {
         return (settings.get(setting));
     }
 
+    /**
+     * Adds the setting.
+     *
+     * @param setting the setting value
+     * @param value   the value value
+     * @return the result
+     */
     public Object addSetting(String setting, Object value) {
 
         Setting appSetting = Setting.forValue(setting);
@@ -111,6 +187,13 @@ public class ApplicationSettings implements Serializable {
         return (value);
     }
 
+    /**
+     * Adds the setting.
+     *
+     * @param setting the setting value
+     * @param value   the value value
+     * @return the result
+     */
     public Object addSetting(Setting setting, Object value) {
 
         if (value instanceof JsonNode) {
@@ -122,13 +205,31 @@ public class ApplicationSettings implements Serializable {
         return (value);
     }
 
+    /**
+     * Removes the setting.
+     *
+     * @param setting the setting value
+     * @return the result
+     */
+
     public Object removeSetting(Setting setting) {
         return settings.remove(setting.toString());
     }
 
+    /**
+     * Removes the setting.
+     *
+     * @param setting the setting value
+     * @return the result
+     */
+
     public Object removeSetting(String setting) {
         return settings.remove(setting);
     }
+
+    /**
+     * Clears the settings.
+     */
 
     public void clearSettings() {
         settings.clear();
@@ -168,6 +269,12 @@ public class ApplicationSettings implements Serializable {
 
         return (value);
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

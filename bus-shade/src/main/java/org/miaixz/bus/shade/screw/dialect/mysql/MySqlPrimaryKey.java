@@ -36,6 +36,13 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 public class MySqlPrimaryKey implements PrimaryKey {
 
     /**
+     * Constructs a new MySqlPrimaryKey instance.
+     */
+    public MySqlPrimaryKey() {
+        // No initialization required.
+    }
+
+    /**
      * Table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")

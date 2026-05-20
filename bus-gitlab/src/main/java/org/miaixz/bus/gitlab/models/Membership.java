@@ -40,37 +40,91 @@ public class Membership implements Serializable {
     private MembershipSourceType sourceType;
     private AccessLevel accessLevel;
 
+    /**
+     * Returns the source id.
+     *
+     * @return the result
+     */
+
     public Long getSourceId() {
         return sourceId;
     }
+
+    /**
+     * Sets the source id.
+     *
+     * @param sourceId the source id value
+     */
 
     public void setSourceId(Long sourceId) {
         this.sourceId = sourceId;
     }
 
+    /**
+     * Returns the source name.
+     *
+     * @return the result
+     */
+
     public String getSourceName() {
         return sourceName;
     }
+
+    /**
+     * Sets the source name.
+     *
+     * @param sourceName the source name value
+     */
 
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
     }
 
+    /**
+     * Returns the source type.
+     *
+     * @return the result
+     */
+
     public MembershipSourceType getSourceType() {
         return sourceType;
     }
+
+    /**
+     * Sets the source type.
+     *
+     * @param sourceType the source type value
+     */
 
     public void setSourceType(MembershipSourceType sourceType) {
         this.sourceType = sourceType;
     }
 
+    /**
+     * Returns the access level.
+     *
+     * @return the result
+     */
+
     public AccessLevel getAccessLevel() {
         return accessLevel;
     }
 
+    /**
+     * Sets the access level.
+     *
+     * @param accessLevel the access level value
+     */
+
     public void setAccessLevel(AccessLevel accessLevel) {
         this.accessLevel = accessLevel;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

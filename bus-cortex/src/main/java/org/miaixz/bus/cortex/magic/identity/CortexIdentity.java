@@ -33,7 +33,7 @@ public final class CortexIdentity {
      * Creates the shared identity utility holder.
      */
     private CortexIdentity() {
-
+        // No initialization required.
     }
 
     /**

@@ -51,6 +51,7 @@ public final class LlmPriceTable {
      * Private constructor; this is a static utility class.
      */
     private LlmPriceTable() {
+        // No initialization required.
     }
 
     /**
@@ -66,6 +67,11 @@ public final class LlmPriceTable {
 
     /**
      * Estimate cost in USD for the given model and token counts. Returns 0 if the model is not in the price table.
+     *
+     * @param model        model name
+     * @param inputTokens  input token count
+     * @param outputTokens output token count
+     * @return estimated cost in USD
      */
     public static double estimateCost(String model, int inputTokens, int outputTokens) {
         double[] p = PRICES.get(model);

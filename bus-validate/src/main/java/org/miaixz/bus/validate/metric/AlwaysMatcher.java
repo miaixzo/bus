@@ -32,6 +32,13 @@ import org.miaixz.bus.validate.magic.Matcher;
 public final class AlwaysMatcher implements Matcher<Object, Object> {
 
     /**
+     * Constructs a new AlwaysMatcher instance.
+     */
+    public AlwaysMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Always returns {@code true}, indicating that the validation passes.
      *
      * @param object     The object to be validated (ignored).

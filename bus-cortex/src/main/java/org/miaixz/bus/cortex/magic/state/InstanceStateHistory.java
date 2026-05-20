@@ -36,6 +36,7 @@ public class InstanceStateHistory {
      * Creates an empty instance-state history record.
      */
     public InstanceStateHistory() {
+        // No initialization required.
     }
 
     /**

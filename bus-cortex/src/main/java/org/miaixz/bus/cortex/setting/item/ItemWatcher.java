@@ -35,7 +35,7 @@ public class ItemWatcher implements Listener<Watch<String>> {
      * Creates an ItemWatcher.
      */
     public ItemWatcher() {
-
+        // No initialization required.
     }
 
     /**

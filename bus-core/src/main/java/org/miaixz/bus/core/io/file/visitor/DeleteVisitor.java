@@ -38,6 +38,7 @@ public class DeleteVisitor extends SimpleFileVisitor<Path> {
      * Constructs a new DeleteVisitor. Utility class constructor for static access.
      */
     private DeleteVisitor() {
+        // No initialization required.
     }
 
     /**

@@ -37,13 +37,31 @@ public class Markdown implements Serializable {
 
     private String html;
 
+    /**
+     * Returns the html.
+     *
+     * @return the result
+     */
+
     public String getHtml() {
         return html;
     }
 
+    /**
+     * Sets the html.
+     *
+     * @param html the html value
+     */
+
     public void setHtml(String html) {
         this.html = html;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

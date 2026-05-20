@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.notify.metric.wechat;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -35,7 +34,13 @@ import org.miaixz.bus.notify.magic.Notice;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class WechatNotice extends Notice {
+
+    /**
+     * Creates a WeChat notice.
+     */
+    public WechatNotice() {
+        // No initialization required.
+    }
 
 }

@@ -34,6 +34,13 @@ import org.miaixz.bus.socket.Session;
 public class KcpMessage implements Message<KcpPacket> {
 
     /**
+     * Constructs a new KcpMessage instance.
+     */
+    public KcpMessage() {
+        // No initialization required.
+    }
+
+    /**
      * Decodes a {@link KcpPacket} from the given {@link ByteBuffer}.
      * <p>
      * This implementation creates a new {@link KcpPacket} if the buffer has remaining data. It does not perform any

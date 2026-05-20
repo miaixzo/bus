@@ -19,34 +19,30 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * The change container class.
  *
+ * @param <T> the changed value type
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
+@Setter
 public class ChangeContainer<T> {
 
     private T previous;
     private T current;
 
-    public T getPrevious() {
-        return previous;
-    }
-
-    public void setPrevious(T previous) {
-        this.previous = previous;
-    }
-
-    public T getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(T current) {
-        this.current = current;
-    }
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

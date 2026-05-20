@@ -31,6 +31,13 @@ import org.miaixz.bus.http.Response;
 public abstract class WebSocketListener {
 
     /**
+     * Constructs a new WebSocketListener instance.
+     */
+    public WebSocketListener() {
+        // No initialization required.
+    }
+
+    /**
      * Invoked when a web socket has been accepted by the remote peer and may begin transmitting messages.
      *
      * @param webSocket The WebSocket that has been opened.

@@ -90,17 +90,45 @@ public final class ProcessInformation {
      */
     public enum ProcessPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
-        // First element defines WMI instance name field and PDH instance filter
+        /**
+         * The name process performance property.
+         */
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
-        // Remaining elements define counters
-        PRIORITYBASE("Priority Base"), //
-        ELAPSEDTIME("Elapsed Time"), //
-        IDPROCESS("ID Process"), //
-        CREATINGPROCESSID("Creating Process ID"), //
-        IOREADBYTESPERSEC("IO Read Bytes/sec"), //
-        IOWRITEBYTESPERSEC("IO Write Bytes/sec"), //
-        WORKINGSETPRIVATE("Working Set - Private"), //
-        WORKINGSET("Working Set"), //
+        /**
+         * Priority Base.
+         */
+        PRIORITYBASE("Priority Base"),
+        /**
+         * Elapsed Time.
+         */
+        ELAPSEDTIME("Elapsed Time"),
+        /**
+         * ID Process.
+         */
+        IDPROCESS("ID Process"),
+        /**
+         * Creating Process ID.
+         */
+        CREATINGPROCESSID("Creating Process ID"),
+        /**
+         * IO Read Bytes/sec.
+         */
+        IOREADBYTESPERSEC("IO Read Bytes/sec"),
+        /**
+         * IO Write Bytes/sec.
+         */
+        IOWRITEBYTESPERSEC("IO Write Bytes/sec"),
+        /**
+         * Working Set - Private.
+         */
+        WORKINGSETPRIVATE("Working Set - Private"),
+        /**
+         * Working Set.
+         */
+        WORKINGSET("Working Set"),
+        /**
+         * Page Faults/sec.
+         */
         PAGEFAULTSPERSEC("Page Faults/sec");
 
         /**
@@ -137,6 +165,9 @@ public final class ProcessInformation {
      */
     public enum HandleCountProperty implements PerfCounterQuery.PdhCounterProperty {
 
+        /**
+         * Handle Count.
+         */
         HANDLECOUNT(PerfmonConsts.TOTAL_INSTANCE, "Handle Count");
 
         /**
@@ -190,10 +221,17 @@ public final class ProcessInformation {
      */
     public enum IdleProcessorTimeProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
-        // First element defines WMI instance name field and PDH instance filter
+        /**
+         * The name idle processor time property.
+         */
         NAME(PerfCounterQuery.TOTAL_OR_IDLE_INSTANCES),
-        // Remaining elements define counters
-        PERCENTPROCESSORTIME("% Processor Time"), //
+        /**
+         * % Processor Time.
+         */
+        PERCENTPROCESSORTIME("% Processor Time"),
+        /**
+         * Elapsed Time.
+         */
         ELAPSEDTIME("Elapsed Time");
 
         /**

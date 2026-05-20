@@ -27,7 +27,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
+import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
 
 /**
  * Database table snapshot.
@@ -39,6 +41,13 @@ import org.miaixz.bus.mapper.parsing.IndexMeta;
 @Setter
 @Accessors(fluent = true)
 public class TableSnapshot {
+
+    /**
+     * Constructs a new TableSnapshot instance.
+     */
+    public TableSnapshot() {
+        // No initialization required.
+    }
 
     /**
      * Database table name.
@@ -59,6 +68,16 @@ public class TableSnapshot {
      * Database index snapshots.
      */
     private List<IndexMeta> indexes = new ArrayList<>();
+
+    /**
+     * Database primary key snapshot.
+     */
+    private PrimaryKeyMeta primaryKey;
+
+    /**
+     * Database foreign key snapshots.
+     */
+    private List<ForeignKeyMeta> foreignKeys = new ArrayList<>();
 
     /**
      * Finds a column snapshot by name.
@@ -91,8 +110,106 @@ public class TableSnapshot {
      * @return {@code true} when the index exists
      */
     public boolean hasIndex(IndexMeta index) {
-        String normalized = normalizeIdentifier(index.name());
-        return indexes.stream().anyMatch(actual -> normalizeIdentifier(actual.name()).equals(normalized));
+        return indexes.stream().anyMatch(actual -> sameIndex(actual, index));
+    }
+
+    /**
+     * Tests whether the table has a primary key matching the expected metadata.
+     *
+     * @param expected the expected primary key metadata
+     * @return {@code true} when the primary key matches
+     */
+    public boolean hasPrimaryKey(PrimaryKeyMeta expected) {
+        return samePrimaryKey(this.primaryKey, expected);
+    }
+
+    /**
+     * Tests whether the table has a foreign key matching the expected metadata.
+     *
+     * @param expected the expected foreign key metadata
+     * @return {@code true} when the foreign key matches
+     */
+    public boolean hasForeignKey(ForeignKeyMeta expected) {
+        return foreignKeys.stream().anyMatch(actual -> sameForeignKey(actual, expected));
+    }
+
+    /**
+     * Tests whether two index definitions match.
+     *
+     * @param actual   the database index metadata
+     * @param expected the expected index metadata
+     * @return {@code true} when the definitions match
+     */
+    public static boolean sameIndex(IndexMeta actual, IndexMeta expected) {
+        if (actual == null || expected == null) {
+            return false;
+        }
+        return normalizeIdentifier(actual.name()).equals(normalizeIdentifier(expected.name()))
+                && actual.unique() == expected.unique() && sameColumns(actual.columns(), expected.columns());
+    }
+
+    /**
+     * Tests whether two primary key definitions match.
+     *
+     * @param actual   the database primary key metadata
+     * @param expected the expected primary key metadata
+     * @return {@code true} when the definitions match
+     */
+    public static boolean samePrimaryKey(PrimaryKeyMeta actual, PrimaryKeyMeta expected) {
+        if (actual == null || expected == null) {
+            return false;
+        }
+        return sameColumns(actual.columns(), expected.columns());
+    }
+
+    /**
+     * Tests whether two foreign key definitions match.
+     *
+     * @param actual   the database foreign key metadata
+     * @param expected the expected foreign key metadata
+     * @return {@code true} when the definitions match
+     */
+    public static boolean sameForeignKey(ForeignKeyMeta actual, ForeignKeyMeta expected) {
+        if (actual == null || expected == null) {
+            return false;
+        }
+        return normalizeIdentifier(actual.name()).equals(normalizeIdentifier(expected.name()))
+                && sameTable(actual.referencedTable(), expected.referencedTable())
+                && sameColumns(actual.columns(), expected.columns())
+                && sameColumns(actual.referencedColumns(), expected.referencedColumns());
+    }
+
+    /**
+     * Tests whether two table names match after identifier normalization.
+     *
+     * @param actual   the database table name
+     * @param expected the expected table name
+     * @return {@code true} when the table names match
+     */
+    public static boolean sameTable(String actual, String expected) {
+        String normalizedActual = normalizeIdentifier(actual);
+        String normalizedExpected = normalizeIdentifier(expected);
+        return normalizedActual.equals(normalizedExpected) || normalizedActual.endsWith("." + normalizedExpected)
+                || normalizedExpected.endsWith("." + normalizedActual);
+    }
+
+    /**
+     * Tests whether two ordered column lists match after identifier normalization.
+     *
+     * @param actual   the database column names
+     * @param expected the expected column names
+     * @return {@code true} when the lists match
+     */
+    public static boolean sameColumns(List<String> actual, List<String> expected) {
+        if (actual == null || expected == null || actual.size() != expected.size()) {
+            return false;
+        }
+        for (int i = 0; i < actual.size(); i++) {
+            if (!normalizeIdentifier(actual.get(i)).equals(normalizeIdentifier(expected.get(i)))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

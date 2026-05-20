@@ -48,7 +48,7 @@ public class ResourceKit {
      * Constructs a new resource utility instance.
      */
     public ResourceKit() {
-
+        // No initialization required.
     }
 
     /**

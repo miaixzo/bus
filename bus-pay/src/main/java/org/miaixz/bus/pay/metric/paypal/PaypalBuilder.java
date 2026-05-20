@@ -34,6 +34,13 @@ import org.miaixz.bus.pay.magic.Callback;
 public class PaypalBuilder {
 
     /**
+     * Constructs a new PaypalBuilder instance.
+     */
+    public PaypalBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Retries a callable operation upon exception.
      *
      * @param <V>           The return type of the callable, which must extend {@link Callback}.

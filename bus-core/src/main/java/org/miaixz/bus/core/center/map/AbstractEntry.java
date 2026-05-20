@@ -41,6 +41,7 @@ public abstract class AbstractEntry<K, V> implements Map.Entry<K, V> {
      * Constructs a new AbstractEntry. Utility class constructor for static access.
      */
     public AbstractEntry() {
+        // No initialization required.
     }
 
     /**

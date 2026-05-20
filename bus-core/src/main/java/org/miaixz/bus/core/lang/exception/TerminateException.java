@@ -79,8 +79,8 @@ public class TerminateException extends UncheckedException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public TerminateException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public TerminateException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**
@@ -104,13 +104,13 @@ public class TerminateException extends UncheckedException {
     }
 
     /**
-     * Constructs a new TerminateException with the specified error code and cause.
+     * Constructs a new TerminateException with the specified detail message and cause.
      *
-     * @param errcode   The error code.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param errmsg The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public TerminateException(final String errcode, final Throwable throwable) {
-        super(errcode, throwable);
+    public TerminateException(final String errmsg, final Throwable cause) {
+        super(errmsg, cause);
     }
 
     /**
@@ -127,12 +127,12 @@ public class TerminateException extends UncheckedException {
     /**
      * Constructs a new TerminateException with the specified error code, detail message, and cause.
      *
-     * @param errcode   The error code.
-     * @param errmsg    The detail message.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param errcode The error code.
+     * @param errmsg  The detail message.
+     * @param cause   The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public TerminateException(final String errcode, final String errmsg, final Throwable throwable) {
-        super(errcode, errmsg, throwable);
+    public TerminateException(final String errcode, final String errmsg, final Throwable cause) {
+        super(errcode, errmsg, cause);
     }
 
     /**

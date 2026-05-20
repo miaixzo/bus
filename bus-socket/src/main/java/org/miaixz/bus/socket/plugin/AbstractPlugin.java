@@ -38,6 +38,13 @@ import org.miaixz.bus.socket.Status;
 public abstract class AbstractPlugin<T> implements Plugin<T> {
 
     /**
+     * Constructs a new AbstractPlugin instance.
+     */
+    public AbstractPlugin() {
+        // No initialization required.
+    }
+
+    /**
      * Hexadecimal digits for conversion.
      */
     private final static char[] DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',

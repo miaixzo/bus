@@ -320,6 +320,13 @@ public class Downloads {
     public class Control {
 
         /**
+         * Constructs a new Control instance.
+         */
+        public Control() {
+            // No initialization required.
+        }
+
+        /**
          * Status indicating the download has been canceled. The partial file will be deleted.
          */
         public static final int STATUS__CANCELED = -1;
@@ -416,6 +423,8 @@ public class Downloads {
         }
 
         /**
+         * Returns the target download file.
+         *
          * @return The target download file.
          */
         public File getFile() {
@@ -423,6 +432,8 @@ public class Downloads {
         }
 
         /**
+         * Returns the number of bytes successfully downloaded before the failure.
+         *
          * @return The number of bytes successfully downloaded before the failure.
          */
         public long getDoneBytes() {
@@ -430,6 +441,8 @@ public class Downloads {
         }
 
         /**
+         * Returns the exception that caused the failure.
+         *
          * @return The exception that caused the failure.
          */
         public IOException getException() {

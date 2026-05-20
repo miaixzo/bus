@@ -40,14 +40,42 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ISO8601 {
 
+    /**
+     * The pattern value.
+     */
+
     public static final String PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
+    /**
+     * The msec pattern value.
+     */
     public static final String MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    /**
+     * The spacey pattern value.
+     */
     public static final String SPACEY_PATTERN = "yyyy-MM-dd HH:mm:ss Z";
+    /**
+     * The spacey msec pattern value.
+     */
     public static final String SPACEY_MSEC_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS Z";
+    /**
+     * The pattern msec value.
+     */
     public static final String PATTERN_MSEC = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    /**
+     * The output pattern value.
+     */
     public static final String OUTPUT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    /**
+     * The output msec pattern value.
+     */
     public static final String OUTPUT_MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    /**
+     * The utc pattern value.
+     */
     public static final String UTC_PATTERN = "yyyy-MM-dd HH:mm:ss 'UTC'";
+    /**
+     * The date only pattern value.
+     */
     public static final String DATE_ONLY_PATTERN = "yyyy-MM-dd";
 
     private static final DateTimeFormatter ODT_WITH_MSEC_PARSER = new DateTimeFormatterBuilder()

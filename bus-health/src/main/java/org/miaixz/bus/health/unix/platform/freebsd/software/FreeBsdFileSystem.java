@@ -49,6 +49,13 @@ import org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit;
 public final class FreeBsdFileSystem extends AbstractFileSystem {
 
     /**
+     * Constructs a new FreeBsdFileSystem instance.
+     */
+    public FreeBsdFileSystem() {
+        // No initialization required.
+    }
+
+    /**
      * The FS_PATH_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder

@@ -41,9 +41,21 @@ public class ApprovedBy implements Serializable {
     private User user;
     private Group group;
 
+    /**
+     * Returns the user.
+     *
+     * @return the result
+     */
+
     public User getUser() {
         return user;
     }
+
+    /**
+     * Sets the user.
+     *
+     * @param user the user value
+     */
 
     public void setUser(User user) {
         if (group != null) {
@@ -53,9 +65,21 @@ public class ApprovedBy implements Serializable {
         this.user = user;
     }
 
+    /**
+     * Returns the group.
+     *
+     * @return the result
+     */
+
     public Group getGroup() {
         return group;
     }
+
+    /**
+     * Sets the group.
+     *
+     * @param group the group value
+     */
 
     public void setGroup(Group group) {
         if (user != null) {
@@ -75,6 +99,12 @@ public class ApprovedBy implements Serializable {
     public Object getApprovedBy() {
         return (user != null ? user : group);
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

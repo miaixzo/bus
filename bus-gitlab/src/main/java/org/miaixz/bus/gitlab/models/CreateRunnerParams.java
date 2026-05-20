@@ -46,6 +46,12 @@ public class CreateRunnerParams implements Serializable {
     private Integer maximumTimeout;
     private String maintenanceNote;
 
+    /**
+     * Returns the form.
+     *
+     * @return the result
+     */
+
     public GitLabForm getForm() {
 
         return new GitLabForm().withParam("runner_type", runnerType, true).withParam("group_id", groupId)
@@ -55,60 +61,143 @@ public class CreateRunnerParams implements Serializable {
                 .withParam("maintenance_note", maintenanceNote);
     }
 
+    /**
+     * Sets the runner type and returns this instance.
+     *
+     * @param runnerType the runner type value
+     * @return the result
+     */
+
     public CreateRunnerParams withRunnerType(Runner.RunnerType runnerType) {
         this.runnerType = runnerType;
         return this;
     }
+
+    /**
+     * Sets the group id and returns this instance.
+     *
+     * @param groupId the group id value
+     * @return the result
+     */
 
     public CreateRunnerParams withGroupId(Long groupId) {
         this.groupId = groupId;
         return this;
     }
 
+    /**
+     * Sets the project id and returns this instance.
+     *
+     * @param projectId the project id value
+     * @return the result
+     */
+
     public CreateRunnerParams withProjectId(Long projectId) {
         this.projectId = projectId;
         return this;
     }
+
+    /**
+     * Sets the description and returns this instance.
+     *
+     * @param description the description value
+     * @return the result
+     */
 
     public CreateRunnerParams withDescription(String description) {
         this.description = description;
         return this;
     }
 
+    /**
+     * Sets the paused and returns this instance.
+     *
+     * @param paused the paused value
+     * @return the result
+     */
+
     public CreateRunnerParams withPaused(Boolean paused) {
         this.paused = paused;
         return this;
     }
+
+    /**
+     * Sets the locked and returns this instance.
+     *
+     * @param locked the locked value
+     * @return the result
+     */
 
     public CreateRunnerParams withLocked(Boolean locked) {
         this.locked = locked;
         return this;
     }
 
+    /**
+     * Sets the run untagged and returns this instance.
+     *
+     * @param runUntagged the run untagged value
+     * @return the result
+     */
+
     public CreateRunnerParams withRunUntagged(Boolean runUntagged) {
         this.runUntagged = runUntagged;
         return this;
     }
+
+    /**
+     * Sets the tag list and returns this instance.
+     *
+     * @param tagList the tag list value
+     * @return the result
+     */
 
     public CreateRunnerParams withTagList(List<String> tagList) {
         this.tagList = tagList;
         return this;
     }
 
+    /**
+     * Sets the access level and returns this instance.
+     *
+     * @param accessLevel the access level value
+     * @return the result
+     */
+
     public CreateRunnerParams withAccessLevel(String accessLevel) {
         this.accessLevel = accessLevel;
         return this;
     }
+
+    /**
+     * Sets the maximum timeout and returns this instance.
+     *
+     * @param maximumTimeout the maximum timeout value
+     * @return the result
+     */
 
     public CreateRunnerParams withMaximumTimeout(Integer maximumTimeout) {
         this.maximumTimeout = maximumTimeout;
         return this;
     }
 
+    /**
+     * Sets the maintenance note and returns this instance.
+     *
+     * @param maintenanceNote the maintenance note value
+     * @return the result
+     */
+
     public CreateRunnerParams withMaintenanceNote(String maintenanceNote) {
         this.maintenanceNote = maintenanceNote;
         return this;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

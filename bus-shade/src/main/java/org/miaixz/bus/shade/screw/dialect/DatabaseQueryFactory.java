@@ -55,7 +55,7 @@ public class DatabaseQueryFactory implements Serializable {
      * Private constructor to prevent instantiation via the 'new' keyword.
      */
     private DatabaseQueryFactory() {
-
+        // No initialization required.
     }
 
     /**

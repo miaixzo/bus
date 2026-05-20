@@ -45,6 +45,13 @@ import org.miaixz.bus.spring.banner.BannerPrinter;
 public class SpringBootConfigListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent>, Ordered {
 
     /**
+     * Constructs a new SpringBootConfigListener instance.
+     */
+    public SpringBootConfigListener() {
+        // No initialization required.
+    }
+
+    /**
      * A flag to ensure that configuration registration and banner printing are performed only once.
      */
     private final AtomicBoolean registered = new AtomicBoolean();

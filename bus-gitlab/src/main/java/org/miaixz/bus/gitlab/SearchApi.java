@@ -31,6 +31,12 @@ import java.util.stream.Stream;
  */
 public class SearchApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code SearchApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public SearchApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

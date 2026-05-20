@@ -41,17 +41,41 @@ public class JobAttributes implements Serializable {
     @JsonProperty("job_variables_attributes")
     private List<JobAttribute> jobAttributes;
 
+    /**
+     * Constructs a new {@code JobAttributes} instance.
+     *
+     * @param jobAttributes the job attributes value
+     */
+
     public JobAttributes(List<JobAttribute> jobAttributes) {
         this.jobAttributes = jobAttributes;
     }
+
+    /**
+     * Returns the job attributes.
+     *
+     * @return the result
+     */
 
     public List<JobAttribute> getJobAttributes() {
         return jobAttributes;
     }
 
+    /**
+     * Sets the job attributes.
+     *
+     * @param jobAttributes the job attributes value
+     */
+
     public void setJobAttributes(List<JobAttribute> jobAttributes) {
         this.jobAttributes = jobAttributes;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

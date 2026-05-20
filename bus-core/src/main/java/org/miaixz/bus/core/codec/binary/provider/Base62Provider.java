@@ -42,6 +42,7 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
      * Constructs a new Base62Provider. Utility class constructor for static access.
      */
     private Base62Provider() {
+        // No initialization required.
     }
 
     @Serial

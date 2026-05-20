@@ -44,8 +44,16 @@ import org.miaixz.bus.logger.Logger;
  */
 public abstract class AbstractApi implements Constants {
 
+    /**
+     * The GitLab API facade used by this API group.
+     */
     protected final GitLabApi gitLabApi;
 
+    /**
+     * Creates a new API group.
+     *
+     * @param gitLabApi the GitLab API facade
+     */
     public AbstractApi(GitLabApi gitLabApi) {
         this.gitLabApi = gitLabApi;
     }
@@ -202,6 +210,13 @@ public abstract class AbstractApi implements Constants {
         }
     }
 
+    /**
+     * Returns the namespace ID or path from the provided Long, String, or Namespace instance.
+     *
+     * @param obj the object to determine the ID or path from
+     * @return the namespace ID or path from the provided Long, String, or Namespace instance
+     * @throws GitLabApiException if any exception occurs during execution
+     */
     public Object getNamespaceIdOrPath(Object obj) throws GitLabApiException {
 
         if (obj == null) {
@@ -233,18 +248,39 @@ public abstract class AbstractApi implements Constants {
         }
     }
 
+    /**
+     * Returns the configured GitLab API version.
+     *
+     * @return the configured GitLab API version
+     */
     protected ApiVersion getApiVersion() {
         return (gitLabApi.getApiVersion());
     }
 
+    /**
+     * Tests whether the configured GitLab API version matches the supplied version.
+     *
+     * @param apiVersion the API version to compare
+     * @return {@code true} when the configured version matches
+     */
     protected boolean isApiVersion(ApiVersion apiVersion) {
         return (gitLabApi.getApiVersion() == apiVersion);
     }
 
+    /**
+     * Returns the default page size.
+     *
+     * @return the default page size
+     */
     protected int getDefaultPerPage() {
         return (gitLabApi.getDefaultPerPage());
     }
 
+    /**
+     * Returns the GitLab API client.
+     *
+     * @return the GitLab API client
+     */
     protected GitLabApiClient getApiClient() {
         return (gitLabApi.getApiClient());
     }
@@ -618,6 +654,17 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
+    /**
+     * Performs a file upload with the specified file and path objects.
+     *
+     * @param expectedStatus the HTTP status that should be returned from the server
+     * @param name           the form field name that contains the file name
+     * @param fileToUpload   the file to upload
+     * @param mediaType      the uploaded file media type
+     * @param pathArgs       the path arguments used to build the URI
+     * @return the response returned from the endpoint
+     * @throws GitLabApiException if any exception occurs during execution
+     */
     protected Response upload(
             Response.Status expectedStatus,
             String name,
@@ -642,6 +689,18 @@ public abstract class AbstractApi implements Constants {
         }
     }
 
+    /**
+     * Performs a stream upload with the specified input stream and path objects.
+     *
+     * @param expectedStatus the HTTP status that should be returned from the server
+     * @param name           the form field name that contains the file name
+     * @param inputStream    the stream to upload
+     * @param filename       the uploaded file name
+     * @param mediaType      the uploaded stream media type
+     * @param pathArgs       the path arguments used to build the URI
+     * @return the response returned from the endpoint
+     * @throws GitLabApiException if any exception occurs during execution
+     */
     protected Response upload(
             Response.Status expectedStatus,
             String name,
@@ -1006,6 +1065,8 @@ public abstract class AbstractApi implements Constants {
      * @param formData the Form containing the name/value pairs
      * @param name     the name of the field/attribute to add
      * @param value    the value of the field/attribute to add
+     *
+     * @throws IllegalArgumentException if the operation fails
      */
     protected void addFormParam(Form formData, String name, Object value) throws IllegalArgumentException {
         addFormParam(formData, name, value, false);

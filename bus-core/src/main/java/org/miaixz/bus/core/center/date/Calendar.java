@@ -51,6 +51,7 @@ public class Calendar extends Calculate {
      * Constructs a new Calendar. Utility class constructor for static access.
      */
     public Calendar() {
+        // No initialization required.
     }
 
     /**
@@ -312,7 +313,6 @@ public class Calendar extends Calculate {
      *
      * <p>
      * Sometimes, the millisecond part must be 0 (e.g., in MySQL databases), so this option is provided.
-     *
      *
      * @param calendar The {@link java.util.Calendar} object to modify.
      * @param various  The time field to set to the end of.

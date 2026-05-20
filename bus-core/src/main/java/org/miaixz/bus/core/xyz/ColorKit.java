@@ -44,6 +44,7 @@ public class ColorKit {
      * Constructs a new ColorKit. Utility class constructor for static access.
      */
     private ColorKit() {
+        // No initialization required.
     }
 
     /**

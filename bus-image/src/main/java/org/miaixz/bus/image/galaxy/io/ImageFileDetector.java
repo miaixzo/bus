@@ -42,6 +42,13 @@ import org.miaixz.bus.image.galaxy.data.VR;
 public class ImageFileDetector extends FileTypeDetector {
 
     /**
+     * Constructs a new ImageFileDetector instance.
+     */
+    public ImageFileDetector() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given byte array indicates a DICOM Part 10 file format. A DICOM Part 10 file typically has "DICM"
      * at offset 128.
      *

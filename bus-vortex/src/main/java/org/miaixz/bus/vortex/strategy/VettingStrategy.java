@@ -53,7 +53,7 @@ public class VettingStrategy extends AbstractStrategy {
      * Creates a basic vetting strategy.
      */
     public VettingStrategy() {
-
+        // No initialization required.
     }
 
     /**

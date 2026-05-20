@@ -35,6 +35,13 @@ import lombok.experimental.Accessors;
 public class ColumnSnapshot {
 
     /**
+     * Constructs a new ColumnSnapshot instance.
+     */
+    public ColumnSnapshot() {
+        // No initialization required.
+    }
+
+    /**
      * Database column name.
      */
     private String name;

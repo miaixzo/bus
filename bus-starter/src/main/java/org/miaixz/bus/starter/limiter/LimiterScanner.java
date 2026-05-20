@@ -55,6 +55,13 @@ import org.miaixz.bus.limiter.proxy.ByteBuddyProxy;
 public class LimiterScanner implements InstantiationAwareBeanPostProcessor {
 
     /**
+     * Constructs a new LimiterScanner instance.
+     */
+    public LimiterScanner() {
+        // No initialization required.
+    }
+
+    /**
      * Processes a bean after its initialization.
      * <p>
      * This method scans the bean's class and its methods for limiter-related annotations. If any such annotations are

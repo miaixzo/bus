@@ -148,11 +148,13 @@ public class Context {
     /**
      * Parameter for the new version of WeChat Work web login.
      */
+    @lombok.Builder.Default
     private String loginType = "CorpApp";
 
     /**
      * Language code for WeChat Work platform.
      */
+    @lombok.Builder.Default
     private String lang = "zh";
 
     /**

@@ -36,6 +36,13 @@ import org.miaixz.bus.health.builtin.hardware.*;
 public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstractionLayer {
 
     /**
+     * Constructs a new AbstractHardwareAbstractionLayer instance.
+     */
+    public AbstractHardwareAbstractionLayer() {
+        // No initialization required.
+    }
+
+    /**
      * The computerSystem value.
      */
     private final Supplier<ComputerSystem> computerSystem = Memoizer.memoize(this::createComputerSystem);

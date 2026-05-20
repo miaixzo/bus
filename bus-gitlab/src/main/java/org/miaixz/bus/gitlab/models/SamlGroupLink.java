@@ -41,29 +41,71 @@ public class SamlGroupLink implements Serializable {
 
     private int memberRoleId;
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param aName the a name value
+     */
 
     public void setName(String aName) {
         this.name = aName;
     }
 
+    /**
+     * Returns the access level.
+     *
+     * @return the result
+     */
+
     public AccessLevel getAccessLevel() {
         return accessLevel;
     }
+
+    /**
+     * Sets the access level.
+     *
+     * @param aAccessLevel the a access level value
+     */
 
     public void setAccessLevel(AccessLevel aAccessLevel) {
         accessLevel = aAccessLevel;
     }
 
+    /**
+     * Returns the member role id.
+     *
+     * @return the result
+     */
+
     public int getMemberRoleId() {
         return memberRoleId;
     }
 
+    /**
+     * Sets the member role id.
+     *
+     * @param aMemberRoleId the a member role id value
+     */
+
     public void setMemberRoleId(int aMemberRoleId) {
         memberRoleId = aMemberRoleId;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

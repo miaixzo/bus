@@ -43,6 +43,13 @@ import org.miaixz.bus.core.xyz.*;
 public class Keys {
 
     /**
+     * Constructs a new Keys instance.
+     */
+    public Keys() {
+        // No initialization required.
+    }
+
+    /**
      * The core framework identifier.
      */
     public static final String BUS = "bus";

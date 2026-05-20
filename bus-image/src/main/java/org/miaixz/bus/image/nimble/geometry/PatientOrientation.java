@@ -54,6 +54,7 @@ public final class PatientOrientation {
      * Creates a new instance.
      */
     private PatientOrientation() {
+        // No initialization required.
     }
 
     /**

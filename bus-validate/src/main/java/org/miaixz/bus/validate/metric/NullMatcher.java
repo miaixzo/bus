@@ -34,6 +34,13 @@ import org.miaixz.bus.validate.magic.annotation.Null;
 public class NullMatcher implements Validator<Object>, Matcher<Object, Null> {
 
     /**
+     * Constructs a new NullMatcher instance.
+     */
+    public NullMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object is null.
      *
      * @param object  The object to validate.

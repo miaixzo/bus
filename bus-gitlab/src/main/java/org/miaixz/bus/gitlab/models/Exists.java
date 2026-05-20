@@ -37,13 +37,31 @@ public class Exists implements Serializable {
 
     private Boolean exists;
 
+    /**
+     * Returns the exists.
+     *
+     * @return the result
+     */
+
     public Boolean getExists() {
         return exists;
     }
 
+    /**
+     * Sets the exists.
+     *
+     * @param exists the exists value
+     */
+
     public void setExists(Boolean exists) {
         this.exists = exists;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

@@ -46,7 +46,7 @@ final class SqlRewriteContext {
      * Prevents instantiation.
      */
     private SqlRewriteContext() {
-
+        // No initialization required.
     }
 
     /**

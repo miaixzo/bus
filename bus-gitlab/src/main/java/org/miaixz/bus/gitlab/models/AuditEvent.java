@@ -43,53 +43,131 @@ public class AuditEvent implements Serializable {
     private AuditEventDetail details;
     private Date createdAt;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the author id.
+     *
+     * @return the result
+     */
+
     public Long getAuthorId() {
         return authorId;
     }
+
+    /**
+     * Sets the author id.
+     *
+     * @param authorId the author id value
+     */
 
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 
+    /**
+     * Returns the entity id.
+     *
+     * @return the result
+     */
+
     public Long getEntityId() {
         return entityId;
     }
+
+    /**
+     * Sets the entity id.
+     *
+     * @param entityId the entity id value
+     */
 
     public void setEntityId(Long entityId) {
         this.entityId = entityId;
     }
 
+    /**
+     * Returns the entity type.
+     *
+     * @return the result
+     */
+
     public String getEntityType() {
         return entityType;
     }
+
+    /**
+     * Sets the entity type.
+     *
+     * @param entityType the entity type value
+     */
 
     public void setEntityType(String entityType) {
         this.entityType = entityType;
     }
 
+    /**
+     * Returns the details.
+     *
+     * @return the result
+     */
+
     public AuditEventDetail getDetails() {
         return details;
     }
+
+    /**
+     * Sets the details.
+     *
+     * @param details the details value
+     */
 
     public void setDetails(AuditEventDetail details) {
         this.details = details;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public Date getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
+
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

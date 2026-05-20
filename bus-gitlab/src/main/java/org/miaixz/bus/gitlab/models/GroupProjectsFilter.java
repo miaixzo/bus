@@ -211,6 +211,12 @@ public class GroupProjectsFilter implements Serializable {
                 .withParam("with_shared", withShared).withParam("include_subgroups", includeSubGroups));
     }
 
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));

@@ -45,6 +45,7 @@ public final class Xrandr {
      * Private constructor to prevent instantiation.
      */
     private Xrandr() {
+        // No initialization required.
     }
 
     /**

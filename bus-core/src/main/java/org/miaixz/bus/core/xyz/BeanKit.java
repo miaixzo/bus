@@ -63,7 +63,7 @@ public class BeanKit {
      * Constructs a new BeanKit. Utility class constructor for static access.
      */
     private BeanKit() {
-
+        // No initialization required.
     }
 
     /**

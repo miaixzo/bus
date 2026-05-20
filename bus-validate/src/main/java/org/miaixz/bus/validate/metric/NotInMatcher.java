@@ -34,6 +34,13 @@ import org.miaixz.bus.validate.magic.annotation.NotIn;
 public class NotInMatcher implements Matcher<Object, NotIn> {
 
     /**
+     * Constructs a new NotInMatcher instance.
+     */
+    public NotInMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given object is NOT present in the array of strings specified in the {@link NotIn} annotation.
      *
      * @param object     The object to validate.

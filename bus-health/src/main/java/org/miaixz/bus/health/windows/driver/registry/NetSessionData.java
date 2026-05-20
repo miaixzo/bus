@@ -40,6 +40,13 @@ import org.miaixz.bus.health.builtin.software.OSSession;
 public final class NetSessionData {
 
     /**
+     * Constructs a new {@code NetSessionData} instance.
+     */
+    public NetSessionData() {
+        // No initialization required.
+    }
+
+    /**
      * The NET constant.
      */
     private static final Netapi32 NET = Netapi32.INSTANCE;

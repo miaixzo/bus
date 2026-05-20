@@ -36,6 +36,9 @@ import org.miaixz.bus.logger.Logger;
  */
 public class HashedWheelTimer implements SocketTimer, Runnable {
 
+    /**
+     * Shared default hashed-wheel timer.
+     */
     public static final HashedWheelTimer DEFAULT_TIMER = new HashedWheelTimer(r -> {
         Thread thread = new Thread(r, "defaultHashedWheelTimer");
         thread.setDaemon(true);
@@ -51,6 +54,9 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
      * The buckets of the hashed wheel.
      */
     private final HashedWheelBucket[] wheel;
+    /**
+     * Bit mask used to map ticks to wheel buckets.
+     */
     private final int mask;
 
     /**
@@ -72,9 +78,21 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
      * The start time of the timer.
      */
     private volatile long startTime;
+    /**
+     * Whether the worker loop should keep running.
+     */
     private boolean running = true;
+
+    /**
+     * Current wheel tick.
+     */
     private long tick;
 
+    /**
+     * Creates a timer with the default tick duration and wheel size.
+     *
+     * @param threadFactory thread factory used to start the timer worker
+     */
     public HashedWheelTimer(ThreadFactory threadFactory) {
         this(threadFactory, 100, 512);
     }
@@ -163,6 +181,11 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         return timeout;
     }
 
+    /**
+     * Returns the current number of pending timeout tasks.
+     *
+     * @return pending timeout count
+     */
     public long pendingTimeouts() {
         return pendingTimeouts.get();
     }

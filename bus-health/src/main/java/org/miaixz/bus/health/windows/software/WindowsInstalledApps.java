@@ -36,6 +36,7 @@ public final class WindowsInstalledApps {
      * Creates a new WindowsInstalledApps instance.
      */
     private WindowsInstalledApps() {
+        // No initialization required.
     }
 
     /**

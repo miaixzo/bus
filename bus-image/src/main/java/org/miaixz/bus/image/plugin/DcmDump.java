@@ -38,6 +38,13 @@ import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 public class DcmDump implements ImageInputHandler {
 
     /**
+     * Constructs a new DcmDump instance.
+     */
+    public DcmDump() {
+        // No initialization required.
+    }
+
+    /**
      * Default number of characters per line for the formatted output.
      */
     private static final int DEFAULT_WIDTH = 78;

@@ -46,6 +46,7 @@ public class FieldKit {
      * Constructs a new FieldKit. Utility class constructor for static access.
      */
     private FieldKit() {
+        // No initialization required.
     }
 
     /**

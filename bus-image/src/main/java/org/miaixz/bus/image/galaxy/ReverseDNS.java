@@ -40,7 +40,7 @@ public class ReverseDNS {
      * Creates a new instance.
      */
     private ReverseDNS() {
-
+        // No initialization required.
     }
 
     /**

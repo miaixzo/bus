@@ -39,21 +39,51 @@ public class Blame implements Serializable {
     private Commit commit;
     private List<String> lines;
 
+    /**
+     * Returns the commit.
+     *
+     * @return the result
+     */
+
     public Commit getCommit() {
         return commit;
     }
+
+    /**
+     * Sets the commit.
+     *
+     * @param commit the commit value
+     */
 
     public void setCommit(Commit commit) {
         this.commit = commit;
     }
 
+    /**
+     * Returns the lines.
+     *
+     * @return the result
+     */
+
     public List<String> getLines() {
         return lines;
     }
 
+    /**
+     * Sets the lines.
+     *
+     * @param lines the lines value
+     */
+
     public void setLines(List<String> lines) {
         this.lines = lines;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

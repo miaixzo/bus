@@ -40,29 +40,71 @@ public class HealthCheckItem implements Serializable {
     private Map<String, String> labels;
     private String message;
 
+    /**
+     * Returns the status.
+     *
+     * @return the result
+     */
+
     public HealthCheckStatus getStatus() {
         return this.status;
     }
+
+    /**
+     * Sets the status.
+     *
+     * @param status the status value
+     */
 
     public void setStatus(HealthCheckStatus status) {
         this.status = status;
     }
 
+    /**
+     * Returns the labels.
+     *
+     * @return the result
+     */
+
     public Map<String, String> getLabels() {
         return labels;
     }
+
+    /**
+     * Sets the labels.
+     *
+     * @param labels the labels value
+     */
 
     public void setLabels(Map<String, String> labels) {
         this.labels = labels;
     }
 
+    /**
+     * Returns the message.
+     *
+     * @return the result
+     */
+
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Sets the message.
+     *
+     * @param message the message value
+     */
+
     public void setMessage(String message) {
         this.message = message;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

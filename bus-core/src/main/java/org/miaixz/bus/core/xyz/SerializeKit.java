@@ -35,6 +35,13 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class SerializeKit {
 
     /**
+     * Constructs a new SerializeKit instance.
+     */
+    public SerializeKit() {
+        // No initialization required.
+    }
+
+    /**
      * Clones an object by serializing and then deserializing it. The object must implement the {@link Serializable}
      * interface.
      *

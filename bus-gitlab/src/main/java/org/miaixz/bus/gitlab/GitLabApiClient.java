@@ -58,10 +58,26 @@ import org.miaixz.bus.logger.Logger;
  */
 public class GitLabApiClient implements AutoCloseable {
 
+    /**
+     * The private token header value.
+     */
+
     protected static final String PRIVATE_TOKEN_HEADER = "PRIVATE-TOKEN";
+    /**
+     * The job token header value.
+     */
     protected static final String JOB_TOKEN_HEADER = "JOB-TOKEN";
+    /**
+     * The sudo header value.
+     */
     protected static final String SUDO_HEADER = "Sudo";
+    /**
+     * The authorization header value.
+     */
     protected static final String AUTHORIZATION_HEADER = "Authorization";
+    /**
+     * The x gitlab token header value.
+     */
     protected static final String X_GITLAB_TOKEN_HEADER = "X-Gitlab-Token";
 
     private ClientConfig clientConfig;
@@ -831,6 +847,18 @@ public class GitLabApiClient implements AutoCloseable {
         return upload(filePart, formData, url);
     }
 
+    /**
+     * Executes the upload operation.
+     *
+     * @param name            the name value
+     * @param inputStream     the input stream value
+     * @param filename        the filename value
+     * @param mediaTypeString the media type string value
+     * @param pathArgs        the path args value
+     * @return the result
+     * @throws IOException if the operation fails
+     */
+
     protected Response upload(
             String name,
             InputStream inputStream,
@@ -840,6 +868,19 @@ public class GitLabApiClient implements AutoCloseable {
         URL url = getApiUrl(pathArgs);
         return (upload(name, inputStream, filename, mediaTypeString, null, url));
     }
+
+    /**
+     * Executes the upload operation.
+     *
+     * @param name            the name value
+     * @param inputStream     the input stream value
+     * @param filename        the filename value
+     * @param mediaTypeString the media type string value
+     * @param formData        the form data value
+     * @param url             the url value
+     * @return the result
+     * @throws IOException if the operation fails
+     */
 
     protected Response upload(
             String name,
@@ -860,6 +901,16 @@ public class GitLabApiClient implements AutoCloseable {
         StreamDataBodyPart streamDataBodyPart = new StreamDataBodyPart(name, inputStream, filename);
         return upload(streamDataBodyPart, formData, url);
     }
+
+    /**
+     * Executes the upload operation.
+     *
+     * @param bodyPart the body part value
+     * @param formData the form data value
+     * @param url      the url value
+     * @return the result
+     * @throws IOException if the operation fails
+     */
 
     protected Response upload(BodyPart bodyPart, Form formData, URL url) throws IOException {
         try (FormDataMultiPart multiPart = new FormDataMultiPart()) {
@@ -1102,9 +1153,23 @@ public class GitLabApiClient implements AutoCloseable {
         return response;
     }
 
+    /**
+     * Executes the invocation operation.
+     *
+     * @param url         the url value
+     * @param queryParams the query params value
+     * @return the result
+     */
+
     protected Invocation.Builder invocation(URL url, MultivaluedMap<String, String> queryParams) {
         return (invocation(url, queryParams, MediaType.APPLICATION_JSON));
     }
+
+    /**
+     * Creates the api client.
+     *
+     * @return the result
+     */
 
     protected Client createApiClient() {
 
@@ -1137,6 +1202,15 @@ public class GitLabApiClient implements AutoCloseable {
                 userAgentHeader != null);
         return (apiClient);
     }
+
+    /**
+     * Executes the invocation operation.
+     *
+     * @param url         the url value
+     * @param queryParams the query params value
+     * @param accept      the accept value
+     * @return the result
+     */
 
     protected Invocation.Builder invocation(URL url, MultivaluedMap<String, String> queryParams, String accept) {
 
@@ -1317,30 +1391,82 @@ public class GitLabApiClient implements AutoCloseable {
         // Create a TrustManager that trusts all certificates
         TrustManager[] trustAllCerts = new TrustManager[] { new X509ExtendedTrustManager() {
 
+            /**
+             * Returns the accepted issuers.
+             *
+             * @return the result
+             */
+
             @Override
             public X509Certificate[] getAcceptedIssuers() {
                 return null;
             }
 
+            /**
+             * Executes the check server trusted operation.
+             *
+             * @param chain    the chain value
+             * @param authType the auth type value
+             */
+
             @Override
             public void checkServerTrusted(X509Certificate[] chain, String authType) {
             }
+
+            /**
+             * Executes the check client trusted operation.
+             *
+             * @param chain    the chain value
+             * @param authType the auth type value
+             */
 
             @Override
             public void checkClientTrusted(X509Certificate[] chain, String authType) {
             }
 
+            /**
+             * Executes the check client trusted operation.
+             *
+             * @param chain    the chain value
+             * @param authType the auth type value
+             * @param socket   the socket value
+             */
+
             @Override
             public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) {
             }
+
+            /**
+             * Executes the check client trusted operation.
+             *
+             * @param chain    the chain value
+             * @param authType the auth type value
+             * @param engine   the engine value
+             */
 
             @Override
             public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine) {
             }
 
+            /**
+             * Executes the check server trusted operation.
+             *
+             * @param chain    the chain value
+             * @param authType the auth type value
+             * @param socket   the socket value
+             */
+
             @Override
             public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) {
             }
+
+            /**
+             * Executes the check server trusted operation.
+             *
+             * @param chain    the chain value
+             * @param authType the auth type value
+             * @param engine   the engine value
+             */
 
             @Override
             public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine) {

@@ -38,6 +38,7 @@ public class CompareKit {
      * Constructs a new CompareKit. Utility class constructor for static access.
      */
     private CompareKit() {
+        // No initialization required.
     }
 
     /**

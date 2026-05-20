@@ -28,7 +28,8 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
 /**
  * Represents the ConfigurationCache type.
  *
- * @param <T> the t type.
+ * @param <C> the configuration type
+ * @param <T> the cached value type
  * @author Kimi Liu
  * @since Java 21+
  */

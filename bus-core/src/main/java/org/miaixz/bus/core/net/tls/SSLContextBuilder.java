@@ -56,6 +56,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * Constructs a new {@code SSLContextBuilder}.
      */
     public SSLContextBuilder() {
+        // No initialization required.
     }
 
     /**

@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import lombok.RequiredArgsConstructor;
-
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -46,7 +44,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @author Kimi Liu
  * @since Java 21+
  */
-@RequiredArgsConstructor
 public class GenIdKeyGenerator implements KeyGenerator {
 
     /**
@@ -84,6 +81,24 @@ public class GenIdKeyGenerator implements KeyGenerator {
      * A counter to track the number of times primary keys have been generated.
      */
     private final AtomicInteger count = new AtomicInteger(0);
+
+    /**
+     * Creates a generated id key generator.
+     *
+     * @param genId         the primary key generator
+     * @param table         the entity table metadata
+     * @param column        the primary key column metadata
+     * @param configuration the MyBatis configuration
+     * @param executeBefore whether the key is generated before insert execution
+     */
+    public GenIdKeyGenerator(GenId<?> genId, TableMeta table, ColumnMeta column, Configuration configuration,
+            boolean executeBefore) {
+        this.genId = genId;
+        this.table = table;
+        this.column = column;
+        this.configuration = configuration;
+        this.executeBefore = executeBefore;
+    }
 
     /**
      * Gets the concurrency level. Defaults to 1000, loaded from global configuration.
@@ -136,6 +151,7 @@ public class GenIdKeyGenerator implements KeyGenerator {
      *
      * @param parameter The parameter object.
      */
+    @SuppressWarnings("unchecked")
     public void genId(Object parameter) {
         if (parameter != null) {
             if (table.entityClass().isInstance(parameter)) {

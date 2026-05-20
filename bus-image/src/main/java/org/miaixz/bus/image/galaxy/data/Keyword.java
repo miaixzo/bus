@@ -30,6 +30,13 @@ import org.miaixz.bus.core.lang.Normal;
 public class Keyword {
 
     /**
+     * Constructs a new Keyword instance.
+     */
+    public Keyword() {
+        // No initialization required.
+    }
+
+    /**
      * Executes the value of operation.
      *
      * @param tag the tag.

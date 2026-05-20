@@ -34,7 +34,16 @@ import org.miaixz.bus.logger.Logger;
 public class Factory {
 
     /**
+     * Constructs a new Factory instance.
+     */
+    public Factory() {
+        // No initialization required.
+    }
+
+    /**
      * Returns the singleton {@link Provider}, resolved via SPI on first call.
+     *
+     * @return metrics provider
      */
     public static Provider get() {
         return Instances.singletion(Factory.class).of();

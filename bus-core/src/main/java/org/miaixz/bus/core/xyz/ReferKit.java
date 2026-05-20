@@ -39,6 +39,13 @@ import org.miaixz.bus.core.lang.ref.ReferenceType;
 public class ReferKit {
 
     /**
+     * Constructs a new ReferKit instance.
+     */
+    public ReferKit() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a {@link Reference} of a specific type.
      *
      * @param <T>      The type of the referenced object.

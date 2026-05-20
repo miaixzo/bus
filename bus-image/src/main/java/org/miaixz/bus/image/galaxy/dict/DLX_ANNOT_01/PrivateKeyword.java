@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.DLX_ANNOT_01;
 public class PrivateKeyword {
 
     /**
+     * Constructs a new {@code PrivateKeyword} instance.
+     */
+    public PrivateKeyword() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "DLX_ANNOT_01";

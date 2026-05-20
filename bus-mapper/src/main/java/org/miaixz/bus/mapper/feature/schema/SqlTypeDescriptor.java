@@ -40,6 +40,13 @@ import org.apache.ibatis.type.JdbcType;
 public class SqlTypeDescriptor {
 
     /**
+     * Constructs a new SqlTypeDescriptor instance.
+     */
+    public SqlTypeDescriptor() {
+        // No initialization required.
+    }
+
+    /**
      * JDBC type associated with the SQL type.
      */
     private JdbcType jdbcType;

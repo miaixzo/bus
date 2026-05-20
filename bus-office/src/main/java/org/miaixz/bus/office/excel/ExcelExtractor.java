@@ -33,6 +33,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelExtractor {
 
     /**
+     * Constructs a new ExcelExtractor instance.
+     */
+    public ExcelExtractor() {
+        // No initialization required.
+    }
+
+    /**
      * Gets an {@link org.apache.poi.ss.extractor.ExcelExtractor} object for the given workbook.
      *
      * @param wb The {@link Workbook} to extract text from.

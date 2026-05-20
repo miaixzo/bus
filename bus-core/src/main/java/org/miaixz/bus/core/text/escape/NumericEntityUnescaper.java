@@ -34,6 +34,13 @@ import org.miaixz.bus.core.xyz.CharKit;
  */
 public class NumericEntityUnescaper extends StringReplacer {
 
+    /**
+     * Constructs a new NumericEntityUnescaper instance.
+     */
+    public NumericEntityUnescaper() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852236101870L;
 

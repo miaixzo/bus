@@ -42,6 +42,13 @@ import org.miaixz.bus.logger.Logger;
 public class AvailabilityListener {
 
     /**
+     * Constructs a new AvailabilityListener instance.
+     */
+    public AvailabilityListener() {
+        // No initialization required.
+    }
+
+    /**
      * Listens for {@link AvailabilityChangeEvent} and logs the state transition. This method handles the following
      * states:
      * <ul>

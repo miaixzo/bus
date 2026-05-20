@@ -39,6 +39,13 @@ import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 public class DeploymentInfoCustomizers implements WebServerFactoryCustomizer<UndertowServletWebServerFactory> {
 
     /**
+     * Constructs a new DeploymentInfoCustomizers instance.
+     */
+    public DeploymentInfoCustomizers() {
+        // No initialization required.
+    }
+
+    /**
      * Customizes the Undertow servlet web server factory.
      * <p>
      * This method adds a {@code DeploymentInfoCustomizer} to the factory, which configures the

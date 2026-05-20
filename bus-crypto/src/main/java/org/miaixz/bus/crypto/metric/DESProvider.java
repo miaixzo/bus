@@ -34,6 +34,13 @@ import org.miaixz.bus.crypto.center.DES;
 public class DESProvider implements Provider {
 
     /**
+     * Constructs a new DESProvider instance.
+     */
+    public DESProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Encrypts the given content using DES with the provided key.
      *
      * @param key     The encryption key as a string. It will be converted to bytes using the platform's default

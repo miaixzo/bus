@@ -66,6 +66,7 @@ public class TreeNode<T> implements Node<T> {
      * Default constructor.
      */
     public TreeNode() {
+        // No initialization required.
     }
 
     /**

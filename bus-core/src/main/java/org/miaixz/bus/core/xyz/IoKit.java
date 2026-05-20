@@ -70,6 +70,7 @@ public class IoKit {
      * Constructs a new IoKit. Utility class constructor for static access.
      */
     private IoKit() {
+        // No initialization required.
     }
 
     /**

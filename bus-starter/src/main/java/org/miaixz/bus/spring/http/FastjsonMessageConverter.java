@@ -54,6 +54,13 @@ import org.miaixz.bus.logger.Logger;
 public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
 
     /**
+     * Constructs a new FastjsonMessageConverter instance.
+     */
+    public FastjsonMessageConverter() {
+        // No initialization required.
+    }
+
+    /**
      * The default media types supported by this converter.
      */
     private static final List<MediaType> DEFAULT_MEDIA_TYPES = List

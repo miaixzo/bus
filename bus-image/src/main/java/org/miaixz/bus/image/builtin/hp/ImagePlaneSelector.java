@@ -36,6 +36,7 @@ public final class ImagePlaneSelector {
      * Creates a new instance.
      */
     private ImagePlaneSelector() {
+        // No initialization required.
     }
 
     /**

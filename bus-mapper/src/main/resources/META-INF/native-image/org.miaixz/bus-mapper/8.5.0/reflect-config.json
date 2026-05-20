@@ -2636,6 +2636,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.mapper.feature.schema.EntitySchemaInitializer$SchemaPhase",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.mapper.feature.schema.EntitySchemaInitializer$SchemaPlan",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.mapper.feature.schema.SchemaConfig",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -3195,6 +3217,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.mapper.parsing.ForeignKeyMeta",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.mapper.parsing.IndexMeta",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -3207,6 +3240,17 @@
   },
   {
     "name": "org.miaixz.bus.mapper.parsing.MapperFactory",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.mapper.parsing.PrimaryKeyMeta",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

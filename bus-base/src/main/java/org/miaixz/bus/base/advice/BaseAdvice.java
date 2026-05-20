@@ -54,6 +54,13 @@ import org.miaixz.bus.logger.Logger;
 public class BaseAdvice extends Controller {
 
     /**
+     * Constructs a new BaseAdvice instance.
+     */
+    public BaseAdvice() {
+        // No initialization required.
+    }
+
+    /**
      * Initializes a data binder for all controller methods.
      * <p>
      * This method is called before any @RequestMapping method to allow for custom property editors, validators, etc.,

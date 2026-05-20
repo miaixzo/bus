@@ -38,16 +38,22 @@ public interface Histogram {
 
     /**
      * Returns the total number of recorded values.
+     *
+     * @return recorded value count
      */
     long count();
 
     /**
      * Returns the sum of all recorded values.
+     *
+     * @return sum of recorded values
      */
     double totalAmount();
 
     /**
      * Returns the maximum recorded value.
+     *
+     * @return maximum recorded value
      */
     double max();
 
@@ -61,6 +67,8 @@ public interface Histogram {
 
     /**
      * Returns an atomic snapshot for cross-instance aggregation.
+     *
+     * @return timer snapshot
      */
     TimerSnapshot snapshot();
 

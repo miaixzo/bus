@@ -32,21 +32,51 @@ public class EventReleaseSource {
     private String format;
     private String url;
 
+    /**
+     * Returns the format.
+     *
+     * @return the result
+     */
+
     public String getFormat() {
         return format;
     }
+
+    /**
+     * Sets the format.
+     *
+     * @param format the format value
+     */
 
     public void setFormat(final String format) {
         this.format = format;
     }
 
+    /**
+     * Returns the url.
+     *
+     * @return the result
+     */
+
     public String getUrl() {
         return url;
     }
 
+    /**
+     * Sets the url.
+     *
+     * @param url the url value
+     */
+
     public void setUrl(final String url) {
         this.url = url;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

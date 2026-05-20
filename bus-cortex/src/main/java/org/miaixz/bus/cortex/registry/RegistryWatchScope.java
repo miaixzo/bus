@@ -38,7 +38,7 @@ public class RegistryWatchScope {
      * Creates an empty registry watch scope.
      */
     public RegistryWatchScope() {
-
+        // No initialization required.
     }
 
     /**

@@ -31,6 +31,13 @@ import java.io.Serializable;
 public class AEExtension implements Serializable {
 
     /**
+     * Constructs a new AEExtension instance.
+     */
+    public AEExtension() {
+        // No initialization required.
+    }
+
+    /**
      * The serial version uid value.
      */
     @Serial

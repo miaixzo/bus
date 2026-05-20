@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.POLYTRON_SMS_2_5;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "POLYTRON-SMS 2.5";

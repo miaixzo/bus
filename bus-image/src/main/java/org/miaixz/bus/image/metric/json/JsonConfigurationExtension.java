@@ -32,6 +32,13 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
 public class JsonConfigurationExtension {
 
     /**
+     * Constructs a new JsonConfigurationExtension instance.
+     */
+    public JsonConfigurationExtension() {
+        // No initialization required.
+    }
+
+    /**
      * The config value.
      */
     protected JsonConfiguration config;

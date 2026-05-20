@@ -47,6 +47,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class PayProperties {
 
     /**
+     * Constructs a new PayProperties instance.
+     */
+    public PayProperties() {
+        // No initialization required.
+    }
+
+    /**
      * A map of payment provider configurations, where the key is the payment provider {@link Registry} type and the
      * value is the {@link Context} containing the specific configuration for that provider.
      */

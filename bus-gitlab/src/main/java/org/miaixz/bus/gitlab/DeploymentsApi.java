@@ -38,6 +38,12 @@ import org.miaixz.bus.gitlab.models.MergeRequest;
  */
 public class DeploymentsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code DeploymentsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public DeploymentsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

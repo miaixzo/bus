@@ -113,6 +113,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
      * Creates a new LinuxCgroupInfo instance.
      */
     public LinuxCgroupInfo() {
+        // No initialization required.
     }
 
     /**

@@ -36,6 +36,13 @@ import org.miaixz.bus.core.Loader;
  */
 public abstract class LazyLoader<T> implements Loader<T>, Serializable {
 
+    /**
+     * Constructs a new LazyLoader instance.
+     */
+    public LazyLoader() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852267795270L;
 

@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.CARDIO_D_R__1_0_siemens;
 public class PrivateKeyword {
 
     /**
+     * Constructs a new {@code PrivateKeyword} instance.
+     */
+    public PrivateKeyword() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "";

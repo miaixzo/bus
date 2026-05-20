@@ -38,6 +38,7 @@ public abstract class WeekParts extends MonthParts {
      * Constructs week-based date parts.
      */
     protected WeekParts() {
+        // No initialization required.
     }
 
     /**

@@ -65,106 +65,264 @@ public class SlackService extends NotificationService {
         return formData;
     }
 
+    /**
+     * Sets the push events and returns this instance.
+     *
+     * @param pushEvents the push events value
+     * @return the result
+     */
+
     public SlackService withPushEvents(Boolean pushEvents) {
         return withPushEvents(pushEvents, this);
     }
+
+    /**
+     * Sets the issues events and returns this instance.
+     *
+     * @param issuesEvents the issues events value
+     * @return the result
+     */
 
     public SlackService withIssuesEvents(Boolean issuesEvents) {
         return withIssuesEvents(issuesEvents, this);
     }
 
+    /**
+     * Sets the confidential issues events and returns this instance.
+     *
+     * @param confidentialIssuesEvents the confidential issues events value
+     * @return the result
+     */
+
     public SlackService withConfidentialIssuesEvents(Boolean confidentialIssuesEvents) {
         return withConfidentialIssuesEvents(confidentialIssuesEvents, this);
     }
+
+    /**
+     * Sets the merge requests events and returns this instance.
+     *
+     * @param mergeRequestsEvents the merge requests events value
+     * @return the result
+     */
 
     public SlackService withMergeRequestsEvents(Boolean mergeRequestsEvents) {
         return withMergeRequestsEvents(mergeRequestsEvents, this);
     }
 
+    /**
+     * Sets the tag push events and returns this instance.
+     *
+     * @param tagPushEvents the tag push events value
+     * @return the result
+     */
+
     public SlackService withTagPushEvents(Boolean tagPushEvents) {
         return withTagPushEvents(tagPushEvents, this);
     }
+
+    /**
+     * Sets the note events and returns this instance.
+     *
+     * @param noteEvents the note events value
+     * @return the result
+     */
 
     public SlackService withNoteEvents(Boolean noteEvents) {
         return withNoteEvents(noteEvents, this);
     }
 
+    /**
+     * Sets the confidential note events and returns this instance.
+     *
+     * @param confidentialNoteEvents the confidential note events value
+     * @return the result
+     */
+
     public SlackService withConfidentialNoteEvents(Boolean confidentialNoteEvents) {
         return withConfidentialNoteEvents(confidentialNoteEvents, this);
     }
+
+    /**
+     * Sets the pipeline events and returns this instance.
+     *
+     * @param pipelineEvents the pipeline events value
+     * @return the result
+     */
 
     public SlackService withPipelineEvents(Boolean pipelineEvents) {
         return withPipelineEvents(pipelineEvents, this);
     }
 
+    /**
+     * Sets the wiki page events and returns this instance.
+     *
+     * @param wikiPageEvents the wiki page events value
+     * @return the result
+     */
+
     public SlackService withWikiPageEvents(Boolean wikiPageEvents) {
         return withWikiPageEvents(wikiPageEvents, this);
     }
 
+    /**
+     * Sets the job events and returns this instance.
+     *
+     * @param jobEvents the job events value
+     * @return the result
+     */
+
     public SlackService withJobEvents(Boolean jobEvents) {
         return withPipelineEvents(jobEvents, this);
     }
+
+    /**
+     * Returns the webhook.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     public String getWebhook() {
         return getProperty(WEBHOOK_PROP);
     }
 
+    /**
+     * Sets the webhook.
+     *
+     * @param webhook the webhook value
+     */
+
     public void setWebhook(String webhook) {
         setProperty(WEBHOOK_PROP, webhook);
     }
+
+    /**
+     * Sets the webhook and returns this instance.
+     *
+     * @param webhook the webhook value
+     * @return the result
+     */
 
     public SlackService withWebhook(String webhook) {
         setWebhook(webhook);
         return (this);
     }
 
+    /**
+     * Returns the username.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getUsername() {
         return getProperty(USERNAME_PROP);
     }
 
+    /**
+     * Sets the username.
+     *
+     * @param username the username value
+     */
+
     public void setUsername(String username) {
         setProperty(USERNAME_PROP, username);
     }
+
+    /**
+     * Sets the username and returns this instance.
+     *
+     * @param username the username value
+     * @return the result
+     */
 
     public SlackService withUsername(String username) {
         setUsername(username);
         return (this);
     }
 
+    /**
+     * Returns the default channel.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getDefaultChannel() {
         return (defaultChannel);
     }
 
+    /**
+     * Sets the default channel.
+     *
+     * @param defaultChannel the default channel value
+     */
+
     public void setDefaultChannel(String defaultChannel) {
         this.defaultChannel = defaultChannel;
     }
+
+    /**
+     * Sets the default channelk and returns this instance.
+     *
+     * @param defaultChannel the default channel value
+     * @return the result
+     */
 
     public SlackService withDefaultChannelk(String defaultChannel) {
         this.defaultChannel = defaultChannel;
         return (this);
     }
 
+    /**
+     * Returns the notify only broken pipelines.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public Boolean getNotifyOnlyBrokenPipelines() {
         return getProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, Boolean.FALSE);
     }
+
+    /**
+     * Returns the notify only default branch.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     public Boolean getNotifyOnlyDefaultBranch() {
         return getProperty(NOTIFY_ONLY_DEFAULT_BRANCH_PROP, Boolean.FALSE);
     }
 
+    /**
+     * Sets the notify only broken pipelines.
+     *
+     * @param notifyOnlyBrokenPipelines the notify only broken pipelines value
+     */
+
     public void setNotifyOnlyBrokenPipelines(Boolean notifyOnlyBrokenPipelines) {
         setProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, notifyOnlyBrokenPipelines);
     }
+
+    /**
+     * Sets the notify only broken pipelines and returns this instance.
+     *
+     * @param notifyOnlyBrokenPipelines the notify only broken pipelines value
+     * @return the result
+     */
 
     public SlackService withNotifyOnlyBrokenPipelines(Boolean notifyOnlyBrokenPipelines) {
         setNotifyOnlyBrokenPipelines(notifyOnlyBrokenPipelines);
         return (this);
     }
+
+    /**
+     * Returns the branches to be notified.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     public BranchesToBeNotified getBranchesToBeNotified() {
@@ -177,135 +335,319 @@ public class SlackService extends NotificationService {
         return (BranchesToBeNotified.valueOf(branchesToBeNotified.toUpperCase()));
     }
 
+    /**
+     * Sets the branches to be notified.
+     *
+     * @param branchesToBeNotified the branches to be notified value
+     */
+
     public void setBranchesToBeNotified(BranchesToBeNotified branchesToBeNotified) {
         setProperty(BRANCHES_TO_BE_NOTIFIED_PROP, branchesToBeNotified.toString());
     }
+
+    /**
+     * Sets the branches to be notified and returns this instance.
+     *
+     * @param branchesToBeNotified the branches to be notified value
+     * @return the result
+     */
 
     public SlackService withBranchesToBeNotified(BranchesToBeNotified branchesToBeNotified) {
         setBranchesToBeNotified(branchesToBeNotified);
         return this;
     }
 
+    /**
+     * Returns the push channel.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getPushChannel() {
         return getProperty(PUSH_CHANNEL_PROP);
     }
 
+    /**
+     * Sets the push channel.
+     *
+     * @param pushChannel the push channel value
+     */
+
     public void setPushChannel(String pushChannel) {
         setProperty(PUSH_CHANNEL_PROP, pushChannel);
     }
+
+    /**
+     * Sets the push channel and returns this instance.
+     *
+     * @param pushChannel the push channel value
+     * @return the result
+     */
 
     public SlackService withPushChannel(String pushChannel) {
         setPushChannel(pushChannel);
         return (this);
     }
 
+    /**
+     * Returns the issue channel.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getIssueChannel() {
         return getProperty(ISSUE_CHANNEL_PROP);
     }
 
+    /**
+     * Sets the issue channel.
+     *
+     * @param issueChannel the issue channel value
+     */
+
     public void setIssueChannel(String issueChannel) {
         setProperty(ISSUE_CHANNEL_PROP, issueChannel);
     }
+
+    /**
+     * Sets the issue channel and returns this instance.
+     *
+     * @param issueChannel the issue channel value
+     * @return the result
+     */
 
     public SlackService withIssueChannel(String issueChannel) {
         setIssueChannel(issueChannel);
         return (this);
     }
 
+    /**
+     * Returns the confidential issue channel.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getConfidentialIssueChannel() {
         return getProperty(CONFIDENTIAL_ISSUE_CHANNEL_PROP);
     }
 
+    /**
+     * Sets the confidential issue channel.
+     *
+     * @param confidentialIssueChannel the confidential issue channel value
+     */
+
     public void setConfidentialIssueChannel(String confidentialIssueChannel) {
         setProperty(CONFIDENTIAL_ISSUE_CHANNEL_PROP, confidentialIssueChannel);
     }
+
+    /**
+     * Sets the confidential issue channel and returns this instance.
+     *
+     * @param confidentialIssueChannel the confidential issue channel value
+     * @return the result
+     */
 
     public SlackService withConfidentialIssueChannel(String confidentialIssueChannel) {
         setConfidentialIssueChannel(confidentialIssueChannel);
         return (this);
     }
 
+    /**
+     * Returns the merge request channel.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getMergeRequestChannel() {
         return getProperty(MERGE_REQUEST_CHANNEL_PROP);
     }
 
+    /**
+     * Sets the merge request channel.
+     *
+     * @param mergeRequestChannel the merge request channel value
+     */
+
     public void setMergeRequestChannel(String mergeRequestChannel) {
         setProperty(MERGE_REQUEST_CHANNEL_PROP, mergeRequestChannel);
     }
+
+    /**
+     * Sets the merge request channel and returns this instance.
+     *
+     * @param mergeRequestChannel the merge request channel value
+     * @return the result
+     */
 
     public SlackService withMergeRequestChannel(String mergeRequestChannel) {
         setMergeRequestChannel(mergeRequestChannel);
         return (this);
     }
 
+    /**
+     * Returns the note channel.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getNoteChannel() {
         return getProperty(NOTE_CHANNEL_PROP);
     }
 
+    /**
+     * Sets the note channel.
+     *
+     * @param noteChannel the note channel value
+     */
+
     public void setNoteChannel(String noteChannel) {
         setProperty(NOTE_CHANNEL_PROP, noteChannel);
     }
+
+    /**
+     * Sets the note channel and returns this instance.
+     *
+     * @param noteChannel the note channel value
+     * @return the result
+     */
 
     public SlackService withNoteChannel(String noteChannel) {
         setNoteChannel(noteChannel);
         return (this);
     }
 
+    /**
+     * Returns the confidential note channel.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getConfidentialNoteChannel() {
         return getProperty(CONFIDENTIAL_NOTE_CHANNEL_PROP);
     }
 
+    /**
+     * Sets the confidential note channel.
+     *
+     * @param noteChannel the note channel value
+     */
+
     public void setConfidentialNoteChannel(String noteChannel) {
         setProperty(NOTE_CHANNEL_PROP, noteChannel);
     }
+
+    /**
+     * Sets the confidential note channel and returns this instance.
+     *
+     * @param confidentialNoteChannel the confidential note channel value
+     * @return the result
+     */
 
     public SlackService withConfidentialNoteChannel(String confidentialNoteChannel) {
         setConfidentialNoteChannel(confidentialNoteChannel);
         return (this);
     }
 
+    /**
+     * Returns the tag push channel.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getTagPushChannel() {
         return getProperty(TAG_PUSH_CHANNEL_PROP);
     }
 
+    /**
+     * Sets the tag push channel.
+     *
+     * @param tagPushChannel the tag push channel value
+     */
+
     public void setTagPushChannel(String tagPushChannel) {
         setProperty(TAG_PUSH_CHANNEL_PROP, tagPushChannel);
     }
+
+    /**
+     * Sets the tag push channel and returns this instance.
+     *
+     * @param tagPushChannel the tag push channel value
+     * @return the result
+     */
 
     public SlackService withTagPushChannel(String tagPushChannel) {
         setTagPushChannel(tagPushChannel);
         return (this);
     }
 
+    /**
+     * Returns the pipeline channel.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getPipelineChannel() {
         return getProperty(PIPELINE_CHANNEL_PROP);
     }
 
+    /**
+     * Sets the pipeline channel.
+     *
+     * @param pipelineChannel the pipeline channel value
+     */
+
     public void setPipelineChannel(String pipelineChannel) {
         setProperty(PIPELINE_CHANNEL_PROP, pipelineChannel);
     }
+
+    /**
+     * Sets the pipeline channel and returns this instance.
+     *
+     * @param pipelineChannel the pipeline channel value
+     * @return the result
+     */
 
     public SlackService withPipelineChannel(String pipelineChannel) {
         setPipelineChannel(pipelineChannel);
         return (this);
     }
 
+    /**
+     * Returns the wiki page channel.
+     *
+     * @return the result
+     */
+
     @JsonIgnore
     public String getWikiPageChannel() {
         return getProperty(WIKI_PAGE_CHANNEL_PROP);
     }
 
+    /**
+     * Sets the wiki page channel.
+     *
+     * @param wikiPageChannel the wiki page channel value
+     */
+
     public void setWikiPageChannel(String wikiPageChannel) {
         setProperty(WIKI_PAGE_CHANNEL_PROP, wikiPageChannel);
     }
+
+    /**
+     * Sets the wiki page channel and returns this instance.
+     *
+     * @param wikiPageChannel the wiki page channel value
+     * @return the result
+     */
 
     public SlackService withWikiPageChannel(String wikiPageChannel) {
         setWikiPageChannel(wikiPageChannel);

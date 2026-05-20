@@ -38,6 +38,13 @@ import org.miaixz.bus.office.excel.style.CellBorderStyle;
 public class StyleKit {
 
     /**
+     * Constructs a new StyleKit instance.
+     */
+    public StyleKit() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a new cell style for the workbook.
      *
      * @param workbook The {@link Workbook} to create the style for.

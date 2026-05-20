@@ -34,6 +34,13 @@ import org.miaixz.bus.image.metric.hl7.HL7Message;
 public class DefaultHL7MessageListener implements HL7MessageListener {
 
     /**
+     * Constructs a new DefaultHL7MessageListener instance.
+     */
+    public DefaultHL7MessageListener() {
+        // No initialization required.
+    }
+
+    /**
      * Executes the on message operation.
      *
      * @param hl7App the hl7 app.

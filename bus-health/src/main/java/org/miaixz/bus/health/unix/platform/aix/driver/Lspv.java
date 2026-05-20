@@ -51,6 +51,7 @@ public final class Lspv {
      * Creates a new Lspv instance.
      */
     private Lspv() {
+        // No initialization required.
     }
 
     /**

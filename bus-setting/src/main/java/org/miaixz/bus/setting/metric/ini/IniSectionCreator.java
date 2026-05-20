@@ -28,6 +28,9 @@ package org.miaixz.bus.setting.metric.ini;
 @FunctionalInterface
 public interface IniSectionCreator {
 
+    /**
+     * Default section creator.
+     */
     IniSectionCreator DEFAULT = IniSectionService::new;
 
     /**

@@ -45,37 +45,91 @@ public class Epic extends AbstractEpic<Epic> {
 
     private Boolean subscribed;
 
+    /**
+     * Returns the start date is fixed.
+     *
+     * @return the result
+     */
+
     public Boolean getStartDateIsFixed() {
         return startDateIsFixed;
     }
+
+    /**
+     * Sets the start date is fixed.
+     *
+     * @param startDateIsFixed the start date is fixed value
+     */
 
     public void setStartDateIsFixed(Boolean startDateIsFixed) {
         this.startDateIsFixed = startDateIsFixed;
     }
 
+    /**
+     * Returns the due date is fixed.
+     *
+     * @return the result
+     */
+
     public Boolean getDueDateIsFixed() {
         return dueDateIsFixed;
     }
+
+    /**
+     * Sets the due date is fixed.
+     *
+     * @param dueDateIsFixed the due date is fixed value
+     */
 
     public void setDueDateIsFixed(Boolean dueDateIsFixed) {
         this.dueDateIsFixed = dueDateIsFixed;
     }
 
+    /**
+     * Returns the due date from inherited source.
+     *
+     * @return the result
+     */
+
     public Date getDueDateFromInheritedSource() {
         return dueDateFromInheritedSource;
     }
+
+    /**
+     * Sets the due date from inherited source.
+     *
+     * @param dueDateFromInheritedSource the due date from inherited source value
+     */
 
     public void setDueDateFromInheritedSource(Date dueDateFromInheritedSource) {
         this.dueDateFromInheritedSource = dueDateFromInheritedSource;
     }
 
+    /**
+     * Returns the subscribed.
+     *
+     * @return the result
+     */
+
     public Boolean getSubscribed() {
         return subscribed;
     }
 
+    /**
+     * Sets the subscribed.
+     *
+     * @param subscribed the subscribed value
+     */
+
     public void setSubscribed(Boolean subscribed) {
         this.subscribed = subscribed;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

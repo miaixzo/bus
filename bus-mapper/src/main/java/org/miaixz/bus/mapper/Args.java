@@ -38,6 +38,13 @@ import java.util.regex.Pattern;
 public class Args {
 
     /**
+     * Constructs a new Args instance.
+     */
+    public Args() {
+        // No initialization required.
+    }
+
+    /**
      * Regular expression for getter methods.
      */
     public static final Pattern GET_PATTERN = Pattern.compile("^get[A-Z].*");

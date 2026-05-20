@@ -59,7 +59,7 @@ public final class RegistryKit {
      * Creates a new RegistryKit instance.
      */
     private RegistryKit() {
-
+        // No initialization required.
     }
 
     /**

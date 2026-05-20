@@ -55,6 +55,13 @@ import org.miaixz.bus.starter.annotation.EnableHealth;
 @ConditionalOnProperty(prefix = GeniusBuilder.HEALTH, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class HealthConfiguration {
 
+    /**
+     * Constructs a new HealthConfiguration instance.
+     */
+    public HealthConfiguration() {
+        // No initialization required.
+    }
+
     @Resource
     private HealthProperties properties;
 

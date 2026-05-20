@@ -40,6 +40,17 @@ import org.miaixz.bus.core.xyz.IoKit;
  */
 public final class Suffixes {
 
+    /**
+     * Constructs a new {@code Suffixes} instance.
+     */
+    public Suffixes() {
+        // No initialization required.
+    }
+
+    /**
+     * The public suffix resource value.
+     *
+     */
     public static final String PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";
 
     private static final byte[] WILDCARD_LABEL = new byte[] { Symbol.C_STAR };

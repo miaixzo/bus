@@ -46,45 +46,111 @@ public class SharedGroup implements Serializable {
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date expiresAt;
 
+    /**
+     * Returns the group id.
+     *
+     * @return the result
+     */
+
     public long getGroupId() {
         return groupId;
     }
+
+    /**
+     * Sets the group id.
+     *
+     * @param groupId the group id value
+     */
 
     public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
 
+    /**
+     * Returns the group name.
+     *
+     * @return the result
+     */
+
     public String getGroupName() {
         return groupName;
     }
+
+    /**
+     * Sets the group name.
+     *
+     * @param groupName the group name value
+     */
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
 
+    /**
+     * Returns the group access level.
+     *
+     * @return the result
+     */
+
     public AccessLevel getGroupAccessLevel() {
         return (groupAccessLevel);
     }
+
+    /**
+     * Sets the group access level.
+     *
+     * @param accessLevel the access level value
+     */
 
     public void setGroupAccessLevel(AccessLevel accessLevel) {
         this.groupAccessLevel = accessLevel;
     }
 
+    /**
+     * Returns the group full path.
+     *
+     * @return the result
+     */
+
     public String getGroupFullPath() {
         return groupFullPath;
     }
+
+    /**
+     * Sets the group full path.
+     *
+     * @param groupFullPath the group full path value
+     */
 
     public void setGroupFullPath(String groupFullPath) {
         this.groupFullPath = groupFullPath;
     }
 
+    /**
+     * Returns the expires at.
+     *
+     * @return the result
+     */
+
     public Date getExpiresAt() {
         return expiresAt;
     }
 
+    /**
+     * Sets the expires at.
+     *
+     * @param expiresAt the expires at value
+     */
+
     public void setExpiresAt(Date expiresAt) {
         this.expiresAt = expiresAt;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

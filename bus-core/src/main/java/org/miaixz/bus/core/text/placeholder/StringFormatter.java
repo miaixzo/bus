@@ -43,6 +43,7 @@ public class StringFormatter {
      * Constructs a new string formatter.
      */
     public StringFormatter() {
+        // No initialization required.
     }
 
     /**

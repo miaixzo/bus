@@ -220,6 +220,8 @@ public class TranscodeParam {
     }
 
     /**
+     * Executes the 100 operation.
+     *
      * @param jpegCompressionQuality between 1 to 100 (100 is the best lossy quality).
      */
     public void setJpegCompressionQuality(int jpegCompressionQuality) {
@@ -239,7 +241,7 @@ public class TranscodeParam {
      * It preserves the raw data when the pixel depth is more than 8 bit. The default value applies the W/L and is
      * FALSE, the output image will be always a 8-bit per sample image.
      *
-     * @param preserveRawImage
+     * @param preserveRawImage whether to preserve the raw image data
      */
     public void setPreserveRawImage(Boolean preserveRawImage) {
         this.preserveRawImage = preserveRawImage;

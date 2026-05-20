@@ -58,6 +58,13 @@ import org.miaixz.bus.mapper.parsing.SqlSource;
 public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implements MapperHandler<T> {
 
     /**
+     * Constructs a new ConditionHandler instance.
+     */
+    public ConditionHandler() {
+        // No initialization required.
+    }
+
+    /**
      * All properties for dynamic configuration lookup.
      * <p>
      * This field is shared across all handler subclasses and used to dynamically build configuration based on the

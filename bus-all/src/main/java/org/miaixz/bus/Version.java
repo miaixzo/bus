@@ -60,6 +60,11 @@ public class Version extends org.miaixz.bus.core.Version {
         super(v);
     }
 
+    /**
+     * Returns the module name represented by this version descriptor.
+     *
+     * @return module name
+     */
     public String name() {
         return Keys.BUS;
     }

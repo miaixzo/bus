@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
@@ -155,7 +154,7 @@ public class SlackProvider extends AbstractProvider {
                 if (responseMetadata.containsKey("messages")) {
                     List<String> messages = (List<String>) responseMetadata.get("messages");
                     if (messages != null && !messages.isEmpty()) {
-                        errorMsg += "; " + StringKit.join(Symbol.COMMA, messages.toArray(new String[0]));
+                        errorMsg += "; " + String.join(Symbol.COMMA, messages);
                     }
                 }
             }

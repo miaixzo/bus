@@ -144,6 +144,8 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the magnitude operation.
+     *
      * @return vector magnitude
      */
     public double magnitude() {
@@ -151,6 +153,8 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the magnitude operation.
+     *
      * @return squared vector magnitude
      */
     public double magnitudeSquared() {
@@ -158,6 +162,8 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the vector operation.
+     *
      * @param other other vector
      * @return dot product
      */
@@ -167,6 +173,8 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the #zero} operation.
+     *
      * @return unit vector in the same direction, or {@link #ZERO}
      */
     public Vector3 normalize() {
@@ -178,6 +186,8 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the vector operation.
+     *
      * @param other other vector
      * @return cross product
      */
@@ -188,6 +198,8 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the add operation.
+     *
      * @param other vector to add
      * @return vector sum
      */
@@ -197,6 +209,8 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the subtract operation.
+     *
      * @param other vector to subtract
      * @return vector difference
      */
@@ -206,6 +220,8 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the multiplier operation.
+     *
      * @param scalar scalar multiplier
      * @return scaled vector
      */
@@ -214,6 +230,8 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the vector operation.
+     *
      * @return negated vector
      */
     public Vector3 negate() {
@@ -221,6 +239,8 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the order operation.
+     *
      * @return a new coordinate array in x, y, z order
      */
     public double[] toArray() {

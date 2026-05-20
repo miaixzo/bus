@@ -75,7 +75,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * the executor focused on request forwarding.
      */
     public McpExecutor() {
-
+        // No initialization required.
     }
 
     /**
@@ -558,19 +558,10 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 downstreamPrefix,
                 gatewayPrefix);
         var bufferFactory = dataBuffer.factory();
-        releaseIfPooled(dataBuffer);
-        return bufferFactory.wrap(rewritten.getBytes(StandardCharsets.UTF_8));
-    }
-
-    /**
-     * Releases a pooled buffer directly.
-     *
-     * @param dataBuffer data buffer to release when it is pooled
-     */
-    private void releaseIfPooled(DataBuffer dataBuffer) {
         if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
             pooledDataBuffer.release();
         }
+        return bufferFactory.wrap(rewritten.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -627,8 +618,9 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Handles the execution for a BUFFERING MCP request.
      * <p>
-     * This path mirrors REST buffering behavior by retrieving the downstream response as an entity and building a
-     * bounded {@link ServerResponse}. It is used for non-streaming MCP responses such as JSON acknowledgements.
+     * This path mirrors REST buffering behavior while streaming the downstream response body through WebFlux. It is
+     * used for non-streaming MCP responses such as JSON acknowledgements, without materializing a standalone
+     * {@link DataBuffer}.
      *
      * @param bodySpec The request body specification.
      * @param ip       The client IP for logging.
@@ -641,15 +633,15 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String ip,
             String method,
             String path) {
-        return bodySpec.retrieve().toEntity(DataBuffer.class).flatMap(responseEntity -> {
+        return bodySpec.exchangeToMono(clientResponse -> {
             Logger.info(
                     false,
                     "Vortex",
-                    "Received buffered status: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_BUFFERED, {}",
+                    "Received downstream status: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_BUFFERED, {}",
                     ip,
                     method,
                     path,
-                    responseEntity.getStatusCode());
+                    clientResponse.statusCode());
             Logger.info(
                     false,
                     "Vortex",
@@ -657,40 +649,28 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     ip,
                     method,
                     path,
-                    responseEntity.getHeaders());
+                    clientResponse.headers().asHttpHeaders());
 
-            DataBuffer body = responseEntity.getBody();
-            if (body != null && body.readableByteCount() > 0) {
-                Logger.info(
-                        false,
-                        "Vortex",
-                        "Received buffered content: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
-                        ip,
-                        method,
-                        path,
-                        body.readableByteCount());
-            } else {
-                Logger.warn(
-                        false,
-                        "Vortex",
-                        "Received buffered content is empty: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED",
-                        ip,
-                        method,
-                        path);
-            }
-
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
             responseBuilder.headers(headers -> {
-                headers.addAll(responseEntity.getHeaders());
+                headers.addAll(clientResponse.headers().asHttpHeaders());
                 headers.remove(HttpHeaders.HOST);
                 headers.remove(HttpHeaders.TRANSFER_ENCODING);
                 headers.remove(HttpHeaders.CONTENT_LENGTH);
             });
 
-            if (body != null && body.readableByteCount() > 0) {
-                return responseBuilder.body(Mono.just(body), DataBuffer.class);
-            }
-            return responseBuilder.build();
+            Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
+                Logger.debug(
+                        false,
+                        "Vortex",
+                        "Received data chunk, size: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_BUFFERED_CHUNK, {} bytes",
+                        ip,
+                        method,
+                        path,
+                        dataBuffer.readableByteCount());
+            });
+
+            return responseBuilder.body(bodyFlux, DataBuffer.class);
         }).doOnSubscribe(
                 subscription -> Logger.info(
                         true,

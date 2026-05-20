@@ -55,6 +55,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public abstract class BasicProvider {
 
     /**
+     * Constructs a new BasicProvider instance.
+     */
+    public BasicProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Template method for caching SQL scripts.
      *
      * <p>

@@ -52,6 +52,13 @@ import org.miaixz.bus.logger.Logger;
 public abstract class AbstractRouter implements OAuth2Router {
 
     /**
+     * Constructs a new AbstractRouter instance.
+     */
+    public AbstractRouter() {
+        // No initialization required.
+    }
+
+    /**
      * Standard OAuth2 parameter names.
      * <p>
      * These parameters are filtered out and will not be extracted as extra parameters.

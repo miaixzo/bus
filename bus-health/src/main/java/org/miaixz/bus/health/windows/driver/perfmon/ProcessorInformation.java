@@ -48,6 +48,7 @@ public final class ProcessorInformation {
      * Creates a new ProcessorInformation instance.
      */
     private ProcessorInformation() {
+        // No initialization required.
     }
 
     /**
@@ -152,6 +153,9 @@ public final class ProcessorInformation {
      */
     public enum InterruptsProperty implements PerfCounterQuery.PdhCounterProperty {
 
+        /**
+         * Executes the interruptspersec operation.
+         */
         INTERRUPTSPERSEC(PerfCounterQuery.TOTAL_INSTANCE, "Interrupts/sec");
 
         /**
@@ -206,8 +210,14 @@ public final class ProcessorInformation {
     public enum ProcessorFrequencyProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
         // First element defines WMI instance name field and PDH instance filter
+        /**
+         * Executes the name operation.
+         */
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
+        /**
+         * Executes the percentofmaximumfrequency operation.
+         */
         PERCENTOFMAXIMUMFREQUENCY("% of Maximum Frequency");
 
         /**
@@ -245,8 +255,14 @@ public final class ProcessorInformation {
     public enum ProcessorPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
         // First element defines WMI instance name field and PDH instance filter
+        /**
+         * Executes the name operation.
+         */
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
+        /**
+         * Executes the percentprocessorperformance operation.
+         */
         PERCENTPROCESSORPERFORMANCE("% Processor Performance");
 
         /**
@@ -284,12 +300,30 @@ public final class ProcessorInformation {
     public enum ProcessorTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
         // First element defines WMI instance name field and PDH instance filter
+        /**
+         * Executes the name operation.
+         */
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
+        /**
+         * Executes the percentdpctime operation.
+         */
         PERCENTDPCTIME("% DPC Time"), //
+        /**
+         * Executes the percentinterrupttime operation.
+         */
         PERCENTINTERRUPTTIME("% Interrupt Time"), //
+        /**
+         * Executes the percentprivilegedtime operation.
+         */
         PERCENTPRIVILEGEDTIME("% Privileged Time"), //
+        /**
+         * Executes the percentprocessortime operation.
+         */
         PERCENTPROCESSORTIME("% Processor Time"), //
+        /**
+         * Executes the percentusertime operation.
+         */
         PERCENTUSERTIME("% User Time");
 
         /**
@@ -327,18 +361,48 @@ public final class ProcessorInformation {
     public enum ProcessorUtilityTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
         // First element defines WMI instance name field and PDH instance filter
+        /**
+         * Executes the name operation.
+         */
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
+        /**
+         * Executes the percentdpctime operation.
+         */
         PERCENTDPCTIME("% DPC Time"), //
+        /**
+         * Executes the percentinterrupttime operation.
+         */
         PERCENTINTERRUPTTIME("% Interrupt Time"), //
+        /**
+         * Executes the percentprivilegedtime operation.
+         */
         PERCENTPRIVILEGEDTIME("% Privileged Time"), //
+        /**
+         * Executes the percentprocessortime operation.
+         */
         PERCENTPROCESSORTIME("% Processor Time"), //
         // The above 3 counters are 100ns base type
         // For PDH accessible as secondary counter in any of them
+        /**
+         * Executes the timestamp sys100 ns operation.
+         */
         TIMESTAMP_SYS100NS("% Processor Time_Base"), //
+        /**
+         * Executes the percentprivilegedutility operation.
+         */
         PERCENTPRIVILEGEDUTILITY("% Privileged Utility"), //
+        /**
+         * Executes the percentprocessorutility operation.
+         */
         PERCENTPROCESSORUTILITY("% Processor Utility"), //
+        /**
+         * Executes the percentprocessorutility base operation.
+         */
         PERCENTPROCESSORUTILITY_BASE("% Processor Utility_Base"), //
+        /**
+         * Executes the percentusertime operation.
+         */
         PERCENTUSERTIME("% User Time");
 
         /**
@@ -375,7 +439,14 @@ public final class ProcessorInformation {
      */
     public enum SystemTickCountProperty implements PerfCounterQuery.PdhCounterProperty {
 
+        /**
+         * Executes the percentdpctime operation.
+         */
+
         PERCENTDPCTIME(PerfCounterQuery.TOTAL_INSTANCE, "% DPC Time"), //
+        /**
+         * Executes the percentinterrupttime operation.
+         */
         PERCENTINTERRUPTTIME(PerfCounterQuery.TOTAL_INSTANCE, "% Interrupt Time");
 
         /**

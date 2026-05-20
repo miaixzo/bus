@@ -45,6 +45,13 @@ import org.miaixz.bus.logger.Logger;
 public class Sentinel {
 
     /**
+     * Constructs a new Sentinel instance.
+     */
+    public Sentinel() {
+        // No initialization required.
+    }
+
+    /**
      * Executes the given method with the specified limiting strategy. This method acts as an entry point for applying
      * different protection strategies (fallback, hotspot, request limit) before or during method invocation.
      *

@@ -36,6 +36,12 @@ import org.miaixz.bus.gitlab.models.Namespace;
  */
 public class NamespaceApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code NamespaceApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public NamespaceApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

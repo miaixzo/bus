@@ -30,7 +30,7 @@ import java.util.List;
 public final class ExcelReadState {
 
     private ExcelReadState() {
-
+        // No initialization required.
     }
 
     /**

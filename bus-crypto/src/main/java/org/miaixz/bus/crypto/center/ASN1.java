@@ -45,6 +45,13 @@ import org.miaixz.bus.logger.Logger;
 public class ASN1 {
 
     /**
+     * Constructs a new ASN1 instance.
+     */
+    public ASN1() {
+        // No initialization required.
+    }
+
+    /**
      * Encodes ASN.1 elements into DER (Distinguished Encoding Rules) format.
      *
      * @param elements The ASN.1 elements to encode.

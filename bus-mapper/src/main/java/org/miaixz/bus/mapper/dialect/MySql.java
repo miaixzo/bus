@@ -25,7 +25,9 @@ import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
+import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
@@ -101,6 +103,30 @@ public class MySql extends AbstractDialect {
     @Override
     public String dropIndex(TableMeta table, IndexMeta index) {
         return mysqlDropIndex(table, index);
+    }
+
+    /**
+     * Builds the DDL used to drop a MySQL primary key.
+     *
+     * @param table      the mapper table metadata
+     * @param primaryKey the mapper primary key metadata
+     * @return the generated drop-primary-key SQL
+     */
+    @Override
+    public String dropPrimaryKey(TableMeta table, PrimaryKeyMeta primaryKey) {
+        return "ALTER TABLE " + tableName(table) + " DROP PRIMARY KEY";
+    }
+
+    /**
+     * Builds the DDL used to drop a MySQL foreign key.
+     *
+     * @param table      the mapper table metadata
+     * @param foreignKey the mapper foreign key metadata
+     * @return the generated drop-foreign-key SQL
+     */
+    @Override
+    public String dropForeignKey(TableMeta table, ForeignKeyMeta foreignKey) {
+        return "ALTER TABLE " + tableName(table) + " DROP FOREIGN KEY " + identifier(foreignKey.name());
     }
 
     /**

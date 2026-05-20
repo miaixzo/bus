@@ -38,6 +38,7 @@ public class EmptyBeanConverter extends AbstractConverter implements MatcherConv
      * Constructs a new EmptyBeanConverter. Utility class constructor for static access.
      */
     public EmptyBeanConverter() {
+        // No initialization required.
     }
 
     @Serial

@@ -44,91 +44,223 @@ public class ContainerExpirationPolicy implements Serializable {
 
     private String nextRunAt;
 
+    /**
+     * Returns the cadence.
+     *
+     * @return the result
+     */
+
     public String getCadence() {
         return cadence;
     }
 
+    /**
+     * Sets the cadence.
+     *
+     * @param cadence the cadence value
+     */
+
     public void setCadence(String cadence) {
         this.cadence = cadence;
     }
+
+    /**
+     * Sets the cadence and returns this instance.
+     *
+     * @param cadence the cadence value
+     * @return the result
+     */
 
     public ContainerExpirationPolicy withCadence(String cadence) {
         this.cadence = cadence;
         return this;
     }
 
+    /**
+     * Returns the enabled.
+     *
+     * @return the result
+     */
+
     public Boolean getEnabled() {
         return enabled;
     }
 
+    /**
+     * Sets the enabled.
+     *
+     * @param enabled the enabled value
+     */
+
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
+
+    /**
+     * Sets the enabled and returns this instance.
+     *
+     * @param enabled the enabled value
+     * @return the result
+     */
 
     public ContainerExpirationPolicy withEnabled(Boolean enabled) {
         this.enabled = enabled;
         return this;
     }
 
+    /**
+     * Returns the keep n.
+     *
+     * @return the result
+     */
+
     public Integer getKeepN() {
         return keepN;
     }
 
+    /**
+     * Sets the keep n.
+     *
+     * @param keepN the keep n value
+     */
+
     public void setKeepN(Integer keepN) {
         this.keepN = keepN;
     }
+
+    /**
+     * Sets the keep n and returns this instance.
+     *
+     * @param keepN the keep n value
+     * @return the result
+     */
 
     public ContainerExpirationPolicy withKeepN(Integer keepN) {
         this.keepN = keepN;
         return this;
     }
 
+    /**
+     * Returns the older than.
+     *
+     * @return the result
+     */
+
     public String getOlderThan() {
         return olderThan;
     }
 
+    /**
+     * Sets the older than.
+     *
+     * @param olderThan the older than value
+     */
+
     public void setOlderThan(String olderThan) {
         this.olderThan = olderThan;
     }
+
+    /**
+     * Sets the older than and returns this instance.
+     *
+     * @param olderThan the older than value
+     * @return the result
+     */
 
     public ContainerExpirationPolicy withOlderThan(String olderThan) {
         this.olderThan = olderThan;
         return this;
     }
 
+    /**
+     * Returns the name regex.
+     *
+     * @return the result
+     */
+
     public String getNameRegex() {
         return nameRegex;
     }
 
+    /**
+     * Sets the name regex.
+     *
+     * @param nameRegex the name regex value
+     */
+
     public void setNameRegex(String nameRegex) {
         this.nameRegex = nameRegex;
     }
+
+    /**
+     * Sets the name regex and returns this instance.
+     *
+     * @param nameRegex the name regex value
+     * @return the result
+     */
 
     public ContainerExpirationPolicy withNameRegex(String nameRegex) {
         this.nameRegex = nameRegex;
         return this;
     }
 
+    /**
+     * Returns the name regex keep.
+     *
+     * @return the result
+     */
+
     public String getNameRegexKeep() {
         return nameRegexKeep;
     }
 
+    /**
+     * Sets the name regex keep.
+     *
+     * @param nameRegexKeep the name regex keep value
+     */
+
     public void setNameRegexKeep(String nameRegexKeep) {
         this.nameRegexKeep = nameRegexKeep;
     }
+
+    /**
+     * Sets the name regex keep and returns this instance.
+     *
+     * @param nameRegexKeep the name regex keep value
+     * @return the result
+     */
 
     public ContainerExpirationPolicy withNameRegexKeep(String nameRegexKeep) {
         this.nameRegexKeep = nameRegexKeep;
         return this;
     }
 
+    /**
+     * Returns the next run at.
+     *
+     * @return the result
+     */
+
     public String getNextRunAt() {
         return nextRunAt;
     }
 
+    /**
+     * Sets the next run at.
+     *
+     * @param nextRunAt the next run at value
+     */
+
     public void setNextRunAt(String nextRunAt) {
         this.nextRunAt = nextRunAt;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

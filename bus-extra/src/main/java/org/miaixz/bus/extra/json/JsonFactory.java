@@ -33,6 +33,13 @@ import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 public class JsonFactory {
 
     /**
+     * Constructs a new JsonFactory instance.
+     */
+    public JsonFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Retrieves the singleton instance of {@link JsonProvider}. The provider is created based on the first available
      * JSON library found on the classpath via SPI.
      *

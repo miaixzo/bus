@@ -58,6 +58,13 @@ import org.miaixz.bus.core.xyz.*;
 public class ImageKit {
 
     /**
+     * Constructs a new ImageKit instance.
+     */
+    public ImageKit() {
+        // No initialization required.
+    }
+
+    /**
      * Graphics Interchange Format: GIF.
      */
     public static final String IMAGE_TYPE_GIF = "gif";

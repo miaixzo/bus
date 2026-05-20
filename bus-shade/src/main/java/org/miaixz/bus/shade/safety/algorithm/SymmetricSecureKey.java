@@ -33,7 +33,14 @@ public final class SymmetricSecureKey extends SecureKey implements SymmetricKey 
     @Serial
     private static final long serialVersionUID = -1L;
 
+    /**
+     * Encoded symmetric secret key bytes.
+     */
     private final byte[] secretKey;
+
+    /**
+     * Encoded initialization vector bytes.
+     */
     private final byte[] iv;
 
     /**

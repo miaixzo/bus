@@ -61,6 +61,7 @@ public class CollKit extends CollectionStream {
      * Constructs a new CollKit. Utility class constructor for static access.
      */
     private CollKit() {
+        // No initialization required.
     }
 
     /**

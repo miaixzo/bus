@@ -40,6 +40,13 @@ import org.miaixz.bus.health.builtin.hardware.GpuTicks;
 public final class NoOpGpuStats implements GpuStats {
 
     /**
+     * Constructs a new {@code NoOpGpuStats} instance.
+     */
+    public NoOpGpuStats() {
+        // No initialization required.
+    }
+
+    /**
      * The closed value.
      */
     private final AtomicBoolean closed = new AtomicBoolean(false);

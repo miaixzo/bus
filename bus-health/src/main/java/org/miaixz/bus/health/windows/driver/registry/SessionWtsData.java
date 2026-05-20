@@ -82,6 +82,7 @@ public final class SessionWtsData {
      * Creates a new SessionWtsData instance.
      */
     private SessionWtsData() {
+        // No initialization required.
     }
 
     /**

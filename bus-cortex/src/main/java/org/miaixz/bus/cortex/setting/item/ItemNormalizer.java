@@ -46,7 +46,7 @@ public final class ItemNormalizer {
      * Creates the item normalization utility holder.
      */
     private ItemNormalizer() {
-
+        // No initialization required.
     }
 
     /**

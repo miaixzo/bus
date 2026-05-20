@@ -60,7 +60,6 @@ public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {
      * Note: This operation removes any old collection of values associated with the key. If you intend to append values
      * to an existing collection, use {@link #putAllValues(Object, Collection)} instead.
      *
-     *
      * @param key   The key with which the specified value collection is to be associated.
      * @param value The new collection of values to be associated with the specified key.
      * @return The previous collection of values associated with {@code key}, or {@code null} if there was no mapping
@@ -74,7 +73,6 @@ public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {
      * <p>
      * Note: This operation replaces any old collection of values associated with the keys. If you intend to append
      * values to existing collections, use {@link #putAllValues(Map)} instead.
-     *
      *
      * @param map The map whose mappings are to be placed in this map.
      */

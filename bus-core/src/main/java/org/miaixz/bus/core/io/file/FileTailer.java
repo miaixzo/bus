@@ -335,6 +335,7 @@ public class FileTailer implements Serializable {
          * Constructs a new ConsoleLineHandler.
          */
         public ConsoleLineHandler() {
+            // No initialization required.
         }
 
         @Serial

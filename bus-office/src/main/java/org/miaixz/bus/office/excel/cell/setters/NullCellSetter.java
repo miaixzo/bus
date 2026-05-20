@@ -32,6 +32,13 @@ import org.miaixz.bus.core.lang.Normal;
 public class NullCellSetter implements CellSetter {
 
     /**
+     * Constructs a new {@code NullCellSetter} instance.
+     */
+    public NullCellSetter() {
+        // No initialization required.
+    }
+
+    /**
      * Singleton instance of {@code NullCellSetter}.
      */
     public static final NullCellSetter INSTANCE = new NullCellSetter();

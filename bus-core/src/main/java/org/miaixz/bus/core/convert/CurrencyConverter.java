@@ -34,6 +34,7 @@ public class CurrencyConverter extends AbstractConverter {
      * Constructs a new CurrencyConverter. Utility class constructor for static access.
      */
     public CurrencyConverter() {
+        // No initialization required.
     }
 
     @Serial

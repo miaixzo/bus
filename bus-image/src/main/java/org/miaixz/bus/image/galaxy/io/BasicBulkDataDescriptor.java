@@ -63,6 +63,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
      * Constructs a new {@code BasicBulkDataDescriptor} with default settings.
      */
     public BasicBulkDataDescriptor() {
+        // No initialization required.
     }
 
     /**

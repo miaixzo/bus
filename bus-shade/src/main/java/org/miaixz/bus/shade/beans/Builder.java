@@ -42,6 +42,13 @@ import freemarker.template.Template;
 public class Builder {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * Constant for identifying the Entity template.
      */
     public static final String ENTITY = "Entity";

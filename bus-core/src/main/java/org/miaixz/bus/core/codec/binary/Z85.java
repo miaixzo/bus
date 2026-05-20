@@ -42,6 +42,13 @@ import org.miaixz.bus.core.codec.Encoder;
  */
 public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Serializable {
 
+    /**
+     * Constructs a new {@code Z85} instance.
+     */
+    public Z85() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852282097928L;
 

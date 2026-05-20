@@ -81,6 +81,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
      * Creates a WebSocket executor.
      */
     public WsExecutor() {
+        // No initialization required.
     }
 
     /**

@@ -19,10 +19,11 @@
 */
 package org.miaixz.bus.vortex.routing.llm;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.HttpMethod;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
@@ -32,6 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Egress;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -90,18 +92,11 @@ public class OpenAIProvider implements LlmProvider {
     private final String model;
 
     /**
-     * The pre-configured WebClient instance for making HTTP requests to the LLM service.
-     * <p>
-     * This client is initialized with the base URL, API key authentication header, and content type header.
-     * </p>
-     */
-    private final WebClient webClient;
-
-    /**
      * Constructs a new {@code OpenAIProvider} instance.
      * <p>
-     * This constructor initializes the provider with the specified configuration and creates a pre-configured WebClient
-     * for making HTTP requests to the LLM service. The endpoint URL is normalized by removing any trailing slashes.
+     * This constructor initializes the provider with the specified configuration. Outbound calls are executed through
+     * the shared {@link Egress} client so LLM traffic reuses the same connection pool and codec settings as REST and
+     * MCP routing. The endpoint URL is normalized by removing any trailing slashes.
      * </p>
      *
      * @param type     The provider type identifier (e.g., "openai", "gemini", "qwen", "vllm", "ollama"). Must not be
@@ -127,10 +122,6 @@ public class OpenAIProvider implements LlmProvider {
         this.apiKey = apiKey;
         this.model = model;
 
-        this.webClient = WebClient.builder().baseUrl(this.endpoint)
-                .defaultHeader(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
-                .defaultHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).build();
-
         Logger.info(true, "Vortex", "Initialized {} provider: endpoint={}", type, endpoint);
     }
 
@@ -152,9 +143,10 @@ public class OpenAIProvider implements LlmProvider {
 
         Logger.debug(true, "Vortex", "Sending non-streaming request to {}: model={}", type, request.getModel());
 
-        String chatCompletionsPath = Symbol.SLASH + "v1" + Symbol.SLASH + "chat" + Symbol.SLASH + "completions";
-        return webClient.post().uri(chatCompletionsPath).bodyValue(requestBody).retrieve().bodyToMono(String.class)
-                .map(this::parseResponse)
+        return Egress.request(HttpMethod.POST, chatCompletionsUri())
+                .header(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
+                .header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
+                .bodyToMono(String.class).map(this::parseResponse)
                 .doOnError(e -> Logger.error(false, "Vortex", "Request failed: {}", e.getClass().getSimpleName()));
     }
 
@@ -180,9 +172,10 @@ public class OpenAIProvider implements LlmProvider {
 
         Logger.debug(true, "Vortex", "Sending streaming request to {}: model={}", type, request.getModel());
 
-        String chatCompletionsPath = Symbol.SLASH + "v1" + Symbol.SLASH + "chat" + Symbol.SLASH + "completions";
-        return webClient.post().uri(chatCompletionsPath).bodyValue(requestBody).retrieve().bodyToFlux(String.class)
-                .map(chunk -> "data: " + chunk + Symbol.LF + Symbol.LF).doOnError(
+        return Egress.request(HttpMethod.POST, chatCompletionsUri())
+                .header(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
+                .header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
+                .bodyToFlux(String.class).map(chunk -> "data: " + chunk + Symbol.LF + Symbol.LF).doOnError(
                         e -> Logger
                                 .error(false, "Vortex", "Streaming request failed: {}", e.getClass().getSimpleName()));
     }
@@ -260,6 +253,15 @@ public class OpenAIProvider implements LlmProvider {
         }
 
         return body;
+    }
+
+    /**
+     * Builds the absolute OpenAI-compatible chat completions endpoint.
+     *
+     * @return chat completions endpoint URI
+     */
+    private URI chatCompletionsUri() {
+        return UrlKit.toURI(endpoint + Symbol.SLASH + "v1" + Symbol.SLASH + "chat" + Symbol.SLASH + "completions");
     }
 
     /**

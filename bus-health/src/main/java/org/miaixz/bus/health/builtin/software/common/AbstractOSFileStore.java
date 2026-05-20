@@ -70,7 +70,7 @@ public abstract class AbstractOSFileStore implements OSFileStore {
      * Creates a new AbstractOSFileStore instance.
      */
     protected AbstractOSFileStore() {
-
+        // No initialization required.
     }
 
     /**

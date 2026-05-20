@@ -39,6 +39,13 @@ import lombok.Setter;
 public class ModuleMetrics extends ChildrenMetrics<BeanMetrics> {
 
     /**
+     * Constructs a new ModuleMetrics instance.
+     */
+    public ModuleMetrics() {
+        // No initialization required.
+    }
+
+    /**
      * The name of the thread that executed the module refresh operation.
      * <p>
      * Records the thread name to analyze concurrency performance and thread usage.

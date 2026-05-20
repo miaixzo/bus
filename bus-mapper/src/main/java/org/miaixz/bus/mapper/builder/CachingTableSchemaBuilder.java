@@ -34,6 +34,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class CachingTableSchemaBuilder implements TableSchemaBuilder {
 
     /**
+     * Constructs a new CachingTableSchemaBuilder instance.
+     */
+    public CachingTableSchemaBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Caches entity class information, with the entity class as the key and the corresponding {@link TableMeta} as the
      * value.
      */

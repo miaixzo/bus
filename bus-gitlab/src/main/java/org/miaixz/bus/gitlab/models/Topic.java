@@ -47,53 +47,131 @@ public class Topic implements Serializable {
 
     private String avatarUrl;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Integer getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Integer id) {
         this.id = id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the title.
+     *
+     * @return the result
+     */
+
     public String getTitle() {
         return title;
     }
+
+    /**
+     * Sets the title.
+     *
+     * @param title the title value
+     */
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the result
+     */
+
     public String getDescription() {
         return description;
     }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Returns the total projects count.
+     *
+     * @return the result
+     */
+
     public int getTotalProjectsCount() {
         return totalProjectsCount;
     }
+
+    /**
+     * Sets the total projects count.
+     *
+     * @param totalProjectsCount the total projects count value
+     */
 
     public void setTotalProjectsCount(int totalProjectsCount) {
         this.totalProjectsCount = totalProjectsCount;
     }
 
+    /**
+     * Returns the avatar url.
+     *
+     * @return the result
+     */
+
     public String getAvatarUrl() {
         return avatarUrl;
     }
 
+    /**
+     * Sets the avatar url.
+     *
+     * @param avatarUrl the avatar url value
+     */
+
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

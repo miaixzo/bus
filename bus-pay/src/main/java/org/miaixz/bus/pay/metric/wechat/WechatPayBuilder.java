@@ -54,6 +54,13 @@ import org.miaixz.bus.pay.magic.Message;
  */
 public class WechatPayBuilder {
 
+    /**
+     * Constructs a new WechatPayBuilder instance.
+     */
+    public WechatPayBuilder() {
+        // No initialization required.
+    }
+
     private static final String OS = Keys.get(Keys.OS_NAME) + "/" + Keys.get(Keys.OS_VERSION);
     private static final String VERSION = Keys.get(Keys.JAVA_VERSION);
 

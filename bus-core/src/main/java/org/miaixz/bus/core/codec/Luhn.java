@@ -41,6 +41,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Luhn {
 
     /**
+     * Constructs a new Luhn instance.
+     */
+    public Luhn() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given string is valid according to the Luhn algorithm.
      *
      * @param text The string containing the number to be checked.

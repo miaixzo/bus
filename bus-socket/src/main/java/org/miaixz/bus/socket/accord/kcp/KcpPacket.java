@@ -31,4 +31,11 @@ package org.miaixz.bus.socket.accord.kcp;
  */
 public class KcpPacket {
 
+    /**
+     * Constructs a new KcpPacket instance.
+     */
+    public KcpPacket() {
+        // No initialization required.
+    }
+
 }

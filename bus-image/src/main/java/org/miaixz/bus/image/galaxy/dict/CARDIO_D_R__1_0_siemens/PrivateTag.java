@@ -28,6 +28,13 @@ package org.miaixz.bus.image.galaxy.dict.CARDIO_D_R__1_0_siemens;
 public class PrivateTag {
 
     /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
+
+    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "CARDIO-D.R. 1.0";

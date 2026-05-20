@@ -52,15 +52,34 @@ public class IssueEvent implements Serializable {
         private static JacksonJsonEnumHelper<ResourceType> enumHelper = new JacksonJsonEnumHelper<>(ResourceType.class,
                 true, true);
 
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
         @JsonCreator
         public static ResourceType forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -76,53 +95,131 @@ public class IssueEvent implements Serializable {
     private Long resourceId;
     private String state;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the user.
+     *
+     * @return the result
+     */
+
     public User getUser() {
         return user;
     }
+
+    /**
+     * Sets the user.
+     *
+     * @param user the user value
+     */
 
     public void setUser(User user) {
         this.user = user;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return the result
+     */
+
     public String getCreatedAt() {
         return createdAt;
     }
+
+    /**
+     * Sets the created at.
+     *
+     * @param createdAt the created at value
+     */
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the resource type.
+     *
+     * @return the result
+     */
+
     public ResourceType getResourceType() {
         return resourceType;
     }
+
+    /**
+     * Sets the resource type.
+     *
+     * @param resourceType the resource type value
+     */
 
     public void setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
     }
 
+    /**
+     * Returns the resource id.
+     *
+     * @return the result
+     */
+
     public Long getResourceId() {
         return resourceId;
     }
+
+    /**
+     * Sets the resource id.
+     *
+     * @param resourceId the resource id value
+     */
 
     public void setResourceId(Long resourceId) {
         this.resourceId = resourceId;
     }
 
+    /**
+     * Returns the state.
+     *
+     * @return the result
+     */
+
     public String getState() {
         return state;
     }
 
+    /**
+     * Sets the state.
+     *
+     * @param state the state value
+     */
+
     public void setState(String state) {
         this.state = state;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

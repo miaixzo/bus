@@ -77,8 +77,8 @@ public class TimeoutException extends UncheckedException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public TimeoutException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public TimeoutException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**
@@ -102,13 +102,13 @@ public class TimeoutException extends UncheckedException {
     }
 
     /**
-     * Constructs a new TimeoutException with the specified error code and cause.
+     * Constructs a new TimeoutException with the specified detail message and cause.
      *
-     * @param errcode   The error code.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param errmsg The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public TimeoutException(final String errcode, final Throwable throwable) {
-        super(errcode, throwable);
+    public TimeoutException(final String errmsg, final Throwable cause) {
+        super(errmsg, cause);
     }
 
     /**
@@ -125,12 +125,12 @@ public class TimeoutException extends UncheckedException {
     /**
      * Constructs a new TimeoutException with the specified error code, detail message, and cause.
      *
-     * @param errcode   The error code.
-     * @param errmsg    The detail message.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param errcode The error code.
+     * @param errmsg  The detail message.
+     * @param cause   The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public TimeoutException(final String errcode, final String errmsg, final Throwable throwable) {
-        super(errcode, errmsg, throwable);
+    public TimeoutException(final String errcode, final String errmsg, final Throwable cause) {
+        super(errcode, errmsg, cause);
     }
 
     /**

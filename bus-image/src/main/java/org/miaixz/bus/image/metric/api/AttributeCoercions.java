@@ -38,6 +38,13 @@ import org.miaixz.bus.image.metric.TransferCapability;
 public class AttributeCoercions implements Iterable<AttributeCoercion>, Serializable {
 
     /**
+     * Constructs a new AttributeCoercions instance.
+     */
+    public AttributeCoercions() {
+        // No initialization required.
+    }
+
+    /**
      * The serial version uid value.
      */
     @Serial

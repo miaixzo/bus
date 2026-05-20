@@ -38,6 +38,12 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  */
 public class AuditEventApi extends AbstractApi {
 
+    /**
+     * Executes the audit event api operation.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public AuditEventApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

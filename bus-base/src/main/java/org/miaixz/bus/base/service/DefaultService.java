@@ -35,4 +35,11 @@ import org.miaixz.bus.base.mapper.BaseMapper;
  */
 public abstract class DefaultService<T, M extends BaseMapper<T>> extends AbstractService<T, String, M> {
 
+    /**
+     * Constructs a new DefaultService instance.
+     */
+    public DefaultService() {
+        // No initialization required.
+    }
+
 }

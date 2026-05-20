@@ -39,6 +39,13 @@ import lombok.experimental.Accessors;
 public class IndexMeta {
 
     /**
+     * Constructs a new IndexMeta instance.
+     */
+    public IndexMeta() {
+        // No initialization required.
+    }
+
+    /**
      * Index name.
      */
     private String name;

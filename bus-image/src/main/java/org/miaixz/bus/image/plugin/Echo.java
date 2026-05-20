@@ -38,6 +38,13 @@ import org.miaixz.bus.logger.Logger;
 public class Echo {
 
     /**
+     * Constructs a new Echo instance.
+     */
+    public Echo() {
+        // No initialization required.
+    }
+
+    /**
      * Performs a DICOM C-ECHO verification.
      *
      * @param callingAET the AET of the calling DICOM node.

@@ -39,7 +39,7 @@ public class ThreadKit {
      * Constructs a new thread utility instance.
      */
     public ThreadKit() {
-
+        // No initialization required.
     }
 
     /**

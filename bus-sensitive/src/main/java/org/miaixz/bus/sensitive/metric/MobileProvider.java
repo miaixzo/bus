@@ -34,6 +34,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class MobileProvider extends AbstractProvider {
 
     /**
+     * Constructs a new MobileProvider instance.
+     */
+    public MobileProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Applies mobile phone number-specific desensitization logic to the provided value.
      *
      * @param object  The object containing the mobile number string to be desensitized.

@@ -46,6 +46,7 @@ public class Converter extends Formatter {
      * Constructs a new Converter. Utility class constructor for static access.
      */
     public Converter() {
+        // No initialization required.
     }
 
     /**
@@ -276,7 +277,6 @@ public class Converter extends Formatter {
      *
      * <p>
      * Note: This method uses the default time zone, which may cause a time offset if it's not UTC.
-     *
      *
      * @param epochMilli Milliseconds counted from 1970-01-01T00:00:00Z.
      * @return The {@link LocalDateTime} object.

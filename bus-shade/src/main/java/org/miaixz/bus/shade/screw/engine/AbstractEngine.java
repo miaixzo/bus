@@ -51,6 +51,7 @@ public abstract class AbstractEngine implements TemplateEngine {
      * Private default constructor to prevent direct instantiation without configuration.
      */
     private AbstractEngine() {
+        // No initialization required.
     }
 
     /**

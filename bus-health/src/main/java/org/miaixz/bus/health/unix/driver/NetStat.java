@@ -45,6 +45,7 @@ public final class NetStat {
      * Creates a new NetStat instance.
      */
     private NetStat() {
+        // No initialization required.
     }
 
     /**

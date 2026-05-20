@@ -39,6 +39,13 @@ import org.miaixz.bus.core.xyz.FieldKit;
 public class SheetKit {
 
     /**
+     * Constructs a new SheetKit instance.
+     */
+    public SheetKit() {
+        // No initialization required.
+    }
+
+    /**
      * Gets an existing sheet or creates a new one. If the sheet already exists in the workbook, it is retrieved;
      * otherwise, it is created.
      *

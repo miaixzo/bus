@@ -41,6 +41,13 @@ import org.miaixz.bus.health.builtin.hardware.PhysicalMemory;
 public abstract class AbstractGlobalMemory implements GlobalMemory {
 
     /**
+     * Constructs a new AbstractGlobalMemory instance.
+     */
+    public AbstractGlobalMemory() {
+        // No initialization required.
+    }
+
+    /**
      * Returns the physical memory.
      *
      * @return the get physical memory result

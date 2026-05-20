@@ -37,13 +37,13 @@ import org.miaixz.bus.core.xyz.IoKit;
  * if FileChannel#transferFrom is used to transfer to a file, its return value may be less than totalBytes,
  * which will lead to file content loss if not handled.
  *
- * // Incorrect usage: dstChannel.transferFrom returns a value less than zipEntry.getSize(),
+ * // Incorrect usage: targetChannel.transferFrom returns a value less than zipEntry.getSize(),
  * // resulting in missing file content after decompression.
- * try (InputStream srcStream = zipFile.getInputStream(zipEntry);
- *     ReadableByteChannel srcChannel = Channels.newChannel(srcStream);
- *     FileOutputStream fos = new FileOutputStream(saveFile);
- *     FileChannel dstChannel = fos.getChannel()) {
- *     dstChannel.transferFrom(srcChannel, 0, zipEntry.getSize());
+ * try (InputStream sourceStream = zipFile.getInputStream(zipEntry);
+ *     ReadableByteChannel sourceChannel = Channels.newChannel(sourceStream);
+ *     FileOutputStream targetStream = new FileOutputStream(saveFile);
+ *     FileChannel targetChannel = targetStream.getChannel()) {
+ *     targetChannel.transferFrom(sourceChannel, 0, zipEntry.getSize());
  *  }
  * }</pre>
  *
@@ -83,21 +83,21 @@ public class FileChannelCopier extends IoCopier<FileChannel, FileChannel> {
     /**
      * Copies data from a {@link FileInputStream} to a {@link FileOutputStream} using NIO {@link FileChannel}.
      *
-     * @param in  The input {@link FileInputStream}.
-     * @param out The output {@link FileOutputStream}.
+     * @param source The source {@link FileInputStream}.
+     * @param target The target {@link FileOutputStream}.
      * @return The number of bytes copied.
      * @throws InternalException if an I/O error occurs during the copy operation.
      */
-    public long copy(final FileInputStream in, final FileOutputStream out) throws InternalException {
-        FileChannel inChannel = null;
-        FileChannel outChannel = null;
+    public long copy(final FileInputStream source, final FileOutputStream target) throws InternalException {
+        FileChannel sourceChannel = null;
+        FileChannel targetChannel = null;
         try {
-            inChannel = in.getChannel();
-            outChannel = out.getChannel();
-            return copy(inChannel, outChannel);
+            sourceChannel = source.getChannel();
+            targetChannel = target.getChannel();
+            return copy(sourceChannel, targetChannel);
         } finally {
-            IoKit.closeQuietly(outChannel);
-            IoKit.closeQuietly(inChannel);
+            IoKit.closeQuietly(targetChannel);
+            IoKit.closeQuietly(sourceChannel);
         }
     }
 
@@ -129,19 +129,19 @@ public class FileChannelCopier extends IoCopier<FileChannel, FileChannel> {
      * if FileChannel#transferFrom is used to transfer to a file, its return value may be less than totalBytes,
      * which will lead to file content loss if not handled.
      *
-     * // Incorrect usage: dstChannel.transferFrom returns a value less than zipEntry.getSize(),
+     * // Incorrect usage: targetChannel.transferFrom returns a value less than zipEntry.getSize(),
      * // resulting in missing file content after decompression.
-     * try (InputStream srcStream = zipFile.getInputStream(zipEntry);
-     * 		ReadableByteChannel srcChannel = Channels.newChannel(srcStream);
-     * 		FileOutputStream fos = new FileOutputStream(saveFile);
-     * 		FileChannel dstChannel = fos.getChannel()) {
-     * 		dstChannel.transferFrom(srcChannel, 0, zipEntry.getSize());
+     * try (InputStream sourceStream = zipFile.getInputStream(zipEntry);
+     * 		ReadableByteChannel sourceChannel = Channels.newChannel(sourceStream);
+     * 		FileOutputStream targetStream = new FileOutputStream(saveFile);
+     * 		FileChannel targetChannel = targetStream.getChannel()) {
+     * 		targetChannel.transferFrom(sourceChannel, 0, zipEntry.getSize());
      *  }
      * </pre>
      *
-     * @param inChannel  The input {@link FileChannel}.
-     * @param outChannel The output {@link FileChannel}.
-     * @return The number of bytes transferred from the input channel.
+     * @param source The source {@link FileChannel}.
+     * @param target The target {@link FileChannel}.
+     * @return The number of bytes transferred from the source channel.
      * @throws IOException If an I/O error occurs.
      * @see <a href=
      *      "http://androidxref.com/6.0.1_r10/xref/libcore/luni/src/main/java/java/nio/FileChannelImpl.java">FileChannelImpl.java
@@ -153,14 +153,14 @@ public class FileChannelCopier extends IoCopier<FileChannel, FileChannel> {
      *      "http://androidxref.com/7.0.0_r1/xref/libcore/ojluni/src/main/native/FileChannelImpl.c">FileChannelImpl.c
      *      (Android 7.0.0)</a>
      */
-    private long doCopySafely(final FileChannel inChannel, final FileChannel outChannel) throws IOException {
-        long totalBytes = inChannel.size();
+    private long doCopySafely(final FileChannel source, final FileChannel target) throws IOException {
+        long totalBytes = source.size();
         if (this.count > 0 && this.count < totalBytes) {
             // Limit the total number of bytes to copy
             totalBytes = count;
         }
         for (long pos = 0, remaining = totalBytes; remaining > 0;) { // Ensure no file content is lost
-            final long writeBytes = inChannel.transferTo(pos, remaining, outChannel); // Actual bytes transferred
+            final long writeBytes = source.transferTo(pos, remaining, target); // Actual bytes transferred
             pos += writeBytes;
             remaining -= writeBytes;
         }

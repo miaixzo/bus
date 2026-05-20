@@ -44,6 +44,13 @@ import org.miaixz.bus.logger.Logger;
 public abstract class DicomFiles {
 
     /**
+     * Constructs a new DicomFiles instance.
+     */
+    public DicomFiles() {
+        // No initialization required.
+    }
+
+    /**
      * Static SAXParser instance for parsing XML files. Initialized on first use.
      */
     private static SAXParser saxParser;

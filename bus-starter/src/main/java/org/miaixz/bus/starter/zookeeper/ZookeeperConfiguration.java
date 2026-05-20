@@ -45,6 +45,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 @ConditionalOnProperty(prefix = GeniusBuilder.ZOOKEEPER, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class ZookeeperConfiguration {
 
+    /**
+     * Constructs a new {@code ZookeeperConfiguration} instance.
+     */
+    public ZookeeperConfiguration() {
+        // No initialization required.
+    }
+
     @Resource
     private ZookeeperProperties properties;
 

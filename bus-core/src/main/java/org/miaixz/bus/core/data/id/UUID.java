@@ -96,6 +96,10 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     @Serial
     private static final long serialVersionUID = 2852276107807L;
 
+    /**
+     * The id value value.
+     *
+     */
     private final No128 idValue;
 
     /**

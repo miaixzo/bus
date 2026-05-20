@@ -39,29 +39,71 @@ public class IssueLink implements Serializable {
     private Issue targetIssue;
     private LinkType linkType;
 
+    /**
+     * Returns the source issue.
+     *
+     * @return the result
+     */
+
     public Issue getSourceIssue() {
         return sourceIssue;
     }
+
+    /**
+     * Sets the source issue.
+     *
+     * @param sourceIssue the source issue value
+     */
 
     public void setSourceIssue(Issue sourceIssue) {
         this.sourceIssue = sourceIssue;
     }
 
+    /**
+     * Returns the target issue.
+     *
+     * @return the result
+     */
+
     public Issue getTargetIssue() {
         return targetIssue;
     }
+
+    /**
+     * Sets the target issue.
+     *
+     * @param targetIssue the target issue value
+     */
 
     public void setTargetIssue(Issue targetIssue) {
         this.targetIssue = targetIssue;
     }
 
+    /**
+     * Returns the link type.
+     *
+     * @return the result
+     */
+
     public LinkType getLinkType() {
         return linkType;
     }
 
+    /**
+     * Sets the link type.
+     *
+     * @param linkType the link type value
+     */
+
     public void setLinkType(LinkType linkType) {
         this.linkType = linkType;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

@@ -50,6 +50,8 @@ public class AbstractLogicalVolumeGroup implements LogicalVolumeGroup {
     private final Set<String> pvSet;
 
     /**
+     * Creates a logical volume group.
+     *
      * @param name  Name of the volume group
      * @param lvMap Logical volumes derived from this volume group and the physical volumes its mapped to.
      * @param pvSet Set of physical volumes this volume group consists of.

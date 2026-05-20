@@ -36,6 +36,7 @@ public class CallerKit {
      * Constructs a new CallerKit. Utility class constructor for static access.
      */
     private CallerKit() {
+        // No initialization required.
     }
 
     /**

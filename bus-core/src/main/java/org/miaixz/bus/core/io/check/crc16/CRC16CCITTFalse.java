@@ -35,6 +35,7 @@ public class CRC16CCITTFalse extends CRC16Checksum {
      * Constructs a new CRC16CCITTFalse. Utility class constructor for static access.
      */
     private CRC16CCITTFalse() {
+        // No initialization required.
     }
 
     @Serial

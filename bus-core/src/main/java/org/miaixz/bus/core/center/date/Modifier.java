@@ -36,6 +36,13 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class Modifier {
 
     /**
+     * Constructs a new Modifier instance.
+     */
+    public Modifier() {
+        // No initialization required.
+    }
+
+    /**
      * Fields to be ignored during calculation.
      */
     private static final int[] IGNORE_FIELDS = new int[] { java.util.Calendar.HOUR_OF_DAY, // Same as HOUR
@@ -69,7 +76,6 @@ public class Modifier {
      * In {@link Modify#TRUNCATE} mode, milliseconds are always truncated to zero. However, in {@link Modify#CEILING}
      * and {@link Modify#ROUND} modes, sometimes the millisecond part must be zero (e.g., in MySQL databases), so this
      * option is added.
-     *
      *
      * @param calendar  The {@link java.util.Calendar} object to modify.
      * @param dateField The date field to retain, e.g., {@link java.util.Calendar#DAY_OF_MONTH}.

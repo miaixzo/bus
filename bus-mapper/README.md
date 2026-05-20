@@ -868,9 +868,13 @@ int delete(T entity);                      // Delete by entity properties
 
 ## Entity Schema Initialization
 
-Bus Mapper can initialize table structures from entity metadata. The capability is implemented by `bus-mapper`; Spring
-Boot only binds `bus.mapper.schema` configuration and triggers startup execution. `Dialect` is the single database
-capability entrypoint and is composed of `PagingBehavior`, `OptionsBehavior`, and `SchemaBehavior`.
+Bus Mapper can initialize database table structures from entity metadata. It can create missing tables, create missing
+columns, create primary keys, create foreign keys, create indexes, create unique indexes, and apply explicitly allowed
+column type or length changes during application startup.
+
+The capability is implemented by `bus-mapper`. Spring Boot only binds `bus.mapper.schema` configuration and triggers
+startup execution. `Dialect` is the single database capability entrypoint and is composed of `PagingBehavior`,
+`OptionsBehavior`, `UpsertBehavior`, and `SchemaBehavior`.
 
 The default is disabled:
 
@@ -880,6 +884,23 @@ bus:
     schema:
       enabled: false
 ```
+
+### Supported Schema Changes
+
+| Change | Supported | Required flag |
+| :--- | :--- | :--- |
+| Create missing table | Yes | `allow-create-table: true` |
+| Add missing column | Yes | `allow-add-column: true` |
+| Create primary key | Yes | `allow-create-primary-key: true` |
+| Create composite primary key | Yes | `allow-create-primary-key: true` |
+| Create normal index | Yes | `allow-create-index: true` |
+| Create unique index | Yes | `allow-create-unique: true` |
+| Create composite index | Yes | `allow-create-index: true` |
+| Create foreign key | Yes | `allow-create-foreign-key: true` |
+| Change SQL type | Yes | `allow-modify-type: true` |
+| Expand varchar length | Yes | `allow-expand-length: true` |
+| Shrink varchar length | Blocked by default | `allow-shrink-length: true`, `allow-dangerous: true`, and whitelist |
+| Drop column, index, primary key, or foreign key | Blocked by default | matching drop flag, `allow-dangerous: true`, and whitelist |
 
 Supported modes:
 
@@ -891,16 +912,253 @@ Supported modes:
 | `VALIDATE` | Reads metadata and reports differences; it does not execute DDL. |
 | `UPDATE` | Executes only differences explicitly allowed by configuration. |
 
-All built-in dialects provide schema operations: MySQL, PostgreSQL, H2, SQLite, Firebird, Oscar, Oracle9i, SQL Server,
-Polardb, HerdDB, SQL Server 2012, DB2, AS/400, HSQLDB, CirroData, Informix, Oracle, XuguDB, and Dameng. Each dialect
-keeps its existing pagination and UPSERT behavior while exposing schema and metadata capabilities through
-`OptionsBehavior.types()` and the `SchemaBehavior` methods implemented directly by each dialect. Schema SQL rules belong to the
-corresponding dialect class under `org.miaixz.bus.mapper.dialect`, so MySQL DDL is in `MySql`, PostgreSQL DDL is
-in `PostgreSql`, and H2 DDL is in `H2`.
+### Existing Table Behavior
+
+When a table already exists, Bus Mapper reads current database metadata and compares it with entity metadata. It only
+executes differences that are both supported by the active dialect and enabled by configuration. Missing indexes,
+unique indexes, primary keys, and foreign keys can be added to existing tables. Existing field type changes require
+`allow-modify-type: true`, and length expansion requires `allow-expand-length: true`.
+
+Destructive changes remain blocked unless the matching operation flag, `allow-dangerous: true`, and
+`dangerous-whitelist` all allow the same difference.
+
+### Spring Boot Startup Example
+
+```yaml
+bus:
+  mapper:
+    basePackage:
+      ai.deepparser.nexus.mapper
+    schema:
+      enabled: true
+      mode: UPDATE
+      dry-run: false
+      print-sql: true
+      fail-fast: true
+      entity-packages:
+        - ai.deepparser.nexus.entity
+      allow-create-table: true
+      allow-add-column: true
+      allow-create-primary-key: true
+      allow-create-index: true
+      allow-create-unique: true
+      allow-create-foreign-key: true
+      allow-modify-type: true
+      allow-expand-length: true
+```
+
+Use `SCRIPT` first in production-like environments to review generated DDL before allowing execution:
+
+```yaml
+bus:
+  mapper:
+    schema:
+      enabled: true
+      mode: SCRIPT
+      dry-run: false
+      script-location: ./target/bus-mapper-schema.sql
+      entity-packages:
+        - ai.deepparser.nexus.entity
+      allow-create-table: true
+      allow-create-primary-key: true
+      allow-create-index: true
+      allow-create-unique: true
+      allow-create-foreign-key: true
+```
+
+### Entity Example
+
+```java
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "dp_user")
+public class UserEntity {
+
+    @Id
+    @Column(nullable = false)
+    private Long id;
+
+    @Column(length = 128)
+    private String name;
+}
+```
+
+```java
+@Data
+@Entity
+@Table(
+    name = "dp_order",
+    indexes = @Index(name = "idx_dp_order_user_code", columnList = "user_id, code"),
+    uniqueConstraints = @UniqueConstraint(name = "uk_dp_order_code", columnNames = "code")
+)
+public class OrderEntity {
+
+    @Id
+    @Column(nullable = false)
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(length = 64, unique = true)
+    private String code;
+
+    @Column(length = 512)
+    private String remark;
+
+    private Long amount;
+
+    @ManyToOne
+    @JoinColumn(
+        name = "user_id",
+        referencedColumnName = "id",
+        foreignKey = @ForeignKey(name = "fk_dp_order_user")
+    )
+    private UserEntity user;
+}
+```
+
+The example above creates:
+
+* `dp_user` and `dp_order` when they do not exist.
+* Primary keys on `id`.
+* Normal composite index `idx_dp_order_user_code(user_id, code)`.
+* Unique index `uk_dp_order_code(code)`.
+* Foreign key `fk_dp_order_user(user_id) references dp_user(id)`.
+* `remark VARCHAR(512)` through `@Column(length = 512)`.
+* `amount BIGINT` because the Java type is `Long`.
+
+The relationship field annotated with `@JoinColumn` is used to build the foreign key. Keep the physical join column
+field, such as `userId`, on the entity when mapper CRUD needs to read or write the column value.
+
+### Composite Primary Key Example
+
+```java
+@Data
+@Entity
+@Table(
+    name = "dp_role_permission",
+    indexes = @Index(name = "idx_dp_role_permission_role_perm", columnList = "role_id, permission_id")
+)
+public class RolePermissionEntity {
+
+    @Id
+    @Column(name = "role_id", nullable = false)
+    private Long roleId;
+
+    @Id
+    @Column(name = "permission_id", nullable = false)
+    private Long permissionId;
+}
+```
+
+This creates `PRIMARY KEY (role_id, permission_id)` and a composite index on the same two columns.
+
+### Type and Length Change Example
+
+```java
+@Data
+@Entity
+@Table(name = "dp_schema_type")
+public class SchemaTypeEntity {
+
+    @Id
+    @Column(nullable = false)
+    private Integer id;
+
+    @Column(name = "text_value", length = 512)
+    private String textValue;
+
+    @Column(name = "big_value")
+    private Long bigValue;
+
+    @Column(name = "wide_value", length = 512)
+    private String wideValue;
+}
+```
+
+With `mode: UPDATE`, `allow-modify-type: true`, and `allow-expand-length: true`, Bus Mapper can update an existing table
+from `text_value INTEGER` to `VARCHAR(512)`, from `big_value INTEGER` to `BIGINT`, and from `wide_value VARCHAR(32)` to
+`VARCHAR(512)`.
 
 Type mapping is Java-type based. `int(4)` and `int(8)` are not Java length mappings and are not generated by default.
 Use `@Column(length = 512)` to generate `VARCHAR(512)`. Use `@Column(columnDefinition = "...")` when a native database
 definition such as `int(8) unsigned` is required.
+
+### Programmatic Initialization Example
+
+```java
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.miaixz.bus.mapper.Charter.Schema;
+import org.miaixz.bus.mapper.feature.schema.EntitySchemaInitializer;
+import org.miaixz.bus.mapper.feature.schema.SchemaConfig;
+import org.miaixz.bus.mapper.feature.schema.SchemaReport;
+
+public class SchemaBootstrap {
+
+    public SchemaReport initialize(DataSource dataSource) throws Exception {
+        SchemaConfig config = new SchemaConfig()
+            .enabled(true)
+            .mode(Schema.UPDATE)
+            .dryRun(false)
+            .printSql(true)
+            .allowCreateTable(true)
+            .allowAddColumn(true)
+            .allowCreatePrimaryKey(true)
+            .allowCreateIndex(true)
+            .allowCreateUnique(true)
+            .allowCreateForeignKey(true)
+            .allowModifyType(true)
+            .allowExpandLength(true);
+
+        return new EntitySchemaInitializer().initialize(
+            dataSource,
+            List.of(UserEntity.class, OrderEntity.class, RolePermissionEntity.class, SchemaTypeEntity.class),
+            config
+        );
+    }
+}
+```
+
+### PostgreSQL Integration Test Example
+
+`bus-mapper` includes a PostgreSQL integration test that keeps visible test tables and data:
+
+```bash
+BUS_MAPPER_POSTGRES_PASSWORD='your-password' mvn -B -ntp -f bus-mapper/pom.xml \
+  -Dtest=PostgreSqlEntitySchemaInitializerIntegrationTest \
+  -Dbus.mapper.postgres.it=true \
+  -Dbus.mapper.postgres.url='jdbc:postgresql://localhost:5432/example?connectTimeout=8&socketTimeout=30&sslmode=disable' \
+  -Dbus.mapper.postgres.user=postgres \
+  test
+```
+
+The test writes only to `dp_postgres_test_parent`, `dp_postgres_test_child`, `dp_postgres_test_composite`, and
+`dp_postgres_test_type`. It does not drop, truncate, or delete data.
+
+### Dialect Coverage
+
+All built-in dialects provide schema operations: MySQL, PostgreSQL, H2, SQLite, Firebird, Oscar, Oracle9i, SQL Server,
+Polardb, HerdDB, SQL Server 2012, DB2, AS/400, HSQLDB, CirroData, Informix, Oracle, XuguDB, and Dameng. Each dialect
+keeps its existing pagination and UPSERT behavior while exposing schema and metadata capabilities through
+`OptionsBehavior.types()` and `SchemaBehavior` methods implemented directly by each dialect. Schema SQL rules belong to
+the corresponding dialect class under `org.miaixz.bus.mapper.dialect`, so MySQL DDL is in `MySql`, PostgreSQL DDL is in
+`PostgreSql`, and H2 DDL is in `H2`.
 
 This feature does not use Flyway, does not use Liquibase, and does not create a migration history table.
 

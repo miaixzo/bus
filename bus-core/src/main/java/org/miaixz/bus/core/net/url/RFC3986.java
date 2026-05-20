@@ -36,7 +36,7 @@ public class RFC3986 {
      * Constructs a new RFC 3986 codec definition holder.
      */
     public RFC3986() {
-
+        // No initialization required.
     }
 
     /**

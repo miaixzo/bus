@@ -33,21 +33,45 @@ public class MergeRequestSystemHookEvent extends MergeRequestEvent implements Sy
 
     @Serial
     private static final long serialVersionUID = 2852292895308L;
+    /**
+     * The x gitlab event value.
+     */
 
     public static final String X_GITLAB_EVENT = "System Hook";
+    /**
+     * The merge request event value.
+     */
     public static final String MERGE_REQUEST_EVENT = "merge_request";
 
     private String eventName;
+
+    /**
+     * Returns the object kind.
+     *
+     * @return the result
+     */
 
     @Override
     public String getObjectKind() {
         return (MERGE_REQUEST_EVENT);
     }
 
+    /**
+     * Returns the event name.
+     *
+     * @return the result
+     */
+
     @Override
     public String getEventName() {
         return eventName;
     }
+
+    /**
+     * Sets the event name.
+     *
+     * @param eventName the event name value
+     */
 
     public void setEventName(String eventName) {
         this.eventName = eventName;

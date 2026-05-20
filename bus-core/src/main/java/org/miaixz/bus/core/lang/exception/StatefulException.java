@@ -82,8 +82,8 @@ public class StatefulException extends UncheckedException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public StatefulException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public StatefulException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**
@@ -146,23 +146,23 @@ public class StatefulException extends UncheckedException {
     /**
      * Constructs a new StatefulException with the specified status code and cause.
      *
-     * @param status    The status code.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param status The status code.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public StatefulException(final int status, final Throwable throwable) {
-        super(throwable);
+    public StatefulException(final int status, final Throwable cause) {
+        super(cause);
         this.status = status;
     }
 
     /**
      * Constructs a new StatefulException with the specified status code, detail message, and cause.
      *
-     * @param status    The status code.
-     * @param msg       The detail message.
-     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param status The status code.
+     * @param msg    The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public StatefulException(final int status, final String msg, final Throwable throwable) {
-        super(msg, throwable);
+    public StatefulException(final int status, final String msg, final Throwable cause) {
+        super(msg, cause);
         this.status = status;
     }
 

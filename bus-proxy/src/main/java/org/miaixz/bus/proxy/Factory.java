@@ -34,6 +34,13 @@ import org.miaixz.bus.logger.Logger;
 public class Factory {
 
     /**
+     * Constructs a new Factory instance.
+     */
+    public Factory() {
+        // No initialization required.
+    }
+
+    /**
      * Gets the singleton instance of the proxy provider. It uses SPI to find the best available provider and caches it
      * for subsequent calls.
      *

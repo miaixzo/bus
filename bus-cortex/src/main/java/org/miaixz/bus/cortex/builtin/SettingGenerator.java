@@ -57,7 +57,7 @@ public class SettingGenerator implements Keying<SettingSpec> {
      * Creates the default setting key generator.
      */
     public SettingGenerator() {
-
+        // No initialization required.
     }
 
     /**

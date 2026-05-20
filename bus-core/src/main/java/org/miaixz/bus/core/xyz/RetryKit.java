@@ -38,7 +38,7 @@ public class RetryKit {
      * Constructs a new retry utility instance.
      */
     public RetryKit() {
-
+        // No initialization required.
     }
 
     /**

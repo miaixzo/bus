@@ -48,6 +48,7 @@ public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
      * Constructs a new AtomicLoader. Utility class constructor for static access.
      */
     private AtomicLoader() {
+        // No initialization required.
     }
 
     @Serial

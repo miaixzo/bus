@@ -55,6 +55,13 @@ import org.miaixz.bus.logger.Logger;
 public final class AccessToken {
 
     /**
+     * Constructs a new AccessToken instance.
+     */
+    public AccessToken() {
+        // No initialization required.
+    }
+
+    /**
      * This enum defines the available scopes for a personal access token.
      *
      * @author Kimi Liu
@@ -63,50 +70,60 @@ public final class AccessToken {
     public enum Scope {
 
         /**
-         * Grants complete access to the API and Container Registry (read/write) (introduced in GitLab 8.15).
+         * The api defines.
          */
         API,
-
         /**
-         * Allows to read (pull) container registry images if a project is private and authorization is required
-         * (introduced in GitLab 9.3). If the GitLab server you are using does not have the Registry properly
-         * configured, using this scope will result in an exception.
+         * The read registry defines.
          */
         READ_REGISTRY,
-
         /**
-         * Allows read-only access (pull) to the repository through git clone.
+         * The read repository defines.
          */
         READ_REPOSITORY,
-
         /**
-         * Allows access to the read-only endpoints under /users. Essentially, any of the GET requests in the Users API
-         * are allowed (introduced in GitLab 8.15).
+         * The read user defines.
          */
         READ_USER,
-
         /**
-         * Allows performing API actions as any user in the system, if the authenticated user is an admin (introduced in
-         * GitLab 10.2).
+         * The sudo defines.
          */
         SUDO,
-
         /**
-         * Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).
+         * The write repository defines.
          */
         WRITE_REPOSITORY;
 
         private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
+
+        /**
+         * Executes the for value operation.
+         *
+         * @param value the value value
+         * @return the result
+         */
 
         @JsonCreator
         public static Scope forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Executes the to value operation.
+         *
+         * @return the result
+         */
+
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -115,27 +132,70 @@ public final class AccessToken {
 
     }
 
+    /**
+     * The user agent value.
+     */
     protected static final String USER_AGENT = "GitLab4J Client";
+    /**
+     * The cookies header value.
+     *
+     */
     protected static final String COOKIES_HEADER = "Set-Cookie";
 
+    /**
+     * Regular expression used to extract an authenticity token from a new user page.
+     */
     protected static final String NEW_USER_AUTHENTICITY_TOKEN_REGEX = "\"new_user\".*name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\".*new_new_user";
+    /**
+     * Compiled pattern for {@link #NEW_USER_AUTHENTICITY_TOKEN_REGEX}.
+     */
     protected static final Pattern NEW_USER_AUTHENTICITY_TOKEN_PATTERN = Pattern
             .compile(NEW_USER_AUTHENTICITY_TOKEN_REGEX);
 
+    /**
+     * Regular expression used to extract an authenticity token from a page.
+     */
     protected static final String AUTHENTICITY_TOKEN_REGEX = "name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\"";
+    /**
+     * Compiled pattern for {@link #AUTHENTICITY_TOKEN_REGEX}.
+     */
     protected static final Pattern AUTHENTICITY_TOKEN_PATTERN = Pattern.compile(AUTHENTICITY_TOKEN_REGEX);
 
+    /**
+     * Regular expression used to extract a created personal access token.
+     */
     protected static final String PERSONAL_ACCESS_TOKEN_REGEX = "name=\\\"created-personal-access-token\\\".*data-clipboard-text=\\\"([^\\\"]*)\\\".*\\/>";
+    /**
+     * Compiled pattern for {@link #PERSONAL_ACCESS_TOKEN_REGEX}.
+     */
     protected static final Pattern PERSONAL_ACCESS_TOKEN_PATTERN = Pattern.compile(PERSONAL_ACCESS_TOKEN_REGEX);
 
+    /**
+     * Regular expression used to extract a revoke personal access token link.
+     */
     protected static final String REVOKE_PERSONAL_ACCESS_TOKEN_REGEX = "href=\\\"([^\\\"]*)\\\"";
+    /**
+     * Compiled pattern for {@link #REVOKE_PERSONAL_ACCESS_TOKEN_REGEX}.
+     */
     protected static final Pattern REVOKE_PERSONAL_ACCESS_TOKEN_PATTERN = Pattern
             .compile(REVOKE_PERSONAL_ACCESS_TOKEN_REGEX);
 
+    /**
+     * Regular expression used to extract a feed token.
+     */
     protected static final String FEED_TOKEN_REGEX = "name=\\\"feed_token\\\".*value=\\\"([^\\\"]*)\\\".*\\/>";
+    /**
+     * Compiled pattern for {@link #FEED_TOKEN_REGEX}.
+     */
     protected static final Pattern FEED_TOKEN_PATTERN = Pattern.compile(FEED_TOKEN_REGEX);
 
+    /**
+     * Regular expression used to extract the health check access token.
+     */
     protected static final String HEALTH_CHECK_ACCESS_TOKEN_REGEX = "id=\"health-check-token\">([^<]*)<\\/code>";
+    /**
+     * Compiled pattern for {@link #HEALTH_CHECK_ACCESS_TOKEN_REGEX}.
+     */
     protected static final Pattern HEALTH_CHECK_ACCESS_TOKEN_PATTERN = Pattern.compile(HEALTH_CHECK_ACCESS_TOKEN_REGEX);
 
     /**

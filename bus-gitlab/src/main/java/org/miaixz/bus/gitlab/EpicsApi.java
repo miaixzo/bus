@@ -44,6 +44,12 @@ import org.miaixz.bus.gitlab.models.*;
  */
 public class EpicsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code EpicsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public EpicsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -33,6 +33,13 @@ import org.miaixz.bus.metrics.window.EwmaRate;
 public class NativeMeter implements Meter {
 
     /**
+     * Constructs a new NativeMeter instance.
+     */
+    public NativeMeter() {
+        // No initialization required.
+    }
+
+    /**
      * Lock-free accumulator for the cumulative event count.
      */
     private final LongAdder adder = new LongAdder();

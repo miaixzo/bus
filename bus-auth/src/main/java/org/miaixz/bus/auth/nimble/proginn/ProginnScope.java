@@ -35,13 +35,20 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum ProginnScope implements AuthorizeScope {
 
     /**
-     * Access to user's basic information. The meaning of {@code scope} is subject to {@code description}.
+     * Access to user's basic information.
      */
     BASIC("basic", "Access to user's basic information", true),
     /**
-     * The following scopes require separate application to the Proginn platform, otherwise they cannot be used.
+     * Get user's email.
      */
-    email("email", "Get user's email", false), realname("realname", "Get user's real name", false),
+    email("email", "Get user's email", false),
+    /**
+     * Get user's real name.
+     */
+    realname("realname", "Get user's real name", false),
+    /**
+     * Get user's mobile number.
+     */
     cellphone("cellphone", "Get user's mobile number", false);
 
     /**

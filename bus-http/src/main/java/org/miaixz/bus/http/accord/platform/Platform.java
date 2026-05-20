@@ -49,6 +49,13 @@ import org.miaixz.bus.logger.Logger;
  */
 public class Platform {
 
+    /**
+     * Constructs a new Platform instance.
+     */
+    public Platform() {
+        // No initialization required.
+    }
+
     private static final Platform PLATFORM = findPlatform();
 
     /**

@@ -52,6 +52,12 @@ import org.miaixz.bus.logger.Logger;
  */
 public class ProjectApi extends AbstractApi implements Constants {
 
+    /**
+     * Constructs a new {@code ProjectApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public ProjectApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
@@ -1563,7 +1569,6 @@ public class ProjectApi extends AbstractApi implements Constants {
      * <pre>
      * <code>GitLab Endpoint: POST /projects/:id/fork/:forkFromId</code>
      * </pre>
-     *
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param forkedFromId    the ID of the project that was forked from

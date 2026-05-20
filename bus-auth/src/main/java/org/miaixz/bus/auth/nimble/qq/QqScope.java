@@ -35,18 +35,32 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum QqScope implements AuthorizeScope {
 
     /**
-     * Retrieves the user's nickname, avatar, and gender. The meaning of {@code scope} is subject to
-     * {@code description}.
+     * Retrieves the user's nickname, avatar, and gender.
      */
     GET_USER_INFO("get_user_info", "Retrieves the user's nickname, avatar, and gender", true),
     /**
-     * The following scopes require application: http://wiki.connect.qq.com/openapi%e6%9d%83%e9%99%90%e7%94%b3%e8%af%b7
+     * Retrieves basic QQ VIP information.
      */
     GET_VIP_INFO("get_vip_info", "Retrieves basic QQ VIP information", false),
+    /**
+     * Retrieves advanced QQ VIP information.
+     */
     GET_VIP_RICH_INFO("get_vip_rich_info", "Retrieves advanced QQ VIP information", false),
+    /**
+     * Retrieves the user's QQ Zone album list.
+     */
     LIST_ALBUM("list_album", "Retrieves the user's QQ Zone album list", false),
+    /**
+     * Uploads a photo to the QQ Zone album.
+     */
     UPLOAD_PIC("upload_pic", "Uploads a photo to the QQ Zone album", false),
+    /**
+     * Creates a new personal album in the user's QQ Zone.
+     */
     ADD_ALBUM("add_album", "Creates a new personal album in the user's QQ Zone", false),
+    /**
+     * Retrieves the photo list in the user's QQ Zone album.
+     */
     LIST_PHOTO("list_photo", "Retrieves the photo list in the user's QQ Zone album", false);
 
     /**

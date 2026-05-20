@@ -35,7 +35,7 @@ public class SetKit {
      * Constructs a new set utility instance.
      */
     public SetKit() {
-
+        // No initialization required.
     }
 
     /**

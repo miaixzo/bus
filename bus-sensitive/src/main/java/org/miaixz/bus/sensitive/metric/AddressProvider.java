@@ -36,6 +36,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class AddressProvider extends AbstractProvider {
 
     /**
+     * Constructs a new AddressProvider instance.
+     */
+    public AddressProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Applies address-specific desensitization logic to the provided value.
      *
      * @param object  The object containing the address string to be desensitized.

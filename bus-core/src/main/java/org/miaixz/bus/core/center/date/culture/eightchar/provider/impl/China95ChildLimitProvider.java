@@ -35,6 +35,7 @@ public class China95ChildLimitProvider extends AbstractChildLimitProvider {
      * Constructs a new China95ChildLimitProvider. Utility class constructor for static access.
      */
     protected China95ChildLimitProvider() {
+        // No initialization required.
     }
 
     /**

@@ -34,6 +34,13 @@ import org.miaixz.bus.http.plugin.httpz.*;
 public class Httpz {
 
     /**
+     * Constructs a new Httpz instance.
+     */
+    public Httpz() {
+        // No initialization required.
+    }
+
+    /**
      * The static client instance used for managing HTTP requests.
      */
     private static Client client = new Client();

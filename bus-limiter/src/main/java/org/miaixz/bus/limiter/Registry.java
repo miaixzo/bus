@@ -39,6 +39,13 @@ import org.miaixz.bus.logger.Logger;
 public class Registry {
 
     /**
+     * Constructs a new Registry instance.
+     */
+    public Registry() {
+        // No initialization required.
+    }
+
+    /**
      * Registers a downgrade rule based on the provided {@link Downgrade} annotation. If a flow rule for the given
      * resource key does not already exist, a new {@link FlowRule} is created with the specified grade and count, and
      * then loaded into Sentinel's {@link FlowRuleManager}.

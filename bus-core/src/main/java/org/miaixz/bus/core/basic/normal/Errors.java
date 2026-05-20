@@ -22,6 +22,8 @@ package org.miaixz.bus.core.basic.normal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.lang.I18n;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
 
 /**
@@ -84,6 +86,55 @@ public interface Errors {
      */
     static Entry require(String key) {
         return ERRORS_CACHE.get(key);
+    }
+
+    /**
+     * Resolves an exception message from an error code, explicit message, and fallback message.
+     *
+     * @param errcode  The error code.
+     * @param errmsg   The explicit error message.
+     * @param fallback The fallback message.
+     * @return The resolved message.
+     */
+    static String message(final String errcode, final String errmsg, final String fallback) {
+        return null != errcode && null != errmsg ? errmsg : fallback;
+    }
+
+    /**
+     * Resolves a localized exception message using auto-detected locale.
+     *
+     * @param errcode  The error code.
+     * @param errmsg   The explicit error message.
+     * @param fallback The fallback message.
+     * @return The resolved localized message.
+     */
+    static String localizedMessage(final String errcode, final String errmsg, final String fallback) {
+        return localizedMessage(I18n.AUTO_DETECT, errcode, errmsg, fallback);
+    }
+
+    /**
+     * Resolves a localized exception message from a resource bundle, registered error entry, or fallback message.
+     *
+     * @param i18n     The locale enumeration.
+     * @param errcode  The error code.
+     * @param errmsg   The explicit error message.
+     * @param fallback The fallback message.
+     * @return The resolved localized message.
+     */
+    static String localizedMessage(final I18n i18n, final String errcode, final String errmsg, final String fallback) {
+        if (null == errcode) {
+            return fallback;
+        }
+        try {
+            final String message = I18n.message(i18n, Keys.BUNDLE_NAME, errcode);
+            if (!errcode.equals(message)) {
+                return message;
+            }
+        } catch (final Exception ignored) {
+            // Fall back to registered errors or the supplied exception message.
+        }
+        final Entry entry = require(errcode);
+        return null != entry ? entry.getValue() : message(errcode, errmsg, fallback);
     }
 
     /**

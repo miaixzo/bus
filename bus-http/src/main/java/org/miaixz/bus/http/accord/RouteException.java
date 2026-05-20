@@ -32,7 +32,15 @@ import org.miaixz.bus.http.Builder;
  */
 public final class RouteException extends RuntimeException {
 
+    /**
+     * The first exception value.
+     *
+     */
     private IOException firstException;
+    /**
+     * The last exception value.
+     *
+     */
     private IOException lastException;
 
     /**

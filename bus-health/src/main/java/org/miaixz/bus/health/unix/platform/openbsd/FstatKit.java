@@ -36,6 +36,13 @@ import org.miaixz.bus.health.Executor;
 public final class FstatKit {
 
     /**
+     * Constructs a new FstatKit instance.
+     */
+    public FstatKit() {
+        // No initialization required.
+    }
+
+    /**
      * Gets current working directory info (using {@code ps} actually).
      *
      * @param pid a process ID

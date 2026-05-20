@@ -48,6 +48,8 @@ import lombok.experimental.SuperBuilder;
  * <li>maxRequestSize: 100 MB</li>
  * <li>maxMultipartRequestSize: 1024 MB</li>
  * <li>maxConnections: 5000</li>
+ * <li>pendingAcquireTimeoutSeconds: 45 seconds</li>
+ * <li>pendingAcquireMaxCount: 0 (derived as maxConnections * 2)</li>
  * <li>maxProducerCacheSize: 100</li>
  * <li>registryL2CacheSize: 10,000 (assets)</li>
  * <li>registryL2CacheExpireMs: 300,000 (5 minutes)</li>
@@ -70,7 +72,7 @@ public class Performance {
      * Creates a performance configuration with default values.
      */
     public Performance() {
-
+        // No initialization required.
     }
 
     /**
@@ -101,6 +103,24 @@ public class Performance {
      */
     @Builder.Default
     private int maxConnections = 5000;
+
+    /**
+     * Maximum time in seconds to wait for a pooled HTTP connection.
+     * <p>
+     * Requests waiting longer than this value fail instead of staying queued indefinitely. Values less than or equal to
+     * zero are treated as the default 45 seconds by the connection provider.
+     */
+    @Builder.Default
+    private int pendingAcquireTimeoutSeconds = 45;
+
+    /**
+     * Maximum number of pending HTTP connection acquisition requests.
+     * <p>
+     * Values greater than zero are used directly. Values less than or equal to zero are resolved to
+     * {@code maxConnections * 2}, providing bounded backpressure without requiring explicit configuration.
+     */
+    @Builder.Default
+    private int pendingAcquireMaxCount = 0;
 
     /**
      * Maximum number of MQ producer instances to cache.

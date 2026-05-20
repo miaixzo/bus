@@ -41,6 +41,13 @@ import redis.clients.jedis.JedisPoolConfig;
 public class Factory {
 
     /**
+     * Constructs a new Factory instance.
+     */
+    public Factory() {
+        // No initialization required.
+    }
+
+    /**
      * Default maximum cache size defined by {@link Options}.
      */
     private static final long DEFAULT_CACHE_MAX_SIZE = new Options().getMaxSize();

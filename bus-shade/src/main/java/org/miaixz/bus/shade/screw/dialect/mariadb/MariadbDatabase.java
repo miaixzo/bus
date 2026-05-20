@@ -36,6 +36,13 @@ import org.miaixz.bus.shade.screw.metadata.Database;
 public class MariadbDatabase implements Database {
 
     /**
+     * Constructs a new MariadbDatabase instance.
+     */
+    public MariadbDatabase() {
+        // No initialization required.
+    }
+
+    /**
      * The name of the database.
      */
     @MappingField(value = "TABLE_CAT")

@@ -33,6 +33,13 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public class PixelAspectRatio {
 
     /**
+     * Constructs a new {@code PixelAspectRatio} instance.
+     */
+    public PixelAspectRatio() {
+        // No initialization required.
+    }
+
+    /**
      * Executes the for image operation.
      *
      * @param attrs the attrs.

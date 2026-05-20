@@ -39,6 +39,13 @@ import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
 public class Jar {
 
     /**
+     * Constructs a new Jar instance.
+     */
+    public Jar() {
+        // No initialization required.
+    }
+
+    /**
      * Encrypts a standard JAR package.
      *
      * @param src  The source JAR file path.

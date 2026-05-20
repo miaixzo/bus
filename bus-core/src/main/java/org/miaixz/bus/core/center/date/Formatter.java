@@ -60,6 +60,7 @@ public class Formatter {
      * Constructs a new Formatter. Utility class constructor for static access.
      */
     public Formatter() {
+        // No initialization required.
     }
 
     /**

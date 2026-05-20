@@ -45,6 +45,7 @@ public class Coordinate {
      * Constructs a new Coordinate. Utility class constructor for static access.
      */
     private Coordinate() {
+        // No initialization required.
     }
 
     /**

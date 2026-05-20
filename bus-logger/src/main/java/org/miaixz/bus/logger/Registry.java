@@ -31,7 +31,7 @@ public abstract class Registry {
      * Default constructor.
      */
     public Registry() {
-
+        // No initialization required.
     }
 
     /**

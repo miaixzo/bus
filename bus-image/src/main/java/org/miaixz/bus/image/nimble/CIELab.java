@@ -50,6 +50,7 @@ public class CIELab {
      * Creates a new instance.
      */
     private CIELab() {
+        // No initialization required.
     }
 
     /**

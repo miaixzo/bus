@@ -54,6 +54,7 @@ public class ExplorerCompare implements Comparator<CharSequence> {
      * Constructs a new ExplorerCompare. Utility class constructor for static access.
      */
     private ExplorerCompare() {
+        // No initialization required.
     }
 
     /**

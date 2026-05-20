@@ -297,6 +297,7 @@ public class SyncFinisher implements Closeable {
          * Constructs a worker.
          */
         public Worker() {
+            // No initialization required.
         }
 
         /**

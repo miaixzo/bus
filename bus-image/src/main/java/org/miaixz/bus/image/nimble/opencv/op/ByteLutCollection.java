@@ -77,6 +77,7 @@ public final class ByteLutCollection {
      * Creates a new instance.
      */
     private ByteLutCollection() {
+        // No initialization required.
     }
 
     /**

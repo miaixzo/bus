@@ -38,6 +38,7 @@ public class DefaultNodeParser<T> implements NodeParser<TreeNode<T>, T> {
      * Constructs a new DefaultNodeParser. Utility class constructor for static access.
      */
     public DefaultNodeParser() {
+        // No initialization required.
     }
 
     /**

@@ -340,6 +340,7 @@ public class Connection implements Serializable {
      * Creates a new instance.
      */
     public Connection() {
+        // No initialization required.
     }
 
     /**

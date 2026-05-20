@@ -40,6 +40,7 @@ public final class EmptyInputStream extends InputStream {
      * Private constructor to enforce the singleton pattern.
      */
     private EmptyInputStream() {
+        // No initialization required.
     }
 
     /**

@@ -43,7 +43,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
      * Default constructor.
      */
     public MapperFactoryBean() {
-
+        // No initialization required.
     }
 
     /**

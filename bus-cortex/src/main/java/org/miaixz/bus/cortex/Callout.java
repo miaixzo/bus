@@ -48,7 +48,7 @@ public final class Callout {
      * Creates a new Callout utility holder.
      */
     private Callout() {
-
+        // No initialization required.
     }
 
     /**

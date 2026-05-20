@@ -60,14 +60,33 @@ public final class PhysicalDisk {
      */
     public enum PhysicalDiskProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
-        // First element defines WMI instance name field and PDH instance filter
+        /**
+         * The name physical disk property.
+         */
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCE),
-        // Remaining elements define counters
-        DISKREADSPERSEC("Disk Reads/sec"), //
-        DISKREADBYTESPERSEC("Disk Read Bytes/sec"), //
-        DISKWRITESPERSEC("Disk Writes/sec"), //
-        DISKWRITEBYTESPERSEC("Disk Write Bytes/sec"), //
-        CURRENTDISKQUEUELENGTH("Current Disk Queue Length"), //
+        /**
+         * Disk Reads/sec.
+         */
+        DISKREADSPERSEC("Disk Reads/sec"),
+        /**
+         * Disk Read Bytes/sec.
+         */
+        DISKREADBYTESPERSEC("Disk Read Bytes/sec"),
+        /**
+         * Disk Writes/sec.
+         */
+        DISKWRITESPERSEC("Disk Writes/sec"),
+        /**
+         * Disk Write Bytes/sec.
+         */
+        DISKWRITEBYTESPERSEC("Disk Write Bytes/sec"),
+        /**
+         * Current Disk Queue Length.
+         */
+        CURRENTDISKQUEUELENGTH("Current Disk Queue Length"),
+        /**
+         * % Disk Time.
+         */
         PERCENTDISKTIME("% Disk Time");
 
         /**

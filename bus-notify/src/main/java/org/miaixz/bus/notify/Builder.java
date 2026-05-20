@@ -34,6 +34,13 @@ import lombok.ToString;
 public class Builder {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * Defines the type of cache to be used for notification services.
      *
      * @author Kimi Liu

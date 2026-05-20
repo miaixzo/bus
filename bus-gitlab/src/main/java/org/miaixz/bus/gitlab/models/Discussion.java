@@ -40,29 +40,71 @@ public class Discussion implements Serializable {
     private Boolean individualNote;
     private List<Note> notes;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public String getId() {
         return id;
     }
+
+    /**
+     * Returns the individual note.
+     *
+     * @return the result
+     */
 
     public Boolean getIndividualNote() {
         return individualNote;
     }
 
+    /**
+     * Returns the notes.
+     *
+     * @return the result
+     */
+
     public List<Note> getNotes() {
         return notes;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Sets the individual note.
+     *
+     * @param individualNote the individual note value
+     */
+
     public void setIndividualNote(Boolean individualNote) {
         this.individualNote = individualNote;
     }
 
+    /**
+     * Sets the notes.
+     *
+     * @param notes the notes value
+     */
+
     public void setNotes(List<Note> notes) {
         this.notes = notes;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

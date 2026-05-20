@@ -58,6 +58,8 @@ public interface Timer {
 
     /**
      * Returns the total number of recordings.
+     *
+     * @return recorded duration count
      */
     long count();
 
@@ -92,6 +94,7 @@ public interface Timer {
      * @param p      percentile 0.0–1.0
      * @param unit   desired time unit
      * @param window rolling window (ONE_MINUTE, FIVE_MINUTES, or LIFETIME)
+     * @return estimated percentile value
      */
     double percentile(double p, TimeUnit unit, Window window);
 
@@ -119,6 +122,8 @@ public interface Timer {
 
     /**
      * Returns an atomic snapshot of histogram state for cross-instance aggregation.
+     *
+     * @return timer snapshot
      */
     TimerSnapshot snapshot();
 
@@ -165,6 +170,8 @@ public interface Timer {
 
         /**
          * Returns {@link #actualNanos} converted to milliseconds.
+         *
+         * @return actual latency in milliseconds
          */
         public double actualMillis() {
             return actualNanos / 1_000_000.0;
@@ -172,6 +179,8 @@ public interface Timer {
 
         /**
          * Returns {@link #thresholdNanos} converted to milliseconds.
+         *
+         * @return threshold latency in milliseconds
          */
         public double thresholdMillis() {
             return thresholdNanos / 1_000_000.0;

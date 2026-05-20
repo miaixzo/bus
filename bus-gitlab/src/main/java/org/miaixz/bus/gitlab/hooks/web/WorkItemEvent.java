@@ -35,8 +35,14 @@ public class WorkItemEvent extends AbstractEvent {
 
     @Serial
     private static final long serialVersionUID = 2852233532039L;
+    /**
+     * The x gitlab event value.
+     */
 
     public static final String X_GITLAB_EVENT = "Issue Hook";
+    /**
+     * The object kind value.
+     */
     public static final String OBJECT_KIND = "work_item";
 
     private User user;
@@ -46,62 +52,152 @@ public class WorkItemEvent extends AbstractEvent {
     private List<EventLabel> labels;
     private WorkItemChanges changes;
 
+    /**
+     * Returns the object kind.
+     *
+     * @return the result
+     */
+
     public String getObjectKind() {
         return (OBJECT_KIND);
     }
+
+    /**
+     * Sets the object kind.
+     *
+     * @param objectKind the object kind value
+     */
 
     public void setObjectKind(String objectKind) {
         if (!OBJECT_KIND.equals(objectKind))
             throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + "'");
     }
 
+    /**
+     * Returns the user.
+     *
+     * @return the result
+     */
+
     public User getUser() {
         return user;
     }
+
+    /**
+     * Sets the user.
+     *
+     * @param user the user value
+     */
 
     public void setUser(User user) {
         this.user = user;
     }
 
+    /**
+     * Returns the project.
+     *
+     * @return the result
+     */
+
     public EventProject getProject() {
         return project;
     }
+
+    /**
+     * Sets the project.
+     *
+     * @param project the project value
+     */
 
     public void setProject(EventProject project) {
         this.project = project;
     }
 
+    /**
+     * Returns the repository.
+     *
+     * @return the result
+     */
+
     public EventRepository getRepository() {
         return repository;
     }
+
+    /**
+     * Sets the repository.
+     *
+     * @param repository the repository value
+     */
 
     public void setRepository(EventRepository repository) {
         this.repository = repository;
     }
 
+    /**
+     * Returns the labels.
+     *
+     * @return the result
+     */
+
     public List<EventLabel> getLabels() {
         return labels;
     }
+
+    /**
+     * Sets the labels.
+     *
+     * @param labels the labels value
+     */
 
     public void setLabels(List<EventLabel> labels) {
         this.labels = labels;
     }
 
+    /**
+     * Returns the changes.
+     *
+     * @return the result
+     */
+
     public WorkItemChanges getChanges() {
         return changes;
     }
+
+    /**
+     * Sets the changes.
+     *
+     * @param changes the changes value
+     */
 
     public void setChanges(WorkItemChanges changes) {
         this.changes = changes;
     }
 
+    /**
+     * Returns the object attributes.
+     *
+     * @return the result
+     */
+
     public ObjectAttributes getObjectAttributes() {
         return this.objectAttributes;
     }
 
+    /**
+     * Sets the object attributes.
+     *
+     * @param objectAttributes the object attributes value
+     */
+
     public void setObjectAttributes(ObjectAttributes objectAttributes) {
         this.objectAttributes = objectAttributes;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

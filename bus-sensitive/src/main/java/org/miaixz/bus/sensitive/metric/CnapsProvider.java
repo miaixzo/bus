@@ -34,6 +34,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class CnapsProvider extends AbstractProvider {
 
     /**
+     * Constructs a new CnapsProvider instance.
+     */
+    public CnapsProvider() {
+        // No initialization required.
+    }
+
+    /**
      * Applies CNAPS code-specific desensitization logic to the provided value.
      *
      * @param object  The object containing the CNAPS code string to be desensitized.

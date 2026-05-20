@@ -77,8 +77,8 @@ public class DependencyException extends InternalException {
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public DependencyException(final Errors errors, String errmsg) {
-        super(errors.getKey(), errmsg);
+    public DependencyException(final Errors errors, final String errmsg) {
+        super(errors, errmsg);
     }
 
     /**

@@ -37,6 +37,13 @@ import org.miaixz.bus.health.linux.ProcPath;
 public final class Auxv {
 
     /**
+     * Constructs a new Auxv instance.
+     */
+    public Auxv() {
+        // No initialization required.
+    }
+
+    /**
      * end of vector
      */
     public static final int AT_NULL = 0;

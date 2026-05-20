@@ -33,29 +33,71 @@ public class EventExternalStatusCheck {
     private String name;
     private String externalUrl;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
     public String getName() {
         return name;
     }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
 
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the external url.
+     *
+     * @return the result
+     */
+
     public String getExternalUrl() {
         return externalUrl;
     }
 
+    /**
+     * Sets the external url.
+     *
+     * @param externalUrl the external url value
+     */
+
     public void setExternalUrl(String externalUrl) {
         this.externalUrl = externalUrl;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

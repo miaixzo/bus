@@ -35,6 +35,7 @@ public class DocumentBuilder {
      * Constructs a new DocumentBuilder. Utility class constructor for static access.
      */
     private DocumentBuilder() {
+        // No initialization required.
     }
 
     /**

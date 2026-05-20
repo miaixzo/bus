@@ -60,17 +60,50 @@ public interface SystemHookEvent extends Serializable {
 
     String getEventName();
 
+    /**
+     * Sets the request url.
+     *
+     * @param requestUrl the request url value
+     */
     void setRequestUrl(String requestUrl);
+
+    /**
+     * Returns the request url.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     String getRequestUrl();
 
+    /**
+     * Sets the request query string.
+     *
+     * @param requestQueryString the request query string value
+     */
     void setRequestQueryString(String requestQueryString);
+
+    /**
+     * Returns the request query string.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     String getRequestQueryString();
 
+    /**
+     * Sets the request secret token.
+     *
+     * @param requestSecretToken the request secret token value
+     */
     void setRequestSecretToken(String requestSecretToken);
+
+    /**
+     * Returns the request secret token.
+     *
+     * @return the result
+     */
 
     @JsonIgnore
     String getRequestSecretToken();

@@ -52,6 +52,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ImagePlace {
 
     /**
+     * Constructs a new ImagePlace instance.
+     */
+    public ImagePlace() {
+        // No initialization required.
+    }
+
+    /**
      * Array of currently supported image types. Results for other formats are not guaranteed.
      */
     public static String[] IMAGES_TYPE = { ImageKit.IMAGE_TYPE_JPG, ImageKit.IMAGE_TYPE_JPEG, ImageKit.IMAGE_TYPE_PNG };

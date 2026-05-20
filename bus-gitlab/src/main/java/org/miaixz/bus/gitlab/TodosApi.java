@@ -34,6 +34,12 @@ import org.miaixz.bus.gitlab.models.Todo;
  */
 public class TodosApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code TodosApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public TodosApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -49,6 +49,13 @@ import org.miaixz.bus.image.nimble.extend.ImageReaderExtension;
 public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtension {
 
     /**
+     * Constructs a new LdapImageReaderConfiguration instance.
+     */
+    public LdapImageReaderConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * The cn image reader factory value.
      */
     private static final String CN_IMAGE_READER_FACTORY = "cn=Image Reader Factory,";

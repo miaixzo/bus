@@ -36,6 +36,7 @@ public class CharacterConverter extends AbstractConverter {
      * Constructs a new CharacterConverter. Utility class constructor for static access.
      */
     public CharacterConverter() {
+        // No initialization required.
     }
 
     /**

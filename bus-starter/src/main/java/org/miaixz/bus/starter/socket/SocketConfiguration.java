@@ -42,6 +42,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class SocketConfiguration {
 
     /**
+     * Constructs a new SocketConfiguration instance.
+     */
+    public SocketConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected socket configuration properties.
      */
     @Resource

@@ -46,6 +46,7 @@ public class CharsetDetector {
      * Constructs a new CharsetDetector. Utility class constructor for static access.
      */
     private CharsetDetector() {
+        // No initialization required.
     }
 
     /**

@@ -36,13 +36,31 @@ public class Issue extends AbstractIssue {
 
     private Boolean subscribed;
 
+    /**
+     * Returns the subscribed.
+     *
+     * @return the result
+     */
+
     public Boolean getSubscribed() {
         return subscribed;
     }
 
+    /**
+     * Sets the subscribed.
+     *
+     * @param subscribed the subscribed value
+     */
+
     public void setSubscribed(Boolean subscribed) {
         this.subscribed = subscribed;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

@@ -39,6 +39,7 @@ public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequ
      * Constructs a new Base58Provider. Utility class constructor for static access.
      */
     private Base58Provider() {
+        // No initialization required.
     }
 
     @Serial

@@ -32,6 +32,13 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public class ZipSecurity {
 
     /**
+     * Constructs a new {@code ZipSecurity} instance.
+     */
+    public ZipSecurity() {
+        // No initialization required.
+    }
+
+    /**
      * Checks for Zip bomb vulnerabilities.
      *
      * @param entry       The {@link ZipEntry} to check.

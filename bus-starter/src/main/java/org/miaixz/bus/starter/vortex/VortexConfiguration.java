@@ -116,6 +116,7 @@ public class VortexConfiguration {
      * Creates a Vortex auto-configuration.
      */
     public VortexConfiguration() {
+        // No initialization required.
     }
 
     /**

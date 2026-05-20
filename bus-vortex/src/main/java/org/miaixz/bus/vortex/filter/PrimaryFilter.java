@@ -39,7 +39,6 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.strategy.StrategyFactory;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * The primary {@link WebFilter} that acts as the main entry point and orchestrator for the Vortex gateway.
@@ -114,39 +113,38 @@ public class PrimaryFilter extends AbstractFilter {
             throw new ValidateException(ErrorCode._LIMITER);
         }
 
-        return Mono.fromCallable(() -> factory.getStrategiesFor(exchange)).subscribeOn(Schedulers.boundedElastic())
-                .flatMap(strategies -> {
-                    Context context = new Context();
-                    context.setX_request_id(exchange.getRequest().getId());
-                    context.setTimestamp(DateKit.current());
-                    context.setHeaders(exchange.getRequest().getHeaders().toSingleValueMap());
-                    try {
-                        context.setHttpMethod(HTTP.Method.of(exchange.getRequest().getMethod().name()));
-                    } catch (IllegalArgumentException e) {
-                        Logger.warn(
-                                false,
-                                "Vortex",
-                                e,
-                                "HTTP method mapping failed: methodPresent={}, exception={}",
-                                exchange.getRequest().getMethod() != null,
-                                e.getClass().getSimpleName());
-                        throw new ValidateException(ErrorCode._100802);
-                    }
+        return Mono.defer(() -> {
+            List<Strategy> strategies = factory.getStrategiesFor(exchange);
+            Context context = new Context();
+            context.setX_request_id(exchange.getRequest().getId());
+            context.setTimestamp(DateKit.current());
+            context.setHeaders(exchange.getRequest().getHeaders().toSingleValueMap());
+            try {
+                context.setHttpMethod(HTTP.Method.of(exchange.getRequest().getMethod().name()));
+            } catch (IllegalArgumentException e) {
+                Logger.warn(
+                        false,
+                        "Vortex",
+                        e,
+                        "HTTP method mapping failed: methodPresent={}, exception={}",
+                        exchange.getRequest().getMethod() != null,
+                        e.getClass().getSimpleName());
+                throw new ValidateException(ErrorCode._100802);
+            }
 
-                    exchange.getAttributes().put(Context.$, context);
+            exchange.getAttributes().put(Context.$, context);
 
-                    Logger.info(
-                            true,
-                            "Vortex",
-                            "Strategy chain selected: requestId={}, path={}, strategies={}",
-                            context.getX_request_id(),
-                            path,
-                            strategies.stream().map(strategy -> strategy.getClass().getSimpleName())
-                                    .collect(Collectors.joining(" -> ")));
+            Logger.info(
+                    true,
+                    "Vortex",
+                    "Strategy chain selected: requestId={}, path={}, strategies={}",
+                    context.getX_request_id(),
+                    path,
+                    strategies.stream().map(strategy -> strategy.getClass().getSimpleName())
+                            .collect(Collectors.joining(" -> ")));
 
-                    return new Chain(strategies, chain).apply(exchange)
-                            .contextWrite(ctx -> ctx.put(Context.class, context));
-                });
+            return new Chain(strategies, chain).apply(exchange).contextWrite(ctx -> ctx.put(Context.class, context));
+        });
     }
 
     /**

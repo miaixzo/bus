@@ -26,6 +26,24 @@ package org.miaixz.bus.gitlab.models;
  * @since Java 21+
  */
 public enum GitLabFormValueType {
-    DATE, ACCESS_LEVEL, OBJECT, LIST, MAP,
-
+    /**
+     * The date git lab form value type.
+     */
+    DATE,
+    /**
+     * The access level git lab form value type.
+     */
+    ACCESS_LEVEL,
+    /**
+     * The object git lab form value type.
+     */
+    OBJECT,
+    /**
+     * The list git lab form value type.
+     */
+    LIST,
+    /**
+     * The map git lab form value type.
+     */
+    MAP;
 }

@@ -42,7 +42,7 @@ public class HL7Charset {
      * Creates a new instance.
      */
     private HL7Charset() {
-
+        // No initialization required.
     }
 
     /**

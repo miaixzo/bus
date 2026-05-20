@@ -36,6 +36,13 @@ import org.miaixz.bus.tempus.Executor;
  */
 public class TaskListenerManager implements Serializable {
 
+    /**
+     * Constructs a new TaskListenerManager instance.
+     */
+    public TaskListenerManager() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852287805158L;
 

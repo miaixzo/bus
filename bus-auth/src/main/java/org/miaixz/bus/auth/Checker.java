@@ -36,6 +36,13 @@ import org.miaixz.bus.logger.Logger;
 public class Checker {
 
     /**
+     * Constructs a new Checker instance.
+     */
+    public Checker() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if third-party login is supported for the given context and complex type.
      *
      * @param context the authentication context

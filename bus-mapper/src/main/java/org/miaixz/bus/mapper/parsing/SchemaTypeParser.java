@@ -36,6 +36,13 @@ import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 public abstract class SchemaTypeParser implements ClassMetaResolver {
 
     /**
+     * Constructs a new SchemaTypeParser instance.
+     */
+    public SchemaTypeParser() {
+        // No initialization required.
+    }
+
+    /**
      * Finds the entity class corresponding to the current method by checking the method's return value, parameters, and
      * interface generics in order.
      *

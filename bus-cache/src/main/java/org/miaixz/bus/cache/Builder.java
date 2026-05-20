@@ -50,6 +50,13 @@ import org.miaixz.bus.logger.Logger;
 public class Builder {
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * The prefix used for synthetic argument names, e.g., "args0", "args1".
      */
     private static final String X_ARGS_PREFIX = "args";

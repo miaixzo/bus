@@ -41,6 +41,13 @@ import org.miaixz.bus.health.Parsing;
 public final class GeomDiskList {
 
     /**
+     * Constructs a new GeomDiskList instance.
+     */
+    public GeomDiskList() {
+        // No initialization required.
+    }
+
+    /**
      * The GEOM_DISK_LIST constant.
      */
     private static final String GEOM_DISK_LIST = "geom disk list";

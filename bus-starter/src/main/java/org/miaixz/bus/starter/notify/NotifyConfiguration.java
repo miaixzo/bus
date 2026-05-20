@@ -60,6 +60,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class NotifyConfiguration {
 
     /**
+     * Constructs a new NotifyConfiguration instance.
+     */
+    public NotifyConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Injected notification configuration properties, containing settings for various notification components.
      * Automatically injected via the {@link EnableConfigurationProperties} annotation.
      */

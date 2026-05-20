@@ -41,6 +41,13 @@ import org.miaixz.bus.validate.magic.annotation.Each;
 public class EachMatcher implements Matcher<Object, Each> {
 
     /**
+     * Constructs a new EachMatcher instance.
+     */
+    public EachMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * Validates each element of the given container (array, collection, or map values) against a set of validators.
      *
      * @param object     The container object to validate.

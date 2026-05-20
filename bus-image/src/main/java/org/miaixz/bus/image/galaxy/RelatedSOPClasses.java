@@ -36,6 +36,13 @@ import org.miaixz.bus.image.metric.pdu.CommonExtended;
 public class RelatedSOPClasses {
 
     /**
+     * Constructs a new {@code RelatedSOPClasses} instance.
+     */
+    public RelatedSOPClasses() {
+        // No initialization required.
+    }
+
+    /**
      * The common ext negs value.
      */
     private final HashMap<String, CommonExtended> commonExtNegs = new HashMap<>();

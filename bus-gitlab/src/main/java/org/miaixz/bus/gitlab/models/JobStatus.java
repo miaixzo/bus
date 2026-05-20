@@ -32,19 +32,69 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
  */
 public enum JobStatus {
 
-    CREATED, RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED, MANUAL;
+    /**
+     * The created job status.
+     */
+    CREATED,
+    /**
+     * The running job status.
+     */
+    RUNNING,
+    /**
+     * The pending job status.
+     */
+    PENDING,
+    /**
+     * The success job status.
+     */
+    SUCCESS,
+    /**
+     * The failed job status.
+     */
+    FAILED,
+    /**
+     * The canceled job status.
+     */
+    CANCELED,
+    /**
+     * The skipped job status.
+     */
+    SKIPPED,
+    /**
+     * The manual job status.
+     */
+    MANUAL;
 
     private static JacksonJsonEnumHelper<JobStatus> enumHelper = new JacksonJsonEnumHelper<>(JobStatus.class);
+
+    /**
+     * Returns the value.
+     *
+     * @param value the value value
+     * @return the result
+     */
 
     @JsonCreator
     public static JobStatus forValue(String value) {
         return enumHelper.forValue(value);
     }
 
+    /**
+     * Returns the value.
+     *
+     * @return the result
+     */
+
     @JsonValue
     public String toValue() {
         return (enumHelper.toString(this));
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

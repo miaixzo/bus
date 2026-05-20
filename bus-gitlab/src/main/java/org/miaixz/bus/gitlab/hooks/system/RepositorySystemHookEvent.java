@@ -35,6 +35,9 @@ public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852227880877L;
+    /**
+     * The repository update event value.
+     */
 
     public static final String REPOSITORY_UPDATE_EVENT = "repository_update";
 
@@ -50,78 +53,192 @@ public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
     private List<RepositoryChange> changes;
     private List<String> refs;
 
+    /**
+     * Returns the event name.
+     *
+     * @return the result
+     */
+
     @Override
     public String getEventName() {
         return (eventName);
     }
 
+    /**
+     * Sets the event name.
+     *
+     * @param eventName the event name value
+     */
+
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
+
+    /**
+     * Returns the user id.
+     *
+     * @return the result
+     */
 
     public Long getUserId() {
         return this.userId;
     }
 
+    /**
+     * Sets the user id.
+     *
+     * @param userId the user id value
+     */
+
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    /**
+     * Returns the user name.
+     *
+     * @return the result
+     */
 
     public String getUserName() {
         return this.userName;
     }
 
+    /**
+     * Sets the user name.
+     *
+     * @param userName the user name value
+     */
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    /**
+     * Returns the user email.
+     *
+     * @return the result
+     */
 
     public String getUserEmail() {
         return userEmail;
     }
 
+    /**
+     * Sets the user email.
+     *
+     * @param userEmail the user email value
+     */
+
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
+    /**
+     * Returns the user avatar.
+     *
+     * @return the result
+     */
 
     public String getUserAvatar() {
         return userAvatar;
     }
 
+    /**
+     * Sets the user avatar.
+     *
+     * @param userAvatar the user avatar value
+     */
+
     public void setUserAvatar(String userAvatar) {
         this.userAvatar = userAvatar;
     }
+
+    /**
+     * Returns the project id.
+     *
+     * @return the result
+     */
 
     public Long getProjectId() {
         return this.projectId;
     }
 
+    /**
+     * Sets the project id.
+     *
+     * @param projectId the project id value
+     */
+
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
+
+    /**
+     * Returns the project.
+     *
+     * @return the result
+     */
 
     public EventProject getProject() {
         return project;
     }
 
+    /**
+     * Sets the project.
+     *
+     * @param project the project value
+     */
+
     public void setProject(EventProject project) {
         this.project = project;
     }
+
+    /**
+     * Returns the changes.
+     *
+     * @return the result
+     */
 
     public List<RepositoryChange> getChanges() {
         return changes;
     }
 
+    /**
+     * Sets the changes.
+     *
+     * @param changes the changes value
+     */
+
     public void setChanges(List<RepositoryChange> changes) {
         this.changes = changes;
     }
+
+    /**
+     * Returns the refs.
+     *
+     * @return the result
+     */
 
     public List<String> getRefs() {
         return refs;
     }
 
+    /**
+     * Sets the refs.
+     *
+     * @param refs the refs value
+     */
+
     public void setRefs(List<String> refs) {
         this.refs = refs;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

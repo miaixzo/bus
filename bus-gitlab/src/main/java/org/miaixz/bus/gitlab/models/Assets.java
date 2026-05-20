@@ -42,37 +42,91 @@ public class Assets implements Serializable {
     private List<Link> links;
     private String evidenceFilePath;
 
+    /**
+     * Returns the count.
+     *
+     * @return the result
+     */
+
     public Integer getCount() {
         return count;
     }
+
+    /**
+     * Sets the count.
+     *
+     * @param count the count value
+     */
 
     public void setCount(Integer count) {
         this.count = count;
     }
 
+    /**
+     * Returns the sources.
+     *
+     * @return the result
+     */
+
     public List<Source> getSources() {
         return sources;
     }
+
+    /**
+     * Sets the sources.
+     *
+     * @param sources the sources value
+     */
 
     public void setSources(List<Source> sources) {
         this.sources = sources;
     }
 
+    /**
+     * Returns the links.
+     *
+     * @return the result
+     */
+
     public List<Link> getLinks() {
         return links;
     }
+
+    /**
+     * Sets the links.
+     *
+     * @param links the links value
+     */
 
     public void setLinks(List<Link> links) {
         this.links = links;
     }
 
+    /**
+     * Returns the evidence file path.
+     *
+     * @return the result
+     */
+
     public String getEvidenceFilePath() {
         return evidenceFilePath;
     }
 
+    /**
+     * Sets the evidence file path.
+     *
+     * @param evidenceFilePath the evidence file path value
+     */
+
     public void setEvidenceFilePath(String evidenceFilePath) {
         this.evidenceFilePath = evidenceFilePath;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {
@@ -93,21 +147,51 @@ public class Assets implements Serializable {
         private ArchiveFormat format;
         private String url;
 
+        /**
+         * Returns the format.
+         *
+         * @return the result
+         */
+
         public ArchiveFormat getFormat() {
             return format;
         }
+
+        /**
+         * Sets the format.
+         *
+         * @param format the format value
+         */
 
         public void setFormat(ArchiveFormat format) {
             this.format = format;
         }
 
+        /**
+         * Returns the url.
+         *
+         * @return the result
+         */
+
         public String getUrl() {
             return url;
         }
 
+        /**
+         * Sets the url.
+         *
+         * @param url the url value
+         */
+
         public void setUrl(String url) {
             this.url = url;
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {
@@ -132,37 +216,91 @@ public class Assets implements Serializable {
         private String url;
         private Boolean external;
 
+        /**
+         * Returns the id.
+         *
+         * @return the result
+         */
+
         public Long getId() {
             return id;
         }
+
+        /**
+         * Sets the id.
+         *
+         * @param id the id value
+         */
 
         public void setId(Long id) {
             this.id = id;
         }
 
+        /**
+         * Returns the name.
+         *
+         * @return the result
+         */
+
         public String getName() {
             return name;
         }
+
+        /**
+         * Sets the name.
+         *
+         * @param name the name value
+         */
 
         public void setName(String name) {
             this.name = name;
         }
 
+        /**
+         * Returns the url.
+         *
+         * @return the result
+         */
+
         public String getUrl() {
             return url;
         }
+
+        /**
+         * Sets the url.
+         *
+         * @param url the url value
+         */
 
         public void setUrl(String url) {
             this.url = url;
         }
 
+        /**
+         * Returns the external.
+         *
+         * @return the result
+         */
+
         public Boolean getExternal() {
             return external;
         }
 
+        /**
+         * Sets the external.
+         *
+         * @param external the external value
+         */
+
         public void setExternal(Boolean external) {
             this.external = external;
         }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
 
         @Override
         public String toString() {

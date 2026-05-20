@@ -41,6 +41,13 @@ import org.miaixz.bus.health.Parsing;
 @ThreadSafe
 public final class Iostat {
 
+    /**
+     * Constructs a new Iostat instance.
+     */
+    public Iostat() {
+        // No initialization required.
+    }
+
     // Note uppercase E
     /**
      * The IOSTAT_ER_DETAIL constant.

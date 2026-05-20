@@ -38,6 +38,13 @@ import org.miaixz.bus.core.xyz.ByteKit;
 public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]> {
 
     /**
+     * Constructs a new {@code MurmurHash} instance.
+     */
+    public MurmurHash() {
+        // No initialization required.
+    }
+
+    /**
      * Singleton instance of the MurmurHash.
      */
     public static final MurmurHash INSTANCE = new MurmurHash();

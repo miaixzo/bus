@@ -22,7 +22,6 @@ package org.miaixz.bus.mapper.feature.paging;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import org.miaixz.bus.core.text.PooledStringBuilder;
 import org.miaixz.bus.core.text.StringBuilderPool;
@@ -312,7 +311,6 @@ public class PageBuilder {
      * @since Java 21+
      */
     @Getter
-    @RequiredArgsConstructor
     public static class PaginationResult {
 
         /**
@@ -329,6 +327,19 @@ public class PageBuilder {
          * Whether a count query must be executed.
          */
         private final boolean countRequired;
+
+        /**
+         * Creates a pagination result.
+         *
+         * @param sql           SQL statement with pagination applied
+         * @param countSql      SQL statement used for count queries
+         * @param countRequired whether a count query must be executed
+         */
+        public PaginationResult(String sql, String countSql, boolean countRequired) {
+            this.sql = sql;
+            this.countSql = countSql;
+            this.countRequired = countRequired;
+        }
 
     }
 

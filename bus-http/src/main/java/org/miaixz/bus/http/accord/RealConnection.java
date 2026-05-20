@@ -65,6 +65,9 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     private static final String NPE_THROW_WITH_NULL = "throw with null exception";
     private static final int MAX_TUNNEL_ATTEMPTS = 21;
 
+    /**
+     * The connection pool that owns this connection.
+     */
     public final RealConnectionPool connectionPool;
 
     /**
@@ -121,6 +124,12 @@ public final class RealConnection extends Http2Connection.Listener implements Co
      */
     private int allocationLimit = 1;
 
+    /**
+     * Creates a real connection for the supplied route.
+     *
+     * @param connectionPool the owning connection pool
+     * @param route          the route for the connection
+     */
     public RealConnection(RealConnectionPool connectionPool, Route route) {
         this.connectionPool = connectionPool;
         this.route = route;

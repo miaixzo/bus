@@ -30,6 +30,13 @@ import org.miaixz.bus.tempus.Executor;
 public class SimpleTaskListener implements TaskListener {
 
     /**
+     * Constructs a new SimpleTaskListener instance.
+     */
+    public SimpleTaskListener() {
+        // No initialization required.
+    }
+
+    /**
      * Triggered when a task is about to start.
      * <p>
      * Description inherited from parent interface.

@@ -964,12 +964,21 @@ public class Http2Connection implements Closeable {
         int pingIntervalMillis;
 
         /**
+         * Creates an HTTP/2 connection builder.
+         *
          * @param client true if this peer initiated the connection; false if this peer accepted the connection.
          */
         public Builder(boolean client) {
             this.client = client;
         }
 
+        /**
+         * Configures the socket and derives the connection name from its remote address.
+         *
+         * @param socket the socket
+         * @return this builder
+         * @throws IOException if socket streams cannot be opened
+         */
         public Builder socket(Socket socket) throws IOException {
             SocketAddress remoteSocketAddress = socket.getRemoteSocketAddress();
             String connectionName = remoteSocketAddress instanceof InetSocketAddress
@@ -978,6 +987,15 @@ public class Http2Connection implements Closeable {
             return socket(socket, connectionName, IoKit.buffer(IoKit.source(socket)), IoKit.buffer(IoKit.sink(socket)));
         }
 
+        /**
+         * Configures the socket and stream buffers.
+         *
+         * @param socket         the socket
+         * @param connectionName the connection name
+         * @param source         the input source
+         * @param sink           the output sink
+         * @return this builder
+         */
         public Builder socket(Socket socket, String connectionName, BufferSource source, BufferSink sink) {
             this.socket = socket;
             this.connectionName = connectionName;
@@ -986,21 +1004,44 @@ public class Http2Connection implements Closeable {
             return this;
         }
 
+        /**
+         * Configures the stream listener.
+         *
+         * @param listener the stream listener
+         * @return this builder
+         */
         public Builder listener(Listener listener) {
             this.listener = listener;
             return this;
         }
 
+        /**
+         * Configures the push observer.
+         *
+         * @param pushObserver the push observer
+         * @return this builder
+         */
         public Builder pushObserver(PushObserver pushObserver) {
             this.pushObserver = pushObserver;
             return this;
         }
 
+        /**
+         * Configures the ping interval.
+         *
+         * @param pingIntervalMillis the ping interval in milliseconds
+         * @return this builder
+         */
         public Builder pingIntervalMillis(int pingIntervalMillis) {
             this.pingIntervalMillis = pingIntervalMillis;
             return this;
         }
 
+        /**
+         * Builds the HTTP/2 connection.
+         *
+         * @return the HTTP/2 connection
+         */
         public Http2Connection build() {
             return new Http2Connection(this);
         }
@@ -1015,6 +1056,16 @@ public class Http2Connection implements Closeable {
      */
     public abstract static class Listener {
 
+        /**
+         * Constructs a new {@code Listener} instance.
+         */
+        public Listener() {
+            // No initialization required.
+        }
+
+        /**
+         * Listener that refuses incoming streams.
+         */
         public static final Listener REFUSE_INCOMING_STREAMS = new Listener() {
 
             /**

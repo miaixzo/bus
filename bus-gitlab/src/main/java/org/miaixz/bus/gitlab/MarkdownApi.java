@@ -33,6 +33,12 @@ import org.miaixz.bus.gitlab.models.MarkdownRequest;
  */
 public class MarkdownApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code MarkdownApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public MarkdownApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

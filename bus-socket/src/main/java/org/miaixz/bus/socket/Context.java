@@ -35,6 +35,13 @@ import org.miaixz.bus.core.lang.Normal;
 public final class Context {
 
     /**
+     * Constructs a new Context instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
+
+    /**
      * The size of the read buffer for message bodies, in bytes.
      */
     private int readBufferSize = Normal._512;

@@ -36,6 +36,12 @@ import org.miaixz.bus.gitlab.models.Environment;
  */
 public class EnvironmentsApi extends AbstractApi {
 
+    /**
+     * Constructs a new {@code EnvironmentsApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public EnvironmentsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

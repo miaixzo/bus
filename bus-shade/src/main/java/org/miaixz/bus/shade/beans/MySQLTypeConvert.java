@@ -29,6 +29,13 @@ package org.miaixz.bus.shade.beans;
 public class MySQLTypeConvert implements TypeConvert {
 
     /**
+     * Constructs a new MySQLTypeConvert instance.
+     */
+    public MySQLTypeConvert() {
+        // No initialization required.
+    }
+
+    /**
      * Processes the type conversion from a MySQL field type string to a {@link ColumnType}. It considers the specified
      * {@link DateType} for date and time fields.
      *

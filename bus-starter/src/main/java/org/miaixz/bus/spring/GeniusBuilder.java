@@ -45,6 +45,13 @@ import org.miaixz.bus.core.xyz.ClassKit;
 public class GeniusBuilder {
 
     /**
+     * Constructs a new GeniusBuilder instance.
+     */
+    public GeniusBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Bus banner ASCII art for miaixz.org.
      */
     public static final String[] BUS_BANNER = {

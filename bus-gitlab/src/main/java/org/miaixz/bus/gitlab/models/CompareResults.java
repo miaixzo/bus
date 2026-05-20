@@ -42,45 +42,111 @@ public class CompareResults implements Serializable {
     private Boolean compareTimeout;
     private Boolean compareSameRef;
 
+    /**
+     * Returns the commit.
+     *
+     * @return the result
+     */
+
     public Commit getCommit() {
         return commit;
     }
+
+    /**
+     * Sets the commit.
+     *
+     * @param commit the commit value
+     */
 
     public void setCommit(Commit commit) {
         this.commit = commit;
     }
 
+    /**
+     * Returns the commits.
+     *
+     * @return the result
+     */
+
     public List<Commit> getCommits() {
         return commits;
     }
+
+    /**
+     * Sets the commits.
+     *
+     * @param commits the commits value
+     */
 
     public void setCommits(List<Commit> commits) {
         this.commits = commits;
     }
 
+    /**
+     * Returns the diffs.
+     *
+     * @return the result
+     */
+
     public List<Diff> getDiffs() {
         return diffs;
     }
+
+    /**
+     * Sets the diffs.
+     *
+     * @param diffs the diffs value
+     */
 
     public void setDiffs(List<Diff> diffs) {
         this.diffs = diffs;
     }
 
+    /**
+     * Returns the compare timeout.
+     *
+     * @return the result
+     */
+
     public Boolean getCompareTimeout() {
         return compareTimeout;
     }
+
+    /**
+     * Sets the compare timeout.
+     *
+     * @param compareTimeout the compare timeout value
+     */
 
     public void setCompareTimeout(Boolean compareTimeout) {
         this.compareTimeout = compareTimeout;
     }
 
+    /**
+     * Returns the compare same ref.
+     *
+     * @return the result
+     */
+
     public Boolean getCompareSameRef() {
         return compareSameRef;
     }
 
+    /**
+     * Sets the compare same ref.
+     *
+     * @param compareSameRef the compare same ref value
+     */
+
     public void setCompareSameRef(Boolean compareSameRef) {
         this.compareSameRef = compareSameRef;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

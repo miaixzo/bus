@@ -82,6 +82,9 @@ public final class OhmHardware {
      * @since Java 21+
      */
     public enum IdentifierProperty {
+        /**
+         * Executes the identifier operation.
+         */
         IDENTIFIER
 
     }

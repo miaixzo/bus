@@ -40,6 +40,7 @@ public class AnyKeyManager {
      * Constructs a new AnyKeyManager. Utility class constructor for static access.
      */
     private AnyKeyManager() {
+        // No initialization required.
     }
 
     /**

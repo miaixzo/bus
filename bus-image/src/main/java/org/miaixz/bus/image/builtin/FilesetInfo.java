@@ -31,6 +31,13 @@ import java.io.File;
 public class FilesetInfo {
 
     /**
+     * Constructs a new FilesetInfo instance.
+     */
+    public FilesetInfo() {
+        // No initialization required.
+    }
+
+    /**
      * The Unique Identifier (UID) of the fileset.
      */
     private String uid;

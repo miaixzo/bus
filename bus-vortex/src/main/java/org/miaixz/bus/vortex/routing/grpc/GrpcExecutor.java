@@ -19,22 +19,24 @@
 */
 package org.miaixz.bus.vortex.routing.grpc;
 
-import java.time.Duration;
+import java.net.URI;
 
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.routing.Coordinator;
 
 import reactor.core.publisher.Flux;
@@ -60,6 +62,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * Creates a gRPC executor.
      */
     public GrpcExecutor() {
+        // No initialization required.
     }
 
     /**
@@ -77,15 +80,12 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
         Assets assets = context.getAssets();
         String payload = input;
 
-        Mono<String> responseMono = Mono.fromCallable(() -> invoke(assets, payload))
-                .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
-
         boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
 
         if (isStreaming) {
-            return executeStreaming(responseMono, assets);
+            return executeStreaming(assets, payload);
         } else {
-            return executeBuffering(responseMono, assets);
+            return executeBuffering(assets, payload);
         }
     }
 
@@ -94,27 +94,23 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * <p>
      * Converts the gRPC response into a flux of data buffers for streaming transfer.
      *
-     * @param responseMono The mono containing the gRPC response
-     * @param assets       The asset configuration
+     * @param assets  The asset configuration
+     * @param payload The JSON payload to send to the gRPC gateway
      * @return A streaming ServerResponse
      */
-    private Mono<ServerResponse> executeStreaming(Mono<String> responseMono, Assets assets) {
-        return responseMono.flatMap(response -> {
+    private Mono<ServerResponse> executeStreaming(Assets assets, String payload) {
+        return request(assets, payload).exchangeToMono(clientResponse -> {
             Logger.info(
                     false,
                     "Vortex",
                     "GRPC service invocation completed: protocol=grpc, event=GRPC_SUCCESS_STREAM, service={}, mode=streaming",
                     assets.getMethod());
 
-            DefaultDataBufferFactory bufferFactory = new DefaultDataBufferFactory();
+            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
+            copyDownstreamHeaders(responseBuilder, clientResponse.headers().asHttpHeaders());
+            Flux<DataBuffer> dataFlux = clientResponse.bodyToFlux(DataBuffer.class);
 
-            Flux<DataBuffer> dataFlux = Flux.interval(Duration.ofMillis(10)).take(1).map(i -> {
-                byte[] bytes = response.getBytes(Charset.UTF_8);
-                return bufferFactory.wrap(bytes);
-            });
-
-            return ServerResponse.ok().header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                    .body(dataFlux, DataBuffer.class);
+            return responseBuilder.body(dataFlux, DataBuffer.class);
         });
     }
 
@@ -123,19 +119,22 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * <p>
      * Buffers the complete gRPC response before sending.
      *
-     * @param responseMono The mono containing the gRPC response
-     * @param assets       The asset configuration
+     * @param assets  The asset configuration
+     * @param payload The JSON payload to send to the gRPC gateway
      * @return A buffered ServerResponse
      */
-    private Mono<ServerResponse> executeBuffering(Mono<String> responseMono, Assets assets) {
-        return responseMono.flatMap(response -> {
+    private Mono<ServerResponse> executeBuffering(Assets assets, String payload) {
+        return request(assets, payload).exchangeToMono(clientResponse -> {
             Logger.info(
                     false,
                     "Vortex",
                     "GRPC service invocation completed: protocol=grpc, event=GRPC_SUCCESS_ATOMIC, service={}, mode=atomic",
                     assets.getMethod());
 
-            return ServerResponse.ok().header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(response);
+            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
+            copyDownstreamHeaders(responseBuilder, clientResponse.headers().asHttpHeaders());
+            return clientResponse.bodyToMono(String.class).defaultIfEmpty(Normal.EMPTY)
+                    .flatMap(responseBuilder::bodyValue);
         });
     }
 
@@ -149,7 +148,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * @param payload The JSON string content of the request message.
      * @return The JSON response from the gRPC service.
      */
-    public String invoke(Assets assets, String payload) {
+    public Mono<String> invoke(Assets assets, String payload) {
         try {
             String fullMethodName = assets.getMethod();
 
@@ -161,15 +160,44 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                     assets.getHost(),
                     assets.getPort());
 
-            String url = buildGrpcUrl(assets, fullMethodName);
+            URI uri = UrlKit.toURI(buildGrpcUrl(assets, fullMethodName));
 
             Logger.info(true, "Vortex", "GRPC method {} invoked successfully: protocol=grpc", fullMethodName);
-            return Httpx.post(url, payload, MediaType.APPLICATION_JSON);
+            return Egress.request(HttpMethod.POST, uri).header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                    .bodyValue(payload).retrieve().bodyToMono(String.class);
 
         } catch (Exception e) {
             Logger.error(false, "Vortex", "Failed to invoke gRPC method '{}': protocol=grpc", assets.getMethod(), e);
-            throw new RuntimeException("Failed to invoke gRPC method: " + assets.getMethod(), e);
+            return Mono.error(new RuntimeException("Failed to invoke gRPC method: " + assets.getMethod(), e));
         }
+    }
+
+    /**
+     * Creates one outbound gRPC gateway request through the shared HTTP client.
+     *
+     * @param assets  The configuration for the target gRPC service.
+     * @param payload The JSON payload to send.
+     * @return A WebClient request ready for response handling.
+     */
+    private WebClient.RequestHeadersSpec<?> request(Assets assets, String payload) {
+        URI uri = UrlKit.toURI(buildGrpcUrl(assets, assets.getMethod()));
+        return Egress.request(HttpMethod.POST, uri).header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .bodyValue(payload);
+    }
+
+    /**
+     * Copies safe downstream headers into the client response builder.
+     *
+     * @param responseBuilder   target server response builder
+     * @param downstreamHeaders downstream response headers
+     */
+    private void copyDownstreamHeaders(ServerResponse.BodyBuilder responseBuilder, HttpHeaders downstreamHeaders) {
+        responseBuilder.headers(headers -> {
+            headers.addAll(downstreamHeaders);
+            headers.remove(HttpHeaders.HOST);
+            headers.remove(HttpHeaders.TRANSFER_ENCODING);
+            headers.remove(HttpHeaders.CONTENT_LENGTH);
+        });
     }
 
     /**

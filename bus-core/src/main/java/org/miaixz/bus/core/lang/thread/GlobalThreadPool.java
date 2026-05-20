@@ -48,6 +48,7 @@ public class GlobalThreadPool {
      * Private constructor to prevent instantiation of this utility class.
      */
     private GlobalThreadPool() {
+        // No initialization required.
     }
 
     /**

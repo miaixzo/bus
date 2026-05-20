@@ -60,7 +60,7 @@ public class Issuer implements Serializable {
      * Constructor for persistence frameworks.
      */
     protected Issuer() {
-
+        // No initialization required.
     }
 
     /**

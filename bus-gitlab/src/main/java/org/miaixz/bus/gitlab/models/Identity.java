@@ -39,29 +39,71 @@ public class Identity implements Serializable {
     private String externUid;
     private Integer samlProviderId;
 
+    /**
+     * Returns the provider.
+     *
+     * @return the result
+     */
+
     public String getProvider() {
         return provider;
     }
+
+    /**
+     * Sets the provider.
+     *
+     * @param provider the provider value
+     */
 
     public void setProvider(String provider) {
         this.provider = provider;
     }
 
+    /**
+     * Returns the extern uid.
+     *
+     * @return the result
+     */
+
     public String getExternUid() {
         return externUid;
     }
+
+    /**
+     * Sets the extern uid.
+     *
+     * @param externUid the extern uid value
+     */
 
     public void setExternUid(String externUid) {
         this.externUid = externUid;
     }
 
+    /**
+     * Returns the saml provider id.
+     *
+     * @return the result
+     */
+
     public Integer getSamlProviderId() {
         return samlProviderId;
     }
 
+    /**
+     * Sets the saml provider id.
+     *
+     * @param samlProviderId the saml provider id value
+     */
+
     public void setSamlProviderId(Integer samlProviderId) {
         this.samlProviderId = samlProviderId;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

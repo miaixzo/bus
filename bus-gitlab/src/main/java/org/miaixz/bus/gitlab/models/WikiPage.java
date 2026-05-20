@@ -40,8 +40,21 @@ public class WikiPage implements Serializable {
     private String slug;
     private String format;
 
+    /**
+     * Constructs a new {@code WikiPage} instance.
+     */
+
     public WikiPage() {
+        // No initialization required.
     }
+
+    /**
+     * Constructs a new {@code WikiPage} instance.
+     *
+     * @param title   the title value
+     * @param slug    the slug value
+     * @param content the content value
+     */
 
     public WikiPage(String title, String slug, String content) {
         this.title = title;
@@ -49,37 +62,91 @@ public class WikiPage implements Serializable {
         this.content = content;
     }
 
+    /**
+     * Returns the title.
+     *
+     * @return the result
+     */
+
     public String getTitle() {
         return this.title;
     }
+
+    /**
+     * Sets the title.
+     *
+     * @param title the title value
+     */
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Returns the content.
+     *
+     * @return the result
+     */
+
     public String getContent() {
         return content;
     }
+
+    /**
+     * Sets the content.
+     *
+     * @param content the content value
+     */
 
     public void setContent(String content) {
         this.content = content;
     }
 
+    /**
+     * Returns the slug.
+     *
+     * @return the result
+     */
+
     public String getSlug() {
         return slug;
     }
+
+    /**
+     * Sets the slug.
+     *
+     * @param slug the slug value
+     */
 
     public void setSlug(String slug) {
         this.slug = slug;
     }
 
+    /**
+     * Returns the format.
+     *
+     * @return the result
+     */
+
     public String getFormat() {
         return format;
     }
 
+    /**
+     * Sets the format.
+     *
+     * @param format the format value
+     */
+
     public void setFormat(String format) {
         this.format = format;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

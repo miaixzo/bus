@@ -43,6 +43,13 @@ import org.miaixz.bus.health.builtin.software.NetworkParams;
 public abstract class AbstractNetworkParams implements NetworkParams {
 
     /**
+     * Constructs a new AbstractNetworkParams instance.
+     */
+    public AbstractNetworkParams() {
+        // No initialization required.
+    }
+
+    /**
      * The NAMESERVER constant.
      */
     private static final String NAMESERVER = "nameserver";

@@ -61,6 +61,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * Private constructor to support the singleton pattern.
      */
     private DynamicDataSource() {
+        // No initialization required.
     }
 
     /**

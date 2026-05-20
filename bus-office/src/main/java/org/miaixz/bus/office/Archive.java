@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class Archive {
 
     private Archive() {
-
+        // No initialization required.
     }
 
     /**
@@ -508,6 +508,13 @@ public class Archive {
      * @since Java 21+
      */
     public static class Reader {
+
+        /**
+         * Constructs a new Reader instance.
+         */
+        public Reader() {
+            // No initialization required.
+        }
 
         /**
          * Reads the archive manifest from the supplied root directory.

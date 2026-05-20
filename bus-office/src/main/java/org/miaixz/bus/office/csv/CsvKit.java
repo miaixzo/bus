@@ -33,6 +33,13 @@ import java.nio.charset.Charset;
 public class CsvKit {
 
     /**
+     * Constructs a new CsvKit instance.
+     */
+    public CsvKit() {
+        // No initialization required.
+    }
+
+    /**
      * Gets a CSV reader. The caller must specify the resource to read from.
      *
      * @param config Configuration for the CSV reader, may be {@code null} for default configuration.

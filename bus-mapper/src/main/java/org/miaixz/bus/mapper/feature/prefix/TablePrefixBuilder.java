@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.RequiredArgsConstructor;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -49,7 +47,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-@RequiredArgsConstructor
 public class TablePrefixBuilder {
 
     /**
@@ -103,6 +100,17 @@ public class TablePrefixBuilder {
      * </p>
      */
     private final List<String> ignore;
+
+    /**
+     * Creates a table prefix builder.
+     *
+     * @param prefix the prefix applied to table names
+     * @param ignore table names excluded from prefixing
+     */
+    public TablePrefixBuilder(String prefix, List<String> ignore) {
+        this.prefix = prefix;
+        this.ignore = ignore;
+    }
 
     /**
      * Apply prefix to all table names in the SQL statement.

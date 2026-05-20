@@ -40,6 +40,13 @@ import org.miaixz.bus.sensitive.metric.*;
 public final class Registry {
 
     /**
+     * Constructs a new Registry instance.
+     */
+    public Registry() {
+        // No initialization required.
+    }
+
+    /**
      * A cache mapping strategy types to their provider instances.
      */
     private static final Map<EnumValue.Masking, StrategyProvider> STRATEGY_CACHE = new ConcurrentHashMap<>();

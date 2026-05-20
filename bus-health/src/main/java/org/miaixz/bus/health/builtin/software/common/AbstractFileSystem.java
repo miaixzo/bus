@@ -39,6 +39,13 @@ import org.miaixz.bus.health.builtin.software.OSFileStore;
 public abstract class AbstractFileSystem implements FileSystem {
 
     /**
+     * Constructs a new AbstractFileSystem instance.
+     */
+    public AbstractFileSystem() {
+        // No initialization required.
+    }
+
+    /**
      * FileSystem types which are network-based and should be excluded from local-only lists
      */
     protected static final List<String> NETWORK_FS_TYPES = Arrays

@@ -40,6 +40,7 @@ public class Console {
      * Constructs a new Console. Utility class constructor for static access.
      */
     private Console() {
+        // No initialization required.
     }
 
     /**
@@ -352,6 +353,7 @@ public class Console {
          * Constructs a new Table.
          */
         public Table() {
+            // No initialization required.
         }
 
         /**

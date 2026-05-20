@@ -67,6 +67,13 @@ import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 public class ContextBuilder extends WebUtils {
 
     /**
+     * Constructs a new ContextBuilder instance.
+     */
+    public ContextBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Cache implementation for request headers.
      */
     private static volatile CacheX<String, Map<String, String>> HEADER_CACHE;

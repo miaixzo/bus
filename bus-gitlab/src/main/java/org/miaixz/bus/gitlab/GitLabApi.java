@@ -1406,6 +1406,12 @@ public class GitLabApi implements AutoCloseable {
         return (jobApi);
     }
 
+    /**
+     * Returns the labels api.
+     *
+     * @return the result
+     */
+
     public LabelsApi getLabelsApi() {
 
         if (labelsApi == null) {
@@ -2040,6 +2046,12 @@ public class GitLabApi implements AutoCloseable {
     public enum ApiVersion {
 
         V4;
+
+        /**
+         * Returns the api namespace.
+         *
+         * @return the result
+         */
 
         public String getApiNamespace() {
             return ("/api/" + name().toLowerCase());

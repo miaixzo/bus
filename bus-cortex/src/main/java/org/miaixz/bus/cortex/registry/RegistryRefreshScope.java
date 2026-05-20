@@ -38,6 +38,7 @@ public class RegistryRefreshScope {
      * Creates an empty registry refresh scope.
      */
     public RegistryRefreshScope() {
+        // No initialization required.
     }
 
     /**

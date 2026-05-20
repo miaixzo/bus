@@ -44,7 +44,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * Constructs a new MutableFloat with a default value of 0.
      */
     public MutableFloat() {
-
+        // No initialization required.
     }
 
     /**

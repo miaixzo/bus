@@ -43,6 +43,7 @@ public abstract class FormatCache<F extends Format> {
      * Constructs a new FormatCache. Utility class constructor for static access.
      */
     protected FormatCache() {
+        // No initialization required.
     }
 
     /**

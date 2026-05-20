@@ -46,6 +46,7 @@ public class AccessHandler extends AbstractHandler {
      * Creates an access handler.
      */
     public AccessHandler() {
+        // No initialization required.
     }
 
     /**

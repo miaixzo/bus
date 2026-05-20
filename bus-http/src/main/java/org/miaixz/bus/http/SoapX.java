@@ -41,6 +41,13 @@ import org.miaixz.bus.http.plugin.soap.SoapBuilder;
 public class SoapX {
 
     /**
+     * Constructs a new SoapX instance.
+     */
+    public SoapX() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a SOAP client with the default SOAP 1.2 protocol.
      *
      * @param url The URL of the web service.

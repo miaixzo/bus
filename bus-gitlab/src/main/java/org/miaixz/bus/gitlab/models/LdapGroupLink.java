@@ -43,37 +43,91 @@ public class LdapGroupLink implements Serializable {
 
     private String filter;
 
+    /**
+     * Returns the cn.
+     *
+     * @return the result
+     */
+
     public String getCn() {
         return cn;
     }
+
+    /**
+     * Sets the cn.
+     *
+     * @param aCn the a cn value
+     */
 
     public void setCn(String aCn) {
         cn = aCn;
     }
 
+    /**
+     * Returns the group access.
+     *
+     * @return the result
+     */
+
     public AccessLevel getGroupAccess() {
         return groupAccess;
     }
+
+    /**
+     * Sets the group access.
+     *
+     * @param aGroupAccess the a group access value
+     */
 
     public void setGroupAccess(AccessLevel aGroupAccess) {
         groupAccess = aGroupAccess;
     }
 
+    /**
+     * Returns the provider.
+     *
+     * @return the result
+     */
+
     public String getProvider() {
         return provider;
     }
+
+    /**
+     * Sets the provider.
+     *
+     * @param aProvider the a provider value
+     */
 
     public void setProvider(String aProvider) {
         provider = aProvider;
     }
 
+    /**
+     * Returns the filter.
+     *
+     * @return the result
+     */
+
     public String getFilter() {
         return filter;
     }
 
+    /**
+     * Sets the filter.
+     *
+     * @param aFilter the a filter value
+     */
+
     public void setFilter(String aFilter) {
         filter = aFilter;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

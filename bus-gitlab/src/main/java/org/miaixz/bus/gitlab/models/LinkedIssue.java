@@ -40,37 +40,91 @@ public class LinkedIssue extends AbstractIssue {
     private Date linkCreatedAt;
     private Date linkUpdatedAt;
 
+    /**
+     * Returns the issue link id.
+     *
+     * @return the result
+     */
+
     public Long getIssueLinkId() {
         return issueLinkId;
     }
+
+    /**
+     * Sets the issue link id.
+     *
+     * @param issueLinkId the issue link id value
+     */
 
     public void setIssueLinkId(Long issueLinkId) {
         this.issueLinkId = issueLinkId;
     }
 
+    /**
+     * Returns the link type.
+     *
+     * @return the result
+     */
+
     public LinkType getLinkType() {
         return linkType;
     }
+
+    /**
+     * Sets the link type.
+     *
+     * @param linkType the link type value
+     */
 
     public void setLinkType(LinkType linkType) {
         this.linkType = linkType;
     }
 
+    /**
+     * Returns the link created at.
+     *
+     * @return the result
+     */
+
     public Date getLinkCreatedAt() {
         return linkCreatedAt;
     }
+
+    /**
+     * Sets the link created at.
+     *
+     * @param linkCreatedAt the link created at value
+     */
 
     public void setLinkCreatedAt(Date linkCreatedAt) {
         this.linkCreatedAt = linkCreatedAt;
     }
 
+    /**
+     * Returns the link updated at.
+     *
+     * @return the result
+     */
+
     public Date getLinkUpdatedAt() {
         return linkUpdatedAt;
     }
 
+    /**
+     * Sets the link updated at.
+     *
+     * @param linkUpdatedAt the link updated at value
+     */
+
     public void setLinkUpdatedAt(Date linkUpdatedAt) {
         this.linkUpdatedAt = linkUpdatedAt;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

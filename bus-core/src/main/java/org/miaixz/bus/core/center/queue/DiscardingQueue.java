@@ -36,6 +36,7 @@ public class DiscardingQueue extends AbstractQueue<Object> {
      * Constructs a new DiscardingQueue. Utility class constructor for static access.
      */
     private DiscardingQueue() {
+        // No initialization required.
     }
 
     /**

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.mapper.builder;
 
+import java.util.Arrays;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -35,6 +37,13 @@ import org.miaixz.bus.mapper.provider.NamingProvider;
  * @since Java 21+
  */
 public class TableAnnotationBuilder implements TableSchemaBuilder {
+
+    /**
+     * Constructs a new TableAnnotationBuilder instance.
+     */
+    public TableAnnotationBuilder() {
+        // No initialization required.
+    }
 
     /**
      * Creates table metadata for an entity class based on annotations or default naming conventions.
@@ -83,19 +92,27 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
                 tableMeta.schema(table.schema());
             }
             for (jakarta.persistence.Index index : table.indexes()) {
+                String[] columns = splitColumns(index.columnList());
+                if (columns.length == 0) {
+                    continue;
+                }
                 IndexMeta definition = IndexMeta.of(
                         StringKit.isNotEmpty(index.name()) ? index.name()
                                 : tableMeta.table() + "_" + index.columnList().replace(",", "_") + "_idx",
                         index.unique(),
-                        splitColumns(index.columnList()));
+                        columns);
                 tableMeta.addIndex(definition);
             }
             for (UniqueConstraint unique : table.uniqueConstraints()) {
+                String[] columns = splitColumns(unique.columnNames());
+                if (columns.length == 0) {
+                    continue;
+                }
                 IndexMeta definition = IndexMeta.of(
                         StringKit.isNotEmpty(unique.name()) ? unique.name()
                                 : tableMeta.table() + "_" + String.join("_", unique.columnNames()) + "_uk",
                         true,
-                        unique.columnNames());
+                        columns);
                 tableMeta.addIndex(definition);
             }
         } else if (StringKit.isEmpty(tableMeta.table())) {
@@ -114,11 +131,21 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
         if (StringKit.isEmpty(columnList)) {
             return new String[0];
         }
-        String[] columns = columnList.split(",");
-        for (int i = 0; i < columns.length; i++) {
-            columns[i] = columns[i].trim();
+        return splitColumns(columnList.split(","));
+    }
+
+    /**
+     * Trims and filters column names.
+     *
+     * @param columnNames the raw column names
+     * @return the non-blank column names
+     */
+    private String[] splitColumns(String[] columnNames) {
+        if (columnNames == null || columnNames.length == 0) {
+            return new String[0];
         }
-        return columns;
+        return Arrays.stream(columnNames).filter(StringKit::isNotEmpty).map(String::trim).filter(StringKit::isNotEmpty)
+                .toArray(String[]::new);
     }
 
 }

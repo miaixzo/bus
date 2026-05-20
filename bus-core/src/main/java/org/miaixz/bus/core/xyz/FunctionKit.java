@@ -32,6 +32,13 @@ import org.miaixz.bus.core.center.function.Consumer3X;
 public class FunctionKit {
 
     /**
+     * Constructs a new FunctionKit instance.
+     */
+    public FunctionKit() {
+        // No initialization required.
+    }
+
+    /**
      * Gets a value from the supplier.
      * <p>
      * Returns {@code null} when the supplier is {@code null}.

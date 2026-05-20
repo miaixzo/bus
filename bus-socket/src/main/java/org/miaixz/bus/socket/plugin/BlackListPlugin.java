@@ -36,6 +36,13 @@ import org.miaixz.bus.logger.Logger;
 public final class BlackListPlugin<T> extends AbstractPlugin<T> {
 
     /**
+     * Constructs a new BlackListPlugin instance.
+     */
+    public BlackListPlugin() {
+        // No initialization required.
+    }
+
+    /**
      * A queue of {@link BlackListRule} instances that define which IP addresses are blacklisted.
      */
     private ConcurrentLinkedQueue<BlackListRule> ipBlackList = new ConcurrentLinkedQueue<>();

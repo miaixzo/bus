@@ -51,6 +51,13 @@ import org.miaixz.bus.logger.Logger;
 public class Dcm2Jpg {
 
     /**
+     * Constructs a new Dcm2Jpg instance.
+     */
+    public Dcm2Jpg() {
+        // No initialization required.
+    }
+
+    /**
      * The ImageReader for DICOM format.
      */
     private final ImageReader imageReader = ImageIO.getImageReadersByFormatName("DICOM").next();

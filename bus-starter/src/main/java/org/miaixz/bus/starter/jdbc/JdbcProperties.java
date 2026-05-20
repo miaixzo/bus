@@ -40,6 +40,13 @@ import org.miaixz.bus.spring.GeniusBuilder;
 public class JdbcProperties {
 
     /**
+     * Constructs a new JdbcProperties instance.
+     */
+    public JdbcProperties() {
+        // No initialization required.
+    }
+
+    /**
      * The name of the data source.
      */
     private String name;

@@ -20,6 +20,7 @@
 package org.miaixz.bus.mapper.parsing;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -95,6 +96,16 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      * Expected schema indexes.
      */
     protected List<IndexMeta> indexes;
+
+    /**
+     * Expected schema primary key.
+     */
+    protected PrimaryKeyMeta primaryKey;
+
+    /**
+     * Expected schema foreign keys.
+     */
+    protected List<ForeignKeyMeta> foreignKeys;
 
     /**
      * Indicates if the initialization is complete and the table metadata is ready for use.
@@ -197,6 +208,97 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     public void addIndex(IndexMeta index) {
         if (index != null) {
             indexes().add(index);
+        }
+    }
+
+    /**
+     * Gets the expected primary key metadata.
+     *
+     * @return the primary key metadata, or {@code null} when no explicit ID column exists
+     */
+    public PrimaryKeyMeta primaryKey() {
+        List<String> keys = primaryKeyColumns().stream().map(ColumnMeta::column).collect(Collectors.toList());
+        if (keys.isEmpty()) {
+            return null;
+        }
+        if (this.primaryKey == null) {
+            this.primaryKey = PrimaryKeyMeta.of(table() + "_pk", keys);
+        } else {
+            this.primaryKey.columns(keys);
+        }
+        return this.primaryKey;
+    }
+
+    /**
+     * Gets primary key columns in entity declaration order for stable composite primary key DDL.
+     *
+     * @return primary key columns ordered by declaring field position
+     */
+    public List<ColumnMeta> primaryKeyColumns() {
+        List<ColumnMeta> keys = columns().stream().filter(ColumnMeta::id)
+                .collect(Collectors.toCollection(ArrayList::new));
+        keys.sort(Comparator.comparingInt(this::declarationOrder));
+        return keys;
+    }
+
+    /**
+     * Resolves the declaration order for a mapped column field.
+     *
+     * @param column the column metadata
+     * @return the declaration order, or {@link Integer#MAX_VALUE} when unavailable
+     */
+    private int declarationOrder(ColumnMeta column) {
+        if (column == null || column.fieldMeta() == null || column.fieldMeta().getField() == null) {
+            return Integer.MAX_VALUE;
+        }
+        int order = 0;
+        Class<?> declaringClass = column.fieldMeta().getDeclaringClass();
+        String fieldName = column.fieldMeta().getName();
+        Class<?> current = entityClass();
+        while (current != null && current != Object.class) {
+            Field[] fields = current.getDeclaredFields();
+            for (int i = 0; i < fields.length; i++) {
+                if (fields[i].getDeclaringClass() == declaringClass && fields[i].getName().equals(fieldName)) {
+                    return order + i;
+                }
+            }
+            order += fields.length;
+            current = current.getSuperclass();
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    /**
+     * Configures the expected primary key metadata.
+     *
+     * @param primaryKey the primary key metadata
+     * @return this table metadata
+     */
+    public TableMeta primaryKey(PrimaryKeyMeta primaryKey) {
+        this.primaryKey = primaryKey;
+        return this;
+    }
+
+    /**
+     * Gets all expected schema foreign keys.
+     *
+     * @return a list of foreign keys
+     */
+    public List<ForeignKeyMeta> foreignKeys() {
+        if (this.foreignKeys == null) {
+            this.foreignKeys = new ArrayList<>();
+        }
+        return foreignKeys;
+    }
+
+    /**
+     * Adds an expected schema foreign key.
+     *
+     * @param foreignKey the foreign key metadata
+     */
+    public void addForeignKey(ForeignKeyMeta foreignKey) {
+        if (foreignKey != null) {
+            foreignKeys().add(foreignKey);
         }
     }
 

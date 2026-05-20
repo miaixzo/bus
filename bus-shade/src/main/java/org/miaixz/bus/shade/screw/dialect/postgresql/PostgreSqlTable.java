@@ -36,6 +36,13 @@ import org.miaixz.bus.shade.screw.metadata.Table;
 public class PostgreSqlTable implements Table {
 
     /**
+     * Constructs a new PostgreSqlTable instance.
+     */
+    public PostgreSqlTable() {
+        // No initialization required.
+    }
+
+    /**
      * Specifies how values in SELF_REFERENCING_COL_NAME are created.
      */
     @MappingField(value = "ref_generation")

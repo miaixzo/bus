@@ -36,6 +36,13 @@ import java.io.Serializable;
  */
 public class PoolConfig implements Serializable {
 
+    /**
+     * Constructs a new PoolConfig instance.
+     */
+    public PoolConfig() {
+        // No initialization required.
+    }
+
     @Serial
     private static final long serialVersionUID = 2852272106223L;
 

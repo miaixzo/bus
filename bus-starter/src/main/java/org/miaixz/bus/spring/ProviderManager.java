@@ -52,7 +52,7 @@ public class ProviderManager {
      * Default constructor.
      */
     public ProviderManager() {
-
+        // No initialization required.
     }
 
     /**

@@ -51,6 +51,13 @@ import org.miaixz.bus.starter.Nexus;
 public class SpringHolder {
 
     /**
+     * Constructs a new SpringHolder instance.
+     */
+    public SpringHolder() {
+        // No initialization required.
+    }
+
+    /**
      * A static flag indicating whether the Spring application context is alive.
      */
     public static boolean alive = false;

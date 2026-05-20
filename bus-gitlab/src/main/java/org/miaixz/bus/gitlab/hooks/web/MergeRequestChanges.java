@@ -34,17 +34,41 @@ public class MergeRequestChanges extends EventChanges {
     private ChangeContainer<String> mergeStatus;
     private ChangeContainer<List<Reviewer>> reviewers;
 
+    /**
+     * Returns the merge status.
+     *
+     * @return the result
+     */
+
     public ChangeContainer<String> getMergeStatus() {
         return mergeStatus;
     }
+
+    /**
+     * Sets the merge status.
+     *
+     * @param mergeStatus the merge status value
+     */
 
     public void setMergeStatus(ChangeContainer<String> mergeStatus) {
         this.mergeStatus = mergeStatus;
     }
 
+    /**
+     * Returns the reviewers.
+     *
+     * @return the result
+     */
+
     public ChangeContainer<List<Reviewer>> getReviewers() {
         return reviewers;
     }
+
+    /**
+     * Sets the reviewers.
+     *
+     * @param reviewers the reviewers value
+     */
 
     public void setReviewers(ChangeContainer<List<Reviewer>> reviewers) {
         this.reviewers = reviewers;

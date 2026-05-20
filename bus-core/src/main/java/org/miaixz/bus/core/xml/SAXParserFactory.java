@@ -34,7 +34,7 @@ public class SAXParserFactory {
      * Constructs a new SAX parser factory utility.
      */
     public SAXParserFactory() {
-
+        // No initialization required.
     }
 
     /**

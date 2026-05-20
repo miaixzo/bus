@@ -47,6 +47,13 @@ import org.miaixz.bus.validate.magic.annotation.NotBlank;
 public class Checker {
 
     /**
+     * Constructs a new Checker instance.
+     */
+    public Checker() {
+        // No initialization required.
+    }
+
+    /**
      * Validates an object against a specific validator rule.
      *
      * @param verified  The object to be validated, wrapped in a {@link Verified} instance.

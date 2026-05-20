@@ -53,6 +53,13 @@ import org.miaixz.bus.logger.Logger;
 public class DcmDir {
 
     /**
+     * Constructs a new DcmDir instance.
+     */
+    public DcmDir() {
+        // No initialization required.
+    }
+
+    /**
      * Default number of characters per line for output.
      */
     private static final int DEFAULT_WIDTH = 78;

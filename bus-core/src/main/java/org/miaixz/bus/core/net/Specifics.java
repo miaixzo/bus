@@ -49,6 +49,13 @@ package org.miaixz.bus.core.net;
 public class Specifics {
 
     /**
+     * Constructs a new Specifics instance.
+     */
+    public Specifics() {
+        // No initialization required.
+    }
+
+    /**
      * The mandatory parameter name for the logical API method to be invoked (e.g., "user.getProfile").
      */
     public static final String METHOD = "method";

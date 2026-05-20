@@ -41,45 +41,111 @@ public class BranchAccessLevel implements Serializable {
     private Long userId;
     private Long groupId;
 
+    /**
+     * Returns the id.
+     *
+     * @return the result
+     */
+
     public Long getId() {
         return id;
     }
+
+    /**
+     * Sets the id.
+     *
+     * @param id the id value
+     */
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Returns the access level.
+     *
+     * @return the result
+     */
+
     public AccessLevel getAccessLevel() {
         return this.accessLevel;
     }
+
+    /**
+     * Sets the access level.
+     *
+     * @param accessLevel the access level value
+     */
 
     public void setAccessLevel(AccessLevel accessLevel) {
         this.accessLevel = accessLevel;
     }
 
+    /**
+     * Returns the access level description.
+     *
+     * @return the result
+     */
+
     public String getAccessLevelDescription() {
         return this.accessLevelDescription;
     }
+
+    /**
+     * Sets the access level description.
+     *
+     * @param accessLevelDescription the access level description value
+     */
 
     public void setAccessLevelDescription(String accessLevelDescription) {
         this.accessLevelDescription = accessLevelDescription;
     }
 
+    /**
+     * Returns the user id.
+     *
+     * @return the result
+     */
+
     public Long getUserId() {
         return userId;
     }
+
+    /**
+     * Sets the user id.
+     *
+     * @param userId the user id value
+     */
 
     public void setUserId(Long userId) {
         this.userId = userId;
     }
 
+    /**
+     * Returns the group id.
+     *
+     * @return the result
+     */
+
     public Long getGroupId() {
         return groupId;
     }
 
+    /**
+     * Sets the group id.
+     *
+     * @param groupId the group id value
+     */
+
     public void setGroupId(Long groupId) {
         this.groupId = groupId;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

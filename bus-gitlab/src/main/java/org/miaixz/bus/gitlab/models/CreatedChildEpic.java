@@ -38,29 +38,71 @@ public class CreatedChildEpic extends AbstractMinimalEpic<CreatedChildEpic> {
     private Boolean hasIssues;
     private String relationUrl;
 
+    /**
+     * Returns the has children.
+     *
+     * @return the result
+     */
+
     public Boolean getHasChildren() {
         return hasChildren;
     }
+
+    /**
+     * Sets the has children.
+     *
+     * @param hasChildren the has children value
+     */
 
     public void setHasChildren(Boolean hasChildren) {
         this.hasChildren = hasChildren;
     }
 
+    /**
+     * Returns the has issues.
+     *
+     * @return the result
+     */
+
     public Boolean getHasIssues() {
         return hasIssues;
     }
+
+    /**
+     * Sets the has issues.
+     *
+     * @param hasIssues the has issues value
+     */
 
     public void setHasIssues(Boolean hasIssues) {
         this.hasIssues = hasIssues;
     }
 
+    /**
+     * Returns the relation url.
+     *
+     * @return the result
+     */
+
     public String getRelationUrl() {
         return relationUrl;
     }
 
+    /**
+     * Sets the relation url.
+     *
+     * @param relationUrl the relation url value
+     */
+
     public void setRelationUrl(String relationUrl) {
         this.relationUrl = relationUrl;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

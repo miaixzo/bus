@@ -61,7 +61,7 @@ public class ReflectKit {
      * Constructs a new reflection utility instance.
      */
     public ReflectKit() {
-
+        // No initialization required.
     }
 
     /**

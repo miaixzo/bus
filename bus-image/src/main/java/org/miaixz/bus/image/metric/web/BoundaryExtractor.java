@@ -33,6 +33,7 @@ public final class BoundaryExtractor {
      * Creates a new instance.
      */
     private BoundaryExtractor() {
+        // No initialization required.
     }
 
     /**

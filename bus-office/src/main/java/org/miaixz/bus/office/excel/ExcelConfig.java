@@ -38,6 +38,13 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
 public class ExcelConfig {
 
     /**
+     * Constructs a new ExcelConfig instance.
+     */
+    public ExcelConfig() {
+        // No initialization required.
+    }
+
+    /**
      * Alias map for header rows.
      */
     protected Map<String, String> headerAlias;

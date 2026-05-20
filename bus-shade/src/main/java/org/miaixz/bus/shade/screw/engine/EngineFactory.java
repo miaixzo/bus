@@ -63,6 +63,7 @@ public class EngineFactory implements Serializable {
      * Private default constructor to prevent direct instantiation.
      */
     private EngineFactory() {
+        // No initialization required.
     }
 
     /**

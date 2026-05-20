@@ -44,7 +44,7 @@ public class ItemQuery extends ItemScope {
      * Creates an empty setting query.
      */
     public ItemQuery() {
-
+        // No initialization required.
     }
 
     /**
@@ -60,6 +60,7 @@ public class ItemQuery extends ItemScope {
     /**
      * Whether overlay content should be preferred during resolution.
      */
+    @lombok.Builder.Default
     private boolean preferOverlay = true;
 
     /**

@@ -38,21 +38,51 @@ public class ArtifactsFile implements Serializable {
     private String filename;
     private Long size;
 
+    /**
+     * Returns the filename.
+     *
+     * @return the result
+     */
+
     public String getFilename() {
         return filename;
     }
+
+    /**
+     * Sets the filename.
+     *
+     * @param filename the filename value
+     */
 
     public void setFilename(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Returns the size.
+     *
+     * @return the result
+     */
+
     public Long getSize() {
         return size;
     }
 
+    /**
+     * Sets the size.
+     *
+     * @param size the size value
+     */
+
     public void setSize(Long size) {
         this.size = size;
     }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
 
     @Override
     public String toString() {

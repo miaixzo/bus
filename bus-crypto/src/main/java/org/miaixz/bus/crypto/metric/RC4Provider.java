@@ -39,6 +39,13 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 public class RC4Provider implements Provider {
 
     /**
+     * Constructs a new RC4Provider instance.
+     */
+    public RC4Provider() {
+        // No initialization required.
+    }
+
+    /**
      * Encrypts the given content using RC4 with the provided key.
      *
      * @param key     The encryption key as a string. It will be converted to bytes using the platform's default

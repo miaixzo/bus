@@ -194,7 +194,7 @@ public interface RepeatableAnnotationCollector {
          * Constructs a no-op repeatable annotation collector.
          */
         None() {
-
+            // No initialization required.
         }
 
         /**
@@ -257,6 +257,7 @@ public interface RepeatableAnnotationCollector {
          * Constructs a repeatable annotation collector.
          */
         AbstractCollector() {
+            // No initialization required.
         }
 
         /**
@@ -417,6 +418,7 @@ public interface RepeatableAnnotationCollector {
          * Constructs a new {@code Standard} collector.
          */
         Standard() {
+            // No initialization required.
         }
 
         /**
@@ -540,6 +542,7 @@ public interface RepeatableAnnotationCollector {
          * Constructs a new {@code Full} collector.
          */
         Full() {
+            // No initialization required.
         }
 
         /**

@@ -19,11 +19,8 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.web.server.ServerWebExchange;
 
@@ -34,9 +31,7 @@ import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.magic.Limiter;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * A strategy that applies rate limiting to incoming requests.
@@ -78,10 +73,10 @@ public class LimiterStrategy extends AbstractStrategy {
      * <li>Retrieves the {@link Context} from the reactive stream.</li>
      * <li>Asserts that the context and its nested {@code Assets} have been populated by preceding strategies.</li>
      * <li>Extracts the API method, version, and client IP address from the context.</li>
-     * <li>Calls {@link #getLimiter} to find all applicable limiters (e.g., global and per-IP).</li>
-     * <li>For each applicable limiter, it asynchronously calls the {@link Limiter#acquire()} method. If a limiter has
-     * no available tokens, this call will throw an exception, which is caught by the global error handler to produce a
-     * "Too Many Requests" response.</li>
+     * <li>Calls {@link #getLimiters} to find all applicable limiters (e.g., global and per-IP).</li>
+     * <li>For each applicable limiter, it calls the non-blocking {@link Limiter#acquire()} method. If a limiter has no
+     * available tokens, this call throws an exception, which is caught by the global error handler to produce a "Too
+     * Many Requests" response.</li>
      * <li>If all limiters are successfully acquired, it proceeds to the next strategy in the chain.</li>
      * </ol>
      *
@@ -107,70 +102,60 @@ public class LimiterStrategy extends AbstractStrategy {
                     clientIp,
                     methodVersion);
 
-            return getLimiter(methodVersion, clientIp).flatMap(limiters -> {
-                if (limiters.isEmpty()) {
-                    Logger.debug(
-                            true,
-                            "Vortex",
-                            "No matching limiters found; bypassing rate limit: strategy=limiter, clientIp={}, methodVersion={}",
-                            clientIp,
-                            methodVersion);
-                    return chain.apply(exchange);
-                }
-
+            Set<Limiter> limiters = getLimiters(methodVersion, clientIp);
+            if (limiters.isEmpty()) {
                 Logger.debug(
                         true,
                         "Vortex",
-                        "Limiters resolved; acquiring permits: strategy=limiter, clientIp={}, limiterCount={}",
+                        "No matching limiters found; bypassing rate limit: strategy=limiter, clientIp={}, methodVersion={}",
                         clientIp,
-                        limiters.size());
+                        methodVersion);
+                return chain.apply(exchange);
+            }
 
-                List<Mono<Void>> acquireMonos = limiters.stream()
-                        .map(
-                                limiter -> Mono.fromRunnable(() -> limiter.acquire())
-                                        .subscribeOn(Schedulers.boundedElastic()).then())
-                        .collect(Collectors.toList());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Limiters resolved; acquiring permits: strategy=limiter, clientIp={}, limiterCount={}",
+                    clientIp,
+                    limiters.size());
 
-                return Mono.when(acquireMonos).doOnError(ex -> {
-                    Logger.warn(
-                            false,
-                            "Vortex",
-                            ex,
-                            "Rate limit exceeded: strategy=limiter, clientIp={}, methodVersion={}, exception={}",
-                            clientIp,
-                            methodVersion,
-                            ex.getClass().getSimpleName());
-                }).then(Mono.fromRunnable(() -> {
-                    Logger.info(
-                            true,
-                            "Vortex",
-                            "Rate limit permits acquired: strategy=limiter, clientIp={}, path={}, methodVersion={}",
-                            clientIp,
-                            exchange.getRequest().getURI().getPath(),
-                            methodVersion);
-                })).then(chain.apply(exchange));
-            });
+            return Mono.fromRunnable(() -> acquireAll(limiters)).doOnError(ex -> {
+                Logger.warn(
+                        false,
+                        "Vortex",
+                        ex,
+                        "Rate limit exceeded: strategy=limiter, clientIp={}, methodVersion={}, exception={}",
+                        clientIp,
+                        methodVersion,
+                        ex.getClass().getSimpleName());
+            }).then(Mono.fromRunnable(() -> {
+                Logger.info(
+                        true,
+                        "Vortex",
+                        "Rate limit permits acquired: strategy=limiter, clientIp={}, path={}, methodVersion={}",
+                        clientIp,
+                        exchange.getRequest().getURI().getPath(),
+                        methodVersion);
+            })).then(chain.apply(exchange));
         });
     }
 
     /**
-     * Asynchronously finds all applicable limiters for a given request.
+     * Finds all applicable limiters for a given request.
      * <p>
      * This method implements a two-layer lookup:
      * <ol>
      * <li><b>Global API Limit:</b> "api.user.get:1.0"</li>
      * <li><b>Per-IP API Limit:</b> "192.168.1.100:api.user.get:1.0"</li>
      * </ol>
-     * It fetches all potential limiters in parallel from the registry, assuming the {@code registry.get()} call might
-     * be blocking I/O (e.g., a cache or DB lookup).
+     * Both lookups are in-memory registry reads and run in the current reactive chain.
      *
      * @param methodVersion The combined method and version string for the API.
      * @param ip            The client's IP address.
-     * @return A {@code Mono<Set<Limiter>>} that emits the set of all found {@link Limiter} instances.
+     * @return the set of all found {@link Limiter} instances
      */
-    private Mono<Set<Limiter>> getLimiter(String methodVersion, String ip) {
-        Stream<String> limitKeys = Stream.of(methodVersion, ip + methodVersion);
-
+    private Set<Limiter> getLimiters(String methodVersion, String ip) {
         Logger.debug(
                 true,
                 "Vortex",
@@ -178,11 +163,33 @@ public class LimiterStrategy extends AbstractStrategy {
                 ip,
                 methodVersion);
 
-        List<Mono<Limiter>> limiterMonos = limitKeys
-                .map(key -> Mono.fromCallable(() -> registry.get(key)).subscribeOn(Schedulers.boundedElastic()))
-                .collect(Collectors.toList());
+        Set<Limiter> limiters = new LinkedHashSet<>();
+        addLimiter(limiters, registry.get(methodVersion));
+        addLimiter(limiters, registry.get(ip + methodVersion));
+        return limiters;
+    }
 
-        return Flux.merge(limiterMonos).filter(Objects::nonNull).collect(Collectors.toSet());
+    /**
+     * Adds a limiter when it is present.
+     *
+     * @param limiters resolved limiter set
+     * @param limiter  limiter candidate
+     */
+    private void addLimiter(Set<Limiter> limiters, Limiter limiter) {
+        if (limiter != null) {
+            limiters.add(limiter);
+        }
+    }
+
+    /**
+     * Acquires permits from all resolved limiters.
+     *
+     * @param limiters resolved limiter set
+     */
+    private void acquireAll(Set<Limiter> limiters) {
+        for (Limiter limiter : limiters) {
+            limiter.acquire();
+        }
     }
 
 }

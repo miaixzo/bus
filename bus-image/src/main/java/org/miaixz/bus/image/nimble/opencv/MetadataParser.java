@@ -37,6 +37,7 @@ public class MetadataParser {
      * Creates a new instance.
      */
     private MetadataParser() {
+        // No initialization required.
     }
 
     /**

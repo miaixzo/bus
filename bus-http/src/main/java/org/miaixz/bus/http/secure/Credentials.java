@@ -35,7 +35,7 @@ public final class Credentials {
      * Private constructor to prevent instantiation.
      */
     private Credentials() {
-
+        // No initialization required.
     }
 
     /**

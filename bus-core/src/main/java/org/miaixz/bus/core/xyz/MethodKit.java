@@ -48,6 +48,13 @@ import org.miaixz.bus.core.lang.reflect.method.MethodReflect;
 public class MethodKit {
 
     /**
+     * Constructs a new MethodKit instance.
+     */
+    public MethodKit() {
+        // No initialization required.
+    }
+
+    /**
      * Method cache.
      */
     private static final WeakConcurrentMap<Class<?>, MethodReflect> METHODS_CACHE = new WeakConcurrentMap<>();

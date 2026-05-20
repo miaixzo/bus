@@ -618,7 +618,6 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * <p>
      * If all elements are equal, it returns {@code true}.
      *
-     *
      * @param comparator The comparator to use for comparison.
      * @return {@code true} if the array is sorted (ascending or descending), {@code false} otherwise.
      * @throws NullPointerException If array elements contain {@code null} values and the comparator does not handle

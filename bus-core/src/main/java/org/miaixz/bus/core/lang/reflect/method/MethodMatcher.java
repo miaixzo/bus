@@ -41,6 +41,13 @@ import org.miaixz.bus.core.xyz.*;
 public class MethodMatcher {
 
     /**
+     * Constructs a new MethodMatcher instance.
+     */
+    public MethodMatcher() {
+        // No initialization required.
+    }
+
+    /**
      * A method matcher that combines multiple matchers, returning {@code true} only if all matchers fail to match.
      *
      * @param matchers An array of method predicates.

@@ -45,6 +45,12 @@ import org.miaixz.bus.gitlab.models.*;
  */
 public class PipelineApi extends AbstractApi implements Constants {
 
+    /**
+     * Constructs a new {@code PipelineApi} instance.
+     *
+     * @param gitLabApi the git lab api value
+     */
+
     public PipelineApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
@@ -445,7 +451,14 @@ public class PipelineApi extends AbstractApi implements Constants {
          */
         class CreatePipelineForm {
 
+            /**
+             * The ref value.
+             */
+
             public String ref;
+            /**
+             * The variables value.
+             */
             public List<Variable> variables;
 
             CreatePipelineForm(String ref, List<Variable> variables) {
@@ -1281,6 +1294,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * @param pipelineId      the pipeline ID to get the list of bridges for
      * @return a Stream containing the bridges for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
+     *
+     * @param scope the scope value
      */
     public Stream<Bridge> getBridgesStream(Object projectIdOrPath, long pipelineId, JobScope scope)
             throws GitLabApiException {

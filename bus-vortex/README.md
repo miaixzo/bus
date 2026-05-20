@@ -129,6 +129,9 @@ bus:
     limit:
       enabled: true           # Enable rate limiting
     performance:
+      max-connections: 5000
+      pending-acquire-timeout-seconds: 45
+      pending-acquire-max-count: 0  # 0 derives max-connections * 2
       sanitize-null-like-parameters: true
 ```
 
@@ -300,6 +303,9 @@ bus:
     port: 8765
     path: /router/rest
     performance:
+      max-connections: 5000
+      pending-acquire-timeout-seconds: 45
+      pending-acquire-max-count: 0
       sanitize-null-like-parameters: true
 ```
 
@@ -340,6 +346,9 @@ context.putQueryParameter("lang", "en");
 | bus.vortex.path | String | /router/rest | Gateway routing path |
 | bus.vortex.condition | boolean | false | Enable custom Spring MVC condition bridge |
 | bus.vortex.limit.enabled | boolean | false | Enable rate limiting |
+| bus.vortex.performance.max-connections | int | 5000 | Maximum outbound HTTP connection pool size |
+| bus.vortex.performance.pending-acquire-timeout-seconds | int | 45 | Maximum time to wait for a pooled outbound connection |
+| bus.vortex.performance.pending-acquire-max-count | int | 0 | Maximum pending outbound connection acquisitions; `0` derives `max-connections * 2` |
 | bus.vortex.performance.sanitize-null-like-parameters | boolean | true | Remove `null` / `"null"` / `"undefined"` parameters before routing |
 
 -----

@@ -42,6 +42,13 @@ import org.miaixz.bus.logger.Logger;
 public class ImageServiceRegistry implements DimseRQHandler {
 
     /**
+     * Constructs a new ImageServiceRegistry instance.
+     */
+    public ImageServiceRegistry() {
+        // No initialization required.
+    }
+
+    /**
      * The services value.
      */
     private final HashMap<String, DimseRQHandler> services = new HashMap<>();
