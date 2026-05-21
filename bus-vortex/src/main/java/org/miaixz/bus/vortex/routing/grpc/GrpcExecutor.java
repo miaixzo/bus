@@ -24,6 +24,7 @@ import java.net.URI;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -99,19 +100,21 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * @return A streaming ServerResponse
      */
     private Mono<ServerResponse> executeStreaming(Assets assets, String payload) {
-        return request(assets, payload).exchangeToMono(clientResponse -> {
-            Logger.info(
-                    false,
-                    "Vortex",
-                    "GRPC service invocation completed: protocol=grpc, event=GRPC_SUCCESS_STREAM, service={}, mode=streaming",
-                    assets.getMethod());
+        return request(assets, payload).retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
+                    Logger.info(
+                            false,
+                            "Vortex",
+                            "GRPC service invocation completed: protocol=grpc, event=GRPC_SUCCESS_STREAM, service={}, mode=streaming",
+                            assets.getMethod());
 
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
-            copyDownstreamHeaders(responseBuilder, clientResponse.headers().asHttpHeaders());
-            Flux<DataBuffer> dataFlux = clientResponse.bodyToFlux(DataBuffer.class);
+                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+                    copyDownstreamHeaders(responseBuilder, responseEntity.getHeaders());
+                    Flux<DataBuffer> dataFlux = responseEntity.getBody() == null ? Flux.empty()
+                            : responseEntity.getBody();
 
-            return responseBuilder.body(dataFlux, DataBuffer.class);
-        });
+                    return responseBuilder.body(BodyInserters.fromDataBuffers(dataFlux));
+                });
     }
 
     /**

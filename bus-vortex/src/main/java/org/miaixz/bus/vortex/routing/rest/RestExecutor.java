@@ -225,7 +225,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "Using ATOMIC mode (stream=1, exchangeToMono passthrough): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_STRATEGY",
+                    "Using ATOMIC mode (stream=1, buffered passthrough): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_STRATEGY",
                     ip,
                     method,
                     path);
@@ -471,52 +471,58 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     }
 
     /**
-     * **New private method.** Handles the execution for a STREAMING request (e.g., SSE). This uses the low-memory
-     * `exchangeToMono` method.
+     * Handles the execution for a STREAMING request such as SSE.
+     * <p>
+     * The response entity exposes a downstream {@link DataBuffer} stream that is written with a raw data-buffer body
+     * inserter so long-lived streams are not materialized in memory.
+     * </p>
      */
     private Mono<ServerResponse> executeStreaming(
             WebClient.RequestBodySpec bodySpec,
             String ip,
             String method,
             String path) {
-        return bodySpec.exchangeToMono(clientResponse -> {
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
-            Logger.debug(
-                    false,
-                    "Vortex",
-                    "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
-                    ip,
-                    method,
-                    path,
-                    clientResponse.headers().asHttpHeaders());
+        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
+                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+                    Logger.debug(
+                            false,
+                            "Vortex",
+                            "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
+                            ip,
+                            method,
+                            path,
+                            responseEntity.getHeaders());
 
-            responseBuilder.headers(headers -> {
-                headers.addAll(clientResponse.headers().asHttpHeaders());
-                headers.remove(HttpHeaders.HOST);
-                headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                headers.remove(HttpHeaders.CONTENT_LENGTH);
-            });
+                    responseBuilder.headers(headers -> {
+                        headers.addAll(responseEntity.getHeaders());
+                        headers.remove(HttpHeaders.HOST);
+                        headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                        headers.remove(HttpHeaders.CONTENT_LENGTH);
+                    });
 
-            Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
-                Logger.debug(
-                        false,
-                        "Vortex",
-                        "Received data chunk, size: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_STREAM_CHUNK, {} bytes",
-                        ip,
-                        method,
-                        path,
-                        dataBuffer.readableByteCount());
-            });
+                    Flux<DataBuffer> bodyFlux = responseEntity.getBody() == null ? Flux.empty()
+                            : responseEntity.getBody().doOnNext(dataBuffer -> {
+                                Logger.debug(
+                                        false,
+                                        "Vortex",
+                                        "Received data chunk, size: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_STREAM_CHUNK, {} bytes",
+                                        ip,
+                                        method,
+                                        path,
+                                        dataBuffer.readableByteCount());
+                            });
 
-            return responseBuilder.body(bodyFlux, DataBuffer.class);
-        }).doOnSubscribe(
-                subscription -> Logger.info(
-                        true,
-                        "Vortex",
-                        "Request subscribed (Streaming).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUBSCRIBE",
-                        ip,
-                        method,
-                        path))
+                    return responseBuilder.body(BodyInserters.fromDataBuffers(bodyFlux));
+                })
+                .doOnSubscribe(
+                        subscription -> Logger.info(
+                                true,
+                                "Vortex",
+                                "Request subscribed (Streaming).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUBSCRIBE",
+                                ip,
+                                method,
+                                path))
                 .doOnSuccess(
                         serverResponse -> Logger.info(
                                 false,
@@ -547,18 +553,18 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     }
 
     /**
-     * Handles the execution for an ATOMIC request using streamed downstream response passthrough.
+     * Handles the execution for an ATOMIC request using buffered downstream response passthrough.
      * <p>
-     * The route mode remains ATOMIC for compatibility with existing assets, but the downstream {@link DataBuffer} body
-     * is no longer materialized through entity buffering. Keeping the body as a {@link Flux} allows WebFlux to own
-     * cancellation, error, and release handling.
+     * The downstream response body is consumed inside the WebClient exchange and materialized as bytes before the
+     * {@link ServerResponse} is returned. This keeps the existing atomic route semantics and avoids deferred
+     * {@link DataBuffer} subscriptions after the downstream response has already been released.
      * </p>
      *
      * @param bodySpec the downstream request specification
      * @param ip       the client IP for logging
      * @param method   the incoming request method for logging
      * @param path     the incoming request path for logging
-     * @return a streamed {@link ServerResponse}
+     * @return a buffered {@link ServerResponse}
      */
     private Mono<ServerResponse> executeBuffering(
             WebClient.RequestBodySpec bodySpec,
@@ -569,40 +575,55 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     false,
                     "Vortex",
-                    "Received downstream status: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_PASSTHROUGH, {}",
+                    "Received downstream status: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_BUFFERED, {}",
                     ip,
                     method,
                     path,
                     clientResponse.statusCode());
-            Logger.info(
-                    false,
-                    "Vortex",
-                    "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
-                    ip,
-                    method,
-                    path,
-                    clientResponse.headers().asHttpHeaders());
 
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
-            responseBuilder.headers(headers -> {
-                headers.addAll(clientResponse.headers().asHttpHeaders());
-                headers.remove(HttpHeaders.HOST);
-                headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                headers.remove(HttpHeaders.CONTENT_LENGTH);
-            });
-
-            Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
-                Logger.debug(
+            return clientResponse.toEntity(byte[].class).flatMap(responseEntity -> {
+                Logger.info(
                         false,
                         "Vortex",
-                        "Received data chunk, size: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_PASSTHROUGH_CHUNK, {} bytes",
+                        "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
                         ip,
                         method,
                         path,
-                        dataBuffer.readableByteCount());
-            });
+                        responseEntity.getHeaders());
 
-            return responseBuilder.body(bodyFlux, DataBuffer.class);
+                byte[] body = responseEntity.getBody();
+                if (body != null && body.length > 0) {
+                    Logger.info(
+                            false,
+                            "Vortex",
+                            "Received buffered content: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
+                            ip,
+                            method,
+                            path,
+                            body.length);
+                } else {
+                    Logger.warn(
+                            false,
+                            "Vortex",
+                            "Received buffered content is empty: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED",
+                            ip,
+                            method,
+                            path);
+                }
+
+                ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+                responseBuilder.headers(headers -> {
+                    headers.addAll(responseEntity.getHeaders());
+                    headers.remove(HttpHeaders.HOST);
+                    headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                    headers.remove(HttpHeaders.CONTENT_LENGTH);
+                });
+
+                if (body != null && body.length > 0) {
+                    return responseBuilder.bodyValue(body);
+                }
+                return responseBuilder.build();
+            });
         }).doOnSubscribe(
                 subscription -> Logger.info(
                         true,

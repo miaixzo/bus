@@ -21,52 +21,36 @@ package org.miaixz.bus.vortex.strategy.vetting;
 
 import java.net.URI;
 import java.util.List;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
-import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.SignatureException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.crypto.Builder;
-import org.miaixz.bus.crypto.center.HMac;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Holder;
-import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * Performs MCP Streamable HTTP vetting after the MCP route asset has been resolved.
+ * Performs MCP Streamable HTTP vetting before the MCP route asset is resolved.
  * <p>
- * This strategy owns MCP protocol checks, Origin validation, optional MCP signature verification, and POST body replay
- * after signature verification consumes the raw request body.
+ * This strategy owns MCP protocol checks and Origin validation. Route resolution, authorization, signature
+ * verification, and forwarding cleanup are handled by {@code McpQualifierStrategy}.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@org.springframework.core.annotation.Order(Order.THIRD)
+@org.springframework.core.annotation.Order(Order.SECOND)
 public class McpVettingStrategy extends VettingStrategy {
 
     /**
@@ -77,7 +61,7 @@ public class McpVettingStrategy extends VettingStrategy {
     }
 
     /**
-     * Applies MCP protocol validation and signature verification.
+     * Applies MCP protocol validation.
      *
      * @param exchange current exchange
      * @param chain    remaining strategy chain
@@ -92,7 +76,7 @@ public class McpVettingStrategy extends VettingStrategy {
     }
 
     /**
-     * Validates Streamable HTTP method/header rules, enriches context metadata, and verifies route signatures.
+     * Validates Streamable HTTP method/header rules and trusted Origin configuration.
      *
      * @param exchange current exchange
      * @param context  request context
@@ -123,7 +107,6 @@ public class McpVettingStrategy extends VettingStrategy {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "MCP DELETE requires Mcp-Session-Id");
             }
             validateTrustedOrigin(request);
-            enrich(exchange, context);
             Logger.info(
                     true,
                     "Vortex",
@@ -132,150 +115,7 @@ public class McpVettingStrategy extends VettingStrategy {
                     method,
                     request.getPath().value(),
                     request.getHeaders().getFirst(Args.MCP_PROTOCOL_VERSION));
-        }).then(validateSignature(exchange, context, context.getAssets()));
-    }
-
-    /**
-     * Verifies an MCP route signature and restores the POST body when it was consumed for hashing.
-     *
-     * @param exchange current exchange
-     * @param context  request context
-     * @param assets   resolved MCP route asset from the request context
-     * @return exchange to continue with
-     */
-    protected Mono<ServerWebExchange> validateSignature(ServerWebExchange exchange, Context context, Assets assets) {
-        if (assets == null) {
-            return Mono.error(new ValidateException(ErrorCode._100800));
-        }
-        if (!Integer.valueOf(1).equals(assets.getSign())) {
-            return Mono.just(exchange);
-        }
-        if (context.getHttpMethod() != HTTP.Method.POST) {
-            return Mono.fromRunnable(() -> verifyMcpSignature(exchange.getRequest(), context, assets, new byte[0]))
-                    .thenReturn(exchange);
-        }
-        return exchange.getRequest().getBody().collectList().map(this::readAndRelease).flatMap(
-                body -> Mono.fromRunnable(() -> verifyMcpSignature(exchange.getRequest(), context, assets, body))
-                        .thenReturn(cacheBody(exchange, body)));
-    }
-
-    /**
-     * Reads all request body buffers into one byte array and releases pooled buffers directly.
-     *
-     * @param buffers request body buffers
-     * @return request body bytes
-     */
-    private byte[] readAndRelease(List<DataBuffer> buffers) {
-        if (buffers == null || buffers.isEmpty()) {
-            return new byte[0];
-        }
-        int size = buffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
-        byte[] bytes = new byte[size];
-        int offset = 0;
-        try {
-            for (DataBuffer buffer : buffers) {
-                int readable = buffer.readableByteCount();
-                buffer.read(bytes, offset, readable);
-                offset += readable;
-            }
-            return bytes;
-        } finally {
-            buffers.forEach(dataBuffer -> {
-                if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
-                    pooledDataBuffer.release();
-                }
-            });
-        }
-    }
-
-    /**
-     * Builds the MCP canonical signature payload and compares it with the request signature.
-     *
-     * @param request current HTTP request
-     * @param context request context
-     * @param assets  resolved MCP route asset
-     * @param body    cached request body bytes, or an empty array for body-less requests
-     */
-    private void verifyMcpSignature(ServerHttpRequest request, Context context, Assets assets, byte[] body) {
-        String timestamp = request.getHeaders().getFirst(Args.X_TIMESTAMP);
-        String nonce = request.getHeaders().getFirst(Args.X_NONCE);
-        String signature = request.getHeaders().getFirst(Args.X_SIGN);
-        if (StringKit.isBlank(timestamp) || StringKit.isBlank(nonce) || StringKit.isBlank(signature)) {
-            throw new SignatureException(ErrorCode._100109);
-        }
-        String canonical = request.getMethod().name() + Symbol.LF + request.getURI().getRawPath() + Symbol.LF
-                + canonicalQuery(request) + Symbol.LF + timestamp + Symbol.LF + nonce + Symbol.LF
-                + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_PROTOCOL_VERSION)) + Symbol.LF
-                + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_SESSION_ID)) + Symbol.LF
-                + Builder.sha256().digestHex(body == null ? new byte[0] : body);
-        String secret = StringKit.isNotBlank(context.getBearer()) ? context.getBearer() : getToken(context);
-        if (StringKit.isNotBlank(secret)) {
-            context.setBearer(secret);
-        } else {
-            secret = assets.getMethod();
-        }
-        HMac mac = StringKit.isBlank(secret) ? null
-                : Builder.hmac(Algorithm.HMACSHA256, secret.getBytes(Charset.UTF_8));
-        String expected = mac == null ? null : Base64.encode(mac.digest(canonical.getBytes(Charset.UTF_8)));
-        if (!constantTimeEquals(expected, signature)) {
-            throw new SignatureException(ErrorCode._100109);
-        }
-    }
-
-    /**
-     * Builds a stable query-string representation for MCP signature verification.
-     *
-     * @param request current HTTP request
-     * @return query parameters sorted by key and value
-     */
-    private String canonicalQuery(ServerHttpRequest request) {
-        TreeMap<String, List<String>> sorted = new TreeMap<>();
-        request.getQueryParams().forEach((key, values) -> sorted.put(key, values.stream().sorted().toList()));
-        return sorted.entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream().map(value -> entry.getKey() + Symbol.EQUAL + value))
-                .collect(Collectors.joining(Symbol.AND));
-    }
-
-    /**
-     * Compares two signature strings without returning early on the first differing byte.
-     *
-     * @param expected expected signature
-     * @param actual   request signature
-     * @return {@code true} when both signatures match
-     */
-    private boolean constantTimeEquals(String expected, String actual) {
-        if (expected == null || actual == null) {
-            return false;
-        }
-        byte[] left = expected.getBytes(Charset.UTF_8);
-        byte[] right = actual.getBytes(Charset.UTF_8);
-        int diff = left.length ^ right.length;
-        int max = Math.max(left.length, right.length);
-        for (int i = 0; i < max; i++) {
-            byte l = i < left.length ? left[i] : 0;
-            byte r = i < right.length ? right[i] : 0;
-            diff |= l ^ r;
-        }
-        return diff == 0;
-    }
-
-    /**
-     * Replaces the consumed request body with a replayable body backed by cached bytes.
-     *
-     * @param exchange current web exchange
-     * @param body     cached body bytes
-     * @return exchange carrying a decorated request body
-     */
-    private ServerWebExchange cacheBody(ServerWebExchange exchange, byte[] body) {
-        ServerHttpRequest request = new ServerHttpRequestDecorator(exchange.getRequest()) {
-
-            @Override
-            public Flux<DataBuffer> getBody() {
-                return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body)));
-            }
-
-        };
-        return exchange.mutate().request(request).build();
+        }).thenReturn(exchange);
     }
 
     /**

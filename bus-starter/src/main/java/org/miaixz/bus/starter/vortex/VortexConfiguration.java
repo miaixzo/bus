@@ -419,8 +419,8 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the REST vetting strategy bean. This strategy validates REST/API parameters, timestamps, and signatures
-     * after route assets have been resolved.
+     * Provides the REST vetting strategy bean. This strategy validates REST/API parameters and timestamps before route
+     * assets are resolved.
      *
      * @return A new instance of RestVettingStrategy.
      */

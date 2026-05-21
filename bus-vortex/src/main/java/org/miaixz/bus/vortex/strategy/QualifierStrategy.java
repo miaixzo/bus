@@ -22,7 +22,6 @@ package org.miaixz.bus.vortex.strategy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.springframework.web.server.ServerWebExchange;
@@ -60,14 +59,8 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  * @since Java 21+
  */
-@org.springframework.core.annotation.Order(Order.SECOND)
+@org.springframework.core.annotation.Order(Order.THIRD)
 public class QualifierStrategy extends AbstractStrategy {
-
-    /**
-     * Exchange attribute key used to defer REST authorization attributes until signature verification completes.
-     */
-    public static final String AUTHORIZATION_ATTRIBUTES = QualifierStrategy.class.getName()
-            + ".AUTHORIZATION_ATTRIBUTES";
 
     /**
      * Provider used to validate route credentials and load authorization attributes.
@@ -145,12 +138,8 @@ public class QualifierStrategy extends AbstractStrategy {
                         assets.getPath(),
                         assets.getUrl());
                 Mono<Void> validationMono = this.method(context, assets);
-                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy())
-                        ? this.authorize(
-                                context,
-                                attributes -> exchange.getAttributes().put(AUTHORIZATION_ATTRIBUTES, attributes))
-                        : Mono.empty();
-                return validationMono.then(authMono);
+                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? this.authorize(context) : Mono.empty();
+                return validationMono.then(authMono).then(finalizeParameters(exchange, context));
             }).then(
                     Mono.fromRunnable(
                             () -> Logger.info(
@@ -270,21 +259,6 @@ public class QualifierStrategy extends AbstractStrategy {
      * @return completion signal
      */
     protected Mono<Void> authorize(Context context) {
-        return authorize(context, context.getParameters()::putAll);
-    }
-
-    /**
-     * Performs policy-based authorization and sends authorization attributes to the supplied consumer.
-     * <p>
-     * REST uses a deferred consumer so generated authorization attributes are not included in request signature
-     * verification. MCP can write them immediately because its signature canonical string is built from headers, path,
-     * query, and raw body rather than gateway parameters.
-     *
-     * @param context            current request context
-     * @param attributesConsumer authorization attribute sink
-     * @return completion signal
-     */
-    protected Mono<Void> authorize(Context context, Consumer<Map<String, Object>> attributesConsumer) {
         final Integer policy = context.getAssets().getPolicy();
 
         if (policy == null || policy < Consts.ZERO || policy > Consts.SIX) {
@@ -369,9 +343,7 @@ public class QualifierStrategy extends AbstractStrategy {
                                 .filter(entry -> entry.getKey() != null && entry.getValue() != null)
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-                        if (attributesConsumer != null) {
-                            attributesConsumer.accept(nonNullAuthMap);
-                        }
+                        context.getParameters().putAll(nonNullAuthMap);
                         Logger.info(
                                 true,
                                 "Vortex",
@@ -392,6 +364,35 @@ public class QualifierStrategy extends AbstractStrategy {
                             message.errmsg);
                     return Mono.error(new ValidateException(message.errcode, message.errmsg));
                 });
+    }
+
+    /**
+     * Adds final downstream parameters and removes gateway-only control parameters.
+     * <p>
+     * This method must run after route resolution, signature verification, and authorization so gateway parameters stay
+     * available for those checks but are not forwarded to the target service.
+     *
+     * @param exchange current exchange
+     * @param context  request context
+     * @return completion signal
+     */
+    protected Mono<Void> finalizeParameters(ServerWebExchange exchange, Context context) {
+        return Mono.fromRunnable(() -> {
+            enrich(exchange, context);
+            removeForwardingControlParameters(context);
+        });
+    }
+
+    /**
+     * Removes gateway control parameters from the downstream-visible parameter map after qualification has finished.
+     * <p>
+     * Matching is case-insensitive so variants such as {@code Method}, {@code VERSION}, or {@code Sign} are removed as
+     * well.
+     *
+     * @param context request context
+     */
+    protected void removeForwardingControlParameters(Context context) {
+        context.getParameters().keySet().removeIf(Args::isForwardingControlParameter);
     }
 
 }

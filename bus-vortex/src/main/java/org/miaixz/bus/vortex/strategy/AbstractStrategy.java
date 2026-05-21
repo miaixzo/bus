@@ -277,6 +277,35 @@ public abstract class AbstractStrategy implements Strategy {
     }
 
     /**
+     * Adds derived request metadata to the context and downstream parameter map.
+     *
+     * @param exchange current exchange
+     * @param context  request context
+     */
+    protected void enrich(ServerWebExchange exchange, Context context) {
+        String x_request_id = context.getX_request_id();
+        if (StringKit.isEmpty(x_request_id)) {
+            x_request_id = context.getX_request_id();
+            context.setX_request_id(x_request_id);
+        }
+        context.getParameters().put("x_request_id", x_request_id);
+
+        String x_request_ipv4 = context.getX_request_ip();
+        if (StringKit.isEmpty(x_request_ipv4)) {
+            x_request_ipv4 = this.getClientIp(exchange.getRequest());
+            context.setX_request_ipv4(x_request_ipv4);
+        }
+        context.getParameters().put("x_request_ipv4", x_request_ipv4);
+
+        String x_request_domain = context.getX_request_domain();
+        if (StringKit.isEmpty(x_request_domain)) {
+            x_request_domain = this.determineRequestDomain(exchange.getRequest());
+            context.setX_request_domain(x_request_domain);
+        }
+        context.getParameters().put("x_request_domain", x_request_domain);
+    }
+
+    /**
      * Retrieves the original protocol (http or https) of the request, prioritizing proxy headers.
      * <p>
      * This ensures correct protocol detection even when the application is behind a reverse proxy that terminates TLS.
@@ -314,6 +343,23 @@ public abstract class AbstractStrategy implements Strategy {
         String protocol = request.getURI().getScheme();
         Logger.debug(true, "Vortex", "Protocol: '{}' found via fallback getURI().getScheme()", protocol);
         return protocol;
+    }
+
+    /**
+     * Determines the request domain from proxy-aware authority headers.
+     *
+     * @param request current request
+     * @return request authority or a stable unknown fallback
+     */
+    private String determineRequestDomain(ServerHttpRequest request) {
+        return getAuthority(request).orElseGet(() -> {
+            Logger.warn(
+                    true,
+                    "Vortex",
+                    "Unable to determine request domain (host:port). Using default value: strategy=abstract, {}",
+                    (Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO));
+            return Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO;
+        });
     }
 
     /**

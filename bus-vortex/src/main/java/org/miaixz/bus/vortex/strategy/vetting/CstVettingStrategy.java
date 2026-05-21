@@ -25,13 +25,13 @@ import org.miaixz.bus.vortex.strategy.VettingStrategy;
 /**
  * CST URL-based request vetting strategy.
  * <p>
- * CST currently uses the common validation, enrichment, and authorization-attribute merge behavior provided by
- * {@link VettingStrategy}. This class exists as the CST-specific strategy type used by the strategy factory.
+ * CST currently uses the common request validation behavior provided by {@link VettingStrategy}. Route resolution,
+ * authorization, enrichment, and forwarding cleanup are handled by {@code CstQualifierStrategy}.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@org.springframework.core.annotation.Order(Order.THIRD)
+@org.springframework.core.annotation.Order(Order.SECOND)
 public class CstVettingStrategy extends VettingStrategy {
 
     /**

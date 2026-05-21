@@ -770,17 +770,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.extra.mq.provider.jms.JmsProducer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
