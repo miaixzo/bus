@@ -70,7 +70,7 @@ public final class Egress {
      * @return The request body spec used by REST and MCP executors.
      */
     public static WebClient.RequestBodySpec request(HttpMethod method, URI uri) {
-        return resources().webClient().method(method).uri(uri);
+        return client().method(method).uri(uri);
     }
 
     /**
@@ -83,7 +83,7 @@ public final class Egress {
      * @return The shared WebClient.
      */
     public static WebClient webClient() {
-        return resources().webClient();
+        return client();
     }
 
     /**
@@ -95,28 +95,28 @@ public final class Egress {
      * @return {@code true} if resources are initialized.
      */
     public static boolean initialized() {
-        return ResourcesHolder.initialized();
+        return ClientHolder.initialized();
     }
 
     /**
-     * Returns lazily initialized outbound HTTP resources.
+     * Returns the lazily initialized outbound HTTP client facade.
      *
-     * @return The shared outbound HTTP resources.
+     * @return The shared outbound WebClient.
      */
-    private static Resources resources() {
-        return ResourcesHolder.get();
+    private static WebClient client() {
+        return ClientHolder.get();
     }
 
     /**
-     * Creates the shared Reactor Netty and WebClient resources.
+     * Creates the shared WebClient facade backed by Reactor Netty.
      * <p>
      * The {@link HttpClient} is created from the existing Vortex connection provider so current connection pool
      * performance settings continue to apply. The {@link ExchangeStrategies} instance keeps the previous codec memory
      * limit while moving the configuration out of individual executors.
      *
-     * @return The newly created outbound HTTP resources.
+     * @return The newly created outbound WebClient.
      */
-    private static Resources create() {
+    private static WebClient create() {
         HttpClient httpClient = HttpClient.create(Holder.connectionProvider());
         ExchangeStrategies strategies = ExchangeStrategies.builder()
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE)).build();
@@ -124,11 +124,11 @@ public final class Egress {
                 .exchangeStrategies(strategies).build();
 
         Logger.info(true, "Vortex", "Outbound HTTP client initialized: implementation={}", "reactor-netty");
-        return new Resources(httpClient, webClient);
+        return webClient;
     }
 
     /**
-     * Lazy holder for outbound HTTP resources.
+     * Lazy holder for the outbound HTTP client.
      * <p>
      * The holder uses double-checked locking so the connection provider is not touched during class loading. This
      * avoids creating HTTP resources before {@link Holder#of(org.miaixz.bus.vortex.magic.Performance)} has applied the
@@ -137,33 +137,33 @@ public final class Egress {
      * @author Kimi Liu
      * @since Java 21+
      */
-    private static final class ResourcesHolder {
+    private static final class ClientHolder {
 
         /**
-         * Shared outbound HTTP resources, initialized on the first outbound proxy request.
+         * Shared outbound WebClient, initialized on the first outbound proxy request.
          */
-        private static volatile Resources resources;
+        private static volatile WebClient client;
 
         /**
          * Utility holder constructor.
          */
-        private ResourcesHolder() {
+        private ClientHolder() {
             // No initialization required.
         }
 
         /**
-         * Returns the shared resources, creating them once when first requested.
+         * Returns the shared client, creating it once when first requested.
          *
-         * @return The shared outbound HTTP resources.
+         * @return The shared outbound WebClient.
          */
-        private static Resources get() {
-            Resources current = resources;
+        private static WebClient get() {
+            WebClient current = client;
             if (current == null) {
-                synchronized (ResourcesHolder.class) {
-                    current = resources;
+                synchronized (ClientHolder.class) {
+                    current = client;
                     if (current == null) {
                         current = create();
-                        resources = current;
+                        client = current;
                     }
                 }
             }
@@ -176,23 +176,8 @@ public final class Egress {
          * @return {@code true} if resources are already initialized.
          */
         private static boolean initialized() {
-            return resources != null;
+            return client != null;
         }
-
-    }
-
-    /**
-     * Container for the low-level Reactor Netty client and the higher-level Spring WebClient facade.
-     * <p>
-     * Keeping both references together documents that they have the same lifecycle: both are created once, shared by
-     * all REST/MCP outbound proxy requests, and backed by the connection provider owned by {@link Holder}.
-     *
-     * @param httpClient The shared Reactor Netty HTTP client.
-     * @param webClient  The shared Spring WebClient built on top of {@code httpClient}.
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    private record Resources(HttpClient httpClient, WebClient webClient) {
 
     }
 

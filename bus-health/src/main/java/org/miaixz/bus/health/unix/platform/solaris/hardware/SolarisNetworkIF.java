@@ -287,11 +287,12 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
         this.packetsSent = results[2] == null ? 0L : (long) results[2];
         this.packetsRecv = results[3] == null ? 0L : (long) results[3];
         this.outErrors = results[4] == null ? 0L : (long) results[4];
-        this.collisions = results[5] == null ? 0L : (long) results[5];
-        this.inDrops = results[6] == null ? 0L : (long) results[6];
-        this.speed = results[7] == null ? 0L : (long) results[7];
+        this.inErrors = results[5] == null ? 0L : (long) results[5];
+        this.collisions = results[6] == null ? 0L : (long) results[6];
+        this.inDrops = results[7] == null ? 0L : (long) results[7];
+        this.speed = results[8] == null ? 0L : (long) results[8];
         // Snap time in ns; convert to ms
-        this.timeStamp = (long) results[8] / 1_000_000L;
+        this.timeStamp = (long) results[9] / 1_000_000L;
         return true;
     }
 

@@ -241,6 +241,7 @@ public class Provider implements org.miaixz.bus.core.Provider {
         hardwareMap.put("sensors", getHardware().getSensors());
         hardwareMap.put("logicalVolumeGroups", getHardware().getLogicalVolumeGroups());
         hardwareMap.put("soundCards", getHardware().getSoundCards());
+        hardwareMap.put("bluetoothDevices", getHardware().getBluetoothDevices());
         hardwareMap.put("graphicsCards", getHardware().getGraphicsCards());
         hardwareMap.put("displays", getHardware().getDisplays());
         hardwareMap.put("diskStores", getHardware().getDiskStores());

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +42,7 @@ public class Tenant extends Tracer {
     /**
      * The unique identifier of the tenant to which the current entity belongs.
      */
+    @Column(length = 24)
     private String tenant_id;
 
 }
