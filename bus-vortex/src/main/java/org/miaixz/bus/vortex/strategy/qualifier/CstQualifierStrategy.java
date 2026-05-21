@@ -39,7 +39,7 @@ import org.miaixz.bus.vortex.strategy.QualifierStrategy;
  * @author Kimi Liu
  * @since Java 21+
  */
-@org.springframework.core.annotation.Order(Order.SECOND)
+@org.springframework.core.annotation.Order(Order.THIRD)
 public class CstQualifierStrategy extends QualifierStrategy {
 
     /**

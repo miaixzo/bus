@@ -22,6 +22,7 @@ package org.miaixz.bus.vortex.handler;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.*;
 
@@ -86,8 +87,6 @@ public class ErrorsHandler implements WebExceptionHandler {
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
         ServerHttpResponse response = exchange.getResponse();
         ServerHttpRequest request = exchange.getRequest();
-        response.setStatusCode(HttpStatus.OK);
-
         Context context = exchange.getAttribute(Context.$);
         if (context != null) {
             Logger.info(false, "Vortex", "Context format is: {}", context.getFormat());
@@ -99,18 +98,33 @@ public class ErrorsHandler implements WebExceptionHandler {
         String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
 
         Formats formats = (context != null) ? context.getFormat() : Formats.JSON;
-        response.getHeaders().setContentType(formats.getMediaType());
+        response.setStatusCode(HttpStatus.OK);
 
-        Mono<Message> messageMono = Mono.fromCallable(() -> buildErrorMessage(ex, method, path));
-
-        Mono<DataBuffer> dataBufferMono = messageMono.flatMap(message -> formats.getProvider().serialize(message))
-                .map(formatBody -> {
-                    if (formatBody instanceof byte[]) {
-                        return response.bufferFactory().wrap((byte[]) formatBody);
+        AtomicInteger responseBytes = new AtomicInteger();
+        Mono<DataBuffer> dataBufferMono = Mono.fromCallable(() -> buildErrorMessage(ex, method, path))
+                .flatMap(message -> formats.getProvider().serialize(message)).map(formatBody -> {
+                    byte[] bytes;
+                    if (formatBody instanceof byte[] value) {
+                        bytes = value;
                     } else {
-                        return response.bufferFactory().wrap(((String) formatBody).getBytes(Charset.UTF_8));
+                        bytes = String.valueOf(formatBody).getBytes(Charset.UTF_8);
                     }
+                    responseBytes.set(bytes.length);
+                    response.getHeaders().setContentType(formats.getMediaType());
+                    response.getHeaders().setContentLength(bytes.length);
+                    return response.bufferFactory().wrap(bytes);
                 });
+
+        if (response.isCommitted()) {
+            Logger.error(
+                    false,
+                    "Vortex",
+                    "Error response skipped because response is already committed: method={}, path={}, event=ERROR_RESPONSE_COMMITTED, exception={}",
+                    method,
+                    path,
+                    ex.getClass().getSimpleName());
+            return Mono.empty();
+        }
 
         return response.writeWith(dataBufferMono).doOnTerminate(() -> {
             String exceptionName = ex.getClass().getSimpleName();
@@ -121,20 +135,22 @@ public class ErrorsHandler implements WebExceptionHandler {
                 Logger.error(
                         false,
                         "Vortex",
-                        "Error response handled: clientIp={}, method={}, path={}, event=ERROR_COMPLETION, executionTimeMs={}, exception={}",
+                        "Error response handled: clientIp={}, method={}, path={}, event=ERROR_COMPLETION, executionTimeMs={}, responseBytes={}, exception={}",
                         ip,
                         method,
                         path,
                         executionTime,
+                        responseBytes.get(),
                         exceptionName);
             } else {
                 Logger.error(
                         false,
                         "Vortex",
-                        "Error response handled: clientIp={}, method={}, path={}, event=ERROR_COMPLETION, exception={}",
+                        "Error response handled: clientIp={}, method={}, path={}, event=ERROR_COMPLETION, responseBytes={}, exception={}",
                         ip,
                         method,
                         path,
+                        responseBytes.get(),
                         exceptionName);
             }
         });

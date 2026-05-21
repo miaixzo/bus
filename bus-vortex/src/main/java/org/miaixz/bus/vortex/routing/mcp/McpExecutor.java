@@ -448,7 +448,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                             method,
                             path);
 
-                    return responseBuilder.body(bodyFlux, DataBuffer.class);
+                    return responseBuilder.body(BodyInserters.fromDataBuffers(bodyFlux));
                 })
                 .doOnSubscribe(
                         subscription -> Logger.info(
@@ -618,9 +618,9 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Handles the execution for a BUFFERING MCP request.
      * <p>
-     * This path mirrors REST buffering behavior while streaming the downstream response body through WebFlux. It is
-     * used for non-streaming MCP responses such as JSON acknowledgements, without materializing a standalone
-     * {@link DataBuffer}.
+     * This path mirrors REST buffering behavior by consuming the downstream response body inside the WebClient exchange
+     * before the {@link ServerResponse} is returned. It is used for non-streaming MCP responses such as JSON
+     * acknowledgements.
      *
      * @param bodySpec The request body specification.
      * @param ip       The client IP for logging.
@@ -642,35 +642,50 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     method,
                     path,
                     clientResponse.statusCode());
-            Logger.info(
-                    false,
-                    "Vortex",
-                    "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
-                    ip,
-                    method,
-                    path,
-                    clientResponse.headers().asHttpHeaders());
 
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
-            responseBuilder.headers(headers -> {
-                headers.addAll(clientResponse.headers().asHttpHeaders());
-                headers.remove(HttpHeaders.HOST);
-                headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                headers.remove(HttpHeaders.CONTENT_LENGTH);
-            });
-
-            Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
-                Logger.debug(
+            return clientResponse.toEntity(byte[].class).flatMap(responseEntity -> {
+                Logger.info(
                         false,
                         "Vortex",
-                        "Received data chunk, size: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_BUFFERED_CHUNK, {} bytes",
+                        "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
                         ip,
                         method,
                         path,
-                        dataBuffer.readableByteCount());
-            });
+                        responseEntity.getHeaders());
 
-            return responseBuilder.body(bodyFlux, DataBuffer.class);
+                byte[] body = responseEntity.getBody();
+                if (body != null && body.length > 0) {
+                    Logger.info(
+                            false,
+                            "Vortex",
+                            "Received buffered content: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
+                            ip,
+                            method,
+                            path,
+                            body.length);
+                } else {
+                    Logger.warn(
+                            false,
+                            "Vortex",
+                            "Received buffered content is empty: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED",
+                            ip,
+                            method,
+                            path);
+                }
+
+                ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+                responseBuilder.headers(headers -> {
+                    headers.addAll(responseEntity.getHeaders());
+                    headers.remove(HttpHeaders.HOST);
+                    headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                    headers.remove(HttpHeaders.CONTENT_LENGTH);
+                });
+
+                if (body != null && body.length > 0) {
+                    return responseBuilder.bodyValue(body);
+                }
+                return responseBuilder.build();
+            });
         }).doOnSubscribe(
                 subscription -> Logger.info(
                         true,
