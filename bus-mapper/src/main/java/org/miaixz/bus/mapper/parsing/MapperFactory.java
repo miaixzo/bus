@@ -88,8 +88,9 @@ public abstract class MapperFactory {
                     Class<?> declaredClass = entityClass;
                     boolean isSuperclass = false;
                     while (declaredClass != null && declaredClass != Object.class) {
-                        // Use bus-core FieldKit for field retrieval with built-in cache optimization
-                        Field[] declaredFields = FieldKit.getFields(declaredClass);
+                        // Use declared fields for the current hierarchy level so subclass column definitions are
+                        // evaluated before inherited definitions and can override them deterministically.
+                        Field[] declaredFields = FieldKit.getDeclaredFields(declaredClass, null);
                         if (isSuperclass) {
                             reverse(declaredFields);
                         }

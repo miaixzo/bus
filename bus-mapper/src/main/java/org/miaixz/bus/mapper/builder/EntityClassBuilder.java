@@ -72,15 +72,16 @@ public class EntityClassBuilder {
      * @throws RuntimeException if the {@link TableMeta} for the entity class has not been initialized.
      */
     public static void setColumnMeta(Class<?> entityClass, ColumnMeta columnMeta) {
-        List<ColumnMeta> columnMetas = COLUMN_META_STORE.computeIfAbsent(entityClass, k -> new ArrayList<>());
-        synchronized (columnMetas) {
-            columnMetas.add(columnMeta);
-        }
         TableMeta tableMeta = TABLE_META_STORE.get(entityClass);
         if (tableMeta == null) {
             throw new RuntimeException("TableMeta for " + entityClass.getName() + " not initialized");
         }
-        tableMeta.addColumn(columnMeta);
+        List<ColumnMeta> columnMetas = COLUMN_META_STORE.computeIfAbsent(entityClass, k -> new ArrayList<>());
+        synchronized (columnMetas) {
+            tableMeta.addColumn(columnMeta);
+            columnMetas.clear();
+            columnMetas.addAll(tableMeta.columns());
+        }
     }
 
     /**
