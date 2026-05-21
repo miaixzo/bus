@@ -62,6 +62,7 @@ module bus.core {
     exports org.miaixz.bus.core.center.date.culture.eightchar.provider;
     exports org.miaixz.bus.core.center.date.culture.eightchar.provider.impl;
     exports org.miaixz.bus.core.center.date.culture.fetus;
+    exports org.miaixz.bus.core.center.date.culture.hijri;
     exports org.miaixz.bus.core.center.date.culture.minor;
     exports org.miaixz.bus.core.center.date.culture.nine;
     exports org.miaixz.bus.core.center.date.culture.plumrain;

@@ -23,7 +23,7 @@
  * This package contains classes representing various components of the Gregorian calendar system, including years,
  * quarters, half-years, months, weeks, days, and times. It also provides support for solar terms (the 24 seasonal
  * periods), solar festivals, and conversions between the Gregorian calendar and other calendar systems (such as Lunar
- * and Tibetan calendars).
+ * Hijri and Tibetan calendars).
  * </p>
  * <p>
  * Key classes include:

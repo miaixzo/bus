@@ -30,6 +30,7 @@ import org.miaixz.bus.core.center.date.culture.climate.ClimateDay;
 import org.miaixz.bus.core.center.date.culture.dog.Dog;
 import org.miaixz.bus.core.center.date.culture.dog.DogDay;
 import org.miaixz.bus.core.center.date.culture.festival.Festival;
+import org.miaixz.bus.core.center.date.culture.hijri.HijriDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
 import org.miaixz.bus.core.center.date.culture.nine.Nine;
@@ -172,12 +173,10 @@ public class SolarDay extends DayParts {
      * @return true if this day is before the target
      */
     public boolean isBefore(SolarDay target) {
-        int y = target.getYear();
-        if (year != y) {
-            return year < y;
+        if (year != target.year) {
+            return year < target.year;
         }
-        int m = target.getMonth();
-        return month != m ? month < m : day < target.getDay();
+        return month != target.month ? month < target.month : day < target.day;
     }
 
     /**
@@ -187,12 +186,10 @@ public class SolarDay extends DayParts {
      * @return true if this day is after the target
      */
     public boolean isAfter(SolarDay target) {
-        int y = target.getYear();
-        if (year != y) {
-            return year > y;
+        if (year != target.year) {
+            return year > target.year;
         }
-        int m = target.getMonth();
-        return month != m ? month > m : day > target.getDay();
+        return month != target.month ? month > target.month : day > target.day;
     }
 
     /**
@@ -402,6 +399,22 @@ public class SolarDay extends DayParts {
             days += m.getDayCount();
         }
         return LunarDay.fromYmd(m.getYear(), m.getMonthWithLeap(), days + 1);
+    }
+
+    /**
+     * Converts this solar day to a Hijri day.
+     *
+     * @return the corresponding Hijri day
+     */
+    public HijriDay getHijriDay() {
+        int d = subtract(SolarDay.fromYmd(622, 7, 16));
+        int z = Math.floorDiv(d, 10631);
+        d -= z * 10631;
+        int y = (int) Math.floor((d + 0.5) / 354.366);
+        d -= (int) Math.floor(y * 354.366 + 0.5);
+        int m = (int) Math.floor((d + 0.11) / 29.51);
+        d -= (int) Math.floor(m * 29.5 + 0.5);
+        return HijriDay.fromYmd(z * 30 + y + 1, m + 1, d + 1);
     }
 
     /**

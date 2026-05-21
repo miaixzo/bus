@@ -67,10 +67,8 @@ public class SolarFestival extends AbstractFestival {
         }
         int start = index * 8;
         Festival e = new Festival(NAMES[index], "@" + DATA.substring(start, start + 8));
-        if (year < e.getStartYear()) {
-            return null;
-        }
-        return new SolarFestival(index, e, SolarDay.fromYmd(year, e.getValue(2), e.getValue(3)));
+        return year < e.getStartYear() ? null
+                : new SolarFestival(index, e, SolarDay.fromYmd(year, e.getValue(2), e.getValue(3)));
     }
 
     /**
@@ -83,9 +81,9 @@ public class SolarFestival extends AbstractFestival {
      */
     public static SolarFestival fromYmd(int year, int month, int day) {
         SolarDay d = SolarDay.fromYmd(year, month, day);
-        for (int i = 0, j = SolarFestival.NAMES.length; i < j; i++) {
+        for (int i = 0, j = NAMES.length; i < j; i++) {
             int start = i * 8;
-            Festival e = new Festival(SolarFestival.NAMES[i], "@" + SolarFestival.DATA.substring(start, start + 8));
+            Festival e = new Festival(NAMES[i], "@" + DATA.substring(start, start + 8));
             if (d.getYear() >= e.getStartYear() && d.getMonth() == e.getValue(2) && d.getDay() == e.getValue(3)) {
                 return new SolarFestival(i, e, d);
             }

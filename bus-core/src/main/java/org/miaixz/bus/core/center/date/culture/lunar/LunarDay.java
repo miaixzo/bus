@@ -140,16 +140,14 @@ public class LunarDay extends DayParts {
      * @return true if this day is before the target, false otherwise
      */
     public boolean isBefore(LunarDay target) {
-        int y = target.getYear();
-        if (year != y) {
-            return year < y;
+        if (year != target.year) {
+            return year < target.year;
         }
-        int m = target.getMonth();
-        if (month != m) {
-            int t = Math.abs(m);
+        if (month != target.month) {
+            int t = Math.abs(target.month);
             return month == t || Math.abs(month) < t;
         }
-        return day < target.getDay();
+        return day < target.day;
     }
 
     /**
@@ -159,16 +157,14 @@ public class LunarDay extends DayParts {
      * @return true if this day is after the target, false otherwise
      */
     public boolean isAfter(LunarDay target) {
-        int y = target.getYear();
-        if (year != y) {
-            return year > y;
+        if (year != target.year) {
+            return year > target.year;
         }
-        int m = target.getMonth();
-        if (month != m) {
+        if (month != target.month) {
             int t = Math.abs(month);
-            return t == m || t > Math.abs(m);
+            return t == target.month || t > Math.abs(target.month);
         }
-        return day > target.getDay();
+        return day > target.day;
     }
 
     /**

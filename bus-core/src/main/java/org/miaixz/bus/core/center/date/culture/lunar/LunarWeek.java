@@ -144,7 +144,7 @@ public class LunarWeek extends WeekParts {
      * @return the first lunar day of this week
      */
     public LunarDay getFirstDay() {
-        LunarDay firstDay = LunarDay.fromYmd(getYear(), getMonth(), 1);
+        LunarDay firstDay = LunarDay.fromYmd(year, month, 1);
         return firstDay.next(index * 7 - indexOf(firstDay.getWeek().getIndex() - start, 7));
     }
 

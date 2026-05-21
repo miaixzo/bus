@@ -22,6 +22,7 @@ package org.miaixz.bus.core.basic.entity;
 import java.io.Serial;
 
 import jakarta.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

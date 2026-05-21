@@ -172,12 +172,10 @@ public class LunarHour extends SecondParts {
         if (!d0.equals(d1)) {
             return d0.isBefore(d1);
         }
-        int h = target.getHour();
-        if (hour != h) {
-            return hour < h;
+        if (hour != target.hour) {
+            return hour < target.hour;
         }
-        int m = target.getMinute();
-        return minute != m ? minute < m : second < target.getSecond();
+        return minute != target.minute ? minute < target.minute : second < target.second;
     }
 
     /**
@@ -192,12 +190,10 @@ public class LunarHour extends SecondParts {
         if (!d0.equals(d1)) {
             return d0.isAfter(d1);
         }
-        int h = target.getHour();
-        if (hour != h) {
-            return hour > h;
+        if (hour != target.hour) {
+            return hour > target.hour;
         }
-        int m = target.getMinute();
-        return minute != m ? minute > m : second > target.getSecond();
+        return minute != target.minute ? minute > target.minute : second > target.second;
     }
 
     /**

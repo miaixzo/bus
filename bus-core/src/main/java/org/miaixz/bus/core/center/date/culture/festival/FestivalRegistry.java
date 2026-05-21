@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.core.center.date.culture.festival;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * In-memory festival registry for storing and retrieving festival data.
