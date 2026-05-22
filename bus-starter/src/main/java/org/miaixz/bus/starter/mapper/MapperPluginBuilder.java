@@ -19,46 +19,27 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
-import org.apache.ibatis.plugin.Interceptor;
 import org.springframework.core.env.Environment;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.feature.audit.AuditConfig;
-import org.miaixz.bus.mapper.feature.audit.AuditHandler;
 import org.miaixz.bus.mapper.feature.audit.AuditProvider;
-import org.miaixz.bus.mapper.feature.operation.OperationHandler;
-import org.miaixz.bus.mapper.feature.paging.PageHandler;
-import org.miaixz.bus.mapper.feature.populate.PopulateConfig;
-import org.miaixz.bus.mapper.feature.populate.PopulateHandler;
 import org.miaixz.bus.mapper.feature.populate.PopulateProvider;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixHandler;
 import org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider;
-import org.miaixz.bus.mapper.feature.tenant.TenantConfig;
-import org.miaixz.bus.mapper.feature.tenant.TenantHandler;
 import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
-import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
-import org.miaixz.bus.mapper.feature.visible.VisibleHandler;
 import org.miaixz.bus.mapper.feature.visible.VisibleProvider;
-import org.miaixz.bus.mapper.handler.MapperHandler;
 import org.miaixz.bus.mapper.handler.MybatisInterceptor;
+import org.miaixz.bus.mapper.runtime.MapperPluginFactory;
+import org.miaixz.bus.mapper.runtime.MapperPluginProviders;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.SpringBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 
 /**
- * A builder for creating and configuring MyBatis {@link Interceptor} instances.
+ * Starter adapter for creating the MyBatis mapper interceptor.
  * <p>
- * This class is responsible for initializing and setting up various interceptor handlers, such as for pagination and
- * multi-tenancy, based on the application's configuration.
+ * Pure plugin-chain construction lives in {@link MapperPluginFactory}; this class only binds Spring Boot properties and
+ * resolves provider beans from the Spring container.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -73,598 +54,71 @@ public class MapperPluginBuilder {
     }
 
     /**
-     * Builds and configures the primary {@link MybatisInterceptor}.
+     * Builds and configures the primary mapper interceptor.
+     * <p>
+     * Spring-specific work stops at property binding and provider lookup. The actual handler chain is delegated to
+     * {@link MapperPluginFactory} so the mapper module owns plugin assembly without depending on Spring.
      *
-     * @param environment The Spring {@link Environment} object, used to retrieve configuration properties.
-     * @return A fully configured {@link MybatisInterceptor} instance.
+     * @param environment Spring environment
+     * @return configured interceptor
      */
     public static MybatisInterceptor build(Environment environment) {
-        List<MapperHandler> handlers = new ArrayList<>();
-
-        // Handler execution order is critical! The order determines SQL modification sequence.
-        // Execution order: Operation Check → Table Prefix → Tenant Vector → Visible Vector → Populate → Pagination →
-        // Audit
-
-        if (ObjectKit.isNotEmpty(environment)) {
-            // 1. SQL safety check (must be first to block dangerous operations)
-            configureOperation(environment, handlers);
-
-            // 2. Table prefix (modify table names before adding WHERE conditions)
-            configurePrefix(environment, handlers);
-
-            // 3. Tenant filter (mandatory data isolation by tenant_id)
-            configureTenant(environment, handlers);
-
-            // 4. Visible filter (data permission control by org_id, dept_id, etc.)
-            configureVisible(environment, handlers);
-
-            // 5. Field population (auto-fill created_time, creator, etc. - doesn't modify SQL)
-            configurePopulate(environment, handlers);
-
-            // 6. Pagination (must be last SQL modifier to apply LIMIT based on complete WHERE clause)
-            configurePagination(environment, handlers);
-
-            // 7. SQL audit (performance monitoring and slow SQL detection - observer only)
-            configureAudit(environment, handlers);
+        if (environment == null) {
+            return MapperPluginFactory.build(null);
         }
-
-        MybatisInterceptor interceptor = new MybatisInterceptor();
-        interceptor.setHandlers(handlers);
-        return interceptor;
+        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
+        if (properties == null) {
+            properties = new MapperProperties();
+        }
+        return MapperPluginFactory.build(properties, providers(properties));
     }
 
     /**
-     * Configures SQL operation safety checks and adds the {@link OperationHandler}.
+     * Resolves optional provider beans needed by mapper handlers.
      * <p>
-     * This handler can be enabled or disabled through simplified YAML configuration:
-     * {@code bus.mapper.operation.enabled}. It is enabled by default.
-     * </p>
+     * Providers are only queried when the matching simplified configuration exists or when legacy flattened handler
+     * configuration is present. This keeps provider lookup lazy while preserving the previous configuration-file path.
      *
-     * @param environment The Spring environment.
-     * @param handlers    The list of handlers to add the operation handler to.
+     * @param properties mapper properties bound from the Spring environment
+     * @return provider holder passed to the pure mapper plugin factory
      */
-    private static void configureOperation(Environment environment, List<MapperHandler> handlers) {
-        if (ObjectKit.isEmpty(environment)) {
-            handlers.add(new OperationHandler());
-            return;
+    private static MapperPluginProviders providers(MapperProperties properties) {
+        MapperPluginProviders providers = new MapperPluginProviders();
+        Properties resolved = properties.resolveConfigurationProperties();
+        boolean hasConfigFile = resolved != null && !resolved.isEmpty();
+        if (properties.getTenant() != null || hasConfigFile) {
+            providers.setTenantProvider(provider(TenantProvider.class));
         }
-
-        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
-        MapperProperties.OperationProperties operationProps = properties != null ? properties.getOperation() : null;
-
-        if (operationProps != null && !operationProps.isEnabled()) {
-            Logger.info(false, "Starter", "Operation handler is disabled by configuration");
-            return;
+        if (properties.getPrefix() != null || hasConfigFile) {
+            providers.setPrefixProvider(provider(TablePrefixProvider.class));
         }
-
-        OperationHandler<?> handler = new OperationHandler<>();
-        if (operationProps != null) {
-            handler.setStrictMode(operationProps.isStrictMode());
+        if (properties.getVisible() != null || hasConfigFile) {
+            providers.setVisibleProvider(provider(VisibleProvider.class));
         }
-        handlers.add(handler);
-        Logger.info(false, "Starter", "Operation handler configured successfully");
+        if (properties.getPopulate() != null || hasConfigFile) {
+            providers.setPopulateProvider(provider(PopulateProvider.class));
+        }
+        if (properties.getAudit() != null || hasConfigFile) {
+            providers.setAuditProvider(provider(AuditProvider.class));
+        }
+        return providers;
     }
 
     /**
-     * Configures MyBatis pagination and adds the {@link PageHandler}.
-     *
+     * Looks up a provider bean by type from the Spring container.
      * <p>
-     * This method reads pagination configuration from MapperProperties (top-level, not per-datasource). Pagination
-     * settings are global across all datasources.
-     * </p>
+     * A missing provider is normal for most applications, so lookup failures are treated as absence rather than startup
+     * errors.
      *
-     * @param environment The Spring environment.
-     * @param handlers    The list of handlers to add the pagination handler to.
+     * @param providerType provider type to resolve
+     * @param <T>          provider type
+     * @return provider bean, or {@code null} when none is available
      */
-    private static void configurePagination(Environment environment, List<MapperHandler> handlers) {
-        // Pagination uses top-level MapperProperties, not per-datasource configuration
-        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
-        if (ObjectKit.isEmpty(properties)) {
-            return;
-        }
-
-        // Build Properties for PageHandler
-        Properties props = new Properties();
-        if (StringKit.isNotEmpty(properties.getAutoDelimitKeywords())) {
-            props.setProperty(Args.PAGE_AUTO_DELIMIT_KEYWORDS, properties.getAutoDelimitKeywords());
-        }
-        if (StringKit.isNotEmpty(properties.getReasonable())) {
-            props.setProperty(Args.PAGE_REASONABLE, properties.getReasonable());
-        }
-        if (StringKit.isNotEmpty(properties.getSupportMethodsArguments())) {
-            props.setProperty(Args.PAGE_SUPPORT_METHOD_ARGUMENTS, properties.getSupportMethodsArguments());
-        }
-        if (StringKit.isNotEmpty(properties.getParams())) {
-            props.setProperty(Args.PAGE_PARAMS, properties.getParams());
-        }
-
-        // Create PageHandler and set properties
-        PageHandler pageHandler = new PageHandler();
-        pageHandler.setProperties(props);
-        handlers.add(pageHandler);
-        Logger.info(false, "Starter", "Pagination handler configured");
-    }
-
-    /**
-     * Configures multi-tenancy properties and adds the {@link TenantHandler}.
-     *
-     * <p>
-     * Configuration priority:
-     * </p>
-     * <ol>
-     * <li>Provider.getConfig() - if provider bean exists and returns non-null</li>
-     * <li>Simplified YAML config (bus.mapper.tenant.*)</li>
-     * <li>Configuration file (configurationProperties) - datasource-specific > shared</li>
-     * <li>Provider bean only - if provider exists but no config file configuration</li>
-     * <li>Default values</li>
-     * </ol>
-     *
-     * @param environment The Spring environment.
-     * @param handlers    The list of handlers to add the tenant handler to.
-     */
-    private static void configureTenant(Environment environment, List<MapperHandler> handlers) {
-        // Step 3: Load from configuration file (supports both simplified and traditional config)
-        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
-
-        // Check for simplified tenant configuration (bus.mapper.tenant.*)
-        MapperProperties.TenantProperties tenantProps = properties != null ? properties.getTenant() : null;
-        MapperProperties.PrefixProperties prefixProps = properties != null ? properties.getPrefix() : null;
-
-        // Check if explicitly disabled
-        if (tenantProps != null && !tenantProps.isEnabled()) {
-            Logger.info(false, "Starter", "Tenant handler is disabled by configuration");
-            return;
-        }
-
-        boolean hasSimplifiedConfig = tenantProps != null;
-        boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
-                && ObjectKit.isNotEmpty(properties.resolveConfigurationProperties());
-
-        // If no config and no provider, return early
-        if (!hasSimplifiedConfig && !hasConfigFile) {
-            return;
-        }
-
-        // If simplified config is enabled, convert to Properties format
-        Properties props = new Properties();
-        if (hasSimplifiedConfig) {
-            Logger.info(false, "Starter", "Loading tenant config from simplified YAML configuration");
-            String defaultKey = "default";
-            props.setProperty(
-                    defaultKey + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT + Args.TENANT_COLUMN,
-                    tenantProps.getColumn() != null ? tenantProps.getColumn() : "tenant_id");
-            if (StringKit.isNotEmpty(tenantProps.getIgnore())) {
-                props.setProperty(
-                        defaultKey + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT + Args.PROP_IGNORE,
-                        tenantProps.getIgnore());
-            }
-            if (prefixProps != null && StringKit.isNotEmpty(prefixProps.getPrefix())) {
-                props.setProperty(
-                        defaultKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
-                        prefixProps.getPrefix());
-            }
-        } else if (hasConfigFile) {
-            Logger.info(false, "Starter", "Loading tenant config from configuration file");
-            props.putAll(properties.resolveConfigurationProperties());
-        }
-
-        // Step 1: Try to get TenantProvider Bean
-        TenantProvider provider = null;
+    private static <T> T provider(Class<T> providerType) {
         try {
-            provider = SpringBuilder.getBean(TenantProvider.class);
+            return SpringBuilder.getBean(providerType);
         } catch (Exception e) {
-            // No provider bean
-        }
-
-        // Step 2: Use Provider.getConfig() if available
-        if (provider != null) {
-            Logger.info(false, "Starter", "TenantProvider bean found");
-            TenantConfig providerConfig = provider.getConfig();
-            if (providerConfig != null) {
-                Logger.info(false, "Starter", "Using tenant config from Provider.getConfig()");
-                handlers.add(new TenantHandler(withTablePrefix(providerConfig, props)));
-                return;
-            }
-        }
-
-        if (provider != null) {
-            props.put(Args.PROVIDER_KEY, provider);
-        }
-
-        // Create handler and set properties
-        TenantHandler<?> handler = new TenantHandler<>();
-        if (handler.setProperties(props)) {
-            handlers.add(handler);
-            Logger.info(false, "Starter", "Tenant handler configured successfully");
-        }
-    }
-
-    /**
-     * Returns a tenant configuration that contains the table prefix supplied by mapper properties.
-     *
-     * @param config the tenant configuration returned by a provider
-     * @param props  the resolved mapper properties
-     * @return the tenant configuration with a table prefix
-     */
-    private static TenantConfig withTablePrefix(TenantConfig config, Properties props) {
-        if (config == null || StringKit.isNotEmpty(config.getTablePrefix()) || props == null) {
-            return config;
-        }
-        String defaultKey = org.miaixz.bus.mapper.Holder.getDefault();
-        String tablePrefix = props.getProperty(
-                defaultKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
-                props.getProperty(
-                        "default" + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
-                        props.getProperty(
-                                Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX)));
-        if (StringKit.isEmpty(tablePrefix)) {
-            return config;
-        }
-        return TenantConfig.builder().mode(config.getMode()).column(config.getColumn()).ignore(config.getIgnore())
-                .ignoreMappers(config.getIgnoreMappers()).tablePrefix(tablePrefix)
-                .enableSqlCache(config.isEnableSqlCache()).provider(config.getProvider()).build();
-    }
-
-    /**
-     * Configures automatic data fill and adds the {@link PopulateHandler}.
-     *
-     * <p>
-     * Configuration priority:
-     * </p>
-     * <ol>
-     * <li>Provider.getConfig() - if provider bean exists and returns non-null</li>
-     * <li>Simplified YAML config (bus.mapper.populate.*)</li>
-     * <li>Configuration file (configurationProperties) - datasource-specific > shared</li>
-     * <li>Provider bean only - if provider exists but no config file configuration</li>
-     * <li>Default values</li>
-     * </ol>
-     *
-     * @param environment The Spring environment.
-     * @param handlers    The list of handlers to add the data fill handler to.
-     */
-    private static void configurePopulate(Environment environment, List<MapperHandler> handlers) {
-        // Step 3: Load from configuration file (supports both simplified and traditional config)
-        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
-
-        // Check for simplified populate configuration (bus.mapper.populate.*)
-        MapperProperties.PopulateProperties populateProps = properties != null ? properties.getPopulate() : null;
-
-        // Check if explicitly disabled
-        if (populateProps != null && !populateProps.isEnabled()) {
-            Logger.info(false, "Starter", "Populate handler is disabled by configuration");
-            return;
-        }
-
-        boolean hasSimplifiedConfig = populateProps != null;
-        boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
-                && ObjectKit.isNotEmpty(properties.resolveConfigurationProperties());
-
-        // If no config and no provider, return early
-        if (!hasSimplifiedConfig && !hasConfigFile) {
-            return;
-        }
-
-        // If simplified config is enabled, convert to Properties format
-        Properties props = new Properties();
-        if (hasSimplifiedConfig) {
-            Logger.info(false, "Starter", "Loading populate config from simplified YAML configuration");
-            String defaultKey = "default";
-            props.setProperty(
-                    defaultKey + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_CREATED,
-                    String.valueOf(populateProps.isCreated()));
-            props.setProperty(
-                    defaultKey + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_MODIFIED,
-                    String.valueOf(populateProps.isModified()));
-            props.setProperty(
-                    defaultKey + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_CREATOR,
-                    String.valueOf(populateProps.isCreator()));
-            props.setProperty(
-                    defaultKey + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_MODIFIER,
-                    String.valueOf(populateProps.isModifier()));
-        } else if (hasConfigFile) {
-            Logger.info(false, "Starter", "Loading populate config from configuration file");
-            props.putAll(properties.resolveConfigurationProperties());
-        }
-
-        // Step 1: Try to get PopulateProvider Bean
-        PopulateProvider provider = null;
-        try {
-            provider = SpringBuilder.getBean(PopulateProvider.class);
-        } catch (Exception e) {
-            // No provider bean
-        }
-
-        // Step 2: Use Provider.getConfig() if available
-        if (provider != null) {
-            Logger.info(false, "Starter", "PopulateProvider bean found");
-            PopulateConfig providerConfig = provider.getConfig();
-            if (providerConfig != null) {
-                Logger.info(false, "Starter", "Using populate config from Provider.getConfig()");
-                handlers.add(new PopulateHandler(providerConfig));
-                return;
-            }
-        }
-
-        if (provider != null) {
-            props.put(Args.PROVIDER_KEY, provider);
-        }
-
-        // Create handler and set properties
-        PopulateHandler<?> handler = new PopulateHandler<>();
-        if (handler.setProperties(props)) {
-            handlers.add(handler);
-            Logger.info(false, "Starter", "Populate handler configured successfully");
-        }
-    }
-
-    /**
-     * Configures data perimeter control and adds the {@link VisibleHandler}.
-     *
-     * <p>
-     * Configuration priority:
-     * </p>
-     * <ol>
-     * <li>Provider.getConfig() - if provider bean exists and returns non-null</li>
-     * <li>Simplified YAML config (bus.mapper.visible.*)</li>
-     * <li>Configuration file (configurationProperties) - datasource-specific > shared</li>
-     * <li>Provider bean only - if provider exists but no config file configuration</li>
-     * <li>Default values</li>
-     * </ol>
-     *
-     * @param environment The Spring environment.
-     * @param handlers    The list of handlers to add the perimeter handler to.
-     */
-    private static void configureVisible(Environment environment, List<MapperHandler> handlers) {
-        // Step 3: Load from configuration file (supports both simplified and traditional config)
-        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
-
-        // Check for simplified visible configuration (bus.mapper.visible.*)
-        MapperProperties.VisibleProperties visibleProps = properties != null ? properties.getVisible() : null;
-
-        // Check if explicitly disabled
-        if (visibleProps != null && !visibleProps.isEnabled()) {
-            Logger.info(false, "Starter", "Visible handler is disabled by configuration");
-            return;
-        }
-
-        boolean hasSimplifiedConfig = visibleProps != null;
-        boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
-                && ObjectKit.isNotEmpty(properties.resolveConfigurationProperties());
-
-        // If no config and no provider, return early
-        if (!hasSimplifiedConfig && !hasConfigFile) {
-            return;
-        }
-
-        // If simplified config is enabled, convert to Properties format
-        Properties props = new Properties();
-        if (hasSimplifiedConfig) {
-            Logger.info(false, "Starter", "Loading visible config from simplified YAML configuration");
-            String defaultKey = "default";
-            if (StringKit.isNotEmpty(visibleProps.getIgnore())) {
-                props.setProperty(
-                        defaultKey + Symbol.DOT + Args.VISIBLE_KEY + Symbol.DOT + Args.PROP_IGNORE,
-                        visibleProps.getIgnore());
-            }
-        } else if (hasConfigFile) {
-            Logger.info(false, "Starter", "Loading visible config from configuration file");
-            props.putAll(properties.resolveConfigurationProperties());
-        }
-
-        // Step 1: Try to get VisibleProvider Bean
-        VisibleProvider provider = null;
-        try {
-            provider = SpringBuilder.getBean(VisibleProvider.class);
-        } catch (Exception e) {
-            // No provider bean
-        }
-
-        // Step 2: Use Provider.getConfig() if available
-        if (provider != null) {
-            Logger.info(false, "Starter", "VisibleProvider bean found");
-            VisibleConfig providerConfig = provider.getConfig();
-            if (providerConfig != null) {
-                Logger.info(false, "Starter", "Using visible config from Provider.getConfig()");
-                handlers.add(new VisibleHandler(providerConfig));
-                return;
-            }
-        }
-
-        if (provider != null) {
-            props.put(Args.PROVIDER_KEY, provider);
-        }
-
-        // Create handler and set properties
-        VisibleHandler<?> handler = new VisibleHandler<>();
-        if (handler.setProperties(props)) {
-            handlers.add(handler);
-            Logger.info(false, "Starter", "Visible handler configured successfully");
-        }
-    }
-
-    /**
-     * Configures table prefix support and adds the {@link TablePrefixHandler}.
-     *
-     * <p>
-     * Configuration priority:
-     * </p>
-     * <ol>
-     * <li>Provider.getConfig() - if provider bean exists and returns non-null</li>
-     * <li>Simplified YAML config (bus.mapper.prefix.*)</li>
-     * <li>Configuration file (configurationProperties) - datasource-specific > shared</li>
-     * <li>Provider bean only - if provider exists but no config file configuration</li>
-     * <li>Default values</li>
-     * </ol>
-     *
-     * @param environment The Spring environment.
-     * @param handlers    The list of handlers to add the prefix handler to.
-     */
-    private static void configurePrefix(Environment environment, List<MapperHandler> handlers) {
-        // Step 3: Load from configuration file (supports both simplified and traditional config)
-        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
-
-        // Check for simplified prefix configuration (bus.mapper.prefix.*)
-        MapperProperties.PrefixProperties prefixProps = properties != null ? properties.getPrefix() : null;
-
-        // Check if explicitly disabled
-        if (prefixProps != null && !prefixProps.isEnabled()) {
-            Logger.info(false, "Starter", "Prefix handler is disabled by configuration");
-            return;
-        }
-
-        boolean hasSimplifiedConfig = prefixProps != null;
-        boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
-                && ObjectKit.isNotEmpty(properties.resolveConfigurationProperties());
-
-        // If no config and no provider, return early
-        if (!hasSimplifiedConfig && !hasConfigFile) {
-            return;
-        }
-
-        // If simplified config is enabled, convert to Properties format
-        Properties props = new Properties();
-        if (hasSimplifiedConfig) {
-            Logger.info(false, "Starter", "Loading prefix config from simplified YAML configuration");
-            String defaultKey = "default";
-            if (StringKit.isNotEmpty(prefixProps.getPrefix())) {
-                props.setProperty(
-                        defaultKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
-                        prefixProps.getPrefix());
-            }
-            if (StringKit.isNotEmpty(prefixProps.getIgnore())) {
-                props.setProperty(
-                        defaultKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.PROP_IGNORE,
-                        prefixProps.getIgnore());
-            }
-        } else if (hasConfigFile) {
-            Logger.info(false, "Starter", "Loading prefix config from configuration file");
-            props.putAll(properties.resolveConfigurationProperties());
-        }
-
-        // Step 1: Try to get TablePrefixProvider Bean
-        TablePrefixProvider provider = null;
-        try {
-            provider = SpringBuilder.getBean(TablePrefixProvider.class);
-        } catch (Exception e) {
-            // No provider bean
-        }
-
-        // Step 2: Use Provider.getConfig() if available
-        if (provider != null) {
-            Logger.info(false, "Starter", "TablePrefixProvider bean found");
-            TablePrefixConfig providerConfig = provider.getConfig();
-            if (providerConfig != null) {
-                Logger.info(false, "Starter", "Using prefix config from Provider.getConfig()");
-                handlers.add(new TablePrefixHandler(providerConfig));
-                return;
-            }
-        }
-
-        if (provider != null) {
-            props.put(Args.PROVIDER_KEY, provider);
-        }
-
-        // Create handler and set properties
-        TablePrefixHandler handler = new TablePrefixHandler();
-        boolean configured = handler.setProperties(props);
-        if (configured) {
-            handlers.add(handler);
-            Logger.info(false, "Starter", "Prefix handler configured successfully");
-        }
-    }
-
-    /**
-     * Configures SQL audit and adds the {@link AuditHandler}.
-     *
-     * <p>
-     * Configuration priority:
-     * </p>
-     * <ol>
-     * <li>Provider.getConfig() - if provider bean exists and returns non-null</li>
-     * <li>Simplified YAML config (bus.mapper.audit.*)</li>
-     * <li>Configuration file (configurationProperties) - datasource-specific > shared</li>
-     * <li>Provider bean only - if provider exists but no config file configuration</li>
-     * <li>Default values</li>
-     * </ol>
-     *
-     * @param environment The Spring environment.
-     * @param handlers    The list of handlers to add the audit handler to.
-     */
-    private static void configureAudit(Environment environment, List<MapperHandler> handlers) {
-        // Step 3: Load from configuration file (supports both simplified and traditional config)
-        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
-
-        // Check for simplified audit configuration (bus.mapper.audit.*)
-        MapperProperties.AuditProperties auditProps = properties != null ? properties.getAudit() : null;
-
-        // Check if explicitly disabled
-        if (auditProps != null && !auditProps.isEnabled()) {
-            Logger.info(false, "Starter", "Audit handler is disabled by configuration");
-            return;
-        }
-
-        boolean hasSimplifiedConfig = auditProps != null;
-        boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
-                && ObjectKit.isNotEmpty(properties.resolveConfigurationProperties());
-
-        // If no config and no provider, return early
-        if (!hasSimplifiedConfig && !hasConfigFile) {
-            return;
-        }
-
-        // If simplified config is enabled, convert to Properties format
-        Properties props = new Properties();
-        if (hasSimplifiedConfig) {
-            Logger.info(false, "Starter", "Loading audit config from simplified YAML configuration");
-            String defaultKey = "default";
-            props.setProperty(
-                    defaultKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT + Args.AUDIT_SLOW_SQL_THRESHOLD,
-                    String.valueOf(auditProps.getSlowSqlThreshold()));
-            props.setProperty(
-                    defaultKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT + Args.AUDIT_LOG_PARAMETERS,
-                    String.valueOf(auditProps.isLogParameters()));
-            props.setProperty(
-                    defaultKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT + Args.AUDIT_LOG_RESULTS,
-                    String.valueOf(auditProps.isLogResults()));
-            props.setProperty(
-                    defaultKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT + Args.AUDIT_LOG_ALL_SQL,
-                    String.valueOf(auditProps.isLogAllSql()));
-            props.setProperty(
-                    defaultKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT + Args.AUDIT_PRINT_CONSOLE,
-                    String.valueOf(auditProps.isPrintConsole()));
-        } else if (hasConfigFile) {
-            Logger.info(false, "Starter", "Loading audit config from configuration file");
-            props.putAll(properties.resolveConfigurationProperties());
-        }
-
-        // Step 1: Try to get AuditProvider Bean
-        AuditProvider provider = null;
-        try {
-            provider = SpringBuilder.getBean(AuditProvider.class);
-        } catch (Exception e) {
-            // No provider bean
-        }
-
-        // Step 2: Use Provider.getConfig() if available
-        if (provider != null) {
-            Logger.info(false, "Starter", "AuditProvider bean found");
-            AuditConfig providerConfig = provider.getConfig();
-            if (providerConfig != null) {
-                Logger.info(false, "Starter", "Using audit config from Provider.getConfig()");
-                handlers.add(new AuditHandler(providerConfig));
-                return;
-            }
-        }
-
-        if (provider != null) {
-            props.put(Args.PROVIDER_KEY, provider);
-        }
-
-        // Create handler and set properties
-        AuditHandler<?> handler = new AuditHandler<>();
-        if (handler.setProperties(props)) {
-            handlers.add(handler);
-            Logger.info(false, "Starter", "Audit handler configured successfully");
+            return null;
         }
     }
 

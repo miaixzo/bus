@@ -47,6 +47,7 @@ module bus.mapper {
     exports org.miaixz.bus.mapper.handler;
     exports org.miaixz.bus.mapper.parsing;
     exports org.miaixz.bus.mapper.provider;
+    exports org.miaixz.bus.mapper.runtime;
     exports org.miaixz.bus.mapper.binding.basic;
     exports org.miaixz.bus.mapper.binding.batch;
     exports org.miaixz.bus.mapper.binding.condition;

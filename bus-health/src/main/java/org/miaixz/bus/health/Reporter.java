@@ -95,15 +95,19 @@ public final class Reporter {
         CgroupInfo cgroup = os.getCgroupInfo();
         if (cgroup.isContainerized()) {
             lines.add("Container: cgroup v" + cgroup.getVersion());
-            lines.add(" CPU quota: "
-                    + (cgroup.getCpuQuota() == CgroupInfo.UNLIMITED ? "unlimited" : cgroup.getCpuQuota() + " us"));
-            lines.add(" Effective CPUs: " + (cgroup.getEffectiveCpus() == CgroupInfo.UNLIMITED_CPUS ? "unlimited"
-                    : String.format(Locale.ROOT, "%.2f", cgroup.getEffectiveCpus())));
-            lines.add(" Memory limit: " + (cgroup.getMemoryLimit() == CgroupInfo.UNLIMITED_MEMORY ? "unlimited"
-                    : Formats.formatBytes(cgroup.getMemoryLimit())));
+            lines.add(
+                    " CPU quota: " + (cgroup.getCpuQuota() == CgroupInfo.UNLIMITED ? "unlimited"
+                            : cgroup.getCpuQuota() + " us"));
+            lines.add(
+                    " Effective CPUs: " + (cgroup.getEffectiveCpus() == CgroupInfo.UNLIMITED_CPUS ? "unlimited"
+                            : String.format(Locale.ROOT, "%.2f", cgroup.getEffectiveCpus())));
+            lines.add(
+                    " Memory limit: " + (cgroup.getMemoryLimit() == CgroupInfo.UNLIMITED_MEMORY ? "unlimited"
+                            : Formats.formatBytes(cgroup.getMemoryLimit())));
             lines.add(" Memory usage: " + Formats.formatBytes(cgroup.getMemoryUsage()));
-            lines.add(" PID limit: "
-                    + (cgroup.getPidLimit() == CgroupInfo.UNLIMITED ? "unlimited" : cgroup.getPidLimit()));
+            lines.add(
+                    " PID limit: "
+                            + (cgroup.getPidLimit() == CgroupInfo.UNLIMITED ? "unlimited" : cgroup.getPidLimit()));
             lines.add(" PID current: " + cgroup.getPidCurrent());
         }
     }

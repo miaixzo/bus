@@ -118,6 +118,11 @@ bus:
           ignore: tenant,token,user
 ```
 
+The Spring Boot configuration keys remain unchanged. Internally, `bus-mapper` now exposes `MapperOptions` as the pure
+Java/MyBatis option model for mapper properties, plugin construction, and type-resolution helpers. The starter keeps
+Spring Boot binding, resource resolution, mapper scanning, and lifecycle wiring, so existing `bus.mapper.*` YAML does
+not need migration.
+
 #### 3\. Enable Mapper Scanning
 
 ```java

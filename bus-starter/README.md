@@ -98,6 +98,10 @@ public class Application {
 }
 ```
 
+Mapper configuration remains under the same `bus.mapper.*` keys. The shared option model lives in `bus-mapper` as
+`MapperOptions`; this starter keeps Spring Boot property binding, mapper XML resource resolution, scanner registration,
+and bean lifecycle wiring, so existing YAML does not need migration.
+
 ### Example 4: Enable Dubbo RPC
 
 ```java

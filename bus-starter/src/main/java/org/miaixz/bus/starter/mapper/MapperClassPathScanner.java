@@ -59,7 +59,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
+public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
 
     /**
      * The SqlSessionFactory used to create SqlSessions.
@@ -92,7 +92,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     private Class<?> markerInterface;
 
     /**
-     * The bean name of the MapperBuilder, used for configuring the generic Mapper.
+     * The bean name of the mapper builder, used for configuring generic mapper support.
      */
     private String mapperBuilderBeanName;
 
@@ -102,11 +102,11 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     private MapperFactoryBean<?> mapperFactoryBean = new MapperFactoryBean<>();
 
     /**
-     * Constructs a new ClassPathMapperScanner.
+     * Constructs a new MapperClassPathScanner.
      *
      * @param registry The Spring bean definition registry.
      */
-    public ClassPathMapperScanner(BeanDefinitionRegistry registry) {
+    public MapperClassPathScanner(BeanDefinitionRegistry registry) {
         super(registry, false);
     }
 
@@ -127,6 +127,12 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         if (this.markerInterface != null) {
             addIncludeFilter(new AssignableTypeFilter(this.markerInterface) {
 
+                /**
+                 * Prevents the marker interface itself from matching the assignable-type filter.
+                 *
+                 * @param className candidate class name
+                 * @return always {@code false}
+                 */
                 @Override
                 protected boolean matchClassName(String className) {
                     return false;
@@ -289,7 +295,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             definition.setBeanClass(this.mapperFactoryBean.getClass());
             definition.getPropertyValues().add("mapperInterface", beanClassName);
 
-            // Set the generic Mapper builder if specified.
+            // Set the generic mapper builder if specified.
             if (StringKit.hasText(this.mapperBuilderBeanName)) {
                 definition.getPropertyValues()
                         .add("mapperBuilder", new RuntimeBeanReference(this.mapperBuilderBeanName));
@@ -386,9 +392,9 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     }
 
     /**
-     * Sets the bean name of the MapperBuilder.
+     * Sets the bean name of the mapper builder.
      *
-     * @param mapperBuilderBeanName The bean name of the MapperBuilder.
+     * @param mapperBuilderBeanName The bean name of the mapper builder.
      */
     public void setMapperBuilderBeanName(String mapperBuilderBeanName) {
         this.mapperBuilderBeanName = mapperBuilderBeanName;

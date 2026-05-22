@@ -73,14 +73,8 @@ public final class LinuxBluetoothDevice extends AbstractBluetoothDevice {
      * @param batteryLevel     the battery level
      * @param adapterName      the adapter name
      */
-    private LinuxBluetoothDevice(
-            String name,
-            String address,
-            String majorDeviceClass,
-            boolean connected,
-            boolean paired,
-            int batteryLevel,
-            String adapterName) {
+    private LinuxBluetoothDevice(String name, String address, String majorDeviceClass, boolean connected,
+            boolean paired, int batteryLevel, String adapterName) {
         super(name, address, majorDeviceClass, connected, paired, batteryLevel, adapterName);
     }
 
@@ -146,8 +140,9 @@ public final class LinuxBluetoothDevice extends AbstractBluetoothDevice {
                 int classOfDevice = Parsing.hexStringToInt(props.getOrDefault("Class", "0"), 0);
                 String majorClass = parseMajorDeviceClass(classOfDevice);
 
-                devices.add(new LinuxBluetoothDevice(name, dirName, majorClass, connected, paired, batteryLevel,
-                        adapterName));
+                devices.add(
+                        new LinuxBluetoothDevice(name, dirName, majorClass, connected, paired, batteryLevel,
+                                adapterName));
             }
         }
         return Collections.unmodifiableList(devices);

@@ -250,8 +250,7 @@ public final class Formats {
                     cleaned.substring(4, 6),
                     cleaned.substring(6, 8),
                     cleaned.substring(8, 10),
-                    cleaned.substring(10, 12))
-                    .toUpperCase(Locale.ROOT);
+                    cleaned.substring(10, 12)).toUpperCase(Locale.ROOT);
         }
         return raw.toUpperCase(Locale.ROOT);
     }

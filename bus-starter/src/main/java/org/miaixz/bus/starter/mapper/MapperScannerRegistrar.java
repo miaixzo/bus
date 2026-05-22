@@ -48,7 +48,7 @@ import org.miaixz.bus.starter.annotation.EnableMapper;
  * An {@link ImportBeanDefinitionRegistrar} that handles the registration of mapper interfaces.
  * <p>
  * This class is triggered by the {@link EnableMapper} annotation. It configures and launches a
- * {@link ClassPathMapperScanner} to discover and register mapper interfaces as Spring beans.
+ * {@link MapperClassPathScanner} to discover and register mapper interfaces as Spring beans.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -98,7 +98,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
      * Registers bean definitions for mapper interfaces based on the {@link EnableMapper} annotation metadata.
      *
      * <p>
-     * It creates a {@link ClassPathMapperScanner}, configures it with attributes from {@link EnableMapper}, gathers the
+     * It creates a {@link MapperClassPathScanner}, configures it with attributes from {@link EnableMapper}, gathers the
      * base packages, and performs the bean definition scan.
      * </p>
      *
@@ -110,7 +110,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
         AnnotationAttributes annoAttrs = AnnotationAttributes
                 .fromMap(annotationMetadata.getAnnotationAttributes(EnableMapper.class.getName()));
-        ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);
+        MapperClassPathScanner scanner = new MapperClassPathScanner(registry);
 
         // Set the resource loader if available (required in Spring 3.1+).
         if (resourceLoader != null) {

@@ -97,6 +97,9 @@ public class Application {
 }
 ```
 
+Mapper 配置仍使用原有 `bus.mapper.*` key。公共配置模型已由 `bus-mapper` 的 `MapperOptions` 承载；starter 继续负责
+Spring Boot 属性绑定、Mapper XML 资源解析、扫描注册和 Bean 生命周期装配，因此现有 YAML 不需要迁移。
+
 ### 示例 4: 启用 Dubbo RPC
 
 ```java

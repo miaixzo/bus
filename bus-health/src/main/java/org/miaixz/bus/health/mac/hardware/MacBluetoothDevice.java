@@ -51,14 +51,8 @@ public final class MacBluetoothDevice extends AbstractBluetoothDevice {
      * @param batteryLevel     the battery level
      * @param adapterName      the adapter name
      */
-    private MacBluetoothDevice(
-            String name,
-            String address,
-            String majorDeviceClass,
-            boolean connected,
-            boolean paired,
-            int batteryLevel,
-            String adapterName) {
+    private MacBluetoothDevice(String name, String address, String majorDeviceClass, boolean connected, boolean paired,
+            int batteryLevel, String adapterName) {
         super(name, address, majorDeviceClass, connected, paired, batteryLevel, adapterName);
     }
 
@@ -94,8 +88,9 @@ public final class MacBluetoothDevice extends AbstractBluetoothDevice {
             }
             if (trimmed.startsWith("Connected:") || trimmed.equals("Devices (Paired, Configured, & Connected):")) {
                 if (inDevice) {
-                    devices.add(new MacBluetoothDevice(name, address, majorClass, inConnected, true, batteryLevel,
-                            Normal.EMPTY));
+                    devices.add(
+                            new MacBluetoothDevice(name, address, majorClass, inConnected, true, batteryLevel,
+                                    Normal.EMPTY));
                 }
                 inConnected = true;
                 inNotConnected = false;
@@ -104,8 +99,9 @@ public final class MacBluetoothDevice extends AbstractBluetoothDevice {
             }
             if (trimmed.startsWith("Not Connected:") || trimmed.equals("Devices (Paired, Not Connected):")) {
                 if (inDevice) {
-                    devices.add(new MacBluetoothDevice(name, address, majorClass, inConnected, true, batteryLevel,
-                            Normal.EMPTY));
+                    devices.add(
+                            new MacBluetoothDevice(name, address, majorClass, inConnected, true, batteryLevel,
+                                    Normal.EMPTY));
                 }
                 inConnected = false;
                 inNotConnected = true;
@@ -123,8 +119,9 @@ public final class MacBluetoothDevice extends AbstractBluetoothDevice {
 
                 if (value.isEmpty() && !key.startsWith("Address") && !key.startsWith("Minor")) {
                     if (inDevice) {
-                        devices.add(new MacBluetoothDevice(name, address, majorClass, inConnected, true, batteryLevel,
-                                Normal.EMPTY));
+                        devices.add(
+                                new MacBluetoothDevice(name, address, majorClass, inConnected, true, batteryLevel,
+                                        Normal.EMPTY));
                     }
                     inDevice = true;
                     name = key;
@@ -153,8 +150,8 @@ public final class MacBluetoothDevice extends AbstractBluetoothDevice {
             }
         }
         if (inDevice) {
-            devices.add(new MacBluetoothDevice(name, address, majorClass, inConnected, true, batteryLevel,
-                    Normal.EMPTY));
+            devices.add(
+                    new MacBluetoothDevice(name, address, majorClass, inConnected, true, batteryLevel, Normal.EMPTY));
         }
         return Collections.unmodifiableList(devices);
     }

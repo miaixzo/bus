@@ -132,9 +132,9 @@ public @interface EnableMapper {
     String[] properties() default {};
 
     /**
-     * Allows for the direct configuration of a MapperBuilder bean by reference.
+     * Allows for the direct configuration of a mapper builder bean by reference.
      *
-     * @return The bean name of the {@code MapperBuilder}.
+     * @return The bean name of the mapper builder.
      */
     String mapperBuilderRef() default Normal.EMPTY;
 

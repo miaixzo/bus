@@ -21,7 +21,7 @@ package org.miaixz.bus.mapper;
 
 /**
  * A marker interface. Interfaces that extend this interface will be automatically registered with the generic Mapper
- * when {@code ClassPathMapperScanner#setMarkerInterface} is called.
+ * when a compatible mapper scanner is configured with this marker interface.
  *
  * @author Kimi Liu
  * @since Java 21+

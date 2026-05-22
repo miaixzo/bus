@@ -118,6 +118,10 @@ bus:
           ignore: tenant,token,user
 ```
 
+Spring Boot 配置 key 保持不变。内部实现上，`bus-mapper` 提供 `MapperOptions` 作为纯 Java/MyBatis 配置模型，承载 mapper
+属性、插件装配和类型解析辅助能力；starter 继续只负责 Spring Boot 绑定、资源解析、Mapper 扫描和生命周期装配，因此现有
+`bus.mapper.*` YAML 不需要迁移。
+
 #### 3. 启用 Mapper 扫描
 
 ```java
