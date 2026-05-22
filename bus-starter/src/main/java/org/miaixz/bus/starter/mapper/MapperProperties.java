@@ -521,7 +521,8 @@ public class MapperProperties {
         private boolean continueOnError = false;
 
         /**
-         * Packages to scan for {@link jakarta.persistence.Entity}.
+         * Packages to scan for classes annotated with {@link jakarta.persistence.Entity} or
+         * {@link jakarta.persistence.Table}.
          */
         private String[] entityPackages;
 

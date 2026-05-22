@@ -35,6 +35,7 @@ import javax.sql.DataSource;
 
 import jakarta.annotation.Resource;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -444,6 +445,7 @@ public class MapperConfiguration implements InitializingBean {
         scanner.setEnvironment(this.environment);
         scanner.setResourceLoader(this.resourceLoader);
         scanner.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
+        scanner.addIncludeFilter(new AnnotationTypeFilter(Table.class));
         ClassLoader classLoader = this.resourceLoader.getClassLoader();
         for (String basePackage : packages) {
             for (BeanDefinition beanDefinition : scanner.findCandidateComponents(basePackage)) {

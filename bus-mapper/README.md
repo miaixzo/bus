@@ -947,6 +947,8 @@ bus:
       allow-expand-length: true
 ```
 
+`entity-packages` scans entity classes annotated with `@Entity` or `@Table`; when `include-entities` is empty, every discovered entity is eligible for initialization.
+
 Use `SCRIPT` first in production-like environments to review generated DDL before allowing execution:
 
 ```yaml

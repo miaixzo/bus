@@ -940,6 +940,8 @@ bus:
       allow-expand-length: true
 ```
 
+`entity-packages` 会扫描包下标注 `@Entity` 或 `@Table` 的实体类；`include-entities` 为空时，扫描到的实体都会参与初始化。
+
 生产环境或类生产环境首次启用时，先使用 `SCRIPT` 模式生成 SQL 脚本并人工确认：
 
 ```yaml
