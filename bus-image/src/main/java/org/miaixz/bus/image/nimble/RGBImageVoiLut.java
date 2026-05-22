@@ -113,44 +113,53 @@ public class RGBImageVoiLut {
     }
 
     /**
+     * Creates a palette color lookup table.
+     *
+     * @param ds the attributes.
+     * @return the palette color lookup table.
+     */
+    public static LookupTableCV getPaletteColorLookupTable(Attributes ds) {
+        if (ds == null || !ds.containsValue(Tag.RedPaletteColorLookupTableDescriptor)
+                || !ds.containsValue(Tag.GreenPaletteColorLookupTableDescriptor)
+                || !ds.containsValue(Tag.BluePaletteColorLookupTableDescriptor)) {
+            return null;
+        }
+        int[] rDesc = lutDescriptor(ds, Tag.RedPaletteColorLookupTableDescriptor);
+        int[] gDesc = lutDescriptor(ds, Tag.GreenPaletteColorLookupTableDescriptor);
+        int[] bDesc = lutDescriptor(ds, Tag.BluePaletteColorLookupTableDescriptor);
+        byte[] r = lutData(ds, rDesc, Tag.RedPaletteColorLookupTableData, Tag.SegmentedRedPaletteColorLookupTableData);
+        byte[] g = lutData(
+                ds,
+                gDesc,
+                Tag.GreenPaletteColorLookupTableData,
+                Tag.SegmentedGreenPaletteColorLookupTableData);
+        byte[] b = lutData(
+                ds,
+                bDesc,
+                Tag.BluePaletteColorLookupTableData,
+                Tag.SegmentedBluePaletteColorLookupTableData);
+        if (r == null || r.length == 0 || g == null || g.length == 0 || b == null || b.length == 0) {
+            return null;
+        }
+        return new LookupTableCV(new byte[][] { b, g, r }, new int[] { bDesc[1], gDesc[1], rDesc[1] }, true);
+    }
+
+    /**
      * Returns the RGB image from palette color model.
      *
      * @param source the source.
-     * @param ds     the ds.
+     * @param lookup the lookup.
      * @return the RGB image from palette color model.
      */
-    public static PlanarImage getRGBImageFromPaletteColorModel(PlanarImage source, Attributes ds) {
-        // Convert images with PaletteColorModel to RGB model
-        if (ds != null) {
-            int[] rDesc = lutDescriptor(ds, Tag.RedPaletteColorLookupTableDescriptor);
-            int[] gDesc = lutDescriptor(ds, Tag.GreenPaletteColorLookupTableDescriptor);
-            int[] bDesc = lutDescriptor(ds, Tag.BluePaletteColorLookupTableDescriptor);
-            byte[] r = lutData(
-                    ds,
-                    rDesc,
-                    Tag.RedPaletteColorLookupTableData,
-                    Tag.SegmentedRedPaletteColorLookupTableData);
-            byte[] g = lutData(
-                    ds,
-                    gDesc,
-                    Tag.GreenPaletteColorLookupTableData,
-                    Tag.SegmentedGreenPaletteColorLookupTableData);
-            byte[] b = lutData(
-                    ds,
-                    bDesc,
-                    Tag.BluePaletteColorLookupTableData,
-                    Tag.SegmentedBluePaletteColorLookupTableData);
-
-            if (source.depth() <= CvType.CV_8S && rDesc[1] == 0 && gDesc[1] == 0 && bDesc[1] == 0) {
-                // Replace the original image with the RGB image.
-                return ImageTransformer.applyLUT(source.toMat(), new byte[][] { b, g, r });
-            } else {
-                LookupTableCV lookup = new LookupTableCV(new byte[][] { b, g, r },
-                        new int[] { bDesc[1], gDesc[1], rDesc[1] }, true);
-                return lookup.lookup(source.toMat());
-            }
+    public static PlanarImage getRGBImageFromPaletteColorModel(PlanarImage source, LookupTableCV lookup) {
+        if (lookup == null) {
+            return source;
         }
-        return source;
+        if (source.depth() <= CvType.CV_8S && lookup.getOffset(0) == 0 && lookup.getOffset(1) == 0
+                && lookup.getOffset(2) == 0) {
+            return ImageTransformer.applyLUT(source.toMat(), lookup.getByteData());
+        }
+        return lookup.lookup(source.toMat());
     }
 
     /**

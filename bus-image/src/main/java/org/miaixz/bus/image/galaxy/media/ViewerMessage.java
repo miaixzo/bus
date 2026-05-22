@@ -103,6 +103,19 @@ public record ViewerMessage(String title, String message, Level level) {
     }
 
     /**
+     * Creates an error message from an exception.
+     *
+     * @param title     the title.
+     * @param exception the exception.
+     * @return the operation result.
+     */
+    public static ViewerMessage fromException(String title, Exception exception) {
+        String exceptionMessage = exception.getMessage();
+        String message = exceptionMessage != null ? exceptionMessage : exception.getClass().getSimpleName();
+        return error(title, message);
+    }
+
+    /**
      * Determines whether problem.
      *
      * @return true if the condition is met; otherwise false.
@@ -112,12 +125,49 @@ public record ViewerMessage(String title, String message, Level level) {
     }
 
     /**
+     * Determines whether this message is informational.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
+    public boolean isInfo() {
+        return level == Level.INFO;
+    }
+
+    /**
+     * Determines whether this message is a warning.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
+    public boolean isWarning() {
+        return level == Level.WARN;
+    }
+
+    /**
+     * Determines whether this message is an error.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
+    public boolean isError() {
+        return level == Level.ERROR;
+    }
+
+    /**
      * Gets the display text.
      *
      * @return the display text.
      */
     public String getDisplayText() {
         return "[" + level.getDisplayName() + "] " + title + ": " + message;
+    }
+
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
+    @Override
+    public String toString() {
+        return getDisplayText();
     }
 
     /**

@@ -272,7 +272,7 @@ public class ImageAdapter {
                 }
 
                 @Override
-                public boolean bigEndian() {
+                public boolean isBigEndian() {
                     if (pixdata instanceof BulkData bulkData) {
                         return bulkData.bigEndian();
                     } else if (pixdata instanceof Fragments fragments) {
@@ -295,7 +295,7 @@ public class ImageAdapter {
                     } else {
                         Fragments fragments = null;
                         BulkData bulkData = null;
-                        boolean bigEndian = bigEndian();
+                        boolean bigEndian = isBigEndian();
                         if (pixdata instanceof BulkData bck) {
                             bulkData = bck;
                         } else if (pixdata instanceof Fragments frag) {
