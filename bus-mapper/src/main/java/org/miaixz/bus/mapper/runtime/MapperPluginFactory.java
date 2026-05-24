@@ -97,7 +97,7 @@ public class MapperPluginFactory {
     public static MybatisInterceptor build(MapperOptions options, MapperPluginProviders providers) {
         List<MapperHandler> handlers = new ArrayList<>();
         if (options != null) {
-            Properties resolved = options.resolveConfigurationProperties();
+            Properties resolved = MapperOptions.resolve(options);
             // Handler execution order is critical. The order determines the SQL modification sequence.
             // Execution order: Operation Check -> Table Prefix -> Tenant Vector -> Visible Vector -> Populate
             // -> Pagination -> Audit.
@@ -136,7 +136,7 @@ public class MapperPluginFactory {
             handler.setStrictMode(operationOptions.isStrictMode());
         }
         handlers.add(handler);
-        Logger.info(false, "Mapper", "Operation handler configured successfully");
+        Logger.debug(false, "Mapper", "Operation handler configured successfully");
     }
 
     /**
@@ -166,7 +166,7 @@ public class MapperPluginFactory {
         PageHandler<?> pageHandler = new PageHandler<>();
         pageHandler.setProperties(props);
         handlers.add(pageHandler);
-        Logger.info(false, "Mapper", "Pagination handler configured");
+        Logger.debug(false, "Mapper", "Pagination handler configured");
     }
 
     /**
@@ -207,7 +207,7 @@ public class MapperPluginFactory {
 
         Properties props = new Properties();
         if (hasSimplifiedConfig) {
-            Logger.info(false, "Mapper", "Loading tenant config from simplified YAML configuration");
+            Logger.debug(false, "Mapper", "Loading tenant config from simplified YAML configuration");
             props.setProperty(
                     DEFAULT_KEY + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT + Args.TENANT_COLUMN,
                     tenantOptions.getColumn() != null ? tenantOptions.getColumn() : Args.TENANT_ID);
@@ -222,16 +222,16 @@ public class MapperPluginFactory {
                         prefixOptions.getPrefix());
             }
         } else {
-            Logger.info(false, "Mapper", "Loading tenant config from configuration file");
+            Logger.debug(false, "Mapper", "Loading tenant config from configuration file");
             props.putAll(resolved);
         }
 
         TenantProvider provider = providers != null ? providers.getTenantProvider() : null;
         if (provider != null) {
-            Logger.info(false, "Mapper", "TenantProvider instance found");
+            Logger.debug(false, "Mapper", "TenantProvider instance found");
             TenantConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.info(false, "Mapper", "Using tenant config from Provider.getConfig()");
+                Logger.debug(false, "Mapper", "Using tenant config from Provider.getConfig()");
                 handlers.add(new TenantHandler<>(withTablePrefix(providerConfig, props)));
                 return;
             }
@@ -241,7 +241,7 @@ public class MapperPluginFactory {
         TenantHandler<?> handler = new TenantHandler<>();
         if (handler.setProperties(props)) {
             handlers.add(handler);
-            Logger.info(false, "Mapper", "Tenant handler configured successfully");
+            Logger.debug(false, "Mapper", "Tenant handler configured successfully");
         }
     }
 
@@ -308,7 +308,7 @@ public class MapperPluginFactory {
 
         Properties props = new Properties();
         if (hasSimplifiedConfig) {
-            Logger.info(false, "Mapper", "Loading populate config from simplified YAML configuration");
+            Logger.debug(false, "Mapper", "Loading populate config from simplified YAML configuration");
             props.setProperty(
                     DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_CREATED,
                     String.valueOf(populateOptions.isCreated()));
@@ -322,16 +322,16 @@ public class MapperPluginFactory {
                     DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_MODIFIER,
                     String.valueOf(populateOptions.isModifier()));
         } else {
-            Logger.info(false, "Mapper", "Loading populate config from configuration file");
+            Logger.debug(false, "Mapper", "Loading populate config from configuration file");
             props.putAll(resolved);
         }
 
         PopulateProvider provider = providers != null ? providers.getPopulateProvider() : null;
         if (provider != null) {
-            Logger.info(false, "Mapper", "PopulateProvider instance found");
+            Logger.debug(false, "Mapper", "PopulateProvider instance found");
             PopulateConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.info(false, "Mapper", "Using populate config from Provider.getConfig()");
+                Logger.debug(false, "Mapper", "Using populate config from Provider.getConfig()");
                 handlers.add(new PopulateHandler<>(providerConfig));
                 return;
             }
@@ -341,7 +341,7 @@ public class MapperPluginFactory {
         PopulateHandler<?> handler = new PopulateHandler<>();
         if (handler.setProperties(props)) {
             handlers.add(handler);
-            Logger.info(false, "Mapper", "Populate handler configured successfully");
+            Logger.debug(false, "Mapper", "Populate handler configured successfully");
         }
     }
 
@@ -382,23 +382,23 @@ public class MapperPluginFactory {
 
         Properties props = new Properties();
         if (hasSimplifiedConfig) {
-            Logger.info(false, "Mapper", "Loading visible config from simplified YAML configuration");
+            Logger.debug(false, "Mapper", "Loading visible config from simplified YAML configuration");
             if (StringKit.isNotEmpty(visibleOptions.getIgnore())) {
                 props.setProperty(
                         DEFAULT_KEY + Symbol.DOT + Args.VISIBLE_KEY + Symbol.DOT + Args.PROP_IGNORE,
                         visibleOptions.getIgnore());
             }
         } else {
-            Logger.info(false, "Mapper", "Loading visible config from configuration file");
+            Logger.debug(false, "Mapper", "Loading visible config from configuration file");
             props.putAll(resolved);
         }
 
         VisibleProvider provider = providers != null ? providers.getVisibleProvider() : null;
         if (provider != null) {
-            Logger.info(false, "Mapper", "VisibleProvider instance found");
+            Logger.debug(false, "Mapper", "VisibleProvider instance found");
             VisibleConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.info(false, "Mapper", "Using visible config from Provider.getConfig()");
+                Logger.debug(false, "Mapper", "Using visible config from Provider.getConfig()");
                 handlers.add(new VisibleHandler<>(providerConfig));
                 return;
             }
@@ -408,7 +408,7 @@ public class MapperPluginFactory {
         VisibleHandler<?> handler = new VisibleHandler<>();
         if (handler.setProperties(props)) {
             handlers.add(handler);
-            Logger.info(false, "Mapper", "Visible handler configured successfully");
+            Logger.debug(false, "Mapper", "Visible handler configured successfully");
         }
     }
 
@@ -449,7 +449,7 @@ public class MapperPluginFactory {
 
         Properties props = new Properties();
         if (hasSimplifiedConfig) {
-            Logger.info(false, "Mapper", "Loading prefix config from simplified YAML configuration");
+            Logger.debug(false, "Mapper", "Loading prefix config from simplified YAML configuration");
             if (StringKit.isNotEmpty(prefixOptions.getPrefix())) {
                 props.setProperty(
                         DEFAULT_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
@@ -461,16 +461,16 @@ public class MapperPluginFactory {
                         prefixOptions.getIgnore());
             }
         } else {
-            Logger.info(false, "Mapper", "Loading prefix config from configuration file");
+            Logger.debug(false, "Mapper", "Loading prefix config from configuration file");
             props.putAll(resolved);
         }
 
         TablePrefixProvider provider = providers != null ? providers.getPrefixProvider() : null;
         if (provider != null) {
-            Logger.info(false, "Mapper", "TablePrefixProvider instance found");
+            Logger.debug(false, "Mapper", "TablePrefixProvider instance found");
             TablePrefixConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.info(false, "Mapper", "Using prefix config from Provider.getConfig()");
+                Logger.debug(false, "Mapper", "Using prefix config from Provider.getConfig()");
                 handlers.add(new TablePrefixHandler(providerConfig));
                 return;
             }
@@ -480,7 +480,7 @@ public class MapperPluginFactory {
         TablePrefixHandler handler = new TablePrefixHandler();
         if (handler.setProperties(props)) {
             handlers.add(handler);
-            Logger.info(false, "Mapper", "Prefix handler configured successfully");
+            Logger.debug(false, "Mapper", "Prefix handler configured successfully");
         }
     }
 
@@ -521,7 +521,7 @@ public class MapperPluginFactory {
 
         Properties props = new Properties();
         if (hasSimplifiedConfig) {
-            Logger.info(false, "Mapper", "Loading audit config from simplified YAML configuration");
+            Logger.debug(false, "Mapper", "Loading audit config from simplified YAML configuration");
             props.setProperty(
                     DEFAULT_KEY + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT + Args.AUDIT_SLOW_SQL_THRESHOLD,
                     String.valueOf(auditOptions.getSlowSqlThreshold()));
@@ -538,16 +538,16 @@ public class MapperPluginFactory {
                     DEFAULT_KEY + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT + Args.AUDIT_PRINT_CONSOLE,
                     String.valueOf(auditOptions.isPrintConsole()));
         } else {
-            Logger.info(false, "Mapper", "Loading audit config from configuration file");
+            Logger.debug(false, "Mapper", "Loading audit config from configuration file");
             props.putAll(resolved);
         }
 
         AuditProvider provider = providers != null ? providers.getAuditProvider() : null;
         if (provider != null) {
-            Logger.info(false, "Mapper", "AuditProvider instance found");
+            Logger.debug(false, "Mapper", "AuditProvider instance found");
             AuditConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.info(false, "Mapper", "Using audit config from Provider.getConfig()");
+                Logger.debug(false, "Mapper", "Using audit config from Provider.getConfig()");
                 handlers.add(new AuditHandler<>(providerConfig));
                 return;
             }
@@ -557,7 +557,7 @@ public class MapperPluginFactory {
         AuditHandler<?> handler = new AuditHandler<>();
         if (handler.setProperties(props)) {
             handlers.add(handler);
-            Logger.info(false, "Mapper", "Audit handler configured successfully");
+            Logger.debug(false, "Mapper", "Audit handler configured successfully");
         }
     }
 

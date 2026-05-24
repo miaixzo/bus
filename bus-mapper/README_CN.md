@@ -119,7 +119,7 @@ bus:
 ```
 
 Spring Boot 配置 key 保持不变。内部实现上，`bus-mapper` 提供 `MapperOptions` 作为纯 Java/MyBatis 配置模型，承载 mapper
-属性、插件装配和类型解析辅助能力；starter 继续只负责 Spring Boot 绑定、资源解析、Mapper 扫描和生命周期装配，因此现有
+属性；插件装配、配置归一化和类型解析由独立组件负责。starter 继续只负责 Spring Boot 绑定、资源解析、Mapper 扫描和生命周期装配，因此现有
 `bus.mapper.*` YAML 不需要迁移。
 
 #### 3. 启用 Mapper 扫描
@@ -945,6 +945,47 @@ bus:
 ```
 
 `entity-packages` 会扫描包下标注 `@Entity` 或 `@Table` 的实体类；`include-entities` 为空时，扫描到的实体都会参与初始化。
+
+### 按数据库初始化
+
+当项目使用 `configurationProperties.namespaces` 配置多个数据库时，可以把 `schema` 放在对应 namespace 下。表前缀不在
+`schema` 下重复配置，初始化时会读取同一个 namespace 的现有 `table.prefix` / `table.ignore` 表前缀插件配置。
+表前缀兼容全局和按数据库两种配置：按数据库的 `namespace.table.prefix` 优先，其次使用 `shared.table.prefix`、
+`default.table.prefix` 或顶层 `bus.mapper.prefix`。
+
+```yaml
+bus:
+  mapper:
+    configurationProperties:
+      namespaces:
+        - name: com_deepparser
+          table:
+            prefix: dp_
+            ignore: tenant,assets,license
+          tenant:
+            column: tenant_id
+            ignore: tenant,assets,license,token,user
+          schema:
+            enabled: true
+            mode: UPDATE
+            dry-run: false
+            print-sql: true
+            fail-fast: true
+            entity-packages:
+              - ai.deepparser.nexus.entity
+            include-entities:
+              - ai.deepparser.nexus.entity.License
+              - ai.deepparser.nexus.entity.Token
+            allow-create-table: true
+            allow-add-column: true
+            allow-create-primary-key: true
+            allow-create-index: true
+```
+
+`bus.mapper.schema` 仍然保持兼容：没有 namespace 级 `schema` 时按原全局配置执行；存在 namespace 级 `schema` 时，全局
+`bus.mapper.schema` 会作为每个 namespace 的默认模板，避免同一批实体再被全局初始化一次。若数据源 Bean 名与 namespace
+名称不一致，可以在 namespace 的 `schema.datasource-key` 中指定实际数据源 key。也可以使用
+`configurationProperties.shared.schema` 作为所有 namespace 的默认 schema 配置，再由具体 namespace 覆盖。
 
 生产环境或类生产环境首次启用时，先使用 `SCRIPT` 模式生成 SQL 脚本并人工确认：
 

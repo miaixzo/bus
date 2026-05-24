@@ -33,6 +33,8 @@ import java.util.Locale;
 
 import javax.sql.DataSource;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Risk;
@@ -40,6 +42,9 @@ import org.miaixz.bus.mapper.Charter.Schema;
 import org.miaixz.bus.mapper.behavior.SchemaBehavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
+import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
+import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
+import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.MapperFactory;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
@@ -75,6 +80,28 @@ public class EntitySchemaInitializer {
      */
     public SchemaReport initialize(DataSource dataSource, Collection<Class<?>> entityClasses, SchemaConfig config)
             throws SQLException, IOException {
+        return initialize(dataSource, entityClasses, config, null);
+    }
+
+    /**
+     * Initializes schema structures for entity classes using an optional table prefix configuration.
+     * <p>
+     * The table prefix configuration is owned by the prefix plugin and is applied only to schema-local table metadata.
+     * Runtime mapper metadata remains unchanged.
+     *
+     * @param dataSource        the datasource used for metadata reads and DDL execution
+     * @param entityClasses     the entity classes to initialize
+     * @param config            the schema configuration
+     * @param tablePrefixConfig the table prefix configuration resolved from the prefix plugin
+     * @return the schema execution report
+     * @throws SQLException when metadata reads or DDL execution fail
+     * @throws IOException  when script output fails
+     */
+    public SchemaReport initialize(
+            DataSource dataSource,
+            Collection<Class<?>> entityClasses,
+            SchemaConfig config,
+            TablePrefixConfig tablePrefixConfig) throws SQLException, IOException {
         SchemaReport report = new SchemaReport();
         if (config == null || !config.enabled() || config.mode() == Schema.NONE) {
             return report;
@@ -94,6 +121,7 @@ public class EntitySchemaInitializer {
                     if (excluded(table, config)) {
                         continue;
                     }
+                    table = prefixedTable(table, tablePrefixConfig);
                     locks.add(SchemaInitializationLock.acquire(dataSource, table));
                     locks.add(operations.acquireSchemaInitializationLock(connection, table));
                     TableSnapshot snapshot = operations.readTable(connection, table);
@@ -110,6 +138,144 @@ public class EntitySchemaInitializer {
         }
         writeScript(config, scriptSqls);
         return report;
+    }
+
+    /**
+     * Applies table prefix plugin configuration to schema-local table metadata.
+     *
+     * @param source            cached runtime table metadata
+     * @param tablePrefixConfig resolved table prefix configuration
+     * @return table metadata used by schema initialization
+     */
+    private TableMeta prefixedTable(TableMeta source, TablePrefixConfig tablePrefixConfig) {
+        String prefix = tablePrefix(tablePrefixConfig);
+        String tableName = source == null ? null : source.table();
+        String simpleTableName = simpleTableName(tableName);
+        if (source == null || tableName == null || prefix == null || prefix.isBlank()
+                || ignored(simpleTableName, tablePrefixConfig) || simpleTableName.startsWith(prefix)) {
+            return source;
+        }
+        TableMeta copy = copyTable(source);
+        copy.table(prefixQualifiedTable(tableName, prefix));
+        for (ForeignKeyMeta foreignKey : copy.foreignKeys()) {
+            String referencedTable = foreignKey.referencedTable();
+            if (referencedTable != null && !referencedTable.isBlank()
+                    && !ignored(simpleTableName(referencedTable), tablePrefixConfig)
+                    && !simpleTableName(referencedTable).startsWith(prefix)) {
+                foreignKey.referencedTable(prefixQualifiedTable(referencedTable, prefix));
+            }
+        }
+        return copy;
+    }
+
+    /**
+     * Resolves the table prefix from the prefix plugin configuration.
+     *
+     * @param tablePrefixConfig table prefix configuration
+     * @return table prefix, or {@code null}
+     */
+    private String tablePrefix(TablePrefixConfig tablePrefixConfig) {
+        if (tablePrefixConfig == null || tablePrefixConfig.getProvider() == null) {
+            return null;
+        }
+        return tablePrefixConfig.getProvider().getPrefix();
+    }
+
+    /**
+     * Copies table metadata before schema-only table name changes.
+     *
+     * @param source cached table metadata
+     * @return copied table metadata
+     */
+    private TableMeta copyTable(TableMeta source) {
+        TableMeta copy = TableMeta.of(source.entityClass()).table(source.table()).catalog(source.catalog())
+                .schema(source.schema()).style(source.style()).columns(new ArrayList<>(source.columns()))
+                .indexes(copyIndexes(source.indexes())).foreignKeys(copyForeignKeys(source.foreignKeys()))
+                .ready(source.ready());
+        copy.primaryKey(null);
+        return copy;
+    }
+
+    /**
+     * Copies index metadata into a mutable list.
+     *
+     * @param indexes source index metadata
+     * @return copied index metadata
+     */
+    private List<IndexMeta> copyIndexes(List<IndexMeta> indexes) {
+        List<IndexMeta> copies = new ArrayList<>();
+        if (indexes == null) {
+            return copies;
+        }
+        for (IndexMeta index : indexes) {
+            copies.add(
+                    new IndexMeta().name(index.name()).unique(index.unique())
+                            .columns(index.columns() == null ? new ArrayList<>() : new ArrayList<>(index.columns())));
+        }
+        return copies;
+    }
+
+    /**
+     * Copies foreign key metadata into a mutable list.
+     *
+     * @param foreignKeys source foreign key metadata
+     * @return copied foreign key metadata
+     */
+    private List<ForeignKeyMeta> copyForeignKeys(List<ForeignKeyMeta> foreignKeys) {
+        List<ForeignKeyMeta> copies = new ArrayList<>();
+        if (foreignKeys == null) {
+            return copies;
+        }
+        for (ForeignKeyMeta foreignKey : foreignKeys) {
+            copies.add(
+                    new ForeignKeyMeta().name(foreignKey.name()).referencedTable(foreignKey.referencedTable()).columns(
+                            foreignKey.columns() == null ? new ArrayList<>() : new ArrayList<>(foreignKey.columns()))
+                            .referencedColumns(
+                                    foreignKey.referencedColumns() == null ? new ArrayList<>()
+                                            : new ArrayList<>(foreignKey.referencedColumns()))
+                            .onDelete(foreignKey.onDelete()).onUpdate(foreignKey.onUpdate()));
+        }
+        return copies;
+    }
+
+    /**
+     * Checks whether a logical table should ignore table prefixing.
+     *
+     * @param tableName         logical table name
+     * @param tablePrefixConfig table prefix configuration
+     * @return {@code true} when the table should not be prefixed
+     */
+    private boolean ignored(String tableName, TablePrefixConfig tablePrefixConfig) {
+        if (tableName == null || tablePrefixConfig == null || tablePrefixConfig.getIgnore() == null) {
+            return false;
+        }
+        return tablePrefixConfig.getIgnore().stream().anyMatch(tableName::equalsIgnoreCase);
+    }
+
+    /**
+     * Applies a prefix to the simple table name while preserving an optional qualifier.
+     *
+     * @param tableName table name
+     * @param prefix    table prefix
+     * @return prefixed table name
+     */
+    private String prefixQualifiedTable(String tableName, String prefix) {
+        int qualifierIndex = tableName.lastIndexOf('.');
+        if (qualifierIndex < 0) {
+            return prefix + tableName;
+        }
+        return tableName.substring(0, qualifierIndex + 1) + prefix + tableName.substring(qualifierIndex + 1);
+    }
+
+    /**
+     * Returns the simple table name without qualifier.
+     *
+     * @param tableName table name
+     * @return simple table name
+     */
+    private String simpleTableName(String tableName) {
+        int qualifierIndex = tableName == null ? -1 : tableName.lastIndexOf('.');
+        return qualifierIndex < 0 ? tableName : tableName.substring(qualifierIndex + 1);
     }
 
     /**
@@ -369,12 +535,13 @@ public class EntitySchemaInitializer {
     private boolean whitelisted(SchemaConfig config, SchemaDiff diff) {
         String table = diff.tableMeta().tableName();
         String column = diff.columnMeta() != null ? diff.columnMeta().column()
-                : diff.actualColumn() != null ? diff.actualColumn().name() : "";
+                : diff.actualColumn() != null ? diff.actualColumn().name() : Normal.EMPTY;
         String type = diff.type().name();
-        return config.dangerousWhitelist().contains(table) || config.dangerousWhitelist().contains(table + "." + column)
+        return config.dangerousWhitelist().contains(table)
+                || config.dangerousWhitelist().contains(table + Symbol.DOT + column)
                 || config.dangerousWhitelist().contains(type)
-                || config.dangerousWhitelist().contains(type + ":" + table)
-                || config.dangerousWhitelist().contains(type + ":" + table + "." + column);
+                || config.dangerousWhitelist().contains(type + Symbol.COLON + table)
+                || config.dangerousWhitelist().contains(type + Symbol.COLON + table + Symbol.DOT + column);
     }
 
     /**

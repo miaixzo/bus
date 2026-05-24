@@ -118,16 +118,6 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     }
 
     /**
-     * Get the handler name for logging purposes.
-     *
-     * @return the handler name "Page"
-     */
-    @Override
-    public String getHandler() {
-        return "Page";
-    }
-
-    /**
      * Returns the execution order for the pagination handler in the mapper interceptor chain.
      *
      * @return the handler order value
@@ -251,7 +241,6 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         }
 
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-        BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
         MappedStatement ms = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
         if (ms != null && isCountMappedStatement(ms)) {
             Logger.debug(true, "Mapper", "Pagination prepare skipped: method={}, reason=countQuery", ms.getId());

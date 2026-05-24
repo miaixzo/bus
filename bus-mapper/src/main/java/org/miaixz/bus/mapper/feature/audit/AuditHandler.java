@@ -21,8 +21,6 @@ package org.miaixz.bus.mapper.feature.audit;
 
 import java.util.Properties;
 
-import lombok.Getter;
-
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -33,7 +31,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.handler.ConditionHandler;
+import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
 
 /**
  * SQL Audit Interceptor
@@ -71,19 +69,13 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 21+
  */
-@Getter
-public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
-
-    /**
-     * Audit configuration from file (lowest priority).
-     */
-    private AuditConfig config;
+public class AuditHandler<T> extends ScopedProviderHandler<T, AuditConfig, AuditProvider> {
 
     /**
      * Default constructor (uses default configuration).
      */
     public AuditHandler() {
-        // No initialization required.
+        super();
     }
 
     /**
@@ -92,61 +84,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
      * @param config the audit configuration from file
      */
     public AuditHandler(AuditConfig config) {
-        this.config = config;
-    }
-
-    /**
-     * Get the handler name for logging purposes.
-     *
-     * @return the handler name "Audit"
-     */
-    @Override
-    public String getHandler() {
-        return "Audit";
-    }
-
-    /**
-     * Sets the audit-related configuration properties. This method is typically called during plugin initialization to
-     * configure SQL audit behaviors.
-     *
-     * @param properties the configuration properties (contains all datasources)
-     * @return true if properties were successfully set, false if properties is null
-     */
-    @Override
-    public boolean setProperties(Properties properties) {
-        if (properties == null) {
-            return false;
-        }
-
-        // Store all properties for dynamic lookup (in parent class)
-        this.properties = properties;
-
-        // Get current datasource key for static config initialization
-        String datasourceKey = getDatasourceKey();
-
-        // Try to get provider from properties
-        AuditProvider provider = getProvider(properties, AuditProvider.class);
-
-        // Set provider if found
-        if (provider == null) {
-            Logger.warn(false, "Mapper", "Audit provider not found, feature disabled: datasource={}", datasourceKey);
-            return false;
-        }
-
-        // Build initial static config
-        this.config = buildAuditConfig(datasourceKey, properties, provider);
-        Logger.info(
-                false,
-                "Mapper",
-                "Audit handler configured: datasource={}, slowSqlThreshold={}, logParameters={}, logResults={}, logAllSql={}, printConsole={}, provider={}",
-                datasourceKey,
-                config.getSlowSqlThreshold(),
-                config.isLogParameters(),
-                config.isLogResults(),
-                config.isLogAllSql(),
-                config.isPrintConsole(),
-                provider.getClass().getName());
-        return true;
+        super(config);
     }
 
     /**
@@ -157,16 +95,6 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     @Override
     protected String scope() {
         return Args.AUDIT_KEY;
-    }
-
-    /**
-     * Gets the default audit configuration.
-     *
-     * @return the default audit configuration
-     */
-    @Override
-    protected AuditConfig defaults() {
-        return config;
     }
 
     /**
@@ -181,34 +109,38 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * Gets the derived audit configuration for a specific datasource.
+     * Returns the audit provider contract.
      *
-     * @param datasourceKey the datasource key
-     * @param properties    the properties
-     * @return the derived audit configuration
+     * @return the audit provider contract type
      */
     @Override
-    protected AuditConfig derived(String datasourceKey, Properties properties) {
-        // Try to get provider from properties
-        AuditProvider provider = getProvider(properties, AuditProvider.class);
-
-        // Set provider if found
-        if (provider == null) {
-            return null;
-        }
-
-        return buildAuditConfig(datasourceKey, properties, provider);
+    protected Class<AuditProvider> type() {
+        return AuditProvider.class;
     }
 
     /**
-     * Build audit configuration from properties for a specific datasource.
+     * Returns whether audit configuration requires an audit provider.
+     *
+     * @return {@code true}
+     */
+    @Override
+    protected boolean requiresProvider() {
+        return true;
+    }
+
+    /**
+     * Resolves audit configuration from properties for a specific datasource.
      *
      * @param datasourceKey the datasource key
      * @param properties    the properties
      * @param provider      the audit provider
      * @return the audit configuration
      */
-    private AuditConfig buildAuditConfig(String datasourceKey, Properties properties, AuditProvider provider) {
+    @Override
+    protected AuditConfig resolve(String datasourceKey, Properties properties, AuditProvider provider) {
+        if (provider == null) {
+            return null;
+        }
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT;
         String dsPrefix = datasourceKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT;
 

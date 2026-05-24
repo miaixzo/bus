@@ -2724,6 +2724,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.mapper.feature.schema.SchemaProvider",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.mapper.feature.schema.SchemaReport",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

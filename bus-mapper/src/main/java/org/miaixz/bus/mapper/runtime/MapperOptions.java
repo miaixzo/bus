@@ -24,9 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,14 +32,14 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Charter.Schema;
 
 /**
  * Runtime mapper configuration options.
  * <p>
  * This class provides the pure Java/MyBatis configuration model shared by the starter adapter and mapper runtime
- * assembly code. It deliberately avoids Spring resource resolution, bean lookup, classpath scanning, and application
+ * assembly code. It exposes lightweight resolution helpers while delegating parsing details to package-private runtime
+ * infrastructure. It deliberately avoids Spring resource resolution, bean lookup, classpath scanning, and application
  * context concerns so it can live inside {@code bus-mapper}.
  *
  * @author Kimi Liu
@@ -51,13 +48,6 @@ import org.miaixz.bus.mapper.Charter.Schema;
 @Getter
 @Setter
 public class MapperOptions {
-
-    /**
-     * Pattern used to flatten indexed {@code namespaces[n].*} configuration entries into the legacy
-     * {@code namespace.path=value} property shape consumed by mapper handlers.
-     */
-    private static final Pattern NAMESPACE_INDEXED_KEY = Pattern
-            .compile("^namespaces(?:\\[(\\d+)\\]|\\.(\\d+))\\.(.+)$");
 
     /**
      * Constructs a new MapperOptions instance with the default schema options.
@@ -114,7 +104,8 @@ public class MapperOptions {
      * Externalized properties for MyBatis configuration and mapper handlers.
      * <p>
      * The value supports both existing flattened keys and indexed namespace keys such as {@code namespaces[0].name},
-     * {@code namespaces[0].tenant.column}, and {@code namespaces[0].table.prefix}.
+     * {@code namespaces[0].tenant.column}, {@code namespaces[0].table.prefix}, and
+     * {@code namespaces[0].schema.enabled}.
      */
     private Properties configurationProperties;
 
@@ -186,53 +177,48 @@ public class MapperOptions {
      * <p>
      * Supports both legacy fixed-key configuration and the {@code namespaces[].name} structure.
      *
+     * @param raw raw mapper configuration properties
      * @return flattened configuration properties
      */
-    public Properties resolveConfigurationProperties() {
-        Properties raw = this.configurationProperties;
-        Properties resolved = new Properties();
-        if (raw == null || raw.isEmpty()) {
-            return resolved;
-        }
+    public static Properties resolve(Properties raw) {
+        return MapperOptionsResolver.resolve(raw);
+    }
 
-        Map<Integer, Map<String, String>> groupedNamespaceProperties = new TreeMap<>();
-        for (String key : raw.stringPropertyNames()) {
-            Matcher matcher = NAMESPACE_INDEXED_KEY.matcher(key);
-            if (matcher.matches()) {
-                String indexText = matcher.group(1) != null ? matcher.group(1) : matcher.group(2);
-                int index = Integer.parseInt(indexText);
-                String path = matcher.group(3);
-                groupedNamespaceProperties.computeIfAbsent(index, ignored -> new LinkedHashMap<>())
-                        .put(path, raw.getProperty(key));
-                continue;
-            }
-            resolved.setProperty(key, raw.getProperty(key));
-        }
+    /**
+     * Resolves mapper configuration properties from mapper options.
+     *
+     * @param options mapper options
+     * @return flattened configuration properties
+     */
+    public static Properties resolve(MapperOptions options) {
+        return MapperOptionsResolver.resolve(options);
+    }
 
-        if (groupedNamespaceProperties.isEmpty()) {
-            return resolved;
-        }
+    /**
+     * Resolves namespace-level schema options from mapper options.
+     *
+     * @param options mapper options
+     * @return resolved namespace schema options keyed by namespace name
+     */
+    public static Map<String, SchemaOptions> resolveSchemaOptions(MapperOptions options) {
+        return MapperOptionsResolver.resolveSchemaOptions(options);
+    }
 
-        Set<String> namespaceNames = new HashSet<>(groupedNamespaceProperties.size());
-        for (Map.Entry<Integer, Map<String, String>> entry : groupedNamespaceProperties.entrySet()) {
-            String namespaceName = StringKit.trim(entry.getValue().get("name"));
-            if (StringKit.isEmpty(namespaceName)) {
-                throw new IllegalArgumentException(
-                        "bus.mapper.configurationProperties.namespaces[" + entry.getKey() + "].name must not be empty");
-            }
-            if (!namespaceNames.add(namespaceName)) {
-                throw new IllegalArgumentException("Duplicate mapper namespace name: " + namespaceName);
-            }
-
-            for (Map.Entry<String, String> propertyEntry : entry.getValue().entrySet()) {
-                String path = propertyEntry.getKey();
-                if ("name".equals(path)) {
-                    continue;
-                }
-                resolved.setProperty(namespaceName + "." + path, propertyEntry.getValue());
-            }
-        }
-        return resolved;
+    /**
+     * Resolves namespace-level schema options from flattened mapper properties.
+     * <p>
+     * The top-level schema object remains the legacy global configuration. When namespace {@code schema.*} entries or
+     * {@code shared.schema.*} defaults exist, that global object becomes the default template for namespace
+     * initialization.
+     *
+     * @param globalSchema       top-level schema options used as namespace defaults
+     * @param resolvedProperties flattened mapper configuration properties
+     * @return resolved namespace schema options keyed by namespace name
+     */
+    public static Map<String, SchemaOptions> resolveSchemaOptions(
+            SchemaOptions globalSchema,
+            Properties resolvedProperties) {
+        return MapperOptionsResolver.resolveSchemaOptions(globalSchema, resolvedProperties);
     }
 
     /**

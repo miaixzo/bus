@@ -25,6 +25,7 @@ import lombok.Setter;
 import org.miaixz.bus.mapper.feature.audit.AuditProvider;
 import org.miaixz.bus.mapper.feature.populate.PopulateProvider;
 import org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider;
+import org.miaixz.bus.mapper.feature.schema.SchemaProvider;
 import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
 import org.miaixz.bus.mapper.feature.visible.VisibleProvider;
 
@@ -73,5 +74,10 @@ public class MapperPluginProviders {
      * Provider used to resolve audit behavior and optional audit handler configuration.
      */
     private AuditProvider auditProvider;
+
+    /**
+     * Provider used to resolve schema initialization configuration and entity classes.
+     */
+    private SchemaProvider schemaProvider;
 
 }
