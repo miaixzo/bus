@@ -380,6 +380,7 @@ typings/
 
 # flatten-maven-plugin index file
 .flattened-pom.xml
+.groom-pom.xml
 
 # LLM assistant local files
 .claude/

@@ -34,89 +34,40 @@ import org.apache.ibatis.session.RowBounds;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.Visible;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.handler.ConditionHandler;
+import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
 
 /**
  * Visible control interceptor handler.
  *
  * <p>
- * This handler intercepts SQL query execution and automatically adds perimeter conditions to filter results based on
- * the current user's data perimeter. It works in conjunction with {@link VisibleBuilder} to modify the SQL.
+ * This handler intercepts SQL query execution and automatically adds visibility conditions from the configured
+ * {@link VisibleProvider}. It works in conjunction with {@link VisibleBuilder} to modify the SQL.
  *
  * @param <T> the entity type
  * @author Kimi Liu
  * @since Java 21+
  */
-public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
-
-    /**
-     * Visible configuration from file (lowest priority).
-     */
-    private VisibleConfig config;
+public class VisibleHandler<T> extends ScopedProviderHandler<T, VisibleConfig, VisibleProvider> {
 
     /**
      * Default constructor (uses default configuration).
      */
     public VisibleHandler() {
-        // No initialization required.
+        super();
     }
 
     /**
      * Constructor with file configuration.
      *
-     * @param config the perimeter configuration from file
+     * @param config the visibility configuration from file
      */
     public VisibleHandler(VisibleConfig config) {
-        this.config = config;
-    }
-
-    /**
-     * Get the handler name for logging purposes.
-     *
-     * @return the handler name "Visible"
-     */
-    @Override
-    public String getHandler() {
-        return "Visible";
-    }
-
-    /**
-     * Sets the visible-related configuration properties. This method is typically called during plugin initialization
-     * to configure data perimeter behaviors.
-     *
-     * @param properties the configuration properties (contains all datasources)
-     * @return true if properties were successfully set, false if properties is null
-     */
-    @Override
-    public boolean setProperties(Properties properties) {
-        if (properties == null) {
-            return false;
-        }
-
-        // Store all properties for dynamic lookup (in parent class)
-        this.properties = properties;
-
-        // Get current datasource key for static config initialization
-        String datasourceKey = getDatasourceKey();
-
-        // Try to get provider from properties
-        VisibleProvider provider = getProvider(properties, VisibleProvider.class);
-
-        // Set provider if found
-        if (provider == null) {
-            Logger.warn(false, "Mapper", "Provider not found, feature will not be enabled");
-            return false;
-        }
-
-        // Build initial static config
-        this.config = buildVisibleConfig(datasourceKey, properties, provider);
-        return true;
+        super(config);
     }
 
     /**
@@ -127,16 +78,6 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
     @Override
     protected String scope() {
         return Args.VISIBLE_KEY;
-    }
-
-    /**
-     * Returns the default visible configuration loaded for this handler.
-     *
-     * @return the default configuration, or {@code null} when unavailable
-     */
-    @Override
-    protected VisibleConfig defaults() {
-        return config;
     }
 
     /**
@@ -151,34 +92,38 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
     }
 
     /**
-     * Builds datasource-specific visible configuration from the supplied properties.
+     * Returns the visible provider contract.
      *
-     * @param datasourceKey the datasource key used to resolve scoped configuration
-     * @param properties    the configuration properties used to build the scoped configuration
-     * @return the derived configuration, or {@code null} when the datasource is not configured
+     * @return the visible provider contract type
      */
     @Override
-    protected VisibleConfig derived(String datasourceKey, Properties properties) {
-        // Try to get provider from properties
-        VisibleProvider provider = getProvider(properties, VisibleProvider.class);
-
-        // Set provider if found
-        if (provider == null) {
-            return null;
-        }
-
-        return buildVisibleConfig(datasourceKey, properties, provider);
+    protected Class<VisibleProvider> type() {
+        return VisibleProvider.class;
     }
 
     /**
-     * Build visible configuration from properties for a specific datasource.
+     * Returns whether visible configuration requires a visible provider.
+     *
+     * @return {@code true}
+     */
+    @Override
+    protected boolean requiresProvider() {
+        return true;
+    }
+
+    /**
+     * Resolves visible configuration from properties for a specific datasource.
      *
      * @param datasourceKey the datasource key
      * @param properties    the properties
      * @param provider      the visible provider
      * @return the visible configuration
      */
-    private VisibleConfig buildVisibleConfig(String datasourceKey, Properties properties, VisibleProvider provider) {
+    @Override
+    protected VisibleConfig resolve(String datasourceKey, Properties properties, VisibleProvider provider) {
+        if (provider == null) {
+            return null;
+        }
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.VISIBLE_KEY + Symbol.DOT;
         String dsPrefix = datasourceKey + Symbol.DOT + Args.VISIBLE_KEY + Symbol.DOT;
 
@@ -206,8 +151,8 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
      * Intercept query operations (SELECT).
      *
      * <p>
-     * This method is called before SQL execution. It modifies the SQL to add perimeter conditions based on the current
-     * user's data perimeter and the entity's {@link Visible} annotation.
+     * This method is called before SQL execution. It modifies the SQL to add visibility conditions from the current
+     * {@link VisibleProvider}.
      * </p>
      *
      * <p>
@@ -235,13 +180,13 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
         // Get current configuration
         VisibleConfig currentConfig = current();
 
-        // Skip if perimeter control is disabled
+        // Skip if visibility filtering is disabled
         if (currentConfig == null) {
             Logger.debug(true, "Mapper", "Visibility control disabled: method={}", ms.getId());
             return true;
         }
 
-        // Skip if perimeter filtering is ignored
+        // Skip if visibility filtering is ignored
         if (VisibleContext.isIgnore()) {
             Logger.debug(true, "Mapper", "Visibility filtering ignored: method={}", ms.getId());
             return true;
@@ -263,7 +208,7 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 
         String originalSql = boundSql.getSql();
 
-        // Create builder for current config and apply perimeter condition
+        // Create builder for current config and apply visibility condition
         VisibleBuilder builder = new VisibleBuilder(currentConfig);
         String actualSql = builder.applyVisibility(originalSql);
 

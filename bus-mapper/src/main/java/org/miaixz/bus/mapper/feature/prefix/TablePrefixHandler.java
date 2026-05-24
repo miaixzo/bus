@@ -38,7 +38,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.handler.ConditionHandler;
+import org.miaixz.bus.mapper.Holder;
+import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
 
 /**
  * Table prefix handler.
@@ -60,18 +61,13 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConfig> {
-
-    /**
-     * Prefix configuration from file (lowest priority).
-     */
-    private TablePrefixConfig config;
+public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefixConfig, TablePrefixProvider> {
 
     /**
      * Default constructor (uses default configuration).
      */
     public TablePrefixHandler() {
-        // No initialization required.
+        super();
     }
 
     /**
@@ -80,49 +76,7 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
      * @param config the prefix configuration from file
      */
     public TablePrefixHandler(TablePrefixConfig config) {
-        this.config = config;
-    }
-
-    /**
-     * Get the handler name for logging purposes.
-     *
-     * @return the handler name "Prefix"
-     */
-    @Override
-    public String getHandler() {
-        return "Prefix";
-    }
-
-    /**
-     * Sets the prefix-related configuration properties. This method is typically called during plugin initialization to
-     * configure table prefix behaviors.
-     *
-     * @param properties the configuration properties (contains all datasources)
-     * @return true if properties were successfully set, false if properties is null or no valid prefix configuration
-     */
-    @Override
-    public boolean setProperties(Properties properties) {
-        if (properties == null) {
-            return false;
-        }
-
-        // Store all properties for dynamic lookup (in parent class)
-        this.properties = properties;
-
-        // Get current datasource key for static config initialization
-        String datasourceKey = getDatasourceKey();
-
-        // Try to get provider from properties
-        TablePrefixProvider provider = getProvider(properties, TablePrefixProvider.class);
-
-        // Build initial static config
-        TablePrefixConfig staticConfig = buildTablePrefixConfig(datasourceKey, properties, provider);
-        if (staticConfig == null) {
-            return false;
-        }
-
-        this.config = staticConfig;
-        return true;
+        super(config);
     }
 
     /**
@@ -136,16 +90,6 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
     }
 
     /**
-     * Returns the default table prefix configuration loaded for this handler.
-     *
-     * @return the default configuration, or {@code null} when unavailable
-     */
-    @Override
-    protected TablePrefixConfig defaults() {
-        return config;
-    }
-
-    /**
      * Captures the current thread-local table prefix configuration override.
      *
      * @return the captured configuration, or {@code null} when no override is active
@@ -154,66 +98,6 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
     protected TablePrefixConfig capture() {
         Context.MapperConfig contextConfig = Context.getMapperConfig();
         return contextConfig != null ? contextConfig.getPrefix() : null;
-    }
-
-    /**
-     * Builds datasource-specific table prefix configuration from the supplied properties.
-     *
-     * @param datasourceKey the datasource key used to resolve scoped configuration
-     * @param properties    the configuration properties used to build the scoped configuration
-     * @return the derived configuration, or {@code null} when the datasource is not configured
-     */
-    @Override
-    protected TablePrefixConfig derived(String datasourceKey, Properties properties) {
-        // Try to get provider from properties
-        TablePrefixProvider provider = getProvider(properties, TablePrefixProvider.class);
-
-        return buildTablePrefixConfig(datasourceKey, properties, provider);
-    }
-
-    /**
-     * Build table prefix configuration from properties for a specific datasource.
-     *
-     * @param datasourceKey the datasource key
-     * @param properties    the properties
-     * @param provider      the table prefix provider
-     * @return the table prefix configuration, or null if no valid configuration
-     */
-    private TablePrefixConfig buildTablePrefixConfig(
-            String datasourceKey,
-            Properties properties,
-            TablePrefixProvider provider) {
-        // Build configuration paths
-        String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
-        String dsPrefix = datasourceKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
-
-        // Merge configuration: datasource-specific > shared > null
-        String prefixValue = properties.getProperty(
-                dsPrefix + Args.TABLE_PREFIX,
-                properties.getProperty(sharedPrefix + Args.TABLE_PREFIX, Normal.EMPTY));
-
-        String ignore = properties.getProperty(
-                dsPrefix + Args.PROP_IGNORE,
-                properties.getProperty(sharedPrefix + Args.PROP_IGNORE, Normal.EMPTY));
-
-        // Get ignore tables list
-        List<String> ignoreTables = StringKit.isNotEmpty(ignore) ? Arrays.stream(ignore.split(Symbol.COMMA))
-                .map(String::trim).filter(ObjectKit::isNotEmpty).collect(Collectors.toList()) : Collections.emptyList();
-
-        // If no provider and no prefix value from config, return null
-        if (provider == null && StringKit.isEmpty(prefixValue)) {
-            return null;
-        }
-
-        // Create a file-based provider if no provider bean but prefix value exists
-        TablePrefixProvider finalProvider = provider;
-        if (finalProvider == null && StringKit.isNotEmpty(prefixValue)) {
-            final String configuredPrefix = prefixValue;
-            finalProvider = () -> configuredPrefix;
-        }
-
-        // Build and return configuration
-        return TablePrefixConfig.builder().provider(finalProvider).ignore(ignoreTables).build();
     }
 
     /**
@@ -276,6 +160,89 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
     }
 
     /**
+     * Returns the table prefix provider contract.
+     *
+     * @return the table prefix provider contract type
+     */
+    @Override
+    protected Class<TablePrefixProvider> type() {
+        return TablePrefixProvider.class;
+    }
+
+    /**
+     * Resolves datasource-specific table prefix configuration from mapper properties.
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the mapper configuration properties
+     * @param provider      the optional table prefix provider
+     * @return the table prefix configuration, or {@code null} when no prefix can be resolved
+     */
+    @Override
+    protected TablePrefixConfig resolve(String datasourceKey, Properties properties, TablePrefixProvider provider) {
+        return resolveConfig(datasourceKey, properties, provider);
+    }
+
+    /**
+     * Resolves table prefix configuration with the same datasource-specific and global property rules used by this
+     * handler.
+     * <p>
+     * Resolution order is datasource-bound configuration, shared global configuration, then default global
+     * configuration.
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the mapper configuration properties
+     * @param provider      the optional table prefix provider
+     * @return the table prefix configuration, or {@code null} when no prefix can be resolved
+     */
+    public static TablePrefixConfig resolveConfig(
+            String datasourceKey,
+            Properties properties,
+            TablePrefixProvider provider) {
+        if (properties == null && provider == null) {
+            return null;
+        }
+        if (properties == null) {
+            return TablePrefixConfig.builder().provider(provider).ignore(Collections.emptyList()).build();
+        }
+        String key = StringKit.isNotEmpty(datasourceKey) ? datasourceKey : Holder.getDefault();
+        String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
+        String defaultPrefix = Holder.getDefault() + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
+        String legacyDefaultPrefix = "default" + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
+        String dsPrefix = key + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
+
+        String prefixValue = properties.getProperty(
+                dsPrefix + Args.TABLE_PREFIX,
+                properties.getProperty(
+                        sharedPrefix + Args.TABLE_PREFIX,
+                        properties.getProperty(
+                                defaultPrefix + Args.TABLE_PREFIX,
+                                properties.getProperty(legacyDefaultPrefix + Args.TABLE_PREFIX, Normal.EMPTY))));
+
+        String ignore = properties.getProperty(
+                dsPrefix + Args.PROP_IGNORE,
+                properties.getProperty(
+                        sharedPrefix + Args.PROP_IGNORE,
+                        properties.getProperty(
+                                defaultPrefix + Args.PROP_IGNORE,
+                                properties.getProperty(legacyDefaultPrefix + Args.PROP_IGNORE, Normal.EMPTY))));
+
+        List<String> ignoreTables = StringKit.isNotEmpty(ignore) ? Arrays.stream(ignore.split(Symbol.COMMA))
+                .map(String::trim).filter(ObjectKit::isNotEmpty).collect(Collectors.toList()) : Collections.emptyList();
+
+        if (provider == null && StringKit.isEmpty(prefixValue)) {
+            return null;
+        }
+
+        TablePrefixProvider finalProvider = provider;
+        if (finalProvider == null && StringKit.isNotEmpty(prefixValue)) {
+            final String configuredPrefix = prefixValue;
+            finalProvider = () -> configuredPrefix;
+        }
+
+        return TablePrefixConfig.builder().provider(finalProvider).ignore(ignoreTables).build();
+    }
+
+    /**
      * Processes SQL by updating the current BoundSql or the request scoped rewrite context.
      *
      * @param ms        the MappedStatement
@@ -305,7 +272,11 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
                 // Step 1: Modify the BoundSql parameter using reflection
                 // This ensures the current BoundSql instance is modified for current execution
                 if (boundSql != null && !setBoundSql(boundSql, actualSql)) {
-                    Logger.warn(false, "Mapper", "Failed to modify BoundSql");
+                    Logger.warn(
+                            false,
+                            "Mapper",
+                            "Table prefix SQL update failed: method={}, reason=boundSqlImmutable",
+                            ms.getId());
                 }
                 putSqlRewrite(ms, actualSql);
                 Logger.debug(false, "Mapper", "Applied: prefix={}, method={}", prefix, ms.getId());
@@ -314,7 +285,13 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
                 Logger.debug(false, "Mapper", "SQL unchanged: method={}", ms.getId());
             }
         } catch (Exception e) {
-            Logger.warn(false, "Mapper", "Failed to apply prefix: {}", e.getMessage());
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Table prefix SQL rewrite failed: method={}, exception={}",
+                    ms.getId(),
+                    e.getClass().getSimpleName());
         }
     }
 

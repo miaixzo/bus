@@ -118,6 +118,11 @@ bus:
           ignore: tenant,token,user
 ```
 
+The Spring Boot configuration keys remain unchanged. Internally, `bus-mapper` now exposes `MapperOptions` as the pure
+Java/MyBatis option model for mapper properties. Plugin assembly, configuration normalization, and type-resolution
+helpers live in separate components. The starter keeps Spring Boot binding, resource resolution, mapper scanning, and
+lifecycle wiring, so existing `bus.mapper.*` YAML does not need migration.
+
 #### 3\. Enable Mapper Scanning
 
 ```java
@@ -946,6 +951,51 @@ bus:
       allow-modify-type: true
       allow-expand-length: true
 ```
+
+`entity-packages` scans entity classes annotated with `@Entity` or `@Table`; when `include-entities` is empty, every discovered entity is eligible for initialization.
+
+### Per-Database Initialization
+
+When a project configures multiple databases through `configurationProperties.namespaces`, `schema` can be placed under
+the matching namespace. Table prefixes are not duplicated under `schema`; initialization reads the existing
+`table.prefix` / `table.ignore` table-prefix plugin configuration from the same namespace.
+Table prefixes are compatible with both global and datasource-bound configuration: `namespace.table.prefix` wins first,
+then `shared.table.prefix`, `default.table.prefix`, or the top-level `bus.mapper.prefix` is used.
+
+```yaml
+bus:
+  mapper:
+    configurationProperties:
+      namespaces:
+        - name: com_deepparser
+          table:
+            prefix: dp_
+            ignore: tenant,assets,license
+          tenant:
+            column: tenant_id
+            ignore: tenant,assets,license,token,user
+          schema:
+            enabled: true
+            mode: UPDATE
+            dry-run: false
+            print-sql: true
+            fail-fast: true
+            entity-packages:
+              - ai.deepparser.nexus.entity
+            include-entities:
+              - ai.deepparser.nexus.entity.License
+              - ai.deepparser.nexus.entity.Token
+            allow-create-table: true
+            allow-add-column: true
+            allow-create-primary-key: true
+            allow-create-index: true
+```
+
+`bus.mapper.schema` remains compatible: when no namespace-level `schema` exists, the legacy global configuration runs as
+before. When namespace-level `schema` exists, the global `bus.mapper.schema` object is used as the default template for
+each namespace so the same entities are not initialized a second time globally. If the datasource bean name differs from
+the namespace name, set `schema.datasource-key` in that namespace. `configurationProperties.shared.schema` can also
+provide default schema options for all namespaces, with each namespace allowed to override them.
 
 Use `SCRIPT` first in production-like environments to review generated DDL before allowing execution:
 

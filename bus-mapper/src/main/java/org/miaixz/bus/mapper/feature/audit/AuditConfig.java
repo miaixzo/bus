@@ -27,10 +27,9 @@ import lombok.experimental.SuperBuilder;
  * SQL Audit Configuration
  *
  * <p>
- * Used to configure the behavior of audit functionality, including:
+ * Used to configure the behavior of audit functionality after an {@link AuditProvider} has been registered, including:
  * </p>
  * <ul>
- * <li>Whether to enable audit</li>
  * <li>Slow SQL threshold (SQL exceeding this threshold will be logged as slow SQL)</li>
  * <li>Whether to log SQL parameters</li>
  * <li>Whether to log SQL results</li>

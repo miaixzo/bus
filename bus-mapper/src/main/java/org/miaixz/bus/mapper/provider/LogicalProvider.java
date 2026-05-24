@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Logical;
-import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -42,7 +41,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class LogicalProvider {
+public class LogicalProvider extends BasicProvider {
 
     /**
      * Constructs a new LogicalProvider instance.
@@ -146,8 +145,7 @@ public class LogicalProvider {
                                 "",
                                 "WHERE |OR |AND ",
                                 "",
-                                () -> ifParameterNotNull(() -> Args.CONDITION_WHERE_CLAUSE)
-                                        + logicalCondition(entity, false))
+                                () -> ifParameterNotNull(() -> CONDITION_ROOT_WHERE) + logicalCondition(entity, false))
                         + ifTest("orderByClause != null", () -> " Order BY ${orderByClause}")
                         + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(Normal.EMPTY))
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
@@ -184,8 +182,7 @@ public class LogicalProvider {
                                 "",
                                 "WHERE |OR |AND ",
                                 "",
-                                () -> ifParameterNotNull(() -> Args.CONDITION_WHERE_CLAUSE)
-                                        + logicalCondition(entity, false))
+                                () -> ifParameterNotNull(() -> CONDITION_ROOT_WHERE) + logicalCondition(entity, false))
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
         });
@@ -273,7 +270,7 @@ public class LogicalProvider {
                                 "",
                                 "WHERE |OR |AND ",
                                 "",
-                                () -> Args.UPDATE_BY_CONDITION_WHERE_CLAUSE + logicalCondition(entity, false))
+                                () -> CONDITION_PARAMETER_WHERE + logicalCondition(entity, false))
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
         });
@@ -313,7 +310,7 @@ public class LogicalProvider {
                                 "",
                                 "WHERE |OR |AND ",
                                 "",
-                                () -> Args.UPDATE_BY_CONDITION_WHERE_CLAUSE + logicalCondition(entity, false))
+                                () -> CONDITION_PARAMETER_WHERE + logicalCondition(entity, false))
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
         });
@@ -338,7 +335,7 @@ public class LogicalProvider {
             public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
                         + variableNotEmpty("condition.setValues", "Condition setValues cannot be empty") + "UPDATE "
-                        + entity.tableName() + Args.CONDITION_SET_CLAUSE_INNER_WHEN
+                        + entity.tableName() + CONDITION_SET_VALUES
                         + variableNotNull("condition", "Condition cannot be null")
                         + (entity.getBoolean("updateByCondition.allowEmpty", true) ? ""
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
@@ -347,7 +344,7 @@ public class LogicalProvider {
                                 "",
                                 "WHERE |OR |AND ",
                                 "",
-                                () -> Args.UPDATE_BY_CONDITION_WHERE_CLAUSE + logicalCondition(entity, false))
+                                () -> CONDITION_PARAMETER_WHERE + logicalCondition(entity, false))
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
         });
@@ -532,7 +529,7 @@ public class LogicalProvider {
                         + parameterNotNull("Condition cannot be null")
                         + (entity.getBoolean("deleteByCondition.allowEmpty", true) ? ""
                                 : variableIsFalse("_parameter.isEmpty()", "Condition Criteria cannot be empty"))
-                        + Args.CONDITION_WHERE_CLAUSE + " AND " + logicalCondition(entity, true)
+                        + CONDITION_ROOT_WHERE + " AND " + logicalCondition(entity, true)
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
         });

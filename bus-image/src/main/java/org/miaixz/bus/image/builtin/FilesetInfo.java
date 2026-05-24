@@ -19,7 +19,9 @@
 */
 package org.miaixz.bus.image.builtin;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents information about a DICOM Fileset, including its UID, ID, descriptor file, and character set. This class
@@ -29,13 +31,6 @@ import java.io.File;
  * @since Java 21+
  */
 public class FilesetInfo {
-
-    /**
-     * Constructs a new FilesetInfo instance.
-     */
-    public FilesetInfo() {
-        // No initialization required.
-    }
 
     /**
      * The Unique Identifier (UID) of the fileset.
@@ -50,12 +45,45 @@ public class FilesetInfo {
     /**
      * The descriptor file associated with the fileset.
      */
-    private File descFile;
+    private Path descriptorFile;
 
     /**
      * The character set used for the descriptor file.
      */
-    private String descFileCharset;
+    private String descriptorFileCharset;
+
+    /**
+     * Constructs a new FilesetInfo instance.
+     */
+    public FilesetInfo() {
+        // No initialization required.
+    }
+
+    /**
+     * Constructs a new FilesetInfo instance.
+     *
+     * @param uid the uid.
+     * @param id  the id.
+     */
+    public FilesetInfo(String uid, String id) {
+        this.uid = uid;
+        this.id = id;
+    }
+
+    /**
+     * Constructs a new FilesetInfo instance.
+     *
+     * @param uid                   the uid.
+     * @param id                    the id.
+     * @param descriptorFile        the descriptor file.
+     * @param descriptorFileCharset the descriptor file charset.
+     */
+    public FilesetInfo(String uid, String id, Path descriptorFile, String descriptorFileCharset) {
+        this.uid = uid;
+        this.id = id;
+        this.descriptorFile = descriptorFile;
+        this.descriptorFileCharset = descriptorFileCharset;
+    }
 
     /**
      * Retrieves the Unique Identifier (UID) of the fileset.
@@ -71,8 +99,9 @@ public class FilesetInfo {
      *
      * @param uid The new fileset UID.
      */
-    public final void setFilesetUID(String uid) {
+    public final FilesetInfo setFilesetUID(String uid) {
         this.uid = uid;
+        return this;
     }
 
     /**
@@ -89,8 +118,9 @@ public class FilesetInfo {
      *
      * @param id The new fileset ID.
      */
-    public final void setFilesetID(String id) {
+    public final FilesetInfo setFilesetID(String id) {
         this.id = id;
+        return this;
     }
 
     /**
@@ -98,17 +128,18 @@ public class FilesetInfo {
      *
      * @return The descriptor file.
      */
-    public final File getDescriptorFile() {
-        return descFile;
+    public final Optional<Path> getDescriptorFile() {
+        return Optional.ofNullable(descriptorFile);
     }
 
     /**
      * Sets the descriptor file associated with the fileset.
      *
-     * @param descFile The new descriptor file.
+     * @param descriptorFile The new descriptor file.
      */
-    public final void setDescriptorFile(File descFile) {
-        this.descFile = descFile;
+    public final FilesetInfo setDescriptorFile(Path descriptorFile) {
+        this.descriptorFile = descriptorFile;
+        return this;
     }
 
     /**
@@ -116,17 +147,77 @@ public class FilesetInfo {
      *
      * @return The descriptor file character set.
      */
-    public final String getDescriptorFileCharset() {
-        return descFileCharset;
+    public final Optional<String> getDescriptorFileCharset() {
+        return Optional.ofNullable(descriptorFileCharset);
     }
 
     /**
      * Sets the character set used for the descriptor file.
      *
-     * @param descFileCharset The new descriptor file character set.
+     * @param descriptorFileCharset the descriptor file character set.
      */
-    public final void setDescriptorFileCharset(String descFileCharset) {
-        this.descFileCharset = descFileCharset;
+    public final FilesetInfo setDescriptorFileCharset(String descriptorFileCharset) {
+        this.descriptorFileCharset = descriptorFileCharset;
+        return this;
+    }
+
+    /**
+     * Determines whether this fileset information is complete.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
+    public boolean isComplete() {
+        return hasValidIdentifiers() && descriptorFile != null;
+    }
+
+    /**
+     * Determines whether this fileset information has valid identifiers.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
+    public boolean hasValidIdentifiers() {
+        return uid != null && !uid.trim().isEmpty() && id != null && !id.trim().isEmpty();
+    }
+
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param object the object.
+     * @return true if the condition is met; otherwise false.
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        FilesetInfo that = (FilesetInfo) object;
+        return Objects.equals(uid, that.uid) && Objects.equals(id, that.id)
+                && Objects.equals(descriptorFile, that.descriptorFile)
+                && Objects.equals(descriptorFileCharset, that.descriptorFileCharset);
+    }
+
+    /**
+     * Returns the hash code.
+     *
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(uid, id, descriptorFile, descriptorFileCharset);
+    }
+
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
+    @Override
+    public String toString() {
+        return "FilesetInfo{" + "uid='" + uid + '\'' + ", id='" + id + '\'' + ", descriptorFile=" + descriptorFile
+                + ", descriptorFileCharset='" + descriptorFileCharset + '\'' + '}';
     }
 
 }

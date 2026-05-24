@@ -303,6 +303,16 @@ public abstract class AbstractStrategy implements Strategy {
             context.setX_request_domain(x_request_domain);
         }
         context.getParameters().put("x_request_domain", x_request_domain);
+        Logger.info(
+                true,
+                "Vortex",
+                "Request domain enriched: strategy=abstract, clientIp={}, path={}, x_request_domain={}, host={}, xForwardedHost={}, forwarded={}",
+                x_request_ipv4,
+                exchange.getRequest().getURI().getRawPath(),
+                x_request_domain,
+                exchange.getRequest().getHeaders().getFirst(HttpHeaders.HOST),
+                exchange.getRequest().getHeaders().getFirst("X-Forwarded-Host"),
+                exchange.getRequest().getHeaders().getFirst("Forwarded"));
     }
 
     /**

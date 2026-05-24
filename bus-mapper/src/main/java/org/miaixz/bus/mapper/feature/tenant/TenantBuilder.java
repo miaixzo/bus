@@ -20,6 +20,7 @@
 package org.miaixz.bus.mapper.feature.tenant;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +36,8 @@ import org.miaixz.bus.core.lang.Symbol;
  * </p>
  *
  * <p>
- * Does not depend on third-party SQL parsing libraries, uses regular expressions for implementation.
+ * Does not depend on third-party SQL parsing libraries; it combines regular expressions with lightweight top-level SQL
+ * keyword scanners.
  * </p>
  *
  * @author Kimi Liu
@@ -47,35 +49,53 @@ public class TenantBuilder {
      * SELECT statement regex (case insensitive).
      */
     private static final Pattern SELECT_PATTERN = Pattern
-            .compile("\\s*SELECT\\s+.*?\\s+FROM\\s+(\\w+)\\s*(.*)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+            .compile("\\s*SELECT\\s+.*?\\s+FROM\\s+([\\w.]+)\\s*(.*)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
     /**
      * INSERT statement regex.
      */
     private static final Pattern INSERT_PATTERN = Pattern.compile(
-            "\\s*INSERT\\s+INTO\\s+(\\w+)\\s*\\(([^)]+)\\)\\s*VALUES\\s*\\(([^)]+)\\)",
+            "\\s*INSERT\\s+INTO\\s+([\\w.]+)\\s*\\(([^)]+)\\)\\s*VALUES\\s*\\(([^)]+)\\)",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
     /**
      * UPDATE statement regex.
      */
     private static final Pattern UPDATE_PATTERN = Pattern.compile(
-            "\\s*UPDATE\\s+(\\w+)\\s+SET\\s+(.*?)(?:\\s+WHERE\\s+(.*))?$",
+            "\\s*UPDATE\\s+([\\w.]+)\\s+SET\\s+(.*?)(?:\\s+WHERE\\s+(.*))?$",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
     /**
      * DELETE statement regex.
      */
-    private static final Pattern DELETE_PATTERN = Pattern
-            .compile("\\s*DELETE\\s+FROM\\s+(\\w+)\\s*(?:WHERE\\s+(.*))?$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    private static final Pattern DELETE_PATTERN = Pattern.compile(
+            "\\s*DELETE\\s+FROM\\s+([\\w.]+)\\s*(?:WHERE\\s+(.*))?$",
+            Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
     /**
-     * WHERE clause regex.
+     * SQL words that may follow a table name but must not be treated as table aliases.
      */
-    private static final Pattern WHERE_PATTERN = Pattern.compile("\\bWHERE\\b\\s*", Pattern.CASE_INSENSITIVE);
+    private static final Set<String> ALIAS_STOP_WORDS = Set.of(
+            "WHERE",
+            "GROUP",
+            "ORDER",
+            "HAVING",
+            "LIMIT",
+            "OFFSET",
+            "FETCH",
+            "FOR",
+            "JOIN",
+            "INNER",
+            "LEFT",
+            "RIGHT",
+            "FULL",
+            "CROSS",
+            "UNION",
+            "EXCEPT",
+            "INTERSECT");
 
     /**
-     * SQL clauses that appear after the SELECT WHERE condition.
+     * SQL clauses that can trail the main SELECT condition or table suffix.
      */
     private static final String[] SELECT_TRAILING_CLAUSES = { " ORDER BY ", " GROUP BY ", " HAVING ", " LIMIT ",
             " OFFSET ", " FETCH ", " FOR UPDATE", " FOR SHARE", " UNION " };
@@ -86,7 +106,7 @@ public class TenantBuilder {
     private final TenantConfig config;
 
     /**
-     * SQL cache (original SQL -> actual SQL).
+     * SQL cache (original SQL and tenant ID -> actual SQL).
      */
     private final Map<String, String> sqlCache;
 
@@ -169,48 +189,45 @@ public class TenantBuilder {
         String rest = matcher.group(2);
 
         // Check if the table should be ignored
-        if (config.isIgnoreTable(tableName)) {
+        if (ignoredTable(tableName)) {
             return sql;
         }
 
-        // Build tenant condition
-        String tenantCondition = buildTenantCondition(tenantId);
-
         // Check if WHERE clause exists in rest (which is everything after the table name)
-        Matcher whereMatcher = WHERE_PATTERN.matcher(rest);
-        if (whereMatcher.find()) {
+        int whereIndex = indexOfTopLevelWhere(rest);
+        if (whereIndex >= 0) {
             // WHERE exists, add tenant filtering after WHERE keyword
-            int whereStart = whereMatcher.start();
-            int whereEnd = whereMatcher.end();
-            String beforeWhere = rest.substring(0, whereStart);
-            SelectCondition condition = splitSelectCondition(rest.substring(whereEnd));
+            String beforeWhere = rest.substring(0, whereIndex);
+            String tableAlias = tableAlias(beforeWhere);
+            String tenantCondition = buildTenantCondition(tenantId, tableAlias);
+            SelectCondition condition = splitSelectCondition(rest.substring(whereEnd(rest, whereIndex)));
             String whereClause = condition.condition().trim();
             String tailClause = condition.tail();
             if (whereClause.isEmpty()) {
                 return String.format(
-                        "SELECT %s FROM %s%s WHERE %s%s",
+                        "SELECT %s FROM %s WHERE %s%s",
                         extractSelectColumns(sql),
-                        tableName,
-                        beforeWhere,
+                        tableReference(tableName, beforeWhere),
                         tenantCondition,
                         tailClause);
             }
             return String.format(
-                    "SELECT %s FROM %s%s WHERE %s AND (%s)%s",
+                    "SELECT %s FROM %s WHERE %s AND (%s)%s",
                     extractSelectColumns(sql),
-                    tableName,
-                    beforeWhere,
+                    tableReference(tableName, beforeWhere),
                     tenantCondition,
                     whereClause,
                     tailClause);
         } else {
             SelectCondition condition = splitSelectCondition(rest);
+            String tableSuffix = condition.condition();
+            String tableAlias = tableAlias(tableSuffix);
+            String tenantCondition = buildTenantCondition(tenantId, tableAlias);
             // No WHERE, add WHERE clause
             return String.format(
-                    "SELECT %s FROM %s%s WHERE %s%s",
+                    "SELECT %s FROM %s WHERE %s%s",
                     extractSelectColumns(sql),
-                    tableName,
-                    condition.condition(),
+                    tableReference(tableName, tableSuffix),
                     tenantCondition,
                     condition.tail());
         }
@@ -234,7 +251,7 @@ public class TenantBuilder {
         String values = matcher.group(3);
 
         // Check if the table should be ignored
-        if (config.isIgnoreTable(tableName)) {
+        if (ignoredTable(tableName)) {
             return sql;
         }
 
@@ -269,7 +286,7 @@ public class TenantBuilder {
         String whereClause = matcher.group(3);
 
         // Check if the table should be ignored
-        if (config.isIgnoreTable(tableName)) {
+        if (ignoredTable(tableName)) {
             return sql;
         }
 
@@ -302,7 +319,7 @@ public class TenantBuilder {
         String whereClause = matcher.group(2);
 
         // Check if the table should be ignored
-        if (config.isIgnoreTable(tableName)) {
+        if (ignoredTable(tableName)) {
             return sql;
         }
 
@@ -324,7 +341,22 @@ public class TenantBuilder {
      * @return the tenant filtering condition
      */
     private String buildTenantCondition(String tenantId) {
-        return String.format("%s = '%s'", config.getColumn(), escapeSql(tenantId));
+        return buildTenantCondition(tenantId, Normal.EMPTY);
+    }
+
+    /**
+     * Build tenant filtering condition.
+     *
+     * @param tenantId   the tenant ID
+     * @param tableAlias the real table alias, or empty when absent
+     * @return the tenant filtering condition
+     */
+    private String buildTenantCondition(String tenantId, String tableAlias) {
+        String column = config.getColumn();
+        if (tableAlias != null && !tableAlias.isBlank()) {
+            column = tableAlias + Symbol.DOT + column;
+        }
+        return String.format("%s = '%s'", column, escapeSql(tenantId));
     }
 
     /**
@@ -343,7 +375,7 @@ public class TenantBuilder {
     }
 
     /**
-     * SQL escaping (to prevent SQL injection).
+     * Escapes a tenant ID string literal for the generated SQL.
      *
      * @param value the original value
      * @return the escaped value
@@ -354,6 +386,221 @@ public class TenantBuilder {
         }
         // Escape single quotes
         return value.replace(Symbol.SINGLE_QUOTE, "''");
+    }
+
+    /**
+     * Builds the table reference while preserving aliases and joins.
+     *
+     * @param tableName   the main table name
+     * @param tableSuffix the SQL fragment after the table name and before WHERE or a trailing clause
+     * @return the complete table reference
+     */
+    private String tableReference(String tableName, String tableSuffix) {
+        if (tableSuffix == null || tableSuffix.isBlank()) {
+            return tableName;
+        }
+        return tableName + Symbol.SPACE + tableSuffix.strip();
+    }
+
+    /**
+     * Resolves the main table alias from the table suffix.
+     *
+     * @param tableSuffix the SQL fragment after the table name and before WHERE or a trailing clause
+     * @return the real alias, or empty when absent
+     */
+    private String tableAlias(String tableSuffix) {
+        if (tableSuffix == null || tableSuffix.isBlank()) {
+            return Normal.EMPTY;
+        }
+        String first = nextToken(tableSuffix, 0);
+        if (first == null) {
+            return Normal.EMPTY;
+        }
+        if ("AS".equalsIgnoreCase(first)) {
+            int index = tableSuffix.indexOf(first) + first.length();
+            String alias = nextToken(tableSuffix, index);
+            return alias == null || aliasStopWord(alias) ? Normal.EMPTY : alias;
+        }
+        return aliasStopWord(first) ? Normal.EMPTY : first;
+    }
+
+    /**
+     * Returns the next identifier token from a SQL fragment.
+     *
+     * @param sql   the SQL fragment
+     * @param start the scan start index
+     * @return the next token, or {@code null}
+     */
+    private String nextToken(String sql, int start) {
+        int index = start;
+        while (index < sql.length() && Character.isWhitespace(sql.charAt(index))) {
+            index++;
+        }
+        int begin = index;
+        while (index < sql.length()) {
+            char current = sql.charAt(index);
+            if (!Character.isLetterOrDigit(current) && current != '_') {
+                break;
+            }
+            index++;
+        }
+        return index > begin ? sql.substring(begin, index) : null;
+    }
+
+    /**
+     * Tests whether a token cannot be a table alias.
+     *
+     * @param token the token to test
+     * @return {@code true} when the token is not a real alias
+     */
+    private boolean aliasStopWord(String token) {
+        return token == null || ALIAS_STOP_WORDS.contains(token.toUpperCase(java.util.Locale.ROOT));
+    }
+
+    /**
+     * Tests whether tenant filtering should ignore a table.
+     * <p>
+     * The configured ignore list historically receives simple table names, while SQL may contain a schema-qualified
+     * name such as {@code public.user}. Both forms are checked to keep the existing configuration compatible.
+     *
+     * @param tableName the table name from SQL
+     * @return {@code true} when tenant filtering should be skipped
+     */
+    private boolean ignoredTable(String tableName) {
+        return config.isIgnoreTable(tableName) || config.isIgnoreTable(simpleTableName(tableName));
+    }
+
+    /**
+     * Returns the table name without a qualifier.
+     *
+     * @param tableName the table name
+     * @return the simple table name
+     */
+    private String simpleTableName(String tableName) {
+        int qualifier = tableName == null ? -1 : tableName.lastIndexOf(Symbol.C_DOT);
+        return qualifier < 0 ? tableName : tableName.substring(qualifier + 1);
+    }
+
+    /**
+     * Finds a top-level WHERE keyword outside strings and nested expressions.
+     *
+     * @param sql the SQL fragment to scan
+     * @return the WHERE index, or {@code -1}
+     */
+    private int indexOfTopLevelWhere(String sql) {
+        int depth = 0;
+        boolean singleQuoted = false;
+        boolean doubleQuoted = false;
+        boolean backtickQuoted = false;
+        boolean bracketQuoted = false;
+        for (int i = 0; i < sql.length(); i++) {
+            char current = sql.charAt(i);
+            if (singleQuoted) {
+                if (current == Symbol.C_SINGLE_QUOTE && i + 1 < sql.length()
+                        && sql.charAt(i + 1) == Symbol.C_SINGLE_QUOTE) {
+                    i++;
+                    continue;
+                }
+                if (current == Symbol.C_SINGLE_QUOTE) {
+                    singleQuoted = false;
+                }
+                continue;
+            }
+            if (doubleQuoted) {
+                if (current == Symbol.C_DOUBLE_QUOTES && i + 1 < sql.length()
+                        && sql.charAt(i + 1) == Symbol.C_DOUBLE_QUOTES) {
+                    i++;
+                    continue;
+                }
+                if (current == Symbol.C_DOUBLE_QUOTES) {
+                    doubleQuoted = false;
+                }
+                continue;
+            }
+            if (backtickQuoted) {
+                if (current == '`') {
+                    backtickQuoted = false;
+                }
+                continue;
+            }
+            if (bracketQuoted) {
+                if (current == ']') {
+                    bracketQuoted = false;
+                }
+                continue;
+            }
+            if (current == Symbol.C_SINGLE_QUOTE) {
+                singleQuoted = true;
+                continue;
+            }
+            if (current == Symbol.C_DOUBLE_QUOTES) {
+                doubleQuoted = true;
+                continue;
+            }
+            if (current == '`') {
+                backtickQuoted = true;
+                continue;
+            }
+            if (current == '[') {
+                bracketQuoted = true;
+                continue;
+            }
+            if (current == '(') {
+                depth++;
+                continue;
+            }
+            if (current == ')' && depth > 0) {
+                depth--;
+                continue;
+            }
+            if (depth == 0 && isKeywordAt(sql, i, "WHERE")) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Returns the end index after a WHERE keyword and following whitespace.
+     *
+     * @param sql        the SQL fragment
+     * @param whereIndex the WHERE start index
+     * @return the body start index
+     */
+    private int whereEnd(String sql, int whereIndex) {
+        int index = whereIndex + "WHERE".length();
+        while (index < sql.length() && Character.isWhitespace(sql.charAt(index))) {
+            index++;
+        }
+        return index;
+    }
+
+    /**
+     * Tests whether a keyword starts at the index with word boundaries.
+     *
+     * @param sql     the SQL fragment
+     * @param index   the index to test
+     * @param keyword the keyword
+     * @return {@code true} when matched
+     */
+    private boolean isKeywordAt(String sql, int index, String keyword) {
+        if (!sql.regionMatches(true, index, keyword, 0, keyword.length())) {
+            return false;
+        }
+        int before = index - 1;
+        int after = index + keyword.length();
+        return (before < 0 || !identifierPart(sql.charAt(before)))
+                && (after >= sql.length() || !identifierPart(sql.charAt(after)));
+    }
+
+    /**
+     * Tests whether a character is part of an SQL identifier.
+     *
+     * @param value the character to test
+     * @return {@code true} when it belongs to an identifier
+     */
+    private boolean identifierPart(char value) {
+        return Character.isLetterOrDigit(value) || value == '_';
     }
 
     /**
@@ -387,17 +634,58 @@ public class TenantBuilder {
         int depth = 0;
         boolean singleQuoted = false;
         boolean doubleQuoted = false;
+        boolean backtickQuoted = false;
+        boolean bracketQuoted = false;
         for (int i = 0; i < sql.length(); i++) {
             char current = sql.charAt(i);
-            if (current == '\'' && !doubleQuoted) {
-                singleQuoted = !singleQuoted;
+            if (singleQuoted) {
+                if (current == Symbol.C_SINGLE_QUOTE && i + 1 < sql.length()
+                        && sql.charAt(i + 1) == Symbol.C_SINGLE_QUOTE) {
+                    i++;
+                    continue;
+                }
+                if (current == Symbol.C_SINGLE_QUOTE) {
+                    singleQuoted = false;
+                }
                 continue;
             }
-            if (current == '"' && !singleQuoted) {
-                doubleQuoted = !doubleQuoted;
+            if (doubleQuoted) {
+                if (current == Symbol.C_DOUBLE_QUOTES && i + 1 < sql.length()
+                        && sql.charAt(i + 1) == Symbol.C_DOUBLE_QUOTES) {
+                    i++;
+                    continue;
+                }
+                if (current == Symbol.C_DOUBLE_QUOTES) {
+                    doubleQuoted = false;
+                }
                 continue;
             }
-            if (singleQuoted || doubleQuoted) {
+            if (backtickQuoted) {
+                if (current == '`') {
+                    backtickQuoted = false;
+                }
+                continue;
+            }
+            if (bracketQuoted) {
+                if (current == ']') {
+                    bracketQuoted = false;
+                }
+                continue;
+            }
+            if (current == Symbol.C_SINGLE_QUOTE) {
+                singleQuoted = true;
+                continue;
+            }
+            if (current == Symbol.C_DOUBLE_QUOTES) {
+                doubleQuoted = true;
+                continue;
+            }
+            if (current == '`') {
+                backtickQuoted = true;
+                continue;
+            }
+            if (current == '[') {
+                bracketQuoted = true;
                 continue;
             }
             if (current == '(') {
@@ -444,6 +732,7 @@ public class TenantBuilder {
      * @param tail      the trailing clause, including the leading space
      */
     private record SelectCondition(String condition, String tail) {
+
     }
 
     /**

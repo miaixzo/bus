@@ -166,7 +166,7 @@ public class SolarWeek extends WeekParts {
      * @return the first SolarDay of this week
      */
     public SolarDay getFirstDay() {
-        SolarDay firstDay = SolarDay.fromYmd(getYear(), getMonth(), 1);
+        SolarDay firstDay = SolarDay.fromYmd(year, month, 1);
         return firstDay.next(index * 7 - indexOf(firstDay.getWeek().getIndex() - start, 7));
     }
 

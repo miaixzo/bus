@@ -62,6 +62,69 @@ public abstract class BasicProvider {
     }
 
     /**
+     * MyBatis dynamic {@code <set>} template that renders assignments from {@code condition.setValues}.
+     */
+    protected static final String CONDITION_SET_VALUES = "<set>"
+            + "  <foreach collection=\"condition.setValues\" item=\"setValue\">\n" + "    <choose>\n"
+            + "      <when test=\"setValue.noValue\">\n" + "        ${setValue.condition},\n" + "      </when>\n"
+            + "      <when test=\"setValue.singleValue\">\n"
+            + "        ${setValue.condition} = ${setValue.variables('setValue.value')},\n" + "      </when>\n"
+            + "    </choose>\n" + "  </foreach>\n" + "</set>";
+
+    /**
+     * Shared criterion {@code <when>} branch template used by Condition WHERE templates.
+     */
+    private static final String CONDITION_CRITERION_WHEN = "              <when test=\"criterion.noValue\">\n"
+            + "              AND ${criterion.condition}\n" + "            </when>\n"
+            + "            <when test=\"criterion.singleValue\">\n"
+            + "              AND ${criterion.condition} ${criterion.variables('criterion.value')}\n"
+            + "            </when>\n" + "            <when test=\"criterion.betweenValue\">\n"
+            + "              AND ${criterion.condition} ${criterion.variables('criterion.value')} AND\n"
+            + "              ${criterion.variables('criterion.secondValue')}\n" + "            </when>\n"
+            + "            <when test=\"criterion.listValue\">\n" + "              AND ${criterion.condition}\n"
+            + "              <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\"\n"
+            + "                open=\"(\" separator=\",\">\n" + "                ${criterion.variables('listItem')}\n"
+            + "              </foreach>\n" + "            </when>\n";
+
+    /**
+     * MyBatis dynamic {@code <where>} template for a Condition passed as {@code @Param("condition")}.
+     * <p>
+     * This template reads criteria from {@code condition.oredCriteria}.
+     */
+    protected static final String CONDITION_PARAMETER_WHERE = "<where>\n"
+            + "  <foreach collection=\"condition.oredCriteria\" item=\"criteria\"\n separator=\" OR \">\n"
+            + "    <if test=\"criteria.valid\">\n" + "      <trim prefix=\"(\" prefixOverrides=\"AND\" suffix=\")\">\n"
+            + "        <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" + "          <choose>\n"
+            + CONDITION_CRITERION_WHEN + "            <when test=\"criterion.orValue\">\n"
+            + "              <foreach collection=\"criterion.value\" item=\"orCriteria\" separator=\" OR \" open = \" AND (\" close = \")\">\n"
+            + "                <if test=\"orCriteria.valid\">\n"
+            + "                  <trim prefix=\"(\" prefixOverrides=\"AND\" suffix=\")\">\n"
+            + "                    <foreach collection=\"orCriteria.criteria\" item=\"criterion\">\n"
+            + "                      <choose>\n" + CONDITION_CRITERION_WHEN + "                      </choose>\n"
+            + "                    </foreach>\n" + "                  </trim>\n" + "                </if>\n"
+            + "              </foreach>\n" + "            </when>\n" + "          </choose>\n" + "        </foreach>\n"
+            + "      </trim>\n" + "    </if>\n" + "  </foreach>\n" + "</where>\n";
+
+    /**
+     * MyBatis dynamic {@code <where>} template for a Condition used as the root mapper method parameter.
+     * <p>
+     * This template reads criteria from {@code oredCriteria}.
+     */
+    protected static final String CONDITION_ROOT_WHERE = "<where>\n"
+            + "  <foreach collection=\"oredCriteria\" item=\"criteria\" separator=\" OR \">\n"
+            + "    <if test=\"criteria.valid\">\n" + "      <trim prefix=\"(\" prefixOverrides=\"AND\" suffix=\")\">\n"
+            + "        <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" + "          <choose>\n"
+            + CONDITION_CRITERION_WHEN + "            <when test=\"criterion.orValue\">\n"
+            + "              <foreach collection=\"criterion.value\" item=\"orCriteria\" separator=\" OR \" open = \" AND (\" close = \")\">\n"
+            + "                <if test=\"orCriteria.valid\">\n"
+            + "                  <trim prefix=\"(\" prefixOverrides=\"AND\" suffix=\")\">\n"
+            + "                    <foreach collection=\"orCriteria.criteria\" item=\"criterion\">\n"
+            + "                      <choose>\n" + CONDITION_CRITERION_WHEN + "                      </choose>\n"
+            + "                    </foreach>\n" + "                  </trim>\n" + "                </if>\n"
+            + "              </foreach>\n" + "            </when>\n" + "          </choose>\n" + "        </foreach>\n"
+            + "      </trim>\n" + "    </if>\n" + "  </foreach>\n" + "</where>\n";
+
+    /**
      * Template method for caching SQL scripts.
      *
      * <p>

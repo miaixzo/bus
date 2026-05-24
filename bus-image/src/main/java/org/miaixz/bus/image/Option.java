@@ -89,11 +89,6 @@ public class Option {
     public static final List<String> TLS_1_3 = List.of("TLSv1.3");
 
     /**
-     * The ssl 3 value.
-     */
-    public static final List<String> SSL_3 = List.of("SSLv3");
-
-    /**
      * The ssl2 hello value.
      */
     public static final List<String> SSL2_HELLO = List.of("SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2");

@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.health.builtin.hardware.BluetoothDevice;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor.PhysicalProcessor;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor.ProcessorCache;
@@ -49,6 +50,7 @@ import org.miaixz.bus.health.builtin.hardware.SoundCard;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
 import org.miaixz.bus.health.builtin.software.ApplicationInfo;
+import org.miaixz.bus.health.builtin.software.CgroupInfo;
 import org.miaixz.bus.health.builtin.software.FileSystem;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 import org.miaixz.bus.health.builtin.software.NetworkParams;
@@ -89,6 +91,24 @@ public final class Reporter {
         lines.add("Sessions:");
         for (OSSession s : os.getSessions()) {
             lines.add(" " + s.toString());
+        }
+        CgroupInfo cgroup = os.getCgroupInfo();
+        if (cgroup.isContainerized()) {
+            lines.add("Container: cgroup v" + cgroup.getVersion());
+            lines.add(
+                    " CPU quota: " + (cgroup.getCpuQuota() == CgroupInfo.UNLIMITED ? "unlimited"
+                            : cgroup.getCpuQuota() + " us"));
+            lines.add(
+                    " Effective CPUs: " + (cgroup.getEffectiveCpus() == CgroupInfo.UNLIMITED_CPUS ? "unlimited"
+                            : String.format(Locale.ROOT, "%.2f", cgroup.getEffectiveCpus())));
+            lines.add(
+                    " Memory limit: " + (cgroup.getMemoryLimit() == CgroupInfo.UNLIMITED_MEMORY ? "unlimited"
+                            : Formats.formatBytes(cgroup.getMemoryLimit())));
+            lines.add(" Memory usage: " + Formats.formatBytes(cgroup.getMemoryUsage()));
+            lines.add(
+                    " PID limit: "
+                            + (cgroup.getPidLimit() == CgroupInfo.UNLIMITED ? "unlimited" : cgroup.getPidLimit()));
+            lines.add(" PID current: " + cgroup.getPidCurrent());
         }
     }
 
@@ -527,6 +547,23 @@ public final class Reporter {
         lines.add("USB Devices:");
         for (UsbDevice usbDevice : list) {
             lines.add(String.valueOf(usbDevice));
+        }
+    }
+
+    /**
+     * Handles the print bluetooth devices operation.
+     *
+     * @param lines the lines
+     * @param list  the list
+     */
+    public static void printBluetoothDevices(List<String> lines, List<BluetoothDevice> list) {
+        lines.add("Bluetooth Devices:");
+        if (list.isEmpty()) {
+            lines.add(" None detected.");
+        } else {
+            for (BluetoothDevice device : list) {
+                lines.add(" " + String.valueOf(device));
+            }
         }
     }
 

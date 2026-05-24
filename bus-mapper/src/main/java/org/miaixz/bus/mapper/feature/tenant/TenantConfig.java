@@ -63,12 +63,12 @@ import org.miaixz.bus.mapper.Charter.Isolation;
  * // Method 1: Quick setup with custom provider only
  * TenantConfig config = TenantConfig.of(() -> SecurityContextHolder.getTenantId());
  *
- * // Method 2: Use default provider (from TenantContext)
- * TenantConfig config = TenantConfig.ofDefault();
+ * // Method 2: Use TenantContext as the provider
+ * TenantConfig config = TenantConfig.of(TenantContext::getTenantId);
  *
  * // Method 3: Full configuration with custom provider
  * TenantConfig config = TenantConfig.builder().mode(Isolation.COLUMN).column("tenant_id")
- *         .ignoreTables("sys_config", "sys_dict").provider(() -> SecurityContextHolder.getTenantId()).build();
+ *         .ignore(Arrays.asList("sys_config", "sys_dict")).provider(() -> SecurityContextHolder.getTenantId()).build();
  *
  * // Method 4: Configuration file-based (auto-load from application.yml)
  * TenantConfig config = TenantConfig.builder().build();
@@ -152,9 +152,7 @@ public class TenantConfig {
      * </p>
      * <ul>
      * <li>COLUMN mode</li>
-     * <li>Default column name from configuration or "tenant_id"</li>
-     * <li>Ignored tables from configuration</li>
-     * <li>Enabled by default</li>
+     * <li>Custom tenant provider</li>
      * <li>SQL cache enabled</li>
      * </ul>
      *

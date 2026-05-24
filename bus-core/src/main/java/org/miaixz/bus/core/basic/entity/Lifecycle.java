@@ -21,6 +21,8 @@ package org.miaixz.bus.core.basic.entity;
 
 import java.io.Serial;
 
+import jakarta.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,26 +60,31 @@ public class Lifecycle extends Entity {
      * </ul>
      */
     @Logical
+    @Column(nullable = false)
     protected Integer status;
 
     /**
      * The identifier of the user who created this entity.
      */
+    @Column(length = 24, nullable = false)
     protected String creator;
 
     /**
      * The creation timestamp (milliseconds) of the entity.
      */
+    @Column(nullable = false)
     protected Long created;
 
     /**
      * The identifier of the user who last modified this entity.
      */
+    @Column(length = 24, nullable = false)
     protected String modifier;
 
     /**
      * The last modification timestamp (milliseconds) of the entity.
      */
+    @Column(nullable = false)
     protected Long modified;
 
 }

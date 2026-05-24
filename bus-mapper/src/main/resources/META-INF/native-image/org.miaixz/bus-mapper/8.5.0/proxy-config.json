@@ -81,6 +81,11 @@
   },
   {
     "interfaces": [
+      "org.miaixz.bus.mapper.feature.schema.SchemaProvider"
+    ]
+  },
+  {
+    "interfaces": [
       "org.miaixz.bus.mapper.feature.tenant.TenantProvider"
     ]
   },

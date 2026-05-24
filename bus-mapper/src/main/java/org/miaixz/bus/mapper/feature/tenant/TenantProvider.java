@@ -107,8 +107,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * public class CustomTenantProvider implements TenantProvider {
  *
  *     public TenantConfig getConfig() {
- *         return TenantConfig.builder().column("tenant_id").ignoreTables("sys_config", "sys_dict").enabled(true)
- *                 .build();
+ *         return TenantConfig.builder().column("tenant_id").ignore(Arrays.asList("sys_config", "sys_dict")).build();
  *     }
  *
  *     public String getTenantId() {

@@ -134,6 +134,16 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
+     * Returns the bluetooth devices.
+     *
+     * @return the get bluetooth devices result
+     */
+    @Override
+    public List<BluetoothDevice> getBluetoothDevices() {
+        return MacBluetoothDevice.getBluetoothDevices();
+    }
+
+    /**
      * Description inherited from parent class or interface.
      */
     @Override

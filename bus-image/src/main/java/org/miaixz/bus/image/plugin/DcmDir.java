@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
@@ -176,7 +177,8 @@ public class DcmDir {
         try (ImageDirReader r = new ImageDirReader(f)) {
             fsInfo.setFilesetUID(r.getFileSetUID());
             fsInfo.setFilesetID(r.getFileSetID());
-            fsInfo.setDescriptorFile(r.getDescriptorFile());
+            File descriptorFile = r.getDescriptorFile();
+            fsInfo.setDescriptorFile(descriptorFile == null ? null : descriptorFile.toPath());
             fsInfo.setDescriptorFileCharset(r.getDescriptorFileCharacterSet());
             create(tmp);
             copyFrom(r);
@@ -329,8 +331,8 @@ public class DcmDir {
                 file,
                 UID.createUIDIfNull(fsInfo.getFilesetUID()),
                 fsInfo.getFilesetID(),
-                fsInfo.getDescriptorFile(),
-                fsInfo.getDescriptorFileCharset());
+                fsInfo.getDescriptorFile().map(Path::toFile).orElse(null),
+                fsInfo.getDescriptorFileCharset().orElse(null));
         in = out = ImageDirWriter.open(file);
         out.setEncodingOptions(encOpts);
         setCheckDuplicate(false);

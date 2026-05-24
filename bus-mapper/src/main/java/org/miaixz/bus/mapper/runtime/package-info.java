@@ -17,28 +17,13 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.mapper;
-
-import org.apache.ibatis.session.Configuration;
-
 /**
- * A callback interface for customizing the MyBatis {@link Configuration} object that is auto-configured by this
- * starter.
+ * Provides runtime mapper configuration and plugin assembly support.
  * <p>
- * Beans of this type will be automatically detected and their {@link #customize(Configuration)} method will be called
- * before the {@link org.apache.ibatis.session.SqlSessionFactory} is created.
+ * Classes in this package are intentionally independent from Spring so starter modules and non-Spring integrations can
+ * share the same mapper option model and interceptor construction logic.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@FunctionalInterface
-public interface ConfigurationCustomizer {
-
-    /**
-     * Customizes the given {@link Configuration} object.
-     *
-     * @param configuration The {@link Configuration} object to be customized.
-     */
-    void customize(Configuration configuration);
-
-}
+package org.miaixz.bus.mapper.runtime;

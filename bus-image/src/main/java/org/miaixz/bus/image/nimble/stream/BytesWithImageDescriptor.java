@@ -50,20 +50,20 @@ public interface BytesWithImageDescriptor extends ImageReaderDescriptor {
     String getTransferSyntax();
 
     /**
-     * Executes the big endian operation.
+     * Determines whether the pixel data uses big-endian byte ordering.
      *
      * @return true if the condition is met; otherwise false.
      */
-    default boolean bigEndian() {
+    default boolean isBigEndian() {
         return false;
     }
 
     /**
-     * Executes the float pixel data operation.
+     * Determines whether the pixel data contains floating-point values.
      *
      * @return true if the condition is met; otherwise false.
      */
-    default boolean floatPixelData() {
+    default boolean isFloatPixelData() {
         return false;
     }
 

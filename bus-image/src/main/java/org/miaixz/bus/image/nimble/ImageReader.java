@@ -624,11 +624,11 @@ public class ImageReader extends javax.imageio.ImageReader {
         ImageDescriptor desc = dis == null ? bdis.getImageDescriptor() : dis.getMetadata().getImageDescriptor();
         PlanarImage out = img;
         if (getImageDescriptor().hasPaletteColorLookupTable()) {
-            if (dis == null) {
-                out = RGBImageVoiLut.getRGBImageFromPaletteColorModel(out, bdis.getPaletteColorLookupTable());
-            } else {
-                out = RGBImageVoiLut.getRGBImageFromPaletteColorModel(out, dis.getMetadata().getDicomObject());
-            }
+            Attributes paletteAttributes = dis == null ? bdis.getPaletteColorLookupTable()
+                    : dis.getMetadata().getDicomObject();
+            out = RGBImageVoiLut.getRGBImageFromPaletteColorModel(
+                    out,
+                    RGBImageVoiLut.getPaletteColorLookupTable(paletteAttributes));
         }
         if (param != null && param.getSourceRegion() != null) {
             out = ImageTransformer.crop(out.toMat(), param.getSourceRegion());
@@ -863,10 +863,10 @@ public class ImageReader extends javax.imageio.ImageReader {
                 dcmFlags |= Imgcodecs.DICOM_FLAG_FORCE_RGB_CONVERSION;
             }
         }
-        if (bdis.bigEndian()) {
+        if (bdis.isBigEndian()) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_BIGENDIAN;
         }
-        if (bdis.floatPixelData()) {
+        if (bdis.isFloatPixelData()) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_FLOAT;
         }
         if (UID.RLELossless.equals(tsuid)) {

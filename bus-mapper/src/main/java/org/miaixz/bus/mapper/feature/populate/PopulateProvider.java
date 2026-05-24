@@ -69,7 +69,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * &#64;Component
  * public class SimplePopulateProvider implements PopulateProvider {
  *
- *     public Object getCurrentUser() {
+ *     public Object getOperator() {
  *         return SecurityContextHolder.getCurrentUserId();
  *     }
  *     // No getConfig() override - configuration from application.yml
@@ -85,7 +85,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * @Component
  * public class ContextAwarePopulateProvider implements PopulateProvider {
  *
- *     public Object getCurrentUser() {
+ *     public Object getOperator() {
  *         Context context = getContext();
  *
  *         // Read user ID source from context
@@ -110,11 +110,10 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * public class CustomPopulateProvider implements PopulateProvider {
  *
  *     public PopulateConfig getConfig() {
- *         return PopulateConfig.builder().createdField("create_time").creatorField("creator")
- *                 .modifiedField("update_time").modifierField("modifier").enabled(true).build();
+ *         return PopulateConfig.builder().created(true).modified(true).creator(true).modifier(true).build();
  *     }
  *
- *     public Object getCurrentUser() {
+ *     public Object getOperator() {
  *         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
  *         if (auth != null && auth.getPrincipal() instanceof UserDetails) {
  *             return ((UserDetails) auth.getPrincipal()).getUsername();

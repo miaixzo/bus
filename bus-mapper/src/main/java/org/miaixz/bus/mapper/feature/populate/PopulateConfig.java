@@ -38,15 +38,15 @@ import lombok.experimental.SuperBuilder;
  *
  * <pre>{@code
  *
- * // Method 1: Quick setup with user provider only
+ * // Method 1: Quick setup with operator provider
  * PopulateConfig config = PopulateConfig.of(() -> SecurityContextHolder.getCurrentUserId());
  *
- * // Method 2: Use default (no user provider)
- * PopulateConfig config = PopulateConfig.ofDefault();
+ * // Method 2: Fill time fields only, without an operator provider
+ * PopulateConfig config = PopulateConfig.builder().created(true).modified(true).creator(false).modifier(false).build();
  *
  * // Method 3: Full configuration
  * PopulateConfig config = PopulateConfig.builder().provider(() -> SecurityContextHolder.getCurrentUserId())
- *         .enableCreateTime(true).enableUpdateTime(true).enableCreatedBy(true).enableUpdatedBy(true).build();
+ *         .created(true).modified(true).creator(true).modifier(true).build();
  * }</pre>
  *
  * @author Kimi Liu
@@ -111,7 +111,7 @@ public class PopulateConfig {
      * This is a convenient factory method for quick setup. It creates a configuration with:
      * </p>
      * <ul>
-     * <li>All features enabled</li>
+     * <li>All auto-fill flags enabled</li>
      * <li>Custom user provider</li>
      * </ul>
      *

@@ -31,8 +31,7 @@ import lombok.experimental.SuperBuilder;
  * Visible control configuration class.
  *
  * <p>
- * Configuration for automatic perimeter control functionality. Supports row-level security based on user data
- * perimeter.
+ * Configuration for automatic row visibility filtering based on the current user's data scope.
  * </p>
  *
  * <p>
@@ -41,16 +40,17 @@ import lombok.experimental.SuperBuilder;
  *
  * <pre>{@code
  *
- * // Method 1: Quick setup with perimeter provider
- * VisibleConfig config = VisibleConfig
- *         .of((tableName, tableAlias) -> tableAlias + ".user_id = " + SecurityContextHolder.getCurrentUserId());
+ * // Method 1: Quick setup with visibility provider
+ * VisibleConfig config = VisibleConfig.of(
+ *         (tableName, tableAlias) -> VisibleProvider.column(tableAlias, "user_id") + " = "
+ *                 + SecurityContextHolder.getCurrentUserId());
  *
- * // Method 2: Use default (no perimeter provider)
- * VisibleConfig config = VisibleConfig.ofDefault();
+ * // Method 2: No visibility provider
+ * VisibleConfig config = VisibleConfig.builder().build();
  *
  * // Method 3: Full configuration
  * VisibleConfig config = VisibleConfig.builder()
- *         .provider((tableName, tableAlias) -> tableAlias + ".user_id = " + userId)
+ *         .provider((tableName, tableAlias) -> VisibleProvider.column(tableAlias, "user_id") + " = " + userId)
  *         .ignore(Arrays.asList("admin_table", "system_table")).build();
  * }</pre>
  *
@@ -68,7 +68,7 @@ public class VisibleConfig {
     private final VisibleProvider provider;
 
     /**
-     * List of tables to ignore perimeter checking.
+     * List of tables to ignore visibility filtering.
      */
     @Builder.Default
     private final List<String> ignore = Collections.emptyList();
@@ -85,18 +85,17 @@ public class VisibleConfig {
     }
 
     /**
-     * Create a VisibleConfig with perimeter provider and default settings.
+     * Create a VisibleConfig with visibility provider and default settings.
      *
      * <p>
      * This is a convenient factory method for quick setup. It creates a configuration with:
      * </p>
      * <ul>
-     * <li>All features enabled</li>
-     * <li>Custom perimeter provider</li>
+     * <li>Custom visibility provider</li>
      * <li>No ignore tables</li>
      * </ul>
      *
-     * @param provider the perimeter information provider
+     * @param provider the visibility information provider
      * @return a VisibleConfig instance
      */
     public static VisibleConfig of(VisibleProvider provider) {
@@ -104,7 +103,7 @@ public class VisibleConfig {
     }
 
     /**
-     * Check if a table should be ignored from perimeter checking.
+     * Check if a table should be ignored from visibility filtering.
      *
      * @param tableName the table name to check
      * @return true if the table should be ignored, false otherwise

@@ -153,4 +153,14 @@ public interface HardwareAbstractionLayer {
         return Collections.emptyList();
     }
 
+    /**
+     * Instantiates a list of {@link BluetoothDevice} objects, representing Bluetooth devices that are paired or
+     * connected and known to the system.
+     *
+     * @return A list of BluetoothDevice objects or an empty list if none are present.
+     */
+    default List<BluetoothDevice> getBluetoothDevices() {
+        return Collections.emptyList();
+    }
+
 }

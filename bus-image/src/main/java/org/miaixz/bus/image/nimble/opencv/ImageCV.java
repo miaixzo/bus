@@ -57,12 +57,12 @@ public final class ImageCV extends Mat implements PlanarImage {
     /**
      * The released after processing value.
      */
-    private boolean releasedAfterProcessing;
+    private volatile boolean releasedAfterProcessing;
 
     /**
      * The released value.
      */
-    private boolean released;
+    private volatile boolean released;
 
     /**
      * Creates a new instance.
@@ -160,7 +160,7 @@ public final class ImageCV extends Mat implements PlanarImage {
      * Executes the release operation.
      */
     @Override
-    public void release() {
+    public synchronized void release() {
         if (!released) {
             super.release();
             this.released = true;

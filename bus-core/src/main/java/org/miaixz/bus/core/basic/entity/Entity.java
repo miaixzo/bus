@@ -22,6 +22,7 @@ package org.miaixz.bus.core.basic.entity;
 import java.io.Serial;
 import java.io.Serializable;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 
 import lombok.AllArgsConstructor;
@@ -53,6 +54,7 @@ public class Entity implements Serializable {
      * The primary key of the data.
      */
     @Id
+    @Column(length = 24, nullable = false)
     protected String id;
 
     /**

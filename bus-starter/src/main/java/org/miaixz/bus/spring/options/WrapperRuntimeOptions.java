@@ -46,9 +46,15 @@ import org.miaixz.bus.core.net.HTTP;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class WrapperRuntimeOptions {
+
+    /**
+     * Constructs a WrapperRuntimeOptions instance with legacy-compatible defaults.
+     */
+    public WrapperRuntimeOptions() {
+        // Field initializers provide the default runtime options.
+    }
 
     /**
      * Wrap all POST/PUT/PATCH requests. This preserves the legacy behavior.

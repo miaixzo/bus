@@ -330,24 +330,79 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * Adds a column to the table metadata.
+     * Adds a column to the table metadata. When an inherited field and a child field resolve to the same column name,
+     * the child field wins and the inherited definition is ignored.
      *
      * @param column The column metadata to add.
+     * @return {@code true} when the column list changed, {@code false} when an inherited duplicate was ignored.
      */
-    public void addColumn(ColumnMeta column) {
-        if (!columns().contains(column)) {
-            if (column.fieldMeta().getDeclaringClass() != entityClass()) {
-                columns().add(0, column);
-            } else {
-                columns().add(column);
-            }
-            column.tableMeta(this);
-        } else {
-            // If a column with the same name exists in a superclass, it means it's overridden by a subclass,
-            // so the field order should be prioritized.
-            ColumnMeta existsColumn = columns().remove(columns().indexOf(column));
-            columns().add(0, existsColumn);
+    public boolean addColumn(ColumnMeta column) {
+        if (column == null || StringKit.isEmpty(column.column()) || column.fieldMeta() == null) {
+            return false;
         }
+        List<ColumnMeta> columnList = columns();
+        int index = columnList.indexOf(column);
+        if (index < 0) {
+            insertColumn(columnList, column);
+            return true;
+        }
+        ColumnMeta existing = columnList.get(index);
+        if (isCloserColumn(column, existing)) {
+            columnList.set(index, column);
+            column.tableMeta(this);
+            return true;
+        }
+        existing.tableMeta(this);
+        return false;
+    }
+
+    /**
+     * Inserts a new column while keeping inherited fields before entity-local fields.
+     *
+     * @param columnList the mutable column list
+     * @param column     the column metadata to insert
+     */
+    private void insertColumn(List<ColumnMeta> columnList, ColumnMeta column) {
+        if (column.fieldMeta().getDeclaringClass() != entityClass()) {
+            columnList.add(0, column);
+        } else {
+            columnList.add(column);
+        }
+        column.tableMeta(this);
+    }
+
+    /**
+     * Determines whether a candidate column is declared closer to the entity class than the existing column.
+     *
+     * @param candidate the incoming column metadata
+     * @param existing  the existing column metadata
+     * @return {@code true} when the candidate should replace the existing mapping
+     */
+    private boolean isCloserColumn(ColumnMeta candidate, ColumnMeta existing) {
+        return inheritanceDistance(candidate) < inheritanceDistance(existing);
+    }
+
+    /**
+     * Computes the inheritance distance from this entity class to a column's declaring class.
+     *
+     * @param column the column metadata
+     * @return the distance where {@code 0} means the entity class itself
+     */
+    private int inheritanceDistance(ColumnMeta column) {
+        if (column == null || column.fieldMeta() == null) {
+            return Integer.MAX_VALUE;
+        }
+        Class<?> declaringClass = column.fieldMeta().getDeclaringClass();
+        Class<?> current = entityClass();
+        int distance = 0;
+        while (current != null && current != Object.class) {
+            if (current == declaringClass) {
+                return distance;
+            }
+            current = current.getSuperclass();
+            distance++;
+        }
+        return Integer.MAX_VALUE;
     }
 
     /**

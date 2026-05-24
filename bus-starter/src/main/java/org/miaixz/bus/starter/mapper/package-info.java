@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * MyBatis Mapper persistence support.
+ * Spring Boot integration for MyBatis mapper registration, runtime configuration, and schema initialization.
  *
  * @author Kimi Liu
  * @since Java 21+

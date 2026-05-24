@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.annotation.Modifier;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.handler.ConditionHandler;
+import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
 
 /**
  * Data fill interceptor handler.
@@ -58,18 +58,13 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
-
-    /**
-     * Populate configuration from file (lowest priority).
-     */
-    private PopulateConfig config;
+public class PopulateHandler<T> extends ScopedProviderHandler<T, PopulateConfig, PopulateProvider> {
 
     /**
      * Default constructor (uses default configuration).
      */
     public PopulateHandler() {
-        // No initialization required.
+        super();
     }
 
     /**
@@ -78,50 +73,7 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
      * @param config the data fill configuration from file
      */
     public PopulateHandler(PopulateConfig config) {
-        this.config = config;
-    }
-
-    /**
-     * Get the handler name for logging purposes.
-     *
-     * @return the handler name "Populate"
-     */
-    @Override
-    public String getHandler() {
-        return "Populate";
-    }
-
-    /**
-     * Sets the populate-related configuration properties. This method is typically called during plugin initialization
-     * to configure data fill behaviors.
-     *
-     * @param properties the configuration properties (contains all datasources)
-     * @return true if properties were successfully set, false if properties is null
-     */
-    @Override
-    public boolean setProperties(Properties properties) {
-        if (properties == null) {
-            return false;
-        }
-
-        // Store all properties for dynamic lookup (in parent class)
-        this.properties = properties;
-
-        // Get current datasource key for static config initialization
-        String datasourceKey = getDatasourceKey();
-
-        // Try to get provider from properties
-        PopulateProvider provider = getProvider(properties, PopulateProvider.class);
-
-        // Set provider if found
-        if (provider == null) {
-            Logger.warn(false, "Mapper", "Provider not found, feature will not be enabled");
-            return false;
-        }
-
-        // Build initial static config
-        this.config = buildPopulateConfig(datasourceKey, properties, provider);
-        return true;
+        super(config);
     }
 
     /**
@@ -132,16 +84,6 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
     @Override
     protected String scope() {
         return Args.POPULATE_KEY;
-    }
-
-    /**
-     * Returns the default populate configuration loaded for this handler.
-     *
-     * @return the default configuration, or {@code null} when unavailable
-     */
-    @Override
-    protected PopulateConfig defaults() {
-        return config;
     }
 
     /**
@@ -156,34 +98,62 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
     }
 
     /**
-     * Builds datasource-specific populate configuration from the supplied properties.
+     * Returns the populate provider contract.
      *
-     * @param datasourceKey the datasource key used to resolve scoped configuration
-     * @param properties    the configuration properties used to build the scoped configuration
-     * @return the derived configuration, or {@code null} when the datasource is not configured
+     * @return the populate provider contract type
      */
     @Override
-    protected PopulateConfig derived(String datasourceKey, Properties properties) {
-        // Try to get provider from properties
-        PopulateProvider provider = getProvider(properties, PopulateProvider.class);
-
-        // Set provider if found
-        if (provider == null) {
-            return null;
-        }
-
-        return buildPopulateConfig(datasourceKey, properties, provider);
+    protected Class<PopulateProvider> type() {
+        return PopulateProvider.class;
     }
 
     /**
-     * Build populate configuration from properties for a specific datasource.
+     * Sets populate configuration properties and registers this handler when any populate configuration exists.
+     * <p>
+     * A datasource-specific populate block may target a datasource that is not active while the handler is being built.
+     * In that case the default configuration remains empty, but the handler still needs to be registered so runtime
+     * datasource-specific resolution can apply later.
+     *
+     * @param properties mapper configuration properties
+     * @return {@code true} when this handler should be registered
+     */
+    @Override
+    public boolean setProperties(Properties properties) {
+        if (properties == null) {
+            return false;
+        }
+        this.properties = properties;
+        PopulateProvider provider = getProvider(properties, type());
+        this.config = resolve(getDatasourceKey(), properties, provider);
+        return this.config != null || hasAnyPopulateProperties(properties);
+    }
+
+    /**
+     * Returns whether populate configuration requires a populate provider.
+     * <p>
+     * Time fields annotated with {@link Created} or {@link Modified} do not need a provider. The provider is only
+     * needed for operator fields annotated with {@link Creator} or {@link Modifier}.
+     *
+     * @return {@code false}
+     */
+    @Override
+    protected boolean requiresProvider() {
+        return false;
+    }
+
+    /**
+     * Resolves populate configuration from properties for a specific datasource.
      *
      * @param datasourceKey the datasource key
      * @param properties    the properties
      * @param provider      the populate provider
      * @return the populate configuration
      */
-    private PopulateConfig buildPopulateConfig(String datasourceKey, Properties properties, PopulateProvider provider) {
+    @Override
+    protected PopulateConfig resolve(String datasourceKey, Properties properties, PopulateProvider provider) {
+        if (provider == null && !hasPopulateProperties(datasourceKey, properties)) {
+            return null;
+        }
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
         String dsPrefix = datasourceKey + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
 
@@ -269,6 +239,47 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
      */
     public void clear() {
         // No-op: builder is created on-demand per SQL execution
+    }
+
+    /**
+     * Tests whether the supplied properties contain populate-specific configuration.
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the properties
+     * @return {@code true} when populate configuration is present
+     */
+    private boolean hasPopulateProperties(String datasourceKey, Properties properties) {
+        if (properties == null) {
+            return false;
+        }
+        String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
+        String dsPrefix = datasourceKey + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
+        for (String key : properties.stringPropertyNames()) {
+            if (key.startsWith(dsPrefix) || key.startsWith(sharedPrefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tests whether any datasource scope declares populate-specific configuration.
+     *
+     * @param properties mapper configuration properties
+     * @return {@code true} when any populate configuration is present
+     */
+    private boolean hasAnyPopulateProperties(Properties properties) {
+        if (properties == null) {
+            return false;
+        }
+        String marker = Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
+        String rootPrefix = Args.POPULATE_KEY + Symbol.DOT;
+        for (String key : properties.stringPropertyNames()) {
+            if (key.contains(marker) || key.startsWith(rootPrefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

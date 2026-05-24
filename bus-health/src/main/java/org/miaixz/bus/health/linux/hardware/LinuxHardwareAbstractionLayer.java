@@ -162,6 +162,16 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
     }
 
     /**
+     * Returns the bluetooth devices.
+     *
+     * @return the get bluetooth devices result
+     */
+    @Override
+    public List<BluetoothDevice> getBluetoothDevices() {
+        return LinuxBluetoothDevice.getBluetoothDevices();
+    }
+
+    /**
      * Returns the graphics cards.
      *
      * @return the get graphics cards result

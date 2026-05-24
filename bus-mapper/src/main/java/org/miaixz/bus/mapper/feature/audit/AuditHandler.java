@@ -21,8 +21,6 @@ package org.miaixz.bus.mapper.feature.audit;
 
 import java.util.Properties;
 
-import lombok.Getter;
-
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -33,19 +31,24 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.handler.ConditionHandler;
+import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
 
 /**
- * SQL Audit Interceptor
+ * SQL audit handler.
  *
  * <p>
- * Automatically intercepts all SQL executions, records execution time, parameters, results and other information.
+ * Participates in the mapper interceptor chain and records auditable query executions when an {@link AuditProvider} is
+ * available. Query audit completion depends on an earlier query handler supplying the actual result to the shared
+ * handler result holder. Update statements are currently allowed to proceed without audit record creation because the
+ * existing interceptor lifecycle does not expose a safe update completion callback to this handler.
+ * </p>
+ *
+ * <p>
  * Supports:
  * </p>
  * <ul>
  * <li>SQL execution time statistics</li>
  * <li>Slow SQL detection and alerting</li>
- * <li>SQL execution failure recording</li>
  * <li>SQL parameters and results recording</li>
  * <li>Custom audit log output</li>
  * </ul>
@@ -55,35 +58,29 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * </p>
  *
  * <pre>{@code
- * // Configure interceptor
- * AuditConfig config = AuditConfig.builder().enabled(true).slowSqlThreshold(1000) // 1 second
+ * // Configure handler
+ * AuditConfig config = AuditConfig.builder().slowSqlThreshold(1000) // 1 second
  *         .logParameters(true).logAllSql(false) // Only log slow SQL
- *         .build();
+ *         .provider(auditProvider).build();
  *
- * AuditHandler interceptor = new AuditHandler(config);
+ * AuditHandler handler = new AuditHandler(config);
  *
  * // Add to MybatisInterceptor
  * MybatisInterceptor mybatisInterceptor = new MybatisInterceptor();
- * mybatisInterceptor.addHandler(interceptor);
+ * mybatisInterceptor.addHandler(handler);
  * }</pre>
  *
  * @param <T> the generic type parameter
  * @author Kimi Liu
  * @since Java 21+
  */
-@Getter
-public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
-
-    /**
-     * Audit configuration from file (lowest priority).
-     */
-    private AuditConfig config;
+public class AuditHandler<T> extends ScopedProviderHandler<T, AuditConfig, AuditProvider> {
 
     /**
      * Default constructor (uses default configuration).
      */
     public AuditHandler() {
-        // No initialization required.
+        super();
     }
 
     /**
@@ -92,61 +89,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
      * @param config the audit configuration from file
      */
     public AuditHandler(AuditConfig config) {
-        this.config = config;
-    }
-
-    /**
-     * Get the handler name for logging purposes.
-     *
-     * @return the handler name "Audit"
-     */
-    @Override
-    public String getHandler() {
-        return "Audit";
-    }
-
-    /**
-     * Sets the audit-related configuration properties. This method is typically called during plugin initialization to
-     * configure SQL audit behaviors.
-     *
-     * @param properties the configuration properties (contains all datasources)
-     * @return true if properties were successfully set, false if properties is null
-     */
-    @Override
-    public boolean setProperties(Properties properties) {
-        if (properties == null) {
-            return false;
-        }
-
-        // Store all properties for dynamic lookup (in parent class)
-        this.properties = properties;
-
-        // Get current datasource key for static config initialization
-        String datasourceKey = getDatasourceKey();
-
-        // Try to get provider from properties
-        AuditProvider provider = getProvider(properties, AuditProvider.class);
-
-        // Set provider if found
-        if (provider == null) {
-            Logger.warn(false, "Mapper", "Audit provider not found, feature disabled: datasource={}", datasourceKey);
-            return false;
-        }
-
-        // Build initial static config
-        this.config = buildAuditConfig(datasourceKey, properties, provider);
-        Logger.info(
-                false,
-                "Mapper",
-                "Audit handler configured: datasource={}, slowSqlThreshold={}, logParameters={}, logResults={}, logAllSql={}, printConsole={}, provider={}",
-                datasourceKey,
-                config.getSlowSqlThreshold(),
-                config.isLogParameters(),
-                config.isLogResults(),
-                config.isLogAllSql(),
-                config.isPrintConsole(),
-                provider.getClass().getName());
-        return true;
+        super(config);
     }
 
     /**
@@ -157,16 +100,6 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     @Override
     protected String scope() {
         return Args.AUDIT_KEY;
-    }
-
-    /**
-     * Gets the default audit configuration.
-     *
-     * @return the default audit configuration
-     */
-    @Override
-    protected AuditConfig defaults() {
-        return config;
     }
 
     /**
@@ -181,34 +114,38 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * Gets the derived audit configuration for a specific datasource.
+     * Returns the audit provider contract.
      *
-     * @param datasourceKey the datasource key
-     * @param properties    the properties
-     * @return the derived audit configuration
+     * @return the audit provider contract type
      */
     @Override
-    protected AuditConfig derived(String datasourceKey, Properties properties) {
-        // Try to get provider from properties
-        AuditProvider provider = getProvider(properties, AuditProvider.class);
-
-        // Set provider if found
-        if (provider == null) {
-            return null;
-        }
-
-        return buildAuditConfig(datasourceKey, properties, provider);
+    protected Class<AuditProvider> type() {
+        return AuditProvider.class;
     }
 
     /**
-     * Build audit configuration from properties for a specific datasource.
+     * Returns whether audit configuration requires an audit provider.
+     *
+     * @return {@code true}
+     */
+    @Override
+    protected boolean requiresProvider() {
+        return true;
+    }
+
+    /**
+     * Resolves audit configuration from properties for a specific datasource.
      *
      * @param datasourceKey the datasource key
      * @param properties    the properties
      * @param provider      the audit provider
      * @return the audit configuration
      */
-    private AuditConfig buildAuditConfig(String datasourceKey, Properties properties, AuditProvider provider) {
+    @Override
+    protected AuditConfig resolve(String datasourceKey, Properties properties, AuditProvider provider) {
+        if (provider == null) {
+            return null;
+        }
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT;
         String dsPrefix = datasourceKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT;
 
@@ -248,12 +185,16 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * Checks if update should proceed with audit logging.
+     * Allows update execution and skips update audit record creation.
+     * <p>
+     * The current mapper interceptor lifecycle exposes the pre-update decision point to handlers but does not provide a
+     * matching post-update callback with affected row count. This method therefore only applies ignore/config checks
+     * and leaves the statement execution unchanged.
      *
      * @param executor        the executor
      * @param mappedStatement the mapped statement
      * @param parameter       the parameter
-     * @return true if update should proceed, false otherwise
+     * @return always {@code true} to allow the update to proceed
      */
     @Override
     public boolean isUpdate(Executor executor, MappedStatement mappedStatement, Object parameter) {
@@ -283,12 +224,11 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
         Logger.debug(
                 true,
                 "Mapper",
-                "Audit update started: method={}, sqlType={}, parameterPresent={}",
+                "Audit update skipped: method={}, reason={}, sqlType={}, parameterPresent={}",
                 mappedStatement.getId(),
+                "unsupportedUpdateLifecycle",
                 mappedStatement.getSqlCommandType(),
                 parameter != null);
-        // Start audit record
-        builder.before(mappedStatement, parameter);
         return true;
     }
 
@@ -368,18 +308,46 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
             RowBounds rowBounds,
             ResultHandler resultHandler,
             BoundSql boundSql) {
-        // End audit record
         AuditConfig currentConfig = current();
-        if (currentConfig != null) {
-            Logger.debug(
-                    false,
-                    "Mapper",
-                    "Audit query completed: method={}, resultType={}",
-                    mappedStatement.getId(),
-                    result == null ? "null" : result.getClass().getName());
-            AuditBuilder builder = new AuditBuilder(currentConfig);
-            builder.after(result, null);
+        if (currentConfig == null) {
+            AuditContext.removeRecord();
+            return;
         }
+        Object actualResult = suppliedResult(result);
+        if (actualResult == null) {
+            Logger.debug(
+                    true,
+                    "Mapper",
+                    "Audit query deferred: method={}, reason={}",
+                    mappedStatement.getId(),
+                    "resultNotSuppliedByPreviousHandler");
+            AuditContext.removeRecord();
+            return;
+        }
+        Logger.debug(
+                false,
+                "Mapper",
+                "Audit query completed: method={}, resultType={}",
+                mappedStatement.getId(),
+                actualResult.getClass().getName());
+        AuditBuilder builder = new AuditBuilder(currentConfig);
+        builder.after(actualResult, null);
+    }
+
+    /**
+     * Returns the actual query result supplied by an earlier query handler.
+     * <p>
+     * The mapper interceptor passes a mutable single-slot holder into handler query callbacks. Audit must only complete
+     * a record when a previous handler, such as pagination, has already supplied the real result in that holder.
+     *
+     * @param result the handler callback result argument
+     * @return the real query result, or {@code null} when not available yet
+     */
+    private Object suppliedResult(Object result) {
+        if (result instanceof Object[] holder) {
+            return holder.length > 0 ? holder[0] : null;
+        }
+        return result;
     }
 
     /**

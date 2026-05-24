@@ -19,18 +19,10 @@
 */
 package org.miaixz.bus.mapper;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.time.*;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * This class defines constants for MyBatis configuration and SQL fragments.
+ * This class defines constants for MyBatis mapper configuration and SQL fragments.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -43,21 +35,6 @@ public class Args {
     public Args() {
         // No initialization required.
     }
-
-    /**
-     * Regular expression for getter methods.
-     */
-    public static final Pattern GET_PATTERN = Pattern.compile("^get[A-Z].*");
-
-    /**
-     * Regular expression for is-methods (for boolean getters).
-     */
-    public static final Pattern IS_PATTERN = Pattern.compile("^is[A-Z].*");
-
-    /**
-     * Regular expression to extract class names from lambda expressions.
-     */
-    public static final Pattern CLASS_PATTERN = Pattern.compile("\\(L(?<cls>.+);\\).+");
 
     /**
      * Regular expression to remove potential delimiters (like backticks or brackets) from field names.
@@ -209,109 +186,5 @@ public class Args {
      * Default name for the base result map.
      */
     public static final String RESULT_MAP_NAME = "SuperResultMap";
-
-    /**
-     * Dynamic SQL fragment for the SET clause in a Condition object.
-     */
-    public static final String CONDITION_SET_CLAUSE_INNER_WHEN = "<set>"
-            + "  <foreach collection=\"condition.setValues\" item=\"setValue\">\n" + "    <choose>\n"
-            + "      <when test=\"setValue.noValue\">\n" + "        ${setValue.condition},\n" + "      </when>\n"
-            + "      <when test=\"setValue.singleValue\">\n"
-            + "        ${setValue.condition} = ${setValue.variables('setValue.value')},\n" + "      </when>\n"
-            + "    </choose>\n" + "  </foreach>\n" + "</set>";
-
-    /**
-     * Dynamic SQL fragment for the inner 'when' conditions within a WHERE clause for a Condition object.
-     */
-    public static final String CONDITION_WHERE_CLAUSE_INNER_WHEN = "              <when test=\"criterion.noValue\">\n"
-            + "              AND ${criterion.condition}\n" + "            </when>\n"
-            + "            <when test=\"criterion.singleValue\">\n"
-            + "              AND ${criterion.condition} ${criterion.variables('criterion.value')}\n"
-            + "            </when>\n" + "            <when test=\"criterion.betweenValue\">\n"
-            + "              AND ${criterion.condition} ${criterion.variables('criterion.value')} AND\n"
-            + "              ${criterion.variables('criterion.secondValue')}\n" + "            </when>\n"
-            + "            <when test=\"criterion.listValue\">\n" + "              AND ${criterion.condition}\n"
-            + "              <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\"\n"
-            + "                open=\"(\" separator=\",\">\n" + "                ${criterion.variables('listItem')}\n"
-            + "              </foreach>\n" + "            </when>\n";
-
-    /**
-     * Dynamic SQL WHERE clause for a Condition object, used when the Condition is passed as a parameter annotated with
-     * {@code @Param("condition")}.
-     */
-    public static final String UPDATE_BY_CONDITION_WHERE_CLAUSE = "<where>\n"
-            + "  <foreach collection=\"condition.oredCriteria\" item=\"criteria\"\n separator=\" OR \">\n"
-            + "    <if test=\"criteria.valid\">\n" + "      <trim prefix=\"(\" prefixOverrides=\"AND\" suffix=\")\">\n"
-            + "        <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" + "          <choose>\n"
-            + CONDITION_WHERE_CLAUSE_INNER_WHEN + "            <when test=\"criterion.orValue\">\n"
-            + "              <foreach collection=\"criterion.value\" item=\"orCriteria\" separator=\" OR \" open = \" AND (\" close = \")\">\n"
-            + "                <if test=\"orCriteria.valid\">\n"
-            + "                  <trim prefix=\"(\" prefixOverrides=\"AND\" suffix=\")\">\n"
-            + "                    <foreach collection=\"orCriteria.criteria\" item=\"criterion\">\n"
-            + "                      <choose>\n" + CONDITION_WHERE_CLAUSE_INNER_WHEN
-            + "                      </choose>\n" + "                    </foreach>\n" + "                  </trim>\n"
-            + "                </if>\n" + "              </foreach>\n" + "            </when>\n"
-            + "          </choose>\n" + "        </foreach>\n" + "      </trim>\n" + "    </if>\n" + "  </foreach>\n"
-            + "</where>\n";
-
-    /**
-     * Dynamic SQL WHERE clause for a Condition object, used when the interface method has only one Condition parameter.
-     */
-    public static final String CONDITION_WHERE_CLAUSE = "<where>\n"
-            + "  <foreach collection=\"oredCriteria\" item=\"criteria\" separator=\" OR \">\n"
-            + "    <if test=\"criteria.valid\">\n" + "      <trim prefix=\"(\" prefixOverrides=\"AND\" suffix=\")\">\n"
-            + "        <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" + "          <choose>\n"
-            + CONDITION_WHERE_CLAUSE_INNER_WHEN + "            <when test=\"criterion.orValue\">\n"
-            + "              <foreach collection=\"criterion.value\" item=\"orCriteria\" separator=\" OR \" open = \" AND (\" close = \")\">\n"
-            + "                <if test=\"orCriteria.valid\">\n"
-            + "                  <trim prefix=\"(\" prefixOverrides=\"AND\" suffix=\")\">\n"
-            + "                    <foreach collection=\"orCriteria.criteria\" item=\"criterion\">\n"
-            + "                      <choose>\n" + CONDITION_WHERE_CLAUSE_INNER_WHEN
-            + "                      </choose>\n" + "                    </foreach>\n" + "                  </trim>\n"
-            + "                </if>\n" + "              </foreach>\n" + "            </when>\n"
-            + "          </choose>\n" + "        </foreach>\n" + "      </trim>\n" + "    </if>\n" + "  </foreach>\n"
-            + "</where>\n";
-
-    /**
-     * A set of simple types, including primitives, their wrapper classes, date/time types, etc.
-     * <p>
-     * Note: It is recommended to avoid using primitive types for database fields in entity classes, as they have
-     * default values.
-     * </p>
-     */
-    public static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>(Arrays.asList(
-            byte.class,
-            short.class,
-            char.class,
-            int.class,
-            long.class,
-            float.class,
-            double.class,
-            boolean.class,
-            byte[].class,
-            String.class,
-            Byte.class,
-            Short.class,
-            Character.class,
-            Integer.class,
-            Long.class,
-            Float.class,
-            Double.class,
-            Boolean.class,
-            Date.class,
-            Timestamp.class,
-            Class.class,
-            BigInteger.class,
-            BigDecimal.class,
-            Instant.class,
-            LocalDateTime.class,
-            LocalDate.class,
-            LocalTime.class,
-            OffsetDateTime.class,
-            OffsetTime.class,
-            ZonedDateTime.class,
-            Year.class,
-            Month.class,
-            YearMonth.class));
 
 }

@@ -22,8 +22,25 @@ package org.miaixz.bus.mapper;
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,6 +82,63 @@ public class OGNL {
     public OGNL() {
         // No initialization required.
     }
+
+    /**
+     * Regular expression for getter methods.
+     */
+    public static final Pattern GET_PATTERN = Pattern.compile("^get[A-Z].*");
+
+    /**
+     * Regular expression for is-methods (for boolean getters).
+     */
+    public static final Pattern IS_PATTERN = Pattern.compile("^is[A-Z].*");
+
+    /**
+     * Regular expression to extract class names from lambda expressions.
+     */
+    public static final Pattern CLASS_PATTERN = Pattern.compile("\\(L(?<cls>.+);\\).+");
+
+    /**
+     * A set of simple types, including primitives, their wrapper classes, date/time types, etc.
+     * <p>
+     * Note: It is recommended to avoid using primitive types for database fields in entity classes, as they have
+     * default values.
+     * </p>
+     */
+    public static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>(Arrays.asList(
+            byte.class,
+            short.class,
+            char.class,
+            int.class,
+            long.class,
+            float.class,
+            double.class,
+            boolean.class,
+            byte[].class,
+            String.class,
+            Byte.class,
+            Short.class,
+            Character.class,
+            Integer.class,
+            Long.class,
+            Float.class,
+            Double.class,
+            Boolean.class,
+            Date.class,
+            Timestamp.class,
+            Class.class,
+            BigInteger.class,
+            BigDecimal.class,
+            Instant.class,
+            LocalDateTime.class,
+            LocalDate.class,
+            LocalTime.class,
+            OffsetDateTime.class,
+            OffsetTime.class,
+            ZonedDateTime.class,
+            Year.class,
+            Month.class,
+            YearMonth.class));
 
     /**
      * A string containing SQL syntax keywords for injection checks, delimited by '|'.
@@ -135,7 +209,7 @@ public class OGNL {
      * @param clazz The class to register.
      */
     public static void registerSimpleType(Class<?> clazz) {
-        Args.SIMPLE_TYPE_SET.add(clazz);
+        SIMPLE_TYPE_SET.add(clazz);
     }
 
     /**
@@ -149,7 +223,7 @@ public class OGNL {
             String[] cls = classes.split(Symbol.COMMA);
             for (String c : cls) {
                 try {
-                    Args.SIMPLE_TYPE_SET.add(Class.forName(c));
+                    SIMPLE_TYPE_SET.add(Class.forName(c));
                 } catch (ClassNotFoundException e) {
                     Logger.warn(
                             false,
@@ -171,7 +245,7 @@ public class OGNL {
      */
     public static void registerSimpleTypeSilence(String clazz) {
         try {
-            Args.SIMPLE_TYPE_SET.add(Class.forName(clazz));
+            SIMPLE_TYPE_SET.add(Class.forName(clazz));
         } catch (ClassNotFoundException e) {
             Logger.debug(
                     true,
@@ -189,7 +263,7 @@ public class OGNL {
      * @return {@code true} if the class is a simple type, {@code false} otherwise.
      */
     public static boolean isSimpleType(Class<?> clazz) {
-        return Args.SIMPLE_TYPE_SET.contains(clazz);
+        return SIMPLE_TYPE_SET.contains(clazz);
     }
 
     /**
@@ -277,10 +351,10 @@ public class OGNL {
             SerializedLambda serializedLambda = (SerializedLambda) writeReplaceMethod.invoke(fn);
 
             String getter = serializedLambda.getImplMethodName();
-            if (Args.GET_PATTERN.matcher(getter).matches()) {
+            if (GET_PATTERN.matcher(getter).matches()) {
                 // Remove "get" prefix
                 getter = getter.substring(3);
-            } else if (Args.IS_PATTERN.matcher(getter).matches()) {
+            } else if (IS_PATTERN.matcher(getter).matches()) {
                 // Remove "is" prefix
                 getter = getter.substring(2);
             }
@@ -290,7 +364,7 @@ public class OGNL {
 
             if (clazz == null) {
                 // Extract class name from the instantiated method type signature
-                Matcher matcher = Args.CLASS_PATTERN.matcher(serializedLambda.getInstantiatedMethodType());
+                Matcher matcher = CLASS_PATTERN.matcher(serializedLambda.getInstantiatedMethodType());
                 String implClass;
                 if (matcher.find()) {
                     implClass = matcher.group("cls").replaceAll("/", "\\.");
