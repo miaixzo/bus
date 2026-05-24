@@ -108,13 +108,37 @@ public class PopulateHandler<T> extends ScopedProviderHandler<T, PopulateConfig,
     }
 
     /**
-     * Returns whether populate configuration requires a populate provider.
+     * Sets populate configuration properties and registers this handler when any populate configuration exists.
+     * <p>
+     * A datasource-specific populate block may target a datasource that is not active while the handler is being built.
+     * In that case the default configuration remains empty, but the handler still needs to be registered so runtime
+     * datasource-specific resolution can apply later.
      *
-     * @return {@code true}
+     * @param properties mapper configuration properties
+     * @return {@code true} when this handler should be registered
+     */
+    @Override
+    public boolean setProperties(Properties properties) {
+        if (properties == null) {
+            return false;
+        }
+        this.properties = properties;
+        PopulateProvider provider = getProvider(properties, type());
+        this.config = resolve(getDatasourceKey(), properties, provider);
+        return this.config != null || hasAnyPopulateProperties(properties);
+    }
+
+    /**
+     * Returns whether populate configuration requires a populate provider.
+     * <p>
+     * Time fields annotated with {@link Created} or {@link Modified} do not need a provider. The provider is only
+     * needed for operator fields annotated with {@link Creator} or {@link Modifier}.
+     *
+     * @return {@code false}
      */
     @Override
     protected boolean requiresProvider() {
-        return true;
+        return false;
     }
 
     /**
@@ -127,7 +151,7 @@ public class PopulateHandler<T> extends ScopedProviderHandler<T, PopulateConfig,
      */
     @Override
     protected PopulateConfig resolve(String datasourceKey, Properties properties, PopulateProvider provider) {
-        if (provider == null) {
+        if (provider == null && !hasPopulateProperties(datasourceKey, properties)) {
             return null;
         }
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
@@ -215,6 +239,47 @@ public class PopulateHandler<T> extends ScopedProviderHandler<T, PopulateConfig,
      */
     public void clear() {
         // No-op: builder is created on-demand per SQL execution
+    }
+
+    /**
+     * Tests whether the supplied properties contain populate-specific configuration.
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the properties
+     * @return {@code true} when populate configuration is present
+     */
+    private boolean hasPopulateProperties(String datasourceKey, Properties properties) {
+        if (properties == null) {
+            return false;
+        }
+        String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
+        String dsPrefix = datasourceKey + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
+        for (String key : properties.stringPropertyNames()) {
+            if (key.startsWith(dsPrefix) || key.startsWith(sharedPrefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tests whether any datasource scope declares populate-specific configuration.
+     *
+     * @param properties mapper configuration properties
+     * @return {@code true} when any populate configuration is present
+     */
+    private boolean hasAnyPopulateProperties(Properties properties) {
+        if (properties == null) {
+            return false;
+        }
+        String marker = Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
+        String rootPrefix = Args.POPULATE_KEY + Symbol.DOT;
+        for (String key : properties.stringPropertyNames()) {
+            if (key.contains(marker) || key.startsWith(rootPrefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

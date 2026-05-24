@@ -46,8 +46,8 @@ import org.miaixz.bus.core.lang.Assert;
  * // Method 1: Quick setup with provider only
  * TablePrefixConfig config = TablePrefixConfig.of(() -> "dev_");
  *
- * // Method 2: Use default (prefix disabled)
- * TablePrefixConfig config = TablePrefixConfig.ofDefault();
+ * // Method 2: Use default configuration (prefix disabled)
+ * TablePrefixConfig config = TablePrefixConfig.builder().build();
  *
  * // Method 3: Full configuration
  * TablePrefixConfig config = TablePrefixConfig.builder().provider(() -> "prod_")

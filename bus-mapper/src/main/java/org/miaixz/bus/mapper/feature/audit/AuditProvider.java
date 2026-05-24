@@ -78,7 +78,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *                 .logAllSql(false) // Only log slow SQL
  *                 .logParameters(true) // Include parameters
  *                 .printConsole(true) // Also print to console
- *                 .enabled(true).build();
+ *                 .build();
  *     }
  *
  *     public void logSlowSql(AuditRecord record) {
@@ -103,7 +103,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *                 .logAllSql(false) // Only log slow SQL
  *                 .logParameters(true) // Include parameters
  *                 .printConsole(true) // Also print to console
- *                 .enabled(true).build();
+ *                 .build();
  *     }
  *
  *     public void logSlowSql(AuditRecord record) {
@@ -126,7 +126,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *         if ("dev".equals(profile)) {
  *             return AuditConfig.builder().slowSqlThreshold(500L) // More strict in dev
  *                     .logAllSql(true) // Log all SQL in dev
- *                     .logParameters(true).printConsole(true).enabled(true).build();
+ *                     .logParameters(true).printConsole(true).build();
  *         } else {
  *             return null; // Use configuration file for other environments
  *         }

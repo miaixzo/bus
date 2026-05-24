@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.mapper.feature.audit;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -68,7 +68,7 @@ public class AuditBuilder {
     }
 
     /**
-     * Start audit record (UPDATE, INSERT, DELETE).
+     * Start an audit record without bound SQL details.
      *
      * @param mappedStatement Mapper statement
      * @param parameter       Parameters
@@ -207,15 +207,9 @@ public class AuditBuilder {
         if (result instanceof Integer) {
             // UPDATE, INSERT, DELETE return affected rows
             record.affectedRows((Integer) result);
-        } else if (result instanceof List) {
-            // SELECT returns result list
-            record.resultCount(((List<?>) result).size());
-        } else if (result instanceof Object[]) {
-            // Handle array result
-            Object[] arr = (Object[]) result;
-            if (arr.length > 0 && arr[0] instanceof List) {
-                record.resultCount(((List<?>) arr[0]).size());
-            }
+        } else if (result instanceof Collection<?>) {
+            // SELECT returns result collections, including Page which extends ArrayList.
+            record.resultCount(((Collection<?>) result).size());
         }
     }
 

@@ -87,7 +87,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *         Context context = getContext();
  *
  *         // Read prefix from datasource-specific configuration
- *         String dataSourceKey = DataSourceHolder.getKey();
+ *         String dataSourceKey = Holder.getKey();
  *         return context.getProperty(dataSourceKey + ".table.prefix", "");
  *     }
  * }
@@ -102,7 +102,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * public class CustomPrefixProvider implements TablePrefixProvider {
  *
  *     public TablePrefixConfig getConfig() {
- *         return TablePrefixConfig.builder().ignoreTables("sys_user", "sys_role").enabled(true).build();
+ *         return TablePrefixConfig.builder().ignore(Arrays.asList("sys_user", "sys_role")).build();
  *     }
  *
  *     public String getPrefix() {

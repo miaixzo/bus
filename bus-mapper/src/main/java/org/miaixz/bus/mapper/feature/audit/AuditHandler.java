@@ -34,16 +34,21 @@ import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
 
 /**
- * SQL Audit Interceptor
+ * SQL audit handler.
  *
  * <p>
- * Automatically intercepts all SQL executions, records execution time, parameters, results and other information.
+ * Participates in the mapper interceptor chain and records auditable query executions when an {@link AuditProvider} is
+ * available. Query audit completion depends on an earlier query handler supplying the actual result to the shared
+ * handler result holder. Update statements are currently allowed to proceed without audit record creation because the
+ * existing interceptor lifecycle does not expose a safe update completion callback to this handler.
+ * </p>
+ *
+ * <p>
  * Supports:
  * </p>
  * <ul>
  * <li>SQL execution time statistics</li>
  * <li>Slow SQL detection and alerting</li>
- * <li>SQL execution failure recording</li>
  * <li>SQL parameters and results recording</li>
  * <li>Custom audit log output</li>
  * </ul>
@@ -53,16 +58,16 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  * </p>
  *
  * <pre>{@code
- * // Configure interceptor
- * AuditConfig config = AuditConfig.builder().enabled(true).slowSqlThreshold(1000) // 1 second
+ * // Configure handler
+ * AuditConfig config = AuditConfig.builder().slowSqlThreshold(1000) // 1 second
  *         .logParameters(true).logAllSql(false) // Only log slow SQL
- *         .build();
+ *         .provider(auditProvider).build();
  *
- * AuditHandler interceptor = new AuditHandler(config);
+ * AuditHandler handler = new AuditHandler(config);
  *
  * // Add to MybatisInterceptor
  * MybatisInterceptor mybatisInterceptor = new MybatisInterceptor();
- * mybatisInterceptor.addHandler(interceptor);
+ * mybatisInterceptor.addHandler(handler);
  * }</pre>
  *
  * @param <T> the generic type parameter
@@ -180,12 +185,16 @@ public class AuditHandler<T> extends ScopedProviderHandler<T, AuditConfig, Audit
     }
 
     /**
-     * Checks if update should proceed with audit logging.
+     * Allows update execution and skips update audit record creation.
+     * <p>
+     * The current mapper interceptor lifecycle exposes the pre-update decision point to handlers but does not provide a
+     * matching post-update callback with affected row count. This method therefore only applies ignore/config checks
+     * and leaves the statement execution unchanged.
      *
      * @param executor        the executor
      * @param mappedStatement the mapped statement
      * @param parameter       the parameter
-     * @return true if update should proceed, false otherwise
+     * @return always {@code true} to allow the update to proceed
      */
     @Override
     public boolean isUpdate(Executor executor, MappedStatement mappedStatement, Object parameter) {
@@ -215,12 +224,11 @@ public class AuditHandler<T> extends ScopedProviderHandler<T, AuditConfig, Audit
         Logger.debug(
                 true,
                 "Mapper",
-                "Audit update started: method={}, sqlType={}, parameterPresent={}",
+                "Audit update skipped: method={}, reason={}, sqlType={}, parameterPresent={}",
                 mappedStatement.getId(),
+                "unsupportedUpdateLifecycle",
                 mappedStatement.getSqlCommandType(),
                 parameter != null);
-        // Start audit record
-        builder.before(mappedStatement, parameter);
         return true;
     }
 
@@ -300,18 +308,46 @@ public class AuditHandler<T> extends ScopedProviderHandler<T, AuditConfig, Audit
             RowBounds rowBounds,
             ResultHandler resultHandler,
             BoundSql boundSql) {
-        // End audit record
         AuditConfig currentConfig = current();
-        if (currentConfig != null) {
-            Logger.debug(
-                    false,
-                    "Mapper",
-                    "Audit query completed: method={}, resultType={}",
-                    mappedStatement.getId(),
-                    result == null ? "null" : result.getClass().getName());
-            AuditBuilder builder = new AuditBuilder(currentConfig);
-            builder.after(result, null);
+        if (currentConfig == null) {
+            AuditContext.removeRecord();
+            return;
         }
+        Object actualResult = suppliedResult(result);
+        if (actualResult == null) {
+            Logger.debug(
+                    true,
+                    "Mapper",
+                    "Audit query deferred: method={}, reason={}",
+                    mappedStatement.getId(),
+                    "resultNotSuppliedByPreviousHandler");
+            AuditContext.removeRecord();
+            return;
+        }
+        Logger.debug(
+                false,
+                "Mapper",
+                "Audit query completed: method={}, resultType={}",
+                mappedStatement.getId(),
+                actualResult.getClass().getName());
+        AuditBuilder builder = new AuditBuilder(currentConfig);
+        builder.after(actualResult, null);
+    }
+
+    /**
+     * Returns the actual query result supplied by an earlier query handler.
+     * <p>
+     * The mapper interceptor passes a mutable single-slot holder into handler query callbacks. Audit must only complete
+     * a record when a previous handler, such as pagination, has already supplied the real result in that holder.
+     *
+     * @param result the handler callback result argument
+     * @return the real query result, or {@code null} when not available yet
+     */
+    private Object suppliedResult(Object result) {
+        if (result instanceof Object[] holder) {
+            return holder.length > 0 ? holder[0] : null;
+        }
+        return result;
     }
 
     /**

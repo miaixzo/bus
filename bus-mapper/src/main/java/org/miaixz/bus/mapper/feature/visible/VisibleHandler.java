@@ -34,7 +34,6 @@ import org.apache.ibatis.session.RowBounds;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.Visible;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -46,8 +45,8 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  * Visible control interceptor handler.
  *
  * <p>
- * This handler intercepts SQL query execution and automatically adds perimeter conditions to filter results based on
- * the current user's data perimeter. It works in conjunction with {@link VisibleBuilder} to modify the SQL.
+ * This handler intercepts SQL query execution and automatically adds visibility conditions from the configured
+ * {@link VisibleProvider}. It works in conjunction with {@link VisibleBuilder} to modify the SQL.
  *
  * @param <T> the entity type
  * @author Kimi Liu
@@ -65,7 +64,7 @@ public class VisibleHandler<T> extends ScopedProviderHandler<T, VisibleConfig, V
     /**
      * Constructor with file configuration.
      *
-     * @param config the perimeter configuration from file
+     * @param config the visibility configuration from file
      */
     public VisibleHandler(VisibleConfig config) {
         super(config);
@@ -152,8 +151,8 @@ public class VisibleHandler<T> extends ScopedProviderHandler<T, VisibleConfig, V
      * Intercept query operations (SELECT).
      *
      * <p>
-     * This method is called before SQL execution. It modifies the SQL to add perimeter conditions based on the current
-     * user's data perimeter and the entity's {@link Visible} annotation.
+     * This method is called before SQL execution. It modifies the SQL to add visibility conditions from the current
+     * {@link VisibleProvider}.
      * </p>
      *
      * <p>
@@ -181,13 +180,13 @@ public class VisibleHandler<T> extends ScopedProviderHandler<T, VisibleConfig, V
         // Get current configuration
         VisibleConfig currentConfig = current();
 
-        // Skip if perimeter control is disabled
+        // Skip if visibility filtering is disabled
         if (currentConfig == null) {
             Logger.debug(true, "Mapper", "Visibility control disabled: method={}", ms.getId());
             return true;
         }
 
-        // Skip if perimeter filtering is ignored
+        // Skip if visibility filtering is ignored
         if (VisibleContext.isIgnore()) {
             Logger.debug(true, "Mapper", "Visibility filtering ignored: method={}", ms.getId());
             return true;
@@ -209,7 +208,7 @@ public class VisibleHandler<T> extends ScopedProviderHandler<T, VisibleConfig, V
 
         String originalSql = boundSql.getSql();
 
-        // Create builder for current config and apply perimeter condition
+        // Create builder for current config and apply visibility condition
         VisibleBuilder builder = new VisibleBuilder(currentConfig);
         String actualSql = builder.applyVisibility(originalSql);
 

@@ -22,11 +22,11 @@ package org.miaixz.bus.mapper.feature.visible;
 import java.util.function.Supplier;
 
 /**
- * Permission context for managing perimeter control state.
+ * Visibility context for managing row visibility filtering state.
  *
  * <p>
- * This class provides a thread-local context for temporarily disabling perimeter filtering. It is useful in scenarios
- * where you need to bypass permission checks, such as:
+ * This class provides a thread-local context for temporarily disabling visibility filtering. It is useful in scenarios
+ * where you need to bypass row visibility checks, such as:
  * </p>
  * <ul>
  * <li>Administrative operations</li>
@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * <pre>{@code
  * // Method 1: Using try-with-resources (recommended)
  * try (VisibleContext.Ignore ignored = VisibleContext.ignore()) {
- *     List<Order> allOrders = orderMapper.selectAll(); // No perimeter filtering
+ *     List<Order> allOrders = orderMapper.selectAll(); // No visibility filtering
  * }
  *
  * // Method 2: Using runIgnore
@@ -75,18 +75,18 @@ public class VisibleContext {
     }
 
     /**
-     * Check if perimeter filtering should be ignored.
+     * Check if visibility filtering should be ignored.
      *
-     * @return true if perimeter filtering should be ignored, false otherwise
+     * @return true if visibility filtering should be ignored, false otherwise
      */
     public static boolean isIgnore() {
         return IGNORE_PERMISSION.get();
     }
 
     /**
-     * Set whether to ignore perimeter filtering.
+     * Set whether to ignore visibility filtering.
      *
-     * @param ignore true to ignore perimeter filtering, false otherwise
+     * @param ignore true to ignore visibility filtering, false otherwise
      */
     public static void setIgnore(boolean ignore) {
         IGNORE_PERMISSION.set(ignore);
@@ -108,10 +108,10 @@ public class VisibleContext {
      *
      * <pre>{@code
      * try (VisibleContext.Ignore ignored = VisibleContext.ignore()) {
-     *     // Permission filtering is disabled here
+     *     // Visibility filtering is disabled here
      *     List<Order> allOrders = orderMapper.selectAll();
      * }
-     * // Permission filtering is automatically restored here
+     * // Visibility filtering is automatically restored here
      * }</pre>
      *
      * @return an AutoCloseable that restores the previous ignore state
@@ -123,10 +123,10 @@ public class VisibleContext {
     }
 
     /**
-     * Execute a task with perimeter filtering disabled.
+     * Execute a task with visibility filtering disabled.
      *
      * <p>
-     * This method temporarily disables perimeter filtering for the duration of the task execution, then automatically
+     * This method temporarily disables visibility filtering for the duration of the task execution, then automatically
      * restores the previous state.
      * </p>
      *
@@ -146,10 +146,10 @@ public class VisibleContext {
     }
 
     /**
-     * Execute a task with perimeter filtering disabled (no return value).
+     * Execute a task with visibility filtering disabled (no return value).
      *
      * <p>
-     * This method temporarily disables perimeter filtering for the duration of the task execution, then automatically
+     * This method temporarily disables visibility filtering for the duration of the task execution, then automatically
      * restores the previous state.
      * </p>
      *

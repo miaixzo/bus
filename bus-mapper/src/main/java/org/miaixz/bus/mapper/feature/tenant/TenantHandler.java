@@ -53,7 +53,7 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  * <pre>{@code
  * // 1. Create tenant configuration
  * TenantConfig config = TenantConfig.builder().mode(Isolation.COLUMN).column("tenant_id")
- *         .ignoreTables("sys_config", "sys_dict").enabled(true).build();
+ *         .ignore(Arrays.asList("sys_config", "sys_dict")).provider(TenantContext::getTenantId).build();
  *
  * // 2. Create tenant handler
  * TenantHandler tenantHandler = new TenantHandler(config);
@@ -63,10 +63,10 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  * interceptor.addHandler(tenantHandler);
  *
  * // Or with custom tenant ID resolver
- * TenantConfig config2 = TenantConfig.builder().mode(Isolation.COLUMN).tenantIdResolver(() -> {
+ * TenantConfig config2 = TenantConfig.builder().mode(Isolation.COLUMN).column("tenant_id").provider(() -> {
  *     // Custom logic to get tenant ID
  *     return SecurityContextHolder.getTenantId();
- * }).enabled(true).build();
+ * }).build();
  * }</pre>
  *
  * @param <T> the generic type parameter

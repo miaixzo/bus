@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.mapper.feature.visible;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.provider.MapperProvider;
 
 /**
@@ -69,7 +71,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *
  *     public String getVisible(String tableName, String tableAlias) {
  *         Long userId = SecurityContextHolder.getCurrentUserId();
- *         return tableAlias + ".user_id = " + userId;
+ *         return VisibleProvider.column(tableAlias, "user_id") + " = " + userId;
  *     }
  *     // No getConfig() override - configuration from application.yml
  * }
@@ -92,10 +94,10 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *
  *         if ("department".equals(strategy)) {
  *             List<Long> deptIds = SecurityContextHolder.getCurrentUserDepartments();
- *             return tableAlias + ".dept_id IN (" + StringUtils.join(deptIds, ",") + ")";
+ *             return VisibleProvider.column(tableAlias, "dept_id") + " IN (" + StringUtils.join(deptIds, ",") + ")";
  *         } else {
  *             Long userId = SecurityContextHolder.getCurrentUserId();
- *             return tableAlias + ".user_id = " + userId;
+ *             return VisibleProvider.column(tableAlias, "user_id") + " = " + userId;
  *         }
  *     }
  * }
@@ -110,7 +112,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * public class CustomVisibleProvider implements VisibleProvider {
  *
  *     public VisibleConfig getConfig() {
- *         return VisibleConfig.builder().ignoreTables("sys_config", "sys_dict").enabled(true).build();
+ *         return VisibleConfig.builder().ignore(Arrays.asList("sys_config", "sys_dict")).build();
  *     }
  *
  *     public String getVisible(String tableName, String tableAlias) {
@@ -119,9 +121,9 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *             return null; // Admin can see everything
  *         }
  *         if (currentUser.hasRole("MANAGER")) {
- *             return tableAlias + ".dept_id = " + currentUser.getDeptId();
+ *             return VisibleProvider.column(tableAlias, "dept_id") + " = " + currentUser.getDeptId();
  *         }
- *         return tableAlias + ".user_id = " + currentUser.getId();
+ *         return VisibleProvider.column(tableAlias, "user_id") + " = " + currentUser.getId();
  *     }
  * }
  * }</pre>
@@ -149,7 +151,7 @@ public interface VisibleProvider extends MapperProvider<VisibleConfig> {
      * <ul>
      * <li>Return {@code null} or empty string to skip visibility filtering</li>
      * <li>The condition should NOT include the "WHERE" keyword</li>
-     * <li>The condition should use the provided table alias</li>
+     * <li>The condition should use the provided table alias only when it is not empty</li>
      * <li>The condition will be wrapped in parentheses automatically</li>
      * <li>Avoid complex database queries in this method for performance</li>
      * </ul>
@@ -158,6 +160,7 @@ public interface VisibleProvider extends MapperProvider<VisibleConfig> {
      * Example return values:
      * </p>
      * <ul>
+     * <li>{@code "user_id = 123"}</li>
      * <li>{@code "t.user_id = 123"}</li>
      * <li>{@code "t.dept_id IN (1,2,3)"}</li>
      * <li>{@code "t.org_id = 5 AND t.status = 'active'"}</li>
@@ -165,9 +168,28 @@ public interface VisibleProvider extends MapperProvider<VisibleConfig> {
      * </ul>
      *
      * @param tableName  the name of the table being queried
-     * @param tableAlias the alias of the table in the SQL query (never null, defaults to table name if no alias)
+     * @param tableAlias the explicit table alias declared in the SQL query, or an empty string when no alias is
+     *                   declared
      * @return the SQL WHERE condition for visibility filtering, or null to skip filtering
      */
     String getVisible(String tableName, String tableAlias);
+
+    /**
+     * Builds a column reference using the real SQL table alias only when one exists.
+     * <p>
+     * SQL without an explicit alias must use bare columns (for example {@code user_id}), while SQL with an explicit
+     * alias may use qualified columns (for example {@code u.user_id}). The table name itself is intentionally not used
+     * as a fallback alias.
+     *
+     * @param tableAlias the explicit table alias, or empty when absent
+     * @param column     the column name
+     * @return the column reference
+     */
+    static String column(String tableAlias, String column) {
+        if (StringKit.isEmpty(column) || StringKit.isEmpty(tableAlias)) {
+            return column;
+        }
+        return tableAlias + Symbol.DOT + column;
+    }
 
 }

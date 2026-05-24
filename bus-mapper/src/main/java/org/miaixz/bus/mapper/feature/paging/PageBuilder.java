@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.mapper.feature.paging;
 
-import java.util.regex.Pattern;
-
 import lombok.Getter;
 
 import org.miaixz.bus.core.text.PooledStringBuilder;
@@ -61,13 +59,6 @@ import org.miaixz.bus.mapper.Order;
  * @since Java 21+
  */
 public class PageBuilder {
-
-    /**
-     * Pattern to detect Order BY clause in SQL.
-     */
-    private static final Pattern ORDER_BY_PATTERN = Pattern.compile(
-            "\\bORDER\\s+BY\\s+(?:(?:[^\\s,]+|\"[^\"]*\"|'[^']*')(?:\\s+(?:ASC|DESC))?\\s*(?:,\\s*(?:[^\\s,]+|\"[^\"]*\"|'[^']*')(?:\\s+(?:ASC|DESC))?)*)",
-            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 
     /**
      * Creates a new PageBuilder with default settings.
@@ -126,30 +117,7 @@ public class PageBuilder {
             return sql;
         }
 
-        // Check if there's an Order BY clause
-        if (!ORDER_BY_PATTERN.matcher(sql).find()) {
-            return sql;
-        }
-
-        // Find the position of Order BY clause
-        int orderByIndex = -1;
-        String lowerSql = sql.toLowerCase();
-
-        // Look for Order BY that's not in a subquery
-        int searchPos = 0;
-        while (orderByIndex == -1 && searchPos < lowerSql.length()) {
-            int tempIndex = lowerSql.indexOf("order by", searchPos);
-            if (tempIndex == -1) {
-                break;
-            }
-
-            // Check if this Order BY is outside parentheses
-            if (!isInSubquery(lowerSql, tempIndex)) {
-                orderByIndex = tempIndex;
-                break;
-            }
-            searchPos = tempIndex + 8; // Move past this occurrence
-        }
+        int orderByIndex = indexOfTopLevelOrderBy(sql);
 
         if (orderByIndex != -1) {
             // Remove Order BY and everything after it
@@ -160,25 +128,126 @@ public class PageBuilder {
     }
 
     /**
-     * Checks if the given position is within a subquery.
+     * Finds the top-level ORDER BY clause outside strings and nested expressions.
      *
-     * @param sql      the SQL string (lowercase)
-     * @param position the position to check
-     * @return true if the position is in a subquery
+     * @param sql the SQL query
+     * @return the ORDER BY index, or {@code -1} when absent
      */
-    private boolean isInSubquery(String sql, int position) {
-        // Count parentheses before the position
-        int parenthesesCount = 0;
-        for (int i = 0; i < position; i++) {
-            char c = sql.charAt(i);
-            if (c == '(') {
-                parenthesesCount++;
-            } else if (c == ')') {
-                parenthesesCount--;
+    private int indexOfTopLevelOrderBy(String sql) {
+        int depth = 0;
+        boolean singleQuoted = false;
+        boolean doubleQuoted = false;
+        boolean backtickQuoted = false;
+        boolean bracketQuoted = false;
+        for (int i = 0; i < sql.length(); i++) {
+            char current = sql.charAt(i);
+            if (singleQuoted) {
+                if (current == '\'' && i + 1 < sql.length() && sql.charAt(i + 1) == '\'') {
+                    i++;
+                    continue;
+                }
+                if (current == '\'') {
+                    singleQuoted = false;
+                }
+                continue;
+            }
+            if (doubleQuoted) {
+                if (current == '"' && i + 1 < sql.length() && sql.charAt(i + 1) == '"') {
+                    i++;
+                    continue;
+                }
+                if (current == '"') {
+                    doubleQuoted = false;
+                }
+                continue;
+            }
+            if (backtickQuoted) {
+                if (current == '`') {
+                    backtickQuoted = false;
+                }
+                continue;
+            }
+            if (bracketQuoted) {
+                if (current == ']') {
+                    bracketQuoted = false;
+                }
+                continue;
+            }
+            if (current == '\'') {
+                singleQuoted = true;
+                continue;
+            }
+            if (current == '"') {
+                doubleQuoted = true;
+                continue;
+            }
+            if (current == '`') {
+                backtickQuoted = true;
+                continue;
+            }
+            if (current == '[') {
+                bracketQuoted = true;
+                continue;
+            }
+            if (current == '(') {
+                depth++;
+                continue;
+            }
+            if (current == ')' && depth > 0) {
+                depth--;
+                continue;
+            }
+            if (depth == 0 && isKeywordAt(sql, i, "ORDER")) {
+                int byIndex = skipWhitespace(sql, i + "ORDER".length());
+                if (isKeywordAt(sql, byIndex, "BY")) {
+                    return i;
+                }
             }
         }
+        return -1;
+    }
 
-        return parenthesesCount > 0;
+    /**
+     * Skips whitespace characters.
+     *
+     * @param sql   the SQL query
+     * @param index the start index
+     * @return the next non-whitespace index
+     */
+    private int skipWhitespace(String sql, int index) {
+        while (index < sql.length() && Character.isWhitespace(sql.charAt(index))) {
+            index++;
+        }
+        return index;
+    }
+
+    /**
+     * Tests whether a keyword starts at the specified index with identifier boundaries.
+     *
+     * @param sql     the SQL query
+     * @param index   the index to test
+     * @param keyword the keyword to match
+     * @return {@code true} when matched
+     */
+    private boolean isKeywordAt(String sql, int index, String keyword) {
+        if (index < 0 || index + keyword.length() > sql.length()
+                || !sql.regionMatches(true, index, keyword, 0, keyword.length())) {
+            return false;
+        }
+        int before = index - 1;
+        int after = index + keyword.length();
+        return (before < 0 || !identifierPart(sql.charAt(before)))
+                && (after >= sql.length() || !identifierPart(sql.charAt(after)));
+    }
+
+    /**
+     * Tests whether a character belongs to an SQL identifier.
+     *
+     * @param value the character to test
+     * @return {@code true} when it belongs to an identifier
+     */
+    private boolean identifierPart(char value) {
+        return Character.isLetterOrDigit(value) || value == '_';
     }
 
     /**
@@ -189,7 +258,7 @@ public class PageBuilder {
      */
     private String buildOrderByClause(Sort sort) {
         PooledStringBuilder builder = StringBuilderPool.acquire(256);
-        builder.append("Order BY ");
+        builder.append("ORDER BY ");
 
         boolean first = true;
         for (Order order : sort.getOrders()) {
@@ -270,7 +339,7 @@ public class PageBuilder {
             case "SELECT":
             case "FROM":
             case "WHERE":
-            case "Order":
+            case "ORDER":
             case "BY":
             case "GROUP":
             case "HAVING":
