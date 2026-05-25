@@ -2992,6 +2992,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.unix.hardware.CupsPrinter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.unix.hardware.UnixBaseboard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

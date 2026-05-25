@@ -880,6 +880,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.cortex.registry.DefaultRegistryBatchExecutor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.cortex.registry.HealthProbeScheduler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
