@@ -22,6 +22,7 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
+import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.metric.CitizenIdMatcher;
 
 /**
@@ -41,14 +42,14 @@ public @interface CitizenId {
      *
      * @return the error code.
      */
-    String errcode() default Builder.DEFAULT_ERRCODE;
+    String errcode() default ErrorCode._CITIZEN_ID;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default "${field} is not a valid citizen ID number";
+    String errmsg() default ErrorCode._CITIZEN_ID_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.magic.Checker;
+import org.miaixz.bus.validate.magic.ErrorCode;
 
 /**
  * Represents the context of the current validation operation. This class holds configuration and state for a validation
@@ -46,7 +47,7 @@ public class Context {
      * The global error code. If a validation annotation uses -1 as its error code, it will be replaced by this global
      * error code by default.
      */
-    private String errcode = Builder.DEFAULT_ERRCODE;
+    private String errcode = ErrorCode._PARAMETER_VALIDATE;
 
     /**
      * The currently active validation groups.

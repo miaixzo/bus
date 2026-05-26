@@ -167,11 +167,11 @@ public class Checker {
                             return method.getDefaultValue();
                         }));
 
-        // Set the error message template, using the ${field} placeholder.
-        criterion.setErrmsg("Please check the ${field} parameter");
+        // Set the error message template.
+        criterion.setErrmsg(ErrorCode._PARAMETER_VALIDATE_VALUE);
 
         // Set the default error code.
-        criterion.setErrcode(Builder.DEFAULT_ERRCODE);
+        criterion.setErrcode(ErrorCode._PARAMETER_VALIDATE);
 
         // Set the name of the field to be validated.
         criterion.setField(field.getName());
@@ -211,8 +211,12 @@ public class Checker {
             return doCollection(verified, criterion);
         } else {
             boolean result = matcher.on(validatedTarget, criterion.getAnnotation(), verified.getContext());
-            if (!result && verified.getContext().isFast()) {
-                throw Provider.resolve(criterion, verified.getContext());
+            if (!result) {
+                if (verified.getContext().isFast()) {
+                    throw Provider.resolve(criterion, verified.getContext());
+                }
+                Provider.resolve(criterion);
+                criterion.setErrmsg(criterion.getMessage());
             }
             return new Collector(verified, criterion, result);
         }

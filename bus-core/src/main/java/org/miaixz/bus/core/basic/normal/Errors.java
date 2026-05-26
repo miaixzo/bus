@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.core.lang.I18n;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * An interface for defining error codes and their corresponding messages. It provides methods for retrieving,
@@ -113,7 +114,8 @@ public interface Errors {
     }
 
     /**
-     * Resolves a localized exception message from a resource bundle, registered error entry, or fallback message.
+     * Resolves a localized exception message from a resource bundle, explicit message, registered error entry, or
+     * fallback message.
      *
      * @param i18n     The locale enumeration.
      * @param errcode  The error code.
@@ -133,8 +135,11 @@ public interface Errors {
         } catch (final Exception ignored) {
             // Fall back to registered errors or the supplied exception message.
         }
+        if (StringKit.isNotBlank(errmsg)) {
+            return errmsg;
+        }
         final Entry entry = require(errcode);
-        return null != entry ? entry.getValue() : message(errcode, errmsg, fallback);
+        return null != entry ? entry.getValue() : fallback;
     }
 
     /**

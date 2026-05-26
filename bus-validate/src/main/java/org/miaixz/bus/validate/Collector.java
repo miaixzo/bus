@@ -88,6 +88,7 @@ public class Collector {
      */
     public Collector(Verified target, Criterion criterion, boolean pass) {
         this.target = target;
+        this.result = new ArrayList<>();
         this.criterion = criterion;
         this.pass = pass;
     }
@@ -107,13 +108,14 @@ public class Collector {
      * @return a flattened list of all validation results.
      */
     public List<Collector> getResult() {
+        if (this.criterion != null) {
+            List<Collector> list = new ArrayList<>(1);
+            list.add(this);
+            return list;
+        }
         List<Collector> list = new ArrayList<>(Normal._16);
         for (Collector collector : this.result) {
-            if (collector instanceof Collector) {
-                list.addAll(collector.getResult());
-            } else {
-                throw new IllegalArgumentException("Unsupported collector type for validation results: " + collector);
-            }
+            list.addAll(collector.getResult());
         }
         return list;
     }
@@ -133,6 +135,9 @@ public class Collector {
      * @return {@code true} if all validations passed, {@code false} otherwise.
      */
     public boolean isPass() {
+        if (this.criterion != null) {
+            return this.pass;
+        }
         return this.result.stream().allMatch(Collector::isPass);
     }
 

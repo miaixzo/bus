@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -167,8 +168,8 @@ public class Provider {
      * @param group the validation groups to check.
      * @param list  the list of active groups in the validation context.
      * @return {@code true} if the groups match (i.e., the validator should be executed), {@code false} otherwise.
-     *         Returns {@code true} if the validator defines no groups. Returns {@code false} if the validator defines
-     *         groups but the context has no active groups.
+     * Returns {@code true} if the validator defines no groups. Returns {@code false} if the validator defines
+     * groups but the context has no active groups.
      */
     public static boolean isGroup(String[] group, List<String> list) {
         if (null == group || group.length == 0) {
@@ -180,6 +181,20 @@ public class Provider {
                 return Arrays.stream(group).anyMatch(neededGroup -> list.stream().anyMatch(neededGroup::equals));
             }
         }
+    }
+
+    /**
+     * Resolves the final validation message template for a criterion. Resource bundle messages win first, then
+     * annotation messages, then the registered {@link ErrorCode} default.
+     *
+     * @param criterion the validation criterion
+     */
+    public static void resolve(Criterion criterion) {
+        if (criterion == null) {
+            return;
+        }
+        criterion.setErrmsg(
+                Errors.localizedMessage(criterion.getErrcode(), criterion.getErrmsg(), ErrorCode._115000.getValue()));
     }
 
     /**
@@ -198,6 +213,7 @@ public class Provider {
                 criterion == null ? null : criterion.getField(),
                 criterion == null ? null : criterion.getName(),
                 criterion == null ? null : criterion.getErrcode());
+        resolve(criterion);
         // 1. Determine the exception class: Priority is given to the context's exception class, then the criterion's,
         // and finally ValidateException.
         Class<? extends ValidateException> exceptionClass = ObjectKit

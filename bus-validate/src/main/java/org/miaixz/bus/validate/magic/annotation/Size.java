@@ -22,6 +22,7 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
+import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.metric.SizeMatcher;
 
 /**
@@ -72,14 +73,14 @@ public @interface Size {
      *
      * @return the error code.
      */
-    String errcode() default Builder.DEFAULT_ERRCODE;
+    String errcode() default ErrorCode._SIZE;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default "The size of ${field} must be within the specified range. Min: ${min}, Max: ${max}";
+    String errmsg() default ErrorCode._SIZE_VALUE;
 
     /**
      * The validation groups this constraint belongs to.
