@@ -149,19 +149,14 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
     protected Tuple initProcessorCounts() {
         this.config = PerfstatConfig.queryConfig();
 
-        // Reporting "online" or "active" values can lead to nonsense so we go with max
-        int physProcs = (int) config.numProcessors.max;
+        // Reporting "online" or "active" values can lead to nonsense so we go with max.
+        // Prefer vcpus.max as the physical processor count in LPAR environments.
+        int physProcs = (int) config.vcpus.max;
         if (physProcs < 1) {
             physProcs = 1;
         }
-        int lcpus = (int) config.vcpus.max;
-        if (lcpus < 1) {
-            lcpus = 1;
-        }
-        // Sanity check to ensure lp/pp ratio >= 1
-        if (physProcs > lcpus) {
-            physProcs = lcpus;
-        }
+        int smtThreads = config.smtthreads > 0 ? config.smtthreads : 1;
+        int lcpus = physProcs * smtThreads;
         int lpPerPp = lcpus / physProcs;
         // Get node and package mapping
         Map<Integer, Pair<Integer, Integer>> nodePkgMap = Lssrad.queryNodesPackages();
@@ -356,8 +351,8 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
     public long[][] queryProcessorCpuLoadTicks() {
         perfstat_cpu_t[] cpu = cpuProc.get();
         // oversize the array to ensure constant length; we'll only fill cpu.length of it
-        long[][] ticks = new long[cpu.length][CentralProcessor.TickType.values().length];
-        for (int i = 0; i < cpu.length; i++) {
+        long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
+        for (int i = 0; i < cpu.length && i < ticks.length; i++) {
             ticks[i] = new long[CentralProcessor.TickType.values().length];
             ticks[i][CentralProcessor.TickType.USER.ordinal()] = cpu[i].user * 1000L / USER_HZ;
             // Skip NICE

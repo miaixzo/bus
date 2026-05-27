@@ -200,14 +200,14 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                     continue;
                 }
 
-                String name = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_DESC);
+                String name = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_DESC, 0);
                 String deviceId = "VideoController" + index++;
-                String vendor = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, VENDOR);
-                String versionInfo = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_VERSION);
+                String vendor = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, VENDOR, 0);
+                String versionInfo = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_VERSION, 0);
 
                 // Parse PCI vendor/device IDs from MatchingDeviceId (e.g. "pci\ven_8086&dev_56a0&...")
                 String matchingDeviceId = RegistryKit
-                        .getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, MATCHING_DEVICE_ID);
+                        .getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, MATCHING_DEVICE_ID, 0);
                 Pair<Integer, Integer> pciIds = Parsing.parseDeviceIdToVendorProductIds(matchingDeviceId);
                 int pciVendorId = pciIds == null ? 0 : pciIds.getLeft();
                 int pciDeviceId = pciIds == null ? 0 : pciIds.getRight();
@@ -222,7 +222,7 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 int pciBusNumber = -1;
                 String pciBusId = "";
                 String locationInfo = RegistryKit
-                        .getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, LOCATION_INFORMATION);
+                        .getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, LOCATION_INFORMATION, 0);
                 DxgiAdapterInfo dxgiMatch = WindowsDxgi.findMatch(remainingDxgi, pciVendorId, pciDeviceId, name);
                 if (dxgiMatch != null) {
                     vram = dxgiMatch.getDedicatedVideoMemory();
