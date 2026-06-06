@@ -84,7 +84,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <activemq.version>6.2.5</activemq.version>
-        <amazon.s3.version>2.40.15</amazon.s3.version>
+        <amazon.s3.version>2.40.17</amazon.s3.version>
         <ansj.version>5.1.6</ansj.version>
         <bcpkix.version>1.84</bcpkix.version>
         <beetl.version>3.21.2.RELEASE</beetl.version>
