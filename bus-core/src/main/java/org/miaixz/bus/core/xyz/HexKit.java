@@ -35,8 +35,8 @@ import org.miaixz.bus.core.lang.Symbol;
  * hexadecimal related tools, including encoding and decoding inherited from {@link Hex}, as well as other conversion
  * and identification tools.
  *
- * @see Hex
  * @author Kimi Liu
+ * @see Hex
  * @since Java 21+
  */
 public class HexKit extends Hex {
@@ -260,7 +260,7 @@ public class HexKit extends Hex {
      *
      * @param text The hexadecimal string.
      * @return The {@link BigInteger} represented by the hexadecimal string, or {@code null} if the input string is
-     *         {@code null}.
+     * {@code null}.
      */
     public static BigInteger toBigInteger(final String text) {
         if (null == text) {
@@ -321,16 +321,22 @@ public class HexKit extends Hex {
             separator = Symbol.SPACE;
         }
 
-        final int length = text.length();
-        final StringBuilder builder = StringKit.builder(length + length / 2 + (length / 2 * prefix.length()));
-        for (int i = 0; i < length; i++) {
-            if (i % 2 == 0) {
-                if (i != 0) {
-                    builder.append(separator);
-                }
-                builder.append(prefix);
+        String normalizedHex = text;
+        if (normalizedHex.length() % 2 != 0) {
+            normalizedHex = "0" + normalizedHex;
+        }
+
+        final int length = normalizedHex.length();
+        final int byteCount = length / 2;
+        final StringBuilder builder = StringKit.builder(byteCount * (2 + prefix.length() + 1));
+
+        for (int i = 0; i < length; i += 2) {
+            if (i > 0) {
+                builder.append(separator);
             }
-            builder.append(text.charAt(i));
+            builder.append(prefix);
+            builder.append(normalizedHex.charAt(i));
+            builder.append(normalizedHex.charAt(i + 1));
         }
         return builder.toString();
     }

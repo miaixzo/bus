@@ -124,7 +124,7 @@ public final class RegistryKit {
             if (hKey != null) {
                 int rc = ADV.RegCloseKey(hKey);
                 if (rc != ERROR_SUCCESS) {
-                    throw new Win32Exception(rc);
+                    Logger.trace(false, "Health", "Unable to close registry key " + path + ": " + rc);
                 }
             }
         }

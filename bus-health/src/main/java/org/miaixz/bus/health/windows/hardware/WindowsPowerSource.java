@@ -208,6 +208,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                 null,
                 SetupApi.DIGCF_PRESENT | SetupApi.DIGCF_DEVICEINTERFACE);
         if (!WinBase.INVALID_HANDLE_VALUE.equals(hdev)) {
+            try {
             boolean batteryFound = false;
             // Limit search to 100 batteries max
             for (int idev = 0; !batteryFound && idev < 100; idev++) {
@@ -431,8 +432,9 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                     }
                                                 }
                                             }
+                                        } finally {
+                                            Kernel32.INSTANCE.CloseHandle(hBattery);
                                         }
-                                        Kernel32.INSTANCE.CloseHandle(hBattery);
                                     }
                                 }
                             }
@@ -442,7 +444,9 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                     }
                 }
             }
-            SetupApi.INSTANCE.SetupDiDestroyDeviceInfoList(hdev);
+            } finally {
+                SetupApi.INSTANCE.SetupDiDestroyDeviceInfoList(hdev);
+            }
         }
 
         return new WindowsPowerSource(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated,

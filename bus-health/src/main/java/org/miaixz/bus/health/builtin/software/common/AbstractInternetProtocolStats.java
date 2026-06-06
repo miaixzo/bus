@@ -22,7 +22,7 @@ package org.miaixz.bus.health.builtin.software.common;
 import java.util.List;
 
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
-import org.miaixz.bus.health.unix.driver.NetStat;
+import org.miaixz.bus.health.unix.shared.driver.NetStat;
 
 /**
  * Common implementations for IP Stats

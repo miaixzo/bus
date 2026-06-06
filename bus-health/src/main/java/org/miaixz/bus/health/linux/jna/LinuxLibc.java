@@ -26,7 +26,7 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.linux.LibC;
 
-import org.miaixz.bus.health.unix.jna.CLibrary;
+import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 
 /**
  * Linux C Library. This class should be considered non-API as it may be removed if/when its code is incorporated into

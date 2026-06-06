@@ -2937,7 +2937,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.driver.NetStat",
+    "name": "org.miaixz.bus.health.unix.shared.driver.NetStat",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2948,7 +2948,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.driver.Who",
+    "name": "org.miaixz.bus.health.unix.shared.driver.Who",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2959,7 +2959,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.driver.Xrandr",
+    "name": "org.miaixz.bus.health.unix.shared.driver.Xrandr",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2970,7 +2970,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.driver.Xwininfo",
+    "name": "org.miaixz.bus.health.unix.shared.driver.Xwininfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2981,7 +2981,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.hardware.BsdNetworkIF",
+    "name": "org.miaixz.bus.health.unix.shared.hardware.BsdNetworkIF",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2992,7 +2992,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.hardware.UnixBaseboard",
+    "name": "org.miaixz.bus.health.unix.shared.hardware.CupsPrinter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3003,7 +3003,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.hardware.UnixDisplay",
+    "name": "org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3014,7 +3014,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.AixLibc",
+    "name": "org.miaixz.bus.health.unix.shared.hardware.UnixDisplay",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3025,7 +3025,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.AixLibc$AixLwpsInfo",
+    "name": "org.miaixz.bus.health.unix.shared.jna.AixLibc",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3036,7 +3036,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.AixLibc$AixPsInfo",
+    "name": "org.miaixz.bus.health.unix.shared.jna.AixLibc$AixLwpsInfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3047,7 +3047,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.AixLibc$Timestruc",
+    "name": "org.miaixz.bus.health.unix.shared.jna.AixLibc$AixPsInfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3058,7 +3058,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.CLibrary",
+    "name": "org.miaixz.bus.health.unix.shared.jna.AixLibc$Timestruc",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3069,7 +3069,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.CLibrary$Addrinfo",
+    "name": "org.miaixz.bus.health.unix.shared.jna.CLibrary",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3080,7 +3080,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.CLibrary$Addrinfo$ByReference",
+    "name": "org.miaixz.bus.health.unix.shared.jna.CLibrary$Addrinfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3091,7 +3091,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.CLibrary$BsdIp6stat",
+    "name": "org.miaixz.bus.health.unix.shared.jna.CLibrary$Addrinfo$ByReference",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3102,7 +3102,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.CLibrary$BsdIpstat",
+    "name": "org.miaixz.bus.health.unix.shared.jna.CLibrary$BsdIp6stat",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3113,7 +3113,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.CLibrary$BsdTcpstat",
+    "name": "org.miaixz.bus.health.unix.shared.jna.CLibrary$BsdIpstat",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3124,7 +3124,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.CLibrary$BsdUdpstat",
+    "name": "org.miaixz.bus.health.unix.shared.jna.CLibrary$BsdTcpstat",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3135,7 +3135,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.CLibrary$Sockaddr",
+    "name": "org.miaixz.bus.health.unix.shared.jna.CLibrary$BsdUdpstat",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3146,7 +3146,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.CLibrary$Sockaddr$ByReference",
+    "name": "org.miaixz.bus.health.unix.shared.jna.CLibrary$Sockaddr",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3157,7 +3157,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.Cups",
+    "name": "org.miaixz.bus.health.unix.shared.jna.CLibrary$Sockaddr$ByReference",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3168,7 +3168,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.Cups$CupsDest",
+    "name": "org.miaixz.bus.health.unix.shared.jna.Cups",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3179,7 +3179,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.FreeBsdLibc",
+    "name": "org.miaixz.bus.health.unix.shared.jna.Cups$CupsDest",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3190,7 +3190,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.FreeBsdLibc$CpTime",
+    "name": "org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3201,7 +3201,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.FreeBsdLibc$FreeBsdUtmpx",
+    "name": "org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc$CpTime",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3212,7 +3212,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.FreeBsdLibc$Timeval",
+    "name": "org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc$FreeBsdUtmpx",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3223,7 +3223,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.OpenBsdLibc",
+    "name": "org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc$Timeval",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3234,7 +3234,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.OpenBsdLibc$Bcachestats",
+    "name": "org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3245,7 +3245,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.OpenBsdLibc$Timeval",
+    "name": "org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc$Bcachestats",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3256,7 +3256,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.SolarisLibc",
+    "name": "org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc$Timeval",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3267,7 +3267,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.SolarisLibc$Exit_status",
+    "name": "org.miaixz.bus.health.unix.shared.jna.SolarisLibc",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3278,7 +3278,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.SolarisLibc$SolarisLwpsInfo",
+    "name": "org.miaixz.bus.health.unix.shared.jna.SolarisLibc$Exit_status",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3289,7 +3289,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.SolarisLibc$SolarisPrUsage",
+    "name": "org.miaixz.bus.health.unix.shared.jna.SolarisLibc$SolarisLwpsInfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3300,7 +3300,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.SolarisLibc$SolarisPsInfo",
+    "name": "org.miaixz.bus.health.unix.shared.jna.SolarisLibc$SolarisPrUsage",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3311,7 +3311,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.SolarisLibc$SolarisUtmpx",
+    "name": "org.miaixz.bus.health.unix.shared.jna.SolarisLibc$SolarisPsInfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3322,7 +3322,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.SolarisLibc$Timestruc",
+    "name": "org.miaixz.bus.health.unix.shared.jna.SolarisLibc$SolarisUtmpx",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3333,7 +3333,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.jna.SolarisLibc$Timeval",
+    "name": "org.miaixz.bus.health.unix.shared.jna.SolarisLibc$Timestruc",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3344,7 +3344,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.Ls",
+    "name": "org.miaixz.bus.health.unix.shared.jna.SolarisLibc$Timeval",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3355,7 +3355,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.Lscfg",
+    "name": "org.miaixz.bus.health.unix.aix.driver.Ls",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3366,7 +3366,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.Lspv",
+    "name": "org.miaixz.bus.health.unix.aix.driver.Lscfg",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3377,7 +3377,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.Lssrad",
+    "name": "org.miaixz.bus.health.unix.aix.driver.Lspv",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3388,7 +3388,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatConfig",
+    "name": "org.miaixz.bus.health.unix.aix.driver.Lssrad",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3399,7 +3399,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatCpu",
+    "name": "org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatConfig",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3410,7 +3410,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatDisk",
+    "name": "org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatCpu",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3421,7 +3421,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatMemory",
+    "name": "org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatDisk",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3432,7 +3432,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatNetInterface",
+    "name": "org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatMemory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3443,7 +3443,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatProcess",
+    "name": "org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatNetInterface",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3454,7 +3454,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatProtocol",
+    "name": "org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatProcess",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3465,7 +3465,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.PsInfo",
+    "name": "org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatProtocol",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3476,7 +3476,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.Uptime",
+    "name": "org.miaixz.bus.health.unix.aix.driver.PsInfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3487,7 +3487,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.driver.Who",
+    "name": "org.miaixz.bus.health.unix.aix.driver.Uptime",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3498,7 +3498,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixBaseboard",
+    "name": "org.miaixz.bus.health.unix.aix.driver.Who",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3509,7 +3509,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixCentralProcessor",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixBaseboard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3520,7 +3520,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixComputerSystem",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixCentralProcessor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3531,7 +3531,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixComputerSystem$LsattrStrings",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3542,7 +3542,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixFirmware",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem$LsattrStrings",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3553,7 +3553,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixGlobalMemory",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixFirmware",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3564,7 +3564,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixGraphicsCard",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixGlobalMemory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3575,7 +3575,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixHardwareAbstractionLayer",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixGraphicsCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3586,7 +3586,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixHWDiskStore",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixHardwareAbstractionLayer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3597,7 +3597,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixNetworkIF",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixHWDiskStore",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3608,7 +3608,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixPowerSource",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixNetworkIF",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3619,7 +3619,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixSensors",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixPowerSource",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3630,7 +3630,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixSoundCard",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixSensors",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3641,7 +3641,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixUsbDevice",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixSoundCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3652,7 +3652,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.hardware.AixVirtualMemory",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixUsbDevice",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3663,7 +3663,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.software.AixFileSystem",
+    "name": "org.miaixz.bus.health.unix.aix.hardware.AixVirtualMemory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3674,7 +3674,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.software.AixInstalledApps",
+    "name": "org.miaixz.bus.health.unix.aix.software.AixFileSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3685,7 +3685,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.software.AixInternetProtocolStats",
+    "name": "org.miaixz.bus.health.unix.aix.software.AixInstalledApps",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3696,7 +3696,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.software.AixNetworkParams",
+    "name": "org.miaixz.bus.health.unix.aix.software.AixInternetProtocolStats",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3707,7 +3707,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.software.AixOperatingSystem",
+    "name": "org.miaixz.bus.health.unix.aix.software.AixNetworkParams",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3718,7 +3718,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.software.AixOSFileStore",
+    "name": "org.miaixz.bus.health.unix.aix.software.AixOperatingSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3729,7 +3729,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.software.AixOSProcess",
+    "name": "org.miaixz.bus.health.unix.aix.software.AixOSFileStore",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3740,7 +3740,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.aix.software.AixOSThread",
+    "name": "org.miaixz.bus.health.unix.aix.software.AixOSProcess",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3751,7 +3751,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit",
+    "name": "org.miaixz.bus.health.unix.aix.software.AixOSThread",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3762,7 +3762,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.driver.disk.GeomDiskList",
+    "name": "org.miaixz.bus.health.unix.bsd.Systat",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3773,7 +3773,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.driver.disk.GeomPartList",
+    "name": "org.miaixz.bus.health.unix.bsd.Systat$BatteryFields",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3784,7 +3784,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.driver.disk.Mount",
+    "name": "org.miaixz.bus.health.unix.freebsd.BsdSysctlKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3795,7 +3795,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.driver.Who",
+    "name": "org.miaixz.bus.health.unix.freebsd.driver.disk.GeomDiskList",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3806,7 +3806,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdCentralProcessor",
+    "name": "org.miaixz.bus.health.unix.freebsd.driver.disk.GeomPartList",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3817,7 +3817,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdComputerSystem",
+    "name": "org.miaixz.bus.health.unix.freebsd.driver.disk.Mount",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3828,7 +3828,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdFirmware",
+    "name": "org.miaixz.bus.health.unix.freebsd.driver.Who",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3839,7 +3839,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdGlobalMemory",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdCentralProcessor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3850,7 +3850,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdGraphicsCard",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdComputerSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3861,7 +3861,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdHardwareAbstractionLayer",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdFirmware",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3872,7 +3872,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdHWDiskStore",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdGlobalMemory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3883,7 +3883,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdPowerSource",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdGraphicsCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3894,7 +3894,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdSensors",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdHardwareAbstractionLayer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3905,7 +3905,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdSoundCard",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdHWDiskStore",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3916,7 +3916,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdUsbDevice",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdPowerSource",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3927,7 +3927,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdVirtualMemory",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdSensors",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3938,7 +3938,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.ProcstatKit",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdSoundCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3949,7 +3949,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.software.FreeBsdFileSystem",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdUsbDevice",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3960,7 +3960,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.software.FreeBsdInternetProtocolStats",
+    "name": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdVirtualMemory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3971,7 +3971,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.software.FreeBsdNetworkParams",
+    "name": "org.miaixz.bus.health.unix.freebsd.ProcstatKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3982,7 +3982,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.software.FreeBsdOperatingSystem",
+    "name": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdFileSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3993,7 +3993,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.software.FreeBsdOperatingSystem$PsKeywords",
+    "name": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdInternetProtocolStats",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4004,7 +4004,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.software.FreeBsdOSFileStore",
+    "name": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdNetworkParams",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4015,7 +4015,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.software.FreeBsdOSProcess",
+    "name": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4026,7 +4026,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.software.FreeBsdOSProcess$PsThreadColumns",
+    "name": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem$PsKeywords",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4037,7 +4037,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.freebsd.software.FreeBsdOSThread",
+    "name": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSFileStore",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4048,7 +4048,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.driver.disk.Disklabel",
+    "name": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4059,7 +4059,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.FstatKit",
+    "name": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess$PsThreadColumns",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4070,7 +4070,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdCentralProcessor",
+    "name": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSThread",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4081,7 +4081,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdComputerSystem",
+    "name": "org.miaixz.bus.health.unix.openbsd.driver.disk.Disklabel",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4092,7 +4092,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdFirmware",
+    "name": "org.miaixz.bus.health.unix.openbsd.FstatKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4103,7 +4103,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdGlobalMemory",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdCentralProcessor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4114,7 +4114,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdGraphicsCard",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdComputerSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4125,7 +4125,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdHardwareAbstractionLayer",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdFirmware",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4136,7 +4136,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdHWDiskStore",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdGlobalMemory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4147,7 +4147,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdPowerSource",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdGraphicsCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4158,7 +4158,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdSensors",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdHardwareAbstractionLayer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4169,7 +4169,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdSoundCard",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdHWDiskStore",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4180,7 +4180,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdUsbDevice",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdPowerSource",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4191,7 +4191,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdVirtualMemory",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdSensors",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4202,7 +4202,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdSoundCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4213,7 +4213,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdFileSystem",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdUsbDevice",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4224,7 +4224,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdInternetProtocolStats",
+    "name": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdVirtualMemory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4235,7 +4235,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdNetworkParams",
+    "name": "org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4246,7 +4246,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdOperatingSystem",
+    "name": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdFileSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4257,7 +4257,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdOperatingSystem$PsKeywords",
+    "name": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdInternetProtocolStats",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4268,7 +4268,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdOSFileStore",
+    "name": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdNetworkParams",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4279,7 +4279,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdOSProcess",
+    "name": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4290,7 +4290,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdOSProcess$PsThreadColumns",
+    "name": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem$PsKeywords",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4301,7 +4301,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdOSThread",
+    "name": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSFileStore",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4312,7 +4312,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.driver.disk.Iostat",
+    "name": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4323,7 +4323,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.driver.disk.Lshal",
+    "name": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess$PsThreadColumns",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4334,7 +4334,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.driver.disk.Prtvtoc",
+    "name": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSThread",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4345,7 +4345,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.driver.kstat.SystemPages",
+    "name": "org.miaixz.bus.health.unix.solaris.driver.disk.Iostat",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4356,7 +4356,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.driver.PsInfo",
+    "name": "org.miaixz.bus.health.unix.solaris.driver.disk.Lshal",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4367,7 +4367,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.driver.Who",
+    "name": "org.miaixz.bus.health.unix.solaris.driver.disk.Prtvtoc",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4378,7 +4378,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisCentralProcessor",
+    "name": "org.miaixz.bus.health.unix.solaris.driver.kstat.SystemPages",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4389,7 +4389,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisComputerSystem",
+    "name": "org.miaixz.bus.health.unix.solaris.driver.PsInfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4400,7 +4400,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisComputerSystem$SmbiosStrings",
+    "name": "org.miaixz.bus.health.unix.solaris.driver.Who",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4411,7 +4411,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisComputerSystem$SmbType",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisCentralProcessor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4422,7 +4422,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisFirmware",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4433,7 +4433,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisGlobalMemory",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem$SmbiosStrings",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4444,7 +4444,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisGraphicsCard",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem$SmbType",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4455,7 +4455,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisHardwareAbstractionLayer",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisFirmware",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4466,7 +4466,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisHWDiskStore",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisGlobalMemory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4477,7 +4477,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisNetworkIF",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisGraphicsCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4488,7 +4488,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisPowerSource",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisHardwareAbstractionLayer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4499,7 +4499,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisSensors",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisHWDiskStore",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4510,7 +4510,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisSoundCard",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisNetworkIF",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4521,7 +4521,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisUsbDevice",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisPowerSource",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4532,7 +4532,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisVirtualMemory",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisSensors",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4543,7 +4543,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.KstatKit",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisSoundCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4554,7 +4554,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.KstatKit$KstatChain",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisUsbDevice",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4565,7 +4565,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.software.SolarisFileSystem",
+    "name": "org.miaixz.bus.health.unix.solaris.hardware.SolarisVirtualMemory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4576,7 +4576,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.software.SolarisInternetProtocolStats",
+    "name": "org.miaixz.bus.health.unix.solaris.KstatKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4587,7 +4587,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.software.SolarisNetworkParams",
+    "name": "org.miaixz.bus.health.unix.solaris.KstatKit$KstatChain",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4598,7 +4598,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem",
+    "name": "org.miaixz.bus.health.unix.solaris.software.SolarisFileSystem",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4609,7 +4609,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.software.SolarisOSFileStore",
+    "name": "org.miaixz.bus.health.unix.solaris.software.SolarisInternetProtocolStats",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4620,7 +4620,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.software.SolarisOSProcess",
+    "name": "org.miaixz.bus.health.unix.solaris.software.SolarisNetworkParams",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4631,7 +4631,40 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.unix.platform.solaris.software.SolarisOSThread",
+    "name": "org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.unix.solaris.software.SolarisOSFileStore",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.unix.solaris.software.SolarisOSProcess",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.unix.solaris.software.SolarisOSThread",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

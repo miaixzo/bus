@@ -22,6 +22,7 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
+import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.metric.NotBlankMatcher;
 
 /**
@@ -42,14 +43,14 @@ public @interface NotBlank {
      *
      * @return the error code.
      */
-    String errcode() default Builder.DEFAULT_ERRCODE;
+    String errcode() default ErrorCode._NOT_BLANK;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default "${field} cannot be blank";
+    String errmsg() default ErrorCode._NOT_BLANK_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

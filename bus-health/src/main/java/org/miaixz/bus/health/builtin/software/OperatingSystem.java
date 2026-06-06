@@ -29,8 +29,8 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.IdGroup;
-import org.miaixz.bus.health.unix.driver.Who;
-import org.miaixz.bus.health.unix.driver.Xwininfo;
+import org.miaixz.bus.health.unix.shared.driver.Who;
+import org.miaixz.bus.health.unix.shared.driver.Xwininfo;
 
 /**
  * An operating system (OS) is the software on a computer that manages the way different programs use its hardware, and

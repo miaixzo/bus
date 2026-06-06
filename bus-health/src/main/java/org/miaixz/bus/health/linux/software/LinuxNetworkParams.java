@@ -35,7 +35,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
 import org.miaixz.bus.health.linux.jna.LinuxLibc;
-import org.miaixz.bus.health.unix.jna.CLibrary;
+import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 import org.miaixz.bus.logger.Logger;
 
 /**

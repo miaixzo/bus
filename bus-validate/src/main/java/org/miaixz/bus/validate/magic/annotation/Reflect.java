@@ -22,6 +22,7 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
+import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.metric.ReflectMatcher;
 
 /**
@@ -67,14 +68,14 @@ public @interface Reflect {
      *
      * @return the error code.
      */
-    String errcode() default Builder.DEFAULT_ERRCODE;
+    String errcode() default ErrorCode._REFLECT;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default "Validation failed for parameter ${field}";
+    String errmsg() default ErrorCode._REFLECT_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

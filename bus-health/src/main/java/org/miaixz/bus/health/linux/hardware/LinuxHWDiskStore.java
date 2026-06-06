@@ -33,6 +33,7 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
@@ -118,6 +119,11 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     private static final String DM_UUID = "DM_UUID";
 
     /**
+     * The DM_NAME constant.
+     */
+    private static final String DM_NAME = "DM_NAME";
+
+    /**
      * The DM_VG_NAME constant.
      */
     private static final String DM_VG_NAME = "DM_VG_NAME";
@@ -131,6 +137,16 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      * The LOGICAL_VOLUME_GROUP constant.
      */
     private static final String LOGICAL_VOLUME_GROUP = "Logical Volume Group";
+
+    /**
+     * The ENCRYPTED_VOLUME constant.
+     */
+    private static final String ENCRYPTED_VOLUME = "Encrypted Volume";
+
+    /**
+     * The DEVICE_MAPPER constant.
+     */
+    private static final String DEVICE_MAPPER = "Device Mapper";
 
     /**
      * The SECTORSIZE constant.
@@ -271,33 +287,21 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                     long devSize = Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                             * SECTORSIZE;
                                     if (devnode.startsWith(DevPath.DM)) {
-                                        devModel = LOGICAL_VOLUME_GROUP;
                                         devSerial = device.getPropertyValue(DM_UUID);
+                                        devModel = getModelForDmDevice(devSerial);
                                         store = new LinuxHWDiskStore(devnode, devModel,
                                                 devSerial == null ? Normal.UNKNOWN : devSerial, devSize, "Virtual");
                                         String vgName = device.getPropertyValue(DM_VG_NAME);
                                         String lvName = device.getPropertyValue(DM_LV_NAME);
-                                        if (vgName != null && lvName != null && devSerial != null
-                                                && devSerial.startsWith("LVM-")) {
-                                            store.partitionList.add(
-                                                    new HWPartition(getPartitionNameForDmDevice(vgName, lvName),
-                                                            device.getSysname(),
-                                                            device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
-                                                                    : device.getPropertyValue(ID_FS_TYPE),
-                                                            device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
-                                                                    : device.getPropertyValue(ID_FS_UUID),
-                                                            device.getPropertyValue(ID_FS_LABEL) == null ? ""
-                                                                    : device.getPropertyValue(ID_FS_LABEL),
-                                                            Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
-                                                                    * SECTORSIZE,
-                                                            Parsing.parseIntOrDefault(
-                                                                    device.getPropertyValue(MAJOR),
-                                                                    0),
-                                                            Parsing.parseIntOrDefault(
-                                                                    device.getPropertyValue(MINOR),
-                                                                    0),
-                                                            getMountPointOfDmDevice(vgName, lvName)));
-                                        }
+                                        addDeviceMapperPartition(store, mountsMap, devSerial, vgName, lvName,
+                                                device.getPropertyValue(DM_NAME), devnode, device.getSysname(),
+                                                device.getSyspath(), device.getPropertyValue(ID_FS_TYPE),
+                                                device.getPropertyValue(ID_FS_UUID),
+                                                device.getPropertyValue(ID_FS_LABEL),
+                                                Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
+                                                        * SECTORSIZE,
+                                                Parsing.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
+                                                Parsing.parseIntOrDefault(device.getPropertyValue(MINOR), 0));
                                     } else {
                                         store = new LinuxHWDiskStore(devnode,
                                                 devModel == null ? Normal.UNKNOWN : devModel,
@@ -425,6 +429,130 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      */
     private static String getMountPointOfDmDevice(String vgName, String lvName) {
         return DevPath.MAPPER + vgName + Symbol.C_MINUS + lvName;
+    }
+
+    /**
+     * Returns the model description for a device-mapper device.
+     *
+     * @param dmUuid the device-mapper UUID
+     * @return the model description
+     */
+    private static String getModelForDmDevice(String dmUuid) {
+        if (isLogicalVolume(dmUuid)) {
+            return LOGICAL_VOLUME_GROUP;
+        } else if (isEncryptedVolume(dmUuid)) {
+            return ENCRYPTED_VOLUME;
+        }
+        return DEVICE_MAPPER;
+    }
+
+    /**
+     * Returns whether a device-mapper UUID identifies an LVM logical volume.
+     *
+     * @param dmUuid the device-mapper UUID
+     * @return whether the UUID identifies an LVM logical volume
+     */
+    private static boolean isLogicalVolume(String dmUuid) {
+        return dmUuid != null && dmUuid.startsWith("LVM-");
+    }
+
+    /**
+     * Returns whether a device-mapper UUID identifies an encrypted volume.
+     *
+     * @param dmUuid the device-mapper UUID
+     * @return whether the UUID identifies an encrypted volume
+     */
+    private static boolean isEncryptedVolume(String dmUuid) {
+        return dmUuid != null && dmUuid.startsWith("CRYPT-");
+    }
+
+    /**
+     * Returns the preferred path for a device-mapper device.
+     *
+     * @param dmName  the device-mapper name
+     * @param devnode the device node path
+     * @return the device path
+     */
+    private static String getDmDevicePath(String dmName, String devnode) {
+        return StringKit.isBlank(dmName) ? devnode : DevPath.MAPPER + dmName;
+    }
+
+    /**
+     * Returns the mount point for a device-mapper device.
+     *
+     * @param mountsMap the map of device paths to mount points
+     * @param dmName    the device-mapper name
+     * @param devnode   the device node path
+     * @param sysPath   the sysfs path for the device
+     * @return the mount point or dependent device names
+     */
+    private static String getMountPointForDmDevice(
+            Map<String, String> mountsMap,
+            String dmName,
+            String devnode,
+            String sysPath) {
+        String devicePath = getDmDevicePath(dmName, devnode);
+        String mountPoint = mountsMap.get(devicePath);
+        if (mountPoint != null) {
+            return mountPoint;
+        }
+        if (!devicePath.equals(devnode)) {
+            mountPoint = mountsMap.get(devnode);
+            if (mountPoint != null) {
+                return mountPoint;
+            }
+        }
+        return getDependentNamesFromHoldersDirectory(sysPath);
+    }
+
+    /**
+     * Adds a partition entry for a supported device-mapper device.
+     *
+     * @param store     the disk store to update
+     * @param mountsMap the map of device paths to mount points
+     * @param dmUuid    the device-mapper UUID
+     * @param vgName    the LVM volume group name
+     * @param lvName    the LVM logical volume name
+     * @param dmName    the device-mapper name
+     * @param devnode   the device node path
+     * @param sysname   the sysfs device name
+     * @param sysPath   the sysfs path for the device
+     * @param fsType    the filesystem type
+     * @param fsUuid    the filesystem UUID
+     * @param fsLabel   the filesystem label
+     * @param size      the partition size in bytes
+     * @param major     the major device ID
+     * @param minor     the minor device ID
+     */
+    private static void addDeviceMapperPartition(
+            LinuxHWDiskStore store,
+            Map<String, String> mountsMap,
+            String dmUuid,
+            String vgName,
+            String lvName,
+            String dmName,
+            String devnode,
+            String sysname,
+            String sysPath,
+            String fsType,
+            String fsUuid,
+            String fsLabel,
+            long size,
+            int major,
+            int minor) {
+        if (isLogicalVolume(dmUuid) && !StringKit.isBlank(vgName) && !StringKit.isBlank(lvName)) {
+            store.partitionList.add(
+                    new HWPartition(getPartitionNameForDmDevice(vgName, lvName), sysname,
+                            fsType == null ? PARTITION : fsType, fsUuid == null ? Normal.EMPTY : fsUuid,
+                            fsLabel == null ? Normal.EMPTY : fsLabel, size, major, minor,
+                            getMountPointOfDmDevice(vgName, lvName)));
+        } else if (isEncryptedVolume(dmUuid)) {
+            String name = getDmDevicePath(dmName, devnode);
+            store.partitionList.add(
+                    new HWPartition(name, sysname, fsType == null ? PARTITION : fsType,
+                            fsUuid == null ? Normal.EMPTY : fsUuid, fsLabel == null ? Normal.EMPTY : fsLabel, size,
+                            major, minor, getMountPointForDmDevice(mountsMap, dmName, devnode, sysPath)));
+        }
     }
 
     /**

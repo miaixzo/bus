@@ -92,22 +92,28 @@ final class WindowsDisplay extends AbstractDisplay {
                             SetupApi.DIREG_DEV,
                             WinNT.KEY_QUERY_VALUE);
 
-                    byte[] edid = new byte[1];
+                    try {
+                        byte[] edid = new byte[1];
 
-                    try (ByRef.CloseableIntByReference pType = new ByRef.CloseableIntByReference();
-                            ByRef.CloseableIntByReference lpcbData = new ByRef.CloseableIntByReference()) {
-                        if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid, lpcbData) == WinError.ERROR_MORE_DATA) {
-                            edid = new byte[lpcbData.getValue()];
-                            if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid, lpcbData) == WinError.ERROR_SUCCESS) {
-                                Display display = new WindowsDisplay(edid);
-                                displays.add(display);
+                        try (ByRef.CloseableIntByReference pType = new ByRef.CloseableIntByReference();
+                                ByRef.CloseableIntByReference lpcbData = new ByRef.CloseableIntByReference()) {
+                            if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid,
+                                    lpcbData) == WinError.ERROR_MORE_DATA) {
+                                edid = new byte[lpcbData.getValue()];
+                                if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid,
+                                        lpcbData) == WinError.ERROR_SUCCESS) {
+                                    Display display = new WindowsDisplay(edid);
+                                    displays.add(display);
+                                }
                             }
                         }
+                    } finally {
+                        Advapi32.INSTANCE.RegCloseKey(key);
                     }
-                    Advapi32.INSTANCE.RegCloseKey(key);
                 }
+            } finally {
+                SU.SetupDiDestroyDeviceInfoList(hDevInfo);
             }
-            SU.SetupDiDestroyDeviceInfoList(hDevInfo);
         }
         return displays;
     }

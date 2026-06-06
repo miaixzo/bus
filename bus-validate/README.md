@@ -300,7 +300,7 @@ import java.lang.annotation.*;
 @Complex(value = "AgeValidator", clazz = AgeValidator.class)
 public @interface ValidAge {
 
-    String errcode() default Builder.DEFAULT_ERRCODE;
+    String errcode() default ErrorCode._PARAMETER_VALIDATE;
     String errmsg() default "Age must be between 18 and 120";
     String[] group() default {};
     String field() default Builder.DEFAULT_FIELD;

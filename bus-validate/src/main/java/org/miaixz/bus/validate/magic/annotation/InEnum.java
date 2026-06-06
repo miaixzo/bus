@@ -22,6 +22,7 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
+import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.metric.InEnumMatcher;
 
 /**
@@ -62,14 +63,14 @@ public @interface InEnum {
      *
      * @return the error code.
      */
-    String errcode() default Builder.DEFAULT_ERRCODE;
+    String errcode() default ErrorCode._IN_ENUM;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default "${field} must be a value of the specified enum type: ${enumClass}";
+    String errmsg() default ErrorCode._IN_ENUM_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

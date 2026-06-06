@@ -369,10 +369,14 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                 return ticks;
             }
 
-            ticks[CentralProcessor.TickType.USER.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_USER];
-            ticks[CentralProcessor.TickType.NICE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_NICE];
-            ticks[CentralProcessor.TickType.SYSTEM.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_SYSTEM];
-            ticks[CentralProcessor.TickType.IDLE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_IDLE];
+            ticks[CentralProcessor.TickType.USER.getIndex()] = Formats
+                    .getUnsignedInt(cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_USER]);
+            ticks[CentralProcessor.TickType.NICE.getIndex()] = Formats
+                    .getUnsignedInt(cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_NICE]);
+            ticks[CentralProcessor.TickType.SYSTEM.getIndex()] = Formats
+                    .getUnsignedInt(cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_SYSTEM]);
+            ticks[CentralProcessor.TickType.IDLE.getIndex()] = Formats
+                    .getUnsignedInt(cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_IDLE]);
         }
         // Leave IOWait and IRQ values as 0
         return ticks;

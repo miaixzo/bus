@@ -45,11 +45,6 @@ public class Builder extends Validator {
     public static final String DEFAULT_FIELD = "field";
 
     /**
-     * Default error code.
-     */
-    public static final String DEFAULT_ERRCODE = "115000";
-
-    /**
      * The object parameter to be validated.
      */
     public static final String VALUE = "value";

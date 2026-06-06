@@ -1,0 +1,95 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.health.unix.aix.hardware;
+
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.builtin.hardware.PowerSource;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
+
+/**
+ * A Power Source
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+@ThreadSafe
+public final class AixPowerSource extends AbstractPowerSource {
+
+    /**
+     * Creates a new AixPowerSource instance.
+     *
+     * @param name                     the name
+     * @param deviceName               the device name
+     * @param remainingCapacityPercent the remaining capacity percent
+     * @param timeRemainingEstimated   the time remaining estimated
+     * @param timeRemainingInstant     the time remaining instant
+     * @param powerUsageRate           the power usage rate
+     * @param voltage                  the voltage
+     * @param amperage                 the amperage
+     * @param powerOnLine              the power on line
+     * @param charging                 the charging
+     * @param discharging              the discharging
+     * @param capacityUnits            the capacity units
+     * @param currentCapacity          the current capacity
+     * @param maxCapacity              the max capacity
+     * @param designCapacity           the design capacity
+     * @param cycleCount               the cycle count
+     * @param chemistry                the chemistry
+     * @param manufactureDate          the manufacture date
+     * @param manufacturer             the manufacturer
+     * @param serialNumber             the serial number
+     * @param temperature              the temperature
+     */
+    public AixPowerSource(String name, String deviceName, double remainingCapacityPercent,
+            double timeRemainingEstimated, double timeRemainingInstant, double powerUsageRate, double voltage,
+            double amperage, boolean powerOnLine, boolean charging, boolean discharging,
+            PowerSource.CapacityUnits capacityUnits, int currentCapacity, int maxCapacity, int designCapacity,
+            int cycleCount, String chemistry, LocalDate manufactureDate, String manufacturer, String serialNumber,
+            double temperature) {
+        super(name, deviceName, remainingCapacityPercent, timeRemainingEstimated, timeRemainingInstant, powerUsageRate,
+                voltage, amperage, powerOnLine, charging, discharging, capacityUnits, currentCapacity, maxCapacity,
+                designCapacity, cycleCount, chemistry, manufactureDate, manufacturer, serialNumber, temperature);
+    }
+
+    /**
+     * Queries the power sources.
+     *
+     * @return the query power sources result
+     */
+    @Override
+    protected List<PowerSource> queryPowerSources() {
+        return getPowerSources();
+    }
+
+    /**
+     * Gets Battery Information. AIX does not provide any battery statistics, as most servers are not designed to be run
+     * on battery.
+     *
+     * @return An empty list.
+     */
+    public static List<PowerSource> getPowerSources() {
+        return Collections.emptyList();
+    }
+
+}

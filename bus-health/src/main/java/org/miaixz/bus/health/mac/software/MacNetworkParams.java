@@ -34,7 +34,7 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
 import org.miaixz.bus.health.mac.jna.SystemB;
-import org.miaixz.bus.health.unix.jna.CLibrary;
+import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 import org.miaixz.bus.logger.Logger;
 
 /**

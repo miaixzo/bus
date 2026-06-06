@@ -24,6 +24,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.miaixz.bus.core.xyz.ArrayKit;
+
 /**
  *
  * Enumeration for various internationalization (I18n) languages and locales. Each enum constant represents a specific
@@ -695,11 +697,12 @@ public enum I18n {
         Locale locale = i18n == null ? Locale.getDefault() : i18n.toLocale();
         try {
             ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale);
-            return MessageFormat.format(bundle.getString(key), args);
+            String message = bundle.getString(key);
+            return ArrayKit.isEmpty(args) ? message : MessageFormat.format(message, args);
         } catch (MissingResourceException e) {
-            return MessageFormat.format(key, args);
+            return ArrayKit.isEmpty(args) ? key : MessageFormat.format(key, args);
         } catch (Exception e) {
-            return MessageFormat.format(key, args);
+            return ArrayKit.isEmpty(args) ? key : MessageFormat.format(key, args);
         }
     }
 

@@ -40,6 +40,7 @@ module bus.health {
     opens org.miaixz.bus.health.linux to com.sun.jna;
     opens org.miaixz.bus.health.mac to com.sun.jna;
     opens org.miaixz.bus.health.windows to com.sun.jna;
+    opens org.miaixz.bus.health.builtin.gpu to com.sun.jna;
 
     exports org.miaixz.bus.health;
     exports org.miaixz.bus.health.builtin;
@@ -61,28 +62,29 @@ module bus.health {
     exports org.miaixz.bus.health.mac.hardware;
     exports org.miaixz.bus.health.mac.jna;
     exports org.miaixz.bus.health.mac.software;
-    exports org.miaixz.bus.health.unix.driver;
-    exports org.miaixz.bus.health.unix.hardware;
-    exports org.miaixz.bus.health.unix.jna;
-    exports org.miaixz.bus.health.unix.platform.aix.driver;
-    exports org.miaixz.bus.health.unix.platform.aix.driver.perfstat;
-    exports org.miaixz.bus.health.unix.platform.aix.hardware;
-    exports org.miaixz.bus.health.unix.platform.aix.software;
-    exports org.miaixz.bus.health.unix.platform.freebsd;
-    exports org.miaixz.bus.health.unix.platform.freebsd.driver;
-    exports org.miaixz.bus.health.unix.platform.freebsd.driver.disk;
-    exports org.miaixz.bus.health.unix.platform.freebsd.hardware;
-    exports org.miaixz.bus.health.unix.platform.freebsd.software;
-    exports org.miaixz.bus.health.unix.platform.openbsd;
-    exports org.miaixz.bus.health.unix.platform.openbsd.driver.disk;
-    exports org.miaixz.bus.health.unix.platform.openbsd.hardware;
-    exports org.miaixz.bus.health.unix.platform.openbsd.software;
-    exports org.miaixz.bus.health.unix.platform.solaris;
-    exports org.miaixz.bus.health.unix.platform.solaris.driver;
-    exports org.miaixz.bus.health.unix.platform.solaris.driver.disk;
-    exports org.miaixz.bus.health.unix.platform.solaris.driver.kstat;
-    exports org.miaixz.bus.health.unix.platform.solaris.hardware;
-    exports org.miaixz.bus.health.unix.platform.solaris.software;
+    exports org.miaixz.bus.health.unix.shared.driver;
+    exports org.miaixz.bus.health.unix.shared.hardware;
+    exports org.miaixz.bus.health.unix.shared.jna;
+    exports org.miaixz.bus.health.unix.aix.driver;
+    exports org.miaixz.bus.health.unix.aix.driver.perfstat;
+    exports org.miaixz.bus.health.unix.aix.hardware;
+    exports org.miaixz.bus.health.unix.aix.software;
+    exports org.miaixz.bus.health.unix.bsd;
+    exports org.miaixz.bus.health.unix.freebsd;
+    exports org.miaixz.bus.health.unix.freebsd.driver;
+    exports org.miaixz.bus.health.unix.freebsd.driver.disk;
+    exports org.miaixz.bus.health.unix.freebsd.hardware;
+    exports org.miaixz.bus.health.unix.freebsd.software;
+    exports org.miaixz.bus.health.unix.openbsd;
+    exports org.miaixz.bus.health.unix.openbsd.driver.disk;
+    exports org.miaixz.bus.health.unix.openbsd.hardware;
+    exports org.miaixz.bus.health.unix.openbsd.software;
+    exports org.miaixz.bus.health.unix.solaris;
+    exports org.miaixz.bus.health.unix.solaris.driver;
+    exports org.miaixz.bus.health.unix.solaris.driver.disk;
+    exports org.miaixz.bus.health.unix.solaris.driver.kstat;
+    exports org.miaixz.bus.health.unix.solaris.hardware;
+    exports org.miaixz.bus.health.unix.solaris.software;
     exports org.miaixz.bus.health.windows;
     exports org.miaixz.bus.health.windows.driver;
     exports org.miaixz.bus.health.windows.driver.perfmon;
@@ -92,7 +94,5 @@ module bus.health {
     exports org.miaixz.bus.health.windows.jna;
     exports org.miaixz.bus.health.windows.software;
     exports org.miaixz.bus.health.builtin.gpu;
-
-    opens org.miaixz.bus.health.builtin.gpu to com.sun.jna;
 
 }

@@ -23,6 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.validate.Builder;
+import org.miaixz.bus.validate.magic.ErrorCode;
 
 /**
  * Annotation for validating by comparing the values of two parameters.
@@ -54,14 +55,14 @@ public @interface Compare {
      *
      * @return the error code.
      */
-    String errcode() default Builder.DEFAULT_ERRCODE;
+    String errcode() default ErrorCode._COMPARE;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default "The value of ${field} does not meet the comparison rule";
+    String errmsg() default ErrorCode._COMPARE_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

@@ -1,0 +1,260 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.health.unix.aix.hardware;
+
+import java.util.List;
+import java.util.function.Supplier;
+
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.builtin.hardware.Baseboard;
+import org.miaixz.bus.health.builtin.hardware.Firmware;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
+
+/**
+ * Hardware data obtained from lsattr
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+@Immutable
+final class AixComputerSystem extends AbstractComputerSystem {
+
+    /**
+     * The lsattrStrings value.
+     */
+    private final Supplier<LsattrStrings> lsattrStrings = Memoizer.memoize(AixComputerSystem::readLsattr);
+
+    /**
+     * The lscfg value.
+     */
+    private final Supplier<List<String>> lscfg;
+
+    /**
+     * Creates a new AixComputerSystem instance.
+     *
+     * @param lscfg the lscfg
+     */
+    AixComputerSystem(Supplier<List<String>> lscfg) {
+        this.lscfg = lscfg;
+    }
+
+    /**
+     * Reads the lsattr.
+     *
+     * @return the read lsattr result
+     */
+    private static LsattrStrings readLsattr() {
+        String fwVendor = "IBM";
+        String fwVersion = null;
+        String fwPlatformVersion = null;
+
+        String manufacturer = fwVendor;
+        String model = null;
+        String serialNumber = null;
+        String uuid = null;
+
+        /*-
+        fwversion       IBM,RG080425_d79e22_r                Firmware version and revision levels                False
+        modelname       IBM,9114-275                         Machine name                                        False
+        os_uuid         789f930f-b15c-4639-b842-b42603862704 N/A                                                 True
+        rtasversion     1                                    Open Firmware RTAS version                          False
+        systemid        IBM,0110ACFDE                        Hardware system identifier                          False
+        */
+
+        final String fwVersionMarker = "fwversion";
+        final String modelMarker = "modelname";
+        final String systemIdMarker = "systemid";
+        final String uuidMarker = "os_uuid";
+        final String fwPlatformVersionMarker = "Platform Firmware level is";
+
+        for (final String checkLine : Executor.runNative("lsattr -El sys0")) {
+            if (checkLine.startsWith(fwVersionMarker)) {
+                fwVersion = checkLine.split(fwVersionMarker)[1].trim();
+                int comma = fwVersion.indexOf(Symbol.C_COMMA);
+                if (comma > 0 && fwVersion.length() > comma) {
+                    fwVendor = fwVersion.substring(0, comma);
+                    fwVersion = fwVersion.substring(comma + 1);
+                }
+                fwVersion = Pattern.SPACES_PATTERN.split(fwVersion)[0];
+            } else if (checkLine.startsWith(modelMarker)) {
+                model = checkLine.split(modelMarker)[1].trim();
+                int comma = model.indexOf(Symbol.C_COMMA);
+                if (comma > 0 && model.length() > comma) {
+                    manufacturer = model.substring(0, comma);
+                    model = model.substring(comma + 1);
+                }
+                model = Pattern.SPACES_PATTERN.split(model)[0];
+            } else if (checkLine.startsWith(systemIdMarker)) {
+                serialNumber = checkLine.split(systemIdMarker)[1].trim();
+                serialNumber = Pattern.SPACES_PATTERN.split(serialNumber)[0];
+            } else if (checkLine.startsWith(uuidMarker)) {
+                uuid = checkLine.split(uuidMarker)[1].trim();
+                uuid = Pattern.SPACES_PATTERN.split(uuid)[0];
+            }
+        }
+        for (final String checkLine : Executor.runNative("lsmcode -c")) {
+            /*-
+             Platform Firmware level is 3F080425
+             System Firmware level is RG080425_d79e22_regatta
+             */
+            if (checkLine.startsWith(fwPlatformVersionMarker)) {
+                fwPlatformVersion = checkLine.split(fwPlatformVersionMarker)[1].trim();
+                break;
+            }
+        }
+        return new LsattrStrings(fwVendor, fwPlatformVersion, fwVersion, manufacturer, model, serialNumber, uuid);
+    }
+
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
+    @Override
+    public String getManufacturer() {
+        return lsattrStrings.get().manufacturer;
+    }
+
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
+    @Override
+    public String getModel() {
+        return lsattrStrings.get().model;
+    }
+
+    /**
+     * Returns the serial number.
+     *
+     * @return the get serial number result
+     */
+    @Override
+    public String getSerialNumber() {
+        return lsattrStrings.get().serialNumber;
+    }
+
+    /**
+     * Returns the hardware uuid.
+     *
+     * @return the get hardware uuid result
+     */
+    @Override
+    public String getHardwareUUID() {
+        return lsattrStrings.get().uuid;
+    }
+
+    /**
+     * Creates the firmware.
+     *
+     * @return the create firmware result
+     */
+    @Override
+    public Firmware createFirmware() {
+        return new AixFirmware(lsattrStrings.get().biosVendor, lsattrStrings.get().biosPlatformVersion,
+                lsattrStrings.get().biosVersion);
+    }
+
+    /**
+     * Creates the baseboard.
+     *
+     * @return the create baseboard result
+     */
+    @Override
+    public Baseboard createBaseboard() {
+        return new AixBaseboard(lscfg);
+    }
+
+    /**
+     * The LsattrStrings class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static final class LsattrStrings {
+
+        /**
+         * The biosVendor value.
+         */
+        private final String biosVendor;
+
+        /**
+         * The biosPlatformVersion value.
+         */
+        private final String biosPlatformVersion;
+
+        /**
+         * The biosVersion value.
+         */
+        private final String biosVersion;
+
+        /**
+         * The manufacturer value.
+         */
+        private final String manufacturer;
+
+        /**
+         * The model value.
+         */
+        private final String model;
+
+        /**
+         * The serialNumber value.
+         */
+        private final String serialNumber;
+
+        /**
+         * The uuid value.
+         */
+        private final String uuid;
+
+        /**
+         * Creates a new LsattrStrings instance.
+         *
+         * @param biosVendor          the bios vendor
+         * @param biosPlatformVersion the bios platform version
+         * @param biosVersion         the bios version
+         * @param manufacturer        the manufacturer
+         * @param model               the model
+         * @param serialNumber        the serial number
+         * @param uuid                the uuid
+         */
+        private LsattrStrings(String biosVendor, String biosPlatformVersion, String biosVersion, String manufacturer,
+                String model, String serialNumber, String uuid) {
+            this.biosVendor = StringKit.isBlank(biosVendor) ? Normal.UNKNOWN : biosVendor;
+            this.biosPlatformVersion = StringKit.isBlank(biosPlatformVersion) ? Normal.UNKNOWN : biosPlatformVersion;
+            this.biosVersion = StringKit.isBlank(biosVersion) ? Normal.UNKNOWN : biosVersion;
+
+            this.manufacturer = StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer;
+            this.model = StringKit.isBlank(model) ? Normal.UNKNOWN : model;
+            this.serialNumber = StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber;
+            this.uuid = StringKit.isBlank(uuid) ? Normal.UNKNOWN : uuid;
+        }
+
+    }
+
+}
