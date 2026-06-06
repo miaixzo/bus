@@ -195,33 +195,35 @@ public final class KstatKit {
         }
         List<Object[]> results = new ArrayList<>();
         int s = 0;
+        int consecutiveMisses = 0;
         Kstat2MatcherList matchers = new Kstat2MatcherList();
         KstatKit.CHAIN.lock();
         try {
             matchers.addMatcher(Kstat2.KSTAT2_M_GLOB, beforeStr + Symbol.STAR + afterStr);
             Kstat2Handle handle = new Kstat2Handle();
             try {
-                for (s = 0; s < Integer.MAX_VALUE; s++) {
-                    Object[] result = new Object[names.length];
-                    Kstat2Map map = handle.lookupMap(beforeStr + s + afterStr);
-                    for (int i = 0; i < names.length; i++) {
-                        result[i] = map.getValue(names[i]);
+                for (s = 0; consecutiveMisses < 256; s++) {
+                    try {
+                        Object[] result = new Object[names.length];
+                        Kstat2Map map = handle.lookupMap(beforeStr + s + afterStr);
+                        for (int i = 0; i < names.length; i++) {
+                            result[i] = map.getValue(names[i]);
+                        }
+                        results.add(result);
+                        consecutiveMisses = 0;
+                    } catch (Kstat2StatusException e) {
+                        consecutiveMisses++;
                     }
-                    results.add(result);
                 }
             } finally {
                 handle.close();
             }
         } catch (Kstat2StatusException e) {
-            // Expected to end iteration
             Logger.debug(
                     false,
                     "Health",
-                    "Failed to get stats on {}{}{} for names {}: {}",
-                    beforeStr,
-                    s,
-                    afterStr,
-                    Arrays.toString(names),
+                    "Failed to initialize kstat2 handle for {}: {}",
+                    beforeStr + Symbol.STAR + afterStr,
                     e.getClass().getSimpleName());
         } finally {
             KstatKit.CHAIN.unlock();

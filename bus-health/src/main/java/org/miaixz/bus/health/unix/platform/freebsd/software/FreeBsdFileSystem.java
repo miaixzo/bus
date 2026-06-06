@@ -182,8 +182,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             fsList.add(
                     new FreeBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, "", description, type,
                             freeSpace, usableSpace, totalSpace,
-                            inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
-                            inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L));
+                            inodeFreeMap.getOrDefault(path, 0L), inodeTotalMap.getOrDefault(path, 0L)));
         }
         return fsList;
     }

@@ -91,7 +91,7 @@ public final class Disklabel {
             // boundend: 15693824
             // drivedata: 0
             if (line.contains(totalMarker)) {
-                totalSectors = Parsing.getFirstIntValue(line);
+                totalSectors = Parsing.parseLongOrDefault(line.split(totalMarker)[1].trim(), 1L);
             } else if (line.contains(bpsMarker)) {
                 bytesPerSector = Parsing.getFirstIntValue(line);
             } else if (line.contains(labelMarker)) {
@@ -119,11 +119,11 @@ public final class Disklabel {
             if (line.trim().indexOf(Symbol.C_COLON) == 1) {
                 // partition table values have a single letter followed by a colon
                 String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 9);
-                String name = split[0].substring(0, 1);
-                // get major and minor from stat
-                Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
                 // add partitions
                 if (split.length > 4) {
+                    String name = split[0].substring(0, 1);
+                    // get major and minor from stat
+                    Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
                     partitions.add(
                             new HWPartition(diskName + name, name, split[3], duid + "." + name,
                                     Parsing.parseLongOrDefault(split[1], 0L) * bytesPerSector, majorMinor.getLeft(),
@@ -132,7 +132,8 @@ public final class Disklabel {
             }
         }
         if (partitions.isEmpty()) {
-            return getDiskParamsNoRoot(diskName);
+            Tuple fallback = getDiskParamsNoRoot(diskName);
+            return new Tuple(label, duid, totalSectors * bytesPerSector, fallback.get(3));
         }
         return new Tuple(label, duid, totalSectors * bytesPerSector, partitions);
     }
@@ -148,9 +149,9 @@ public final class Disklabel {
         for (String line : Executor.runNative("df")) {
             if (line.startsWith("/dev/" + diskName)) {
                 String[] split = Pattern.SPACES_PATTERN.split(line);
-                String name = split[0].substring(5 + diskName.length());
-                Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
                 if (split.length > 5) {
+                    String name = split[0].substring(5 + diskName.length());
+                    Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
                     long partSize = Parsing.parseLongOrDefault(split[1], 1L) * 512L;
                     partitions.add(
                             new HWPartition(split[0], split[0].substring(5), Normal.UNKNOWN, Normal.UNKNOWN, partSize,

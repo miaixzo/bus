@@ -3762,6 +3762,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.unix.platform.bsd.Systat",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.unix.platform.bsd.Systat$BatteryFields",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

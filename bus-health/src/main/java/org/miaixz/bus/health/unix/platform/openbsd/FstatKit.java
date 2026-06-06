@@ -63,16 +63,25 @@ public final class FstatKit {
      * @return the number of open files.
      */
     public static long getOpenFiles(int pid) {
+        return parseOpenFiles(Executor.runNative("fstat -sp " + pid));
+    }
+
+    /**
+     * Counts open file descriptor rows from {@code fstat -sp} output.
+     *
+     * @param fstatLines the fstat output lines
+     * @return the number of open files
+     */
+    public static long parseOpenFiles(List<String> fstatLines) {
         long fd = 0L;
-        List<String> fstat = Executor.runNative("fstat -sp " + pid);
-        for (String line : fstat) {
+        for (String line : fstatLines) {
             String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 11);
-            if (split.length == 11 && !"pipe".contains(split[4]) && !"unix".contains(split[4])) {
+            if (split.length == 11 && !split[4].equals("pipe") && !split[4].equals("unix")) {
                 fd++;
             }
         }
-        // subtract 1 for header row
-        return fd - 1;
+        // Subtract 1 for the header row, but never return a negative count.
+        return fd > 0 ? fd - 1 : 0;
     }
 
 }

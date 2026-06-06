@@ -165,7 +165,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         int[] mib = new int[2];
         mib[0] = OpenBsdLibc.CTL_HW;
         mib[1] = OpenBsdLibc.HW_CPUSPEED;
-        freq[0] = OpenBsdSysctlKit.sysctl(mib, 0L) * 1_000_000L;
+        freq[0] = OpenBsdSysctlKit.sysctl(mib, 0) * 1_000_000L;
         return freq;
     }
 
@@ -227,7 +227,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         // cpu0: AMD GX-412TC SOC, 998.28 MHz, 16-30-01
         // cpu0: AMD EPYC 7313P 16-Core Processor, 2994.74 MHz, 19-01-01
         // cpu0: Intel(R) Celeron(R) N4000 CPU @ 1.10GHz, 2491.67 MHz, 06-7a-01
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile("cpu(\\\\d+).*: ((ARM|AMD|Intel|Apple).+)");
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile("cpu(\\d+).*: ((ARM|AMD|Intel|Apple).+)");
 
         Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
         // cpu0: 48KB 64b/line 12-way D-cache, 32KB 64b/line 8-way I-cache,
@@ -256,7 +256,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         // cpu4 at mainbus0 mpidr 100: ARM Cortex-A72 r0p2
         // cpu4: 48KB 64b/line 3-way L1 PIPT I-cache, 32KB 64b/line 2-way L1 D-cache
         // cpu4: 1024KB 64b/line 16-way L2 cache
-        java.util.regex.Pattern q = java.util.regex.Pattern.compile("cpu(\\\\d+).*: (.+(I-|D-|L\\d+\\s)cache)");
+        java.util.regex.Pattern q = java.util.regex.Pattern.compile("cpu(\\d+).*: (.+(I-|D-|L\\d+\\s)cache)");
         Set<String> featureFlags = new LinkedHashSet<>();
         for (String s : Executor.runNative("dmesg")) {
             Matcher m = p.matcher(s);
@@ -266,7 +266,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
             } else {
                 Matcher n = q.matcher(s);
                 if (n.matches()) {
-                    for (String cacheStr : n.group(1).split(Symbol.COMMA)) {
+                    for (String cacheStr : n.group(2).split(Symbol.COMMA)) {
                         CentralProcessor.ProcessorCache cache = parseCacheStr(cacheStr);
                         if (cache != null) {
                             caches.add(cache);
@@ -293,7 +293,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
      * @return the parse cache str result
      */
     private CentralProcessor.ProcessorCache parseCacheStr(String cacheStr) {
-        String[] split = Pattern.SPACES_PATTERN.split(cacheStr);
+        String[] split = Pattern.SPACES_PATTERN.split(cacheStr.trim());
         if (split.length > 3) {
             switch (split[split.length - 1]) {
                 case "I-cache":

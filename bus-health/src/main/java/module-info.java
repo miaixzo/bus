@@ -40,6 +40,7 @@ module bus.health {
     opens org.miaixz.bus.health.linux to com.sun.jna;
     opens org.miaixz.bus.health.mac to com.sun.jna;
     opens org.miaixz.bus.health.windows to com.sun.jna;
+    opens org.miaixz.bus.health.builtin.gpu to com.sun.jna;
 
     exports org.miaixz.bus.health;
     exports org.miaixz.bus.health.builtin;
@@ -68,6 +69,7 @@ module bus.health {
     exports org.miaixz.bus.health.unix.platform.aix.driver.perfstat;
     exports org.miaixz.bus.health.unix.platform.aix.hardware;
     exports org.miaixz.bus.health.unix.platform.aix.software;
+    exports org.miaixz.bus.health.unix.platform.bsd;
     exports org.miaixz.bus.health.unix.platform.freebsd;
     exports org.miaixz.bus.health.unix.platform.freebsd.driver;
     exports org.miaixz.bus.health.unix.platform.freebsd.driver.disk;
@@ -92,7 +94,5 @@ module bus.health {
     exports org.miaixz.bus.health.windows.jna;
     exports org.miaixz.bus.health.windows.software;
     exports org.miaixz.bus.health.builtin.gpu;
-
-    opens org.miaixz.bus.health.builtin.gpu to com.sun.jna;
 
 }

@@ -138,7 +138,7 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
         }
         // life is in percent
         int life = BsdSysctlKit.sysctl("hw.acpi.battery.life", -1);
-        if (life > 0) {
+        if (life >= 0) {
             psRemainingCapacityPercent = life / 100d;
         }
         List<String> acpiconf = Executor.runNative("acpiconf -i 0");

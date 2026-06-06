@@ -202,6 +202,11 @@ public interface OpenBsdLibc extends CLibrary {
     int INT_SIZE = Native.getNativeSize(int.class);
 
     /**
+     * OpenBSD's {@code RLIMIT_NOFILE} value.
+     */
+    int RLIMIT_NOFILE = 8;
+
+    /**
      * Returns the thread ID of the calling thread. This is used in the implementation of the thread library (-lpthread)
      * and can appear in the output of system utilities such as ps and kdump.
      *

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -82,8 +83,40 @@ final class FreeBsdVirtualMemory extends AbstractVirtualMemory {
      * @return the query swap used result
      */
     private static long querySwapUsed() {
-        String swapInfo = Executor.getAnswerAt("swapinfo -k", 1);
-        String[] split = Pattern.SPACES_PATTERN.split(swapInfo);
+        return sumSwapUsed(Executor.runNative("swapinfo -k"));
+    }
+
+    /**
+     * Aggregates the used swap column from {@code swapinfo -k} output.
+     *
+     * @param swapInfoLines the swapinfo output lines
+     * @return the total used swap in bytes
+     */
+    static long sumSwapUsed(List<String> swapInfoLines) {
+        long sum = 0L;
+        long totalRow = -1L;
+        for (String line : swapInfoLines) {
+            String trimmed = line.trim();
+            if (trimmed.isEmpty() || trimmed.startsWith("Device")) {
+                continue;
+            }
+            if (trimmed.startsWith("Total")) {
+                totalRow = parseSwapUsed(trimmed);
+                continue;
+            }
+            sum += parseSwapUsed(trimmed);
+        }
+        return totalRow >= 0L ? totalRow : sum;
+    }
+
+    /**
+     * Parses the used swap column from a single swapinfo data row.
+     *
+     * @param swapInfoRow the swapinfo row
+     * @return the used swap in bytes
+     */
+    static long parseSwapUsed(String swapInfoRow) {
+        String[] split = Pattern.SPACES_PATTERN.split(swapInfoRow);
         if (split.length < 5) {
             return 0L;
         }

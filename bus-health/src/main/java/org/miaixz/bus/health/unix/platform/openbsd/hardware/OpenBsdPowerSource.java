@@ -21,17 +21,16 @@ package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
+import org.miaixz.bus.health.unix.platform.bsd.Systat;
+import org.miaixz.bus.health.unix.platform.bsd.Systat.BatteryFields;
 
 /**
  * A Power Source
@@ -95,16 +94,10 @@ public final class OpenBsdPowerSource extends AbstractPowerSource {
      * @return An array of PowerSource objects representing batteries, etc.
      */
     public static List<PowerSource> getPowerSources() {
-        Set<String> psNames = new HashSet<>();
-        for (String line : Executor.runNative("systat -ab sensors")) {
-            if (line.contains(".amphour") || line.contains(".watthour")) {
-                int dot = line.indexOf('.');
-                psNames.add(line.substring(0, dot));
-            }
-        }
+        List<String> sensorLines = Systat.querySensorLines();
         List<PowerSource> psList = new ArrayList<>();
-        for (String name : psNames) {
-            psList.add(getPowerSource(name));
+        for (String name : Systat.parsePowerSourceNames(sensorLines)) {
+            psList.add(getPowerSource(name, sensorLines));
         }
         return psList;
     }
@@ -112,50 +105,28 @@ public final class OpenBsdPowerSource extends AbstractPowerSource {
     /**
      * Returns the power source.
      *
-     * @param name the name
+     * @param name        the name
+     * @param sensorLines the sensor lines
      * @return the get power source result
      */
-    private static OpenBsdPowerSource getPowerSource(String name) {
+    private static OpenBsdPowerSource getPowerSource(String name, List<String> sensorLines) {
         String psName = name.startsWith("acpi") ? name.substring(4) : name;
+        BatteryFields b = Systat.parseBatteryFields(name, sensorLines);
+        double psVoltage = b.getVoltage();
+        double psAmperage = b.getAmperage();
+        double psTemperature = b.getTemperature();
+        int psCurrentCapacity = b.getCurrentCapacity();
+        int psMaxCapacity = b.getMaxCapacity();
+        int psDesignCapacity = b.getDesignCapacity();
+        PowerSource.CapacityUnits psCapacityUnits = b.getCapacityUnits();
         double psRemainingCapacityPercent = 1d;
         double psTimeRemainingEstimated = -1d; // -1 = unknown, -2 = unlimited
         double psPowerUsageRate = 0d;
-        double psVoltage = -1d;
-        double psAmperage = 0d;
         boolean psPowerOnLine = false;
         boolean psCharging = false;
         boolean psDischarging = false;
-        PowerSource.CapacityUnits psCapacityUnits = PowerSource.CapacityUnits.RELATIVE;
-        int psCurrentCapacity = 0;
-        int psMaxCapacity = 1;
-        int psDesignCapacity = 1;
         int psCycleCount = -1;
         LocalDate psManufactureDate = null;
-
-        double psTemperature = 0d;
-
-        for (String line : Executor.runNative("systat -ab sensors")) {
-            String[] split = Pattern.SPACES_PATTERN.split(line);
-            if (split.length > 1 && split[0].startsWith(name)) {
-                if (split[0].contains("volt0") || split[0].contains("volt") && line.contains("current")) {
-                    psVoltage = Parsing.parseDoubleOrDefault(split[1], -1d);
-                } else if (split[0].contains("current0")) {
-                    psAmperage = Parsing.parseDoubleOrDefault(split[1], 0d);
-                } else if (split[0].contains("temp0")) {
-                    psTemperature = Parsing.parseDoubleOrDefault(split[1], 0d);
-                } else if (split[0].contains("watthour") || split[0].contains("amphour")) {
-                    psCapacityUnits = split[0].contains("watthour") ? PowerSource.CapacityUnits.MWH
-                            : PowerSource.CapacityUnits.MAH;
-                    if (line.contains("remaining")) {
-                        psCurrentCapacity = (int) (1000d * Parsing.parseDoubleOrDefault(split[1], 0d));
-                    } else if (line.contains("full")) {
-                        psMaxCapacity = (int) (1000d * Parsing.parseDoubleOrDefault(split[1], 0d));
-                    } else if (line.contains("new") || line.contains("design")) {
-                        psDesignCapacity = (int) (1000d * Parsing.parseDoubleOrDefault(split[1], 0d));
-                    }
-                }
-            }
-        }
 
         int state = Parsing.parseIntOrDefault(Executor.getFirstAnswer("apm -b"), 255);
         // state 0=high, 1=low, 2=critical, 3=charging, 4=absent, 255=unknown

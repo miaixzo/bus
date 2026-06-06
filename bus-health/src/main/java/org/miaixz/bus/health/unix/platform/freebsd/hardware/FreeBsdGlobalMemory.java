@@ -74,7 +74,7 @@ final class FreeBsdGlobalMemory extends AbstractGlobalMemory {
      */
     private static long queryPageSize() {
         // sysctl hw.pagesize doesn't work on FreeBSD 13
-        return Parsing.parseLongOrDefault(Executor.getFirstAnswer("sysconf PAGESIZE"), 4096L);
+        return Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf PAGESIZE"), 4096L);
     }
 
     /**
@@ -124,8 +124,8 @@ final class FreeBsdGlobalMemory extends AbstractGlobalMemory {
      */
     private long queryVmStats() {
         // cached removed in FreeBSD 12 but was always set to 0
-        int inactive = BsdSysctlKit.sysctl("vm.stats.vm.v_inactive_count", 0);
-        int free = BsdSysctlKit.sysctl("vm.stats.vm.v_free_count", 0);
+        long inactive = Integer.toUnsignedLong(BsdSysctlKit.sysctl("vm.stats.vm.v_inactive_count", 0));
+        long free = Integer.toUnsignedLong(BsdSysctlKit.sysctl("vm.stats.vm.v_free_count", 0));
         return (inactive + free) * getPageSize();
     }
 

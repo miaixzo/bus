@@ -187,7 +187,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     private static String getProcessorIDfromDmiDecode(long processorID) {
         boolean procInfo = false;
         String marker = "Processor Information";
-        for (String checkLine : Executor.runNative("dmidecode -t system")) {
+        for (String checkLine : Executor.runNative("dmidecode -t processor")) {
             if (!procInfo && checkLine.contains(marker)) {
                 marker = "ID:";
                 procInfo = true;

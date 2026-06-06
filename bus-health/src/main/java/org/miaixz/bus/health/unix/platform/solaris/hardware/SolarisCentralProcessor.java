@@ -84,14 +84,16 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
      * @return the query processor id2 result
      */
     private static CentralProcessor.ProcessorIdentifier queryProcessorId2(boolean cpu64bit) {
-        Object[] results = KstatKit.queryKstat2(
-                KSTAT_SYSTEM_CPU + "0" + INFO,
+        List<Object[]> list = KstatKit.queryKstat2List(
+                KSTAT_SYSTEM_CPU,
+                INFO,
                 "vendor_id",
                 "brand",
                 "family",
                 "model",
                 "stepping",
                 "clock_MHz");
+        Object[] results = list.isEmpty() ? new Object[6] : list.get(0);
 
         String cpuVendor = results[0] == null ? Normal.EMPTY : (String) results[0];
         String cpuName = results[1] == null ? Normal.EMPTY : (String) results[1];

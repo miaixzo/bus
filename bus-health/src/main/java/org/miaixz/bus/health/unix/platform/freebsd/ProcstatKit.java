@@ -46,9 +46,18 @@ public final class ProcstatKit {
      *         processes are returned; otherwise the map may contain only a single element for {@code pid}
      */
     public static Map<Integer, String> getCwdMap(int pid) {
-        List<String> procstat = Executor.runNative("procstat -f " + (pid < 0 ? "-a" : pid));
+        return parseCwdMap(Executor.runNative("procstat -f " + (pid < 0 ? "-a" : pid)));
+    }
+
+    /**
+     * Parses {@code procstat -f} output into a map of PID to current working directory.
+     *
+     * @param procstatLines the procstat output lines
+     * @return a map of process IDs to current working directories
+     */
+    public static Map<Integer, String> parseCwdMap(List<String> procstatLines) {
         Map<Integer, String> cwdMap = new HashMap<>();
-        for (String line : procstat) {
+        for (String line : procstatLines) {
             String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 10);
             if (split.length == 10 && split[2].equals("cwd")) {
                 cwdMap.put(Parsing.parseIntOrDefault(split[0], -1), split[9]);
@@ -64,8 +73,17 @@ public final class ProcstatKit {
      * @return the current working directory for that process.
      */
     public static String getCwd(int pid) {
-        List<String> procstat = Executor.runNative("procstat -f " + pid);
-        for (String line : procstat) {
+        return parseCwd(Executor.runNative("procstat -f " + pid));
+    }
+
+    /**
+     * Parses {@code procstat -f <pid>} output and returns the current working directory.
+     *
+     * @param procstatLines the procstat output lines
+     * @return the current working directory, or empty if none is found
+     */
+    public static String parseCwd(List<String> procstatLines) {
+        for (String line : procstatLines) {
             String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 10);
             if (split.length == 10 && split[2].equals("cwd")) {
                 return split[9];
@@ -81,9 +99,18 @@ public final class ProcstatKit {
      * @return the number of open files.
      */
     public static long getOpenFiles(int pid) {
+        return parseOpenFiles(Executor.runNative("procstat -f " + pid));
+    }
+
+    /**
+     * Counts open file rows from {@code procstat -f <pid>} output.
+     *
+     * @param procstatLines the procstat output lines
+     * @return the number of open files
+     */
+    public static long parseOpenFiles(List<String> procstatLines) {
         long fd = 0L;
-        List<String> procstat = Executor.runNative("procstat -f " + pid);
-        for (String line : procstat) {
+        for (String line : procstatLines) {
             String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 10);
             if (split.length == 10 && !"Vd-".contains(split[4])) {
                 fd++;

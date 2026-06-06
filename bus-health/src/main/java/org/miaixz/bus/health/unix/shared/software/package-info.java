@@ -23,4 +23,4 @@
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.health.unix.software;
+package org.miaixz.bus.health.unix.shared.software;
