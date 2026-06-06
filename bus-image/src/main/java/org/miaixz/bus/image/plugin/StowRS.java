@@ -23,6 +23,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.SeekableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.GeneralSecurityException;
@@ -40,7 +41,6 @@ import javax.xml.transform.stream.StreamResult;
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
 
-import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
@@ -84,6 +84,16 @@ public class StowRS {
      * The boundary string for the multipart request.
      */
     private static final String boundary = "myboundary";
+
+    /**
+     * The maximum response body size used for logs.
+     */
+    private static final int MAX_BODY_LOG = 2048;
+
+    /**
+     * The maximum response body size used for error messages.
+     */
+    private static final int MAX_BODY_MESSAGE = 200;
 
     /**
      * A counter for the number of files processed.
@@ -464,35 +474,6 @@ public class StowRS {
     }
 
     /**
-     * Reads an entire InputStream and converts it to a string.
-     *
-     * @param inputStream The input stream to read.
-     * @return The content of the stream as a string.
-     * @throws IOException if an I/O error occurs.
-     */
-    private static String readFullyAsString(InputStream inputStream) throws IOException {
-        return readFully(inputStream).toString(Charset.UTF_8.name());
-    }
-
-    /**
-     * Reads an entire InputStream into a ByteArrayOutputStream.
-     *
-     * @param inputStream The input stream to read.
-     * @return A ByteArrayOutputStream containing the stream's content.
-     * @throws IOException if an I/O error occurs.
-     */
-    private static ByteArrayOutputStream readFully(InputStream inputStream) throws IOException {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[16384];
-            int length;
-            while ((length = inputStream.read(buffer)) != -1) {
-                baos.write(buffer, 0, length);
-            }
-            return baos;
-        }
-    }
-
-    /**
      * Writes the headers for a new part in a multipart message.
      *
      * @param out             The output stream.
@@ -507,6 +488,80 @@ public class StowRS {
         if (contentLocation != null)
             out.write(("Content-Location: " + contentLocation + "\r\n").getBytes());
         out.write("\r\n".getBytes());
+    }
+
+    /**
+     * Reads the HTTP response body without interrupting the main STOW workflow.
+     *
+     * @param connection   the HTTP connection.
+     * @param responseCode the HTTP response code.
+     * @return the response body, or {@code null} when no readable body is available.
+     */
+    private static String readBodyQuietly(HttpURLConnection connection, int responseCode) {
+        try (InputStream inputStream = responseBodyStream(connection, responseCode)) {
+            if (inputStream == null) {
+                return null;
+            }
+            byte[] bytes = inputStream.readNBytes(MAX_BODY_LOG);
+            return bytes.length == 0 ? null : new String(bytes, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            Logger.debug(false, "Image", "Cannot read STOW-RS response body", e);
+            return null;
+        }
+    }
+
+    /**
+     * Selects the HTTP response stream for the response code.
+     *
+     * @param connection   the HTTP connection.
+     * @param responseCode the HTTP response code.
+     * @return the response body stream.
+     * @throws IOException if the response stream cannot be opened.
+     */
+    private static InputStream responseBodyStream(HttpURLConnection connection, int responseCode) throws IOException {
+        if (responseCode >= HttpURLConnection.HTTP_BAD_REQUEST) {
+            return connection.getErrorStream();
+        }
+        return connection.getInputStream();
+    }
+
+    /**
+     * Verifies an HTTP response code and raises an error for failed responses.
+     *
+     * @param responseCode    the HTTP response code.
+     * @param responseMessage the HTTP response message.
+     * @param responseBody    the response body.
+     * @throws IOException if the response code represents a failure.
+     */
+    private static void verifySuccessfulResponse(int responseCode, String responseMessage, String responseBody)
+            throws IOException {
+        if (responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
+            return;
+        }
+
+        String header = String.format(
+                "STOW-RS server response message: HTTP Status-Code %d: %s",
+                responseCode,
+                responseMessage == null ? "" : responseMessage);
+        if (responseBody != null && !responseBody.isBlank()) {
+            Logger.error(false, "Image", "{} - body: {}", header, responseBody);
+            throw new IOException(header + " - " + truncate(responseBody, MAX_BODY_MESSAGE));
+        }
+
+        Logger.error(false, "Image", header);
+        throw new IOException(header);
+    }
+
+    /**
+     * Truncates a response body to a display-safe length.
+     *
+     * @param value the response body.
+     * @param max   the maximum length.
+     * @return the truncated response body.
+     */
+    private static String truncate(String value, int max) {
+        String stripped = value.replaceAll("\\s+", " ").strip();
+        return stripped.length() <= max ? stripped : stripped.substring(0, max) + "...";
     }
 
     /**
@@ -816,14 +871,15 @@ public class StowRS {
             IoKit.copy(new FileInputStream(tmpFile), out);
             out.write(("\r\n--" + boundary + "--\r\n").getBytes());
             out.flush();
-            logIncoming(
-                    connection.getResponseCode(),
-                    connection.getResponseMessage(),
-                    connection.getHeaderFields(),
-                    connection.getInputStream());
-            connection.disconnect();
+            int responseCode = connection.getResponseCode();
+            String responseMessage = connection.getResponseMessage();
+            String responseBody = readBodyQuietly(connection, responseCode);
+            logIncoming(responseCode, responseMessage, connection.getHeaderFields(), responseBody);
+            verifySuccessfulResponse(responseCode, responseMessage, responseBody);
             filesSent += stowChunk.sent();
             totalSize += stowChunk.getSize();
+        } finally {
+            connection.disconnect();
         }
     }
 
@@ -869,14 +925,15 @@ public class StowRS {
             IoKit.copy(new FileInputStream(tmpFile), out);
             out.write(("\r\n--" + boundary + "--\r\n").getBytes());
             out.flush();
-            logIncoming(
-                    connection.getResponseCode(),
-                    connection.getResponseMessage(),
-                    connection.getHeaderFields(),
-                    connection.getInputStream());
-            connection.disconnect();
+            int responseCode = connection.getResponseCode();
+            String responseMessage = connection.getResponseMessage();
+            String responseBody = readBodyQuietly(connection, responseCode);
+            logIncoming(responseCode, responseMessage, connection.getHeaderFields(), responseBody);
+            verifySuccessfulResponse(responseCode, responseMessage, responseBody);
             filesSent += stowChunk.sent();
             totalSize += stowChunk.getSize();
+        } finally {
+            connection.disconnect();
         }
     }
 
@@ -940,20 +997,16 @@ public class StowRS {
      * @param respCode     The HTTP response code.
      * @param respMsg      The HTTP response message.
      * @param headerFields The map of response headers.
-     * @param is           The input stream of the response body.
+     * @param responseBody The response body.
      */
-    private void logIncoming(int respCode, String respMsg, Map<String, List<String>> headerFields, InputStream is) {
+    private void logIncoming(int respCode, String respMsg, Map<String, List<String>> headerFields, String responseBody) {
         Logger.info(false, "Image", "< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
             if (header.getKey() != null)
                 Logger.info(false, "Image", "< " + header.getKey() + " : " + String.join(";", header.getValue()));
         Logger.info(false, "Image", "< Response content captured");
-        try {
-            Logger.debug(false, "Image", "Response content captured: chars={}", readFullyAsString(is).length());
-            is.close();
-        } catch (Exception e) {
-            Logger.info(false, "Image", "Exception caught on reading response content \n", e);
-        }
+        int length = responseBody == null ? 0 : responseBody.length();
+        Logger.debug(false, "Image", "Response content captured: chars={}", length);
     }
 
     /**

@@ -87,7 +87,7 @@
         <amazon.s3.version>2.40.15</amazon.s3.version>
         <ansj.version>5.1.6</ansj.version>
         <bcpkix.version>1.84</bcpkix.version>
-        <beetl.version>3.19.2.RELEASE</beetl.version>
+        <beetl.version>3.21.2.RELEASE</beetl.version>
         <bopomofo4j.version>1.0.1</bopomofo4j.version>
         <commons.io.version>2.22.0</commons.io.version>
         <commons.logging.version>1.3.5</commons.logging.version>

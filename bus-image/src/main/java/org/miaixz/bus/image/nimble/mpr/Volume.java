@@ -340,6 +340,83 @@ public abstract sealed class Volume<T extends Number>
     public abstract Number nativeMaximum();
 
     /**
+     * Gets a trilinearly interpolated value from this volume.
+     *
+     * @param x       the fractional x coordinate.
+     * @param y       the fractional y coordinate.
+     * @param z       the fractional z coordinate.
+     * @param channel the channel.
+     * @return the interpolated value, or {@code null} when the coordinate is outside the interpolatable range.
+     */
+    public T getInterpolatedValueFromSource(double x, double y, double z, int channel) {
+        if (x < 0
+                || x >= size.x() - 1
+                || y < 0
+                || y >= size.y() - 1
+                || z < 0
+                || z >= size.z() - 1) {
+            return null;
+        }
+
+        int x0 = (int) Math.floor(x);
+        int y0 = (int) Math.floor(y);
+        int z0 = (int) Math.floor(z);
+        int x1 = Math.min(x0 + 1, size.x() - 1);
+        int y1 = Math.min(y0 + 1, size.y() - 1);
+        int z1 = Math.min(z0 + 1, size.z() - 1);
+
+        double fx = x - x0;
+        double fy = y - y0;
+        double fz = z - z0;
+
+        T v000 = getValue(x0, y0, z0, channel);
+        T v001 = getValue(x0, y0, z1, channel);
+        T v010 = getValue(x0, y1, z0, channel);
+        T v110 = getValue(x1, y1, z0, channel);
+        T v100 = getValue(x1, y0, z0, channel);
+        T v101 = getValue(x1, y0, z1, channel);
+        T v011 = getValue(x0, y1, z1, channel);
+        T v111 = getValue(x1, y1, z1, channel);
+
+        double v00 = interpolate(v000, v100, fx);
+        double v01 = interpolate(v001, v101, fx);
+        double v10 = interpolate(v010, v110, fx);
+        double v11 = interpolate(v011, v111, fx);
+
+        double v0 = v00 * (1 - fy) + v10 * fy;
+        double v1 = v01 * (1 - fy) + v11 * fy;
+        return convertToGeneric(v0 * (1 - fz) + v1 * fz);
+    }
+
+    /**
+     * Interpolates between two numeric values.
+     *
+     * @param first    the first value.
+     * @param second   the second value.
+     * @param fraction the interpolation fraction.
+     * @return the interpolated value.
+     */
+    private double interpolate(T first, T second, double fraction) {
+        return first.doubleValue() * (1 - fraction) + second.doubleValue() * fraction;
+    }
+
+    /**
+     * Converts an interpolated value to the volume sample type.
+     *
+     * @param value the interpolated value.
+     * @return the converted value.
+     */
+    private T convertToGeneric(double value) {
+        return switch (this) {
+            case VolumeByte ignored -> (T) Byte.valueOf((byte) Math.round(value));
+            case VolumeShort ignored -> (T) Short.valueOf((short) Math.round(value));
+            case VolumeInt ignored -> (T) Integer.valueOf((int) Math.round(value));
+            case VolumeFloat ignored -> (T) Float.valueOf((float) value);
+            default -> (T) Double.valueOf(value);
+        };
+    }
+
+    /**
      * Executes the checked array index operation.
      *
      * @param index the index.

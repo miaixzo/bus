@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.metric.web;
 
+import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,11 @@ public final class DicomStowConfig {
      * The default connect timeout value.
      */
     private static final Duration DEFAULT_CONNECT_TIMEOUT = Duration.ofSeconds(10);
+
+    /**
+     * The default HTTP protocol version value.
+     */
+    static final HttpClient.Version DEFAULT_HTTP_VERSION = HttpClient.Version.HTTP_1_1;
 
     /**
      * The request url value.
@@ -80,6 +86,11 @@ public final class DicomStowConfig {
     private final Duration connectTimeout;
 
     /**
+     * The HTTP protocol version value.
+     */
+    private final HttpClient.Version httpVersion;
+
+    /**
      * Creates a new instance.
      *
      * @param builder the builder.
@@ -91,6 +102,7 @@ public final class DicomStowConfig {
         this.headers = Map.copyOf(builder.headers);
         this.threadPoolSize = builder.threadPoolSize;
         this.connectTimeout = builder.connectTimeout;
+        this.httpVersion = builder.httpVersion;
     }
 
     /**
@@ -157,6 +169,15 @@ public final class DicomStowConfig {
     }
 
     /**
+     * Gets the HTTP protocol version.
+     *
+     * @return the HTTP protocol version.
+     */
+    public HttpClient.Version getHttpVersion() {
+        return httpVersion;
+    }
+
+    /**
      * Executes the normalize url operation.
      *
      * @param url the url.
@@ -211,6 +232,11 @@ public final class DicomStowConfig {
          * The connect timeout value.
          */
         private Duration connectTimeout = DEFAULT_CONNECT_TIMEOUT;
+
+        /**
+         * The HTTP protocol version value.
+         */
+        private HttpClient.Version httpVersion = DEFAULT_HTTP_VERSION;
 
         /**
          * Creates a new instance.
@@ -302,6 +328,17 @@ public final class DicomStowConfig {
          */
         public Builder connectTimeout(Duration connectTimeout) {
             this.connectTimeout = Objects.requireNonNull(connectTimeout);
+            return this;
+        }
+
+        /**
+         * Executes the HTTP version operation.
+         *
+         * @param httpVersion the HTTP protocol version.
+         * @return the operation result.
+         */
+        public Builder httpVersion(HttpClient.Version httpVersion) {
+            this.httpVersion = Objects.requireNonNull(httpVersion);
             return this;
         }
 

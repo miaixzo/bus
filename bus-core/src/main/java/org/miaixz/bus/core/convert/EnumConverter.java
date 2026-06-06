@@ -98,7 +98,10 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
                 final Class<?> valueClass = value.getClass();
                 for (final Map.Entry<Class<?>, Method> entry : methodMap.entrySet()) {
                     if (ClassKit.isAssignable(entry.getKey(), valueClass)) {
-                        return MethodKit.invokeStatic(entry.getValue(), value);
+                        final Object result = MethodKit.invokeStatic(entry.getValue(), value);
+                        if (null != result) {
+                            return (Enum) result;
+                        }
                     }
                 }
             }

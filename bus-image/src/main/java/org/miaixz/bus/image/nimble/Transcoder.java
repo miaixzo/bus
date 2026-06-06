@@ -78,7 +78,7 @@ public class Transcoder {
     /**
      * Convert a DICOM image to a standard image with some rendering parameters
      *
-     * @param srcPath the path of the source image
+     * @param srcPath the path to a single source DICOM file; it must exist and be a regular file, not a directory
      * @param dstPath the path of the destination image or the path of a directory in which the source image filename
      *                will be used
      * @param params  the standard image conversion parameters
@@ -118,12 +118,11 @@ public class Transcoder {
     /**
      * Convert a DICOM image to another DICOM image with a specific transfer syntax
      *
-     * @param srcPath the path of the source image
+     * @param srcPath the path to a single source DICOM file; it must exist and be a regular file, not a directory
      * @param dstPath the path of the destination image or the path of a directory in which the source image filename
      *                will be used
      * @param params  the DICOM conversion parameters
      * @throws IOException if an I/O error occurs
-     *
      * @return the result
      */
     public static Path dcm2dcm(Path srcPath, Path dstPath, TranscodeParam params) throws IOException {
@@ -142,7 +141,7 @@ public class Transcoder {
     /**
      * Convert a DICOM image to another DICOM image with a specific transfer syntax
      *
-     * @param srcPath      the path of the source image
+     * @param srcPath      the path to a single source DICOM file; it must exist and be a regular file, not a directory
      * @param outputStream the output stream where the transcoded data will be written
      * @param params       the DICOM conversion parameters
      * @throws IOException if an I/O error occurs
