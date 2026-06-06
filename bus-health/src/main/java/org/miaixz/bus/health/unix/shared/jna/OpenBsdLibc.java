@@ -1,0 +1,341 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.health.unix.shared.jna;
+
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.Structure;
+import com.sun.jna.Structure.FieldOrder;
+
+/**
+ * C library for OpenBSD. This class should be considered non-API as it may be removed if/when its code is incorporated
+ * into the JNA project.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+public interface OpenBsdLibc extends CLibrary {
+
+    /**
+     * Singleton instance of the OpenBsdLibc library.
+     */
+    OpenBsdLibc INSTANCE = Native.load(null, OpenBsdLibc.class);
+
+    /**
+     * High kernel: proc, limits
+     */
+    int CTL_KERN = 1;
+
+    /**
+     * High kernel: proc, limits
+     */
+    int CTL_VM = 1;
+
+    /**
+     * Generic CPU/IO
+     */
+    int CTL_HW = 6;
+
+    /**
+     * Machine dependent
+     */
+    int CTL_MACHDEP = 7;
+
+    /**
+     * VFS sysctls
+     */
+    int CTL_VFS = 10;
+
+    /**
+     * String: system version
+     */
+    int KERN_OSTYPE = 1;
+
+    /**
+     * String: system release
+     */
+    int KERN_OSRELEASE = 2;
+
+    /**
+     * Int: system revision
+     */
+    int KERN_OSREV = 3;
+
+    /**
+     * String: compile time info
+     */
+    int KERN_VERSION = 4;
+
+    /**
+     * Int: max vnodes
+     */
+    int KERN_MAXVNODES = 5;
+
+    /**
+     * Int: max processes
+     */
+    int KERN_MAXPROC = 6;
+
+    /**
+     * Int: max arguments to exec
+     */
+    int KERN_ARGMAX = 8;
+
+    /**
+     * Array: cp_time
+     */
+    int KERN_CPTIME = 40;
+
+    /**
+     * Array: cp_time2
+     */
+    int KERN_CPTIME2 = 71;
+
+    /**
+     * Struct uvmexp
+     */
+    int VM_UVMEXP = 4;
+
+    /**
+     * String: machine class
+     */
+    int HW_MACHINE = 1;
+
+    /**
+     * String: specific machine model
+     */
+    int HW_MODEL = 2;
+
+    /**
+     * Int: software page size
+     */
+    int HW_PAGESIZE = 7;
+
+    /**
+     * Get CPU frequency
+     */
+    int HW_CPUSPEED = 12;
+
+    /**
+     * CPU found (includes offline)
+     */
+    int HW_NCPUFOUND = 21;
+
+    /**
+     * Enable SMT/HT/CMT
+     */
+    int HW_SMT = 24;
+
+    /**
+     * Number of cpus being used
+     */
+    int HW_NCPUONLINE = 25;
+
+    /**
+     * Generic filesystem information
+     */
+    int VFS_GENERIC = 0;
+
+    /**
+     * Struct: buffer cache statistics given as next argument
+     */
+    int VFS_BCACHESTAT = 3;
+
+    /*
+     * CPU state indices
+     */
+    /**
+     * Number of CPU states.
+     */
+    int CPUSTATES = 5;
+
+    /**
+     * CPU user state index.
+     */
+    int CP_USER = 0;
+
+    /**
+     * CPU nice state index.
+     */
+    int CP_NICE = 1;
+
+    /**
+     * CPU system state index.
+     */
+    int CP_SYS = 2;
+
+    /**
+     * CPU interrupt state index (4 on 6.4 and later).
+     */
+    int CP_INTR = 3;
+
+    /**
+     * CPU idle state index (5 on 6.4 and later).
+     */
+    int CP_IDLE = 4;
+
+    /**
+     * Size of a 64-bit unsigned integer.
+     */
+    int UINT64_SIZE = Native.getNativeSize(long.class);
+
+    /**
+     * Size of an integer.
+     */
+    int INT_SIZE = Native.getNativeSize(int.class);
+
+    /**
+     * OpenBSD's {@code RLIMIT_NOFILE} value.
+     */
+    int RLIMIT_NOFILE = 8;
+
+    /**
+     * Returns the thread ID of the calling thread. This is used in the implementation of the thread library (-lpthread)
+     * and can appear in the output of system utilities such as ps and kdump.
+     *
+     * @return the thread ID of the calling thread.
+     */
+    int getthrid();
+
+    /**
+     * JNA wrapper for the bcachestats structure.
+     * <p>
+     * This class maps to the native OpenBSD buffer cache statistics structure.
+     * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    @FieldOrder({ "numbufs", "numbufpages", "numdirtypages", "numcleanpages", "pendingwrites", "pendingreads",
+            "numwrites", "numreads", "cachehits", "busymapped", "dmapages", "highpages", "delwribufs", "kvaslots",
+            "kvaslots_avail", "highflips", "highflops", "dmaflips" })
+    class Bcachestats extends Structure {
+
+        /**
+         * The numbufs value.
+         */
+        public long numbufs; // number of buffers allocated
+        /**
+         * The numbufpages value.
+         */
+        public long numbufpages; // number of pages in buffer cache
+        /**
+         * The numdirtypages value.
+         */
+        public long numdirtypages; // number of dirty free pages
+        /**
+         * The numcleanpages value.
+         */
+        public long numcleanpages; // number of clean free pages
+        /**
+         * The pendingwrites value.
+         */
+        public long pendingwrites; // number of pending writes
+        /**
+         * The pendingreads value.
+         */
+        public long pendingreads; // number of pending reads
+        /**
+         * The numwrites value.
+         */
+        public long numwrites; // total writes started
+        /**
+         * The numreads value.
+         */
+        public long numreads; // total reads started
+        /**
+         * The cachehits value.
+         */
+        public long cachehits; // total reads found in cache
+        /**
+         * The busymapped value.
+         */
+        public long busymapped; // number of busy and mapped buffers
+        /**
+         * The dmapages value.
+         */
+        public long dmapages; // dma reachable pages in buffer cache
+        /**
+         * The highpages value.
+         */
+        public long highpages; // pages above dma region
+        /**
+         * The delwribufs value.
+         */
+        public long delwribufs; // delayed write buffers
+        /**
+         * The kvaslots value.
+         */
+        public long kvaslots; // kva slots total
+        /**
+         * The kvaslots_avail value.
+         */
+        public long kvaslots_avail; // available kva slots
+        /**
+         * The highflips value.
+         */
+        public long highflips; // total flips to above DMA
+        /**
+         * The highflops value.
+         */
+        public long highflops; // total failed flips to above DMA
+        /**
+         * The dmaflips value.
+         */
+        public long dmaflips; // total flips from high to DMA
+
+        /**
+         * Creates a new Bcachestats instance.
+         *
+         * @param p the p
+         */
+        public Bcachestats(Pointer p) {
+            super(p);
+            read();
+        }
+
+    }
+
+    /**
+     * JNA wrapper for the timeval structure.
+     * <p>
+     * This class maps to the native OpenBSD timeval structure: {@code struct timeval { time_t tv_sec; suseconds_t
+     * tv_usec; }; }
+     * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    @FieldOrder({ "tv_sec", "tv_usec" })
+    class Timeval extends Structure {
+
+        /**
+         * Seconds.
+         */
+        public long tv_sec;
+
+        /**
+         * Microseconds.
+         */
+        public long tv_usec;
+
+    }
+
+}

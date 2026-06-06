@@ -33,8 +33,8 @@ import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolStats;
 import org.miaixz.bus.health.mac.SysctlKit;
 import org.miaixz.bus.health.mac.jna.SystemB;
-import org.miaixz.bus.health.unix.driver.NetStat;
-import org.miaixz.bus.health.unix.jna.CLibrary;
+import org.miaixz.bus.health.unix.shared.driver.NetStat;
+import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 
 /**
  * Internet Protocol Stats implementation

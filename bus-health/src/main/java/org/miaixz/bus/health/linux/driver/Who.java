@@ -46,7 +46,7 @@ import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.OSSession;
 import org.miaixz.bus.health.linux.jna.LinuxLibc;
 import org.miaixz.bus.health.linux.jna.Systemd;
-import org.miaixz.bus.health.unix.jna.CLibrary;
+import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 
 /**
  * Utility to query logged in users.
@@ -96,7 +96,7 @@ public final class Who {
         List<OSSession> whoList = new ArrayList<>();
         for (String s : Executor.runNative("who")) {
             if (!matchLinux(whoList, s)) {
-                org.miaixz.bus.health.unix.driver.Who.matchUnix(whoList, s);
+                org.miaixz.bus.health.unix.shared.driver.Who.matchUnix(whoList, s);
             }
         }
         return whoList;

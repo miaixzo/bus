@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.software.OSSession;
 import org.miaixz.bus.health.mac.jna.SystemB;
-import org.miaixz.bus.health.unix.jna.CLibrary;
+import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 
 /**
  * Utility to query logged in users on macOS.
@@ -64,7 +64,7 @@ public final class Who {
                     long loginTime = ut.ut_tv.tv_sec.longValue() * 1000L + ut.ut_tv.tv_usec / 1000L;
                     // Sanity check. If errors, default to who command line
                     if (!Builder.isSessionValid(user, device, loginTime)) {
-                        return org.miaixz.bus.health.unix.driver.Who.queryWho();
+                        return org.miaixz.bus.health.unix.shared.driver.Who.queryWho();
                     }
                     whoList.add(new OSSession(user, device, loginTime, host));
                 }
