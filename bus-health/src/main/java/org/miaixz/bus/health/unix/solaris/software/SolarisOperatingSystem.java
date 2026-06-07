@@ -57,6 +57,12 @@ import org.miaixz.bus.health.unix.solaris.driver.Who;
 public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     /**
+     * Creates a new SolarisOperatingSystem instance.
+     */
+    public SolarisOperatingSystem() {
+    }
+
+    /**
      * This static field identifies if the kstat2 library (available in Solaris 11.4 or greater) can be loaded.
      */
     public static final boolean HAS_KSTAT2;

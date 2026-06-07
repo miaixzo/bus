@@ -37,6 +37,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32PhysicalMemory {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32PhysicalMemory() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_PHYSICAL_MEMORY = "Win32_PhysicalMemory";
@@ -70,7 +76,34 @@ public final class Win32PhysicalMemory {
      * @since Java 21+
      */
     public enum PhysicalMemoryProperty {
-        BANKLABEL, CAPACITY, SPEED, MANUFACTURER, PARTNUMBER, SMBIOSMEMORYTYPE, SERIALNUMBER
+        /**
+         * The BANKLABEL WMI property.
+         */
+        BANKLABEL,
+        /**
+         * The CAPACITY WMI property.
+         */
+        CAPACITY,
+        /**
+         * The SPEED WMI property.
+         */
+        SPEED,
+        /**
+         * The MANUFACTURER WMI property.
+         */
+        MANUFACTURER,
+        /**
+         * The PARTNUMBER WMI property.
+         */
+        PARTNUMBER,
+        /**
+         * The SMBIOSMEMORYTYPE WMI property.
+         */
+        SMBIOSMEMORYTYPE,
+        /**
+         * The SERIALNUMBER WMI property.
+         */
+        SERIALNUMBER
 
     }
 
@@ -81,7 +114,34 @@ public final class Win32PhysicalMemory {
      * @since Java 21+
      */
     public enum PhysicalMemoryPropertyWin8 {
-        BANKLABEL, CAPACITY, SPEED, MANUFACTURER, MEMORYTYPE, PARTNUMBER, SERIALNUMBER
+        /**
+         * The BANKLABEL WMI property.
+         */
+        BANKLABEL,
+        /**
+         * The CAPACITY WMI property.
+         */
+        CAPACITY,
+        /**
+         * The SPEED WMI property.
+         */
+        SPEED,
+        /**
+         * The MANUFACTURER WMI property.
+         */
+        MANUFACTURER,
+        /**
+         * The MEMORYTYPE WMI property.
+         */
+        MEMORYTYPE,
+        /**
+         * The PARTNUMBER WMI property.
+         */
+        PARTNUMBER,
+        /**
+         * The SERIALNUMBER WMI property.
+         */
+        SERIALNUMBER
 
     }
 

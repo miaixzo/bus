@@ -38,6 +38,12 @@ import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolSta
 public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats {
 
     /**
+     * Creates a new SolarisInternetProtocolStats instance.
+     */
+    public SolarisInternetProtocolStats() {
+    }
+
+    /**
      * Returns the tcp stats.
      *
      * @return the get tcp stats result

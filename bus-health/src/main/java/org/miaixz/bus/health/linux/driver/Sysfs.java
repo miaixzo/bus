@@ -38,6 +38,12 @@ import org.miaixz.bus.health.linux.SysPath;
 public final class Sysfs {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Sysfs() {
+    }
+
+    /**
      * Query the vendor from sysfs
      *
      * @return The vendor if available, null otherwise

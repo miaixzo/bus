@@ -37,6 +37,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32BaseBoard {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32BaseBoard() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_BASEBOARD = "Win32_BaseBoard";
@@ -58,7 +64,26 @@ public final class Win32BaseBoard {
      * @since Java 21+
      */
     public enum BaseBoardProperty {
-        MANUFACTURER, MODEL, PRODUCT, VERSION, SERIALNUMBER
+        /**
+         * The MANUFACTURER WMI property.
+         */
+        MANUFACTURER,
+        /**
+         * The MODEL WMI property.
+         */
+        MODEL,
+        /**
+         * The PRODUCT WMI property.
+         */
+        PRODUCT,
+        /**
+         * The VERSION WMI property.
+         */
+        VERSION,
+        /**
+         * The SERIALNUMBER WMI property.
+         */
+        SERIALNUMBER
 
     }
 

@@ -37,6 +37,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32Fan {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32Fan() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_FAN = "Win32_Fan";
@@ -58,6 +64,9 @@ public final class Win32Fan {
      * @since Java 21+
      */
     public enum SpeedProperty {
+        /**
+         * The DESIREDSPEED WMI property.
+         */
         DESIREDSPEED
 
     }

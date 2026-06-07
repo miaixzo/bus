@@ -39,6 +39,12 @@ import org.miaixz.bus.health.Parsing;
 public final class ProcstatKit {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private ProcstatKit() {
+    }
+
+    /**
      * Gets a map containing current working directory info
      *
      * @param pid a process ID, optional

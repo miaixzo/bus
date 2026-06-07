@@ -38,6 +38,12 @@ import org.miaixz.bus.health.Config;
 public final class ProcPath {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private ProcPath() {
+    }
+
+    /**
      * The /proc filesystem location.
      */
     public static final String PROC = queryProcConfig();

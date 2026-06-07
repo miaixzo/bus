@@ -52,6 +52,12 @@ import org.miaixz.bus.logger.Logger;
 public final class SmcKit {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private SmcKit() {
+    }
+
+    /**
      * Instance of IOKit.
      */
     private static final IOKit IO = IOKit.INSTANCE;

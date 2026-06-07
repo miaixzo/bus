@@ -43,6 +43,12 @@ import org.miaixz.bus.health.Parsing;
 public final class WmiKit {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private WmiKit() {
+    }
+
+    /**
      * The namespace where Open Hardware Monitor publishes to WMI,
      * <code>OHM_NAMESPACE="ROOT\\OpenHardwareMonitor"</code>. This namespace is not built-in to WMI, so if OHM is not
      * running would result in unnecessary log messages.

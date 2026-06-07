@@ -37,6 +37,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32LogicalDisk {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32LogicalDisk() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_LOGICAL_DISK = "Win32_LogicalDisk";
@@ -82,7 +88,42 @@ public final class Win32LogicalDisk {
      * @since Java 21+
      */
     public enum LogicalDiskProperty {
-        ACCESS, DESCRIPTION, DRIVETYPE, FILESYSTEM, FREESPACE, NAME, PROVIDERNAME, SIZE, VOLUMENAME
+        /**
+         * The ACCESS WMI property.
+         */
+        ACCESS,
+        /**
+         * The DESCRIPTION WMI property.
+         */
+        DESCRIPTION,
+        /**
+         * The DRIVETYPE WMI property.
+         */
+        DRIVETYPE,
+        /**
+         * The FILESYSTEM WMI property.
+         */
+        FILESYSTEM,
+        /**
+         * The FREESPACE WMI property.
+         */
+        FREESPACE,
+        /**
+         * The NAME WMI property.
+         */
+        NAME,
+        /**
+         * The PROVIDERNAME WMI property.
+         */
+        PROVIDERNAME,
+        /**
+         * The SIZE WMI property.
+         */
+        SIZE,
+        /**
+         * The VOLUMENAME WMI property.
+         */
+        VOLUMENAME
 
     }
 

@@ -43,6 +43,12 @@ import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation.ProcessPe
 public final class ProcessPerformanceData {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private ProcessPerformanceData() {
+    }
+
+    /**
      * The PROCESS constant.
      */
     public static final String PROCESS = "Process";

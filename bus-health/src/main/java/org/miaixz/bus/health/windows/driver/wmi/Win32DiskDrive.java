@@ -35,6 +35,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32DiskDrive {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32DiskDrive() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_DISK_DRIVE = "Win32_DiskDrive";
@@ -57,7 +63,34 @@ public final class Win32DiskDrive {
      * @since Java 21+
      */
     public enum DiskDriveProperty {
-        INDEX, MANUFACTURER, MEDIATYPE, MODEL, NAME, SERIALNUMBER, SIZE
+        /**
+         * The INDEX WMI property.
+         */
+        INDEX,
+        /**
+         * The MANUFACTURER WMI property.
+         */
+        MANUFACTURER,
+        /**
+         * The MEDIATYPE WMI property.
+         */
+        MEDIATYPE,
+        /**
+         * The MODEL WMI property.
+         */
+        MODEL,
+        /**
+         * The NAME WMI property.
+         */
+        NAME,
+        /**
+         * The SERIALNUMBER WMI property.
+         */
+        SERIALNUMBER,
+        /**
+         * The SIZE WMI property.
+         */
+        SIZE
 
     }
 

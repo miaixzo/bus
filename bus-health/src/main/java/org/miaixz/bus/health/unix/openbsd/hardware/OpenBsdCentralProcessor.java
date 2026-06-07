@@ -38,8 +38,8 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
-import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 import org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit;
+import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 
 /**
  * OpenBSD Central Processor implementation
@@ -49,6 +49,12 @@ import org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit;
  */
 @ThreadSafe
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
+
+    /**
+     * Creates a new OpenBsdCentralProcessor instance.
+     */
+    public OpenBsdCentralProcessor() {
+    }
 
     /**
      * The DMESG_CPU constant.

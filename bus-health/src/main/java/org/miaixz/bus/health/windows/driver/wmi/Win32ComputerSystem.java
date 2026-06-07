@@ -37,6 +37,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32ComputerSystem {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32ComputerSystem() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_COMPUTER_SYSTEM = "Win32_ComputerSystem";
@@ -59,7 +65,14 @@ public final class Win32ComputerSystem {
      * @since Java 21+
      */
     public enum ComputerSystemProperty {
-        MANUFACTURER, MODEL
+        /**
+         * The MANUFACTURER WMI property.
+         */
+        MANUFACTURER,
+        /**
+         * The MODEL WMI property.
+         */
+        MODEL
 
     }
 

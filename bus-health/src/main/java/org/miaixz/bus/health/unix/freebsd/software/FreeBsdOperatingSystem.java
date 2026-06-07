@@ -34,9 +34,9 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.*;
 import org.miaixz.bus.health.builtin.software.common.AbstractOperatingSystem;
-import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
 import org.miaixz.bus.health.unix.freebsd.driver.Who;
+import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 import org.miaixz.bus.logger.Logger;
 
 /**

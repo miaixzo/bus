@@ -33,6 +33,12 @@ import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
 public class OpenBsdNetworkParams extends AbstractNetworkParams {
 
     /**
+     * Creates a new OpenBsdNetworkParams instance.
+     */
+    public OpenBsdNetworkParams() {
+    }
+
+    /**
      * Returns the ipv4 default gateway.
      *
      * @return the get ipv4 default gateway result

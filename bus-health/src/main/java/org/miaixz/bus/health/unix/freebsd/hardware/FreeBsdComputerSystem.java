@@ -31,8 +31,8 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
-import org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard;
 import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
+import org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard;
 
 /**
  * Hardware data obtained from dmidecode.

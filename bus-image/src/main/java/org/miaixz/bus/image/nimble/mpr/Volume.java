@@ -349,12 +349,7 @@ public abstract sealed class Volume<T extends Number>
      * @return the interpolated value, or {@code null} when the coordinate is outside the interpolatable range.
      */
     public T getInterpolatedValueFromSource(double x, double y, double z, int channel) {
-        if (x < 0
-                || x >= size.x() - 1
-                || y < 0
-                || y >= size.y() - 1
-                || z < 0
-                || z >= size.z() - 1) {
+        if (x < 0 || x >= size.x() - 1 || y < 0 || y >= size.y() - 1 || z < 0 || z >= size.z() - 1) {
             return null;
         }
 

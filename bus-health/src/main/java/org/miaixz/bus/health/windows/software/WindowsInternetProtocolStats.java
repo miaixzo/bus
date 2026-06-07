@@ -45,6 +45,12 @@ import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolSta
 public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats {
 
     /**
+     * Creates a new WindowsInternetProtocolStats instance.
+     */
+    public WindowsInternetProtocolStats() {
+    }
+
+    /**
      * The IPHLP constant.
      */
     private static final IPHlpAPI IPHLP = IPHlpAPI.INSTANCE;

@@ -35,6 +35,12 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
 public final class PagingFile {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private PagingFile() {
+    }
+
+    /**
      * Returns paging file counters
      *
      * @return Paging file counters for memory.

@@ -47,6 +47,12 @@ import org.miaixz.bus.logger.Logger;
 public class WmiQueryHandler {
 
     /**
+     * Creates a new WmiQueryHandler instance.
+     */
+    public WmiQueryHandler() {
+    }
+
+    /**
      * The EMPTY_CLASS_ARRAY constant.
      */
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];

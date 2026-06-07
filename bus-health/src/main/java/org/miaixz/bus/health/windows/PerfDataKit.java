@@ -52,6 +52,12 @@ import org.miaixz.bus.logger.Logger;
 public final class PerfDataKit {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private PerfDataKit() {
+    }
+
+    /**
      * The PZERO constant.
      */
     private static final DWORD_PTR PZERO = new DWORD_PTR(0);

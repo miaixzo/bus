@@ -38,6 +38,12 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
 public final class OpenBsdHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
+     * Creates a new OpenBsdHardwareAbstractionLayer instance.
+     */
+    public OpenBsdHardwareAbstractionLayer() {
+    }
+
+    /**
      * Creates the computer system.
      *
      * @return the create computer system result

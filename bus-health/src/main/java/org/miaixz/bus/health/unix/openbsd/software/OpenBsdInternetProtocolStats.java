@@ -34,6 +34,12 @@ import org.miaixz.bus.health.unix.shared.driver.NetStat;
 public class OpenBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
     /**
+     * Creates a new OpenBsdInternetProtocolStats instance.
+     */
+    public OpenBsdInternetProtocolStats() {
+    }
+
+    /**
      * Returns the tc pv4 stats.
      *
      * @return the get tc pv4 stats result

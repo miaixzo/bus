@@ -47,6 +47,12 @@ import org.miaixz.bus.logger.Logger;
 public final class PsInfo {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private PsInfo() {
+    }
+
+    /**
      * The LIBC constant.
      */
     private static final SolarisLibc LIBC = SolarisLibc.INSTANCE;

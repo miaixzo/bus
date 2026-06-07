@@ -97,10 +97,20 @@ final class WindowsDisplay extends AbstractDisplay {
 
                         try (ByRef.CloseableIntByReference pType = new ByRef.CloseableIntByReference();
                                 ByRef.CloseableIntByReference lpcbData = new ByRef.CloseableIntByReference()) {
-                            if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid,
+                            if (ADV.RegQueryValueEx(
+                                    key,
+                                    "EDID",
+                                    0,
+                                    pType,
+                                    edid,
                                     lpcbData) == WinError.ERROR_MORE_DATA) {
                                 edid = new byte[lpcbData.getValue()];
-                                if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid,
+                                if (ADV.RegQueryValueEx(
+                                        key,
+                                        "EDID",
+                                        0,
+                                        pType,
+                                        edid,
                                         lpcbData) == WinError.ERROR_SUCCESS) {
                                     Display display = new WindowsDisplay(edid);
                                     displays.add(display);

@@ -57,6 +57,12 @@ import org.miaixz.bus.logger.Logger;
 public final class Parsing {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Parsing() {
+    }
+
+    /**
      * Default log message template for recording parsing failures.
      */
     private static final String DEFAULT_LOG_MSG = "{} didn't parse. Returning default. {}";

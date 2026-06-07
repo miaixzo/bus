@@ -38,6 +38,12 @@ import org.miaixz.bus.health.Config;
 public final class SysPath {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private SysPath() {
+    }
+
+    /**
      * The /sys filesystem location.
      */
     public static final String SYS = querySysConfig() + "/";

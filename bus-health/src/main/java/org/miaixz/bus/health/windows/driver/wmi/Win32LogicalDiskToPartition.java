@@ -35,6 +35,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32LogicalDiskToPartition {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32LogicalDiskToPartition() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_LOGICAL_DISK_TO_PARTITION = "Win32_LogicalDiskToPartition";
@@ -58,7 +64,22 @@ public final class Win32LogicalDiskToPartition {
      * @since Java 21+
      */
     public enum DiskToPartitionProperty {
-        ANTECEDENT, DEPENDENT, ENDINGADDRESS, STARTINGADDRESS
+        /**
+         * The ANTECEDENT WMI property.
+         */
+        ANTECEDENT,
+        /**
+         * The DEPENDENT WMI property.
+         */
+        DEPENDENT,
+        /**
+         * The ENDINGADDRESS WMI property.
+         */
+        ENDINGADDRESS,
+        /**
+         * The STARTINGADDRESS WMI property.
+         */
+        STARTINGADDRESS
 
     }
 

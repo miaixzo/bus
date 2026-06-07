@@ -999,7 +999,11 @@ public class StowRS {
      * @param headerFields The map of response headers.
      * @param responseBody The response body.
      */
-    private void logIncoming(int respCode, String respMsg, Map<String, List<String>> headerFields, String responseBody) {
+    private void logIncoming(
+            int respCode,
+            String respMsg,
+            Map<String, List<String>> headerFields,
+            String responseBody) {
         Logger.info(false, "Image", "< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
             if (header.getKey() != null)

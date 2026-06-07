@@ -37,6 +37,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32VideoController {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32VideoController() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_VIDEO_CONTROLLER = "Win32_VideoController";
@@ -59,7 +65,30 @@ public final class Win32VideoController {
      * @since Java 21+
      */
     public enum VideoControllerProperty {
-        ADAPTERCOMPATIBILITY, ADAPTERRAM, CONFIGMANAGERERRORCODE, DRIVERVERSION, NAME, PNPDEVICEID;
+        /**
+         * The ADAPTERCOMPATIBILITY WMI property.
+         */
+        ADAPTERCOMPATIBILITY,
+        /**
+         * The ADAPTERRAM WMI property.
+         */
+        ADAPTERRAM,
+        /**
+         * The CONFIGMANAGERERRORCODE WMI property.
+         */
+        CONFIGMANAGERERRORCODE,
+        /**
+         * The DRIVERVERSION WMI property.
+         */
+        DRIVERVERSION,
+        /**
+         * The NAME WMI property.
+         */
+        NAME,
+        /**
+         * The PNPDEVICEID WMI property.
+         */
+        PNPDEVICEID;
 
     }
 

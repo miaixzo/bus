@@ -46,6 +46,12 @@ import org.miaixz.bus.logger.Logger;
 public final class PerfCounterWildcardQuery {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private PerfCounterWildcardQuery() {
+    }
+
+    /**
      * The PERF_DISABLE_ALL_ON_FAILURE constant.
      */
     private static final boolean PERF_DISABLE_ALL_ON_FAILURE = Config

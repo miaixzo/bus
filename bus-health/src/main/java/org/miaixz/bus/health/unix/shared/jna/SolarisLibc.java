@@ -114,6 +114,12 @@ public interface SolarisLibc extends CLibrary {
     class SolarisUtmpx extends Structure {
 
         /**
+         * Creates a new SolarisUtmpx instance.
+         */
+        public SolarisUtmpx() {
+        }
+
+        /**
          * The ut_user value.
          */
         public byte[] ut_user = new byte[UTX_USERSIZE]; // user login name
@@ -173,6 +179,12 @@ public interface SolarisLibc extends CLibrary {
     class Exit_status extends Structure {
 
         /**
+         * Creates a new Exit_status instance.
+         */
+        public Exit_status() {
+        }
+
+        /**
          * The e_termination value.
          */
         public short e_termination; // Process termination status
@@ -195,6 +207,12 @@ public interface SolarisLibc extends CLibrary {
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
+
+        /**
+         * Creates a new Timeval instance.
+         */
+        public Timeval() {
+        }
 
         /**
          * The tv_sec value.

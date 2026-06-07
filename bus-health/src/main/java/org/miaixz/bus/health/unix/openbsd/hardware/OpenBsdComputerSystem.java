@@ -27,8 +27,8 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
-import org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard;
 import org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit;
+import org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard;
 
 /**
  * OpenBSD ComputerSystem implementation
@@ -38,6 +38,12 @@ import org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit;
  */
 @Immutable
 public class OpenBsdComputerSystem extends AbstractComputerSystem {
+
+    /**
+     * Creates a new OpenBsdComputerSystem instance.
+     */
+    public OpenBsdComputerSystem() {
+    }
 
     /**
      * The manufacturer value.
