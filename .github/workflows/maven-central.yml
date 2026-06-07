@@ -29,7 +29,7 @@ jobs:
       modules: ${{ steps.build.outputs.modules }}
     steps:
       - name: Check Out Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -92,7 +92,7 @@ jobs:
           echo "Pre-release: $IS_PRERELEASE"
 
       - name: Set Up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
@@ -118,10 +118,10 @@ jobs:
       MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
     steps:
       - name: Check Out Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set Up Java and Maven Central Credentials
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
