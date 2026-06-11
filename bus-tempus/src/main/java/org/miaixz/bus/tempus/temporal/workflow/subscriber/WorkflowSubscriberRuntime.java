@@ -123,9 +123,9 @@ public class WorkflowSubscriberRuntime {
     }
 
     /**
-     * Marks the runtime as failed.
+     * Marks the runtime as failed and increments the consecutive failure counter.
      *
-     * @param cause failure cause
+     * @param cause failure cause reported by the caller
      */
     public void markFailure(Throwable cause) {
         state = EnumValue.Lifecycle.ERROR;

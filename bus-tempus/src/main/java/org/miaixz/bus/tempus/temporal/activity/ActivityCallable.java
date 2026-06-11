@@ -29,8 +29,8 @@ package org.miaixz.bus.tempus.temporal.activity;
  * Business code must define a concrete Activity interface annotated with {@code @ActivityInterface} and declare the
  * concrete {@code @ActivityMethod} there.
  *
- * @param <R> request type
- * @param <C> return type
+ * @param <R> activity request type
+ * @param <C> activity result type
  * @author Kimi Liu
  * @since Java 21+
  */

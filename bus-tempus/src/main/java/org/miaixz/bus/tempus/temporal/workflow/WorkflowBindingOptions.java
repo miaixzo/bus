@@ -23,7 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Unified Temporal workflow runtime options.
+ * Unified Temporal workflow binding and runtime options.
  * <p>
  * This class is not a direct model of {@link io.temporal.client.WorkflowOptions}. It is the shared options object used
  * to bind Temporal connection, workflow publication target, subscriber worker runtime, activity retry, health check,
@@ -71,7 +71,7 @@ public class WorkflowBindingOptions {
     }
 
     /**
-     * Creates workflow binding options with publication fields.
+     * Creates workflow binding options with workflow target fields.
      *
      * @param taskQueue    task queue name
      * @param workflowType workflow type name

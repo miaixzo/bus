@@ -29,8 +29,8 @@ package org.miaixz.bus.tempus.temporal.workflow;
  * Business code must define a concrete Workflow interface annotated with {@code @WorkflowInterface} and declare the
  * concrete {@code @WorkflowMethod} there.
  *
- * @param <R> request type
- * @param <C> return type
+ * @param <R> workflow request type
+ * @param <C> workflow result type
  * @author Kimi Liu
  * @since Java 21+
  */

@@ -70,7 +70,7 @@ public final class WorkflowEndpointParser {
     }
 
     /**
-     * Parses a configured endpoint into Temporal service stubs target metadata.
+     * Parses a configured endpoint into normalized Temporal endpoint metadata.
      *
      * @param endpoint raw endpoint value
      * @return endpoint metadata

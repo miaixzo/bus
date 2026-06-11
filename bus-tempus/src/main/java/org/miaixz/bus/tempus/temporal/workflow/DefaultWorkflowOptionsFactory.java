@@ -31,7 +31,7 @@ import io.temporal.worker.WorkerFactoryOptions;
 import io.temporal.worker.WorkerOptions;
 
 /**
- * Default implementation of {@link WorkflowOptionsFactory}.
+ * Builds Temporal SDK workflow, activity, worker, and worker factory options from {@link WorkflowBindingOptions}.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -26,7 +26,7 @@ import org.miaixz.bus.logger.Logger;
 import io.temporal.common.RetryOptions;
 
 /**
- * Default implementation of {@link RetryOptionsFactory}.
+ * Builds Temporal SDK retry options from {@link WorkflowBindingOptions}.
  *
  * @author Kimi Liu
  * @since Java 21+

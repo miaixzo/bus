@@ -423,32 +423,32 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
     }
 
     /**
-     * Creates a WorkerFactory.
+     * Creates a Temporal worker factory for the workflow client.
      *
      * @param workflowClient       workflow client
-     * @param workerFactoryOptions WorkerFactory options
-     * @return WorkerFactory
+     * @param workerFactoryOptions worker factory options
+     * @return Temporal worker factory
      */
     WorkerFactory createWorkerFactory(WorkflowClient workflowClient, WorkerFactoryOptions workerFactoryOptions) {
         return WorkerFactory.newInstance(workflowClient, workerFactoryOptions);
     }
 
     /**
-     * Creates a worker.
+     * Creates a Temporal worker for the configured task queue.
      *
-     * @param workerFactory WorkerFactory
+     * @param workerFactory Temporal worker factory
      * @param taskQueue     task queue
      * @param workerOptions worker options
-     * @return Worker
+     * @return Temporal worker
      */
     Worker createWorker(WorkerFactory workerFactory, String taskQueue, WorkerOptions workerOptions) {
         return workerFactory.newWorker(taskQueue, workerOptions);
     }
 
     /**
-     * Starts the WorkerFactory.
+     * Starts the Temporal worker factory.
      *
-     * @param workerFactory WorkerFactory
+     * @param workerFactory Temporal worker factory
      */
     void startWorkerFactory(WorkerFactory workerFactory) {
         workerFactory.start();
@@ -535,7 +535,7 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
     }
 
     /**
-     * Completes the workflow binding options from binding defaults.
+     * Completes workflow binding options with subscriber binding defaults.
      *
      * @param source  source workflow binding options
      * @param binding workflow subscriber binding
@@ -572,9 +572,9 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
     }
 
     /**
-     * Gets or creates the scheduler.
+     * Returns the health check and reconnect scheduler, creating it when needed.
      *
-     * @return scheduler
+     * @return health check and reconnect scheduler
      */
     private synchronized ScheduledExecutorService ensureScheduler() {
         if (scheduler == null || scheduler.isShutdown() || scheduler.isTerminated()) {

@@ -302,7 +302,7 @@ public class WorkflowPublisherManager implements Publisher {
     }
 
     /**
-     * Completes the workflow binding options from binding defaults.
+     * Completes workflow binding options with publisher binding defaults.
      *
      * @param source  source workflow binding options
      * @param binding workflow binding
