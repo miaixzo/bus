@@ -19,14 +19,16 @@
 */
 package org.miaixz.bus.tempus.temporal.workflow;
 
+import io.temporal.activity.ActivityOptions;
 import io.temporal.client.WorkflowOptions;
+import io.temporal.worker.WorkerFactoryOptions;
+import io.temporal.worker.WorkerOptions;
 
 /**
- * Creates {@link WorkflowOptions} for workflow publications.
+ * Creates Temporal SDK options from unified {@link WorkflowBindingOptions}.
  * <p>
- * This abstraction allows applications to centralize timeout, task queue, and workflow identifier policies for
- * published workflows. The factory accepts basic workflow parameters that can be provided by both publishers and
- * subscribers.
+ * This abstraction centralizes creation of workflow, activity, worker, and worker factory options without exposing
+ * Temporal SDK builders to publisher or subscriber code.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -34,24 +36,50 @@ import io.temporal.client.WorkflowOptions;
 public interface WorkflowOptionsFactory {
 
     /**
-     * Creates workflow options for the specified workflow parameters.
+     * Creates workflow options for the specified workflow binding options.
      *
-     * @param taskQueue    the task queue name
-     * @param workflowType the workflow type name
+     * @param options workflow binding options
      * @return the workflow options
      */
-    WorkflowOptions createWorkflowOptions(String taskQueue, String workflowType);
+    WorkflowOptions createWorkflowOptions(WorkflowBindingOptions options);
 
     /**
-     * Creates workflow options for the specified specification.
-     * <p>
-     * This overload exists to avoid signature churn as additional workflow fields become relevant.
+     * Creates activity options for the specified activity.
      *
-     * @param spec the workflow options specification
-     * @return the workflow options
+     * @param options      workflow binding options
+     * @param activityName activity name
+     * @return the activity options
      */
-    default WorkflowOptions createWorkflowOptions(WorkflowOptionsSpec spec) {
-        return createWorkflowOptions(spec.taskQueue(), spec.workflowType());
-    }
+    ActivityOptions createActivityOptions(WorkflowBindingOptions options, String activityName);
+
+    /**
+     * Creates activity options for the specified activity with a timeout override.
+     *
+     * @param options          workflow binding options
+     * @param activityName     activity name
+     * @param maxDurationHours maximum activity duration in hours
+     * @return the activity options
+     */
+    ActivityOptions createActivityOptions(
+            WorkflowBindingOptions options,
+            String activityName,
+            Integer maxDurationHours);
+
+    /**
+     * Creates worker options for the specified concurrency limit.
+     *
+     * @param options       workflow binding options
+     * @param maxConcurrent maximum concurrent activity and workflow task executions
+     * @return the worker options
+     */
+    WorkerOptions createWorkerOptions(WorkflowBindingOptions options, int maxConcurrent);
+
+    /**
+     * Creates worker factory options.
+     *
+     * @param options workflow binding options
+     * @return the worker factory options
+     */
+    WorkerFactoryOptions createWorkerFactoryOptions(WorkflowBindingOptions options);
 
 }

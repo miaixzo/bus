@@ -20,8 +20,8 @@
 /**
  * Provides subscription and bootstrap infrastructure for Temporal workers.
  * <p>
- * This package contains worker subscriber bindings, worker subscriber contracts, service stubs providers, and the
- * default manager responsible for starting and stopping worker resources.
+ * This package contains worker subscriber bindings, worker subscriber contracts, workflow transports, and the default
+ * manager responsible for starting and stopping worker resources.
  *
  * @author Kimi Liu
  * @since Java 21+

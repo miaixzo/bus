@@ -19,19 +19,17 @@
 */
 package org.miaixz.bus.tempus.temporal.workflow;
 
-import java.time.Duration;
-
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.logger.Logger;
 
 import io.temporal.activity.ActivityOptions;
-import io.temporal.common.RetryOptions;
 import io.temporal.workflow.Workflow;
 
 /**
  * Provides a reusable execution template for Temporal workflows.
  * <p>
  * This base class creates a default activity stub and delegates the concrete workflow invocation to subclasses. It also
- * exposes protected extension points for request-specific timeout customization and retry configuration.
+ * exposes a protected extension point for request-specific timeout customization.
  *
  * @param <A> the activity interface type
  * @param <R> the workflow input type
@@ -46,36 +44,47 @@ public abstract class AbstractWorkflowHandler<A, R> {
     private final A activity;
 
     /**
-     * Creates a workflow handler backed by the specified activity interface.
-     *
-     * @param activityClass the activity interface class
+     * Activity interface class.
      */
-    protected AbstractWorkflowHandler(Class<A> activityClass) {
-        this(activityClass, null, null);
-    }
+    private final Class<A> activityClass;
 
     /**
-     * Creates a workflow handler backed by the specified activity interface and factories.
+     * Temporal options factory.
+     */
+    private final WorkflowOptionsFactory workflowOptionsFactory;
+
+    /**
+     * Unified workflow binding options.
+     */
+    private final WorkflowBindingOptions bindingOptions;
+
+    /**
+     * Creates a workflow handler backed by the specified activity interface and workflow options factory.
      *
      * @param activityClass          the activity interface class
-     * @param activityOptionsFactory activity options factory (optional)
-     * @param retryOptionsFactory    retry options factory (optional)
+     * @param workflowOptionsFactory workflow options factory
+     * @param bindingOptions         workflow binding options
      */
-    protected AbstractWorkflowHandler(Class<A> activityClass, ActivityOptionsFactory activityOptionsFactory,
-            RetryOptionsFactory retryOptionsFactory) {
+    protected AbstractWorkflowHandler(Class<A> activityClass, WorkflowOptionsFactory workflowOptionsFactory,
+            WorkflowBindingOptions bindingOptions) {
+        Assert.notNull(activityClass, "activityClass must not be null");
+        Assert.notNull(workflowOptionsFactory, "workflowOptionsFactory must not be null");
         Logger.info(
                 true,
                 "Tempus",
                 "Workflow handler initialization started: activityClass={}",
-                activityClass == null ? null : activityClass.getName());
+                activityClass.getName());
+        this.activityClass = activityClass;
+        this.workflowOptionsFactory = workflowOptionsFactory;
+        this.bindingOptions = bindingOptions == null ? WorkflowBindingOptions.defaults() : bindingOptions;
         this.activity = Workflow.newActivityStub(
                 activityClass,
-                createActivityOptions(getActivityName(activityClass), activityOptionsFactory, retryOptionsFactory));
+                workflowOptionsFactory.createActivityOptions(this.bindingOptions, getActivityName(activityClass)));
         Logger.info(
                 false,
                 "Tempus",
                 "Workflow handler initialization completed: activityClass={}, activityName={}",
-                activityClass == null ? null : activityClass.getName(),
+                activityClass.getName(),
                 getActivityName(activityClass));
     }
 
@@ -96,8 +105,9 @@ public abstract class AbstractWorkflowHandler<A, R> {
 
             Integer maxDurationHours = getMaxDurationHours(request);
             if (maxDurationHours != null && maxDurationHours > 0) {
-                A dynamicActivity = Workflow
-                        .newActivityStub(getActivityClass(), createDynamicActivityOptions(maxDurationHours));
+                ActivityOptions options = workflowOptionsFactory
+                        .createActivityOptions(bindingOptions, getActivityName(getActivityClass()), maxDurationHours);
+                A dynamicActivity = Workflow.newActivityStub(getActivityClass(), options);
                 String result = invokeActivity(dynamicActivity, request);
                 Logger.info(
                         false,
@@ -143,153 +153,6 @@ public abstract class AbstractWorkflowHandler<A, R> {
     }
 
     /**
-     * Returns the heartbeat timeout in seconds used when building default activity options.
-     * <p>
-     * Subclasses may override to link this value with configuration.
-     *
-     * @return heartbeat timeout in seconds, default is 30
-     */
-    protected long getHeartbeatTimeoutSeconds() {
-        return 90;
-    }
-
-    /**
-     * Creates the default Temporal activity options used by this workflow.
-     *
-     * @return the default activity options
-     */
-    protected ActivityOptions createDefaultActivityOptions() {
-        Logger.debug(
-                true,
-                "Tempus",
-                "Workflow default activity options creation started: heartbeatTimeoutSeconds={}",
-                getHeartbeatTimeoutSeconds());
-        ActivityOptions options = ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofHours(12))
-                .setScheduleToStartTimeout(Duration.ofMinutes(5))
-                .setHeartbeatTimeout(Duration.ofSeconds(getHeartbeatTimeoutSeconds()))
-                .setRetryOptions(createDefaultRetryOptions()).build();
-        Logger.debug(false, "Tempus", "Workflow default activity options creation completed");
-        return options;
-    }
-
-    /**
-     * Creates Temporal activity options with a request-specific execution timeout.
-     *
-     * @param maxDurationHours the maximum execution duration in hours
-     * @return the dynamic activity options
-     */
-    protected ActivityOptions createDynamicActivityOptions(int maxDurationHours) {
-        Logger.debug(
-                true,
-                "Tempus",
-                "Workflow dynamic activity options creation started: maxDurationHours={}, heartbeatTimeoutSeconds={}",
-                maxDurationHours,
-                getHeartbeatTimeoutSeconds());
-        ActivityOptions options = ActivityOptions.newBuilder()
-                .setStartToCloseTimeout(Duration.ofHours(maxDurationHours))
-                .setScheduleToStartTimeout(Duration.ofMinutes(5))
-                .setHeartbeatTimeout(Duration.ofSeconds(getHeartbeatTimeoutSeconds()))
-                .setRetryOptions(createDefaultRetryOptions()).build();
-        Logger.debug(
-                false,
-                "Tempus",
-                "Workflow dynamic activity options creation completed: maxDurationHours={}",
-                maxDurationHours);
-        return options;
-    }
-
-    /**
-     * Creates the default retry options applied to activity invocations.
-     *
-     * @return the default retry options
-     */
-    protected RetryOptions createDefaultRetryOptions() {
-        Logger.debug(true, "Tempus", "Workflow default retry options creation started");
-        RetryOptions options = RetryOptions.newBuilder().setInitialInterval(Duration.ofSeconds(1))
-                .setMaximumInterval(Duration.ofSeconds(60)).setBackoffCoefficient(2.0).setMaximumAttempts(3).build();
-        Logger.debug(
-                false,
-                "Tempus",
-                "Workflow default retry options creation completed: initialIntervalSeconds={}, maximumIntervalSeconds={}, maxAttempts={}",
-                1,
-                60,
-                3);
-        return options;
-    }
-
-    /**
-     * Builds activity options for the given activity name using optional factories.
-     *
-     * @param activityName           the logical activity name
-     * @param activityOptionsFactory the activity options factory (optional)
-     * @param retryOptionsFactory    the retry options factory (optional)
-     * @return the resolved activity options
-     */
-    protected ActivityOptions createActivityOptions(
-            String activityName,
-            ActivityOptionsFactory activityOptionsFactory,
-            RetryOptionsFactory retryOptionsFactory) {
-        if (activityOptionsFactory != null) {
-            Logger.debug(
-                    true,
-                    "Tempus",
-                    "Workflow activity options factory invocation started: activityName={}",
-                    activityName);
-            ActivityOptions options = activityOptionsFactory.createActivityOptions(activityName);
-            if (options != null) {
-                Logger.debug(
-                        false,
-                        "Tempus",
-                        "Workflow activity options factory invocation completed: activityName={}, provided=true",
-                        activityName);
-                return options;
-            }
-            Logger.debug(
-                    false,
-                    "Tempus",
-                    "Workflow activity options factory invocation completed: activityName={}, provided=false",
-                    activityName);
-        }
-
-        RetryOptions retryOptions = null;
-        if (retryOptionsFactory != null) {
-            Logger.debug(
-                    true,
-                    "Tempus",
-                    "Workflow retry options factory invocation started: activityName={}",
-                    activityName);
-            retryOptions = retryOptionsFactory.createRetryOptions(activityName);
-            Logger.debug(
-                    false,
-                    "Tempus",
-                    "Workflow retry options factory invocation completed: activityName={}, provided={}",
-                    activityName,
-                    retryOptions != null);
-        }
-
-        if (retryOptions != null) {
-            ActivityOptions options = ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofHours(12))
-                    .setScheduleToStartTimeout(Duration.ofMinutes(5))
-                    .setHeartbeatTimeout(Duration.ofSeconds(getHeartbeatTimeoutSeconds())).setRetryOptions(retryOptions)
-                    .build();
-            Logger.debug(
-                    false,
-                    "Tempus",
-                    "Workflow activity options created with custom retry: activityName={}, heartbeatTimeoutSeconds={}",
-                    activityName,
-                    getHeartbeatTimeoutSeconds());
-            return options;
-        }
-
-        Logger.debug(
-                false,
-                "Tempus",
-                "Workflow activity options falling back to defaults: activityName={}",
-                activityName);
-        return createDefaultActivityOptions();
-    }
-
-    /**
      * Resolves the logical activity name used by option factories.
      *
      * @param activityClass the activity interface class
@@ -313,6 +176,8 @@ public abstract class AbstractWorkflowHandler<A, R> {
      *
      * @return the activity interface class
      */
-    protected abstract Class<A> getActivityClass();
+    protected Class<A> getActivityClass() {
+        return activityClass;
+    }
 
 }

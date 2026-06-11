@@ -20,15 +20,14 @@
 package org.miaixz.bus.tempus.temporal.workflow;
 
 /**
- * Generic Workflow callable contract.
+ * Generic Workflow marker contract.
  * <p>
- * This interface abstracts a common Workflow shape (single request argument + single return value) so business modules
- * can reuse consistent type constraints.
+ * This interface marks a common Workflow type shape (single request argument + single return value) so business modules
+ * can reuse consistent type constraints without exposing generic methods to Temporal metadata scanning.
  * <p>
- * Note: This interface intentionally does not carry Temporal annotations to avoid Temporal runtime scanning generic
- * type variables (type erasure), which may cause serialization/type resolution issues. Business code should define a
- * concrete Workflow interface annotated with {@code @WorkflowInterface}/{@code @WorkflowMethod} and re-declare the
- * method with explicit parameter/return types.
+ * This interface intentionally does not carry Temporal annotations and intentionally declares no business methods.
+ * Business code must define a concrete Workflow interface annotated with {@code @WorkflowInterface} and declare the
+ * concrete {@code @WorkflowMethod} there.
  *
  * @param <R> request type
  * @param <C> return type
@@ -36,13 +35,5 @@ package org.miaixz.bus.tempus.temporal.workflow;
  * @since Java 21+
  */
 public interface WorkflowCallable<R, C> {
-
-    /**
-     * Execute workflow logic.
-     *
-     * @param request request object
-     * @return workflow result
-     */
-    C execute(R request);
 
 }

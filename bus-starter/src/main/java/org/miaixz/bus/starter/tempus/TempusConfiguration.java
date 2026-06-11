@@ -27,30 +27,32 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableTempus;
 import org.miaixz.bus.tempus.temporal.Publisher;
 import org.miaixz.bus.tempus.temporal.Subscriber;
-import org.miaixz.bus.tempus.temporal.worker.CachingWorkflowClientProvider;
-import org.miaixz.bus.tempus.temporal.worker.WorkflowClientProvider;
-import org.miaixz.bus.tempus.temporal.worker.WorkflowServiceStubsProvider;
+import org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector;
+import org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport;
+import org.miaixz.bus.tempus.temporal.worker.WorkflowConnector;
+import org.miaixz.bus.tempus.temporal.worker.WorkflowTransport;
+import org.miaixz.bus.tempus.temporal.workflow.DefaultRetryOptionsFactory;
+import org.miaixz.bus.tempus.temporal.workflow.DefaultWorkflowOptionsFactory;
+import org.miaixz.bus.tempus.temporal.workflow.RetryOptionsFactory;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory;
 import org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding;
 import org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager;
-import org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherOptionsFactory;
 import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding;
 import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager;
 
 /**
- * Temporal framework-level auto-configuration.
+ * Temporal framework auto-configuration.
  * <p>
- * Imported by {@link EnableTempus} via {@code @Import}. Registers the core Temporal beans: client, worker, publisher
- * and subscriber.
+ * Imported through {@link EnableTempus}; registers core Temporal beans including clients, workers, publishers, and
+ * subscribers.
  * <p>
- * All beans are guarded by {@code @ConditionalOnMissingBean} so the application side can override any of them. The
- * subscriber worker only starts when {@code bus.tempus.enabled=true}.
+ * All beans are protected by {@code @ConditionalOnMissingBean}, allowing applications to override default
+ * implementations. The subscriber worker starts only when {@code bus.tempus.enabled=true}.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -60,39 +62,52 @@ import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberMana
 public class TempusConfiguration {
 
     /**
-     * Constructs a new TempusConfiguration instance.
+     * Creates Temporal auto-configuration.
      */
     public TempusConfiguration() {
         // No initialization required.
     }
 
     /**
-     * Bound Temporal starter properties used to construct the default framework beans.
+     * Temporal configuration properties used to build default framework beans.
      */
     @Resource
     private TempusProperties properties;
 
     /**
-     * Creates the {@link WorkflowClientProvider}.
+     * Creates a {@link WorkflowTransport}.
      * <p>
-     * Skipped when the application registers its own {@code WorkflowClientProvider} bean.
+     * Skipped when the application registers a custom {@code WorkflowTransport} bean.
      *
-     * @param provider the {@link WorkflowServiceStubsProvider} used to build the underlying gRPC stubs
-     * @return a caching workflow-client provider
+     * @return default Temporal workflow transport
      */
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnBean(WorkflowServiceStubsProvider.class)
-    public WorkflowClientProvider workflowClientProvider(WorkflowServiceStubsProvider provider) {
-        return new CachingWorkflowClientProvider(provider);
+    public WorkflowTransport workflowTransport() {
+        return new DefaultWorkflowTransport();
     }
 
     /**
-     * Creates the default {@link WorkflowIdGenerator} that produces a random UUID for each workflow execution.
+     * Creates a {@link WorkflowConnector}.
      * <p>
-     * Skipped when the application registers its own {@code WorkflowIdGenerator} bean.
+     * Skipped when the application registers a custom {@code WorkflowConnector} bean.
      *
-     * @return a no-op workflow-id generator (UUID-based default)
+     * @param transport workflow transport used to create underlying service stubs
+     * @return caching workflow connector
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(WorkflowTransport.class)
+    public WorkflowConnector workflowConnector(WorkflowTransport transport) {
+        return new CachingWorkflowConnector(transport);
+    }
+
+    /**
+     * Creates the default {@link WorkflowIdGenerator}.
+     * <p>
+     * Skipped when the application registers a custom {@code WorkflowIdGenerator} bean.
+     *
+     * @return workflow ID generator based on the default UUID strategy
      */
     @Bean
     @ConditionalOnMissingBean
@@ -102,68 +117,90 @@ public class TempusConfiguration {
     }
 
     /**
-     * Creates the {@link WorkflowOptionsFactory}.
+     * Creates a {@link RetryOptionsFactory}.
      * <p>
-     * Skipped when the application registers its own {@code WorkflowOptionsFactory} bean.
+     * Skipped when the application registers a custom {@code RetryOptionsFactory} bean.
      *
-     * @param generator the {@link WorkflowIdGenerator} used to produce unique workflow IDs
-     * @return a publisher-oriented workflow-options factory
+     * @return default retry options factory
      */
     @Bean
     @ConditionalOnMissingBean
-    public WorkflowOptionsFactory workflowOptionsFactory(WorkflowIdGenerator generator) {
-        return new WorkflowPublisherOptionsFactory(generator, properties.getWorkflowTaskTimeoutMinutes());
+    public RetryOptionsFactory retryOptionsFactory() {
+        return new DefaultRetryOptionsFactory();
     }
 
     /**
-     * Creates the {@link Publisher} that starts workflow executions on the Temporal server.
+     * Creates a {@link WorkflowOptionsFactory}.
      * <p>
-     * Skipped when the application registers its own {@code Publisher} bean.
+     * Skipped when the application registers a custom {@code WorkflowOptionsFactory} bean.
      *
-     * @param provider the workflow-client provider
-     * @param factory  the workflow-options factory
-     * @param binding  the publisher binding that supplies task-queue and workflow-type metadata
-     * @return a workflow publisher manager
+     * @param generator           generator used to create unique workflow IDs
+     * @param retryOptionsFactory retry options factory
+     * @return default workflow options factory
      */
     @Bean
-    @ConditionalOnBean({ WorkflowClientProvider.class, WorkflowOptionsFactory.class, WorkflowPublisherBinding.class })
+    @ConditionalOnMissingBean
+    public WorkflowOptionsFactory workflowOptionsFactory(
+            WorkflowIdGenerator generator,
+            RetryOptionsFactory retryOptionsFactory) {
+        return new DefaultWorkflowOptionsFactory(generator, retryOptionsFactory);
+    }
+
+    /**
+     * Creates a {@link Publisher} that starts workflow executions on the Temporal service.
+     * <p>
+     * Skipped when the application registers a custom {@code Publisher} bean.
+     *
+     * @param connector workflow connector
+     * @param factory   workflow options factory
+     * @param binding   publisher binding configuration
+     * @return workflow publisher manager
+     */
+    @Bean
+    @ConditionalOnBean({ WorkflowConnector.class, WorkflowOptionsFactory.class, WorkflowPublisherBinding.class })
     @ConditionalOnMissingBean
     public Publisher publisherManager(
-            WorkflowClientProvider provider,
+            WorkflowConnector connector,
             WorkflowOptionsFactory factory,
             WorkflowPublisherBinding binding) {
-        return new WorkflowPublisherManager(provider, factory, binding);
+        return new WorkflowPublisherManager(connector, factory, binding, properties);
     }
 
     /**
-     * Creates the {@link Subscriber} worker that polls the Temporal task queue and dispatches workflow and activity
-     * tasks.
+     * Creates a {@link Subscriber} worker that polls Temporal task queues and dispatches workflow and activity tasks.
      * <p>
-     * Skipped when the application registers its own {@code Subscriber} bean.
+     * Skipped when the application registers a custom {@code Subscriber} bean.
      * <p>
-     * {@code start()} is called inside this factory method rather than via {@code initMethod} so that a connection
-     * failure is caught and logged as a WARN instead of aborting the application context.
+     * The worker is started by {@link TempusLifecycle} after the Spring context is ready.
      *
-     * @param binding  the subscriber binding that registers workflow and activity implementations
-     * @param provider the {@link WorkflowServiceStubsProvider} used to build the underlying gRPC stubs
-     * @return a workflow subscriber manager
+     * @param binding   subscriber binding used to register workflow and activity implementations
+     * @param transport workflow transport used to create underlying service stubs
+     * @param factory   Temporal options factory
+     * @return workflow subscriber manager
      */
     @Bean(destroyMethod = "shutdown")
     @ConditionalOnMissingBean
-    @ConditionalOnBean({ WorkflowSubscriberBinding.class, WorkflowServiceStubsProvider.class })
+    @ConditionalOnBean({ WorkflowSubscriberBinding.class, WorkflowTransport.class, WorkflowOptionsFactory.class })
     @ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true")
-    public Subscriber subscriberManager(WorkflowSubscriberBinding binding, WorkflowServiceStubsProvider provider) {
-        WorkflowSubscriberManager manager = new WorkflowSubscriberManager(binding, provider);
-        try {
-            manager.start();
-        } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Starter",
-                    "Tempus temporal Worker failed to start, app continues without worker. exception={}",
-                    e.getClass().getSimpleName());
-        }
-        return manager;
+    public Subscriber subscriberManager(
+            WorkflowSubscriberBinding binding,
+            WorkflowTransport transport,
+            WorkflowOptionsFactory factory) {
+        return new WorkflowSubscriberManager(binding, transport, factory, properties);
+    }
+
+    /**
+     * Creates a lifecycle component that starts and stops the Temporal subscriber.
+     *
+     * @param subscriber Temporal subscriber
+     * @return Temporal lifecycle component
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(Subscriber.class)
+    @ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true")
+    public TempusLifecycle tempusLifecycle(Subscriber subscriber) {
+        return new TempusLifecycle(subscriber);
     }
 
 }

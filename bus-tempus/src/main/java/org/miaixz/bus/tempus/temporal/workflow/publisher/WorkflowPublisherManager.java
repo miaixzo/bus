@@ -24,10 +24,9 @@ import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.Publisher;
-import org.miaixz.bus.tempus.temporal.worker.CachingWorkflowClientProvider;
-import org.miaixz.bus.tempus.temporal.worker.WorkflowClientProvider;
+import org.miaixz.bus.tempus.temporal.worker.WorkflowConnector;
+import org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory;
-import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsSpec;
 
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowStub;
@@ -52,9 +51,9 @@ public class WorkflowPublisherManager implements Publisher {
     private final WorkflowOptionsFactory factory;
 
     /**
-     * Provider used to obtain workflow clients for target endpoints.
+     * Connector used to obtain workflow clients for target endpoints.
      */
-    private final WorkflowClientProvider provider;
+    private final WorkflowConnector connector;
 
     /**
      * Pre-configured workflow publication binding.
@@ -62,23 +61,30 @@ public class WorkflowPublisherManager implements Publisher {
     private final WorkflowPublisherBinding binding;
 
     /**
+     * Unified workflow binding options.
+     */
+    private final WorkflowBindingOptions options;
+
+    /**
      * Creates a workflow publisher manager with the specified configuration.
      *
-     * @param provider the workflow client provider
-     * @param factory  the workflow options factory
-     * @param binding  the workflow publication binding
+     * @param connector the workflow connector
+     * @param factory   the workflow options factory
+     * @param binding   the workflow publication binding
+     * @param options   unified workflow binding options
      * @throws IllegalArgumentException if {@code binding} is {@code null} or required binding properties are missing
      */
-    public WorkflowPublisherManager(WorkflowClientProvider provider, WorkflowOptionsFactory factory,
-            WorkflowPublisherBinding binding) {
+    public WorkflowPublisherManager(WorkflowConnector connector, WorkflowOptionsFactory factory,
+            WorkflowPublisherBinding binding, WorkflowBindingOptions options) {
         Assert.notNull(binding, "binding must not be null");
         Assert.notNull(binding.getEndpoint(), "temporal.endpoint must not be null");
         Assert.notNull(binding.getTaskQueue(), "temporal.task.queue must not be null");
         Assert.notNull(binding.getWorkflowType(), "temporal.workflow.type must not be null");
 
-        this.provider = provider;
+        this.connector = connector;
         this.factory = factory;
         this.binding = binding;
+        this.options = completeOptions(options, binding);
     }
 
     /**
@@ -136,9 +142,7 @@ public class WorkflowPublisherManager implements Publisher {
                         binding.getEndpoint(),
                         attempt,
                         ex.getClass().getSimpleName());
-                if (provider instanceof CachingWorkflowClientProvider c) {
-                    c.invalidate(binding.getEndpoint());
-                }
+                connector.invalidate(binding.getEndpoint());
             }
         }
         Logger.error(
@@ -170,13 +174,11 @@ public class WorkflowPublisherManager implements Publisher {
                     binding.getEndpoint(),
                     binding.getTaskQueue(),
                     args == null ? 0 : args.length);
-            WorkflowClient client = provider.createWorkflowClient(binding);
+            WorkflowClient client = connector.client(binding);
             Logger.debug(false, "Tempus", "Workflow client created: endpoint={}", binding.getEndpoint());
 
-            WorkflowStub workflow = client.newUntypedWorkflowStub(
-                    binding.getWorkflowType(),
-                    factory.createWorkflowOptions(
-                            WorkflowOptionsSpec.of(binding.getTaskQueue(), binding.getWorkflowType())));
+            WorkflowStub workflow = client
+                    .newUntypedWorkflowStub(binding.getWorkflowType(), factory.createWorkflowOptions(options));
             Logger.debug(
                     false,
                     "Tempus",
@@ -258,7 +260,10 @@ public class WorkflowPublisherManager implements Publisher {
      * @return the gRPC status code name, or {@code null} when it cannot be resolved
      */
     private String extractGrpcStatusCode(Throwable throwable) {
-        if (!"io.grpc.StatusRuntimeException".equals(throwable.getClass().getName())) {
+        Class<?> throwableType = throwable.getClass();
+        Package throwablePackage = throwableType.getPackage();
+        String packageName = throwablePackage == null ? null : throwablePackage.getName();
+        if (!"StatusRuntimeException".equals(throwableType.getSimpleName()) || !("io" + ".grpc").equals(packageName)) {
             return null;
         }
         try {
@@ -294,6 +299,26 @@ public class WorkflowPublisherManager implements Publisher {
                     e.getClass().getSimpleName());
             return null;
         }
+    }
+
+    /**
+     * Completes the workflow binding options from binding defaults.
+     *
+     * @param source  source workflow binding options
+     * @param binding workflow binding
+     * @return completed workflow binding options
+     */
+    private static WorkflowBindingOptions completeOptions(
+            WorkflowBindingOptions source,
+            WorkflowPublisherBinding binding) {
+        WorkflowBindingOptions target = source == null ? WorkflowBindingOptions.defaults() : source;
+        if (!StringKit.hasText(target.getTaskQueue())) {
+            target.setTaskQueue(binding.getTaskQueue());
+        }
+        if (!StringKit.hasText(target.getWorkflowType())) {
+            target.setWorkflowType(binding.getWorkflowType());
+        }
+        return target;
     }
 
 }

@@ -17,43 +17,41 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.tempus.temporal.workflow;
+package org.miaixz.bus.tempus.temporal.worker;
 
-import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.tempus.temporal.Binding;
+
+import io.temporal.client.WorkflowClient;
 
 /**
- * Specification used when creating {@link io.temporal.client.WorkflowOptions}.
+ * Connects Temporal workflow clients to target endpoints.
  * <p>
- * This type exists to avoid signature churn as additional workflow option fields become relevant.
+ * Implementations may create fresh clients, reuse cached clients, or apply custom connection policies for different
+ * Temporal clusters.
  *
- * @param taskQueue    the task queue name
- * @param workflowType the workflow type name
- * @param workflowId   an optional workflow id to use
- * @param stableKey    an optional stable key used for deterministic workflow id generation
  * @author Kimi Liu
  * @since Java 21+
  */
-public record WorkflowOptionsSpec(String taskQueue, String workflowType, String workflowId, String stableKey) {
+public interface WorkflowConnector {
 
     /**
-     * Validates required fields.
+     * Returns a workflow client for the specified Temporal configuration.
+     * <p>
+     * This is the primary entry point because a binding can carry namespace and identity information in addition to the
+     * endpoint itself.
      *
-     * @throws IllegalArgumentException if {@code taskQueue} or {@code workflowType} is {@code null}
+     * @param binding temporal configuration
+     * @return the workflow client
      */
-    public WorkflowOptionsSpec {
-        Assert.notNull(taskQueue, "taskQueue must not be null");
-        Assert.notNull(workflowType, "workflowType must not be null");
-    }
+    WorkflowClient client(Binding binding);
 
     /**
-     * Creates a minimal specification with only the required fields.
+     * Invalidates cached workflow clients for an endpoint when the connector supports caching.
      *
-     * @param taskQueue    the task queue name
-     * @param workflowType the workflow type name
-     * @return the workflow options specification
+     * @param endpoint Temporal endpoint
      */
-    public static WorkflowOptionsSpec of(String taskQueue, String workflowType) {
-        return new WorkflowOptionsSpec(taskQueue, workflowType, null, null);
+    default void invalidate(String endpoint) {
+        // Default implementations do not keep endpoint caches.
     }
 
 }

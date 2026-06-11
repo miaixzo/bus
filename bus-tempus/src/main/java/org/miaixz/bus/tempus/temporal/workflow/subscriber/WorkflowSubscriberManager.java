@@ -19,28 +19,33 @@
 */
 package org.miaixz.bus.tempus.temporal.workflow.subscriber;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.xyz.ExceptionKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.Subscriber;
-import org.miaixz.bus.tempus.temporal.worker.WorkflowServiceStubsProvider;
+import org.miaixz.bus.tempus.temporal.worker.WorkflowTransport;
+import org.miaixz.bus.tempus.temporal.worker.WorkflowTransportState;
+import org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions;
+import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory;
 
 import io.temporal.client.WorkflowClient;
 import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
+import io.temporal.worker.WorkerFactoryOptions;
 import io.temporal.worker.WorkerOptions;
 
 /**
- * Manages the subscriber lifecycle of a Temporal worker.
+ * Temporal worker subscriber manager.
  * <p>
- * This class validates worker configuration, creates the required Temporal infrastructure objects, registers workflows
- * and activities, and shuts down worker resources when they are no longer needed.
- * <p>
- * This class implements {@link AutoCloseable} to support try-with-resources for proper resource cleanup.
+ * This manager creates worker runtime resources, registers workflows and activities, runs health checks, rebuilds
+ * disconnected runtimes, and releases resources during shutdown.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -48,72 +53,74 @@ import io.temporal.worker.WorkerOptions;
 public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
 
     /**
-     * Factory used to create worker options.
+     * Temporal options factory.
      */
-    private final WorkflowSubscriberOptionsFactory factory;
+    private final WorkflowOptionsFactory factory;
 
     /**
-     * Provider used to create Temporal service stub handles.
+     * Temporal workflow transport.
      */
-    private final WorkflowServiceStubsProvider provider;
+    private final WorkflowTransport transport;
 
     /**
-     * Worker binding containing endpoint, queue, and registration settings.
+     * Worker binding configuration.
      */
     private final WorkflowSubscriberBinding binding;
 
     /**
-     * Ensures shutdown is idempotent.
+     * Unified workflow binding options.
+     */
+    private final WorkflowBindingOptions bindingOptions;
+
+    /**
+     * Shutdown idempotency marker.
      */
     private final AtomicBoolean shutdown = new AtomicBoolean(false);
 
     /**
-     * Temporal worker factory created during startup.
+     * Startup idempotency marker.
      */
-    private WorkerFactory workerFactory;
+    private final AtomicBoolean started = new AtomicBoolean(false);
 
     /**
-     * Opaque Temporal service stub handle created during startup.
+     * Reconnect scheduling idempotency marker.
      */
-    private Object serviceStubs;
+    private final AtomicBoolean reconnectScheduled = new AtomicBoolean(false);
 
     /**
-     * Lifecycle state for start/shutdown coordination.
+     * Current worker runtime.
      */
-    private volatile EnumValue.Lifecycle state = EnumValue.Lifecycle.UNKNOWN;
+    private volatile WorkflowSubscriberRuntime runtime = new WorkflowSubscriberRuntime();
+
+    /**
+     * Health check and reconnect scheduler.
+     */
+    private volatile ScheduledExecutorService scheduler;
 
     /**
      * Creates a Temporal worker subscriber manager.
      *
-     * @param binding  the worker subscriber binding
-     * @param provider the service stubs provider
-     * @param factory  the worker options factory
+     * @param binding        worker subscriber binding
+     * @param transport      workflow transport
+     * @param factory        Temporal options factory
+     * @param bindingOptions unified workflow binding options
      */
-    public WorkflowSubscriberManager(WorkflowSubscriberBinding binding, WorkflowServiceStubsProvider provider,
-            WorkflowSubscriberOptionsFactory factory) {
+    public WorkflowSubscriberManager(WorkflowSubscriberBinding binding, WorkflowTransport transport,
+            WorkflowOptionsFactory factory, WorkflowBindingOptions bindingOptions) {
+        Assert.notNull(factory, "factory must not be null");
         this.binding = binding;
-        this.provider = provider;
+        this.transport = transport;
         this.factory = factory;
+        this.bindingOptions = completeOptions(bindingOptions, binding);
     }
 
     /**
-     * Backward-compatible constructor using the default {@link WorkflowSubscriberOptionsFactory}.
-     *
-     * @param binding       the worker subscriber binding
-     * @param stubsProvider the service stubs provider
-     */
-    public WorkflowSubscriberManager(WorkflowSubscriberBinding binding, WorkflowServiceStubsProvider stubsProvider) {
-        this(binding, stubsProvider, new WorkflowSubscriberOptionsFactory());
-    }
-
-    /**
-     * Starts the Temporal worker if it is enabled.
-     *
-     * @throws IllegalArgumentException if required worker properties are missing
+     * Starts the Temporal worker.
      */
     @Override
     public synchronized void start() {
         if (!binding.isEnabled()) {
+            runtime.markStopped();
             Logger.info(
                     false,
                     "Tempus",
@@ -121,113 +128,34 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
                     binding.getTaskQueue());
             return;
         }
-        if (state == EnumValue.Lifecycle.RUNNING) {
+        if (!started.compareAndSet(false, true)) {
             Logger.info(
                     false,
                     "Tempus",
-                    "Temporal worker startup skipped: state=RUNNING, taskQueue={}",
-                    binding.getTaskQueue());
+                    "Temporal worker startup skipped: alreadyStarted=true, taskQueue={}, state={}",
+                    binding.getTaskQueue(),
+                    runtime.getState());
             return;
         }
-        if (state == EnumValue.Lifecycle.STARTING) {
-            Logger.warn(
-                    false,
-                    "Tempus",
-                    "Temporal worker startup rejected: state=STARTING, taskQueue={}",
-                    binding.getTaskQueue());
-            throw new IllegalStateException("worker is starting");
-        }
-        if (state == EnumValue.Lifecycle.STOPPED || shutdown.get()) {
-            Logger.warn(
-                    false,
-                    "Tempus",
-                    "Temporal worker startup rejected: state={}, shutdown={}, taskQueue={}",
-                    state,
-                    shutdown.get(),
-                    binding.getTaskQueue());
-            throw new IllegalStateException("worker has been stopped and cannot be restarted");
-        }
-
         Assert.notNull(binding.getEndpoint(), "temporal.endpoint must not be null");
         Assert.notNull(binding.getTaskQueue(), "temporal.task.queue must not be null");
 
-        state = EnumValue.Lifecycle.STARTING;
-        try {
-            Logger.info(
-                    true,
-                    "Tempus",
-                    "Temporal worker startup started: endpoint={}, taskQueue={}, maxConcurrent={}",
-                    binding.getEndpoint(),
-                    binding.getTaskQueue(),
-                    binding.getMaxConcurrent());
-
-            serviceStubs = provider.createServiceStubs(binding);
-            Logger.debug(false, "Tempus", "Temporal worker service stubs created: endpoint={}", binding.getEndpoint());
-
-            WorkflowClient client = provider.createWorkflowClient(serviceStubs, binding);
-            Logger.debug(
-                    false,
-                    "Tempus",
-                    "Temporal worker workflow client created: endpoint={}, taskQueue={}",
-                    binding.getEndpoint(),
-                    binding.getTaskQueue());
-
-            workerFactory = WorkerFactory.newInstance(client);
-            Logger.debug(false, "Tempus", "Temporal worker factory created: taskQueue={}", binding.getTaskQueue());
-
-            WorkerOptions workerOptions = factory.createWorkerOptions(binding.getMaxConcurrent());
-            Worker worker = workerFactory.newWorker(binding.getTaskQueue(), workerOptions);
-            Logger.debug(
-                    false,
-                    "Tempus",
-                    "Temporal worker created: taskQueue={}, maxConcurrent={}",
-                    binding.getTaskQueue(),
-                    binding.getMaxConcurrent());
-
-            Logger.debug(true, "Tempus", "Temporal worker registration started: taskQueue={}", binding.getTaskQueue());
-            binding.registerWorkflowsAndActivities(worker);
-            Logger.debug(
-                    false,
-                    "Tempus",
-                    "Temporal worker registration completed: taskQueue={}",
-                    binding.getTaskQueue());
-
-            workerFactory.start();
-            state = EnumValue.Lifecycle.RUNNING;
-
-            Logger.info(
-                    false,
-                    "Tempus",
-                    "Temporal worker startup completed: taskQueue={}, state={}",
-                    binding.getTaskQueue(),
-                    state);
-
-        } catch (Exception e) {
-            state = EnumValue.Lifecycle.UNKNOWN;
-            cleanupResources();
-            Logger.error(
-                    false,
-                    "Tempus",
-                    e,
-                    "Temporal worker startup failed: endpoint={}, taskQueue={}, exception={}",
-                    binding.getEndpoint(),
-                    binding.getTaskQueue(),
-                    e.getClass().getSimpleName());
-            throw e;
-        }
+        ensureScheduler();
+        startRuntime("startup");
+        scheduleHealthCheck();
     }
 
     /**
-     * Returns {@code true} if the worker is currently running.
+     * Checks whether the worker is running.
      *
-     * @return {@code true} if running
+     * @return {@code true} when the worker is running
      */
     public boolean isRunning() {
-        return state == EnumValue.Lifecycle.RUNNING;
+        return runtime.isRunning();
     }
 
     /**
-     * Closes this manager by delegating to {@link #shutdown()}.
+     * Closes this subscriber manager.
      */
     @Override
     public void close() {
@@ -235,7 +163,7 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
     }
 
     /**
-     * Shuts down the worker factory and service stubs created by this manager.
+     * Stops the scheduler and releases worker runtime resources.
      */
     @Override
     public synchronized void shutdown() {
@@ -252,69 +180,420 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
                 "Tempus",
                 "Temporal worker shutdown started: taskQueue={}, state={}",
                 binding.getTaskQueue(),
-                state);
-        state = EnumValue.Lifecycle.STOPPING;
-
-        cleanupResources();
+                runtime.getState());
+        ScheduledExecutorService currentScheduler = scheduler;
+        if (currentScheduler != null) {
+            currentScheduler.shutdownNow();
+            scheduler = null;
+        }
+        closeRuntime(runtime, true);
         Logger.info(
                 false,
                 "Tempus",
                 "Temporal worker shutdown completed: taskQueue={}, state={}",
                 binding.getTaskQueue(),
-                state);
+                runtime.getState());
     }
 
     /**
-     * Releases worker-side resources after startup failure or final shutdown.
+     * Starts a new worker runtime.
+     *
+     * @param reason startup reason
      */
-    private void cleanupResources() {
+    private synchronized void startRuntime(String reason) {
+        if (shutdown.get()) {
+            return;
+        }
+        WorkflowSubscriberRuntime previous = runtime;
+        WorkflowSubscriberRuntime next = new WorkflowSubscriberRuntime();
+        next.setReconnectAttempts(previous.getReconnectAttempts());
+        next.markStarting();
+        runtime = next;
         try {
-            if (workerFactory != null) {
-                Logger.info(
+            Logger.info(
+                    true,
+                    "Tempus",
+                    "Temporal worker startup started: endpoint={}, namespace={}, taskQueue={}, reason={}, maxConcurrent={}",
+                    binding.getEndpoint(),
+                    binding.getNamespace(),
+                    binding.getTaskQueue(),
+                    reason,
+                    binding.getMaxConcurrent());
+            Object transportHandle = transport.create(binding);
+            next.setTransportHandle(transportHandle);
+            WorkflowClient workflowClient = transport.client(transportHandle, binding);
+            next.setWorkflowClient(workflowClient);
+            WorkerFactoryOptions factoryOptions = factory.createWorkerFactoryOptions(bindingOptions);
+            WorkerFactory workerFactory = createWorkerFactory(workflowClient, factoryOptions);
+            next.setWorkerFactory(workerFactory);
+            WorkerOptions workerOptions = factory.createWorkerOptions(bindingOptions, binding.getMaxConcurrent());
+            Worker worker = createWorker(workerFactory, binding.getTaskQueue(), workerOptions);
+            next.setWorker(worker);
+            binding.registerWorkflowsAndActivities(worker);
+            startWorkerFactory(workerFactory);
+            next.markRunning();
+            reconnectScheduled.set(false);
+            Logger.info(
+                    false,
+                    "Tempus",
+                    "Temporal worker startup completed: endpoint={}, namespace={}, taskQueue={}, maxConcurrent={}, workflowPollers={}, activityPollers={}, taskQueueActivitiesPerSecond={}, state={}",
+                    binding.getEndpoint(),
+                    binding.getNamespace(),
+                    binding.getTaskQueue(),
+                    binding.getMaxConcurrent(),
+                    bindingOptions.resolveMaxWorkflowTaskPollers(),
+                    bindingOptions.resolveMaxActivityTaskPollers(),
+                    bindingOptions.resolveMaxTaskQueueActivitiesPerSecond(),
+                    next.getState());
+        } catch (Exception e) {
+            next.markFailure(e);
+            closeRuntime(next, false);
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    e,
+                    "Temporal worker startup failed: endpoint={}, taskQueue={}, state={}, nextRetrySeconds={}, exception={}",
+                    binding.getEndpoint(),
+                    binding.getTaskQueue(),
+                    next.getState(),
+                    reconnectBackoffSeconds(next),
+                    e.getClass().getSimpleName());
+            scheduleReconnect("startup_failed");
+        }
+    }
+
+    /**
+     * Schedules periodic health checks.
+     */
+    private void scheduleHealthCheck() {
+        ScheduledExecutorService currentScheduler = ensureScheduler();
+        long intervalSeconds = bindingOptions.resolveWorkerHealthIntervalSeconds();
+        currentScheduler
+                .scheduleWithFixedDelay(this::safeHealthCheck, intervalSeconds, intervalSeconds, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Runs a safe health check.
+     */
+    private void safeHealthCheck() {
+        try {
+            healthCheck();
+        } catch (RuntimeException e) {
+            runtime.markFailure(e);
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    e,
+                    "Temporal worker health check failed: taskQueue={}, exception={}",
+                    binding.getTaskQueue(),
+                    e.getClass().getSimpleName());
+            scheduleReconnect("health_check_exception");
+        }
+    }
+
+    /**
+     * Runs a worker health check.
+     */
+    void healthCheck() {
+        if (shutdown.get() || !binding.isEnabled()) {
+            return;
+        }
+        WorkflowSubscriberRuntime currentRuntime = runtime;
+        if (!currentRuntime.isRunning()) {
+            scheduleReconnect("runtime_not_running");
+            return;
+        }
+        WorkerFactory workerFactory = currentRuntime.getWorkerFactory();
+        if (workerFactory == null || workerFactory.isShutdown() || workerFactory.isTerminated()) {
+            rebuildRuntime("worker_factory_closed");
+            return;
+        }
+        String transportState = transport.state(currentRuntime.getTransportHandle());
+        Logger.debug(
+                false,
+                "Tempus",
+                "Temporal worker health transport state: taskQueue={}, transportState={}",
+                binding.getTaskQueue(),
+                transportState);
+        if (isShutdownTransportState(transportState)) {
+            rebuildRuntime("transport_shutdown");
+            return;
+        }
+        if (isTransientFailureTransportState(transportState)) {
+            currentRuntime.markFailure(null);
+            if (currentRuntime.getConsecutiveFailures() >= bindingOptions.resolveWorkerHealthFailureThreshold()) {
+                rebuildRuntime("health_threshold_reached");
+            }
+            return;
+        }
+        if (!transport
+                .health(currentRuntime.getTransportHandle(), bindingOptions.resolveWorkerHealthProbeTimeoutSeconds())) {
+            currentRuntime.markFailure(null);
+            if (currentRuntime.getConsecutiveFailures() >= bindingOptions.resolveWorkerHealthFailureThreshold()) {
+                rebuildRuntime("health_threshold_reached");
+            }
+            return;
+        }
+        currentRuntime.markRunning();
+        Logger.debug(false, "Tempus", "Temporal worker health check completed: taskQueue={}", binding.getTaskQueue());
+    }
+
+    /**
+     * Rebuilds the worker runtime.
+     *
+     * @param reason rebuild reason
+     */
+    private synchronized void rebuildRuntime(String reason) {
+        if (shutdown.get()) {
+            return;
+        }
+        WorkflowSubscriberRuntime currentRuntime = runtime;
+        long backoffSeconds = reconnectBackoffSeconds(currentRuntime);
+        Logger.warn(
+                true,
+                "Tempus",
+                "Temporal worker rebuild started: reason={}, state={}, consecutiveFailures={}, attempt={}, backoffSeconds={}",
+                reason,
+                currentRuntime.getState(),
+                currentRuntime.getConsecutiveFailures(),
+                currentRuntime.getReconnectAttempts() + 1,
+                backoffSeconds);
+        closeRuntime(currentRuntime, false);
+        currentRuntime.markReconnectScheduled();
+        try {
+            TimeUnit.SECONDS.sleep(backoffSeconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    e,
+                    "Temporal worker rebuild interrupted: taskQueue={}",
+                    binding.getTaskQueue());
+            return;
+        }
+        long startedAt = System.currentTimeMillis();
+        startRuntime(reason);
+        if (runtime.isRunning()) {
+            Logger.info(
+                    false,
+                    "Tempus",
+                    "Temporal worker rebuild completed: attempt={}, taskQueue={}, elapsedMillis={}",
+                    runtime.getReconnectAttempts(),
+                    binding.getTaskQueue(),
+                    System.currentTimeMillis() - startedAt);
+        }
+    }
+
+    /**
+     * Schedules reconnect.
+     *
+     * @param reason scheduling reason
+     */
+    private void scheduleReconnect(String reason) {
+        if (shutdown.get() || !bindingOptions.isWorkerReconnectEnabled()) {
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    "Temporal worker reconnect skipped: enabled={}, shutdown={}, reason={}, taskQueue={}",
+                    bindingOptions.isWorkerReconnectEnabled(),
+                    shutdown.get(),
+                    reason,
+                    binding.getTaskQueue());
+            return;
+        }
+        if (!reconnectScheduled.compareAndSet(false, true)) {
+            return;
+        }
+        WorkflowSubscriberRuntime currentRuntime = runtime;
+        long backoffSeconds = reconnectBackoffSeconds(currentRuntime);
+        currentRuntime.markReconnectScheduled();
+        Logger.warn(
+                false,
+                "Tempus",
+                "Temporal worker reconnect scheduled: reason={}, taskQueue={}, attempt={}, backoffSeconds={}",
+                reason,
+                binding.getTaskQueue(),
+                currentRuntime.getReconnectAttempts(),
+                backoffSeconds);
+        ensureScheduler().schedule(() -> {
+            reconnectScheduled.set(false);
+            startRuntime(reason);
+        }, backoffSeconds, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Creates a WorkerFactory.
+     *
+     * @param workflowClient       workflow client
+     * @param workerFactoryOptions WorkerFactory options
+     * @return WorkerFactory
+     */
+    WorkerFactory createWorkerFactory(WorkflowClient workflowClient, WorkerFactoryOptions workerFactoryOptions) {
+        return WorkerFactory.newInstance(workflowClient, workerFactoryOptions);
+    }
+
+    /**
+     * Creates a worker.
+     *
+     * @param workerFactory WorkerFactory
+     * @param taskQueue     task queue
+     * @param workerOptions worker options
+     * @return Worker
+     */
+    Worker createWorker(WorkerFactory workerFactory, String taskQueue, WorkerOptions workerOptions) {
+        return workerFactory.newWorker(taskQueue, workerOptions);
+    }
+
+    /**
+     * Starts the WorkerFactory.
+     *
+     * @param workerFactory WorkerFactory
+     */
+    void startWorkerFactory(WorkerFactory workerFactory) {
+        workerFactory.start();
+    }
+
+    /**
+     * Closes the specified runtime.
+     *
+     * @param targetRuntime target runtime
+     * @param finalStop     whether this is the final stop
+     */
+    private void closeRuntime(WorkflowSubscriberRuntime targetRuntime, boolean finalStop) {
+        if (targetRuntime == null) {
+            return;
+        }
+        if (finalStop || targetRuntime.getState() != EnumValue.Lifecycle.ERROR) {
+            targetRuntime.markStopping();
+        }
+        WorkerFactory workerFactory = targetRuntime.getWorkerFactory();
+        if (workerFactory != null) {
+            try {
+                Logger.debug(
                         true,
                         "Tempus",
                         "Temporal worker factory shutdown started: taskQueue={}",
                         binding.getTaskQueue());
                 workerFactory.shutdown();
-                workerFactory.awaitTermination(10, TimeUnit.SECONDS);
-                Logger.info(
+                workerFactory.awaitTermination(bindingOptions.resolveShutdownAwaitSeconds(), TimeUnit.SECONDS);
+                Logger.debug(
                         false,
                         "Tempus",
                         "Temporal worker factory shutdown completed: taskQueue={}",
                         binding.getTaskQueue());
-            }
-        } catch (Exception e) {
-            if (ExceptionKit.isCausedBy(e, InterruptedException.class)) {
-                Thread.currentThread().interrupt();
-            }
-            Logger.warn(
-                    false,
-                    "Tempus",
-                    e,
-                    "Temporal worker factory shutdown failed: taskQueue={}, exception={}",
-                    binding.getTaskQueue(),
-                    e.getClass().getSimpleName());
-        } finally {
-            workerFactory = null;
-            if (serviceStubs != null) {
-                try {
-                    Logger.info(
-                            true,
-                            "Tempus",
-                            "Temporal worker service stubs shutdown started: endpoint={}",
-                            binding.getEndpoint());
-                    provider.shutdownServiceStubs(serviceStubs);
-                    Logger.info(
-                            false,
-                            "Tempus",
-                            "Temporal worker service stubs shutdown completed: endpoint={}",
-                            binding.getEndpoint());
-                } finally {
-                    serviceStubs = null;
+            } catch (Exception e) {
+                if (ExceptionKit.isCausedBy(e, InterruptedException.class)) {
+                    Thread.currentThread().interrupt();
                 }
+                Logger.warn(
+                        false,
+                        "Tempus",
+                        e,
+                        "Temporal worker factory shutdown failed: taskQueue={}, exception={}",
+                        binding.getTaskQueue(),
+                        e.getClass().getSimpleName());
+            } finally {
+                targetRuntime.setWorkerFactory(null);
+                targetRuntime.setWorker(null);
             }
-            state = EnumValue.Lifecycle.STOPPED;
         }
+        Object transportHandle = targetRuntime.getTransportHandle();
+        if (transportHandle != null) {
+            try {
+                transport.shutdown(transportHandle);
+            } catch (RuntimeException e) {
+                Logger.warn(
+                        false,
+                        "Tempus",
+                        e,
+                        "Temporal worker transport shutdown failed: taskQueue={}, exception={}",
+                        binding.getTaskQueue(),
+                        e.getClass().getSimpleName());
+            } finally {
+                targetRuntime.setTransportHandle(null);
+                targetRuntime.setWorkflowClient(null);
+            }
+        }
+        if (finalStop) {
+            targetRuntime.markStopped();
+        }
+    }
+
+    /**
+     * Calculates reconnect backoff in seconds.
+     *
+     * @param targetRuntime target runtime
+     * @return backoff in seconds
+     */
+    private long reconnectBackoffSeconds(WorkflowSubscriberRuntime targetRuntime) {
+        int attempt = targetRuntime == null ? 1 : Math.max(1, targetRuntime.getReconnectAttempts() + 1);
+        long initial = bindingOptions.resolveWorkerReconnectInitialBackoffSeconds();
+        long max = bindingOptions.resolveWorkerReconnectMaxBackoffSeconds();
+        long multiplier = 1L << Math.min(attempt - 1, 30);
+        return Math.min(initial * multiplier, max);
+    }
+
+    /**
+     * Completes the workflow binding options from binding defaults.
+     *
+     * @param source  source workflow binding options
+     * @param binding workflow subscriber binding
+     * @return completed workflow binding options
+     */
+    private static WorkflowBindingOptions completeOptions(
+            WorkflowBindingOptions source,
+            WorkflowSubscriberBinding binding) {
+        WorkflowBindingOptions target = source == null ? WorkflowBindingOptions.defaults() : source;
+        if (binding != null && !StringKit.hasText(target.getTaskQueue())) {
+            target.setTaskQueue(binding.getTaskQueue());
+        }
+        return target;
+    }
+
+    /**
+     * Checks whether the transport state means shutdown.
+     *
+     * @param transportState transport state name
+     * @return {@code true} when the transport state means shutdown
+     */
+    private static boolean isShutdownTransportState(String transportState) {
+        return WorkflowTransportState.SHUTDOWN.matches(transportState);
+    }
+
+    /**
+     * Checks whether the transport state means transient failure.
+     *
+     * @param transportState transport state name
+     * @return {@code true} when the transport state means transient failure
+     */
+    private static boolean isTransientFailureTransportState(String transportState) {
+        return WorkflowTransportState.TRANSIENT_FAILURE.matches(transportState);
+    }
+
+    /**
+     * Gets or creates the scheduler.
+     *
+     * @return scheduler
+     */
+    private synchronized ScheduledExecutorService ensureScheduler() {
+        if (scheduler == null || scheduler.isShutdown() || scheduler.isTerminated()) {
+            scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
+                Thread thread = new Thread(r, "bus-tempus-worker-" + binding.getTaskQueue());
+                thread.setDaemon(true);
+                return thread;
+            });
+        }
+        return scheduler;
+    }
+
+    /**
+     * Returns the current runtime.
+     *
+     * @return current runtime
+     */
+    WorkflowSubscriberRuntime runtime() {
+        return runtime;
     }
 
 }
