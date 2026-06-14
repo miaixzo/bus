@@ -103,7 +103,7 @@ final class WindowsSensors extends AbstractSensors {
                 "CPU",
                 "Temperature",
                 (h, ohmHardware) -> {
-                    String cpuIdentifier = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, 0);
+                    String cpuIdentifier = selectOhmCpuIdentifier(ohmHardware, false);
                     if (!cpuIdentifier.isEmpty()) {
                         return OhmSensor.querySensorValue(h, cpuIdentifier, "Temperature");
                     }
@@ -254,7 +254,7 @@ final class WindowsSensors extends AbstractSensors {
      */
     private static int[] getFansFromWMI() {
         WmiResult<Win32Fan.SpeedProperty> fan = Win32Fan.querySpeed();
-        if (fan.getResultCount() > 1) {
+        if (fan.getResultCount() > 0) {
             Logger.debug(false, "Health", "Found Fan data in WMI");
             int[] fanSpeeds = new int[fan.getResultCount()];
             for (int i = 0; i < fan.getResultCount(); i++) {
@@ -304,19 +304,7 @@ final class WindowsSensors extends AbstractSensors {
                 "Voltage",
                 "Voltage",
                 (h, ohmHardware) -> {
-                    // Look for identifier containing "cpu"
-                    String cpuIdentifier = null;
-                    for (int i = 0; i < ohmHardware.getResultCount(); i++) {
-                        String id = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, i);
-                        if (id.toLowerCase(Locale.ROOT).contains("cpu")) {
-                            cpuIdentifier = id;
-                            break;
-                        }
-                    }
-                    // If none found, just get the first one
-                    if (cpuIdentifier == null) {
-                        cpuIdentifier = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, 0);
-                    }
+                    String cpuIdentifier = selectOhmCpuIdentifier(ohmHardware, true);
                     // Now fetch sensor
                     return OhmSensor.querySensorValue(h, cpuIdentifier, "Voltage");
                 });
@@ -345,7 +333,7 @@ final class WindowsSensors extends AbstractSensors {
      */
     private static double getVoltsFromWMI() {
         WmiResult<Win32Processor.VoltProperty> voltage = Win32Processor.queryVoltage();
-        if (voltage.getResultCount() > 1) {
+        if (voltage.getResultCount() > 0) {
             Logger.debug(false, "Health", "Found Voltage data in WMI");
             int decivolts = WmiKit.getUint16(voltage, Win32Processor.VoltProperty.CURRENTVOLTAGE, 0);
             // If the eighth bit is set, bits 0-6 contain the voltage
@@ -369,6 +357,27 @@ final class WindowsSensors extends AbstractSensors {
             }
         }
         return 0d;
+    }
+
+    /**
+     * Selects a CPU hardware identifier from an Open Hardware Monitor result.
+     *
+     * @param ohmHardware the OHM hardware identifier result
+     * @param searchCpu   whether to prefer identifiers containing {@code cpu}
+     * @return the selected identifier, or an empty string if no identifier is available
+     */
+    private static String selectOhmCpuIdentifier(
+            WmiResult<OhmHardware.IdentifierProperty> ohmHardware,
+            boolean searchCpu) {
+        if (searchCpu) {
+            for (int i = 0; i < ohmHardware.getResultCount(); i++) {
+                String id = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, i);
+                if (id.toLowerCase(Locale.ROOT).contains("cpu")) {
+                    return id;
+                }
+            }
+        }
+        return WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, 0);
     }
 
     /**

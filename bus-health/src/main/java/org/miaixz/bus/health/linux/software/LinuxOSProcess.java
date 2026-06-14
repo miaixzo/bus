@@ -805,11 +805,9 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.userTime = statArray[ProcPidStat.USER_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
         this.minorFaults = statArray[ProcPidStat.MINOR_FAULTS.ordinal()];
         this.majorFaults = statArray[ProcPidStat.MAJOR_FAULTS.ordinal()];
-        long nonVoluntaryContextSwitches = Parsing.parseLongOrDefault(status.get("nonvoluntary_ctxt_switches"), 0L);
-        long voluntaryContextSwitches = Parsing.parseLongOrDefault(status.get("voluntary_ctxt_switches"), 0L);
-        this.voluntaryContextSwitches = voluntaryContextSwitches;
-        this.involuntaryContextSwitches = nonVoluntaryContextSwitches;
-        this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
+        this.voluntaryContextSwitches = Parsing.parseLongOrDefault(status.get("voluntary_ctxt_switches"), 0L);
+        this.involuntaryContextSwitches = Parsing.parseLongOrDefault(status.get("nonvoluntary_ctxt_switches"), 0L);
+        this.contextSwitches = this.voluntaryContextSwitches + this.involuntaryContextSwitches;
         if (getProcessID() == this.os.getProcessId()) {
             LinuxLibc.Rusage rusage = new LinuxLibc.Rusage();
             if (0 == LinuxLibc.INSTANCE.getrusage(LinuxLibc.RUSAGE_SELF, rusage)) {

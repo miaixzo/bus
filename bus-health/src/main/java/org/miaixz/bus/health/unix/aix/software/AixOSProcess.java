@@ -383,7 +383,7 @@ public class AixOSProcess extends AbstractOSProcess {
     @Override
     public String getCurrentWorkingDirectory() {
         try {
-            String cwdLink = "/proc" + getProcessID() + "/cwd";
+            String cwdLink = "/proc/" + getProcessID() + "/cwd";
             String cwd = new File(cwdLink).getCanonicalPath();
             if (!cwd.equals(cwdLink)) {
                 return cwd;

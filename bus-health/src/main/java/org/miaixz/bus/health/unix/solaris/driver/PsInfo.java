@@ -277,7 +277,8 @@ public final class PsInfo {
      * @return the get offset from buffer result
      */
     private static long getOffsetFromBuffer(Memory buffer, long offset, long increment) {
-        return increment == 8 ? buffer.getLong(offset) : buffer.getInt(offset);
+        // For 32-bit processes read the pointer as unsigned so high addresses are not sign-extended.
+        return increment == 8 ? buffer.getLong(offset) : Integer.toUnsignedLong(buffer.getInt(offset));
     }
 
 }

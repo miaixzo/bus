@@ -123,18 +123,6 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
     /**
      * Creates a new WindowsHWDiskStore instance.
      *
-     * @param name   the name
-     * @param model  the model
-     * @param serial the serial
-     * @param size   the size
-     */
-    private WindowsHWDiskStore(String name, String model, String serial, long size) {
-        super(name, model, serial, size);
-    }
-
-    /**
-     * Creates a new WindowsHWDiskStore instance.
-     *
      * @param name     the name
      * @param model    the model
      * @param serial   the serial

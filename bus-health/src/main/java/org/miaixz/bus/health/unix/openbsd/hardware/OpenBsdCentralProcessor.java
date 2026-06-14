@@ -95,9 +95,9 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         List<String> vmstat = Executor.runNative("vmstat -s");
         for (String line : vmstat) {
             if (line.endsWith("cpu context switches")) {
-                contextSwitches = Parsing.getFirstIntValue(line);
+                contextSwitches = Parsing.parseLongOrDefault(line.trim().split("\\s+")[0], 0L);
             } else if (line.endsWith("interrupts")) {
-                interrupts = Parsing.getFirstIntValue(line);
+                interrupts = Parsing.parseLongOrDefault(line.trim().split("\\s+")[0], 0L);
             }
         }
         return Pair.of(contextSwitches, interrupts);

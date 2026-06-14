@@ -52,6 +52,11 @@ public final class SolarisPowerSource extends AbstractPowerSource {
      */
     private static final int KSTAT_BATT_IDX;
 
+    /**
+     * The unsigned 32-bit unknown-capacity sentinel returned by battery kstats.
+     */
+    private static final long UNKNOWN_CAP = 0xFFFFFFFFL;
+
     static {
         try (KstatChain kc = KstatKit.openChain()) {
             if (kc.lookup(KSTAT_BATT_MOD[1], 0, null) != null) {
@@ -157,10 +162,10 @@ public final class SolarisPowerSource extends AbstractPowerSource {
                 if (ksp != null && kc.read(ksp)) {
                     // Predicted battery capacity when fully charged.
                     long energyFull = KstatKit.dataLookupLong(ksp, "bif_last_cap");
-                    if (energyFull == 0xffffffff || energyFull <= 0) {
+                    if (energyFull == UNKNOWN_CAP || energyFull <= 0) {
                         energyFull = KstatKit.dataLookupLong(ksp, "bif_design_cap");
                     }
-                    if (energyFull != 0xffffffff && energyFull > 0) {
+                    if (energyFull != UNKNOWN_CAP && energyFull > 0) {
                         psMaxCapacity = (int) energyFull;
                     }
                     long unit = KstatKit.dataLookupLong(ksp, "bif_unit");
@@ -180,12 +185,12 @@ public final class SolarisPowerSource extends AbstractPowerSource {
                 if (ksp != null && kc.read(ksp)) {
                     // estimated remaining battery capacity
                     long energyNow = KstatKit.dataLookupLong(ksp, "bst_rem_cap");
-                    if (energyNow >= 0) {
+                    if (energyNow >= 0 && energyNow != UNKNOWN_CAP) {
                         psCurrentCapacity = (int) energyNow;
                     }
                     // power or current supplied at battery terminal
                     long powerNow = KstatKit.dataLookupLong(ksp, "bst_rate");
-                    if (powerNow == 0xFFFFFFFF) {
+                    if (powerNow == UNKNOWN_CAP) {
                         powerNow = 0L;
                     }
                     psPowerUsageRate = powerNow;

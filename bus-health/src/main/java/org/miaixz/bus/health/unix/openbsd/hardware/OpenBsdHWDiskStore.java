@@ -121,6 +121,9 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
         String diskName;
         for (String device : devices) {
             diskName = device.split(Symbol.COLON)[0];
+            if (diskName.isEmpty()) {
+                continue;
+            }
             // get partitions using disklabel command (requires root)
             Tuple diskdata = Disklabel.getDiskParams(diskName);
             String model = diskdata.get(0);

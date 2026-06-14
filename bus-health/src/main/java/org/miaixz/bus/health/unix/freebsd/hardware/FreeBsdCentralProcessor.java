@@ -192,7 +192,10 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                 marker = "ID:";
                 procInfo = true;
             } else if (procInfo && checkLine.contains(marker)) {
-                return checkLine.split(marker)[1].trim();
+                String[] parts = checkLine.split(marker);
+                if (parts.length > 1) {
+                    return parts[1].trim();
+                }
             }
         }
         // If we've gotten this far, dmidecode failed. Used the passed-in values

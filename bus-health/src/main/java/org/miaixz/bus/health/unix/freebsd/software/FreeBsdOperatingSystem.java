@@ -204,6 +204,9 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
      */
     @Override
     public OSProcess getProcess(int pid) {
+        if (pid < 0) {
+            return null;
+        }
         List<OSProcess> procs = getProcessListFromPS(pid);
         if (procs.isEmpty()) {
             return null;

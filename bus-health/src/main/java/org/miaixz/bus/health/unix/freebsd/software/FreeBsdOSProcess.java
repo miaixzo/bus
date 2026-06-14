@@ -775,13 +775,11 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
         this.minorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MINFLT), 0L);
         this.majorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MAJFLT), 0L);
-        long voluntaryContextSwitches = Parsing
+        this.voluntaryContextSwitches = Parsing
                 .parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NVCSW), 0L);
-        long nonVoluntaryContextSwitches = Parsing
+        this.involuntaryContextSwitches = Parsing
                 .parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NIVCSW), 0L);
-        this.voluntaryContextSwitches = voluntaryContextSwitches;
-        this.involuntaryContextSwitches = nonVoluntaryContextSwitches;
-        this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
+        this.contextSwitches = this.voluntaryContextSwitches + this.involuntaryContextSwitches;
         this.commandLineBackup = psMap.get(FreeBsdOperatingSystem.PsKeywords.ARGS);
         return true;
     }
@@ -807,6 +805,9 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
 
         // Split all non-Digits away -> ["", "{soft-limit}, "{hard-limit}"]
         final String[] split = maxOpenFilesLine.get().split("\\D+");
+        if (split.length <= index) {
+            return -1;
+        }
         return Parsing.parseLongOrDefault(split[index], -1);
     }
 

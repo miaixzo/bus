@@ -397,7 +397,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
     @Override
     public String getCurrentWorkingDirectory() {
         try {
-            String cwdLink = "/proc" + getProcessID() + "/cwd";
+            String cwdLink = "/proc/" + getProcessID() + "/cwd";
             String cwd = new File(cwdLink).getCanonicalPath();
             if (!cwd.equals(cwdLink)) {
                 return cwd;
@@ -606,8 +606,10 @@ public class SolarisOSProcess extends AbstractOSProcess {
     public long getSoftOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
             final Resource.Rlimit rlimit = new Resource.Rlimit();
-            SolarisLibc.INSTANCE.getrlimit(SolarisLibc.RLIMIT_NOFILE, rlimit);
-            return rlimit.rlim_cur;
+            if (SolarisLibc.INSTANCE.getrlimit(SolarisLibc.RLIMIT_NOFILE, rlimit) == 0) {
+                return rlimit.rlim_cur;
+            }
+            return -1L;
         } else {
             return getProcessOpenFileLimit(getProcessID(), 1);
         }
@@ -622,8 +624,10 @@ public class SolarisOSProcess extends AbstractOSProcess {
     public long getHardOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
             final Resource.Rlimit rlimit = new Resource.Rlimit();
-            SolarisLibc.INSTANCE.getrlimit(SolarisLibc.RLIMIT_NOFILE, rlimit);
-            return rlimit.rlim_max;
+            if (SolarisLibc.INSTANCE.getrlimit(SolarisLibc.RLIMIT_NOFILE, rlimit) == 0) {
+                return rlimit.rlim_max;
+            }
+            return -1L;
         } else {
             return getProcessOpenFileLimit(getProcessID(), 2);
         }
@@ -796,6 +800,9 @@ public class SolarisOSProcess extends AbstractOSProcess {
 
         // Split all non-Digits away -> ["", "{soft-limit}, "{hard-limit}"]
         final String[] split = nofilesLine.get().split("\\D+");
+        if (split.length <= index) {
+            return -1;
+        }
         return Parsing.parseLongOrDefault(split[index], -1);
     }
 

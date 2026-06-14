@@ -69,14 +69,14 @@ final class LinuxSensors extends AbstractSensors {
      */
     private static final List<String> HWMON_NAME_PRIORITY = Stream.of(
             Config.get(HWMON_NAME_PRIORITY_CONFIG, "coretemp,k10temp,zenpower,k8temp,via-cputemp,acpitz").split(","))
-            .filter((s) -> !s.isEmpty()).collect(Collectors.toList());
+            .filter(s -> !s.isEmpty()).collect(Collectors.toList());
 
     /**
      * The THERMAL_ZONE_TYPE_PRIORITY constant.
      */
     private static final List<String> THERMAL_ZONE_TYPE_PRIORITY = Stream
             .of(Config.get(THERMAL_ZONE_TYPE_PRIORITY_CONFIG, "cpu-thermal,x86_pkg_temp").split(","))
-            .filter((s) -> !s.isEmpty()).collect(Collectors.toList());
+            .filter(s -> !s.isEmpty()).collect(Collectors.toList());
 
     /**
      * The TYPE constant.
@@ -211,7 +211,7 @@ final class LinuxSensors extends AbstractSensors {
      * @param sensorFileFilter A FileFilter for detecting valid sensor files
      */
     private void getSensorFilesFromPath(String sensorPath, String sensor, FileFilter sensorFileFilter) {
-        getSensorFilesFromPath(sensorPath, sensor, sensorFileFilter, (files) -> 0);
+        getSensorFilesFromPath(sensorPath, sensor, sensorFileFilter, files -> 0);
     }
 
     /**
@@ -321,7 +321,7 @@ final class LinuxSensors extends AbstractSensors {
                 f -> f.getName().equals(TYPE) || f.getName().equals(TEMP),
                 files -> Stream.of(files).filter(f -> TYPE.equals(f.getName())).findFirst().map(File::getPath)
                         .map(Builder::getStringFromFile).map(THERMAL_ZONE_TYPE_PRIORITY::indexOf)
-                        .filter((index) -> index >= 0).orElse(THERMAL_ZONE_TYPE_PRIORITY.size()));
+                        .filter(index -> index >= 0).orElse(THERMAL_ZONE_TYPE_PRIORITY.size()));
     }
 
     /**

@@ -58,12 +58,6 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
      */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
-    // Conversion: LHM reports memory in MB; 1 MB = 1_048_576 bytes
-    /**
-     * The MB_TO_BYTES constant.
-     */
-    private static final long MB_TO_BYTES = 1_048_576L;
-
     /**
      * The ADAPTER_STRING constant.
      */
