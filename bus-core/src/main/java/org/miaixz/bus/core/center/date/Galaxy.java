@@ -921,36 +921,54 @@ public class Galaxy {
     }
 
     /**
-     * Calculates the Julian day of the new moon ('shuo') for a given Julian day.
+     * Calculates a solar term or new moon using high/low precision algorithms.
      *
-     * @param jd The Julian day.
-     * @return The Julian day of the new moon.
+     * @param qi   whether to calculate a solar term ({@code true}) or new moon ({@code false})
+     * @param high whether to use the high precision algorithm
+     * @param jd   the absolute Julian day
+     * @param pc   correction offset
+     * @return the calculated day
      */
-    public static double calcShuo(double jd) {
-        int size = SHUO_KB.length;
+    private static double qiShuo(boolean qi, boolean high, double jd, int pc) {
+        double w = qi ? Math.floor((jd + pc - 2451259) / 365.2422 * 24) * Math.PI / 12
+                : Math.floor((jd + pc - 2451551) / 29.5306) * PI_2;
+        double d = qi ? high ? qiHigh(w) : qiLow(w) : high ? shuoHigh(w) : shuoLow(w);
+        return Math.floor(d + 0.5);
+    }
+
+    /**
+     * Calculates a solar term or new moon using the historical table and correction data.
+     *
+     * @param qi  whether to calculate a solar term ({@code true}) or new moon ({@code false})
+     * @param jd  the Julian day relative to J2000
+     * @param kb  the historical table
+     * @param pc  correction offset
+     * @param fkb the correction table
+     * @return the calculated day relative to J2000
+     */
+    private static double calc(boolean qi, double jd, double[] kb, int pc, String fkb) {
+        int size = kb.length;
         double d = 0;
-        int pc = 14;
-        jd += 2451545;
-        double f1 = SHUO_KB[0] - pc, f2 = SHUO_KB[size - 1] - pc, f3 = 2436935;
-        if (jd < f1 || jd >= f3) {
-            d = Math.floor(shuoHigh(Math.floor((jd + pc - 2451551) / 29.5306) * PI_2) + 0.5);
-        } else if (jd >= f1 && jd < f2) {
+        double j = jd + 2451545;
+        double f1 = kb[0] - pc;
+        double f2 = kb[size - 1] - pc;
+        if (j < f1 || j >= 2436935) {
+            d = qiShuo(qi, true, j, pc);
+        } else if (j >= f1 && j < f2) {
             int i;
             for (i = 0; i < size; i += 2) {
-                if (jd + pc < SHUO_KB[i + 2]) {
+                if (j + pc < kb[i + 2]) {
                     break;
                 }
             }
-            d = SHUO_KB[i] + SHUO_KB[i + 1] * Math.floor((jd + pc - SHUO_KB[i]) / SHUO_KB[i + 1]);
-            d = Math.floor(d + 0.5);
-            if (d == 1683460) {
-                d++;
+            d = Math.floor(kb[i] + kb[i + 1] * Math.floor((j + pc - kb[i]) / kb[i + 1]) + 0.5);
+            if (!qi && d == 1683460) {
+                d += 1;
             }
             d -= 2451545;
-        } else if (jd >= f2) {
-            d = Math.floor(shuoLow(Math.floor((jd + pc - 2451551) / 29.5306) * PI_2) + 0.5);
-            int from = (int) ((jd - f2) / 29.5306);
-            char n = SB.charAt(from);
+        } else if (j >= f2) {
+            d = qiShuo(qi, false, j, pc);
+            char n = fkb.charAt((int) (qi ? (j - f2) / 365.2422 * 24 : (j - f2) / 29.5306));
             if ('1' == n) {
                 d += 1;
             } else if ('2' == n) {
@@ -961,43 +979,23 @@ public class Galaxy {
     }
 
     /**
+     * Calculates the Julian day of the new moon ('shuo') for a given Julian day.
+     *
+     * @param jd The Julian day.
+     * @return The Julian day of the new moon.
+     */
+    public static double calcShuo(double jd) {
+        return calc(false, jd, SHUO_KB, 14, SB);
+    }
+
+    /**
      * Calculates the Julian day of the solar term ('qi') for a given Julian day.
      *
      * @param jd The Julian day.
      * @return The Julian day of the solar term.
      */
     public static double calcQi(double jd) {
-        int size = QI_KB.length;
-        double d = 0;
-        int pc = 7;
-        jd += 2451545;
-        double f1 = QI_KB[0] - pc, f2 = QI_KB[size - 1] - pc, f3 = 2436935;
-        if (jd < f1 || jd >= f3) {
-            d = Math.floor(qiHigh(Math.floor((jd + pc - 2451259) / 365.2422 * 24) * Math.PI / 12) + 0.5);
-        } else if (jd >= f1 && jd < f2) {
-            int i;
-            for (i = 0; i < size; i += 2) {
-                if (jd + pc < QI_KB[i + 2]) {
-                    break;
-                }
-            }
-            d = QI_KB[i] + QI_KB[i + 1] * Math.floor((jd + pc - QI_KB[i]) / QI_KB[i + 1]);
-            d = Math.floor(d + 0.5);
-            if (d == 1683460) {
-                d++;
-            }
-            d -= 2451545;
-        } else if (jd >= f2) {
-            d = Math.floor(qiLow(Math.floor((jd + pc - 2451259) / 365.2422 * 24) * Math.PI / 12) + 0.5);
-            int from = (int) ((jd - f2) / 365.2422 * 24);
-            char n = QB.charAt(from);
-            if ('1' == n) {
-                d += 1;
-            } else if ('2' == n) {
-                d -= 1;
-            }
-        }
-        return d;
+        return calc(true, jd, QI_KB, 7, QB);
     }
 
     /**

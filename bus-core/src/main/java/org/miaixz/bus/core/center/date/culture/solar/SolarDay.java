@@ -96,14 +96,15 @@ public class SolarDay extends DayParts {
      * @throws IllegalArgumentException if the date is invalid
      */
     public static void validate(int year, int month, int day) {
-        if (day < 1) {
-            throw new IllegalArgumentException(String.format("illegal solar day: %d-%d-%d", year, month, day));
-        }
-        if (1582 == year && 10 == month) {
-            if ((day > 4 && day < 15) || day > 31) {
-                throw new IllegalArgumentException(String.format("illegal solar day: %d-%d-%d", year, month, day));
+        boolean illegal = day < 1;
+        if (!illegal) {
+            if (1582 == year && 10 == month) {
+                illegal = (day > 4 && day < 15) || day > 31;
+            } else {
+                illegal = day > SolarMonth.fromYm(year, month).getDayCount();
             }
-        } else if (day > SolarMonth.fromYm(year, month).getDayCount()) {
+        }
+        if (illegal) {
             throw new IllegalArgumentException(String.format("illegal solar day: %d-%d-%d", year, month, day));
         }
     }
@@ -132,19 +133,10 @@ public class SolarDay extends DayParts {
      * @return the Zodiac sign
      */
     public Zodiac getZodiac() {
-        int y = month * 100 + day;
-        return Zodiac.get(
-                y > 1221 || y < 120 ? 9
-                        : y < 219 ? 10
-                                : y < 321 ? 11
-                                        : y < 420 ? 0
-                                                : y < 521 ? 1
-                                                        : y < 622 ? 2
-                                                                : y < 723 ? 3
-                                                                        : y < 823 ? 4
-                                                                                : y < 923 ? 5
-                                                                                        : y < 1024 ? 6
-                                                                                                : y < 1123 ? 7 : 8);
+        int[] days = { 19, 18, 20, 19, 20, 21, 22, 22, 22, 23, 22, 21 };
+        int m = month - 1;
+        int offset = day > days[m] ? 1 : 0;
+        return Zodiac.values()[Math.floorMod(9 + m + offset, 12)];
     }
 
     /**
@@ -173,10 +165,7 @@ public class SolarDay extends DayParts {
      * @return true if this day is before the target
      */
     public boolean isBefore(SolarDay target) {
-        if (year != target.year) {
-            return year < target.year;
-        }
-        return month != target.month ? month < target.month : day < target.day;
+        return getCompareIndex() < target.getCompareIndex();
     }
 
     /**
@@ -186,10 +175,7 @@ public class SolarDay extends DayParts {
      * @return true if this day is after the target
      */
     public boolean isAfter(SolarDay target) {
-        if (year != target.year) {
-            return year > target.year;
-        }
-        return month != target.month ? month > target.month : day > target.day;
+        return getCompareIndex() > target.getCompareIndex();
     }
 
     /**

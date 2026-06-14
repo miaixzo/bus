@@ -46,9 +46,7 @@ public class HijriMonth extends MonthParts {
      * @throws IllegalArgumentException if the month or year is invalid
      */
     public static void validate(int year, int month) {
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException("illegal hijri month: " + month);
-        }
+        validateRange(month, 1, 12, "hijri month");
         HijriYear.validate(year);
     }
 

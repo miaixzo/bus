@@ -52,9 +52,7 @@ public class HijriYear extends YearParts {
      * @throws IllegalArgumentException if the year is out of range
      */
     public static void validate(int year) {
-        if (year < -640 || year > 9666) {
-            throw new IllegalArgumentException("illegal hijri year: " + year);
-        }
+        validateRange(year, -640, 9666, "hijri year");
     }
 
     /**

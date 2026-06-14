@@ -74,9 +74,7 @@ public class SolarMonth extends MonthParts {
      * @throws IllegalArgumentException if validation fails
      */
     public static void validate(int year, int month) {
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException("illegal solar month: " + month);
-        }
+        validateRange(month, 1, 12, "solar month");
         SolarYear.validate(year);
     }
 

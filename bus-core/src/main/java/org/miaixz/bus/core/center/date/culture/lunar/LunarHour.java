@@ -147,17 +147,9 @@ public class LunarHour extends SecondParts {
         if (n == 0) {
             return fromYmdHms(year, month, day, hour, minute, second);
         }
-        int h = hour + n * 2;
-        int diff = h < 0 ? -1 : 1;
-        int hour = Math.abs(h);
-        int days = hour / 24 * diff;
-        hour = (hour % 24) * diff;
-        if (hour < 0) {
-            hour += 24;
-            days--;
-        }
-        LunarDay d = getLunarDay().next(days);
-        return fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
+        long h = hour + n * 2L;
+        LunarDay d = getLunarDay().next((int) Math.floorDiv(h, 24));
+        return fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), (int) Math.floorMod(h, 24), minute, second);
     }
 
     /**
@@ -167,15 +159,7 @@ public class LunarHour extends SecondParts {
      * @return true if this hour is before the target, false otherwise
      */
     public boolean isBefore(LunarHour target) {
-        LunarDay d0 = getLunarDay();
-        LunarDay d1 = target.getLunarDay();
-        if (!d0.equals(d1)) {
-            return d0.isBefore(d1);
-        }
-        if (hour != target.hour) {
-            return hour < target.hour;
-        }
-        return minute != target.minute ? minute < target.minute : second < target.second;
+        return getCompareIndex() < target.getCompareIndex();
     }
 
     /**
@@ -185,15 +169,7 @@ public class LunarHour extends SecondParts {
      * @return true if this hour is after the target, false otherwise
      */
     public boolean isAfter(LunarHour target) {
-        LunarDay d0 = getLunarDay();
-        LunarDay d1 = target.getLunarDay();
-        if (!d0.equals(d1)) {
-            return d0.isAfter(d1);
-        }
-        if (hour != target.hour) {
-            return hour > target.hour;
-        }
-        return minute != target.minute ? minute > target.minute : second > target.second;
+        return getCompareIndex() > target.getCompareIndex();
     }
 
     /**

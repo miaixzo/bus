@@ -48,9 +48,7 @@ public class SixtyCycleYear extends Loops {
      * @throws IllegalArgumentException if the year is out of the supported range.
      */
     public SixtyCycleYear(int year) {
-        if (year < -1 || year > 9999) {
-            throw new IllegalArgumentException("illegal sixty cycle year: " + year);
-        }
+        validateRange(year, -1, 9999, "sixty cycle year");
         this.year = year;
     }
 

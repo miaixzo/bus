@@ -56,4 +56,13 @@ public abstract class YearParts extends Loops {
         return year;
     }
 
+    /**
+     * Gets the index used for chronological comparisons.
+     *
+     * @return comparison index
+     */
+    protected long getCompareIndex() {
+        return year * 10000L;
+    }
+
 }

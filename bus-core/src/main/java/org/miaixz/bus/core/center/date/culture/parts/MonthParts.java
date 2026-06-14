@@ -53,4 +53,14 @@ public abstract class MonthParts extends YearParts {
         return month;
     }
 
+    /**
+     * Gets the index used for chronological comparisons.
+     *
+     * @return comparison index
+     */
+    @Override
+    protected long getCompareIndex() {
+        return super.getCompareIndex() + (month > 0 ? month * 2L : -month * 2L + 1) * 100;
+    }
+
 }
