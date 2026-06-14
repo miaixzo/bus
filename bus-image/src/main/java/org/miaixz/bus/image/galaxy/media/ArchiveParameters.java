@@ -273,7 +273,7 @@ public class ArchiveParameters {
         if (!hasText(overrideDicomTagsList)) {
             return null;
         }
-        return Arrays.stream(overrideDicomTagsList.split(TAG_DELIMITER)).map(String::trim)
+        return Arrays.stream(overrideDicomTagsList.split(TAG_DELIMITER + "\\s*")).map(String::trim)
                 .mapToInt(ArchiveParameters::parseTagId).filter(tagId -> tagId != -1).toArray();
     }
 

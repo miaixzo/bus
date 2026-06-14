@@ -51,6 +51,21 @@ public class ManifestSeries implements ManifestXml, Comparable<ManifestSeries> {
     private static final int MAX_COMPRESSION = 100;
 
     /**
+     * The direct download thumbnail attribute.
+     */
+    private static final String ATTR_DIRECT_DOWNLOAD_THUMBNAIL = "DirectDownloadThumbnail";
+
+    /**
+     * The WADO transfer syntax UID attribute.
+     */
+    private static final String ATTR_WADO_TRANSFER_SYNTAX_UID = "WadoTransferSyntaxUID";
+
+    /**
+     * The WADO compression rate attribute.
+     */
+    private static final String ATTR_WADO_COMPRESSION_RATE = "WadoCompressionRate";
+
+    /**
      * The series instance uid value.
      */
     private final String seriesInstanceUID;
@@ -303,9 +318,9 @@ public class ManifestSeries implements ManifestXml, Comparable<ManifestSeries> {
         ManifestXml.addXmlAttribute(Tag.SeriesDescription, seriesDescription, writer);
         ManifestXml.addXmlAttribute(Tag.SeriesNumber, seriesNumber, writer);
         ManifestXml.addXmlAttribute(Tag.Modality, modality, writer);
-        ManifestXml.addXmlAttribute("DirectDownloadThumbnail", thumbnail, writer);
-        ManifestXml.addXmlAttribute("WadoTransferSyntaxUID", wadoTransferSyntaxUID, writer);
-        ManifestXml.addXmlAttribute("WadoCompressionRate", getCompressionRateString(), writer);
+        ManifestXml.addXmlAttribute(ATTR_DIRECT_DOWNLOAD_THUMBNAIL, thumbnail, writer);
+        ManifestXml.addXmlAttribute(ATTR_WADO_TRANSFER_SYNTAX_UID, wadoTransferSyntaxUID, writer);
+        ManifestXml.addXmlAttribute(ATTR_WADO_COMPRESSION_RATE, getCompressionRateString(), writer);
         writer.append(">");
 
         ArrayList<ManifestInstance> sortedInstances = new ArrayList<>(instances.values());

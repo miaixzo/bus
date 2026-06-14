@@ -249,7 +249,7 @@ public final class LutShape {
      */
     @Override
     public boolean equals(Object o) {
-        return this == o || (o instanceof LutShape other && isFunction() == other.isFunction()
+        return this == o || (o instanceof LutShape other && Objects.equals(function, other.function)
                 && Objects.equals(explanation, other.explanation) && Objects.equals(lookup, other.lookup));
     }
 
@@ -260,7 +260,7 @@ public final class LutShape {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(isFunction(), explanation, lookup);
+        return Objects.hash(function, explanation, lookup);
     }
 
     /**

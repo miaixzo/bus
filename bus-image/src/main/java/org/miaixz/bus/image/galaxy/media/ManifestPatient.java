@@ -318,7 +318,7 @@ public class ManifestPatient implements ManifestXml, Comparable<ManifestPatient>
         if (sex == null) {
             return null;
         }
-        String upperSex = sex.toUpperCase(Locale.getDefault());
+        String upperSex = sex.toUpperCase(Locale.ROOT);
         if (upperSex.startsWith("M")) {
             return "M";
         }
