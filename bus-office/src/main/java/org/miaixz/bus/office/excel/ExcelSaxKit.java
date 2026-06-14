@@ -109,7 +109,28 @@ public class ExcelSaxKit {
             final RowHandler rowHandler,
             final boolean padCellAtEndOfRow,
             final int[] includeColumns) {
-        return isXlsx ? new Excel07SaxReader(rowHandler, padCellAtEndOfRow, includeColumns)
+        return createSaxReader(isXlsx, rowHandler, padCellAtEndOfRow, includeColumns, false);
+    }
+
+    /**
+     * Creates an {@link ExcelSaxReader} instance.
+     *
+     * @param isXlsx                {@code true} if the Excel file is in XLSX format (07 format), {@code false}
+     *                              otherwise.
+     * @param rowHandler            The row handler to process each row.
+     * @param padCellAtEndOfRow     {@code true} to pad missing cells at the end of each row, {@code false} otherwise.
+     * @param includeColumns        Optional included columns (sorted unique indexes).
+     * @param readOnlySharedStrings {@code true} to read XLSX shared strings through POI read-only mode, {@code false}
+     *                              to keep the default shared strings behavior.
+     * @return An {@link ExcelSaxReader} instance.
+     */
+    public static ExcelSaxReader<?> createSaxReader(
+            final boolean isXlsx,
+            final RowHandler rowHandler,
+            final boolean padCellAtEndOfRow,
+            final int[] includeColumns,
+            final boolean readOnlySharedStrings) {
+        return isXlsx ? new Excel07SaxReader(rowHandler, padCellAtEndOfRow, includeColumns, readOnlySharedStrings)
                 : new Excel03SaxReader(rowHandler);
     }
 
@@ -154,10 +175,14 @@ public class ExcelSaxKit {
                 break;
 
             case SSTINDEX:
+                if (null == sharedStrings) {
+                    result = value;
+                    break;
+                }
                 try {
                     final int index = Integer.parseInt(value);
                     result = sharedStrings.getItemAt(index).getString();
-                } catch (final NumberFormatException e) {
+                } catch (final NumberFormatException | IndexOutOfBoundsException e) {
                     result = value;
                 }
                 break;

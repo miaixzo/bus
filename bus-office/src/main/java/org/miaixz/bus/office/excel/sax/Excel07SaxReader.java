@@ -29,10 +29,10 @@ import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.model.SharedStrings;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -52,6 +52,11 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * Handler for parsing sheet data.
      */
     private final SheetDataSaxHandler handler;
+
+    /**
+     * Whether shared strings should be read through POI read-only mode.
+     */
+    private final boolean readOnlySharedStrings;
 
     /**
      * Constructs a new {@code Excel07SaxReader}.
@@ -82,7 +87,23 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @param includeColumns    Optional included columns (sorted unique indexes).
      */
     public Excel07SaxReader(final RowHandler rowHandler, final boolean padCellAtEndOfRow, final int[] includeColumns) {
+        this(rowHandler, padCellAtEndOfRow, includeColumns, false);
+    }
+
+    /**
+     * Constructs a new {@code Excel07SaxReader}.
+     *
+     * @param rowHandler            The row handler to process each row.
+     * @param padCellAtEndOfRow     {@code true} to pad missing cells at the end of a row with {@code null} values,
+     *                              {@code false} otherwise.
+     * @param includeColumns        Optional included columns (sorted unique indexes).
+     * @param readOnlySharedStrings {@code true} to read shared strings through POI read-only mode, {@code false} to
+     *                              keep the default shared strings behavior.
+     */
+    public Excel07SaxReader(final RowHandler rowHandler, final boolean padCellAtEndOfRow, final int[] includeColumns,
+            final boolean readOnlySharedStrings) {
         this.handler = new SheetDataSaxHandler(rowHandler, padCellAtEndOfRow, includeColumns);
+        this.readOnlySharedStrings = readOnlySharedStrings;
     }
 
     /**
@@ -170,7 +191,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     public Excel07SaxReader read(final OPCPackage opcPackage, final String idOrRidOrSheetName)
             throws InternalException {
         try {
-            return read(new XSSFReader(opcPackage), idOrRidOrSheetName);
+            return read(new XSSFReader(opcPackage, this.readOnlySharedStrings), idOrRidOrSheetName);
         } catch (final OpenXML4JException | IOException e) {
             Logger.warn(
                     false,
@@ -195,6 +216,8 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      */
     public Excel07SaxReader read(final XSSFReader xssfReader, final String idOrRidOrSheetName)
             throws InternalException {
+        configureSharedStringsMode(xssfReader);
+
         // Get shared styles table, styles are not mandatory.
         try {
             this.handler.stylesTable = xssfReader.getStylesTable();
@@ -202,14 +225,42 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
             // ignore
         }
 
-        // Get shared strings table.
-        // Starting from POI-5.2.0, the return value has changed, causing MethodNotFoundException in actual use.
-        // Reflection is used here to call the method, resolving the return value change issue across different
-        // versions.
-        // this.handler.sharedStrings = xssfReader.getSharedStringsTable();
-        this.handler.sharedStrings = MethodKit.invoke(xssfReader, "getSharedStringsTable");
+        this.handler.sharedStrings = readSharedStrings(xssfReader);
 
         return readSheets(xssfReader, idOrRidOrSheetName);
+    }
+
+    /**
+     * Configures the shared strings mode on an {@link XSSFReader}.
+     *
+     * @param xssfReader {@link XSSFReader}, the Excel reader.
+     */
+    private void configureSharedStringsMode(final XSSFReader xssfReader) {
+        if (null != xssfReader) {
+            xssfReader.setUseReadOnlySharedStringsTable(this.readOnlySharedStrings);
+        }
+    }
+
+    /**
+     * Reads the shared strings table with the configured shared strings mode.
+     *
+     * @param xssfReader {@link XSSFReader}, the Excel reader.
+     * @return The shared strings table, or {@code null} when shared strings are not available.
+     * @throws InternalException If shared strings cannot be read.
+     */
+    private SharedStrings readSharedStrings(final XSSFReader xssfReader) throws InternalException {
+        try {
+            return xssfReader.getSharedStringsTable();
+        } catch (final IOException | InvalidFormatException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel 2007 SAX shared strings read failed: readOnly={}, exception={}",
+                    this.readOnlySharedStrings,
+                    e.getClass().getSimpleName());
+            throw new InternalException(e);
+        }
     }
 
     /**

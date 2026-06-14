@@ -395,7 +395,7 @@ public class WorkflowBindingOptions {
      */
     public int resolveMaxWorkflowTaskPollers() {
         int value = getRuntime().getWorker().getMaxWorkflowTaskPollers();
-        return value <= 0 ? 2 : value;
+        return value < 2 ? 2 : value;
     }
 
     /**
@@ -405,7 +405,7 @@ public class WorkflowBindingOptions {
      */
     public int resolveMaxActivityTaskPollers() {
         int value = getRuntime().getWorker().getMaxActivityTaskPollers();
-        return value <= 0 ? 2 : value;
+        return value <= 0 ? 1 : value;
     }
 
     /**
@@ -800,7 +800,7 @@ public class WorkflowBindingOptions {
         /**
          * Activity task poller count.
          */
-        int maxActivityTaskPollers = 2;
+        int maxActivityTaskPollers = 1;
 
         /**
          * Workflow cache size.

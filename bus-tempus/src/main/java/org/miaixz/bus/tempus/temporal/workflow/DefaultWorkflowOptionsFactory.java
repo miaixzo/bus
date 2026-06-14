@@ -29,6 +29,7 @@ import io.temporal.activity.ActivityOptions;
 import io.temporal.client.WorkflowOptions;
 import io.temporal.worker.WorkerFactoryOptions;
 import io.temporal.worker.WorkerOptions;
+import io.temporal.worker.tuning.PollerBehaviorSimpleMaximum;
 
 /**
  * Builds Temporal SDK workflow, activity, worker, and worker factory options from {@link WorkflowBindingOptions}.
@@ -173,8 +174,10 @@ public class DefaultWorkflowOptionsFactory implements WorkflowOptionsFactory {
                 effective.resolveMaxTaskQueueActivitiesPerSecond());
         WorkerOptions.Builder builder = WorkerOptions.newBuilder().setMaxConcurrentActivityExecutionSize(maxConcurrent)
                 .setMaxConcurrentWorkflowTaskExecutionSize(maxConcurrent)
-                .setMaxConcurrentActivityTaskPollers(effective.resolveMaxActivityTaskPollers())
-                .setMaxConcurrentWorkflowTaskPollers(effective.resolveMaxWorkflowTaskPollers());
+                .setActivityTaskPollersBehavior(
+                        new PollerBehaviorSimpleMaximum(effective.resolveMaxActivityTaskPollers()))
+                .setWorkflowTaskPollersBehavior(
+                        new PollerBehaviorSimpleMaximum(effective.resolveMaxWorkflowTaskPollers()));
         if (effective.resolveMaxWorkerActivitiesPerSecond() > 0D) {
             builder.setMaxWorkerActivitiesPerSecond(effective.resolveMaxWorkerActivitiesPerSecond());
         }
