@@ -283,12 +283,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 -----
 
-## 📄 License
-
-[License information]
-
------
-
 ## 🔗 Related Documentation
 
 - [Bus Framework Documentation](https://www.miaixz.org)
