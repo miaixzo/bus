@@ -98,19 +98,11 @@ public abstract class DicomFiles {
     private static void scan(Path path, boolean printout, Callback scb) {
         if (Files.isDirectory(path) && Files.isReadable(path)) {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
-                Logger.debug(
-                        true,
-                        "Image",
-                        "DICOM directory scan started: directoryName={}",
-                        path.getFileName());
+                Logger.debug(true, "Image", "DICOM directory scan started: directoryName={}", path.getFileName());
                 for (Path entry : stream) {
                     scan(entry, printout, scb);
                 }
-                Logger.debug(
-                        false,
-                        "Image",
-                        "DICOM directory scan finished: directoryName={}",
-                        path.getFileName());
+                Logger.debug(false, "Image", "DICOM directory scan finished: directoryName={}", path.getFileName());
             } catch (IOException e) {
                 Logger.warn(
                         false,

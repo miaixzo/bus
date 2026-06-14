@@ -183,8 +183,7 @@ public class SolarTime extends SecondParts {
      * @return the number of seconds difference (positive if target is earlier)
      */
     public int subtract(SolarTime target) {
-        long t = getSolarDay().subtract(target.getSolarDay()) * 86400L + getSecondsInDay()
-                - target.getSecondsInDay();
+        long t = getSolarDay().subtract(target.getSolarDay()) * 86400L + getSecondsInDay() - target.getSecondsInDay();
         if (t < Integer.MIN_VALUE || t > Integer.MAX_VALUE) {
             throw new ArithmeticException("seconds difference exceeds int range: " + t);
         }

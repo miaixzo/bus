@@ -71,8 +71,8 @@ public class Format extends java.text.Format {
     /**
      * Characters for a custom base-32 encoding used in MD5 hashing.
      */
-    private static final char[] CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
-            'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v'};
+    private static final char[] CHARS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
+            'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v' };
 
     /**
      * Number of bytes in a Java long primitive type.
@@ -795,7 +795,7 @@ public class Format extends java.text.Format {
     private static String tzid(String s) {
         int length = s.length();
         if (length > 4) {
-            char[] tzid = {'G', 'M', 'T', 0, 0, 0, Symbol.C_COLON, 0, 0};
+            char[] tzid = { 'G', 'M', 'T', 0, 0, 0, Symbol.C_COLON, 0, 0 };
             s.getChars(length - 5, length - 2, tzid, 3);
             s.getChars(length - 2, length, tzid, 7);
             if ((tzid[3] == '+' || tzid[3] == '-') && Character.isDigit(tzid[4]) && Character.isDigit(tzid[5])
@@ -1376,8 +1376,7 @@ public class Format extends java.text.Format {
      */
     private Object[] toArgs(Attributes attrs) {
         Object[] args = new Object[tagPaths.length];
-        outer:
-        for (int i = 0; i < args.length; i++) {
+        outer: for (int i = 0; i < args.length; i++) {
             Attributes item = attrs;
             int tag = 0;
             int[] tagPath = tagPaths[i];
@@ -1429,6 +1428,7 @@ public class Format extends java.text.Format {
          * No special formatting, returns the raw string value.
          */
         none {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1444,6 +1444,7 @@ public class Format extends java.text.Format {
          * Converts the string value to uppercase.
          */
         upper {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1459,6 +1460,7 @@ public class Format extends java.text.Format {
          * Extracts a substring from the value.
          */
         slice {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1474,6 +1476,7 @@ public class Format extends java.text.Format {
          * Formats the value as a number.
          */
         number {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1489,6 +1492,7 @@ public class Format extends java.text.Format {
          * Adds a numeric offset to an integer value.
          */
         offset {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1504,6 +1508,7 @@ public class Format extends java.text.Format {
          * Formats the value as a date, with optional period offset.
          */
         date {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1527,6 +1532,7 @@ public class Format extends java.text.Format {
          * Formats the value as a time, with optional duration offset.
          */
         time {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1548,6 +1554,7 @@ public class Format extends java.text.Format {
          * Formats a numeric value using a choice pattern.
          */
         choice {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1563,6 +1570,7 @@ public class Format extends java.text.Format {
          * Computes the hash code of the string value.
          */
         hash {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1579,6 +1587,7 @@ public class Format extends java.text.Format {
          * Computes the MD5 hash of the string value.
          */
         md5 {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1595,6 +1604,7 @@ public class Format extends java.text.Format {
          * URL-encodes the string value.
          */
         urlencoded {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1611,6 +1621,7 @@ public class Format extends java.text.Format {
          * Generates a random integer and formats it as hex.
          */
         rnd {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1626,6 +1637,7 @@ public class Format extends java.text.Format {
          * Generates a random UUID.
          */
         uuid {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1641,6 +1653,7 @@ public class Format extends java.text.Format {
          * Generates a new DICOM UID.
          */
         uid {
+
             @Override
             Object toArg(
                     Attributes attrs,
@@ -1780,8 +1793,8 @@ public class Format extends java.text.Format {
                 int l = s.length();
                 return endIndex == 0 ? s.substring(beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex)
                         : s.substring(
-                        beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex,
-                        endIndex < 0 ? l + endIndex : Math.min(l, endIndex));
+                                beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex,
+                                endIndex < 0 ? l + endIndex : Math.min(l, endIndex));
             } catch (RuntimeException e) {
                 return "";
             }
