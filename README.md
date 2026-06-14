@@ -127,14 +127,7 @@ implementation 'org.miaixz:bus-all:x.x.x'
 
 Click any of the following links to download `bus-*-x.x.x.jar`:
 
-- [Maven Central Repository](https://repo.maven.apache.org/maven2/org/miaixz)
-
-
-### ✨ Testing
-
-To ensure project compilation efficiency and related rules, please refer to the `abarth` project for all unit tests and usage:
-
-- Address: [https://github.com/818000/abarth](https://github.com/818000/abarth)
+- [Maven Central Repository](https://central.sonatype.com/search?q=org.miaixz)
 
 > Note
 > The Bus project supports Java 17+. Some modules have not been tested on the Android platform, and we cannot guarantee that all utility classes or methods will work.
