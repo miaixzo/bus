@@ -40,6 +40,12 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 public final class Prtvtoc {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Prtvtoc() {
+    }
+
+    /**
      * The PRTVTOC_DEV_DSK constant.
      */
     private static final String PRTVTOC_DEV_DSK = "prtvtoc /dev/dsk/";

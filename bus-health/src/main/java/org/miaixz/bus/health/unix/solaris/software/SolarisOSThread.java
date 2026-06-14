@@ -256,6 +256,7 @@ public class SolarisOSThread extends AbstractOSThread {
         this.userTime = info.pr_time.tv_sec.longValue() * 1000L + info.pr_time.tv_nsec.longValue() / 1_000_000L;
         this.startMemoryAddress = Pointer.nativeValue(info.pr_addr);
         this.priority = info.pr_pri;
+        this.contextSwitches = 0L;
         if (usage != null) {
             this.userTime = usage.pr_utime.tv_sec.longValue() * 1000L + usage.pr_utime.tv_nsec.longValue() / 1_000_000L;
             this.kernelTime = usage.pr_stime.tv_sec.longValue() * 1000L

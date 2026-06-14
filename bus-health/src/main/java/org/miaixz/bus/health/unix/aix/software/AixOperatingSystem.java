@@ -40,11 +40,11 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.*;
 import org.miaixz.bus.health.builtin.software.common.AbstractOperatingSystem;
-import org.miaixz.bus.health.unix.shared.jna.AixLibc;
 import org.miaixz.bus.health.unix.aix.driver.Uptime;
 import org.miaixz.bus.health.unix.aix.driver.Who;
 import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatConfig;
 import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatProcess;
+import org.miaixz.bus.health.unix.shared.jna.AixLibc;
 
 /**
  * AIX (Advanced Interactive eXecutive) is a series of proprietary Unix operating systems developed and sold by IBM for

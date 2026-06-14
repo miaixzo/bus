@@ -29,8 +29,8 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGlobalMemory;
-import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 import org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit;
+import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 
 /**
  * Memory obtained by sysctl vm.stats

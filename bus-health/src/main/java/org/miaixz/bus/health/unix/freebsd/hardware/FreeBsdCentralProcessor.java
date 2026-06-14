@@ -37,8 +37,8 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
-import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
+import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -192,7 +192,10 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                 marker = "ID:";
                 procInfo = true;
             } else if (procInfo && checkLine.contains(marker)) {
-                return checkLine.split(marker)[1].trim();
+                String[] parts = checkLine.split(marker);
+                if (parts.length > 1) {
+                    return parts[1].trim();
+                }
             }
         }
         // If we've gotten this far, dmidecode failed. Used the passed-in values

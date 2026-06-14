@@ -260,7 +260,7 @@ public class HexKit extends Hex {
      *
      * @param text The hexadecimal string.
      * @return The {@link BigInteger} represented by the hexadecimal string, or {@code null} if the input string is
-     * {@code null}.
+     *         {@code null}.
      */
     public static BigInteger toBigInteger(final String text) {
         if (null == text) {

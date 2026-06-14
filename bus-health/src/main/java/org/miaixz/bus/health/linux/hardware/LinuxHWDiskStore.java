@@ -293,9 +293,17 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                                 devSerial == null ? Normal.UNKNOWN : devSerial, devSize, "Virtual");
                                         String vgName = device.getPropertyValue(DM_VG_NAME);
                                         String lvName = device.getPropertyValue(DM_LV_NAME);
-                                        addDeviceMapperPartition(store, mountsMap, devSerial, vgName, lvName,
-                                                device.getPropertyValue(DM_NAME), devnode, device.getSysname(),
-                                                device.getSyspath(), device.getPropertyValue(ID_FS_TYPE),
+                                        addDeviceMapperPartition(
+                                                store,
+                                                mountsMap,
+                                                devSerial,
+                                                vgName,
+                                                lvName,
+                                                device.getPropertyValue(DM_NAME),
+                                                devnode,
+                                                device.getSysname(),
+                                                device.getSyspath(),
+                                                device.getPropertyValue(ID_FS_TYPE),
                                                 device.getPropertyValue(ID_FS_UUID),
                                                 device.getPropertyValue(ID_FS_LABEL),
                                                 Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)

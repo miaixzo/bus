@@ -49,6 +49,12 @@ import org.miaixz.bus.logger.Logger;
 public final class ProcessWtsData {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private ProcessWtsData() {
+    }
+
+    /**
      * The IS_WINDOWS7_OR_GREATER constant.
      */
     private static final boolean IS_WINDOWS7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();

@@ -43,6 +43,12 @@ import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
 public final class Xwininfo {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Xwininfo() {
+    }
+
+    /**
      * The NET_CLIENT_LIST_STACKING constant.
      */
     private static final String[] NET_CLIENT_LIST_STACKING = Pattern.SPACES_PATTERN

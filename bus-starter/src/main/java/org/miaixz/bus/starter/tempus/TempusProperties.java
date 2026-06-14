@@ -25,12 +25,13 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions;
 
 /**
- * Temporal framework-level configuration properties.
+ * Temporal framework configuration properties.
  * <p>
- * Binds to {@code bus.tempus.*} configuration keys, covering connection, worker concurrency, workflow/activity timeouts
- * and retry parameters.
+ * The {@code enabled} field is a Spring Boot starter lifecycle switch. Temporal connection, target, workflow, activity,
+ * retry, worker, and recovery options are inherited from {@link WorkflowBindingOptions}.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -38,110 +39,18 @@ import org.miaixz.bus.spring.GeniusBuilder;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = GeniusBuilder.TEMPUS)
-public class TempusProperties {
+public class TempusProperties extends WorkflowBindingOptions {
 
     /**
-     * Constructs a new TempusProperties instance.
-     */
-    public TempusProperties() {
-        // No initialization required.
-    }
-
-    /**
-     * Whether to enable the Temporal worker.
+     * Whether the Temporal worker is enabled.
      */
     private boolean enabled = false;
 
     /**
-     * Temporal server address (host:port).
+     * Creates Temporal configuration properties.
      */
-    private String endpoint;
-
-    /**
-     * Temporal namespace.
-     */
-    private String namespace;
-
-    /**
-     * Temporal client identity (optional).
-     */
-    private String identity;
-
-    /**
-     * Temporal task queue name.
-     */
-    private String taskQueue;
-
-    /**
-     * Workflow type name.
-     */
-    private String workflowType;
-
-    /**
-     * Maximum worker concurrency.
-     */
-    private int maxConcurrent = 4;
-
-    // -------------------------------------------------------------------------
-    // Workflow timeouts
-    // -------------------------------------------------------------------------
-
-    /**
-     * Maximum workflow execution timeout in days. Maps to setWorkflowExecutionTimeout.
-     */
-    private int workflowExecutionTimeoutDays = 1;
-
-    /**
-     * Maximum workflow run timeout in hours. Maps to setWorkflowRunTimeout.
-     */
-    private int workflowRunTimeoutHours = 12;
-
-    /**
-     * Workflow task timeout in minutes. Maps to setWorkflowTaskTimeout.
-     */
-    private int workflowTaskTimeoutMinutes = 6;
-
-    // -------------------------------------------------------------------------
-    // Activity timeouts
-    // -------------------------------------------------------------------------
-
-    /**
-     * Maximum duration from activity start to close, in hours. Maps to setStartToCloseTimeout.
-     */
-    private int activityStartToCloseHours = 12;
-
-    /**
-     * Maximum wait time from activity schedule to start, in minutes. Maps to setScheduleToStartTimeout.
-     */
-    private int activityScheduleToStartMinutes = 6;
-
-    /**
-     * Activity heartbeat timeout in seconds. Maps to setHeartbeatTimeout.
-     */
-    private int activityHeartbeatTimeoutSeconds = 300;
-
-    // -------------------------------------------------------------------------
-    // Activity retry
-    // -------------------------------------------------------------------------
-
-    /**
-     * Initial retry interval in seconds. Maps to setInitialInterval.
-     */
-    private int activityRetryInitialIntervalSeconds = 180;
-
-    /**
-     * Maximum retry interval in seconds. Maps to setMaximumInterval.
-     */
-    private int activityRetryMaxIntervalSeconds = 600;
-
-    /**
-     * Retry backoff coefficient. Maps to setBackoffCoefficient.
-     */
-    private double activityRetryBackoffCoefficient = 2.0;
-
-    /**
-     * Maximum number of retry attempts. Maps to setMaximumAttempts.
-     */
-    private int activityRetryMaxAttempts = 3;
+    public TempusProperties() {
+        super();
+    }
 
 }

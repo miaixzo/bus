@@ -37,6 +37,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32OperatingSystem {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32OperatingSystem() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_OPERATING_SYSTEM = "Win32_OperatingSystem";
@@ -58,7 +64,26 @@ public final class Win32OperatingSystem {
      * @since Java 21+
      */
     public enum OSVersionProperty {
-        VERSION, PRODUCTTYPE, BUILDNUMBER, CSDVERSION, SUITEMASK
+        /**
+         * The VERSION WMI property.
+         */
+        VERSION,
+        /**
+         * The PRODUCTTYPE WMI property.
+         */
+        PRODUCTTYPE,
+        /**
+         * The BUILDNUMBER WMI property.
+         */
+        BUILDNUMBER,
+        /**
+         * The CSDVERSION WMI property.
+         */
+        CSDVERSION,
+        /**
+         * The SUITEMASK WMI property.
+         */
+        SUITEMASK
 
     }
 

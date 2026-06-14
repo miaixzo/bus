@@ -186,6 +186,12 @@ public interface Nvml {
     class NvmlUtilization extends Structure {
 
         /**
+         * Creates a new NvmlUtilization instance.
+         */
+        public NvmlUtilization() {
+        }
+
+        /**
          * The gpu value.
          */
         public int gpu;
@@ -205,6 +211,12 @@ public interface Nvml {
      */
     @FieldOrder({ "total", "free", "used" })
     class NvmlMemory extends Structure {
+
+        /**
+         * Creates a new NvmlMemory instance.
+         */
+        public NvmlMemory() {
+        }
 
         /**
          * The total value.
@@ -231,6 +243,12 @@ public interface Nvml {
      */
     @FieldOrder({ "busIdLegacy", "domain", "bus", "device", "pciDeviceId", "pciSubSystemId", "busId" })
     class NvmlPciInfo extends Structure {
+
+        /**
+         * Creates a new NvmlPciInfo instance.
+         */
+        public NvmlPciInfo() {
+        }
 
         /**
          * The busIdLegacy value.

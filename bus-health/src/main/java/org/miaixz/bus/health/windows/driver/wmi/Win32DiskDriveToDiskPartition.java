@@ -35,6 +35,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32DiskDriveToDiskPartition {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32DiskDriveToDiskPartition() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_DISK_DRIVE_TO_DISK_PARTITION = "Win32_DiskDriveToDiskPartition";
@@ -58,7 +64,14 @@ public final class Win32DiskDriveToDiskPartition {
      * @since Java 21+
      */
     public enum DriveToPartitionProperty {
-        ANTECEDENT, DEPENDENT
+        /**
+         * The ANTECEDENT WMI property.
+         */
+        ANTECEDENT,
+        /**
+         * The DEPENDENT WMI property.
+         */
+        DEPENDENT
 
     }
 

@@ -37,6 +37,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32Bios {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32Bios() {
+    }
+
+    /**
      * The WMI class name with WHERE clause for primary BIOS.
      */
     public static final String WIN32_BIOS_WHERE_PRIMARY_BIOS_TRUE = "Win32_BIOS where PrimaryBIOS=true";
@@ -69,6 +75,9 @@ public final class Win32Bios {
      * @since Java 21+
      */
     public enum BiosSerialProperty {
+        /**
+         * The SERIALNUMBER WMI property.
+         */
         SERIALNUMBER
 
     }
@@ -80,7 +89,26 @@ public final class Win32Bios {
      * @since Java 21+
      */
     public enum BiosProperty {
-        MANUFACTURER, NAME, DESCRIPTION, VERSION, RELEASEDATE
+        /**
+         * The MANUFACTURER WMI property.
+         */
+        MANUFACTURER,
+        /**
+         * The NAME WMI property.
+         */
+        NAME,
+        /**
+         * The DESCRIPTION WMI property.
+         */
+        DESCRIPTION,
+        /**
+         * The VERSION WMI property.
+         */
+        VERSION,
+        /**
+         * The RELEASEDATE WMI property.
+         */
+        RELEASEDATE
 
     }
 

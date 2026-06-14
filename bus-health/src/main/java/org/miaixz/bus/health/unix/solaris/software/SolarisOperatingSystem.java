@@ -57,6 +57,12 @@ import org.miaixz.bus.health.unix.solaris.driver.Who;
 public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     /**
+     * Creates a new SolarisOperatingSystem instance.
+     */
+    public SolarisOperatingSystem() {
+    }
+
+    /**
      * This static field identifies if the kstat2 library (available in Solaris 11.4 or greater) can be loaded.
      */
     public static final boolean HAS_KSTAT2;
@@ -150,9 +156,10 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
      * @return the query boot and uptime result
      */
     private static Pair<Long, Long> queryBootAndUptime() {
-        Object[] results = KstatKit.queryKstat2("/misc/unix/system_misc", "boot_time", "snaptime");
+        Object[] results = KstatKit.queryKstat2("kstat:/misc/unix/system_misc", "boot_time", "snaptime");
 
-        long boot = results[0] == null ? System.currentTimeMillis() : (long) results[0];
+        // boot_time is epoch seconds; keep the fallback in seconds to match getSystemBootTime().
+        long boot = results[0] == null ? System.currentTimeMillis() / 1000L : (long) results[0];
         // Snap Time is in nanoseconds; divide for seconds
         long snap = results[1] == null ? 0L : (long) results[1] / 1_000_000_000L;
 

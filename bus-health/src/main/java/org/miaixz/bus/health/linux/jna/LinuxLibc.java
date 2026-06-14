@@ -99,6 +99,12 @@ public interface LinuxLibc extends LibC, CLibrary {
     class Rusage extends Structure {
 
         /**
+         * Creates a new Rusage instance.
+         */
+        public Rusage() {
+        }
+
+        /**
          * User time seconds.
          */
         public NativeLong ru_utime_sec;

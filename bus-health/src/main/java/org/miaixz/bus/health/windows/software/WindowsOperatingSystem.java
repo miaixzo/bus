@@ -61,6 +61,12 @@ import org.miaixz.bus.logger.Logger;
 public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
     /**
+     * Creates a new WindowsOperatingSystem instance.
+     */
+    public WindowsOperatingSystem() {
+    }
+
+    /**
      * The USE_PROCSTATE_SUSPENDED constant.
      */
     private static final boolean USE_PROCSTATE_SUSPENDED = Config.get(Config._WINDOWS_PROCSTATE_SUSPENDED, false);

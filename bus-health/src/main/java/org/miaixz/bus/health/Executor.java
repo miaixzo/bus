@@ -20,6 +20,7 @@
 package org.miaixz.bus.health;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -133,23 +134,24 @@ public final class Executor {
     static void destroyProcess(Process p) {
         // Windows and Solaris don't close descriptors on destroy, so must be handled separately.
         if (Platform.isWindows() || Platform.isSolaris()) {
-            try {
-                p.getOutputStream().close();
-            } catch (IOException e) {
-                // Do nothing on failure
-            }
-            try {
-                p.getInputStream().close();
-            } catch (IOException e) {
-                // Do nothing on failure
-            }
-            try {
-                p.getErrorStream().close();
-            } catch (IOException e) {
-                // Do nothing on failure
-            }
+            closeSilently(p.getOutputStream());
+            closeSilently(p.getInputStream());
+            closeSilently(p.getErrorStream());
         }
         p.destroy();
+    }
+
+    /**
+     * Closes a process stream and ignores failures.
+     *
+     * @param closeable The process stream to close.
+     */
+    private static void closeSilently(Closeable closeable) {
+        try {
+            closeable.close();
+        } catch (IOException e) {
+            // Do nothing on failure.
+        }
     }
 
     /**

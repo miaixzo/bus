@@ -18,10 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides workflow publication and execution abstractions for Temporal.
+ * Provides workflow publication components for Temporal.
  * <p>
- * This package contains workflow handler templates, publishing contracts, workflow option factories, client providers,
- * publication metadata bindings, and default implementations used to start workflows.
+ * This package contains publication metadata bindings and the default manager used to start workflow executions.
  *
  * @author Kimi Liu
  * @since Java 21+

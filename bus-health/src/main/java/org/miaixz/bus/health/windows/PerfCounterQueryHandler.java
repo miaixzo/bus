@@ -39,6 +39,12 @@ import org.miaixz.bus.logger.Logger;
 @NotThreadSafe
 public final class PerfCounterQueryHandler implements AutoCloseable {
 
+    /**
+     * Creates a new PerfCounterQueryHandler instance.
+     */
+    public PerfCounterQueryHandler() {
+    }
+
     // Map of counter handles
     /**
      * The counterHandleMap value.

@@ -38,6 +38,12 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 public final class PhysicalDisk {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private PhysicalDisk() {
+    }
+
+    /**
      * Returns physical disk performance counters.
      *
      * @return Performance Counters for physical disks.

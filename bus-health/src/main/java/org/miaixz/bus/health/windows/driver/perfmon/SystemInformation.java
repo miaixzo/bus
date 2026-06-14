@@ -79,6 +79,9 @@ public final class SystemInformation {
      */
     public enum ContextSwitchProperty implements PerfCounterQuery.PdhCounterProperty {
 
+        /**
+         * Context switches per second counter.
+         */
         CONTEXTSWITCHESPERSEC(null, "Context Switches/sec");
 
         /**
@@ -132,6 +135,9 @@ public final class SystemInformation {
      */
     public enum ProcessorQueueLengthProperty implements PerfCounterQuery.PdhCounterProperty {
 
+        /**
+         * Processor queue length counter.
+         */
         PROCESSORQUEUELENGTH(null, "Processor Queue Length");
 
         /**

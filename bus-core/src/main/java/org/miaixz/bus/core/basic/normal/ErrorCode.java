@@ -41,11 +41,11 @@ public class ErrorCode {
     /**
      * Creates and registers an error code entry using the common {@link ErrorRegistry} builder flow.
      * <p>
-     * This method is a convenience factory for predefined constants and extension modules that need to define additional
-     * error codes. It validates that both {@code key} and {@code value} are not blank, builds an {@link ErrorRegistry},
-     * and relies on {@link ErrorRegistry}'s construction process to register the entry in the global
-     * {@link Errors#ERRORS_CACHE}. Because registration is global, the supplied {@code key} must be unique across all
-     * registered error codes.
+     * This method is a convenience factory for predefined constants and extension modules that need to define
+     * additional error codes. It validates that both {@code key} and {@code value} are not blank, builds an
+     * {@link ErrorRegistry}, and relies on {@link ErrorRegistry}'s construction process to register the entry in the
+     * global {@link Errors#ERRORS_CACHE}. Because registration is global, the supplied {@code key} must be unique
+     * across all registered error codes.
      *
      * @param key   unique error code used for lookup, localization, and duplicate detection
      * @param value default error message used when no localized message is available
@@ -85,7 +85,8 @@ public class ErrorCode {
     /**
      * Illegal request, please try again later.
      */
-    public static final Errors _BLOCKED = registry("-3",
+    public static final Errors _BLOCKED = registry(
+            "-3",
             "Illegal or blocked request, please check parameters and try again");
 
     /**
@@ -820,7 +821,8 @@ public class ErrorCode {
     /**
      * Password must contain both uppercase and lowercase letters.
      */
-    public static final Errors _100515 = registry("100515",
+    public static final Errors _100515 = registry(
+            "100515",
             "Password must contain both uppercase and lowercase letters");
 
     /**

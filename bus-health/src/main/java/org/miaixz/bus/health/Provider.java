@@ -51,6 +51,12 @@ import org.miaixz.bus.health.builtin.software.OperatingSystem;
 public class Provider implements org.miaixz.bus.core.Provider {
 
     /**
+     * Creates a new Provider instance.
+     */
+    public Provider() {
+    }
+
+    /**
      * Main method for testing purposes.
      *
      * @param args Command line arguments.

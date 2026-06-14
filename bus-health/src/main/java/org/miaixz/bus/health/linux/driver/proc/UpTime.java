@@ -35,6 +35,12 @@ import org.miaixz.bus.health.linux.ProcPath;
 public final class UpTime {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private UpTime() {
+    }
+
+    /**
      * Parses the first value in {@code /proc/uptime} for seconds since boot
      *
      * @return Seconds since boot

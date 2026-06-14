@@ -34,6 +34,12 @@ import java.util.List;
 public final class TID {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private TID() {
+    }
+
+    /**
      * Host information
      */
     public static final String HOST = "host";

@@ -40,7 +40,7 @@ import org.miaixz.bus.logger.Logger;
 public abstract class AbstractPayloadConverter implements PayloadConverter {
 
     /**
-     * Constructs a new AbstractPayloadConverter instance.
+     * Creates a payload converter template.
      */
     public AbstractPayloadConverter() {
         // No initialization required.

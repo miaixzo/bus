@@ -64,15 +64,9 @@ public abstract class SecondParts extends DayParts {
      * @throws IllegalArgumentException if hour, minute, or second is out of valid range
      */
     public static void validate(int hour, int minute, int second) {
-        if (hour < 0 || hour > 23) {
-            throw new IllegalArgumentException("illegal hour: " + hour);
-        }
-        if (minute < 0 || minute > 59) {
-            throw new IllegalArgumentException("illegal minute: " + minute);
-        }
-        if (second < 0 || second > 59) {
-            throw new IllegalArgumentException("illegal second: " + second);
-        }
+        validateRange(hour, 0, 23, "hour");
+        validateRange(minute, 0, 59, "minute");
+        validateRange(second, 0, 59, "second");
     }
 
     /**
@@ -100,6 +94,25 @@ public abstract class SecondParts extends DayParts {
      */
     public int getSecond() {
         return second;
+    }
+
+    /**
+     * Gets the number of elapsed seconds in the current day.
+     *
+     * @return seconds since midnight
+     */
+    public int getSecondsInDay() {
+        return hour * 3600 + minute * 60 + second;
+    }
+
+    /**
+     * Gets the index used for chronological comparisons.
+     *
+     * @return comparison index
+     */
+    @Override
+    protected long getCompareIndex() {
+        return super.getCompareIndex() * 86400L + getSecondsInDay();
     }
 
 }

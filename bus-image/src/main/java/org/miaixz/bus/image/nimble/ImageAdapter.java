@@ -23,6 +23,7 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferUShort;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import org.opencv.core.Core.MinMaxLocResult;
 import org.opencv.core.CvType;
@@ -314,13 +315,11 @@ public class ImageAdapter {
      * @return Rescale intercept.
      */
     public double getRescaleIntercept(PresentationLutObject dcm) {
-        if (dcm != null) {
-            OptionalDouble prIntercept = dcm.getModalityLutModule().getRescaleIntercept();
-            if (prIntercept.isPresent()) {
-                return prIntercept.getAsDouble();
-            }
-        }
-        return desc.getModalityLutForFrame(frameIndex).getRescaleIntercept().orElse(0.0);
+        return getRescaleValue(
+                dcm,
+                ModalityLutModule::getRescaleIntercept,
+                desc.getModalityLutForFrame(frameIndex).getRescaleIntercept(),
+                0.0);
     }
 
     /**
@@ -330,13 +329,34 @@ public class ImageAdapter {
      * @return Rescale slope.
      */
     public double getRescaleSlope(PresentationLutObject dcm) {
+        return getRescaleValue(
+                dcm,
+                ModalityLutModule::getRescaleSlope,
+                desc.getModalityLutForFrame(frameIndex).getRescaleSlope(),
+                1.0);
+    }
+
+    /**
+     * Gets a rescale value from the presentation state or descriptor.
+     *
+     * @param dcm             DICOM object.
+     * @param extractor       Modality LUT value extractor.
+     * @param descriptorValue Descriptor value.
+     * @param defaultValue    Default value.
+     * @return Rescale value.
+     */
+    private double getRescaleValue(
+            PresentationLutObject dcm,
+            Function<ModalityLutModule, OptionalDouble> extractor,
+            OptionalDouble descriptorValue,
+            double defaultValue) {
         if (dcm != null) {
-            OptionalDouble prSlope = dcm.getModalityLutModule().getRescaleSlope();
-            if (prSlope.isPresent()) {
-                return prSlope.getAsDouble();
+            OptionalDouble prValue = extractor.apply(dcm.getModalityLutModule());
+            if (prValue.isPresent()) {
+                return prValue.getAsDouble();
             }
         }
-        return desc.getModalityLutForFrame(frameIndex).getRescaleSlope().orElse(1.0);
+        return descriptorValue.orElse(defaultValue);
     }
 
     /**

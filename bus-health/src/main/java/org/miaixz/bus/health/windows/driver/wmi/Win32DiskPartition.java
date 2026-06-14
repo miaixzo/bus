@@ -35,6 +35,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32DiskPartition {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32DiskPartition() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_DISK_PARTITION = "Win32_DiskPartition";
@@ -58,7 +64,34 @@ public final class Win32DiskPartition {
      * @since Java 21+
      */
     public enum DiskPartitionProperty {
-        INDEX, DESCRIPTION, DEVICEID, DISKINDEX, NAME, SIZE, TYPE
+        /**
+         * The INDEX WMI property.
+         */
+        INDEX,
+        /**
+         * The DESCRIPTION WMI property.
+         */
+        DESCRIPTION,
+        /**
+         * The DEVICEID WMI property.
+         */
+        DEVICEID,
+        /**
+         * The DISKINDEX WMI property.
+         */
+        DISKINDEX,
+        /**
+         * The NAME WMI property.
+         */
+        NAME,
+        /**
+         * The SIZE WMI property.
+         */
+        SIZE,
+        /**
+         * The TYPE WMI property.
+         */
+        TYPE
 
     }
 

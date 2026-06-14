@@ -37,6 +37,12 @@ import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
 public final class SystemPages {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private SystemPages() {
+    }
+
+    /**
      * Queries the {@code system_pages} kstat and returns available and physical memory
      *
      * @return A pair with the available and total memory, in pages. Mutiply by page size for bytes.

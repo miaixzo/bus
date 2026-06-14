@@ -41,6 +41,12 @@ import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 public final class Who {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Who() {
+    }
+
+    /**
      * The LIBC constant.
      */
     private static final FreeBsdLibc LIBC = FreeBsdLibc.INSTANCE;

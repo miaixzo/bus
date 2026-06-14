@@ -41,6 +41,11 @@ public class ManifestInstance implements ManifestXml, Comparable<ManifestInstanc
     private static final String KEY_SEPARATOR = "?";
 
     /**
+     * The direct download file attribute.
+     */
+    private static final String ATTR_DIRECT_DOWNLOAD_FILE = "DirectDownloadFile";
+
+    /**
      * The sop instance uid value.
      */
     private final String sopInstanceUID;
@@ -220,7 +225,7 @@ public class ManifestInstance implements ManifestXml, Comparable<ManifestInstanc
         ManifestXml.addXmlAttribute(Tag.TransferSyntaxUID, transferSyntaxUID, writer);
         ManifestXml.addXmlAttribute(Tag.ImageComments, imageComments, writer);
         ManifestXml.addXmlAttribute(Tag.InstanceNumber, getStringInstanceNumber(), writer);
-        ManifestXml.addXmlAttribute("DirectDownloadFile", directDownloadFile, writer);
+        ManifestXml.addXmlAttribute(ATTR_DIRECT_DOWNLOAD_FILE, directDownloadFile, writer);
         writer.append("/>");
     }
 

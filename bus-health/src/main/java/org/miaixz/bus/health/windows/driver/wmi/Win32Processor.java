@@ -37,6 +37,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32Processor {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32Processor() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_PROCESSOR = "Win32_Processor";
@@ -85,7 +91,14 @@ public final class Win32Processor {
      * @since Java 21+
      */
     public enum VoltProperty {
-        CURRENTVOLTAGE, VOLTAGECAPS
+        /**
+         * The CURRENTVOLTAGE WMI property.
+         */
+        CURRENTVOLTAGE,
+        /**
+         * The VOLTAGECAPS WMI property.
+         */
+        VOLTAGECAPS
 
     }
 
@@ -96,6 +109,9 @@ public final class Win32Processor {
      * @since Java 21+
      */
     public enum ProcessorIdProperty {
+        /**
+         * The PROCESSORID WMI property.
+         */
         PROCESSORID
 
     }
@@ -107,6 +123,9 @@ public final class Win32Processor {
      * @since Java 21+
      */
     public enum BitnessProperty {
+        /**
+         * The ADDRESSWIDTH WMI property.
+         */
         ADDRESSWIDTH
 
     }

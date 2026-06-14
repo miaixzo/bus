@@ -196,7 +196,8 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
         Object target = parameterType.getDeclaredConstructor().newInstance();
         WebDataBinder binder = binderFactory.createBinder(webRequest, target, methodParameter.getParameterName());
 
-        // 先合并所有来源的参数，再统一清理 null-like 值，避免后续追加的表单参数把 "null" 再带回来。
+        // Merge parameters from all sources before removing null-like values so later form parameters do not re-add
+        // them.
         MutablePropertyValues mpvs = new MutablePropertyValues(request.getParameterMap());
 
         // Handle application/x-www-form-urlencoded requests

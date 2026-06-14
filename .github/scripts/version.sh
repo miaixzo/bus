@@ -27,8 +27,8 @@
 #   bash .github/scripts/version.sh <version>
 #
 # Examples:
-#   bash .github/scripts/version.sh 8.6.8
-#   bash .github/scripts/version.sh 8.6.8-SNAPSHOT
+#   bash .github/scripts/version.sh 8.6.x
+#   bash .github/scripts/version.sh 8.6.x-SNAPSHOT
 #
 # Notes:
 #   The first argument is required.

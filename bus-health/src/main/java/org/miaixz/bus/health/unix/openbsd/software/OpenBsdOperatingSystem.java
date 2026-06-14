@@ -31,8 +31,8 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.*;
 import org.miaixz.bus.health.builtin.software.common.AbstractOperatingSystem;
-import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 import org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit;
+import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -44,6 +44,12 @@ import org.miaixz.bus.logger.Logger;
  */
 @ThreadSafe
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
+
+    /**
+     * Creates a new OpenBsdOperatingSystem instance.
+     */
+    public OpenBsdOperatingSystem() {
+    }
 
     /**
      * The PS_COMMAND_ARGS constant.
@@ -178,6 +184,9 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
      */
     @Override
     public OSProcess getProcess(int pid) {
+        if (pid < 0) {
+            return null;
+        }
         List<OSProcess> procs = getProcessListFromPS(pid);
         if (procs.isEmpty()) {
             return null;

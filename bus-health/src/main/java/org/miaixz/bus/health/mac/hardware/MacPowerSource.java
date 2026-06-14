@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -161,7 +162,11 @@ public final class MacPowerSource extends AbstractPowerSource {
                 int day = temp & 0x1f;
                 int month = (temp >> 5) & 0xf;
                 int year80 = (temp >> 9) & 0x7f;
-                psManufactureDate = LocalDate.of(1980 + year80, month, day);
+                try {
+                    psManufactureDate = LocalDate.of(1980 + year80, month, day);
+                } catch (DateTimeException e) {
+                    // Corrupt bitfield: leave manufacture date unset.
+                }
             }
 
             temp = smartBattery.getIntegerProperty("DesignCapacity");

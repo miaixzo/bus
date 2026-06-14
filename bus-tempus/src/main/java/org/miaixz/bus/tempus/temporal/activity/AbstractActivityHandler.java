@@ -55,7 +55,7 @@ public abstract class AbstractActivityHandler<R, C>
         implements ActivityContextFactory<R, C>, ActivityExecutorResolver<R, C>, ActivityResultSerializer {
 
     /**
-     * Constructs a new AbstractActivityHandler instance.
+     * Creates an activity handler template.
      */
     public AbstractActivityHandler() {
         // No initialization required.

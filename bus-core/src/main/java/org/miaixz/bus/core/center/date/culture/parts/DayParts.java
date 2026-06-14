@@ -53,4 +53,14 @@ public abstract class DayParts extends MonthParts {
         return day;
     }
 
+    /**
+     * Gets the index used for chronological comparisons.
+     *
+     * @return comparison index
+     */
+    @Override
+    protected long getCompareIndex() {
+        return super.getCompareIndex() + day;
+    }
+
 }

@@ -426,8 +426,8 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     private void processLastCell(final LastCellOfRowDummyRecord lastCell) {
         // At the end of each row, call the handle() method.
         this.rowHandler.handle(curRid, lastCell.getRow(), this.rowCellList);
-        // Clear row cache.
-        this.rowCellList = new ArrayList<>(this.rowCellList.size());
+        // Release row cache without retaining a large previous-row capacity.
+        this.rowCellList = new ArrayList<>();
     }
 
     /**
@@ -435,6 +435,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      */
     private void processLastCellSheet() {
         this.rowHandler.doAfterAllAnalysed();
+        this.rowCellList = new ArrayList<>();
     }
 
     /**

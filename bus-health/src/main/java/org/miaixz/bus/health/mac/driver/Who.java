@@ -41,6 +41,12 @@ import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 public final class Who {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Who() {
+    }
+
+    /**
      * Singleton instance of the SystemB library.
      */
     private static final SystemB SYS = SystemB.INSTANCE;

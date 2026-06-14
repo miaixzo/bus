@@ -74,9 +74,7 @@ public class SolarQuarter extends YearParts {
      * @throws IllegalArgumentException if validation fails
      */
     public static void validate(int year, int index) {
-        if (index < 0 || index > 3) {
-            throw new IllegalArgumentException(String.format("illegal solar quarter index: %d", index));
-        }
+        validateRange(index, 0, 3, "solar quarter index");
         SolarYear.validate(year);
     }
 

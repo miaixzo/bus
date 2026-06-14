@@ -159,6 +159,12 @@ public final class WindowsDxgi {
     public static class DXGI_ADAPTER_DESC extends Structure {
 
         /**
+         * Creates a new DXGI_ADAPTER_DESC instance.
+         */
+        public DXGI_ADAPTER_DESC() {
+        }
+
+        /**
          * The Description value.
          */
         public char[] Description = new char[128];

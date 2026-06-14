@@ -28,10 +28,10 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
-import org.miaixz.bus.health.unix.shared.hardware.CupsPrinter;
-import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
 import org.miaixz.bus.health.unix.aix.driver.Lscfg;
 import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatDisk;
+import org.miaixz.bus.health.unix.shared.hardware.CupsPrinter;
+import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
 
 /**
  * AIXHardwareAbstractionLayer class.

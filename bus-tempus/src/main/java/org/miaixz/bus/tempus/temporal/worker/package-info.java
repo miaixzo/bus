@@ -18,10 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides subscription and bootstrap infrastructure for Temporal workers.
+ * Provides Temporal workflow transport and connector infrastructure.
  * <p>
- * This package contains worker subscriber bindings, worker subscriber contracts, service stubs providers, and the
- * default manager responsible for starting and stopping worker resources.
+ * This package contains endpoint parsing, transport state modeling, transport handle creation, and workflow client
+ * connector implementations shared by publishers and subscribers.
  *
  * @author Kimi Liu
  * @since Java 21+

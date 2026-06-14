@@ -37,6 +37,12 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class PerfstatProcess {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private PerfstatProcess() {
+    }
+
+    /**
      * The PERF constant.
      */
     private static final Perfstat PERF = Perfstat.INSTANCE;

@@ -361,7 +361,7 @@ public class ManifestStudy implements ManifestXml, Comparable<ManifestStudy> {
      */
     private static int compareStudyDescriptions(String first, String second) {
         if (first != null && second != null) {
-            return Collator.getInstance(Locale.getDefault()).compare(first, second);
+            return Collator.getInstance(Locale.ROOT).compare(first, second);
         }
         if (first == null && second != null) {
             return 1;

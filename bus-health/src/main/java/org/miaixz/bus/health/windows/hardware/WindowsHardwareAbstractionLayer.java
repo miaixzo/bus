@@ -35,6 +35,12 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
 public final class WindowsHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
+     * Creates a new WindowsHardwareAbstractionLayer instance.
+     */
+    public WindowsHardwareAbstractionLayer() {
+    }
+
+    /**
      * Creates the computer system.
      *
      * @return the create computer system result

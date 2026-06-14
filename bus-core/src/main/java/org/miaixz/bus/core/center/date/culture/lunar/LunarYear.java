@@ -83,9 +83,7 @@ public class LunarYear extends YearParts {
      * @throws IllegalArgumentException if the year is out of valid range
      */
     public static void validate(int year) {
-        if (year < -1 || year > 9999) {
-            throw new IllegalArgumentException("illegal lunar year: " + year);
-        }
+        validateRange(year, -1, 9999, "lunar year");
     }
 
     /**

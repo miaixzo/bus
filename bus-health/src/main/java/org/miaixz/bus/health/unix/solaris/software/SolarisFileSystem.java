@@ -51,6 +51,12 @@ import org.miaixz.bus.health.unix.solaris.KstatKit.KstatChain;
 public class SolarisFileSystem extends AbstractFileSystem {
 
     /**
+     * Creates a new SolarisFileSystem instance.
+     */
+    public SolarisFileSystem() {
+    }
+
+    /**
      * The FILE_DESC constant.
      */
     private static final Supplier<Pair<Long, Long>> FILE_DESC = Memoizer

@@ -41,6 +41,12 @@ import org.miaixz.bus.logger.Logger;
 public final class OpenBsdSysctlKit {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private OpenBsdSysctlKit() {
+    }
+
+    /**
      * The SYSCTL_N constant.
      */
     private static final String SYSCTL_N = "sysctl -n ";

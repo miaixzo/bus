@@ -22,8 +22,8 @@ package org.miaixz.bus.health.unix.aix.software;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSThread;
-import org.miaixz.bus.health.unix.shared.jna.AixLibc;
 import org.miaixz.bus.health.unix.aix.driver.PsInfo;
+import org.miaixz.bus.health.unix.shared.jna.AixLibc;
 
 /**
  * OSThread implementation

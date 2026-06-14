@@ -37,6 +37,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32ComputerSystemProduct {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32ComputerSystemProduct() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_COMPUTER_SYSTEM_PRODUCT = "Win32_ComputerSystemProduct";
@@ -59,7 +65,14 @@ public final class Win32ComputerSystemProduct {
      * @since Java 21+
      */
     public enum ComputerSystemProductProperty {
-        IDENTIFYINGNUMBER, UUID
+        /**
+         * The IDENTIFYINGNUMBER WMI property.
+         */
+        IDENTIFYINGNUMBER,
+        /**
+         * The UUID WMI property.
+         */
+        UUID
 
     }
 

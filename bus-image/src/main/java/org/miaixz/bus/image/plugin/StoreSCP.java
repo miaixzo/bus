@@ -166,7 +166,9 @@ public class StoreSCP {
                         while (regexMatcher.find()) {
                             if (!regexMatcher.group(1).startsWith("0002")) {
                                 a = parse(file);
-                                a.addAll(fmi);
+                                Attributes fmiToMerge = new Attributes(fmi);
+                                fmiToMerge.setSpecificCharacterSet(a.getSpecificCharacterSet().toCodes());
+                                a.addAll(fmiToMerge);
                                 break;
                             }
                         }

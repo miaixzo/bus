@@ -36,6 +36,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class OhmSensor {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private OhmSensor() {
+    }
+
+    /**
      * The WMI namespace for Open Hardware Monitor.
      */
     public static final String OHM_NAMESPACE = WmiKit.OHM_NAMESPACE;

@@ -48,9 +48,9 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OSThread;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
-import org.miaixz.bus.health.unix.shared.jna.AixLibc;
 import org.miaixz.bus.health.unix.aix.driver.PsInfo;
 import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatCpu;
+import org.miaixz.bus.health.unix.shared.jna.AixLibc;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -383,7 +383,7 @@ public class AixOSProcess extends AbstractOSProcess {
     @Override
     public String getCurrentWorkingDirectory() {
         try {
-            String cwdLink = "/proc" + getProcessID() + "/cwd";
+            String cwdLink = "/proc/" + getProcessID() + "/cwd";
             String cwd = new File(cwdLink).getCanonicalPath();
             if (!cwd.equals(cwdLink)) {
                 return cwd;

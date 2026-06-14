@@ -43,6 +43,12 @@ import org.miaixz.bus.logger.Logger;
 public final class PerfCounterQuery {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private PerfCounterQuery() {
+    }
+
+    /**
      * Multiple classes use these constants
      */
     public static final String TOTAL_INSTANCE = "_Total";

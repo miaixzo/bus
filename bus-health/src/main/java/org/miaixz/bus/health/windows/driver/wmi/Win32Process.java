@@ -40,6 +40,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32Process {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Win32Process() {
+    }
+
+    /**
      * The WMI class name.
      */
     public static final String WIN32_PROCESS = "Win32_Process";
@@ -89,7 +95,14 @@ public final class Win32Process {
      * @since Java 21+
      */
     public enum CommandLineProperty {
-        PROCESSID, COMMANDLINE
+        /**
+         * The PROCESSID WMI property.
+         */
+        PROCESSID,
+        /**
+         * The COMMANDLINE WMI property.
+         */
+        COMMANDLINE
 
     }
 
@@ -100,7 +113,38 @@ public final class Win32Process {
      * @since Java 21+
      */
     public enum ProcessXPProperty {
-        PROCESSID, NAME, KERNELMODETIME, USERMODETIME, THREADCOUNT, PAGEFILEUSAGE, HANDLECOUNT, EXECUTABLEPATH
+        /**
+         * The PROCESSID WMI property.
+         */
+        PROCESSID,
+        /**
+         * The NAME WMI property.
+         */
+        NAME,
+        /**
+         * The KERNELMODETIME WMI property.
+         */
+        KERNELMODETIME,
+        /**
+         * The USERMODETIME WMI property.
+         */
+        USERMODETIME,
+        /**
+         * The THREADCOUNT WMI property.
+         */
+        THREADCOUNT,
+        /**
+         * The PAGEFILEUSAGE WMI property.
+         */
+        PAGEFILEUSAGE,
+        /**
+         * The HANDLECOUNT WMI property.
+         */
+        HANDLECOUNT,
+        /**
+         * The EXECUTABLEPATH WMI property.
+         */
+        EXECUTABLEPATH
 
     }
 

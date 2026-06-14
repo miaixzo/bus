@@ -168,8 +168,8 @@ public class Provider {
      * @param group the validation groups to check.
      * @param list  the list of active groups in the validation context.
      * @return {@code true} if the groups match (i.e., the validator should be executed), {@code false} otherwise.
-     * Returns {@code true} if the validator defines no groups. Returns {@code false} if the validator defines
-     * groups but the context has no active groups.
+     *         Returns {@code true} if the validator defines no groups. Returns {@code false} if the validator defines
+     *         groups but the context has no active groups.
      */
     public static boolean isGroup(String[] group, List<String> list) {
         if (null == group || group.length == 0) {

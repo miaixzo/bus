@@ -283,12 +283,6 @@ mvn help:effective-pom
 
 -----
 
-## 📄 许可证
-
-[许可证信息]
-
------
-
 ## 🔗 相关文档
 
 - [Bus 框架文档](https://www.miaixz.org)

@@ -144,7 +144,7 @@
         <smbj.version>0.14.0</smbj.version>
         <spring.boot.version>3.5.13</spring.boot.version>
         <sshj.version>0.40.0</sshj.version>
-        <temporal.version>1.33.0</temporal.version>
+        <temporal.version>1.35.0</temporal.version>
         <thymeleaf.version>3.1.5.RELEASE</thymeleaf.version>
         <tiny.version>2.0.3.RELEASE</tiny.version>
         <tinylog.version>2.7.0</tinylog.version>

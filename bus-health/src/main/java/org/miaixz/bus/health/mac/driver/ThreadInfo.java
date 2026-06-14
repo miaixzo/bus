@@ -42,6 +42,12 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
 public final class ThreadInfo {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private ThreadInfo() {
+    }
+
+    /**
      * Pattern for parsing `ps -awwxM` output for thread information. Groups: 1: PID 2: CPU usage 3: State 4: Priority
      * 5: System time 6: User time
      */

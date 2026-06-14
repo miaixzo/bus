@@ -41,6 +41,12 @@ import org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation.ThreadPerf
 public final class ThreadPerformanceData {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private ThreadPerformanceData() {
+    }
+
+    /**
      * The THREAD constant.
      */
     public static final String THREAD = "Thread";
@@ -274,6 +280,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the thread name.
+         *
          * @return the name
          */
         public String getName() {
@@ -281,6 +289,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the thread identifier.
+         *
          * @return the threadID
          */
         public int getThreadID() {
@@ -288,6 +298,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the owning process identifier.
+         *
          * @return the owningProcessID
          */
         public int getOwningProcessID() {
@@ -295,6 +307,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the thread start time.
+         *
          * @return the startTime
          */
         public long getStartTime() {
@@ -302,6 +316,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the user time.
+         *
          * @return the userTime
          */
         public long getUserTime() {
@@ -309,6 +325,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the kernel time.
+         *
          * @return the kernelTime
          */
         public long getKernelTime() {
@@ -316,6 +334,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the priority.
+         *
          * @return the priority
          */
         public int getPriority() {
@@ -323,6 +343,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the thread state.
+         *
          * @return the threadState
          */
         public int getThreadState() {
@@ -330,6 +352,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the thread wait reason.
+         *
          * @return the threadWaitReason
          */
         public int getThreadWaitReason() {
@@ -337,6 +361,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the start memory address.
+         *
          * @return the startMemoryAddress
          */
         public long getStartAddress() {
@@ -344,6 +370,8 @@ public final class ThreadPerformanceData {
         }
 
         /**
+         * Returns the context switches.
+         *
          * @return the contextSwitches
          */
         public long getContextSwitches() {

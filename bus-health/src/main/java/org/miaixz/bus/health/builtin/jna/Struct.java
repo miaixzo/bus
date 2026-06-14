@@ -54,6 +54,12 @@ public interface Struct {
     class CloseableSysinfo extends Sysinfo implements AutoCloseable {
 
         /**
+         * Creates a new CloseableSysinfo instance.
+         */
+        public CloseableSysinfo() {
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -76,6 +82,12 @@ public interface Struct {
     class CloseableHostCpuLoadInfo extends HostCpuLoadInfo implements AutoCloseable {
 
         /**
+         * Creates a new CloseableHostCpuLoadInfo instance.
+         */
+        public CloseableHostCpuLoadInfo() {
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -92,6 +104,12 @@ public interface Struct {
      * @since Java 21+
      */
     class CloseableProcTaskInfo extends ProcTaskInfo implements AutoCloseable {
+
+        /**
+         * Creates a new CloseableProcTaskInfo instance.
+         */
+        public CloseableProcTaskInfo() {
+        }
 
         /**
          * Closes this resource.
@@ -112,6 +130,12 @@ public interface Struct {
     class CloseableProcTaskAllInfo extends ProcTaskAllInfo implements AutoCloseable {
 
         /**
+         * Creates a new CloseableProcTaskAllInfo instance.
+         */
+        public CloseableProcTaskAllInfo() {
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -128,6 +152,12 @@ public interface Struct {
      * @since Java 21+
      */
     class CloseableRUsageInfoV2 extends RUsageInfoV2 implements AutoCloseable {
+
+        /**
+         * Creates a new CloseableRUsageInfoV2 instance.
+         */
+        public CloseableRUsageInfoV2() {
+        }
 
         /**
          * Closes this resource.
@@ -148,6 +178,12 @@ public interface Struct {
     class CloseableTimeval extends Timeval implements AutoCloseable {
 
         /**
+         * Creates a new CloseableTimeval instance.
+         */
+        public CloseableTimeval() {
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -164,6 +200,12 @@ public interface Struct {
      * @since Java 21+
      */
     class CloseableVMStatistics extends VMStatistics implements AutoCloseable {
+
+        /**
+         * Creates a new CloseableVMStatistics instance.
+         */
+        public CloseableVMStatistics() {
+        }
 
         /**
          * Closes this resource.
@@ -184,6 +226,12 @@ public interface Struct {
     class CloseableVnodePathInfo extends VnodePathInfo implements AutoCloseable {
 
         /**
+         * Creates a new CloseableVnodePathInfo instance.
+         */
+        public CloseableVnodePathInfo() {
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -200,6 +248,12 @@ public interface Struct {
      * @since Java 21+
      */
     class CloseableXswUsage extends XswUsage implements AutoCloseable {
+
+        /**
+         * Creates a new CloseableXswUsage instance.
+         */
+        public CloseableXswUsage() {
+        }
 
         /**
          * Closes this resource.
@@ -224,6 +278,12 @@ public interface Struct {
     class CloseableMibIfRow extends MIB_IFROW implements AutoCloseable {
 
         /**
+         * Creates a new CloseableMibIfRow instance.
+         */
+        public CloseableMibIfRow() {
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -240,6 +300,12 @@ public interface Struct {
      * @since Java 21+
      */
     class CloseableMibIfRow2 extends MIB_IF_ROW2 implements AutoCloseable {
+
+        /**
+         * Creates a new CloseableMibIfRow2 instance.
+         */
+        public CloseableMibIfRow2() {
+        }
 
         /**
          * Closes this resource.
@@ -260,6 +326,12 @@ public interface Struct {
     class CloseableMibTcpStats extends MIB_TCPSTATS implements AutoCloseable {
 
         /**
+         * Creates a new CloseableMibTcpStats instance.
+         */
+        public CloseableMibTcpStats() {
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -276,6 +348,12 @@ public interface Struct {
      * @since Java 21+
      */
     class CloseableMibUdpStats extends MIB_UDPSTATS implements AutoCloseable {
+
+        /**
+         * Creates a new CloseableMibUdpStats instance.
+         */
+        public CloseableMibUdpStats() {
+        }
 
         /**
          * Closes this resource.
@@ -296,6 +374,12 @@ public interface Struct {
     class CloseablePdhRawCounter extends PDH_RAW_COUNTER implements AutoCloseable {
 
         /**
+         * Creates a new CloseablePdhRawCounter instance.
+         */
+        public CloseablePdhRawCounter() {
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -312,6 +396,12 @@ public interface Struct {
      * @since Java 21+
      */
     class CloseablePerformanceInformation extends PERFORMANCE_INFORMATION implements AutoCloseable {
+
+        /**
+         * Creates a new CloseablePerformanceInformation instance.
+         */
+        public CloseablePerformanceInformation() {
+        }
 
         /**
          * Closes this resource.
@@ -332,6 +422,12 @@ public interface Struct {
     class CloseableSpDeviceInterfaceData extends SP_DEVICE_INTERFACE_DATA implements AutoCloseable {
 
         /**
+         * Creates a new CloseableSpDeviceInterfaceData instance.
+         */
+        public CloseableSpDeviceInterfaceData() {
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -350,6 +446,12 @@ public interface Struct {
     class CloseableSpDevinfoData extends SP_DEVINFO_DATA implements AutoCloseable {
 
         /**
+         * Creates a new CloseableSpDevinfoData instance.
+         */
+        public CloseableSpDevinfoData() {
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -366,6 +468,12 @@ public interface Struct {
      * @since Java 21+
      */
     class CloseableSystemInfo extends SYSTEM_INFO implements AutoCloseable {
+
+        /**
+         * Creates a new CloseableSystemInfo instance.
+         */
+        public CloseableSystemInfo() {
+        }
 
         /**
          * Closes this resource.

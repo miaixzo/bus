@@ -43,6 +43,12 @@ import org.miaixz.bus.health.mac.jna.CoreGraphics;
 public final class WindowInfo {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private WindowInfo() {
+    }
+
+    /**
      * Gets windows on the operating system's GUI desktop.
      *
      * @param visibleOnly Whether to restrict the list to only windows visible to the user.

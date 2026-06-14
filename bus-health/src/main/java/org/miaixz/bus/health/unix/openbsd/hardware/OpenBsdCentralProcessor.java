@@ -38,8 +38,8 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
-import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 import org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit;
+import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 
 /**
  * OpenBSD Central Processor implementation
@@ -49,6 +49,12 @@ import org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit;
  */
 @ThreadSafe
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
+
+    /**
+     * Creates a new OpenBsdCentralProcessor instance.
+     */
+    public OpenBsdCentralProcessor() {
+    }
 
     /**
      * The DMESG_CPU constant.
@@ -89,9 +95,9 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         List<String> vmstat = Executor.runNative("vmstat -s");
         for (String line : vmstat) {
             if (line.endsWith("cpu context switches")) {
-                contextSwitches = Parsing.getFirstIntValue(line);
+                contextSwitches = Parsing.parseLongOrDefault(line.trim().split("\\s+")[0], 0L);
             } else if (line.endsWith("interrupts")) {
-                interrupts = Parsing.getFirstIntValue(line);
+                interrupts = Parsing.parseLongOrDefault(line.trim().split("\\s+")[0], 0L);
             }
         }
         return Pair.of(contextSwitches, interrupts);

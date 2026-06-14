@@ -25,6 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.StringJoiner;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.Binding;
@@ -32,25 +34,25 @@ import org.miaixz.bus.tempus.temporal.Binding;
 import io.temporal.client.WorkflowClient;
 
 /**
- * Caches Temporal workflow clients and service stub handles by endpoint.
+ * Caches Temporal workflow clients and transport handles by endpoint.
  * <p>
- * This implementation reuses service stub handles and {@link WorkflowClient} instances for repeated publications
- * targeting the same Temporal endpoint.
+ * This implementation reuses transport handles and {@link WorkflowClient} instances for repeated publications targeting
+ * the same Temporal endpoint.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class CachingWorkflowClientProvider implements WorkflowClientProvider, AutoCloseable {
+public class CachingWorkflowConnector implements WorkflowConnector, AutoCloseable {
 
     /**
-     * Provider used to create service stub handles for endpoints that are not yet cached.
+     * Transport used to create handles for endpoints that are not yet cached.
      */
-    private final WorkflowServiceStubsProvider stubsProvider;
+    private final WorkflowTransport transport;
 
     /**
-     * Cache of Temporal service stub handles keyed by endpoint.
+     * Cache of Temporal transport handles keyed by endpoint.
      */
-    private final Map<String, Object> serviceStubsCache = new ConcurrentHashMap<>();
+    private final Map<String, Object> transportCache = new ConcurrentHashMap<>();
 
     /**
      * Cache of Temporal workflow clients keyed by endpoint + namespace + identity.
@@ -58,17 +60,17 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
     private final Map<String, WorkflowClient> clientCache = new ConcurrentHashMap<>();
 
     /**
-     * Detached service stubs retained for deferred cleanup after invalidation.
+     * Detached transport handles retained for deferred cleanup after invalidation.
      */
-    private final Queue<Object> retiredServiceStubs = new ConcurrentLinkedQueue<>();
+    private final Queue<Object> retiredTransports = new ConcurrentLinkedQueue<>();
 
     /**
-     * Creates a caching workflow client provider.
+     * Creates a caching workflow connector.
      *
-     * @param stubsProvider the service stubs provider
+     * @param transport the workflow transport
      */
-    public CachingWorkflowClientProvider(WorkflowServiceStubsProvider stubsProvider) {
-        this.stubsProvider = stubsProvider;
+    public CachingWorkflowConnector(WorkflowTransport transport) {
+        this.transport = transport;
     }
 
     /**
@@ -81,7 +83,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      * @return the workflow client
      */
     @Override
-    public WorkflowClient createWorkflowClient(Binding binding) {
+    public WorkflowClient client(Binding binding) {
         Assert.notNull(binding, "binding must not be null");
         Assert.notNull(binding.getEndpoint(), "temporal.endpoint must not be null");
 
@@ -116,7 +118,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      */
     private WorkflowClient createAndCacheClient(Binding binding) {
         String endpoint = binding.getEndpoint();
-        Object serviceStubs = serviceStubsCache.computeIfAbsent(endpoint, key -> createServiceStubs(binding));
+        Object transportHandle = transportCache.computeIfAbsent(endpoint, key -> createTransportHandle(binding));
         Logger.info(
                 true,
                 "Tempus",
@@ -126,7 +128,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
                 binding.getIdentity());
 
         try {
-            WorkflowClient client = stubsProvider.createWorkflowClient(serviceStubs, binding);
+            WorkflowClient client = transport.client(transportHandle, binding);
             Logger.info(
                     false,
                     "Tempus",
@@ -151,37 +153,37 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
     }
 
     /**
-     * Creates a service stub handle for the specified binding.
+     * Creates a transport handle for the specified binding.
      *
      * @param binding temporal configuration
-     * @return the created service stub handle
+     * @return the created transport handle
      */
-    private Object createServiceStubs(Binding binding) {
+    private Object createTransportHandle(Binding binding) {
         String endpoint = binding.getEndpoint();
         Logger.info(
                 true,
                 "Tempus",
-                "Workflow service stubs creation started: endpoint={}, namespace={}, identity={}",
+                "Workflow transport handle creation started: endpoint={}, namespace={}, identity={}",
                 endpoint,
                 binding.getNamespace(),
                 binding.getIdentity());
         try {
-            Object stubs = stubsProvider.createServiceStubs(binding);
+            Object transportHandle = transport.create(binding);
             Logger.info(
                     false,
                     "Tempus",
-                    "Workflow service stubs creation completed: endpoint={}, namespace={}, identity={}, stubsType={}",
+                    "Workflow transport handle creation completed: endpoint={}, namespace={}, identity={}, handleType={}",
                     endpoint,
                     binding.getNamespace(),
                     binding.getIdentity(),
-                    stubs == null ? null : stubs.getClass().getName());
-            return stubs;
+                    transportHandle == null ? null : transportHandle.getClass().getName());
+            return transportHandle;
         } catch (Exception e) {
             Logger.error(
                     false,
                     "Tempus",
                     e,
-                    "Workflow service stubs creation failed: endpoint={}, namespace={}, identity={}, exception={}",
+                    "Workflow transport handle creation failed: endpoint={}, namespace={}, identity={}, exception={}",
                     endpoint,
                     binding.getNamespace(),
                     binding.getIdentity(),
@@ -199,98 +201,99 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      * @return the composite cache key
      */
     private static String toClientCacheKey(String endpoint, String namespace, String identity) {
-        String ns = namespace == null ? "" : namespace;
-        String id = identity == null ? "" : identity;
-        return StringJoiner.of("|").append(endpoint).append(ns).append(id).toString();
+        String ns = namespace == null ? Normal.EMPTY : namespace;
+        String id = identity == null ? Normal.EMPTY : identity;
+        return StringJoiner.of(Symbol.OR).append(endpoint).append(ns).append(id).toString();
     }
 
     /**
-     * Invalidates all cached clients and service stubs for the specified endpoint.
+     * Invalidates all cached clients and transport handles for the specified endpoint.
      * <p>
      * Called on transient connection errors to force re-creation of stale connections on the next publish attempt.
      *
      * @param endpoint the Temporal server endpoint to invalidate
      */
+    @Override
     public void invalidate(String endpoint) {
         if (endpoint == null) {
             Logger.debug(false, "Tempus", "Workflow client cache invalidation skipped: endpointPresent=false");
             return;
         }
         int beforeClientCount = clientCache.size();
-        int beforeStubCount = serviceStubsCache.size();
-        clientCache.keySet().removeIf(key -> key.startsWith(endpoint + "|"));
-        Object detached = serviceStubsCache.remove(endpoint);
+        int beforeTransportCount = transportCache.size();
+        clientCache.keySet().removeIf(key -> key.startsWith(endpoint + Symbol.OR));
+        Object detached = transportCache.remove(endpoint);
         if (detached != null) {
-            retiredServiceStubs.offer(detached);
+            retiredTransports.offer(detached);
         }
         Logger.info(
                 false,
                 "Tempus",
-                "Workflow client cache invalidated: endpoint={}, beforeClientCount={}, afterClientCount={}, beforeStubCount={}, afterStubCount={}, retiredStubCount={}",
+                "Workflow client cache invalidated: endpoint={}, beforeClientCount={}, afterClientCount={}, beforeTransportCount={}, afterTransportCount={}, retiredTransportCount={}",
                 endpoint,
                 beforeClientCount,
                 clientCache.size(),
-                beforeStubCount,
-                serviceStubsCache.size(),
-                retiredServiceStubs.size());
+                beforeTransportCount,
+                transportCache.size(),
+                retiredTransports.size());
     }
 
     /**
-     * Closes all cached service stub handles and clears the internal caches maintained by this provider.
+     * Closes all cached transport handles and clears the internal caches maintained by this connector.
      */
     @Override
     public void close() {
         Logger.info(
                 true,
                 "Tempus",
-                "Workflow client provider close started: serviceStubCount={}, clientCount={}, retiredStubCount={}",
-                serviceStubsCache.size(),
+                "Workflow client connector close started: transportCount={}, clientCount={}, retiredTransportCount={}",
+                transportCache.size(),
                 clientCache.size(),
-                retiredServiceStubs.size());
-        for (Map.Entry<String, Object> entry : serviceStubsCache.entrySet()) {
-            closeServiceStubs(entry.getKey(), entry.getValue());
+                retiredTransports.size());
+        for (Map.Entry<String, Object> entry : transportCache.entrySet()) {
+            closeTransportHandle(entry.getKey(), entry.getValue());
         }
-        while (!retiredServiceStubs.isEmpty()) {
-            closeServiceStubs("retired", retiredServiceStubs.poll());
+        while (!retiredTransports.isEmpty()) {
+            closeTransportHandle("retired", retiredTransports.poll());
         }
-        serviceStubsCache.clear();
+        transportCache.clear();
         clientCache.clear();
-        retiredServiceStubs.clear();
-        Logger.info(false, "Tempus", "Workflow client provider close completed");
+        retiredTransports.clear();
+        Logger.info(false, "Tempus", "Workflow client connector close completed");
     }
 
     /**
-     * Closes a single cached service stub and logs failures without interrupting provider-wide cleanup.
+     * Closes a single cached transport handle and logs failures without interrupting connector-wide cleanup.
      *
-     * @param endpoint     the endpoint label associated with the stub
-     * @param serviceStubs the service stub instance
+     * @param endpoint        the endpoint label associated with the transport handle
+     * @param transportHandle the transport handle
      */
-    private void closeServiceStubs(String endpoint, Object serviceStubs) {
-        if (serviceStubs == null) {
+    private void closeTransportHandle(String endpoint, Object transportHandle) {
+        if (transportHandle == null) {
             return;
         }
         try {
             Logger.debug(
                     true,
                     "Tempus",
-                    "Workflow service stubs close started: endpoint={}, stubsType={}",
+                    "Workflow transport handle close started: endpoint={}, handleType={}",
                     endpoint,
-                    serviceStubs.getClass().getName());
-            stubsProvider.shutdownServiceStubs(serviceStubs);
+                    transportHandle.getClass().getName());
+            transport.shutdown(transportHandle);
             Logger.debug(
                     false,
                     "Tempus",
-                    "Workflow service stubs close completed: endpoint={}, stubsType={}",
+                    "Workflow transport handle close completed: endpoint={}, handleType={}",
                     endpoint,
-                    serviceStubs.getClass().getName());
+                    transportHandle.getClass().getName());
         } catch (Exception e) {
             Logger.warn(
                     false,
                     "Tempus",
                     e,
-                    "Workflow service stubs close failed: endpoint={}, stubsType={}, exception={}",
+                    "Workflow transport handle close failed: endpoint={}, handleType={}, exception={}",
                     endpoint,
-                    serviceStubs.getClass().getName(),
+                    transportHandle.getClass().getName(),
                     e.getClass().getSimpleName());
         }
     }

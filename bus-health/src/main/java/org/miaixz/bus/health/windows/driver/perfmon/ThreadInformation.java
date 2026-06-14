@@ -38,6 +38,12 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 public final class ThreadInformation {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private ThreadInformation() {
+    }
+
+    /**
      * Returns thread counters.
      *
      * @return Thread counters for each thread.
@@ -87,10 +93,50 @@ public final class ThreadInformation {
      */
     public enum ThreadPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
-        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES), PERCENTUSERTIME("% User Time"),
-        PERCENTPRIVILEGEDTIME("% Privileged Time"), ELAPSEDTIME("Elapsed Time"), PRIORITYCURRENT("Priority Current"),
-        STARTADDRESS("Start Address"), THREADSTATE("Thread State"), THREADWAITREASON("Thread Wait Reason"),
-        IDPROCESS("ID Process"), IDTHREAD("ID Thread"), CONTEXTSWITCHESPERSEC("Context Switches/sec");
+        /**
+         * Thread instance name counter.
+         */
+        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
+        /**
+         * User time percentage counter.
+         */
+        PERCENTUSERTIME("% User Time"),
+        /**
+         * Privileged time percentage counter.
+         */
+        PERCENTPRIVILEGEDTIME("% Privileged Time"),
+        /**
+         * Elapsed time counter.
+         */
+        ELAPSEDTIME("Elapsed Time"),
+        /**
+         * Current priority counter.
+         */
+        PRIORITYCURRENT("Priority Current"),
+        /**
+         * Start address counter.
+         */
+        STARTADDRESS("Start Address"),
+        /**
+         * Thread state counter.
+         */
+        THREADSTATE("Thread State"),
+        /**
+         * Thread wait reason counter.
+         */
+        THREADWAITREASON("Thread Wait Reason"),
+        /**
+         * Process identifier counter.
+         */
+        IDPROCESS("ID Process"),
+        /**
+         * Thread identifier counter.
+         */
+        IDTHREAD("ID Thread"),
+        /**
+         * Context switches per second counter.
+         */
+        CONTEXTSWITCHESPERSEC("Context Switches/sec");
 
         /**
          * The counter value.

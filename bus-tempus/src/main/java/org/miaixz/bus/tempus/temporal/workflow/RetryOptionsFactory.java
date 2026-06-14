@@ -31,11 +31,12 @@ import io.temporal.common.RetryOptions;
 public interface RetryOptionsFactory {
 
     /**
-     * Creates retry options for the specified activity name.
+     * Creates retry options for the specified workflow binding options and activity name.
      *
+     * @param options      workflow binding options
      * @param activityName the logical activity name (typically the activity interface simple name)
-     * @return the retry options, or {@code null} to use framework defaults
+     * @return the retry options
      */
-    RetryOptions createRetryOptions(String activityName);
+    RetryOptions createRetryOptions(WorkflowBindingOptions options, String activityName);
 
 }

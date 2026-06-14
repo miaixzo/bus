@@ -37,6 +37,12 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
 public final class SolarisHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
+     * Creates a new SolarisHardwareAbstractionLayer instance.
+     */
+    public SolarisHardwareAbstractionLayer() {
+    }
+
+    /**
      * Creates the computer system.
      *
      * @return the create computer system result

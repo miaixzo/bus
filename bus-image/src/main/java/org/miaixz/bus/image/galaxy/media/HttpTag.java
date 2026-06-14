@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.galaxy.media;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -125,7 +126,7 @@ public final class HttpTag {
      * @return true if the condition is met; otherwise false.
      */
     public boolean isSensitive() {
-        String lowerKey = key.toLowerCase();
+        String lowerKey = key.toLowerCase(Locale.ROOT);
         return lowerKey.contains("auth") || lowerKey.contains("token") || lowerKey.contains("password")
                 || lowerKey.contains("secret") || lowerKey.contains("key");
     }

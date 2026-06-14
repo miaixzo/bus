@@ -35,6 +35,12 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class PerfstatDisk {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private PerfstatDisk() {
+    }
+
+    /**
      * The PERF constant.
      */
     private static final Perfstat PERF = Perfstat.INSTANCE;

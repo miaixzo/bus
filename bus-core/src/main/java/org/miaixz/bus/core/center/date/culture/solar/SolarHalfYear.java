@@ -74,9 +74,7 @@ public class SolarHalfYear extends YearParts {
      * @throws IllegalArgumentException if validation fails
      */
     public static void validate(int year, int index) {
-        if (index < 0 || index > 1) {
-            throw new IllegalArgumentException("illegal solar half year index: " + index);
-        }
+        validateRange(index, 0, 1, "solar half year index");
         SolarYear.validate(year);
     }
 

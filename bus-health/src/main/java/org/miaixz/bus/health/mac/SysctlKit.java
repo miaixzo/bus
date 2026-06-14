@@ -39,6 +39,12 @@ import org.miaixz.bus.logger.Logger;
 public final class SysctlKit {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private SysctlKit() {
+    }
+
+    /**
      * The SYSCTL_FAIL constant.
      */
     private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";

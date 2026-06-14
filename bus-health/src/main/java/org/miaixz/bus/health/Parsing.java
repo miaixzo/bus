@@ -57,6 +57,12 @@ import org.miaixz.bus.logger.Logger;
 public final class Parsing {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private Parsing() {
+    }
+
+    /**
      * Default log message template for recording parsing failures.
      */
     private static final String DEFAULT_LOG_MSG = "{} didn't parse. Returning default. {}";
@@ -1368,10 +1374,32 @@ public final class Parsing {
      *         string, including excess delimiters.
      */
     public static <K extends Enum<K>> Map<K, String> stringToEnumMap(Class<K> clazz, String values, char delim) {
+        return stringToEnumMap(clazz, new ArrayList<>(EnumSet.allOf(clazz)), values, delim);
+    }
+
+    /**
+     * Parses a delimited string into an enum map using an explicit, ordered subset of enum keys. Multiple consecutive
+     * delimiters are treated as one. Unlike {@link #stringToEnumMap(Class, String, char)}, which maps every enum
+     * constant in ordinal order, this overload maps only the supplied {@code keys} in the order given, so callers can
+     * share a single enum across columns that vary by platform.
+     *
+     * @param <K>    The type extending Enum.
+     * @param clazz  The enum class.
+     * @param keys   The ordered enum keys to map, one per delimited field.
+     * @param values The delimited string to parse into a map.
+     * @param delim  The delimiter to use.
+     * @return An EnumMap populated in order using the delimited string values. If there are fewer string values than
+     *         keys, later keys are not mapped. The final key will contain the remainder of the string, including excess
+     *         delimiters.
+     */
+    public static <K extends Enum<K>> Map<K, String> stringToEnumMap(
+            Class<K> clazz,
+            List<K> keys,
+            String values,
+            char delim) {
         EnumMap<K, String> map = new EnumMap<>(clazz);
         int start = 0;
         int len = values.length();
-        EnumSet<K> keys = EnumSet.allOf(clazz);
         int keySize = keys.size();
         for (K key : keys) {
             // If this is the last enum, place the index at the end of the string, otherwise at the delimiter

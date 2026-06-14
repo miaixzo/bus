@@ -40,9 +40,9 @@ import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OSThread;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
-import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 import org.miaixz.bus.health.unix.openbsd.FstatKit;
 import org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem.PsKeywords;
+import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -362,6 +362,9 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * @return the query environment variables result
      */
     private Map<String, String> queryEnvironmentVariables() {
+        if (ARGMAX <= 0) {
+            return Collections.emptyMap();
+        }
         // Get environment variables via sysctl(3)
         int[] mib = new int[4];
         mib[0] = 1; // CTL_KERN
@@ -649,7 +652,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         }
         Predicate<Map<PsThreadColumns, String>> hasColumnsArgs = threadMap -> threadMap
                 .containsKey(PsThreadColumns.ARGS);
-        return Executor.runNative(psCommand).stream().skip(1)
+        return Executor.runNative(psCommand).stream().skip(1).parallel()
                 .map(thread -> Parsing.stringToEnumMap(PsThreadColumns.class, thread.trim(), Symbol.C_SPACE))
                 .filter(hasColumnsArgs).map(threadMap -> new OpenBsdOSThread(getProcessID(), threadMap))
                 .filter(OSThread.ThreadFiltering.VALID_THREAD).collect(Collectors.toList());
@@ -785,11 +788,9 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
         this.minorFaults = Parsing.parseLongOrDefault(psMap.get(PsKeywords.MINFLT), 0L);
         this.majorFaults = Parsing.parseLongOrDefault(psMap.get(PsKeywords.MAJFLT), 0L);
-        long nonVoluntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(PsKeywords.NIVCSW), 0L);
-        long voluntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(PsKeywords.NVCSW), 0L);
-        this.voluntaryContextSwitches = voluntaryContextSwitches;
-        this.involuntaryContextSwitches = nonVoluntaryContextSwitches;
-        this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
+        this.voluntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(PsKeywords.NVCSW), 0L);
+        this.involuntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(PsKeywords.NIVCSW), 0L);
+        this.contextSwitches = this.voluntaryContextSwitches + this.involuntaryContextSwitches;
         this.commandLineBackup = psMap.get(PsKeywords.ARGS);
         return true;
     }
@@ -803,7 +804,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
             // Subtract 1 for header
             this.threadCount = threadList.size() - 1;
         }
-        this.threadCount = 1;
+        this.threadCount = Math.max(this.threadCount, 1);
     }
 
     /**

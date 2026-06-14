@@ -41,6 +41,12 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
 public class OpenBsdFirmware extends AbstractFirmware {
 
     /**
+     * Creates a new OpenBsdFirmware instance.
+     */
+    public OpenBsdFirmware() {
+    }
+
+    /**
      * The manufVersRelease value.
      */
     private final Supplier<Triplet<String, String, String>> manufVersRelease = Memoizer

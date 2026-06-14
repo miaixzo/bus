@@ -38,6 +38,12 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 public final class ProcessInformation {
 
     /**
+     * Prevents instantiation of utility class.
+     */
+    private ProcessInformation() {
+    }
+
+    /**
      * Returns process counters.
      *
      * @return Process counters for each process.

@@ -311,11 +311,8 @@ public class FreeBsdOSThread extends AbstractOSThread {
         this.userTime = Parsing.parseDHMSOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.TIME), 0L)
                 - this.kernelTime;
         this.startMemoryAddress = Parsing.hexStringToLong(threadMap.get(FreeBsdOSProcess.PsThreadColumns.TDADDR), 0L);
-        long nonVoluntaryContextSwitches = Parsing
-                .parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.NIVCSW), 0L);
-        long voluntaryContextSwitches = Parsing
-                .parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.NVCSW), 0L);
-        this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
+        this.contextSwitches = Parsing.parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.NVCSW), 0L)
+                + Parsing.parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.NIVCSW), 0L);
         this.majorFaults = Parsing.parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.MAJFLT), 0L);
         this.minorFaults = Parsing.parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.MINFLT), 0L);
         this.priority = Parsing.parseIntOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.PRI), 0);

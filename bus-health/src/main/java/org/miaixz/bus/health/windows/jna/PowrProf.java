@@ -257,6 +257,12 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     class BATTERY_QUERY_INFORMATION extends Structure implements AutoCloseable {
 
         /**
+         * Creates a new BATTERY_QUERY_INFORMATION instance.
+         */
+        public BATTERY_QUERY_INFORMATION() {
+        }
+
+        /**
          * The BatteryTag value.
          */
         public int BatteryTag;
@@ -300,6 +306,12 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     @FieldOrder({ "Capabilities", "Technology", "Reserved", "Chemistry", "DesignedCapacity", "FullChargedCapacity",
             "DefaultAlert1", "DefaultAlert2", "CriticalBias", "CycleCount" })
     class BATTERY_INFORMATION extends Structure implements AutoCloseable {
+
+        /**
+         * Creates a new BATTERY_INFORMATION instance.
+         */
+        public BATTERY_INFORMATION() {
+        }
 
         /**
          * The Capabilities value.
@@ -374,6 +386,12 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     class BATTERY_WAIT_STATUS extends Structure implements AutoCloseable {
 
         /**
+         * Creates a new BATTERY_WAIT_STATUS instance.
+         */
+        public BATTERY_WAIT_STATUS() {
+        }
+
+        /**
          * The BatteryTag value.
          */
         public int BatteryTag;
@@ -422,6 +440,12 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     class BATTERY_STATUS extends Structure implements AutoCloseable {
 
         /**
+         * Creates a new BATTERY_STATUS instance.
+         */
+        public BATTERY_STATUS() {
+        }
+
+        /**
          * The PowerState value.
          */
         public int PowerState;
@@ -463,6 +487,12 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      */
     @FieldOrder({ "Day", "Month", "Year" })
     class BATTERY_MANUFACTURE_DATE extends Structure implements AutoCloseable {
+
+        /**
+         * Creates a new BATTERY_MANUFACTURE_DATE instance.
+         */
+        public BATTERY_MANUFACTURE_DATE() {
+        }
 
         /**
          * The Day value.

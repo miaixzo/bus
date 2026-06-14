@@ -332,18 +332,14 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
             return "";
         }
 
-        return findFirstSeparator(label).map(index -> label.substring(0, index)).orElse(label);
-    }
-
-    /**
-     * Finds the first separator.
-     *
-     * @param text the text.
-     * @return the operation result.
-     */
-    private java.util.Optional<Integer> findFirstSeparator(String text) {
-        return java.util.Arrays.stream(LABEL_SEPARATORS).mapToInt(text::indexOf)
-                .filter(index -> index > MIN_PREFIX_LENGTH).min().stream().boxed().findFirst();
+        int earliest = label.length();
+        for (String separator : LABEL_SEPARATORS) {
+            int index = label.indexOf(separator);
+            if (index > MIN_PREFIX_LENGTH && index < earliest) {
+                earliest = index;
+            }
+        }
+        return earliest < label.length() ? label.substring(0, earliest) : label;
     }
 
     /**

@@ -44,6 +44,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -1156,10 +1157,10 @@ public class Format extends java.text.Format {
             return defaultTimeFormatter.withLocale(locale).format(date);
         } else if (date instanceof LocalDateTime || date instanceof ZonedDateTime) {
             return defaultDateTimeFormatter.withLocale(locale).format(date);
-        } else if (date instanceof Instant) {
-            return defaultDateTimeFormatter.withLocale(locale).format(((Instant) date).atZone(ZoneId.systemDefault()));
+        } else if (date instanceof Instant instant) {
+            return defaultDateTimeFormatter.withLocale(locale).format(instant.atZone(ZoneId.systemDefault()));
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**

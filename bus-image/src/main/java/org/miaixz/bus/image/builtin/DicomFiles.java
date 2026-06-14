@@ -21,6 +21,9 @@ package org.miaixz.bus.image.builtin;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -78,7 +81,7 @@ public abstract class DicomFiles {
     public static void scan(List<String> fnames, boolean printout, Callback scb) {
         Logger.info(true, "Image", "DICOM file scan started: rootCount={}, printout={}", fnames.size(), printout);
         for (String fname : fnames) {
-            scan(new File(fname), printout, scb);
+            scan(Path.of(fname), printout, scb);
         }
         Logger.info(false, "Image", "DICOM file scan finished: rootCount={}", fnames.size());
     }
@@ -88,39 +91,33 @@ public abstract class DicomFiles {
      * directory, it scans its contents. If it's a file, it attempts to parse it as either a DICOM file or a DICOM XML
      * file and invokes the callback.
      *
-     * @param f        The {@link File} object representing the file or directory to scan.
+     * @param path     The {@link Path} object representing the file or directory to scan.
      * @param printout A boolean indicating whether to print progress to the console.
      * @param scb      The callback interface to handle each DICOM file.
      */
-    private static void scan(File f, boolean printout, Callback scb) {
-        if (f.isDirectory() && f.canRead()) {
-            String[] fileList = f.list();
-            if (fileList != null) {
-                Logger.debug(
-                        true,
-                        "Image",
-                        "DICOM directory scan started: directoryName={}, childCount={}",
-                        f.getName(),
-                        fileList.length);
-                for (String s : fileList) {
-                    scan(new File(f, s), printout, scb);
+    private static void scan(Path path, boolean printout, Callback scb) {
+        if (Files.isDirectory(path) && Files.isReadable(path)) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+                Logger.debug(true, "Image", "DICOM directory scan started: directoryName={}", path.getFileName());
+                for (Path entry : stream) {
+                    scan(entry, printout, scb);
                 }
-                Logger.debug(
-                        false,
-                        "Image",
-                        "DICOM directory scan finished: directoryName={}, childCount={}",
-                        f.getName(),
-                        fileList.length);
-            } else {
+                Logger.debug(false, "Image", "DICOM directory scan finished: directoryName={}", path.getFileName());
+            } catch (IOException e) {
                 Logger.warn(
                         false,
                         "Image",
-                        "DICOM directory scan skipped: directoryName={}, reason=list-null",
-                        f.getName());
+                        e,
+                        "DICOM directory scan failed: directoryName={}, exception={}",
+                        path.getFileName(),
+                        e.getClass().getSimpleName());
             }
             return;
         }
-        if (f.getName().endsWith(".xml")) {
+        if (!Files.isRegularFile(path)) {
+            return;
+        }
+        if (path.getFileName().toString().endsWith(".xml")) {
             try {
                 SAXParser p = saxParser;
                 if (p == null) {
@@ -130,31 +127,29 @@ public abstract class DicomFiles {
                 }
                 Attributes ds = new Attributes();
                 ContentHandlerAdapter ch = new ContentHandlerAdapter(ds);
-                p.parse(f, ch);
+                try (var input = Files.newInputStream(path)) {
+                    p.parse(input, ch);
+                }
                 Attributes fmi = ch.getFileMetaInformation();
                 if (fmi == null) {
                     fmi = ds.createFileMetaInformation(UID.ExplicitVRLittleEndian.uid);
                 }
-                boolean b = scb.dicomFile(f, fmi, -1, ds);
-                Logger.debug(false, "Image", "DICOM XML file scanned: fileName={}, accepted={}", f.getName(), b);
+                boolean b = scb.dicomFile(path, fmi, -1, ds);
+                Logger.debug(false, "Image", "DICOM XML file scanned: fileName={}, accepted={}", path.getFileName(), b);
                 if (printout) {
                     System.out.print(b ? '.' : 'I');
                 }
             } catch (Exception e) {
-                System.out.println();
-                System.out.println("Failed to parse file " + f + ": " + e.getMessage());
                 Logger.warn(
                         false,
                         "Image",
                         e,
                         "DICOM file parse failed: fileName={}, exception={}",
-                        f.getName(),
+                        path.getFileName(),
                         e.getClass().getSimpleName());
             }
         } else {
-            ImageInputStream in = null;
-            try {
-                in = new ImageInputStream(f);
+            try (var in = new ImageInputStream(Files.newInputStream(path))) {
                 in.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
                 Attributes fmi = in.readFileMetaInformation();
                 long dsPos = in.getPosition();
@@ -164,41 +159,25 @@ public abstract class DicomFiles {
                         || !fmi.containsValue(Tag.MediaStorageSOPInstanceUID)) {
                     fmi = ds.createFileMetaInformation(in.getTransferSyntax());
                 }
-                boolean b = scb.dicomFile(f, fmi, dsPos, ds);
+                boolean b = scb.dicomFile(path, fmi, dsPos, ds);
                 Logger.debug(
                         false,
                         "Image",
                         "DICOM file scanned: fileName={}, datasetPosition={}, accepted={}",
-                        f.getName(),
+                        path.getFileName(),
                         dsPos,
                         b);
                 if (printout) {
                     System.out.print(b ? '.' : 'I');
                 }
             } catch (Exception e) {
-                System.out.println();
-                System.out.println("Failed to scan file " + f + ": " + e.getMessage());
                 Logger.warn(
                         false,
                         "Image",
                         e,
                         "DICOM file scan failed: fileName={}, exception={}",
-                        f.getName(),
+                        path.getFileName(),
                         e.getClass().getSimpleName());
-            } finally {
-                try {
-                    if (null != in) {
-                        in.close();
-                    }
-                } catch (IOException e) {
-                    Logger.warn(
-                            false,
-                            "Image",
-                            e,
-                            "DICOM input stream close failed: fileName={}, exception={}",
-                            f.getName(),
-                            e.getClass().getSimpleName());
-                }
             }
         }
     }
@@ -210,6 +189,20 @@ public abstract class DicomFiles {
      * @since Java 21+
      */
     public interface Callback {
+
+        /**
+         * Called for each DICOM path found.
+         *
+         * @param path  The {@link Path} object representing the DICOM file.
+         * @param fmi   The File Meta Information {@link Attributes} of the DICOM file.
+         * @param dsPos The position of the dataset within the file, or -1 if it's an XML file.
+         * @param ds    The main dataset {@link Attributes} of the DICOM file.
+         * @return {@code true} if the file was processed successfully, {@code false} otherwise.
+         * @throws Exception if an error occurs during processing.
+         */
+        default boolean dicomFile(Path path, Attributes fmi, long dsPos, Attributes ds) throws Exception {
+            return dicomFile(path.toFile(), fmi, dsPos, ds);
+        }
 
         /**
          * Called for each DICOM file or DICOM XML file found.

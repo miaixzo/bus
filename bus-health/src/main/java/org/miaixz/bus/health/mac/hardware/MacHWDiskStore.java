@@ -188,10 +188,16 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                             if (!"Disk Image".equals(model)) {
                                 CFStringRef modelNameRef = CFStringRef.createCFString(model);
                                 CFMutableDictionaryRef propertyDict = CF.CFDictionaryCreateMutable(
-                                        CF.CFAllocatorGetDefault(), new CFIndex(0), null, null);
+                                        CF.CFAllocatorGetDefault(),
+                                        new CFIndex(0),
+                                        null,
+                                        null);
                                 propertyDict.setValue(cfKeyMap.get(CFKey.MODEL), modelNameRef);
                                 CFMutableDictionaryRef matchingDict = CF.CFDictionaryCreateMutable(
-                                        CF.CFAllocatorGetDefault(), new CFIndex(0), null, null);
+                                        CF.CFAllocatorGetDefault(),
+                                        new CFIndex(0),
+                                        null,
+                                        null);
                                 matchingDict.setValue(cfKeyMap.get(CFKey.IO_PROPERTY_MATCH), propertyDict);
 
                                 // search for all IOservices that match the model
