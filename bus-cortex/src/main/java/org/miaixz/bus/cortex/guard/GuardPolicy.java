@@ -41,34 +41,19 @@ public enum GuardPolicy {
     ANONYMOUS(0, false, false, false, false),
 
     /**
-     * Token-based authentication only.
+     * Credential authentication only. Token is preferred, API key is used as fallback.
      */
-    TOKEN(1, true, false, false, false),
+    CREDENTIAL(1, true, true, false, false),
 
     /**
-     * Token-based authentication plus permission validation.
+     * Credential authentication plus permission validation.
      */
-    TOKEN_PERMISSION(2, true, false, true, false),
+    CREDENTIAL_PERMISSION(2, true, true, true, false),
 
     /**
-     * Token-based authentication plus permission and license validation.
+     * Credential authentication plus permission and license validation.
      */
-    TOKEN_PERMISSION_LICENSE(3, true, false, true, true),
-
-    /**
-     * ApiKey-based authentication only.
-     */
-    API_KEY(4, false, true, false, false),
-
-    /**
-     * ApiKey-based authentication plus permission validation.
-     */
-    API_KEY_PERMISSION(5, false, true, true, false),
-
-    /**
-     * ApiKey-based authentication plus permission and license validation.
-     */
-    API_KEY_PERMISSION_LICENSE(6, false, true, true, true);
+    CREDENTIAL_PERMISSION_LICENSE(3, true, true, true, true);
 
     /**
      * Stable numeric code persisted in asset definitions.
