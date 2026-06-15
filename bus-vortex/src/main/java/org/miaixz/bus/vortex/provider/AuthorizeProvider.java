@@ -46,12 +46,13 @@ public interface AuthorizeProvider {
     /**
      * Asynchronously validates the provided principal and performs the authorization process. This default method acts
      * as a template, dispatching to the appropriate specific validation method (e.g., {@link #token(Principal)},
-     * {@link #apiKey(Principal)}, or {@link #license(Principal)}) based on the principal's type (policy).
+     * {@link #apiKey(Principal)}, or {@link #license(Principal)}) based on the principal's credential type.
      * <p>
      * Policy dispatch logic:
      * <ul>
-     * <li>Policy 1-3: Token-based authentication (policy 3 includes license verification)</li>
-     * <li>Policy 4-6: ApiKey-based authentication (policy 6 includes license verification)</li>
+     * <li>Type 1: Token-based authentication</li>
+     * <li>Type 2: API key-based authentication</li>
+     * <li>Route policy 3: Includes license verification before the selected credential check</li>
      * </ul>
      * <p>
      * This method can be overridden to handle custom credential types or more complex dispatching logic.
@@ -66,11 +67,22 @@ public interface AuthorizeProvider {
         }
 
         final Integer type = principal.getType();
+        final Integer policy = principal.getContext() == null || principal.getContext().getAssets() == null ? null
+                : principal.getContext().getAssets().getPolicy();
+        if (policy != null && (policy < Consts.ONE || policy > Consts.THREE)) {
+            Logger.warn(false, "Vortex", "Unsupported assets policy: {}. Route policy must be in range 1..3.", policy);
+            return Mono.just(
+                    Delegate.builder()
+                            .message(
+                                    Message.builder().errcode(ErrorCode._116002.getKey())
+                                            .errmsg("Unsupported policy: " + policy).build())
+                            .build());
+        }
 
-        final boolean isTokenBased = Consts.ONE.equals(type) || Consts.TWO.equals(type) || Consts.THREE.equals(type);
-        final boolean isApiKeyBased = Consts.FOUR.equals(type) || Consts.FIVE.equals(type) || Consts.SIX.equals(type);
+        final boolean isTokenBased = Consts.ONE.equals(type);
+        final boolean isApiKeyBased = Consts.TWO.equals(type);
 
-        final boolean requiresLicense = Consts.THREE.equals(type) || Consts.SIX.equals(type);
+        final boolean requiresLicense = Consts.THREE.equals(policy);
 
         if (isTokenBased) {
             Mono<Delegate> chain = requiresLicense ? this.license(principal)
@@ -99,7 +111,7 @@ public interface AuthorizeProvider {
     /**
      * Asynchronously validates a token-based principal (e.g., JWT, Opaque Token).
      * <p>
-     * Used for policy 1-3 (Token-based authentication).
+     * Used when principal type is {@link Consts#ONE}.
      * <p>
      * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
      * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as JWT
@@ -124,7 +136,7 @@ public interface AuthorizeProvider {
     /**
      * Asynchronously validates an API key-based principal.
      * <p>
-     * Used for policy 4-6 (ApiKey-based authentication).
+     * Used when principal type is {@link Consts#TWO}.
      * <p>
      * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
      * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as looking
@@ -149,7 +161,7 @@ public interface AuthorizeProvider {
     /**
      * Asynchronously validates a license-based principal for enhanced security.
      * <p>
-     * Used for policy 3 (Token with license) and policy 6 (ApiKey with license).
+     * Used before selected credential validation when route policy is {@link Consts#THREE}.
      * <p>
      * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
      * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as license

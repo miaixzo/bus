@@ -19,19 +19,13 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.springframework.web.server.ServerWebExchange;
-
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
@@ -46,8 +40,13 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
-
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Basic qualifier strategy for routes without protocol-specific qualification rules.
@@ -81,6 +80,28 @@ public class QualifierStrategy extends AbstractStrategy {
     public QualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
         this.provider = provider;
         this.registry = registry;
+    }
+
+    /**
+     * Resolves a bearer token using the shared case-insensitive credential lookup.
+     *
+     * @param context current request context
+     * @return token value, or {@code null} when absent
+     */
+    @Override
+    protected String getToken(Context context) {
+        return this.resolveToken(context);
+    }
+
+    /**
+     * Resolves an API key using the shared case-insensitive credential lookup.
+     *
+     * @param context current request context
+     * @return API key value, or {@code null} when absent
+     */
+    @Override
+    protected String getApiKey(Context context) {
+        return this.resolveApiKey(context);
     }
 
     /**
@@ -252,8 +273,9 @@ public class QualifierStrategy extends AbstractStrategy {
     /**
      * Performs policy-based authorization for the resolved asset.
      * <p>
-     * Policy values decide whether bearer tokens or API keys are accepted. Successful authorization attributes are
-     * copied into the request parameters for downstream executors.
+     * Policy values 1-3 enable authorization. The request credential type is selected from the request: bearer token
+     * first, API key fallback. Successful authorization attributes are copied into the request parameters for
+     * downstream executors.
      *
      * @param context current request context
      * @return completion signal
@@ -261,11 +283,11 @@ public class QualifierStrategy extends AbstractStrategy {
     protected Mono<Void> authorize(Context context) {
         final Integer policy = context.getAssets().getPolicy();
 
-        if (policy == null || policy < Consts.ZERO || policy > Consts.SIX) {
+        if (policy == null || policy < Consts.ZERO || policy > Consts.THREE) {
             Logger.error(
                     false,
                     "Vortex",
-                    "Invalid policy value: strategy=qualifier, clientIp={}, policy={}, allowedRange=0..6",
+                    "Invalid policy value: strategy=qualifier, clientIp={}, policy={}, allowedRange=0..3",
                     context.getX_request_ip(),
                     policy);
             return Mono.error(new ValidateException(ErrorCode._116002));
@@ -280,39 +302,8 @@ public class QualifierStrategy extends AbstractStrategy {
             return Mono.empty();
         }
 
-        final boolean acceptToken = Consts.ONE.equals(policy) || Consts.TWO.equals(policy)
-                || Consts.THREE.equals(policy);
-        final boolean acceptApiKey = Consts.FOUR.equals(policy) || Consts.FIVE.equals(policy)
-                || Consts.SIX.equals(policy);
-
-        String credentialValue = null;
-
-        if (acceptToken) {
-            credentialValue = this.getToken(context);
-            if (StringKit.isNotBlank(credentialValue)) {
-                context.setBearer(credentialValue);
-                Logger.info(
-                        true,
-                        "Vortex",
-                        "Bearer credential selected: strategy=qualifier, clientIp={}, policy={}",
-                        context.getX_request_ip(),
-                        policy);
-            }
-        }
-
-        if (acceptApiKey) {
-            credentialValue = this.getApiKey(context);
-            if (StringKit.isNotBlank(credentialValue)) {
-                Logger.info(
-                        true,
-                        "Vortex",
-                        "API key credential selected: strategy=qualifier, clientIp={}, policy={}",
-                        context.getX_request_ip(),
-                        policy);
-            }
-        }
-
-        if (credentialValue == null) {
+        Credential credential = this.selectCredential(context, policy);
+        if (credential == null) {
             Logger.warn(
                     false,
                     "Vortex",
@@ -323,8 +314,8 @@ public class QualifierStrategy extends AbstractStrategy {
         }
 
         return this.provider.authorize(
-                Principal.builder().channel(context.getChannel().getType()).context(context).type(policy)
-                        .value(credentialValue).build())
+                Principal.builder().channel(context.getChannel().getType()).context(context).type(credential.type())
+                        .value(credential.value()).build())
                 .flatMap(delegate -> {
                     if (delegate.isOk()) {
                         Map<String, Object> authMap = new HashMap<>();
@@ -347,9 +338,10 @@ public class QualifierStrategy extends AbstractStrategy {
                         Logger.info(
                                 true,
                                 "Vortex",
-                                "Authentication completed: strategy=qualifier, clientIp={}, policy={}",
+                                "Authentication completed: strategy=qualifier, clientIp={}, policy={}, credential={}",
                                 context.getX_request_ip(),
-                                policy);
+                                policy,
+                                credential.name());
                         return Mono.empty();
                     }
 
@@ -357,13 +349,126 @@ public class QualifierStrategy extends AbstractStrategy {
                     Logger.error(
                             false,
                             "Vortex",
-                            "Authentication failed: strategy=qualifier, clientIp={}, policy={}, errorCode={}, message={}",
+                            "Authentication failed: strategy=qualifier, clientIp={}, policy={}, credential={}, errorCode={}, message={}",
                             context.getX_request_ip(),
                             policy,
+                            credential.name(),
                             message.errcode,
                             message.errmsg);
                     return Mono.error(new ValidateException(message.errcode, message.errmsg));
                 });
+    }
+
+    /**
+     * Selects the request credential. Bearer tokens have priority, API keys are used only when no token is present.
+     *
+     * @param context current request context
+     * @param policy  current route policy
+     * @return selected credential, or {@code null} when no supported credential is present
+     */
+    protected Credential selectCredential(Context context, Integer policy) {
+        String token = this.resolveToken(context);
+        if (StringKit.isNotBlank(token)) {
+            context.setBearer(token);
+            return this.selectedCredential(context, policy, Consts.ONE, token, "Bearer");
+        }
+
+        String apiKey = this.resolveApiKey(context);
+        if (StringKit.isBlank(apiKey)) {
+            return null;
+        }
+        return this.selectedCredential(context, policy, Consts.TWO, apiKey, "API key");
+    }
+
+    /**
+     * Resolves a token from headers or request parameters using case-insensitive aliases.
+     *
+     * @param context current request context
+     * @return token value, or {@code null} when absent
+     */
+    protected String resolveToken(Context context) {
+        String token = this.resolveCredentialValue(context.getHeaders(), Specifics.TOKEN_KEYS);
+        if (StringKit.isBlank(token)) {
+            token = this.resolveCredentialValue(context.getParameters(), Specifics.TOKEN_KEYS);
+        }
+        if (StringKit.isBlank(token)) {
+            return null;
+        }
+        token = token.trim();
+        if (StringKit.startWithIgnoreCase(token, HTTP.BEARER)) {
+            return token.substring(HTTP.BEARER.length()).trim();
+        }
+        return token;
+    }
+
+    /**
+     * Resolves an API key from headers or request parameters using case-insensitive aliases.
+     *
+     * @param context current request context
+     * @return API key value, or {@code null} when absent
+     */
+    protected String resolveApiKey(Context context) {
+        String apiKey = this.resolveCredentialValue(context.getHeaders(), Specifics.API_KEY_KEYS);
+        if (StringKit.isBlank(apiKey)) {
+            apiKey = this.resolveCredentialValue(context.getParameters(), Specifics.API_KEY_KEYS);
+        }
+        return StringKit.isBlank(apiKey) ? null : apiKey.trim();
+    }
+
+    /**
+     * Finds the first non-blank credential value by exact match first, then by case-insensitive key match.
+     *
+     * @param values candidate values
+     * @param keys   supported keys
+     * @return matched credential value, or {@code null}
+     */
+    protected String resolveCredentialValue(Map<String, ?> values, String... keys) {
+        if (values == null || values.isEmpty() || keys == null || keys.length == 0) {
+            return null;
+        }
+
+        for (String key : keys) {
+            String value = StringKit.toString(values.get(key));
+            if (StringKit.isNotBlank(value)) {
+                return value;
+            }
+        }
+
+        for (String key : keys) {
+            if (StringKit.isBlank(key)) {
+                continue;
+            }
+            for (Map.Entry<String, ?> entry : values.entrySet()) {
+                if (StringKit.equalsIgnoreCase(key, entry.getKey())) {
+                    String value = StringKit.toString(entry.getValue());
+                    if (StringKit.isNotBlank(value)) {
+                        return value;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Builds a selected credential and writes the common selection log.
+     *
+     * @param context current request context
+     * @param policy  current route policy
+     * @param type    credential type
+     * @param value   credential value
+     * @param name    credential display name
+     * @return selected credential
+     */
+    protected Credential selectedCredential(Context context, Integer policy, Integer type, String value, String name) {
+        Logger.info(
+                true,
+                "Vortex",
+                "{} credential selected: strategy=qualifier, clientIp={}, policy={}",
+                name,
+                context.getX_request_ip(),
+                policy);
+        return new Credential(type, value, name);
     }
 
     /**
@@ -393,6 +498,17 @@ public class QualifierStrategy extends AbstractStrategy {
      */
     protected void removeForwardingControlParameters(Context context) {
         context.getParameters().keySet().removeIf(Args::isForwardingControlParameter);
+    }
+
+    /**
+     * Selected request credential.
+     *
+     * @param type  credential type
+     * @param value credential value
+     * @param name  credential display name
+     */
+    protected record Credential(Integer type, String value, String name) {
+
     }
 
 }
