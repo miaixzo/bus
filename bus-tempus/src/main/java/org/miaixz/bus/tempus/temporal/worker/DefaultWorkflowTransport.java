@@ -20,6 +20,7 @@
 package org.miaixz.bus.tempus.temporal.worker;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -41,16 +42,6 @@ import io.temporal.client.WorkflowClientOptions;
  * @since Java 21+
  */
 public class DefaultWorkflowTransport implements WorkflowTransport {
-
-    /**
-     * Temporal service stubs class name.
-     */
-    private static final String WORKFLOW_SERVICE_STUBS_CLASS = "io.temporal.serviceclient.WorkflowServiceStubs";
-
-    /**
-     * Temporal service stubs options class name.
-     */
-    private static final String WORKFLOW_SERVICE_STUBS_OPTIONS_CLASS = "io.temporal.serviceclient.WorkflowServiceStubsOptions";
 
     /**
      * Creates a default workflow transport.
@@ -196,8 +187,7 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
             return shutdownTransportState();
         }
         try {
-            Method rawChannelMethod = handle.getClass().getMethod("getRawChannel");
-            Object channel = rawChannelMethod.invoke(handle);
+            Object channel = invokeNoArgRequired(handle, "getRawChannel");
             if (channel == null) {
                 Logger.debug(false, "Tempus", "Workflow transport state skipped: reason=noChannel");
                 return shutdownTransportState();
@@ -220,7 +210,7 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
     }
 
     /**
-     * Probes the Temporal service with a lightweight system information request.
+     * Probes the Temporal service through the public stubs health check contract.
      *
      * @param handle         opaque transport handle
      * @param timeoutSeconds probe timeout in seconds
@@ -234,13 +224,14 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
         }
         long deadlineSeconds = timeoutSeconds <= 0 ? 5L : timeoutSeconds;
         try {
-            Object blockingStub = handle.getClass().getMethod("blockingStub").invoke(handle);
-            Object deadlineStub = blockingStub.getClass().getMethod("withDeadlineAfter", long.class, TimeUnit.class)
-                    .invoke(blockingStub, deadlineSeconds, TimeUnit.SECONDS);
-            Class<?> requestType = Class.forName(systemInfoRequestClassName());
-            Object request = requestType.getMethod("getDefaultInstance").invoke(null);
-            deadlineStub.getClass().getMethod("getSystemInfo", requestType).invoke(deadlineStub, request);
-            Logger.debug(false, "Tempus", "Workflow service stubs health check completed: healthy=true");
+            requireWorkflowServiceStubs(handle);
+            Object response = invokeNoArgRequired(handle, "healthCheck");
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow service stubs health check completed: timeoutSeconds={}, responseType={}, healthy=true",
+                    deadlineSeconds,
+                    response == null ? null : response.getClass().getName());
             return true;
         } catch (ReflectiveOperationException | RuntimeException e) {
             Throwable rootCause = ExceptionKit.getRootCause(e);
@@ -312,7 +303,7 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
      * @param handle opaque transport handle
      * @return workflow client
      */
-    private WorkflowClient clientWithoutBinding(Object handle) {
+    protected WorkflowClient clientWithoutBinding(Object handle) {
         Assert.notNull(handle, "handle must not be null");
         Logger.debug(
                 true,
@@ -328,6 +319,70 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
                 "Workflow client creation from service stubs completed: stubsType={}",
                 handle.getClass().getName());
         return client;
+    }
+
+    /**
+     * Creates Temporal service stubs through reflection.
+     *
+     * @param options service stubs options
+     * @return service stubs handle
+     */
+    protected Object newServiceStubs(Object options) {
+        try {
+            Class<?> serviceStubsType = workflowServiceStubsType();
+            return MethodKit.invokeStatic(serviceStubsType.getMethod("newServiceStubs", options.getClass()), options);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Temporal WorkflowServiceStubs is not available", e);
+        }
+    }
+
+    /**
+     * Creates a Temporal service stubs options builder through reflection.
+     *
+     * @return service stubs options builder
+     */
+    protected Object newServiceStubsOptionsBuilder() {
+        try {
+            Class<?> optionsType = workflowServiceStubsOptionsType();
+            return MethodKit.invokeStatic(optionsType.getMethod("newBuilder"));
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Temporal WorkflowServiceStubsOptions is not available", e);
+        }
+    }
+
+    /**
+     * Resolves the workflow service stubs options type from the stubs factory signatures.
+     *
+     * @return workflow service stubs options type
+     */
+    protected Class<?> workflowServiceStubsOptionsType() {
+        Class<?> serviceStubsType = workflowServiceStubsType();
+        for (Method candidate : MethodKit.getPublicMethods(serviceStubsType)) {
+            if (!Modifier.isStatic(candidate.getModifiers()) || !"newServiceStubs".equals(candidate.getName())
+                    || candidate.getParameterCount() != 1
+                    || !serviceStubsType.isAssignableFrom(candidate.getReturnType())) {
+                continue;
+            }
+            return candidate.getParameterTypes()[0];
+        }
+        throw new IllegalStateException("Temporal WorkflowServiceStubs options factory is not available");
+    }
+
+    /**
+     * Resolves the workflow service stubs type from {@link WorkflowClient} factory signatures.
+     *
+     * @return workflow service stubs type
+     */
+    protected Class<?> workflowServiceStubsType() {
+        for (Method candidate : MethodKit.getPublicMethods(WorkflowClient.class)) {
+            if (!Modifier.isStatic(candidate.getModifiers()) || !"newInstance".equals(candidate.getName())
+                    || candidate.getParameterCount() != 1
+                    || !WorkflowClient.class.isAssignableFrom(candidate.getReturnType())) {
+                continue;
+            }
+            return candidate.getParameterTypes()[0];
+        }
+        throw new IllegalStateException("Temporal WorkflowClient stubs factory is not available");
     }
 
     /**
@@ -392,122 +447,6 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
     }
 
     /**
-     * Creates a Temporal service stubs options builder through reflection.
-     *
-     * @return service stubs options builder
-     */
-    private static Object newServiceStubsOptionsBuilder() {
-        try {
-            Class<?> optionsType = Class.forName(WORKFLOW_SERVICE_STUBS_OPTIONS_CLASS);
-            return MethodKit.invokeStatic(optionsType.getMethod("newBuilder"));
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("Temporal WorkflowServiceStubsOptions is not available", e);
-        }
-    }
-
-    /**
-     * Creates Temporal service stubs through reflection.
-     *
-     * @param options service stubs options
-     * @return service stubs handle
-     */
-    private static Object newServiceStubs(Object options) {
-        try {
-            Class<?> serviceStubsType = Class.forName(WORKFLOW_SERVICE_STUBS_CLASS);
-            return MethodKit.invokeStatic(serviceStubsType.getMethod("newServiceStubs", options.getClass()), options);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("Temporal WorkflowServiceStubs is not available", e);
-        }
-    }
-
-    /**
-     * Validates and casts a service stubs handle.
-     *
-     * @param serviceStubs service stubs handle
-     */
-    private static void requireWorkflowServiceStubs(Object serviceStubs) {
-        try {
-            Class<?> serviceStubsType = Class.forName(WORKFLOW_SERVICE_STUBS_CLASS);
-            Assert.isTrue(
-                    serviceStubsType.isInstance(serviceStubs),
-                    "serviceStubs must be a WorkflowServiceStubs instance");
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Temporal WorkflowServiceStubs is not available", e);
-        }
-    }
-
-    /**
-     * Returns the shutdown transport state name.
-     *
-     * @return shutdown transport state name
-     */
-    private static String shutdownTransportState() {
-        return WorkflowTransportState.SHUTDOWN.value();
-    }
-
-    /**
-     * Returns the unknown transport state name.
-     *
-     * @return unknown transport state name
-     */
-    private static String unknownTransportState() {
-        return WorkflowTransportState.UNKNOWN.value();
-    }
-
-    /**
-     * Returns the Temporal system information request class name.
-     *
-     * @return Temporal system information request class name
-     */
-    private static String systemInfoRequestClassName() {
-        return "io.temporal.api.workflowservice.v1.GetSystemInfoRequest";
-    }
-
-    /**
-     * Invokes a no-argument method when it exists on the target object.
-     *
-     * @param target     target object
-     * @param methodName method name
-     */
-    private static void invokeNoArgIfPresent(Object target, String methodName) {
-        invokeIfPresent(target, methodName, new Class<?>[0]);
-    }
-
-    /**
-     * Invokes a method when it exists on the target object and treats a missing method as an optional capability.
-     *
-     * @param target         target object
-     * @param methodName     method name
-     * @param parameterTypes method parameter types
-     * @param args           invocation arguments
-     */
-    private static void invokeIfPresent(Object target, String methodName, Class<?>[] parameterTypes, Object... args) {
-        Method method = MethodKit.getPublicMethod(target.getClass(), false, methodName, parameterTypes);
-        if (method != null) {
-            Logger.debug(
-                    true,
-                    "Tempus",
-                    "Workflow service stubs optional method invocation started: stubsType={}, method={}",
-                    target.getClass().getName(),
-                    methodName);
-            MethodKit.invoke(target, method, args);
-            Logger.debug(
-                    false,
-                    "Tempus",
-                    "Workflow service stubs optional method invocation completed: stubsType={}, method={}",
-                    target.getClass().getName(),
-                    methodName);
-        } else {
-            Logger.debug(
-                    false,
-                    "Tempus",
-                    "Workflow service stubs optional method skipped: stubsType={}, method={}, reason=missing",
-                    target.getClass().getName(),
-                    methodName);
-        }
-    }
-
-    /**
      * Waits for termination when the service stubs implementation exposes {@code awaitTermination(long, TimeUnit)}.
      *
      * @param target  target object
@@ -515,9 +454,14 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
      * @param unit    timeout unit
      * @return {@code true} when the method is absent or termination succeeds, otherwise {@code false}
      */
-    private static boolean invokeAwaitTerminationIfPresent(Object target, long timeout, TimeUnit unit) {
-        Method method = MethodKit
-                .getPublicMethod(target.getClass(), false, "awaitTermination", long.class, TimeUnit.class);
+    private boolean invokeAwaitTerminationIfPresent(Object target, long timeout, TimeUnit unit) {
+        Method method;
+        try {
+            method = workflowServiceStubsType().getMethod("awaitTermination", long.class, TimeUnit.class);
+        } catch (NoSuchMethodException e) {
+            method = MethodKit
+                    .getPublicMethod(target.getClass(), false, "awaitTermination", long.class, TimeUnit.class);
+        }
         if (method == null) {
             Logger.debug(
                     false,
@@ -544,6 +488,112 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
                 unit,
                 terminated);
         return terminated;
+    }
+
+    /**
+     * Invokes a method when it exists on the target object and treats a missing method as an optional capability.
+     *
+     * @param target         target object
+     * @param methodName     method name
+     * @param parameterTypes method parameter types
+     * @param args           invocation arguments
+     */
+    private void invokeIfPresent(Object target, String methodName, Class<?>[] parameterTypes, Object... args) {
+        Method method;
+        try {
+            method = workflowServiceStubsType().getMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException e) {
+            method = MethodKit.getPublicMethod(target.getClass(), false, methodName, parameterTypes);
+        }
+        if (method != null) {
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Workflow service stubs optional method invocation started: stubsType={}, method={}",
+                    target.getClass().getName(),
+                    methodName);
+            MethodKit.invoke(target, method, args);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow service stubs optional method invocation completed: stubsType={}, method={}",
+                    target.getClass().getName(),
+                    methodName);
+        } else {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow service stubs optional method skipped: stubsType={}, method={}, reason=missing",
+                    target.getClass().getName(),
+                    methodName);
+        }
+    }
+
+    /**
+     * Invokes a no-argument method when it exists on the target object.
+     *
+     * @param target     target object
+     * @param methodName method name
+     */
+    private void invokeNoArgIfPresent(Object target, String methodName) {
+        invokeIfPresent(target, methodName, new Class<?>[0]);
+    }
+
+    /**
+     * Invokes a required no-argument method on the target object.
+     *
+     * @param target     target object
+     * @param methodName method name
+     * @return invocation result
+     */
+    private Object invokeNoArgRequired(Object target, String methodName) throws ReflectiveOperationException {
+        Method method = workflowServiceStubsType().getMethod(methodName);
+        Logger.debug(
+                true,
+                "Tempus",
+                "Workflow service stubs required method invocation started: stubsType={}, contractType={}, method={}",
+                target.getClass().getName(),
+                method.getDeclaringClass().getName(),
+                methodName);
+        Object result = MethodKit.invoke(target, method);
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow service stubs required method invocation completed: stubsType={}, contractType={}, method={}",
+                target.getClass().getName(),
+                method.getDeclaringClass().getName(),
+                methodName);
+        return result;
+    }
+
+    /**
+     * Validates and casts a service stubs handle.
+     *
+     * @param serviceStubs service stubs handle
+     */
+    private void requireWorkflowServiceStubs(Object serviceStubs) {
+        Class<?> serviceStubsType = workflowServiceStubsType();
+        Assert.isTrue(
+                serviceStubsType.isInstance(serviceStubs),
+                "serviceStubs must be a WorkflowServiceStubs instance");
+    }
+
+    /**
+     * Returns the shutdown transport state name.
+     *
+     * @return shutdown transport state name
+     */
+    private static String shutdownTransportState() {
+        return WorkflowTransportState.SHUTDOWN.value();
+    }
+
+    /**
+     * Returns the unknown transport state name.
+     *
+     * @return unknown transport state name
+     */
+    private static String unknownTransportState() {
+        return WorkflowTransportState.UNKNOWN.value();
     }
 
 }

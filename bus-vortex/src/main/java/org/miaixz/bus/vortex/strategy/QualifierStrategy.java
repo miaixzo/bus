@@ -19,6 +19,13 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.springframework.web.server.ServerWebExchange;
+
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -40,13 +47,8 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Mono;
 
 /**
  * Basic qualifier strategy for routes without protocol-specific qualification rules.
