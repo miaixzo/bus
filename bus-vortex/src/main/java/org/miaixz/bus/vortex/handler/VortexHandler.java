@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
@@ -398,48 +397,38 @@ public class VortexHandler {
             return Retry.max(0);
         }
 
-        return Retry.backoff(maxRetries, Duration.ofMillis(100)).maxBackoff(Duration.ofSeconds(5)).filter(throwable -> {
-            if (throwable instanceof java.util.concurrent.TimeoutException) {
-                return true;
-            }
-            if (throwable instanceof java.net.ConnectException) {
-                return true;
-            }
-            if (throwable instanceof java.net.SocketTimeoutException) {
-                return true;
-            }
-            if (throwable instanceof java.io.IOException) {
-                return true;
-            }
-            if (throwable instanceof WebClientResponseException) {
-                WebClientResponseException ex = (WebClientResponseException) throwable;
-                return ex.getStatusCode().is5xxServerError() || ex.getStatusCode().value() == 429;
-            }
-            return false;
-        }).doBeforeRetry(retrySignal -> {
-            long attempt = retrySignal.totalRetries() + 1;
-            Throwable failure = retrySignal.failure();
-            Logger.warn(
-                    true,
-                    "Vortex",
-                    "Retry attempt {}/{} after error: clientIp={}, method={}, path={}, event=RETRY_ATTEMPT, {}",
-                    ip,
-                    method,
-                    path,
-                    attempt,
-                    maxRetries,
-                    failure.getClass().getSimpleName());
-        }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
-            Logger.error(
-                    true,
-                    "Vortex",
-                    "All {} retry attempts exhausted: clientIp={}, method={}, path={}, event=RETRY_EXHAUSTED",
-                    maxRetries,
-                    ip,
-                    method,
-                    path);
-            return retrySignal.failure();
-        });
+        return Retry.backoff(maxRetries, Duration.ofMillis(Holder.outboundRetryBackoffMillis()))
+                .maxBackoff(Duration.ofMillis(Holder.outboundRetryMaxBackoffMillis())).filter(Egress::isRetryable)
+                .doBeforeRetry(retrySignal -> {
+                    long attempt = retrySignal.totalRetries() + 1;
+                    Throwable failure = retrySignal.failure();
+                    Throwable root = Egress.rootCause(failure);
+                    Logger.warn(
+                            true,
+                            "Vortex",
+                            "Retry attempt {}/{} after error: clientIp={}, method={}, path={}, event=RETRY_ATTEMPT, failure={}, root={}",
+                            attempt,
+                            maxRetries,
+                            ip,
+                            method,
+                            path,
+                            failure == null ? null : failure.getClass().getSimpleName(),
+                            root == null ? null : root.getClass().getSimpleName());
+                }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
+                    Throwable failure = retrySignal.failure();
+                    Throwable root = Egress.rootCause(failure);
+                    Logger.error(
+                            true,
+                            "Vortex",
+                            "All {} retry attempts exhausted: clientIp={}, method={}, path={}, event=RETRY_EXHAUSTED, failure={}, root={}",
+                            maxRetries,
+                            ip,
+                            method,
+                            path,
+                            failure == null ? null : failure.getClass().getSimpleName(),
+                            root == null ? null : root.getClass().getSimpleName());
+                    return failure;
+                });
     }
 
     /**

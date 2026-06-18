@@ -116,6 +116,15 @@ public final class Holder {
         Logger.info(true, "Vortex", "- Max Connections: {}", performance.getMaxConnections());
         Logger.info(true, "Vortex", "- Pending Acquire Timeout: {} seconds", pendingAcquireTimeoutSeconds(performance));
         Logger.info(true, "Vortex", "- Pending Acquire Max Count: {}", pendingAcquireMaxCount(performance));
+        Logger.info(
+                true,
+                "Vortex",
+                "- Outbound Default Timeout: {} seconds",
+                outboundDefaultTimeoutSeconds(performance));
+        Logger.info(true, "Vortex", "- Outbound Default Retries: {}", outboundDefaultRetries(performance));
+        Logger.info(true, "Vortex", "- Outbound Max Idle: {} seconds", outboundMaxIdleSeconds(performance));
+        Logger.info(true, "Vortex", "- Outbound Max Life: {} minutes", outboundMaxLifeMinutes(performance));
+        Logger.info(true, "Vortex", "- Outbound Evict: {} seconds", outboundEvictSeconds(performance));
         Logger.info(true, "Vortex", "- Max Producer Cache Size: {}", performance.getMaxProducerCacheSize());
         Logger.info(true, "Vortex", "- L2 Cache Size: {}", performance.getCacheSize());
         Logger.info(true, "Vortex", "- L2 Cache Expire: {} ms", performance.getCacheExpireMs());
@@ -138,15 +147,22 @@ public final class Holder {
             Performance perf = get();
             int pendingAcquireMaxCount = pendingAcquireMaxCount(perf);
             int pendingAcquireTimeoutSeconds = pendingAcquireTimeoutSeconds(perf);
+            int maxIdleSeconds = outboundMaxIdleSeconds(perf);
+            int maxLifeMinutes = outboundMaxLifeMinutes(perf);
+            int evictSeconds = outboundEvictSeconds(perf);
             Logger.info(true, "Vortex", "HTTP connection pool initialized");
             Logger.info(true, "Vortex", "  - Pool Name: vortex-http-pool");
             Logger.info(true, "Vortex", "  - Max Connections: {}", perf.getMaxConnections());
             Logger.info(true, "Vortex", "  - Pending Acquire Timeout: {} seconds", pendingAcquireTimeoutSeconds);
             Logger.info(true, "Vortex", "  - Pending Acquire Max Count: {}", pendingAcquireMaxCount);
+            Logger.info(true, "Vortex", "  - Max Idle Time: {} seconds", maxIdleSeconds);
+            Logger.info(true, "Vortex", "  - Max Life Time: {} minutes", maxLifeMinutes);
+            Logger.info(true, "Vortex", "  - Evict In Background: {} seconds", evictSeconds);
             return ConnectionProvider.builder("vortex-http-pool").maxConnections(perf.getMaxConnections())
                     .pendingAcquireTimeout(Duration.ofSeconds(pendingAcquireTimeoutSeconds))
-                    .pendingAcquireMaxCount(pendingAcquireMaxCount).maxIdleTime(Duration.ofSeconds(20))
-                    .maxLifeTime(Duration.ofMinutes(5)).build();
+                    .pendingAcquireMaxCount(pendingAcquireMaxCount).maxIdleTime(Duration.ofSeconds(maxIdleSeconds))
+                    .maxLifeTime(Duration.ofMinutes(maxLifeMinutes)).evictInBackground(Duration.ofSeconds(evictSeconds))
+                    .build();
         });
     }
 
@@ -172,6 +188,99 @@ public final class Holder {
         }
         long derived = Math.max(1L, performance.getMaxConnections()) * 2L;
         return derived > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) derived;
+    }
+
+    /**
+     * Resolves outbound default request timeout in seconds.
+     *
+     * @return timeout in seconds
+     */
+    public static int outboundDefaultTimeoutSeconds() {
+        return outboundDefaultTimeoutSeconds(get());
+    }
+
+    /**
+     * Resolves outbound default retry attempts.
+     *
+     * @return retry attempts
+     */
+    public static int outboundDefaultRetries() {
+        return outboundDefaultRetries(get());
+    }
+
+    /**
+     * Resolves outbound retry initial backoff in milliseconds.
+     *
+     * @return retry initial backoff
+     */
+    public static int outboundRetryBackoffMillis() {
+        return outboundRetryBackoffMillis(get());
+    }
+
+    /**
+     * Resolves outbound retry maximum backoff in milliseconds.
+     *
+     * @return retry maximum backoff
+     */
+    public static int outboundRetryMaxBackoffMillis() {
+        return outboundRetryMaxBackoffMillis(get());
+    }
+
+    /**
+     * Resolves outbound max idle time in seconds.
+     *
+     * @return max idle time
+     */
+    public static int outboundMaxIdleSeconds() {
+        return outboundMaxIdleSeconds(get());
+    }
+
+    /**
+     * Resolves outbound max life time in minutes.
+     *
+     * @return max life time
+     */
+    public static int outboundMaxLifeMinutes() {
+        return outboundMaxLifeMinutes(get());
+    }
+
+    /**
+     * Resolves outbound background eviction interval in seconds.
+     *
+     * @return eviction interval
+     */
+    public static int outboundEvictSeconds() {
+        return outboundEvictSeconds(get());
+    }
+
+    private static int outboundDefaultTimeoutSeconds(Performance performance) {
+        return performance.getOutboundDefaultTimeoutSeconds() > 0 ? performance.getOutboundDefaultTimeoutSeconds() : 60;
+    }
+
+    private static int outboundDefaultRetries(Performance performance) {
+        return performance.getOutboundDefaultRetries() >= 0 ? performance.getOutboundDefaultRetries() : 1;
+    }
+
+    private static int outboundRetryBackoffMillis(Performance performance) {
+        return performance.getOutboundRetryBackoffMillis() > 0 ? performance.getOutboundRetryBackoffMillis() : 100;
+    }
+
+    private static int outboundRetryMaxBackoffMillis(Performance performance) {
+        int maxBackoff = performance.getOutboundRetryMaxBackoffMillis();
+        int backoff = outboundRetryBackoffMillis(performance);
+        return maxBackoff >= backoff ? maxBackoff : 5000;
+    }
+
+    private static int outboundMaxIdleSeconds(Performance performance) {
+        return performance.getOutboundMaxIdleSeconds() > 0 ? performance.getOutboundMaxIdleSeconds() : 20;
+    }
+
+    private static int outboundMaxLifeMinutes(Performance performance) {
+        return performance.getOutboundMaxLifeMinutes() > 0 ? performance.getOutboundMaxLifeMinutes() : 5;
+    }
+
+    private static int outboundEvictSeconds(Performance performance) {
+        return performance.getOutboundEvictSeconds() > 0 ? performance.getOutboundEvictSeconds() : 30;
     }
 
     /**

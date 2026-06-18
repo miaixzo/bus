@@ -361,7 +361,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @param request current request
      * @return request authority or a stable unknown fallback
      */
-    private String determineRequestDomain(ServerHttpRequest request) {
+    protected String determineRequestDomain(ServerHttpRequest request) {
         return getAuthority(request).orElseGet(() -> {
             Logger.warn(
                     true,

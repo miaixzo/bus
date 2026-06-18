@@ -71,7 +71,8 @@ public class McpVettingStrategy extends VettingStrategy {
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-            return validateAndEnrichMcpRequest(exchange, context).flatMap(chain::apply);
+            return validateAndEnrichMcpRequest(exchange, context)
+                    .map(validatedExchange -> sanitizeForwardHeaders(validatedExchange, context)).flatMap(chain::apply);
         });
     }
 
