@@ -162,7 +162,7 @@ public class RestQualifierStrategy extends QualifierStrategy {
         }
         return Mono.fromCallable(() -> {
             Map<String, Object> params = context.getParameters();
-            String key = StringKit.isNotEmpty(getApiKey(context)) ? getApiKey(context) : value(context, Args.METHOD);
+            String key = value(context, Args.METHOD);
             if (!validateSign(key + value(context, Args.TIMESTAMP), context.getHttpMethod().value(), params)) {
                 throw new SignatureException(ErrorCode._100109);
             }

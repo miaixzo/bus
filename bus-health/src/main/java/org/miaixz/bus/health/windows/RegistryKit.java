@@ -119,12 +119,15 @@ public final class RegistryKit {
             Logger.trace(
                     false,
                     "Health",
-                    "Unable to access " + path + " with flag " + accessFlag + ": " + e.getClass().getSimpleName());
+                    "Unable to access {} with flag {}: {}",
+                    path,
+                    accessFlag,
+                    e.getClass().getSimpleName());
         } finally {
             if (hKey != null) {
                 int rc = ADV.RegCloseKey(hKey);
                 if (rc != ERROR_SUCCESS) {
-                    Logger.trace(false, "Health", "Unable to close registry key " + path + ": " + rc);
+                    Logger.trace(false, "Health", "Unable to close registry key {}: {}", path, rc);
                 }
             }
         }

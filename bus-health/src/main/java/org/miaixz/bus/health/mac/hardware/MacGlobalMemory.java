@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.sun.jna.Native;
-import com.sun.jna.platform.mac.SystemB;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -38,6 +37,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractGlobalMemory;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.mac.SysctlKit;
+import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -84,9 +84,9 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
      * @return the query page size result
      */
     private static long queryPageSize() {
-        try (ByRef.CloseableLongByReference pPageSize = new ByRef.CloseableLongByReference()) {
+        try (ByRef.CloseableNativeLongByReference pPageSize = new ByRef.CloseableNativeLongByReference()) {
             if (0 == SystemB.INSTANCE.host_page_size(SystemB.INSTANCE.mach_host_self(), pPageSize)) {
-                return pPageSize.getValue();
+                return pPageSize.getValue().longValue();
             }
         }
         Logger.error(false, "Health", "Failed to get host page size. Error code: {}", Native.getLastError());

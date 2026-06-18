@@ -19,13 +19,20 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 
@@ -35,13 +42,28 @@ import reactor.core.publisher.Mono;
  * Basic vetting strategy for routes without protocol-specific validation rules.
  * <p>
  * This strategy only keeps validations that are useful across protocols, such as rejecting {@code undefined} values.
- * Route resolution, authorization, signature checks, enrichment, and forwarding cleanup belong to qualifier strategies.
+ * Route resolution, authorization, signature checks, and enrichment belong to qualifier strategies.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.SECOND)
 public class VettingStrategy extends AbstractStrategy {
+
+    /**
+     * Hop-by-hop request headers that must not be forwarded to downstream services.
+     */
+    private static final List<String> HOP_BY_HOP_HEADERS = List.of(
+            HttpHeaders.HOST,
+            HttpHeaders.CONNECTION,
+            "Keep-Alive",
+            "Proxy-Authenticate",
+            "Proxy-Authorization",
+            "TE",
+            "Trailer",
+            HttpHeaders.TRANSFER_ENCODING,
+            "Upgrade",
+            HttpHeaders.CONTENT_LENGTH);
 
     /**
      * Creates a basic vetting strategy.
@@ -61,7 +83,8 @@ public class VettingStrategy extends AbstractStrategy {
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-            return validateAndEnrich(exchange, context).then(chain.apply(exchange));
+            return validateAndEnrich(exchange, context)
+                    .then(Mono.defer(() -> chain.apply(sanitizeForwardHeaders(exchange, context))));
         });
     }
 
@@ -84,6 +107,66 @@ public class VettingStrategy extends AbstractStrategy {
      */
     protected Mono<Void> validateParameters(Context context) {
         return Mono.fromRunnable(() -> checkForUndefinedValues(context.getParameters()));
+    }
+
+    /**
+     * Removes connection-level request headers before the routing stage sees the exchange.
+     * <p>
+     * The original request domain is captured before {@code Host} is removed so later enrichment keeps the same
+     * semantics while downstream forwarding receives a sanitized request.
+     *
+     * @param exchange current exchange
+     * @param context  request context
+     * @return exchange with sanitized request headers
+     */
+    protected ServerWebExchange sanitizeForwardHeaders(ServerWebExchange exchange, Context context) {
+        ServerHttpRequest request = exchange.getRequest();
+        if (StringKit.isBlank(context.getX_request_domain())) {
+            context.setX_request_domain(determineRequestDomain(request));
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.addAll(request.getHeaders());
+        sanitizeForwardHeaders(headers);
+        context.setHeaders(headers.toSingleValueMap());
+
+        ServerHttpRequest requestDecorator = new ServerHttpRequestDecorator(request) {
+
+            /**
+             * Returns request headers after connection-level forwarding cleanup.
+             *
+             * @return sanitized request headers
+             */
+            @Override
+            public HttpHeaders getHeaders() {
+                return headers;
+            }
+        };
+        return exchange.mutate().request(requestDecorator).build();
+    }
+
+    /**
+     * Removes connection-level headers from one mutable header collection.
+     *
+     * @param headers request headers to sanitize
+     */
+    private void sanitizeForwardHeaders(HttpHeaders headers) {
+        if (headers == null || headers.isEmpty()) {
+            return;
+        }
+        List<String> connectionValues = new ArrayList<>(headers.getOrEmpty(HttpHeaders.CONNECTION));
+        for (String connectionValue : connectionValues) {
+            if (StringKit.isBlank(connectionValue)) {
+                continue;
+            }
+            for (String extension : connectionValue.split(Symbol.COMMA)) {
+                String name = extension == null ? null : extension.trim();
+                if (StringKit.isNotBlank(name)) {
+                    headers.remove(name);
+                }
+            }
+        }
+        HOP_BY_HOP_HEADERS.forEach(headers::remove);
     }
 
     /**

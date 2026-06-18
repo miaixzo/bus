@@ -24,6 +24,7 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.Union;
+import com.sun.jna.ptr.NativeLongByReference;
 
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.unix.shared.jna.CLibrary;
@@ -51,6 +52,15 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * @return the vm deallocate result
      */
     int vm_deallocate(int targetTask, long address, long size);
+
+    /**
+     * Returns the host page size using the native-width {@code vm_size_t} output value.
+     *
+     * @param host     the host port
+     * @param pageSize the page size output reference
+     * @return 0 on success; nonzero on failure
+     */
+    int host_page_size(int host, NativeLongByReference pageSize);
 
     /**
      * Returns resource usage for the specified target.

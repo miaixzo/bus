@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -40,7 +41,7 @@ public final class WorkflowEndpointParser {
     /**
      * Default Temporal frontend port.
      */
-    private static final int DEFAULT_TEMPORAL_PORT = 7233;
+    private static final int DEFAULT_TEMPORAL_PORT = PORT._7233.getPort();
 
     /**
      * gRPC DNS target scheme.

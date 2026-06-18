@@ -53,7 +53,6 @@ import org.miaixz.bus.vortex.routing.Coordinator;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * The core executor for executing RESTful HTTP requests to downstream services.
@@ -127,7 +126,12 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
 
         bodySpec.headers(headers -> {
             headers.addAll(request.headers().asHttpHeaders());
-            headers.remove(HttpHeaders.HOST);
+            context.getHeaders().forEach((name, value) -> {
+                if (StringKit.isNotBlank(name) && value != null) {
+                    headers.remove(name);
+                    headers.add(name, value);
+                }
+            });
             headers.clearContentHeaders();
         });
         Logger.debug(
@@ -145,7 +149,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 ip,
                 method,
                 path,
-                request.headers().asHttpHeaders().toSingleValueMap());
+                context.getHeaders());
         Logger.debug(
                 true,
                 "Vortex",
@@ -250,32 +254,22 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String path) {
         Map<String, Object> params = context.getParameters();
         if (!params.isEmpty()) {
-            Mono<String> jsonBodyMono = Mono.fromCallable(() -> {
-                String json = JsonKit.toJsonString(params);
-                String fixed = fixJsonEncoding(json);
-                int backslashCount = fixed.length() - fixed.replace(Symbol.BACKSLASH, Normal.EMPTY).length();
-                Logger.debug(
-                        true,
-                        "Vortex",
-                        "JSON prepared: protocol=http, clientIp={}, method={}, path={}, event=HTTP_BEFORE_SEND, backslashes={}, chars={}",
-                        ip,
-                        method,
-                        path,
-                        backslashCount,
-                        fixed.length());
-                return fixed;
-            }).subscribeOn(Schedulers.boundedElastic()).doOnNext(jsonString -> {
-                Logger.debug(
-                        true,
-                        "Vortex",
-                        "JSON normalized: protocol=http, clientIp={}, method={}, path={}, event=HTTP_JSON_AFTER_FIX, chars={}",
-                        ip,
-                        method,
-                        path,
-                        jsonString.length());
-            });
+            String json = JsonKit.toJsonString(params);
+            String fixed = fixJsonEncoding(json);
+            byte[] body = fixed.getBytes(Charset.UTF_8);
+            int backslashCount = fixed.length() - fixed.replace(Symbol.BACKSLASH, Normal.EMPTY).length();
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "JSON prepared: protocol=http, clientIp={}, method={}, path={}, event=HTTP_BEFORE_SEND, backslashes={}, chars={}, bytes={}",
+                    ip,
+                    method,
+                    path,
+                    backslashCount,
+                    fixed.length(),
+                    body.length);
 
-            bodySpec.contentType(MediaType.APPLICATION_JSON).body(jsonBodyMono, String.class);
+            bodySpec.contentType(MediaType.APPLICATION_JSON).contentLength(body.length).bodyValue(body);
 
             Logger.info(
                     true,

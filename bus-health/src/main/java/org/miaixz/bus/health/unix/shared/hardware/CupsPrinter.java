@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
@@ -231,7 +231,7 @@ public final class CupsPrinter extends AbstractPrinter {
             String defaultPrinter,
             Map<String, String> portMap,
             Map<String, String> descriptionMap,
-            Function<String, String> driverLookup,
+            UnaryOperator<String> driverLookup,
             PrinterFactory factory) {
         List<Printer> printers = new ArrayList<>();
         for (String line : lpstatLines) {

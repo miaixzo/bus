@@ -50,6 +50,13 @@ import lombok.experimental.SuperBuilder;
  * <li>maxConnections: 5000</li>
  * <li>pendingAcquireTimeoutSeconds: 45 seconds</li>
  * <li>pendingAcquireMaxCount: 0 (derived as maxConnections * 2)</li>
+ * <li>outboundDefaultTimeoutSeconds: 60 seconds</li>
+ * <li>outboundDefaultRetries: 1</li>
+ * <li>outboundRetryBackoffMillis: 100 milliseconds</li>
+ * <li>outboundRetryMaxBackoffMillis: 5000 milliseconds</li>
+ * <li>outboundMaxIdleSeconds: 20 seconds</li>
+ * <li>outboundMaxLifeMinutes: 5 minutes</li>
+ * <li>outboundEvictSeconds: 30 seconds</li>
  * <li>maxProducerCacheSize: 100</li>
  * <li>registryL2CacheSize: 10,000 (assets)</li>
  * <li>registryL2CacheExpireMs: 300,000 (5 minutes)</li>
@@ -121,6 +128,48 @@ public class Performance {
      */
     @Builder.Default
     private int pendingAcquireMaxCount = 0;
+
+    /**
+     * Default outbound HTTP request timeout in seconds.
+     */
+    @Builder.Default
+    private int outboundDefaultTimeoutSeconds = 60;
+
+    /**
+     * Default outbound HTTP retry attempts when a route does not define one.
+     */
+    @Builder.Default
+    private int outboundDefaultRetries = 1;
+
+    /**
+     * Initial retry backoff in milliseconds.
+     */
+    @Builder.Default
+    private int outboundRetryBackoffMillis = 100;
+
+    /**
+     * Maximum retry backoff in milliseconds.
+     */
+    @Builder.Default
+    private int outboundRetryMaxBackoffMillis = 5000;
+
+    /**
+     * Maximum idle time for pooled outbound HTTP connections in seconds.
+     */
+    @Builder.Default
+    private int outboundMaxIdleSeconds = 20;
+
+    /**
+     * Maximum life time for pooled outbound HTTP connections in minutes.
+     */
+    @Builder.Default
+    private int outboundMaxLifeMinutes = 5;
+
+    /**
+     * Background eviction interval for pooled outbound HTTP connections in seconds.
+     */
+    @Builder.Default
+    private int outboundEvictSeconds = 30;
 
     /**
      * Maximum number of MQ producer instances to cache.

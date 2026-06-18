@@ -101,7 +101,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     /**
      * The DOUBLE_QUOTES constant.
      */
-    private static final String DOUBLE_QUOTES = "(?:^\")|(?:\"$)";
+    private static final String DOUBLE_QUOTES = "(?:^\"|\"$)";
 
     /**
      * Jiffies per second, used for process time counters.

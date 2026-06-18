@@ -42,6 +42,7 @@ import org.miaixz.bus.core.lang.exception.UncheckedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.Formats;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 
@@ -227,28 +228,34 @@ public class ErrorsHandler implements WebExceptionHandler {
 
         WebClientResponseException responseException = findCause(ex, WebClientResponseException.class);
         if (responseException != null) {
+            Throwable root = Egress.rootCause(responseException);
             Logger.error(
                     false,
                     "Vortex",
                     responseException,
-                    "Downstream response error: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT_RESPONSE, status={}, exception={}",
+                    "Downstream response error: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT_RESPONSE, status={}, exception={}, rootCauseClass={}, rootCauseMessage={}",
                     method,
                     path,
                     responseException.getStatusCode().value(),
-                    responseException.getClass().getSimpleName());
+                    responseException.getClass().getSimpleName(),
+                    root == null ? null : root.getClass().getName(),
+                    root == null ? null : root.getMessage());
             return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue()).build();
         }
 
         UnknownHostException unknownHostException = findCause(ex, UnknownHostException.class);
         if (unknownHostException != null) {
+            Throwable root = Egress.rootCause(unknownHostException);
             Logger.error(
                     false,
                     "Vortex",
                     unknownHostException,
-                    "Unknown host: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}",
+                    "Unknown host: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}, rootCauseClass={}, rootCauseMessage={}",
                     method,
                     path,
-                    unknownHostException.getClass().getSimpleName());
+                    unknownHostException.getClass().getSimpleName(),
+                    root == null ? null : root.getClass().getName(),
+                    root == null ? null : root.getMessage());
             return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue()).build();
         }
 
@@ -256,14 +263,17 @@ public class ErrorsHandler implements WebExceptionHandler {
         WebClientException clientException = findCause(ex, WebClientException.class);
         if (requestException != null || clientException != null) {
             Throwable webClientError = requestException != null ? requestException : clientException;
+            Throwable root = Egress.rootCause(webClientError);
             Logger.error(
                     false,
                     "Vortex",
                     webClientError,
-                    "Web client failure: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}",
+                    "Web client failure: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}, rootCauseClass={}, rootCauseMessage={}",
                     method,
                     path,
-                    webClientError.getClass().getSimpleName());
+                    webClientError.getClass().getSimpleName(),
+                    root == null ? null : root.getClass().getName(),
+                    root == null ? null : root.getMessage());
             return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue()).build();
         }
 

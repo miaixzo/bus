@@ -47,6 +47,11 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
     private static final String PCI_CLASS_DISPLAY = "Class: 03 Display";
 
     /**
+     * The default unknown PCI identifier.
+     */
+    private static final String UNKNOWN_PCI_ID = "0x0000";
+
+    /**
      * The PCI_DUMP_HEADER constant.
      */
     private static final Pattern PCI_DUMP_HEADER = Pattern.compile(" \\d+:\\d+:\\d+: (.+)");
@@ -88,8 +93,8 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
                 if (classCodeFound) {
                     cardList.add(
                             new OpenBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                                    productId.isEmpty() ? "0x0000" : productId,
-                                    vendorId.isEmpty() ? "0x0000" : vendorId,
+                                    productId.isEmpty() ? UNKNOWN_PCI_ID : productId,
+                                    vendorId.isEmpty() ? UNKNOWN_PCI_ID : vendorId,
                                     versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
                 }
                 // Device name is the captured pattern
@@ -129,7 +134,8 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
         if (classCodeFound) {
             cardList.add(
                     new OpenBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                            productId.isEmpty() ? "0x0000" : productId, vendorId.isEmpty() ? "0x0000" : vendorId,
+                            productId.isEmpty() ? UNKNOWN_PCI_ID : productId,
+                            vendorId.isEmpty() ? UNKNOWN_PCI_ID : vendorId,
                             versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
         }
         return cardList;

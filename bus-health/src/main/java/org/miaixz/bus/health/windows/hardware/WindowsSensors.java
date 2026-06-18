@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
 import com.sun.jna.platform.win32.COM.COMException;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
@@ -426,7 +427,7 @@ final class WindowsSensors extends AbstractSensors {
     private static double getAverageValueFromLHM(
             String hardwareType,
             String sensorType,
-            BiFunction<String, Double, Boolean> sensorValidFunction) {
+            BiPredicate<String, Double> sensorValidFunction) {
         List<?> sensors = getLhmSensors(hardwareType, sensorType);
         if (sensors == null || sensors.isEmpty()) {
             return 0;
@@ -443,7 +444,7 @@ final class WindowsSensors extends AbstractSensors {
             for (Object sensor : sensors) {
                 String name = (String) getNameMethod.invoke(sensor);
                 double value = (double) getValueMethod.invoke(sensor);
-                if (sensorValidFunction.apply(name, value)) {
+                if (sensorValidFunction.test(name, value)) {
                     sum += value;
                     validCount++;
                 }

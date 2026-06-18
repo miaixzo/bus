@@ -113,15 +113,12 @@ public class Assets extends Nature {
     private Integer verb;
 
     /**
-     * Access control policy / security level. Valid range: -1 to 6.
+     * Access control policy / security level. Valid range: -1 to 3.
      * <ul>
      * <li>{@code 0}: Anonymous</li>
-     * <li>{@code 1}: Token</li>
-     * <li>{@code 2}: Token + permissions</li>
-     * <li>{@code 3}: Token + permissions + license</li>
-     * <li>{@code 4}: AppKey</li>
-     * <li>{@code 5}: AppKey + permissions</li>
-     * <li>{@code 6}: AppKey + permissions + license</li>
+     * <li>{@code 1}: Credential</li>
+     * <li>{@code 2}: Credential + permissions</li>
+     * <li>{@code 3}: Credential + permissions + license</li>
      * </ul>
      */
     private Integer policy;
