@@ -501,7 +501,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 case "model name":
                 case "processor": // some ARM chips
                     // Ignore processor number
-                    if (!splitLine[1].matches("[0-9]+")) {
+                    if (!splitLine[1].matches("\\d+")) {
                         cpuName = splitLine[1];
                     }
                     break;

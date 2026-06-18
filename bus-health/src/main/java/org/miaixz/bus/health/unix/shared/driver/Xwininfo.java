@@ -68,7 +68,7 @@ public final class Xwininfo {
      * The WINDOW_PATTERN constant.
      */
     private static final java.util.regex.Pattern WINDOW_PATTERN = java.util.regex.Pattern.compile(
-            "(0x\\S+) (?:\"(.+)\")?.*: \\((?:\"(.+)\" \".+\")?\\)  (\\d+)x(\\d+)\\+.+  \\+(-?\\d+)\\+(-?\\d+)");
+            "(0x\\S+) (?:\"(.+)\")?.*: \\((?:\"(.+)\" \".+\")?\\) {2}(\\d+)x(\\d+)\\+.+ {2}\\+(-?\\d+)\\+(-?\\d+)");
 
     /**
      * Gets windows on the operating system's GUI desktop.

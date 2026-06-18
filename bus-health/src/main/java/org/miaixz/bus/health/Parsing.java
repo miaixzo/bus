@@ -969,7 +969,7 @@ public final class Parsing {
             }
         }
         long capacity = Parsing.parseLongOrDefault(mem[0], 0L);
-        if (mem.length == 2 && mem[1].length() > 0) {
+        if (mem.length == 2 && !mem[1].isEmpty()) {
             switch (mem[1].charAt(0)) {
                 case 'T':
                     capacity <<= 40;

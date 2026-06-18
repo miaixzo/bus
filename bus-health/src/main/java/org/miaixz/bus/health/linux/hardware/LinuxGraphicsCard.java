@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.ToLongFunction;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -286,7 +287,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
     static List<GraphicsCard> getGraphicsCardsFromLspci(
             List<String> lspci,
             Function<Attrs, GraphicsCard> factory,
-            Function<String, Long> vramLookup,
+            ToLongFunction<String> vramLookup,
             Function<String, Triplet<String, String, String>> drmLookup) {
         List<GraphicsCard> cardList = new ArrayList<>();
         String name = Normal.UNKNOWN;
@@ -319,7 +320,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                                     new Attrs(name, deviceId, vendor,
                                             versionInfoList.isEmpty() ? Normal.UNKNOWN
                                                     : String.join(", ", versionInfoList),
-                                            lookupDevice != null ? vramLookup.apply(lookupDevice) : 0L,
+                                            lookupDevice != null ? vramLookup.applyAsLong(lookupDevice) : 0L,
                                             drmInfo.getLeft(), drmInfo.getMiddle(), drmInfo.getRight())));
                     versionInfoList.clear();
                     found = false;
@@ -350,7 +351,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                     factory.apply(
                             new Attrs(name, deviceId, vendor,
                                     versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
-                                    lookupDevice != null ? vramLookup.apply(lookupDevice) : 0L, drmInfo.getLeft(),
+                                    lookupDevice != null ? vramLookup.applyAsLong(lookupDevice) : 0L, drmInfo.getLeft(),
                                     drmInfo.getMiddle(), drmInfo.getRight())));
         }
         return cardList;

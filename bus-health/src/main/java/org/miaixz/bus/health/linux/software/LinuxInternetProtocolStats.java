@@ -52,19 +52,19 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     /**
-     * The tcpColon value.
+     * The TCP statistics prefix.
      */
-    private final String tcpColon = "Tcp:";
+    private static final String TCP_COLON = "Tcp:";
 
     /**
-     * The udpColon value.
+     * The UDP statistics prefix.
      */
-    private final String udpColon = "Udp:";
+    private static final String UDP_COLON = "Udp:";
 
     /**
-     * The udp6 value.
+     * The UDP6 statistics prefix.
      */
-    private final String udp6 = "Udp6";
+    private static final String UDP6 = "Udp6";
 
     /**
      * The TcpStat enum.
@@ -101,9 +101,9 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         Map<TcpStat, Long> tcpData = new EnumMap<>(TcpStat.class);
 
         for (int line = 0; line < lines.size() - 1; line += 2) {
-            if (lines.get(line).startsWith(tcpColon) && lines.get(line + 1).startsWith(tcpColon)) {
+            if (lines.get(line).startsWith(TCP_COLON) && lines.get(line + 1).startsWith(TCP_COLON)) {
                 Map<TcpStat, String> parsedData = Parsing
-                        .stringToEnumMap(TcpStat.class, lines.get(line + 1).substring(tcpColon.length()).trim(), ' ');
+                        .stringToEnumMap(TcpStat.class, lines.get(line + 1).substring(TCP_COLON.length()).trim(), ' ');
                 for (Map.Entry<TcpStat, String> entry : parsedData.entrySet()) {
                     tcpData.put(entry.getKey(), Parsing.parseLongOrDefault(entry.getValue(), 0L));
                 }
@@ -130,9 +130,9 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         Map<UdpStat, Long> udpData = new EnumMap<>(UdpStat.class);
 
         for (int line = 0; line < lines.size() - 1; line += 2) {
-            if (lines.get(line).startsWith(udpColon) && lines.get(line + 1).startsWith(udpColon)) {
+            if (lines.get(line).startsWith(UDP_COLON) && lines.get(line + 1).startsWith(UDP_COLON)) {
                 Map<UdpStat, String> parsedData = Parsing
-                        .stringToEnumMap(UdpStat.class, lines.get(line + 1).substring(udpColon.length()).trim(), ' ');
+                        .stringToEnumMap(UdpStat.class, lines.get(line + 1).substring(UDP_COLON.length()).trim(), ' ');
                 for (Map.Entry<UdpStat, String> entry : parsedData.entrySet()) {
                     udpData.put(entry.getKey(), Parsing.parseLongOrDefault(entry.getValue(), 0L));
                 }
@@ -161,9 +161,9 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         int foundUDPv6StatsCount = 0;
 
         // Traverse bottom-to-top for efficiency as the /etc/proc/snmp6 file follows sequential format -> ip6, icmp6,
-        // udp6, udplite6 stats
+        // UDP6, udplite6 stats
         for (int line = lines.size() - 1; line >= 0 && foundUDPv6StatsCount < 4; line--) {
-            if (lines.get(line).startsWith(udp6)) {
+            if (lines.get(line).startsWith(UDP6)) {
                 String[] parts = lines.get(line).split("\\s+");
                 switch (parts[0]) {
                     case "Udp6InDatagrams":

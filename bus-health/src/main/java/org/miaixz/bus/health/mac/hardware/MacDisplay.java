@@ -107,7 +107,7 @@ final class MacDisplay extends AbstractDisplay {
                                 edid.release();
                             }
                         }
-                        if (childEntryName != null && propertySource != null) {
+                        if (childEntryName != null) {
                             propertySource.release();
                         }
                     }

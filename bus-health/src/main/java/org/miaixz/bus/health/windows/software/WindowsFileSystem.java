@@ -296,7 +296,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
             } else {
                 volume = WmiKit.getString(drives, LogicalDiskProperty.PROVIDERNAME, i);
                 String[] split = volume.split("\\\\");
-                if (split.length > 1 && split[split.length - 1].length() > 0) {
+                if (split.length > 1 && !split[split.length - 1].isEmpty()) {
                     description = split[split.length - 1];
                 }
             }
