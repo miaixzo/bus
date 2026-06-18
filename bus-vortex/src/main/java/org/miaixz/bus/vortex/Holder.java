@@ -116,12 +116,6 @@ public final class Holder {
         Logger.info(true, "Vortex", "- Max Connections: {}", performance.getMaxConnections());
         Logger.info(true, "Vortex", "- Pending Acquire Timeout: {} seconds", pendingAcquireTimeoutSeconds(performance));
         Logger.info(true, "Vortex", "- Pending Acquire Max Count: {}", pendingAcquireMaxCount(performance));
-        Logger.info(
-                true,
-                "Vortex",
-                "- Outbound Default Timeout: {} seconds",
-                outboundDefaultTimeoutSeconds(performance));
-        Logger.info(true, "Vortex", "- Outbound Default Retries: {}", outboundDefaultRetries(performance));
         Logger.info(true, "Vortex", "- Outbound Max Idle: {} seconds", outboundMaxIdleSeconds(performance));
         Logger.info(true, "Vortex", "- Outbound Max Life: {} minutes", outboundMaxLifeMinutes(performance));
         Logger.info(true, "Vortex", "- Outbound Evict: {} seconds", outboundEvictSeconds(performance));
@@ -191,24 +185,6 @@ public final class Holder {
     }
 
     /**
-     * Resolves outbound default request timeout in seconds.
-     *
-     * @return timeout in seconds
-     */
-    public static int outboundDefaultTimeoutSeconds() {
-        return outboundDefaultTimeoutSeconds(get());
-    }
-
-    /**
-     * Resolves outbound default retry attempts.
-     *
-     * @return retry attempts
-     */
-    public static int outboundDefaultRetries() {
-        return outboundDefaultRetries(get());
-    }
-
-    /**
      * Resolves outbound retry initial backoff in milliseconds.
      *
      * @return retry initial backoff
@@ -251,14 +227,6 @@ public final class Holder {
      */
     public static int outboundEvictSeconds() {
         return outboundEvictSeconds(get());
-    }
-
-    private static int outboundDefaultTimeoutSeconds(Performance performance) {
-        return performance.getOutboundDefaultTimeoutSeconds() > 0 ? performance.getOutboundDefaultTimeoutSeconds() : 60;
-    }
-
-    private static int outboundDefaultRetries(Performance performance) {
-        return performance.getOutboundDefaultRetries() >= 0 ? performance.getOutboundDefaultRetries() : 1;
     }
 
     private static int outboundRetryBackoffMillis(Performance performance) {

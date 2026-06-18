@@ -50,8 +50,6 @@ import lombok.experimental.SuperBuilder;
  * <li>maxConnections: 5000</li>
  * <li>pendingAcquireTimeoutSeconds: 45 seconds</li>
  * <li>pendingAcquireMaxCount: 0 (derived as maxConnections * 2)</li>
- * <li>outboundDefaultTimeoutSeconds: 60 seconds</li>
- * <li>outboundDefaultRetries: 1</li>
  * <li>outboundRetryBackoffMillis: 100 milliseconds</li>
  * <li>outboundRetryMaxBackoffMillis: 5000 milliseconds</li>
  * <li>outboundMaxIdleSeconds: 20 seconds</li>
@@ -128,18 +126,6 @@ public class Performance {
      */
     @Builder.Default
     private int pendingAcquireMaxCount = 0;
-
-    /**
-     * Default outbound HTTP request timeout in seconds.
-     */
-    @Builder.Default
-    private int outboundDefaultTimeoutSeconds = 60;
-
-    /**
-     * Default outbound HTTP retry attempts when a route does not define one.
-     */
-    @Builder.Default
-    private int outboundDefaultRetries = 1;
 
     /**
      * Initial retry backoff in milliseconds.

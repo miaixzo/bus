@@ -378,7 +378,7 @@ public class VortexHandler {
      * This method creates a retry strategy that:
      * <ul>
      * <li>Retries up to {@link Assets#getRetries()} times</li>
-     * <li>Uses exponential backoff starting at 100ms</li>
+     * <li>Uses the configured exponential backoff</li>
      * <li>Only retries on transient errors (network timeouts, 5xx errors)</li>
      * <li>Logs each retry attempt for observability</li>
      * </ul>
@@ -391,7 +391,7 @@ public class VortexHandler {
      * @return A configured {@link Retry} specification
      */
     private Retry buildRetrySpec(Assets assets, String ip, String method, String path) {
-        int maxRetries = assets.getRetries() != null && assets.getRetries() > 0 ? assets.getRetries() : 0;
+        int maxRetries = Egress.retryAttempts(assets);
 
         if (maxRetries == 0) {
             return Retry.max(0);
@@ -434,8 +434,8 @@ public class VortexHandler {
     /**
      * Resolves the downstream routing timeout in seconds for one request.
      * <p>
-     * Standard routes use {@link Assets#getTimeout()} when configured and fall back to 60 seconds. MCP GET requests are
-     * commonly used for SSE or other long-lived stream reads, so their cHRRonfigured timeout is expanded to keep the
+     * Standard routes use {@link Assets#getTimeout()}. MCP GET requests are
+     * commonly used for SSE or other long-lived stream reads, so their configured timeout is expanded to keep the
      * stream open longer while still retaining an upper bound.
      *
      * @param assets  route asset containing timeout and protocol configuration
@@ -443,7 +443,7 @@ public class VortexHandler {
      * @return timeout in seconds
      */
     private long routeTimeoutSeconds(Assets assets, ServerRequest request) {
-        long timeout = assets.getTimeout() != null && assets.getTimeout() > 0 ? assets.getTimeout() : 60;
+        long timeout = Egress.timeoutSeconds(assets);
         if (assets.getProtocol() != null && assets.getProtocol() == Args.PROTOCOL_MCP
                 && HTTP.GET.equalsIgnoreCase(request.methodName())) {
             return timeout * 10;
