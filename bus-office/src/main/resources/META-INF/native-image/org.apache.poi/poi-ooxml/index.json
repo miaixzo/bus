@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "5.5.1",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-sources.jar",
+    "repository-url": "https://github.com/apache/poi",
+    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-javadoc.jar",
+    "description": "Apache POI OOXML provides Office Open XML document support used by Bus Office.",
+    "tested-versions": [
+      "5.5.1"
+    ],
+    "allowed-packages": [
+      "org.apache.poi"
+    ]
+  }
+]

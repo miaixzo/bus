@@ -1,0 +1,57 @@
+{
+  "reflection": [
+    {
+      "type": "org.apache.poi.extractor.ole2.OLE2ScratchpadExtractorFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.poi.hwmf.draw.HwmfImageRenderer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.poi.hemf.draw.HemfImageRenderer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.poi.hslf.usermodel.HSLFSlideShowFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/services/org.apache.poi.extractor.ExtractorProvider"
+    },
+    {
+      "glob": "META-INF/services/org.apache.poi.sl.draw.ImageRenderer"
+    },
+    {
+      "glob": "META-INF/services/org.apache.poi.sl.usermodel.SlideShowProvider"
+    },
+    {
+      "glob": "org/apache/poi/hdgf/chunks_parse_cmds.tbl"
+    },
+    {
+      "glob": "org/apache/poi/hslf/data/empty.ppt"
+    }
+  ]
+}

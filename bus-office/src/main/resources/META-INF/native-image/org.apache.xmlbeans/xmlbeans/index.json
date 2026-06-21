@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "5.3.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/xmlbeans/xmlbeans/$version$/xmlbeans-$version$-sources.jar",
+    "repository-url": "https://github.com/apache/xmlbeans",
+    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/xmlbeans/xmlbeans/$version$/xmlbeans-$version$-javadoc.jar",
+    "description": "Apache XMLBeans provides XML schema binding metadata used by Apache POI.",
+    "tested-versions": [
+      "5.3.0"
+    ],
+    "allowed-packages": [
+      "org.apache.xmlbeans"
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "3.5.19",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/mybatis/mybatis/$version$/mybatis-$version$-sources.jar",
+    "repository-url": "https://github.com/mybatis/mybatis-3",
+    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/mybatis/mybatis/$version$/mybatis-$version$-javadoc.jar",
+    "description": "MyBatis is a SQL mapper framework for Java that maps interfaces, XML statements, and SQL providers to database operations.",
+    "tested-versions": [
+      "3.5.19"
+    ],
+    "allowed-packages": [
+      "org.apache.ibatis"
+    ]
+  }
+]

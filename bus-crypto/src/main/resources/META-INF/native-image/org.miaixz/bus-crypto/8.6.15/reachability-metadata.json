@@ -1,0 +1,4153 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.io.Serializable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Comparable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Enum"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Object"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.constant.Constable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
+      },
+      "type": "java.lang.invoke.MethodHandles",
+      "methods": [
+        {
+          "name": "privateLookupIn",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.invoke.MethodHandles$Lookup"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.reflect.Method[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.lang.Wrapper"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.lang.wrapper.SimpleWrapper"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
+      },
+      "type": "org.miaixz.bus.core.xyz.LookupKit"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Cipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Cipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Cipher$Parameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Cipher$Parameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Factory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Factory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.Holder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "_createProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "setUseCustomProvider",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Keeper"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Keeper"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Keeper"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Padding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.Padding",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Padding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.Registry",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "contains",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "register",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.crypto.Provider"
+          ]
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "fileName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "issuer",
+          "parameterTypes": [
+            "java.security.Principal"
+          ]
+        },
+        {
+          "name": "issuerCN",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "issuerO",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "notAfter",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "notBefore",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "password",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "publicKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "self",
+          "parameterTypes": [
+            "java.security.cert.X509Certificate"
+          ]
+        },
+        {
+          "name": "serial",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "subject",
+          "parameterTypes": [
+            "java.security.Principal"
+          ]
+        },
+        {
+          "name": "subjectCN",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "subjectO",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "version",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.SaltMagic"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.SaltMagic"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.SaltMagic",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addMagic",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getData",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getSalt",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "getSalt",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getSaltedMagic",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.SaltMagic"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.SaltParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.SaltParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.SaltParser",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.MessageDigest",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.MessageDigest",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getKeyAndIV",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.security.MessageDigest",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "ofMd5",
+          "parameterTypes": [
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.SaltParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "getKeyByType",
+          "parameterTypes": [
+            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
+          ]
+        },
+        {
+          "name": "getPrivateKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrivateKeyBase64",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPublicKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPublicKeyBase64",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "initKeys",
+          "parameterTypes": []
+        },
+        {
+          "name": "setKey",
+          "parameterTypes": [
+            "java.security.Key"
+          ]
+        },
+        {
+          "name": "setLock",
+          "parameterTypes": [
+            "java.util.concurrent.locks.Lock"
+          ]
+        },
+        {
+          "name": "setPrivateKey",
+          "parameterTypes": [
+            "java.security.PrivateKey"
+          ]
+        },
+        {
+          "name": "setPublicKey",
+          "parameterTypes": [
+            "java.security.PublicKey"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Crypto"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Crypto"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Crypto",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.security.PrivateKey",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "byte[]",
+            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
+          ]
+        },
+        {
+          "name": "doFinal",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "doFinalWithBlock",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "byte[]",
+            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
+          ]
+        },
+        {
+          "name": "getAlgorithmParameterSpec",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCipher",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDecryptBlockSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEncryptBlockSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "initCipher",
+          "parameterTypes": []
+        },
+        {
+          "name": "initMode",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Type",
+            "java.security.Key"
+          ]
+        },
+        {
+          "name": "setAlgorithmParameterSpec",
+          "parameterTypes": [
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "setDecryptBlockSize",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setEncryptBlockSize",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setRandom",
+          "parameterTypes": [
+            "java.security.SecureRandom"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Crypto"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Decryptor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Decryptor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Encryptor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Encryptor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.KeyType",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.Digester"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.Digester"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.Digester",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.Provider"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.MessageDigest"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.security.Provider"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "digestWithSalt",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "digestWithoutSalt",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "doDigest",
+          "parameterTypes": [
+            "byte[][]"
+          ]
+        },
+        {
+          "name": "getDigestLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "reset",
+          "parameterTypes": []
+        },
+        {
+          "name": "resetAndRepeatDigest",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setDigestCount",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setSalt",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setSaltPosition",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.Digester"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.MessageDigest"
+          ]
+        },
+        {
+          "name": "checkCloneSupport",
+          "parameterTypes": [
+            "java.security.MessageDigest"
+          ]
+        },
+        {
+          "name": "createDigester",
+          "parameterTypes": []
+        },
+        {
+          "name": "createMessageDigester",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.security.MessageDigest"
+          ]
+        },
+        {
+          "name": "ofJdk",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.BCHMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.BCHMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.BCHMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.BCMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.BCMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.BCMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.CBCBlockCipherMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.CBCBlockCipherMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.CBCBlockCipherMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.JCEMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.JCEMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.JCEMac",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.Key"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.Key",
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "doFinal",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAlgorithm",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMacLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "initMac",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.Key",
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "reset",
+          "parameterTypes": []
+        },
+        {
+          "name": "update",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "update",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.JCEMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.Mac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.Mac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.MacFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.MacFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.MacFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "createEngine",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.Key"
+          ]
+        },
+        {
+          "name": "createEngine",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.Key",
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.MacFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.SM4Mac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.SM4Mac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.SM4Mac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.symmetric.Crypto"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.symmetric.Crypto"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.symmetric.Crypto",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "javax.crypto.SecretKey",
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "copyForZeroPadding",
+          "parameterTypes": [
+            "javax.crypto.CipherInputStream",
+            "java.io.OutputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "java.io.OutputStream",
+            "boolean"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "doFinal",
+          "parameterTypes": []
+        },
+        {
+          "name": "doFinalHex",
+          "parameterTypes": []
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "java.io.OutputStream",
+            "boolean"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getCipher",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSecretKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "java.lang.String",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "initMode",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Type",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "initParams",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "paddingDataWithZero",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "removePadding",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "setAlgorithmParameterSpec",
+          "parameterTypes": [
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "setIv",
+          "parameterTypes": [
+            "javax.crypto.spec.IvParameterSpec"
+          ]
+        },
+        {
+          "name": "setIv",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setMode",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Type"
+          ]
+        },
+        {
+          "name": "setMode",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Type",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setRandom",
+          "parameterTypes": [
+            "java.security.SecureRandom"
+          ]
+        },
+        {
+          "name": "update",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "updateHex",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.symmetric.Crypto"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.symmetric.Decryptor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.symmetric.Decryptor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.symmetric.Encryptor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.symmetric.Encryptor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.AES"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.AES"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.AES",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "javax.crypto.SecretKey",
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey",
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.AES"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.ASN1"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.ASN1"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.ASN1"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.Argon2"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.Argon2"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.Argon2",
+      "methods": [
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "char[]"
+          ]
+        },
+        {
+          "name": "setAdditional",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setHashLength",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setIterations",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMemoryAsKB",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setParallelism",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setSalt",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setSecret",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setVersion",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.Argon2"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.BCrypt"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.BCrypt"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.BCrypt",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "char64",
+          "parameterTypes": [
+            "char"
+          ]
+        },
+        {
+          "name": "checkpw",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "crypt",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]",
+            "int",
+            "int[]"
+          ]
+        },
+        {
+          "name": "decodeBase64",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "ekskey",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "encipher",
+          "parameterTypes": [
+            "int[]",
+            "int"
+          ]
+        },
+        {
+          "name": "encode_base64",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "gensalt",
+          "parameterTypes": []
+        },
+        {
+          "name": "gensalt",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "gensalt",
+          "parameterTypes": [
+            "int",
+            "java.security.SecureRandom"
+          ]
+        },
+        {
+          "name": "hashpw",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "hashpw",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "init_key",
+          "parameterTypes": []
+        },
+        {
+          "name": "key",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "streamToWord",
+          "parameterTypes": [
+            "byte[]",
+            "int[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.BCrypt"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.ChaCha20"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.ChaCha20"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.ChaCha20",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "generateIvParam",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.ChaCha20"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.DES"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.DES"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.DES",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "javax.crypto.SecretKey",
+            "javax.crypto.spec.IvParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey",
+            "javax.crypto.spec.IvParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.DES"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.ECIES"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.ECIES"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.ECIES",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.ECIES"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.FPE"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.FPE"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.FPE",
+      "methods": [
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "char[]"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "char[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.FPE"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.FPE$FPEMode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.FPE$FPEMode",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.FPE$FPEMode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.HMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.HMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.HMac",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.Key"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.Key",
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.security.Key"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.crypto.builtin.digest.mac.Mac"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.HMac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.HOTP"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.HOTP"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.HOTP",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.core.lang.Algorithm",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "generate",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "generateSecretKey",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getAlgorithm",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPasswordLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "truncate",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.HOTP"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.MD5"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.MD5"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.MD5",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "digestHex16",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "digestHex16",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "digestHex16",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "digestHex16",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "digestHex16",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.MD5"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.Mac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.Mac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.Mac",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.crypto.builtin.digest.mac.Mac"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "digestBase64",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset",
+            "boolean"
+          ]
+        },
+        {
+          "name": "digestBase64",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "digestHex",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getAlgorithm",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEngine",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMacLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "verify",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.Mac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.PBKDF2"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.PBKDF2"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.PBKDF2",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "char[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "encryptHex",
+          "parameterTypes": [
+            "char[]",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.PBKDF2"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.RSA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.RSA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.RSA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.math.BigInteger",
+            "java.math.BigInteger",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.PrivateKey",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "byte[]",
+            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "byte[]",
+            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
+          ]
+        },
+        {
+          "name": "generatePrivateKey",
+          "parameterTypes": [
+            "java.math.BigInteger",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "generatePublicKey",
+          "parameterTypes": [
+            "java.math.BigInteger",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "initCipher",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.RSA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM2"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM2"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM2"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM3"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM3"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM3",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM3"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM4"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM4"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM4",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "javax.crypto.SecretKey",
+            "javax.crypto.spec.IvParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey",
+            "javax.crypto.spec.IvParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.SM4"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.Sign"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.Sign"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.Sign",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getSignature",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "setCertificate",
+          "parameterTypes": [
+            "java.security.cert.Certificate"
+          ]
+        },
+        {
+          "name": "setParameter",
+          "parameterTypes": [
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "setSignature",
+          "parameterTypes": [
+            "java.security.Signature"
+          ]
+        },
+        {
+          "name": "sign",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "sign",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "sign",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "signHex",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "signHex",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "signHex",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "verify",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.Sign"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.TDEA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.TDEA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.TDEA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "javax.crypto.SecretKey",
+            "javax.crypto.spec.IvParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey",
+            "javax.crypto.spec.IvParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.TDEA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.TEA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.TEA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.TEA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "java.io.OutputStream",
+            "boolean"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "int[]",
+            "int[]"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "java.io.OutputStream",
+            "boolean"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "int[]",
+            "int[]"
+          ]
+        },
+        {
+          "name": "fixKey",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "mx",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "int[]"
+          ]
+        },
+        {
+          "name": "toByteArray",
+          "parameterTypes": [
+            "int[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toIntArray",
+          "parameterTypes": [
+            "byte[]",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.TEA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.TOTP"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.TOTP"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.TOTP",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.time.Duration",
+            "int",
+            "org.miaixz.bus.core.lang.Algorithm",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.time.Duration",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.time.Duration",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "generate",
+          "parameterTypes": [
+            "java.time.Instant"
+          ]
+        },
+        {
+          "name": "generateGoogleSecretKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "getTimeStep",
+          "parameterTypes": []
+        },
+        {
+          "name": "validate",
+          "parameterTypes": [
+            "java.time.Instant",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.TOTP"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.Vigenere"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.Vigenere"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.Vigenere",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "java.lang.CharSequence"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "java.lang.CharSequence"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.Vigenere"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.center.ZUC"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.ZUC"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.ZUC",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "generateIvParam",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "generateKey",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.ZUC"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.BCCipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.BCCipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.BCCipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.BCCipher$BCParameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.BCCipher$BCParameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.BCCipher$BCParameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.crypto.Cipher"
+          ]
+        },
+        {
+          "name": "doFinal",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "getAlgorithm",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBlockSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIV",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOutputSize",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
+          ]
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Type",
+            "org.miaixz.bus.crypto.Cipher$Parameters"
+          ]
+        },
+        {
+          "name": "process",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "process",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "process",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int",
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "processFinal",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.Key",
+            "java.security.spec.AlgorithmParameterSpec",
+            "java.security.SecureRandom"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.metric.AESProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.metric.AESProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.AESProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.AESProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.metric.BouncyCastleProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.BouncyCastleProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.metric.BouncyCastleServiceProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.metric.BouncyCastleServiceProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.BouncyCastleServiceProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.metric.DESProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.metric.DESProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.DESProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.DESProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.metric.RC4Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.metric.RC4Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.RC4Provider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.RC4Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.metric.RSAProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.metric.RSAProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.RSAProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.RSAProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.metric.SM2Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.metric.SM2Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.SM2Provider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.SM2Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.metric.SM4Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.metric.SM4Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.SM4Provider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.metric.SM4Provider"
+    }
+  ],
+  "resources": [
+    {
+      "glob": "**/*.bks"
+    },
+    {
+      "glob": "**/*.crt"
+    },
+    {
+      "glob": "**/*.jks"
+    },
+    {
+      "glob": "**/*.key"
+    },
+    {
+      "glob": "**/*.p12"
+    },
+    {
+      "glob": "**/*.pem"
+    },
+    {
+      "glob": "META-INF/services/**"
+    }
+  ]
+}

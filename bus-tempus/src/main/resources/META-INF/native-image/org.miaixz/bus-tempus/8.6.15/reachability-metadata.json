@@ -1,0 +1,4455 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.io.Serializable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Cloneable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Comparable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Enum"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Object"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Record"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Runnable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Thread"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.constant.Constable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
+      },
+      "type": "java.lang.invoke.MethodHandles",
+      "methods": [
+        {
+          "name": "privateLookupIn",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.invoke.MethodHandles$Lookup"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.reflect.Method[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.util.concurrent.Delayed"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
+      },
+      "type": "org.miaixz.bus.core.xyz.LookupKit"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getScheduler",
+          "parameterTypes": []
+        },
+        {
+          "name": "isValidExpression",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "restart",
+          "parameterTypes": []
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "org.miaixz.bus.setting.Setting"
+          ]
+        },
+        {
+          "name": "setCronSetting",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCronSetting",
+          "parameterTypes": [
+            "org.miaixz.bus.setting.Setting"
+          ]
+        },
+        {
+          "name": "setMatchSecond",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "start",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "stop",
+          "parameterTypes": []
+        },
+        {
+          "name": "updatePattern",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.Configure"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.Configure"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.Configure",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeZone",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDaemon",
+          "parameterTypes": []
+        },
+        {
+          "name": "isMatchSecond",
+          "parameterTypes": []
+        },
+        {
+          "name": "isUseTriggerQueue",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDaemon",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setMatchSecond",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setTimeZone",
+          "parameterTypes": [
+            "java.util.TimeZone"
+          ]
+        },
+        {
+          "name": "setUseTriggerQueue",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.Configure"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.CronTimer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.CronTimer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.CronTimer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler"
+          ]
+        },
+        {
+          "name": "isValidSleepMillis",
+          "parameterTypes": [
+            "long",
+            "long"
+          ]
+        },
+        {
+          "name": "run",
+          "parameterTypes": []
+        },
+        {
+          "name": "spawnLauncher",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "stopTimer",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.CronTimer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.Executor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.Executor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.Executor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler",
+            "org.miaixz.bus.tempus.crontab.CronCrontab"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "run",
+          "parameterTypes": []
+        },
+        {
+          "name": "scheduler",
+          "parameterTypes": []
+        },
+        {
+          "name": "task",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.Executor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.Expression"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.Expression"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.Expression",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Expression"
+          ]
+        },
+        {
+          "name": "addToSet",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "buildExpression",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "checkIncrementRange",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "checkNext",
+          "parameterTypes": [
+            "int",
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "findNextWhiteSpace",
+          "parameterTypes": [
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCronExpression",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDayOfWeekNumber",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getExpressionSetSummary",
+          "parameterTypes": [
+            "java.util.ArrayList"
+          ]
+        },
+        {
+          "name": "getExpressionSetSummary",
+          "parameterTypes": [
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "getExpressionSummary",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFinalFireTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastDayOfMonth",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getMonthNumber",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getNextInvalidTimeAfter",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "getNextValidTimeAfter",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "getNumericValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "getSet",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getTimeAfter",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "getTimeBefore",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "getTimeZone",
+          "parameterTypes": []
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "int",
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "isSatisfiedBy",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "isValidExpression",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readObject",
+          "parameterTypes": [
+            "java.io.ObjectInputStream"
+          ]
+        },
+        {
+          "name": "setCalendarHour",
+          "parameterTypes": [
+            "java.util.Calendar",
+            "int"
+          ]
+        },
+        {
+          "name": "setTimeZone",
+          "parameterTypes": [
+            "java.util.TimeZone"
+          ]
+        },
+        {
+          "name": "skipWhiteSpace",
+          "parameterTypes": [
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "storeExpressionVals",
+          "parameterTypes": [
+            "int",
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "validateExpression",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.Expression"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.Expression$ValueSet"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.Expression$ValueSet"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.Expression$ValueSet",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Expression"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.Expression$ValueSet"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.Launcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.Launcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.Launcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler",
+            "long"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "millis",
+          "parameterTypes": []
+        },
+        {
+          "name": "run",
+          "parameterTypes": []
+        },
+        {
+          "name": "scheduler",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.Launcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.Manager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.Manager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.Manager",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler"
+          ]
+        },
+        {
+          "name": "getExecutors",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLaunchers",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyExecutorCompleted",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Executor"
+          ]
+        },
+        {
+          "name": "notifyLauncherCompleted",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Launcher"
+          ]
+        },
+        {
+          "name": "spawnExecutor",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.crontab.CronCrontab"
+          ]
+        },
+        {
+          "name": "spawnLauncher",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.Manager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.Repertoire"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.Repertoire"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.Repertoire",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "add",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "getIds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPattern",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getPattern",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPatterns",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTask",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getTask",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTasks",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": []
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "updatePattern",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.Repertoire"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.Scheduler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.Scheduler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.Scheduler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Configure"
+          ]
+        },
+        {
+          "name": "addListener",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.listener.TaskListener"
+          ]
+        },
+        {
+          "name": "checkStarted",
+          "parameterTypes": []
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "deschedule",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "descheduleWithStatus",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "getPattern",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getRepertoire",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTask",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": []
+        },
+        {
+          "name": "isStarted",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeListener",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.listener.TaskListener"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Runnable"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "org.miaixz.bus.setting.Setting"
+          ]
+        },
+        {
+          "name": "setMatchSecond",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setThreadExecutor",
+          "parameterTypes": [
+            "java.util.concurrent.ExecutorService"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "start",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "stop",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "updatePattern",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.Scheduler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.Supervisor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.Supervisor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.Supervisor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler"
+          ]
+        },
+        {
+          "name": "notifyLauncherCompleted",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Launcher"
+          ]
+        },
+        {
+          "name": "spawnLauncher",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.Supervisor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.CronCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.CronCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.CronCrontab",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": []
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRaw",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPattern",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.CronPattern"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.CronCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.Crontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.Crontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Configure"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler",
+            "long"
+          ]
+        },
+        {
+          "name": "executeTaskIfMatchInternal",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Runnable"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Runnable",
+            "long"
+          ]
+        },
+        {
+          "name": "getDelayMs",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTask",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "add",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler",
+            "long"
+          ]
+        },
+        {
+          "name": "executeTaskBeforeInternal",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler",
+            "long"
+          ]
+        },
+        {
+          "name": "getCronTask",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "updatePattern",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "compareTo",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "id",
+          "parameterTypes": []
+        },
+        {
+          "name": "timestamp",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.listener.SimpleTaskListener"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.listener.SimpleTaskListener"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.listener.SimpleTaskListener",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "onFailed",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Executor",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "onStart",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Executor"
+          ]
+        },
+        {
+          "name": "onSucceeded",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Executor"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.listener.SimpleTaskListener"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.listener.TaskListener"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.listener.TaskListener"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.listener.TaskListenerManager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.listener.TaskListenerManager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.listener.TaskListenerManager",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addListener",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.listener.TaskListener"
+          ]
+        },
+        {
+          "name": "notifyTaskFailed",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Executor",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "notifyTaskStart",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Executor"
+          ]
+        },
+        {
+          "name": "notifyTaskSucceeded",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Executor"
+          ]
+        },
+        {
+          "name": "removeListener",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.listener.TaskListener"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.listener.TaskListenerManager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.CronPattern"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.CronPattern"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.CronPattern",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getFields",
+          "parameterTypes": [
+            "java.time.LocalDateTime",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getFields",
+          "parameterTypes": [
+            "java.util.Calendar",
+            "boolean"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "long",
+            "boolean"
+          ]
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "java.time.LocalDateTime",
+            "boolean"
+          ]
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "java.util.Calendar",
+            "boolean"
+          ]
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "java.util.TimeZone",
+            "long",
+            "boolean"
+          ]
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "int[]"
+          ]
+        },
+        {
+          "name": "matchedDates",
+          "parameterTypes": [
+            "java.lang.String",
+            "long",
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "matchedDates",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Date",
+            "int"
+          ]
+        },
+        {
+          "name": "matchedDates",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Date",
+            "java.util.Date",
+            "int"
+          ]
+        },
+        {
+          "name": "matchedDates",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.CronPattern",
+            "long",
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "nextDateAfter",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.CronPattern",
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "nextMatch",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "nextMatch",
+          "parameterTypes": [
+            "java.util.Calendar"
+          ]
+        },
+        {
+          "name": "nextMatchAfter",
+          "parameterTypes": [
+            "java.util.Calendar"
+          ]
+        },
+        {
+          "name": "nextMatchAfter",
+          "parameterTypes": [
+            "int[]",
+            "java.util.TimeZone"
+          ]
+        },
+        {
+          "name": "nextMatchFromNow",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.CronPattern"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.CronPatternBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.CronPatternBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.CronPatternBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": []
+        },
+        {
+          "name": "set",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.Part",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRange",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.Part",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "setValues",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.Part",
+            "int[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.CronPatternBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.Part"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.Part",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "checkValue",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getCalendarField",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMax",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMin",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.Part"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.AlwaysTrueMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.AlwaysTrueMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.AlwaysTrueMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "nextAfter",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "test",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.AlwaysTrueMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.BoolArrayMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.BoolArrayMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.BoolArrayMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "getMinValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "nextAfter",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "test",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.BoolArrayMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.DayOfMonthMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.DayOfMonthMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.DayOfMonthMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "getLastDay",
+          "parameterTypes": [
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getMinValue",
+          "parameterTypes": [
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "matchLastDay",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "nextAfter",
+          "parameterTypes": [
+            "int",
+            "int",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.DayOfMonthMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.PartMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.PartMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.matcher.PartMatcher",
+            "org.miaixz.bus.tempus.pattern.matcher.PartMatcher",
+            "org.miaixz.bus.tempus.pattern.matcher.PartMatcher",
+            "org.miaixz.bus.tempus.pattern.matcher.PartMatcher",
+            "org.miaixz.bus.tempus.pattern.matcher.PartMatcher",
+            "org.miaixz.bus.tempus.pattern.matcher.PartMatcher",
+            "org.miaixz.bus.tempus.pattern.matcher.PartMatcher"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.Part"
+          ]
+        },
+        {
+          "name": "getMin",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.Part"
+          ]
+        },
+        {
+          "name": "getNextMatch",
+          "parameterTypes": [
+            "int[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "int[]"
+          ]
+        },
+        {
+          "name": "matchDayOfMonth",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.matcher.PartMatcher",
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "matchWeek",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "nextMatchAfter",
+          "parameterTypes": [
+            "int[]",
+            "java.util.TimeZone"
+          ]
+        },
+        {
+          "name": "nextMatchValuesAfter",
+          "parameterTypes": [
+            "int[]"
+          ]
+        },
+        {
+          "name": "setToMin",
+          "parameterTypes": [
+            "int[]",
+            "int"
+          ]
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "java.util.Calendar",
+            "org.miaixz.bus.tempus.pattern.Part",
+            "int"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.YearValueMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.YearValueMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.YearValueMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "nextAfter",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "test",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.YearValueMatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.Part"
+          ]
+        },
+        {
+          "name": "isMatchAllString",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.Part"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseAlias",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseArray",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseNumber",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "parseRange",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "parseStep",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.parser.PatternParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.parser.PatternParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.parser.PatternParser",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseGroupPattern",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseSingle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.pattern.parser.PatternParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.Binding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.Binding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.Publisher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.Publisher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.Subscriber"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.Subscriber"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.AbstractActivityHandler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.AbstractActivityHandler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.AbstractActivityHandler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityCallable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityCallable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityContextFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityContextFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityExecutor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityExecutor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityExecutorResolver"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityExecutorResolver"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityResultSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityResultSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.notifier.CallbackNotifier"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.notifier.CallbackNotifier"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.notifier.NotificationMode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.notifier.NotificationMode",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.notifier.NotificationMode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.payload.PayloadAdapter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.payload.PayloadAdapter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.worker.WorkflowTransport"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowConnector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowConnector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "count",
+          "parameterTypes": [
+            "java.lang.String",
+            "char"
+          ]
+        },
+        {
+          "name": "extractHost",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "formatGrpcTarget",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "formatHostPort",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "invalidEndpoint",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isIpTarget",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resolveBracketedHost",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resolveTarget",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resolveUri",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "validatePort",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Endpoint"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Endpoint"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Endpoint",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "enableHttps",
+          "parameterTypes": []
+        },
+        {
+          "name": "endpoint",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "host",
+          "parameterTypes": []
+        },
+        {
+          "name": "port",
+          "parameterTypes": []
+        },
+        {
+          "name": "rawEndpoint",
+          "parameterTypes": []
+        },
+        {
+          "name": "target",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Endpoint"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Target"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Target"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Target",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "host",
+          "parameterTypes": []
+        },
+        {
+          "name": "port",
+          "parameterTypes": []
+        },
+        {
+          "name": "target",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Target"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransport"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransport"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransportState"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransportState",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "matches",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransportState"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.AbstractWorkflowHandler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.AbstractWorkflowHandler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.AbstractWorkflowHandler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class",
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory",
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getActivityClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getActivityName",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getMaxDurationHours",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.AbstractWorkflowHandler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultRetryOptionsFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultRetryOptionsFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultRetryOptionsFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultRetryOptionsFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultWorkflowOptionsFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultWorkflowOptionsFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultWorkflowOptionsFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.RetryOptionsFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.RetryOptionsFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "defaults",
+          "parameterTypes": []
+        },
+        {
+          "name": "ensureSections",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBinding",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnection",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEndpoint",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIdentity",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxConcurrent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNamespace",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRuntime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStableKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTaskQueue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWorkflowId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWorkflowType",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWorkerReconnectEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resolveActivityHeartbeatTimeoutSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveActivityRetryBackoffCoefficient",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveActivityRetryInitialIntervalSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveActivityRetryMaxAttempts",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveActivityRetryMaxIntervalSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveActivityScheduleToStartMinutes",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveActivityStartToCloseHours",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveMaxActivityTaskPollers",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveMaxConcurrent",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveMaxTaskQueueActivitiesPerSecond",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveMaxWorkerActivitiesPerSecond",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveMaxWorkflowTaskPollers",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveMaxWorkflowThreadCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveShutdownAwaitSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveWorkerHealthFailureThreshold",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveWorkerHealthIntervalSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveWorkerHealthProbeTimeoutSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveWorkerReconnectInitialBackoffSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveWorkerReconnectMaxBackoffSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveWorkflowCacheSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveWorkflowExecutionTimeoutDays",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveWorkflowRunTimeoutHours",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveWorkflowTaskTimeoutMinutes",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBinding",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding"
+          ]
+        },
+        {
+          "name": "setConnection",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection"
+          ]
+        },
+        {
+          "name": "setEndpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setIdentity",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setMaxConcurrent",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setNamespace",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRuntime",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime"
+          ]
+        },
+        {
+          "name": "setStableKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTaskQueue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setWorkerReconnectEnabled",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setWorkflowId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setWorkflowType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeartbeatTimeoutSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getScheduleToStartMinutes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStartToCloseHours",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHeartbeatTimeoutSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setScheduleToStartMinutes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setStartToCloseHours",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStableKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTaskQueue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWorkflowId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWorkflowType",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStableKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTaskQueue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setWorkflowId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setWorkflowType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEndpoint",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIdentity",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNamespace",
+          "parameterTypes": []
+        },
+        {
+          "name": "setEndpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setIdentity",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setNamespace",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHealthFailureThreshold",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHealthIntervalSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHealthProbeTimeoutSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReconnectInitialBackoffSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReconnectMaxBackoffSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getShutdownAwaitSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "isReconnectEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHealthFailureThreshold",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setHealthIntervalSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setHealthProbeTimeoutSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setReconnectEnabled",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setReconnectInitialBackoffSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setReconnectMaxBackoffSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setShutdownAwaitSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBackoffCoefficient",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInitialIntervalSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxAttempts",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxIntervalSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBackoffCoefficient",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setInitialIntervalSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxAttempts",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxIntervalSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "ensureSections",
+          "parameterTypes": []
+        },
+        {
+          "name": "getActivity",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRecovery",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRetry",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWorker",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWorkflow",
+          "parameterTypes": []
+        },
+        {
+          "name": "setActivity",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity"
+          ]
+        },
+        {
+          "name": "setRecovery",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery"
+          ]
+        },
+        {
+          "name": "setRetry",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry"
+          ]
+        },
+        {
+          "name": "setWorker",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker"
+          ]
+        },
+        {
+          "name": "setWorkflow",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxActivityTaskPollers",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxConcurrent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxTaskQueueActivitiesPerSecond",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxWorkerActivitiesPerSecond",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxWorkflowTaskPollers",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxWorkflowThreadCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWorkflowCacheSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "setMaxActivityTaskPollers",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxConcurrent",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxTaskQueueActivitiesPerSecond",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setMaxWorkerActivitiesPerSecond",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setMaxWorkflowTaskPollers",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxWorkflowThreadCount",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setWorkflowCacheSize",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExecutionTimeoutDays",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRunTimeoutHours",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTaskTimeoutMinutes",
+          "parameterTypes": []
+        },
+        {
+          "name": "setExecutionTimeoutDays",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setRunTimeoutHours",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setTaskTimeoutMinutes",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowCallable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowCallable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator",
+      "methods": [
+        {
+          "name": "normalizeComponent",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.worker.WorkflowConnector",
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory",
+            "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding",
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
+          ]
+        },
+        {
+          "name": "completeOptions",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions",
+            "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding"
+          ]
+        },
+        {
+          "name": "doPublish",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "extractGrpcStatusCode",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "extractString",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isConnectionError",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "publish",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding",
+            "org.miaixz.bus.tempus.temporal.worker.WorkflowTransport",
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory",
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.timings.SystemTimer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.timings.SystemTimer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.timings.SystemTimer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addTask",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.crontab.TimerCrontab"
+          ]
+        },
+        {
+          "name": "advanceClock",
+          "parameterTypes": []
+        },
+        {
+          "name": "poll",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDelayQueueTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.timings.SystemTimer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.timings.TimerTaskList"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.timings.TimerTaskList"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.timings.TimerTaskList",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addTask",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.crontab.TimerCrontab"
+          ]
+        },
+        {
+          "name": "compareTo",
+          "parameterTypes": [
+            "java.util.concurrent.Delayed"
+          ]
+        },
+        {
+          "name": "flush",
+          "parameterTypes": [
+            "java.util.function.Consumer"
+          ]
+        },
+        {
+          "name": "getDelay",
+          "parameterTypes": [
+            "java.util.concurrent.TimeUnit"
+          ]
+        },
+        {
+          "name": "getExpire",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeTask",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.crontab.TimerCrontab"
+          ]
+        },
+        {
+          "name": "setExpiration",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.timings.TimerTaskList"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.tempus.timings.TimingWheel"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.tempus.timings.TimingWheel"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.tempus.timings.TimingWheel",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "int",
+            "long",
+            "java.util.function.Consumer"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "int",
+            "java.util.function.Consumer"
+          ]
+        },
+        {
+          "name": "addTask",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.crontab.TimerCrontab"
+          ]
+        },
+        {
+          "name": "advanceClock",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "getOverflowWheel",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.tempus.timings.TimingWheel"
+    },
+    {
+      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher$1",
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allDeclaredMethods": true,
+      "allPublicMethods": true,
+      "allDeclaredFields": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser$1",
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allDeclaredMethods": true,
+      "allPublicMethods": true,
+      "allDeclaredFields": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter",
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allDeclaredMethods": true,
+      "allPublicMethods": true,
+      "allDeclaredFields": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$1",
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allDeclaredMethods": true,
+      "allPublicMethods": true,
+      "allDeclaredFields": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$2",
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allDeclaredMethods": true,
+      "allPublicMethods": true,
+      "allDeclaredFields": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$3",
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allDeclaredMethods": true,
+      "allPublicMethods": true,
+      "allDeclaredFields": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$DefaultPayloadAdapterHolder",
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allDeclaredMethods": true,
+      "allPublicMethods": true,
+      "allDeclaredFields": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.tempus.temporal.payload.PayloadConverter",
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allDeclaredMethods": true,
+      "allPublicMethods": true,
+      "allDeclaredFields": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager",
+      "methods": [
+        {
+          "name": "shutdown",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/tempus/**"
+    }
+  ]
+}

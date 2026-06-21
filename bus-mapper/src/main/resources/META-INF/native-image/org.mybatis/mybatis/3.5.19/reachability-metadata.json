@@ -1,0 +1,263 @@
+{
+  "reflection": [
+    {
+      "type": "org.apache.ibatis.scripting.xmltags.XMLLanguageDriver",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.scripting.defaults.RawLanguageDriver",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.logging.slf4j.Slf4jImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.logging.commons.JakartaCommonsLoggingImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.logging.log4j2.Log4j2Impl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.logging.log4j.Log4jImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.logging.jdk14.Jdk14LoggingImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.logging.stdout.StdOutImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.logging.nologging.NoLoggingImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.executor.statement.StatementHandler",
+      "methods": [
+        {
+          "name": "getBoundSql",
+          "parameterTypes": []
+        },
+        {
+          "name": "prepare",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "java.lang.Integer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.executor.resultset.ResultSetHandler",
+      "methods": [
+        {
+          "name": "handleResultSets",
+          "parameterTypes": [
+            "java.sql.Statement"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.executor.statement.RoutingStatementHandler",
+      "allDeclaredFields": true
+    },
+    {
+      "type": "org.apache.ibatis.executor.statement.BaseStatementHandler",
+      "allDeclaredFields": true,
+      "methods": [
+        {
+          "name": "getBoundSql",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.mapping.BoundSql",
+      "allDeclaredFields": true
+    },
+    {
+      "type": "org.apache.ibatis.executor.Executor",
+      "methods": [
+        {
+          "name": "update",
+          "parameterTypes": [
+            "org.apache.ibatis.mapping.MappedStatement",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "query",
+          "parameterTypes": [
+            "org.apache.ibatis.mapping.MappedStatement",
+            "java.lang.Object",
+            "org.apache.ibatis.session.RowBounds",
+            "org.apache.ibatis.session.ResultHandler"
+          ]
+        },
+        {
+          "name": "query",
+          "parameterTypes": [
+            "org.apache.ibatis.mapping.MappedStatement",
+            "java.lang.Object",
+            "org.apache.ibatis.session.RowBounds",
+            "org.apache.ibatis.session.ResultHandler",
+            "org.apache.ibatis.cache.CacheKey",
+            "org.apache.ibatis.mapping.BoundSql"
+          ]
+        }
+      ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.Executor"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.statement.StatementHandler"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.resultset.ResultSetHandler"
+        ]
+      }
+    },
+    {
+      "type": "org.apache.ibatis.javassist.util.proxy.ProxyFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setSuperclass",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "setInterfaces",
+          "parameterTypes": [
+            "java.lang.Class[]"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "java.lang.Class[]",
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.javassist.util.proxy.Proxy"
+    },
+    {
+      "type": "org.apache.ibatis.javassist.util.proxy.ProxyObject"
+    },
+    {
+      "type": "org.apache.ibatis.javassist.util.proxy.MethodHandler"
+    },
+    {
+      "type": "org.apache.ibatis.javassist.util.proxy.MethodFilter"
+    }
+  ],
+  "resources": [
+    {
+      "glob": "**/*mapper*.properties"
+    },
+    {
+      "glob": "**/*mapper*.xml"
+    },
+    {
+      "glob": "**/*Mapper.xml"
+    },
+    {
+      "glob": "**/*mybatis-config.xml"
+    },
+    {
+      "glob": "mapper/**/*.xml"
+    },
+    {
+      "glob": "org/apache/ibatis/**"
+    },
+    {
+      "glob": "org/apache/ibatis/builder/xml/*.dtd"
+    },
+    {
+      "glob": "org/apache/ibatis/builder/xml/*.xsd"
+    }
+  ]
+}

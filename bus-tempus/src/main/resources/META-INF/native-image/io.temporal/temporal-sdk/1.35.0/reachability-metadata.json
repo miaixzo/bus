@@ -1,0 +1,515 @@
+{
+  "reflection": [
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.client.WorkflowClient"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.client.ActivityCompletionClient"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.client.schedules.ScheduleClient"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.activity.ActivityExecutionContext"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.client.WorkflowStub"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.common.converter.DataConverter"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.internal.sync.AsyncInternal$AsyncMarker"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.internal.WorkflowThreadMarker"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.CloudServiceStubs"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.OperatorServiceStubs"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.WorkflowServiceStubs"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.worker.WorkerFactory"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.workflow.WorkflowInfo"
+        ]
+      }
+    },
+    {
+      "type": "io.temporal.activity.ActivityExecutionContext",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.activity.ActivityInterface",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.activity.ActivityMethod",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.client.WorkflowClient",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.client.WorkflowClientInternalImpl",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.client.WorkflowClientOptions",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.client.WorkflowStub",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.client.WorkflowStubImpl",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.common.converter.DataConverter",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.common.converter.DefaultDataConverter",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.common.converter.GsonJsonPayloadConverter",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.internal.WorkflowThreadMarker",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.internal.client.NamespaceInjectWorkflowServiceStubs",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.internal.retryer.GrpcRetryer",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.serviceclient.ChannelManager",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.serviceclient.CloudServiceStubs",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.serviceclient.CloudServiceStubsImpl",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.serviceclient.OperatorServiceStubs",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.serviceclient.OperatorServiceStubsImpl",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.serviceclient.WorkflowServiceStubs",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.serviceclient.WorkflowServiceStubsImpl",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.serviceclient.WorkflowServiceStubsOptions",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.worker.Worker",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.worker.WorkerFactory",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.worker.WorkerOptions",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.workflow.WorkflowInterface",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.workflow.WorkflowMethod",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.client.WorkflowClientOptions$Builder",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "type": "io.temporal.internal.common.InternalUtils",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true
+    },
+    {
+      "type": "io.temporal.internal.worker.SyncActivityWorker",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true
+    },
+    {
+      "type": "io.temporal.internal.activity.ActivityTaskHandlerImpl",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true
+    },
+    {
+      "type": "io.temporal.internal.activity.ActivityTaskExecutors$POJOActivityImplementation",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true
+    },
+    {
+      "type": "io.temporal.common.metadata.POJOActivityImplMetadata",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true
+    },
+    {
+      "type": "io.temporal.common.metadata.POJOActivityInterfaceMetadata",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true
+    },
+    {
+      "type": "io.temporal.common.metadata.POJOActivityMethodMetadata",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true
+    },
+    {
+      "type": "io.temporal.common.metadata.POJOWorkflowImplMetadata",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true
+    },
+    {
+      "type": "io.temporal.common.metadata.POJOWorkflowInterfaceMetadata",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true
+    },
+    {
+      "type": "io.temporal.common.metadata.POJOWorkflowMethodMetadata",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "allPublicMethods": true,
+      "allPublicFields": true
+    },
+    {
+      "type": "io.temporal.common.converter.PayloadAndFailureDataConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.common.converter.Jackson3JsonPayloadConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    }
+  ]
+}

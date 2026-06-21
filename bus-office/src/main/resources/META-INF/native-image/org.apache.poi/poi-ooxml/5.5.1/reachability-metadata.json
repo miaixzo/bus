@@ -1,0 +1,75 @@
+{
+  "reflection": [
+    {
+      "type": "org.apache.poi.ooxml.extractor.POIXMLExtractorFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.poi.xslf.draw.SVGImageRenderer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.poi.xslf.usermodel.XSLFMetroShape",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.poi.xslf.usermodel.XSLFSlideShowFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.poi.xssf.usermodel.XSSFWorkbookFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/services/org.apache.poi.extractor.ExtractorProvider"
+    },
+    {
+      "glob": "META-INF/services/org.apache.poi.sl.draw.ImageRenderer"
+    },
+    {
+      "glob": "META-INF/services/org.apache.poi.sl.usermodel.MetroShapeProvider"
+    },
+    {
+      "glob": "META-INF/services/org.apache.poi.sl.usermodel.SlideShowProvider"
+    },
+    {
+      "glob": "META-INF/services/org.apache.poi.ss.usermodel.WorkbookProvider"
+    },
+    {
+      "glob": "org/apache/poi/xslf/usermodel/empty.pptx"
+    },
+    {
+      "glob": "org/apache/poi/xslf/usermodel/notesMaster.xml"
+    },
+    {
+      "glob": "org/apache/poi/xssf/usermodel/presetTableStyles.xml"
+    }
+  ]
+}

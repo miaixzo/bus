@@ -1,0 +1,3631 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.io.Serializable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.AutoCloseable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Comparable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Enum"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Object"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Record"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.constant.Constable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
+      },
+      "type": "java.lang.invoke.MethodHandles",
+      "methods": [
+        {
+          "name": "privateLookupIn",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.invoke.MethodHandles$Lookup"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.reflect.Method[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "javax.sql.DataSource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "appendArray",
+          "parameterTypes": [
+            "java.lang.Object[]",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "collectionToKeyValue",
+          "parameterTypes": [
+            "java.util.Collection",
+            "java.lang.String",
+            "java.util.Set",
+            "java.util.Map",
+            "org.miaixz.bus.core.lang.EnumValue$Switch"
+          ]
+        },
+        {
+          "name": "doGenerateKey",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "doGetArgNamesWithJava8",
+          "parameterTypes": [
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "doPatternCombiner",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.AnnoHolder"
+          ]
+        },
+        {
+          "name": "generateMultiKey",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.AnnoHolder",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "generatePattern",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.AnnoHolder"
+          ]
+        },
+        {
+          "name": "generateSingleKey",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.AnnoHolder",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "getArgNames",
+          "parameterTypes": [
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "getDefaultValue",
+          "parameterTypes": [
+            "java.lang.Object[]",
+            "int"
+          ]
+        },
+        {
+          "name": "getMultiArgEntries",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getXArgNames",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "mapToKeyValue",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.util.Set",
+            "java.util.Map",
+            "org.miaixz.bus.core.lang.EnumValue$Switch"
+          ]
+        },
+        {
+          "name": "toByteArray",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "toByteArray",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.cache.Serializer"
+          ]
+        },
+        {
+          "name": "toObjectMap",
+          "parameterTypes": [
+            "java.util.Collection",
+            "java.util.List",
+            "org.miaixz.bus.cache.Serializer"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.CacheX"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.CacheX"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Collector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Collector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Collector$Snapshot"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Collector$Snapshot"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Collector$Snapshot",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "long",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequired",
+          "parameterTypes": []
+        },
+        {
+          "name": "merge",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Collector$Snapshot",
+            "org.miaixz.bus.cache.Collector$Snapshot"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "long",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Collector$Snapshot"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Complex"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Complex"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Complex",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "doIsSwitchOn",
+          "parameterTypes": [
+            "boolean",
+            "int",
+            "java.lang.String",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "doReadWrite",
+          "parameterTypes": [
+            "java.lang.reflect.Method",
+            "org.miaixz.bus.proxy.invoker.ProxyChain",
+            "boolean"
+          ]
+        },
+        {
+          "name": "isSwitchOn",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Context",
+            "org.miaixz.bus.cache.magic.annotation.Cached",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "isSwitchOn",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Context",
+            "org.miaixz.bus.cache.magic.annotation.CachedGet",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "isSwitchOn",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Context",
+            "org.miaixz.bus.cache.magic.annotation.Invalid",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.annotation.CachedGet",
+            "java.lang.reflect.Method",
+            "org.miaixz.bus.proxy.invoker.ProxyChain"
+          ]
+        },
+        {
+          "name": "readWrite",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.annotation.Cached",
+            "java.lang.reflect.Method",
+            "org.miaixz.bus.proxy.invoker.ProxyChain"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.annotation.Invalid",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "setContext",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Context"
+          ]
+        },
+        {
+          "name": "setManage",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Manage"
+          ]
+        },
+        {
+          "name": "setMultiCacheReader",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.reader.AbstractReader"
+          ]
+        },
+        {
+          "name": "setSingleCacheReader",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.reader.AbstractReader"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Complex"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Context",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCaches",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCollector",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrevent",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPreventOn",
+          "parameterTypes": []
+        },
+        {
+          "name": "newConfig",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setCache",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Switch"
+          ]
+        },
+        {
+          "name": "setCaches",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setCollector",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Collector"
+          ]
+        },
+        {
+          "name": "setPrevent",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Switch"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.cache.Factory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Factory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Factory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Factory$Backend"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Factory$Backend"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Factory$Backend",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.CacheX",
+            "boolean",
+            "boolean",
+            "boolean",
+            "long",
+            "long"
+          ]
+        },
+        {
+          "name": "cache",
+          "parameterTypes": []
+        },
+        {
+          "name": "counter",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "expireMs",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "maximumSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "mirror",
+          "parameterTypes": []
+        },
+        {
+          "name": "scan",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Factory$Backend"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Hybrid"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Hybrid"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Hybrid",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.CacheX"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.CacheX",
+            "boolean",
+            "boolean",
+            "org.miaixz.bus.cache.CacheX"
+          ]
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "containsKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "increment",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "keys",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "renew",
+          "parameterTypes": [
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "scan",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.util.Map",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Hybrid"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Manage"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Manage"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Manage",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.cache.Collector"
+          ]
+        },
+        {
+          "name": "getCacheImpl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCollector",
+          "parameterTypes": []
+        },
+        {
+          "name": "readBatch",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "readSingle",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setCachePool",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setCollector",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Collector"
+          ]
+        },
+        {
+          "name": "writeBatch",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "int"
+          ]
+        },
+        {
+          "name": "writeSingle",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Object",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Manage"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Module"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Module"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Module",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCache",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCollector",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMultiCacheReader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSingleCacheReader",
+          "parameterTypes": []
+        },
+        {
+          "name": "initialize",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Context"
+          ]
+        },
+        {
+          "name": "instance",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Module"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Module$ModuleHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Module$ModuleHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Module$ModuleHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Module$ModuleHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Options"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Options"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Options",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExpire",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRedis",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "setExpire",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setMaxSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setNodes",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRedis",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Options$Redis"
+          ]
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Options"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.Options$Redis"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Options$Redis"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.Options$Redis",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxActive",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxIdle",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMinIdle",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHost",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setMaxActive",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxIdle",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMinIdle",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setNodes",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPort",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setTimeout",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Options$Redis"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.Serializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.Serializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "newAddable",
+          "parameterTypes": [
+            "java.lang.Class",
+            "int"
+          ]
+        },
+        {
+          "name": "newCollection",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "newMap",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$Addable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$Addable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$ArrayAddable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$ArrayAddable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$ArrayAddable",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addAll",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "java.lang.Class",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$ArrayAddable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$CollectionAddable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$CollectionAddable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$CollectionAddable",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addAll",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "java.lang.Class",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$CollectionAddable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$MapAddable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$MapAddable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$MapAddable",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addAll",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "java.lang.Class",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.Addables$MapAddable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.builtin.CacheInfoContainer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.builtin.CacheInfoContainer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.CacheInfoContainer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "doGetMethodInfo",
+          "parameterTypes": [
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "getAnnoHolder",
+          "parameterTypes": [
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "getCacheInfo",
+          "parameterTypes": [
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "getMethodHolder",
+          "parameterTypes": [
+            "java.lang.reflect.Method",
+            "org.miaixz.bus.cache.magic.AnnoHolder"
+          ]
+        },
+        {
+          "name": "isInvalidIdentifier",
+          "parameterTypes": [
+            "boolean",
+            "boolean",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isInvalidMulti",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "isInvalidMultiCount",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "isInvalidParam",
+          "parameterTypes": [
+            "java.lang.Class[]",
+            "org.miaixz.bus.cache.magic.AnnoHolder"
+          ]
+        },
+        {
+          "name": "isInvalidResult",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isMulti",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.annotation.CacheKey"
+          ]
+        },
+        {
+          "name": "scanCached",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.AnnoHolder$Builder",
+            "org.miaixz.bus.cache.magic.annotation.Cached"
+          ]
+        },
+        {
+          "name": "scanCachedGet",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.AnnoHolder$Builder",
+            "org.miaixz.bus.cache.magic.annotation.CachedGet"
+          ]
+        },
+        {
+          "name": "scanInvalid",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.AnnoHolder$Builder",
+            "org.miaixz.bus.cache.magic.annotation.Invalid"
+          ]
+        },
+        {
+          "name": "scanKeys",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.AnnoHolder$Builder",
+            "java.lang.annotation.Annotation[][]"
+          ]
+        },
+        {
+          "name": "staticAnalyze",
+          "parameterTypes": [
+            "java.lang.Class[]",
+            "org.miaixz.bus.cache.magic.AnnoHolder",
+            "boolean",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.CacheInfoContainer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.builtin.PreventObjects"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.builtin.PreventObjects"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.PreventObjects",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPreventObject",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPrevent",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.PreventObjects"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.builtin.PreventObjects$NullMarker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.builtin.PreventObjects$NullMarker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.PreventObjects$NullMarker",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "readResolve",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.PreventObjects$NullMarker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.builtin.SpelCalculator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.builtin.SpelCalculator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.SpelCalculator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "accessSegment",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "calcSpelValueWithContext",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String[]",
+            "java.lang.Object[]",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "calcSpelWithNoContext",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "evalSingle",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "evalToken",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "evaluate",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getField",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "indexOfOperator",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "invokeMethod",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "navigatePath",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "splitOnPlus",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.builtin.SpelCalculator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.collect.AbstractCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.collect.AbstractCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.AbstractCollector",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "countAddCas",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "dumpToDB",
+          "parameterTypes": [
+            "java.util.concurrent.BlockingQueue",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHitting",
+          "parameterTypes": []
+        },
+        {
+          "name": "getObjectCount",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.collect.AbstractCollector$Tally",
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "hitIncr",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "insert",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "newHashMap",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "queryAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryObject",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "reqIncr",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "reset",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resetAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "update",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.AbstractCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.collect.AbstractCollector$Tally"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.collect.AbstractCollector$Tally"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.AbstractCollector$Tally",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHitCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequireCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHitCount",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setPattern",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRequireCount",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setVersion",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.AbstractCollector$Tally"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.collect.H2Collector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.collect.H2Collector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.H2Collector",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "jdbcRunnerSupplier",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "transferResults",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.H2Collector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.collect.JdbcRunner"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.collect.JdbcRunner"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.JdbcRunner",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.sql.DataSource"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "forDataSource",
+          "parameterTypes": [
+            "javax.sql.DataSource"
+          ]
+        },
+        {
+          "name": "forSingleConnection",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryForList",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "update",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.JdbcRunner"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.collect.JdbcRunner$SingleConnectionSource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.collect.JdbcRunner$SingleConnectionSource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.JdbcRunner$SingleConnectionSource",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.sql.Connection"
+          ]
+        },
+        {
+          "name": "getConnection",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnection",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getLogWriter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLoginTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getParentLogger",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWrapperFor",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "setLogWriter",
+          "parameterTypes": [
+            "java.io.PrintWriter"
+          ]
+        },
+        {
+          "name": "setLoginTimeout",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "unwrap",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.JdbcRunner$SingleConnectionSource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.collect.MemoryCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.collect.MemoryCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.MemoryCollector",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHitting",
+          "parameterTypes": []
+        },
+        {
+          "name": "hitIncr",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "reqIncr",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "reset",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resetAll",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.MemoryCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.collect.MySQLCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.collect.MySQLCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.MySQLCollector",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "jdbcRunnerSupplier",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "transferResults",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.MySQLCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.collect.PostgreSQLCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.collect.PostgreSQLCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.PostgreSQLCollector",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "jdbcRunnerSupplier",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "transferResults",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.PostgreSQLCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.collect.SqliteCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.collect.SqliteCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.SqliteCollector",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "jdbcRunnerSupplier",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "transferResults",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.collect.SqliteCollector"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.magic.AnnoHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.magic.AnnoHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.AnnoHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.reflect.Method",
+            "java.lang.String",
+            "java.lang.String",
+            "int",
+            "java.util.Map",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCacheKeyMap",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExpire",
+          "parameterTypes": []
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMethod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMultiIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrefix",
+          "parameterTypes": []
+        },
+        {
+          "name": "isMulti",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.AnnoHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.magic.AnnoHolder$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.magic.AnnoHolder$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.AnnoHolder$Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "newBuilder",
+          "parameterTypes": [
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "setCache",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCacheKeyMap",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setExpire",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setMultiIndex",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setPrefix",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.AnnoHolder$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.magic.CacheExpire"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.CacheExpire"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.magic.CacheKeys"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.magic.CacheKeys"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.CacheKeys",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "getHitKeyMap",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMissKeySet",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.CacheKeys"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.magic.CachePair"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.magic.CachePair"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.CachePair",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getLeft",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRight",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.CachePair"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.magic.MethodHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.magic.MethodHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.MethodHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getInnerReturnType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReturnType",
+          "parameterTypes": []
+        },
+        {
+          "name": "isCollection",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCollection",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setInnerReturnType",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "setReturnType",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.MethodHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.magic.annotation.CacheKey"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.annotation.CacheKey"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.magic.annotation.Cached"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.annotation.Cached"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.magic.annotation.CachedGet"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.annotation.CachedGet"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.magic.annotation.Invalid"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.magic.annotation.Invalid"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.CaffeineCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.CaffeineCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.CaffeineCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.GuavaCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.GuavaCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.GuavaCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemcachedCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemcachedCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemcachedCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "long"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "containsKey",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "estimatedSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "evictOldest",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNativeCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStats",
+          "parameterTypes": []
+        },
+        {
+          "name": "increment",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "scan",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "schedulePrune",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.util.Map",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheScheduler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheScheduler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": []
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.Runnable",
+            "long"
+          ]
+        },
+        {
+          "name": "shutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheScheduler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheState"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheState"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheState",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "getExpireAfterWrite",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastAccessTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getState",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWriteTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "isExpired",
+          "parameterTypes": [
+            "long",
+            "long"
+          ]
+        },
+        {
+          "name": "isForever",
+          "parameterTypes": []
+        },
+        {
+          "name": "setLastAccessTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "updateAccessTime",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheState"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.metric.NoOpCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.NoOpCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.NoOpCache",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.util.Map",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.NoOpCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.RedisCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.RedisCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.RedisCache",
+      "methods": [
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "increment",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "renew",
+          "parameterTypes": [
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "scan",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.util.Map",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.RedisCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.RedisClusterCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.metric.RedisClusterCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.RedisClusterCache",
+      "methods": [
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "increment",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "renew",
+          "parameterTypes": [
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "scan",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.util.Map",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.metric.RedisClusterCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.reader.AbstractReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.reader.AbstractReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.reader.AbstractReader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "doLogInvoke",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.reader.AbstractReader$ThrowableSupplier"
+          ]
+        },
+        {
+          "name": "setCollector",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Collector"
+          ]
+        },
+        {
+          "name": "setContext",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Context"
+          ]
+        },
+        {
+          "name": "setManage",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.Manage"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.reader.AbstractReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.reader.AbstractReader$ThrowableSupplier"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.reader.AbstractReader$ThrowableSupplier"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.reader.MultiCacheReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.reader.MultiCacheReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.reader.MultiCacheReader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "asCollection",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "asType",
+          "parameterTypes": [
+            "java.util.Collection",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "doRecord",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.CacheKeys",
+            "org.miaixz.bus.cache.magic.AnnoHolder"
+          ]
+        },
+        {
+          "name": "handleFullHit",
+          "parameterTypes": [
+            "org.miaixz.bus.proxy.invoker.ProxyChain",
+            "java.util.Map",
+            "org.miaixz.bus.cache.magic.MethodHolder",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "handlePartHit",
+          "parameterTypes": [
+            "org.miaixz.bus.proxy.invoker.ProxyChain",
+            "org.miaixz.bus.cache.magic.CacheKeys",
+            "org.miaixz.bus.cache.magic.AnnoHolder",
+            "org.miaixz.bus.cache.magic.MethodHolder",
+            "java.util.Map[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "mergeCacheValueToResultCollection",
+          "parameterTypes": [
+            "java.util.Collection",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "mergeCacheValueToResultMap",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "mergeCollection",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.util.Collection",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "mergeMap",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.AnnoHolder",
+            "org.miaixz.bus.cache.magic.MethodHolder",
+            "org.miaixz.bus.proxy.invoker.ProxyChain",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toCollection",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "toMap",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "toMissArgs",
+          "parameterTypes": [
+            "java.util.Set",
+            "java.util.Map",
+            "java.lang.Object[]",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.reader.MultiCacheReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.reader.SingleCacheReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.reader.SingleCacheReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.reader.SingleCacheReader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "doRecord",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String",
+            "org.miaixz.bus.cache.magic.AnnoHolder"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.magic.AnnoHolder",
+            "org.miaixz.bus.cache.magic.MethodHolder",
+            "org.miaixz.bus.proxy.invoker.ProxyChain",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.reader.SingleCacheReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.serialize.AbstractSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.serialize.AbstractSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.serialize.AbstractSerializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "deserialize",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "serialize",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.serialize.AbstractSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.serialize.Hessian2Serializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.serialize.Hessian2Serializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.serialize.Hessian2Serializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "doDeserialize",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "doSerialize",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.serialize.Hessian2Serializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JdkGzipSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JdkGzipSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JdkGzipSerializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "doDeserialize",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "doSerialize",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JdkGzipSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JdkSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JdkSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JdkSerializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "deserialize",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "doDeserialize",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "doSerialize",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "serialize",
+          "parameterTypes": [
+            "java.io.Serializable",
+            "java.io.OutputStream"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JdkSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JsonSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JsonSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JsonSerializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "doDeserialize",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "doSerialize",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.cache.serialize.JsonSerializer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
+      },
+      "type": "org.miaixz.bus.core.xyz.LookupKit"
+    }
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/cache/**"
+    }
+  ]
+}
