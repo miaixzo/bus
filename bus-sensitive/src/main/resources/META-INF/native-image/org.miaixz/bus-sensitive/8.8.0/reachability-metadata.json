@@ -1,0 +1,1324 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
+      },
+      "methods": [
+        {
+          "name": "privateLookupIn",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.invoke.MethodHandles$Lookup"
+          ]
+        }
+      ],
+      "type": "java.lang.invoke.MethodHandles"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "java.lang.Object"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Object"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.reflect.Method[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.text.dfa.Sensitive"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.text.dfa.Sensitive"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
+      },
+      "type": "org.miaixz.bus.core.xyz.LookupKit"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "json",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation",
+            "boolean"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAllFieldList",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBeanClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCurrentField",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCurrentFieldName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCurrentFieldValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCurrentObject",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEntry",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtension",
+          "parameterTypes": []
+        },
+        {
+          "name": "getShield",
+          "parameterTypes": []
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAllFieldList",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "setBeanClass",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "setCurrentField",
+          "parameterTypes": [
+            "java.lang.reflect.Field"
+          ]
+        },
+        {
+          "name": "setCurrentObject",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setEntry",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setExtension",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setShield",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.magic.annotation.Shield"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.Filter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.Filter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.Filter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        },
+        {
+          "name": "getConditionOpt",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "handleSensitive",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.reflect.Field"
+          ]
+        },
+        {
+          "name": "isBaseType",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "processArray",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "processCollection",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "process",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.reflect.Field",
+            "java.lang.Object"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.Filter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.Filter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Condition"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Condition"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Condition"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Entry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Entry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Entry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.NShield"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.NShield"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.NShield"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Privacy"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Privacy"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Privacy"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Sensitive"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Sensitive"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Sensitive"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Shield"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Shield"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Shield"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Strategy"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Strategy"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.magic.annotation.Strategy"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Mode",
+            "int",
+            "int",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Mode",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.AddressProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.AddressProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.AddressProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.AddressProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.AddressProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.BandCardProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.BandCardProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.BandCardProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.BandCardProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.BandCardProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.BuiltInProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.BuiltInProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.BuiltInProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.BuiltInProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.BuiltInProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CardProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CardProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CardProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.CardProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CardProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CitizenIdProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CitizenIdProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CitizenIdProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        },
+        {
+          "name": "cardId",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.CitizenIdProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CitizenIdProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CnapsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CnapsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CnapsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.CnapsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.CnapsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.ConditionProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.ConditionProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.ConditionProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.DafaultProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.DafaultProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.DafaultProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.DafaultProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.DafaultProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.EmailProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.EmailProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.EmailProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        },
+        {
+          "name": "email",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.EmailProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.EmailProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.MobileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.MobileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.MobileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.MobileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.MobileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.NameProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.NameProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.NameProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.NameProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.NameProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.NoneProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.NoneProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.NoneProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.NoneProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.NoneProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.PasswordProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.PasswordProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.PasswordProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.PasswordProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.PasswordProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.PhoneProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.PhoneProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.PhoneProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.sensitive.Context"
+          ]
+        },
+        {
+          "name": "phone",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.metric.PhoneProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.PhoneProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.StrategyProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.StrategyProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.metric.StrategyProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "alreadyBeSentisived",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "clone",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getCondition",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "getStrategy",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "handleClassField",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.Object",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "handleSensitiveEntry",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.Object",
+            "java.lang.reflect.Field"
+          ]
+        },
+        {
+          "name": "handleSensitive",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.Object",
+            "java.lang.reflect.Field"
+          ]
+        },
+        {
+          "name": "json",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation"
+          ]
+        },
+        {
+          "name": "needHandleEntryType",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation",
+            "boolean"
+          ]
+        },
+        {
+          "name": "processArrayField",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.Object",
+            "java.lang.reflect.Field"
+          ]
+        },
+        {
+          "name": "processCollectionField",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.Object",
+            "java.lang.reflect.Field"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.sensitive.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.sensitive.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "contains",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "register",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Masking",
+            "org.miaixz.bus.sensitive.metric.StrategyProvider"
+          ]
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Masking"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.sensitive.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.sensitive.Registry"
+    }
+  ]
+}

@@ -1,14 +1,14 @@
 [
   {
     "latest": true,
-    "metadata-version": "8.6.15",
+    "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-limiter/$version$/bus-limiter-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
     "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-limiter/$version$/bus-limiter-$version$-javadoc.jar",
     "description": "Bus Limiter provides rate limiting, token bucket, sliding window, and distributed limiter support.",
     "tested-versions": [
-      "8.6.15"
+      "8.8.0"
     ],
     "allowed-packages": [
       "org.miaixz"

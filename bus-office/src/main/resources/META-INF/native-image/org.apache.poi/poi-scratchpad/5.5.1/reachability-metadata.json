@@ -1,40 +1,40 @@
 {
   "reflection": [
     {
-      "type": "org.apache.poi.extractor.ole2.OLE2ScratchpadExtractorFactory",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.extractor.ole2.OLE2ScratchpadExtractorFactory"
     },
     {
-      "type": "org.apache.poi.hwmf.draw.HwmfImageRenderer",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.hemf.draw.HemfImageRenderer"
     },
     {
-      "type": "org.apache.poi.hemf.draw.HemfImageRenderer",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.hslf.usermodel.HSLFSlideShowFactory"
     },
     {
-      "type": "org.apache.poi.hslf.usermodel.HSLFSlideShowFactory",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.hwmf.draw.HwmfImageRenderer"
     }
   ],
   "resources": [

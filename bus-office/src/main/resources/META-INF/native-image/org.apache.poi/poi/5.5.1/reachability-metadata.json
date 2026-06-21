@@ -1,31 +1,31 @@
 {
   "reflection": [
     {
-      "type": "org.apache.poi.extractor.MainExtractorFactory",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.extractor.MainExtractorFactory"
     },
     {
-      "type": "org.apache.poi.sl.draw.BitmapImageRenderer",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.hssf.usermodel.HSSFWorkbookFactory"
     },
     {
-      "type": "org.apache.poi.hssf.usermodel.HSSFWorkbookFactory",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.sl.draw.BitmapImageRenderer"
     }
   ],
   "resources": [

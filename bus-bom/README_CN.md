@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-dependencies</artifactId>
-            <version>3.x.x</version>
+            <version>4.x.x</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

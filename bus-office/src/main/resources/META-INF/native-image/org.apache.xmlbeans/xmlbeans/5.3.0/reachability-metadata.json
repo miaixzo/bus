@@ -1,58 +1,58 @@
 {
   "reflection": [
     {
-      "type": "org.apache.xmlbeans.impl.inst2xsd.util.TypeSystemHolder",
+      "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
-      "allDeclaredConstructors": true,
       "allPublicConstructors": true,
+      "allPublicFields": true,
       "allPublicMethods": true,
-      "allPublicFields": true
+      "type": "org.apache.xmlbeans.impl.inst2xsd.util.TypeSystemHolder"
     },
     {
-      "type": "org.apache.xmlbeans.impl.schema.TypeSystemHolder",
+      "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
-      "allDeclaredConstructors": true,
       "allPublicConstructors": true,
+      "allPublicFields": true,
       "allPublicMethods": true,
-      "allPublicFields": true
+      "type": "org.apache.xmlbeans.impl.schema.TypeSystemHolder"
     },
     {
-      "type": "org.apache.xmlbeans.metadata.system.sXMLCONFIG.TypeSystemHolder",
+      "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
-      "allDeclaredConstructors": true,
       "allPublicConstructors": true,
+      "allPublicFields": true,
       "allPublicMethods": true,
-      "allPublicFields": true
+      "type": "org.apache.xmlbeans.metadata.system.sXMLCONFIG.TypeSystemHolder"
     },
     {
-      "type": "org.apache.xmlbeans.metadata.system.sXMLLANG.TypeSystemHolder",
+      "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
-      "allDeclaredConstructors": true,
       "allPublicConstructors": true,
+      "allPublicFields": true,
       "allPublicMethods": true,
-      "allPublicFields": true
+      "type": "org.apache.xmlbeans.metadata.system.sXMLLANG.TypeSystemHolder"
     },
     {
-      "type": "org.apache.xmlbeans.metadata.system.sXMLSCHEMA.TypeSystemHolder",
+      "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
-      "allDeclaredConstructors": true,
       "allPublicConstructors": true,
+      "allPublicFields": true,
       "allPublicMethods": true,
-      "allPublicFields": true
+      "type": "org.apache.xmlbeans.metadata.system.sXMLSCHEMA.TypeSystemHolder"
     },
     {
-      "type": "org.apache.xmlbeans.metadata.system.sXMLTOOLS.TypeSystemHolder",
+      "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
-      "allDeclaredConstructors": true,
       "allPublicConstructors": true,
+      "allPublicFields": true,
       "allPublicMethods": true,
-      "allPublicFields": true
+      "type": "org.apache.xmlbeans.metadata.system.sXMLTOOLS.TypeSystemHolder"
     }
   ],
   "resources": [

@@ -1,49 +1,49 @@
 {
   "reflection": [
     {
-      "type": "org.apache.poi.ooxml.extractor.POIXMLExtractorFactory",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.ooxml.extractor.POIXMLExtractorFactory"
     },
     {
-      "type": "org.apache.poi.xslf.draw.SVGImageRenderer",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.xslf.draw.SVGImageRenderer"
     },
     {
-      "type": "org.apache.poi.xslf.usermodel.XSLFMetroShape",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.xslf.usermodel.XSLFMetroShape"
     },
     {
-      "type": "org.apache.poi.xslf.usermodel.XSLFSlideShowFactory",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.xslf.usermodel.XSLFSlideShowFactory"
     },
     {
-      "type": "org.apache.poi.xssf.usermodel.XSSFWorkbookFactory",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "type": "org.apache.poi.xssf.usermodel.XSSFWorkbookFactory"
     }
   ],
   "resources": [

@@ -1,0 +1,2019 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.io.Serializable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Comparable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.constant.Constable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Enum"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
+      },
+      "methods": [
+        {
+          "name": "privateLookupIn",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.invoke.MethodHandles$Lookup"
+          ]
+        }
+      ],
+      "type": "java.lang.invoke.MethodHandles"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Object"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.reflect.Method[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
+      },
+      "type": "org.miaixz.bus.core.xyz.LookupKit"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.Factory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.Factory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "doFactory",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFactory",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "setDefaultFactory",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "setDefaultFactory",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Factory"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.Level"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.logger.Level"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.Level"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.Logger"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.Logger"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "int",
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Provider",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "int",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Provider",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Provider",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Provider",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "getFactory",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLevel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Provider",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "isDebugEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnabled",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Level"
+          ]
+        },
+        {
+          "name": "isErrorEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isInfoEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTraceEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWarnEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "log",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Level",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "setLevel",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Level"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Provider",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "int",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Provider",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Provider",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.Logger"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.Logger"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.magic.AbstractFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.magic.AbstractFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "exists",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.logger.magic.AbstractFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.magic.AbstractFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.magic.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.magic.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "isEnabled",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Level"
+          ]
+        },
+        {
+          "name": "log",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Level",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "log",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Level",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.magic.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.magic.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.magic.level.Debug"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.magic.level.Debug"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.magic.level.Error"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.magic.level.Error"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.magic.level.Info"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.magic.level.Info"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.magic.level.Trace"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.magic.level.Trace"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.magic.level.Warn"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.magic.level.Warn"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "exists",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "getLevel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "isDebugEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isErrorEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isInfoEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTraceEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWarnEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "log",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.logger.Level",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.logging.log4j.Logger"
+          ]
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "getLevel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "isDebugEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isErrorEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isInfoEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTraceEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWarnEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "logIfEnabled",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.logging.log4j.Level",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "log",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.logger.Level",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getLevel",
+          "parameterTypes": []
+        },
+        {
+          "name": "log",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.logger.Level",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "setColorFactory",
+          "parameterTypes": [
+            "java.util.function.Function"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "getLevel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "isDebugEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnabled",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Level"
+          ]
+        },
+        {
+          "name": "isErrorEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isInfoEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTraceEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWarnEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "log",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.logger.Level",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "setLevel",
+          "parameterTypes": [
+            "org.miaixz.bus.logger.Level"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "getLevel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "isDebugEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isErrorEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isInfoEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTraceEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWarnEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "log",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.logger.Level",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readConfig",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.logging.Logger"
+          ]
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "fill",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.logging.LogRecord"
+          ]
+        },
+        {
+          "name": "getLevel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "info",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "isDebugEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isErrorEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isInfoEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTraceEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWarnEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "logIfEnabled",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.logging.Level",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "log",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.logger.Level",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "trace",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "warn",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "get",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.logger.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.Registry"
+    }
+  ],
+  "resources": [
+    {
+      "glob": "logback-spring.groovy"
+    },
+    {
+      "glob": "logback-spring.xml"
+    },
+    {
+      "glob": "logback-test.scmo"
+    },
+    {
+      "glob": "logback-test.xml"
+    },
+    {
+      "glob": "logback.groovy"
+    },
+    {
+      "glob": "logback.scmo"
+    },
+    {
+      "glob": "logback.xml"
+    },
+    {
+      "glob": "META-INF/services/**"
+    }
+  ]
+}

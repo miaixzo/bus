@@ -1,0 +1,3287 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+      },
+      "type": "jakarta.servlet.Servlet"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.io.Serializable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Comparable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.constant.Constable"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Enum"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
+      },
+      "methods": [
+        {
+          "name": "privateLookupIn",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.invoke.MethodHandles$Lookup"
+          ]
+        }
+      ],
+      "type": "java.lang.invoke.MethodHandles"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.Object"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
+      },
+      "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "java.lang.reflect.Method[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+      },
+      "type": "javax.servlet.Servlet"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.cache.CacheX"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.cache.metric.MemoryCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.normal.ErrorCode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ResourceKit"
+      },
+      "type": "org.miaixz.bus.core.center.object.ObjectValidator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
+      },
+      "type": "org.miaixz.bus.core.xyz.ClassKit"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
+      },
+      "type": "org.miaixz.bus.core.xyz.LookupKit"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
+      },
+      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "buildNormalizedPrefix",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "buildObjectKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.cache.StorageCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "containsKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.util.Map",
+            "long"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.cache.StorageCache"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.storage.ClientX"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.storage.ClientX$AsyncContentPublisherWrapper"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.storage.ClientX$ByteBufferPublisher"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.storage.ClientX$ClientBuilder"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.storage.ClientX$CustomRequestBody"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.storage.ClientX$HttpExecutableHttpRequest"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.storage.ClientX$S3CompatibilityInterceptor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.Context$ContextBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.Context$ContextBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.storage.Context$ContextBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.Context$ContextBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.Context$ContextBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "accessKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "bucket",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "connectTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "endpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "extension",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "pathStyle",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "prefix",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "region",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "secretKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "secure",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.Context$ContextBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "$default$connectTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$pathStyle",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$prefix",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$readTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$writeTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAccessKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBucket",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnectTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEndpoint",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtension",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrefix",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReadTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRegion",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSecretKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWriteTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPathStyle",
+          "parameterTypes": []
+        },
+        {
+          "name": "isSecure",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAccessKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setBucket",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setConnectTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setEndpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setExtension",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPathStyle",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setPrefix",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setReadTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setRegion",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSecretKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSecure",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setWriteTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.Context"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "alias",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "bytes",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "extend",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "hash",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "owner",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "path",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "platform",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "status",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "url",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.magic.Blob"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.magic.Blob"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAlias",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtend",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHash",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOwner",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlatform",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUrl",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAlias",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setBytes",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setExtend",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setHash",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setOwner",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPlatform",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSize",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setStatus",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setUrl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.magic.Blob"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.magic.ErrorCode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.magic.ErrorCode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.AbstractProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.AlibabaCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.AlibabaCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.AliYunOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.AliYunOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.AmazonS3Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.AmazonS3Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.AzureBsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.AzureBsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.BackblazeB2Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.BackblazeB2Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.BaiduBosProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.BaiduBosProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.BoxProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.BoxProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "findFileByName",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.BoxProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.CloudflareR2Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.CloudflareR2Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.ContaboProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.ContaboProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.DigitalOceanProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.DigitalOceanProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.DropboxProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.DropboxProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "buildPath",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.DropboxProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.ExoscaleProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.ExoscaleProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.FilebaseProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.FilebaseProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.FtpFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.FtpFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "getAbsolutePath",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "parseHostFromEndpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parsePortFromEndpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.FtpFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.GenericS3Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.GenericS3Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.GitlabFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.GitlabFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.GitlabFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.GoogleCsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.GoogleCsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.GoogleDriveProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.GoogleDriveProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "findFileByName",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getAccessToken",
+          "parameterTypes": []
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "refreshAccessToken",
+          "parameterTypes": []
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resolveParentId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.GoogleDriveProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.HuaweiObsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.HuaweiObsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.IBMCosProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.IBMCosProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.ICloudDriveProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.ICloudDriveProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "buildApiUrl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "buildPath",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "createFileRecord",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "deleteFileRecord",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "getAssetDownloadUrl",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryFileRecord",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryFolderRecords",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "recordToBlob",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "requestAssetUpload",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "updateFileRecord",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "uploadAsset",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.ICloudDriveProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.JdOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.JdOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.KakaoCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.KakaoCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.LinodeOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.LinodeOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.LocalFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.LocalFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.LocalFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.MegaProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.MegaProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "findFileByName",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "list",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "login",
+          "parameterTypes": []
+        },
+        {
+          "name": "makeApiRequest",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.MegaProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.MinioOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.MinioOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.NaverCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.NaverCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.NhnCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.NhnCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.OracleOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.OracleOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.OvhCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.OvhCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.QiniuOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.QiniuOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.SakuraCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.SakuraCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.ScalewayProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.ScalewayProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.SftpFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.SftpFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "getAbsolutePath",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isExist",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "parseHostFromEndpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parsePortFromEndpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.SftpFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.SharePointProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.SharePointProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "buildApiPath",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "chunkedUpload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "getAccessToken",
+          "parameterTypes": []
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "refreshAccessToken",
+          "parameterTypes": []
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.SharePointProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.SmbFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.SmbFileProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.StorjProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.StorjProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.TencentCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.TencentCloudProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.TencentCosProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.TencentCosProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.metric.UpyunOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.UpyunOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "download",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "generateSignature",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "list",
+          "parameterTypes": []
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rename",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.metric.UpyunOssProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.VolcengineTosProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.VolcengineTosProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.VultrProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.VultrProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.WasabiProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.WasabiProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.WebDavProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.metric.WebDavProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.Registry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.storage.Registry"
+    }
+  ],
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ResourceKit"
+      },
+      "glob": "META-INF/services/org.miaixz.bus.logger.Factory"
+    }
+  ]
+}
