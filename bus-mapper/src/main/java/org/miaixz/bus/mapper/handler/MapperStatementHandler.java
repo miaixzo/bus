@@ -110,7 +110,6 @@ public class MapperStatementHandler {
      * @param <T>      The type of the return value.
      * @return The value of the property.
      */
-    @SuppressWarnings("unchecked")
     private <T> T get(String property) {
         return (T) statementHandler.getValue(property);
     }

@@ -341,7 +341,6 @@ public final class DialectRegistry {
      * @param dsKey the datasource key
      * @return the DataSource, or null if not found
      */
-    @SuppressWarnings("unchecked")
     private static DataSource getDataSource(String dsKey) {
         try {
             // Try to load DynamicDataSource class (may not be available in all environments)

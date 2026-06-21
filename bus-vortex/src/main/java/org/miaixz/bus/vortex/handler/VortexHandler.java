@@ -113,7 +113,7 @@ public class VortexHandler {
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
         return Mono.deferContextual(contextView -> {
-            String method = request.methodName();
+            String method = request.method().name();
             String path = request.path();
 
             final Context context = contextView.get(Context.class);
@@ -434,9 +434,9 @@ public class VortexHandler {
     /**
      * Resolves the downstream routing timeout in seconds for one request.
      * <p>
-     * Standard routes use {@link Assets#getTimeout()}. MCP GET requests are
-     * commonly used for SSE or other long-lived stream reads, so their configured timeout is expanded to keep the
-     * stream open longer while still retaining an upper bound.
+     * Standard routes use {@link Assets#getTimeout()}. MCP GET requests are commonly used for SSE or other long-lived
+     * stream reads, so their configured timeout is expanded to keep the stream open longer while still retaining an
+     * upper bound.
      *
      * @param assets  route asset containing timeout and protocol configuration
      * @param request current server request
@@ -445,7 +445,7 @@ public class VortexHandler {
     private long routeTimeoutSeconds(Assets assets, ServerRequest request) {
         long timeout = Egress.timeoutSeconds(assets);
         if (assets.getProtocol() != null && assets.getProtocol() == Args.PROTOCOL_MCP
-                && HTTP.GET.equalsIgnoreCase(request.methodName())) {
+                && HTTP.GET.equalsIgnoreCase(request.method().name())) {
             return timeout * 10;
         }
         return timeout;

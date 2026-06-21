@@ -88,7 +88,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     @NonNull
     @Override
     public Mono<ServerResponse> execute(Context context, ServerRequest request) {
-        final String method = request.methodName();
+        final String method = request.method().name();
         final String path = request.path();
         final String ip = context.getX_request_ip();
 

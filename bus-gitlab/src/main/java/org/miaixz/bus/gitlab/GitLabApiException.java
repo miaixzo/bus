@@ -29,10 +29,10 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.StatusType;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.logger.Logger;
+
+import tools.jackson.databind.JsonNode;
 
 /**
  * This is the exception that will be thrown if any exception occurs while communicating with a GitLab API endpoint.
@@ -107,7 +107,7 @@ public class GitLabApiException extends Exception {
                         if (jsonMessage.isObject()) {
 
                             validationErrors = new LinkedHashMap<>();
-                            Iterator<Entry<String, JsonNode>> fields = jsonMessage.fields();
+                            Iterator<Entry<String, JsonNode>> fields = jsonMessage.properties().iterator();
                             while (fields.hasNext()) {
 
                                 Entry<String, JsonNode> field = fields.next();

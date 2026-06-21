@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.crypto;
 
-import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.crypto.metric.BouncyCastleProvider;
 import org.miaixz.bus.logger.Logger;
@@ -30,10 +29,6 @@ import org.miaixz.bus.logger.Logger;
  * Upon class loading, this class uses SPI (Service Provider Interface) to locate and load available cryptographic
  * providers. It specifically searches for implementations of {@link BouncyCastleProvider} and creates a unique instance
  * globally.
- * </p>
- * <p>
- * In GraalVM native image environments, custom providers are disabled to avoid JCE verification issues. The JDK's
- * default provider will be used instead.
  * </p>
  * <p>
  * Users can still control whether to use this custom provider or the JDK's default providers by calling the
@@ -64,18 +59,11 @@ public class Holder implements org.miaixz.bus.core.Holder {
     private static boolean useCustomProvider = true;
 
     /**
-     * Retrieves the {@link java.security.Provider} instance. In GraalVM native image environments, this method always
-     * returns {@code null} to avoid JCE verification issues.
+     * Retrieves the {@link java.security.Provider} instance.
      *
-     * @return The {@link java.security.Provider} instance, or {@code null} if not using a custom provider or running in
-     *         a GraalVM native image.
+     * @return The {@link java.security.Provider} instance, or {@code null} if not using a custom provider.
      */
     public static java.security.Provider getProvider() {
-        // In GraalVM native image, always return null to avoid JCE verification issues
-        if (Keys.IS_GRAALVM_NATIVE) {
-            Logger.debug(false, "Crypto", "Crypto custom provider disabled: reason=graalvmNativeImage");
-            return null;
-        }
         Logger.debug(
                 false,
                 "Crypto",

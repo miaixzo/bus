@@ -29,15 +29,18 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.ContextResolver;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.type.CollectionType;
 
 import org.miaixz.bus.gitlab.models.User;
 import org.miaixz.bus.logger.Logger;
+
+import tools.jackson.core.*;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.*;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.type.CollectionType;
 
 /**
  * Jackson JSON Configuration and utility class.
@@ -63,21 +66,34 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      */
 
     public JacksonJson() {
+        this(PropertyNamingStrategies.SNAKE_CASE, Include.NON_NULL);
+    }
 
-        objectMapper = new ObjectMapper();
+    /**
+     * Constructs a new {@code JacksonJson} instance with the supplied naming and inclusion policy.
+     *
+     * @param propertyNamingStrategy the property naming strategy
+     * @param include                the inclusion policy
+     */
+    private JacksonJson(PropertyNamingStrategy propertyNamingStrategy, Include include) {
+        objectMapper = createObjectMapper(propertyNamingStrategy, include);
+    }
 
-        objectMapper.setSerializationInclusion(Include.NON_NULL);
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        objectMapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
-
+    /**
+     * Creates the Jackson 3 mapper used by this GitLab JSON adapter.
+     *
+     * @param propertyNamingStrategy the property naming strategy
+     * @param include                the inclusion policy
+     * @return the configured mapper
+     */
+    private static ObjectMapper createObjectMapper(PropertyNamingStrategy propertyNamingStrategy, Include include) {
         SimpleModule module = new SimpleModule("GitLabApiJsonModule");
         module.addSerializer(Date.class, new JsonDateSerializer());
         module.addDeserializer(Date.class, new JsonDateDeserializer());
-        objectMapper.registerModule(module);
+
+        return JsonMapper.builder().propertyNamingStrategy(propertyNamingStrategy)
+                .changeDefaultPropertyInclusion(value -> JsonInclude.Value.construct(include, include))
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).addModule(module).build();
     }
 
     /**
@@ -108,11 +124,10 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      *
      * @param postData a String holding the POST data
      * @return a JsonNode instance containing the parsed JSON
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
-     * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws JacksonException if a JSON error occurs
+     * @throws IOException      if an error occurs reading the JSON data
      */
-    public JsonNode readTree(String postData) throws JsonParseException, JsonMappingException, IOException {
+    public JsonNode readTree(String postData) throws JacksonException, IOException {
         return (objectMapper.readTree(postData));
     }
 
@@ -121,11 +136,10 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      *
      * @param reader the Reader instance that contains the JSON data
      * @return a JsonNode instance containing the parsed JSON
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
-     * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws JacksonException if a JSON error occurs
+     * @throws IOException      if an error occurs reading the JSON data
      */
-    public JsonNode readTree(Reader reader) throws JsonParseException, JsonMappingException, IOException {
+    public JsonNode readTree(Reader reader) throws JacksonException, IOException {
         return (objectMapper.readTree(reader));
     }
 
@@ -136,12 +150,10 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @param returnType an instance of this type class will be returned
      * @param tree       the JsonNode instance that contains the JSON data
      * @return an instance of the provided class containing the data from the tree
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
-     * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws JacksonException if a JSON error occurs
+     * @throws IOException      if an error occurs reading the JSON data
      */
-    public <T> T unmarshal(Class<T> returnType, JsonNode tree)
-            throws JsonParseException, JsonMappingException, IOException {
+    public <T> T unmarshal(Class<T> returnType, JsonNode tree) throws JacksonException, IOException {
         ObjectMapper objectMapper = getContext(returnType);
         return (objectMapper.treeToValue(tree, returnType));
     }
@@ -153,12 +165,10 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @param returnType an instance of this type class will be returned
      * @param reader     the Reader instance that contains the JSON data
      * @return an instance of the provided class containing the parsed data from the Reader
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
-     * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws JacksonException if a JSON error occurs
+     * @throws IOException      if an error occurs reading the JSON data
      */
-    public <T> T unmarshal(Class<T> returnType, Reader reader)
-            throws JsonParseException, JsonMappingException, IOException {
+    public <T> T unmarshal(Class<T> returnType, Reader reader) throws JacksonException, IOException {
         ObjectMapper objectMapper = getContext(returnType);
         return (objectMapper.readValue(reader, returnType));
     }
@@ -170,12 +180,10 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @param returnType an instance of this type class will be returned
      * @param postData   a String holding the POST data
      * @return an instance of the provided class containing the parsed data from the string
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
-     * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws JacksonException if a JSON error occurs
+     * @throws IOException      if an error occurs reading the JSON data
      */
-    public <T> T unmarshal(Class<T> returnType, String postData)
-            throws JsonParseException, JsonMappingException, IOException {
+    public <T> T unmarshal(Class<T> returnType, String postData) throws JacksonException, IOException {
         ObjectMapper objectMapper = getContext(returnType);
         return (objectMapper.readValue(postData, returnType));
     }
@@ -188,12 +196,10 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @param returnType an instance of this type class will be contained in the returned List
      * @param reader     the Reader instance that contains the JSON data
      * @return a List of the provided class containing the parsed data from the Reader
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
-     * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws JacksonException if a JSON error occurs
+     * @throws IOException      if an error occurs reading the JSON data
      */
-    public <T> List<T> unmarshalList(Class<T> returnType, Reader reader)
-            throws JsonParseException, JsonMappingException, IOException {
+    public <T> List<T> unmarshalList(Class<T> returnType, Reader reader) throws JacksonException, IOException {
         ObjectMapper objectMapper = getContext(null);
         CollectionType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, returnType);
         return (objectMapper.readValue(reader, javaType));
@@ -207,12 +213,10 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @param returnType an instance of this type class will be contained in the returned List
      * @param postData   a String holding the POST data
      * @return a List of the provided class containing the parsed data from the string
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
-     * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws JacksonException if a JSON error occurs
+     * @throws IOException      if an error occurs reading the JSON data
      */
-    public <T> List<T> unmarshalList(Class<T> returnType, String postData)
-            throws JsonParseException, JsonMappingException, IOException {
+    public <T> List<T> unmarshalList(Class<T> returnType, String postData) throws JacksonException, IOException {
         ObjectMapper objectMapper = getContext(null);
         CollectionType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, returnType);
         return (objectMapper.readValue(postData, javaType));
@@ -226,12 +230,10 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @param returnType an instance of this type class will be contained the values of the Map
      * @param reader     the Reader instance that contains the JSON data
      * @return a Map containing the parsed data from the Reader
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
-     * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws JacksonException if a JSON error occurs
+     * @throws IOException      if an error occurs reading the JSON data
      */
-    public <T> Map<String, T> unmarshalMap(Class<T> returnType, Reader reader)
-            throws JsonParseException, JsonMappingException, IOException {
+    public <T> Map<String, T> unmarshalMap(Class<T> returnType, Reader reader) throws JacksonException, IOException {
         ObjectMapper objectMapper = getContext(null);
         return (objectMapper.readValue(reader, new TypeReference<Map<String, T>>() {
         }));
@@ -266,28 +268,12 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
         String results = null;
         try {
             results = writer.writeValueAsString(object);
-        } catch (JsonGenerationException e) {
+        } catch (JacksonException e) {
             Logger.warn(
                     false,
                     "GitLab",
                     e,
                     "JSON serialization failed: objectType={}, exception={}",
-                    object.getClass().getName(),
-                    e.getClass().getSimpleName());
-        } catch (JsonMappingException e) {
-            Logger.warn(
-                    false,
-                    "GitLab",
-                    e,
-                    "JSON serialization mapping failed: objectType={}, exception={}",
-                    object.getClass().getName(),
-                    e.getClass().getSimpleName());
-        } catch (IOException e) {
-            Logger.warn(
-                    false,
-                    "GitLab",
-                    e,
-                    "JSON serialization I/O failed: objectType={}, exception={}",
                     object.getClass().getName(),
                     e.getClass().getSimpleName());
         }
@@ -301,21 +287,19 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @author Kimi Liu
      * @since Java 21+
      */
-    public static class DateOnlySerializer extends JsonSerializer<Date> {
+    public static class DateOnlySerializer extends ValueSerializer<Date> {
 
         /**
          * Executes the serialize operation.
          *
-         * @param date     the date value
-         * @param gen      the gen value
-         * @param provider the provider value
-         * @throws IOException             if the operation fails
-         * @throws JsonProcessingException if the operation fails
+         * @param date    the date value
+         * @param gen     the gen value
+         * @param context the context value
+         * @throws JacksonException if the operation fails
          */
 
         @Override
-        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider)
-                throws IOException, JsonProcessingException {
+        public void serialize(Date date, JsonGenerator gen, SerializationContext context) throws JacksonException {
             String dateString = ISO8601.dateOnly(date);
             gen.writeString(dateString);
         }
@@ -328,21 +312,19 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @author Kimi Liu
      * @since Java 21+
      */
-    public static class JsonDateSerializer extends JsonSerializer<Date> {
+    public static class JsonDateSerializer extends ValueSerializer<Date> {
 
         /**
          * Executes the serialize operation.
          *
-         * @param date     the date value
-         * @param gen      the gen value
-         * @param provider the provider value
-         * @throws IOException             if the operation fails
-         * @throws JsonProcessingException if the operation fails
+         * @param date    the date value
+         * @param gen     the gen value
+         * @param context the context value
+         * @throws JacksonException if the operation fails
          */
 
         @Override
-        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider)
-                throws IOException, JsonProcessingException {
+        public void serialize(Date date, JsonGenerator gen, SerializationContext context) throws JacksonException {
             String iso8601String = ISO8601.toString(date);
             gen.writeString(iso8601String);
         }
@@ -355,7 +337,7 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @author Kimi Liu
      * @since Java 21+
      */
-    public static class JsonDateDeserializer extends JsonDeserializer<Date> {
+    public static class JsonDateDeserializer extends ValueDeserializer<Date> {
 
         /**
          * Executes the deserialize operation.
@@ -363,25 +345,23 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
          * @param jsonparser the jsonparser value
          * @param context    the context value
          * @return the result
-         * @throws IOException             if the operation fails
-         * @throws JsonProcessingException if the operation fails
+         * @throws JacksonException if the operation fails
          */
 
         @Override
-        public Date deserialize(JsonParser jsonparser, DeserializationContext context)
-                throws IOException, JsonProcessingException {
+        public Date deserialize(JsonParser jsonparser, DeserializationContext context) throws JacksonException {
 
             try {
-                return (ISO8601.toDate(jsonparser.getText()));
+                return (ISO8601.toDate(jsonparser.getString()));
             } catch (ParseException e) {
                 Logger.warn(
                         false,
                         "GitLab",
                         e,
                         "GitLab JSON date deserialization failed: valueLength={}, exception={}",
-                        jsonparser.getText() == null ? -1 : jsonparser.getText().length(),
+                        jsonparser.getString() == null ? -1 : jsonparser.getString().length(),
                         e.getClass().getSimpleName());
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         }
 
@@ -393,26 +373,26 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @author Kimi Liu
      * @since Java 21+
      */
-    public static class UserListSerializer extends JsonSerializer<List<User>> {
+    public static class UserListSerializer extends ValueSerializer<List<User>> {
 
         /**
          * Executes the serialize operation.
          *
-         * @param value    the value value
-         * @param jgen     the jgen value
-         * @param provider the provider value
-         * @throws IOException             if the operation fails
-         * @throws JsonProcessingException if the operation fails
+         * @param value   the value value
+         * @param jgen    the jgen value
+         * @param context the context value
+         * @throws JacksonException if the operation fails
          */
 
         @Override
-        public void serialize(List<User> value, JsonGenerator jgen, SerializerProvider provider)
-                throws IOException, JsonProcessingException {
+        public void serialize(List<User> value, JsonGenerator jgen, SerializationContext context)
+                throws JacksonException {
 
             jgen.writeStartArray();
             for (User user : value) {
                 jgen.writeStartObject();
-                jgen.writeObjectField("user", user);
+                jgen.writeName("user");
+                jgen.writePOJO(user);
                 jgen.writeEndObject();
             }
             jgen.writeEndArray();
@@ -426,9 +406,7 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @author Kimi Liu
      * @since Java 21+
      */
-    public static class UserListDeserializer extends JsonDeserializer<List<User>> {
-
-        private static final ObjectMapper mapper = new JacksonJson().getObjectMapper();
+    public static class UserListDeserializer extends ValueDeserializer<List<User>> {
 
         /**
          * Executes the deserialize operation.
@@ -436,13 +414,11 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
          * @param jsonParser the json parser value
          * @param context    the context value
          * @return the result
-         * @throws IOException             if the operation fails
-         * @throws JsonProcessingException if the operation fails
+         * @throws JacksonException if the operation fails
          */
 
         @Override
-        public List<User> deserialize(JsonParser jsonParser, DeserializationContext context)
-                throws IOException, JsonProcessingException {
+        public List<User> deserialize(JsonParser jsonParser, DeserializationContext context) throws JacksonException {
 
             JsonNode tree = jsonParser.readValueAsTree();
             int numUsers = tree.size();
@@ -450,7 +426,7 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
             for (int i = 0; i < numUsers; i++) {
                 JsonNode node = tree.get(i);
                 JsonNode userNode = node.get("user");
-                User user = mapper.treeToValue(userNode, User.class);
+                User user = context.readTreeAsValue(userNode, User.class);
                 users.add(user);
             }
 
@@ -475,12 +451,10 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @param returnType an instance of this type class will be contained the values of the Map
      * @param jsonData   the String containing the JSON data
      * @return a Map containing the parsed data from the String
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
-     * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws JacksonException if a JSON error occurs
+     * @throws IOException      if an error occurs reading the JSON data
      */
-    public <T> Map<String, T> unmarshalMap(Class<T> returnType, String jsonData)
-            throws JsonParseException, JsonMappingException, IOException {
+    public <T> Map<String, T> unmarshalMap(Class<T> returnType, String jsonData) throws JacksonException, IOException {
         ObjectMapper objectMapper = getContext(null);
         return (objectMapper.readValue(jsonData, new TypeReference<Map<String, T>>() {
         }));
@@ -494,12 +468,8 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      */
     private static class JacksonJsonSingletonHelper {
 
-        private static final JacksonJson JACKSON_JSON = new JacksonJson();
-
-        static {
-            JACKSON_JSON.objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
-            JACKSON_JSON.objectMapper.setSerializationInclusion(Include.ALWAYS);
-        }
+        private static final JacksonJson JACKSON_JSON = new JacksonJson(PropertyNamingStrategies.LOWER_CAMEL_CASE,
+                Include.ALWAYS);
 
     }
 

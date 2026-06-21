@@ -24,10 +24,11 @@ import java.util.Map;
 
 import jakarta.annotation.Resource;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.webmvc.autoconfigure.WebMvcRegistrations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
@@ -46,6 +47,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.http.AwareWebMvcConfigurer;
+import org.miaixz.bus.spring.http.HttpMessageConverter;
 import org.miaixz.bus.spring.http.RuntimeContextBindingFilter;
 import org.miaixz.bus.spring.http.SentinelRequestHandler;
 import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
@@ -180,16 +182,19 @@ public class WrapperConfiguration implements WebMvcRegistrations {
      *
      * @return A new {@link AwareWebMvcConfigurer} instance.
      *
-     * @param requestHandler the request handler value
+     * @param requestHandler  the request handler value
      *
-     * @param options        the options value
+     * @param options         the options value
+     *
+     * @param jsonConfigurers the JSON configurers provider
      */
     @Bean("supportWebMvcConfigurer")
     public org.springframework.web.servlet.config.annotation.WebMvcConfigurer supportWebMvcConfigurer(
             SentinelRequestHandler requestHandler,
-            WrapperRuntimeOptions options) {
+            WrapperRuntimeOptions options,
+            ObjectProvider<HttpMessageConverter> jsonConfigurers) {
         return new AwareWebMvcConfigurer(this.properties.getAutoType(), this.properties.getPrefix(), requestHandler,
-                options);
+                options, jsonConfigurers);
     }
 
     /**

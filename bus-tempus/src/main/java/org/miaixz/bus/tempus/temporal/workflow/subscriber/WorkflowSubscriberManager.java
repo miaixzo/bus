@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.tempus.temporal.workflow.subscriber;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +44,8 @@ import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
 import io.temporal.worker.WorkerFactoryOptions;
 import io.temporal.worker.WorkerOptions;
+import io.temporal.worker.WorkerPlugin;
+import io.temporal.worker.tuning.PollerBehaviorAutoscaling;
 
 /**
  * Temporal worker subscriber manager.
@@ -442,7 +448,79 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
      * @return Temporal worker
      */
     Worker createWorker(WorkerFactory workerFactory, String taskQueue, WorkerOptions workerOptions) {
-        return workerFactory.newWorker(taskQueue, workerOptions);
+        synchronized (workerFactory) {
+            try {
+                @SuppressWarnings("unchecked")
+                Map<String, Worker> workers = (Map<String, Worker>) field(workerFactory, "workers");
+                Worker existingWorker = workers.get(taskQueue);
+                if (existingWorker != null) {
+                    return existingWorker;
+                }
+                WorkflowClient workflowClient = (WorkflowClient) field(workerFactory, "workflowClient");
+                @SuppressWarnings("unchecked")
+                List<WorkerPlugin> plugins = (List<WorkerPlugin>) field(workerFactory, "plugins");
+                WorkerOptions.Builder optionsBuilder = workerOptions == null ? WorkerOptions.newBuilder()
+                        : WorkerOptions.newBuilder(workerOptions);
+                for (WorkerPlugin plugin : plugins) {
+                    plugin.configureWorker(taskQueue, optionsBuilder);
+                }
+                WorkerOptions validatedOptions = optionsBuilder.validateAndBuildWithDefaults();
+                int workflowPollers = Math.max(1, validatedOptions.getMaxConcurrentWorkflowTaskPollers());
+                int initialWorkflowPollers = Math.min(5, workflowPollers);
+                validatedOptions = WorkerOptions.newBuilder(validatedOptions)
+                        .setWorkflowTaskPollersBehavior(
+                                new PollerBehaviorAutoscaling(1, workflowPollers, initialWorkflowPollers))
+                        .validateAndBuildWithDefaults();
+                Constructor<Worker> constructor = Worker.class.getDeclaredConstructor(
+                        WorkflowClient.class,
+                        String.class,
+                        WorkerFactoryOptions.class,
+                        WorkerOptions.class,
+                        Class.forName("com.uber.m3.tally.Scope"),
+                        Class.forName("io.temporal.internal.worker.WorkflowRunLockManager"),
+                        Class.forName("io.temporal.internal.worker.WorkflowExecutorCache"),
+                        boolean.class,
+                        Class.forName("io.temporal.internal.sync.WorkflowThreadExecutor"),
+                        List.class,
+                        List.class,
+                        Class.forName("io.temporal.internal.worker.NamespaceCapabilities"));
+                constructor.setAccessible(true);
+                Worker worker = constructor.newInstance(
+                        workflowClient,
+                        taskQueue,
+                        field(workerFactory, "factoryOptions"),
+                        validatedOptions,
+                        field(workerFactory, "metricsScope"),
+                        field(workerFactory, "runLocks"),
+                        field(workerFactory, "cache"),
+                        false,
+                        field(workerFactory, "workflowThreadExecutor"),
+                        workflowClient.getOptions().getContextPropagators(),
+                        plugins,
+                        field(workerFactory, "namespaceCapabilities"));
+                workers.put(taskQueue, worker);
+                for (WorkerPlugin plugin : plugins) {
+                    plugin.initializeWorker(taskQueue, worker);
+                }
+                Logger.info(
+                        false,
+                        "Tempus",
+                        "Temporal Jackson3 worker created with sticky task queue disabled and async workflow poller enabled: taskQueue={}",
+                        taskQueue);
+                return worker;
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalStateException("Failed to create Temporal Jackson3 worker", e);
+            }
+        }
+    }
+
+    /**
+     * Reads a Temporal SDK field needed by the Jackson3 worker creation path.
+     */
+    private Object field(Object target, String name) throws ReflectiveOperationException {
+        Field field = target.getClass().getDeclaredField(name);
+        field.setAccessible(true);
+        return field.get(target);
     }
 
     /**

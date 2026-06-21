@@ -21,6 +21,7 @@ package org.miaixz.bus.spring.env;
 
 import java.util.Properties;
 
+import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -31,8 +32,8 @@ import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
- * An {@link org.springframework.boot.env.EnvironmentPostProcessor} implementation that sets up some default properties
- * for the application environment.
+ * An {@link EnvironmentPostProcessor} implementation that sets up some default properties for the application
+ * environment.
  * <p>
  * This post-processor adds a property source named {@code GeniusBuilder.BUS_PROPERTY_SOURCE} to the environment,
  * containing properties like the application version. It also sets {@code GeniusBuilder.APP_NAME} as a required
@@ -41,7 +42,7 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class SpringEnvironmentPostProcessor implements org.springframework.boot.env.EnvironmentPostProcessor, Ordered {
+public class SpringEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     /**
      * Constructs a new SpringEnvironmentPostProcessor instance.

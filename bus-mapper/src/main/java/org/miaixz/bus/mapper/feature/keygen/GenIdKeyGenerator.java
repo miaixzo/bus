@@ -151,7 +151,6 @@ public class GenIdKeyGenerator implements KeyGenerator {
      *
      * @param parameter The parameter object.
      */
-    @SuppressWarnings("unchecked")
     public void genId(Object parameter) {
         if (parameter != null) {
             if (table.entityClass().isInstance(parameter)) {

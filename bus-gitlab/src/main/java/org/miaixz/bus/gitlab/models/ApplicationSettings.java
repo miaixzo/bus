@@ -25,11 +25,12 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.*;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.*;
 
 /**
  * The application settings class.
@@ -240,7 +241,7 @@ public class ApplicationSettings implements Serializable {
         Object value = node;
         if (node instanceof NullNode) {
             value = null;
-        } else if (node instanceof TextNode) {
+        } else if (node instanceof StringNode) {
             value = node.asText();
         } else if (node instanceof BooleanNode) {
             value = node.asBoolean();

@@ -253,15 +253,12 @@ public final class Egress {
     private static WebClient create() {
         HttpClient httpClient = HttpClient.create(Holder.connectionProvider());
         ExchangeStrategies strategies = ExchangeStrategies.builder()
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128))).build();
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128)))
+                .build();
         WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient))
                 .exchangeStrategies(strategies).build();
 
-        Logger.info(
-                true,
-                "Vortex",
-                "Outbound HTTP client initialized: implementation={}",
-                "reactor-netty");
+        Logger.info(true, "Vortex", "Outbound HTTP client initialized: implementation={}", "reactor-netty");
         return webClient;
     }
 

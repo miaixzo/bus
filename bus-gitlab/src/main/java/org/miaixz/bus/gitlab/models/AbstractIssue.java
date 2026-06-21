@@ -29,13 +29,14 @@ import lombok.Setter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.ValueNode;
 
 import org.miaixz.bus.gitlab.models.Constants.IssueState;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import tools.jackson.databind.node.IntNode;
+import tools.jackson.databind.node.LongNode;
+import tools.jackson.databind.node.StringNode;
+import tools.jackson.databind.node.ValueNode;
 
 /**
  * The abstract issue class.
@@ -121,7 +122,7 @@ public abstract class AbstractIssue implements Serializable {
      */
     public void setActualId(ValueNode id) {
         actualId = id;
-        if (actualId instanceof TextNode) {
+        if (actualId instanceof StringNode) {
             externalId = actualId.asText();
         } else if (actualId instanceof IntNode || actualId instanceof LongNode) {
             this.id = actualId.asLong();
@@ -167,7 +168,7 @@ public abstract class AbstractIssue implements Serializable {
     public void setExternalId(String externalId) {
         this.externalId = externalId;
         if (externalId != null) {
-            actualId = new TextNode(externalId);
+            actualId = new StringNode(externalId);
             id = null;
         }
     }

@@ -88,7 +88,7 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
             final Context context = contextView.get(Context.class);
 
             String ip = context.getX_request_ip();
-            String method = input.methodName();
+            String method = input.method().name();
             String path = input.path();
 
             Logger.debug(

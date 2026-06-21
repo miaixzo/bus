@@ -23,9 +23,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import tools.jackson.databind.annotation.JsonSerialize;
 
 /**
  * The milestone class.

@@ -23,7 +23,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.logger.Logger;
 
 import io.temporal.activity.ActivityOptions;
-import io.temporal.workflow.Workflow;
 
 /**
  * Provides a reusable execution template for Temporal workflows.
@@ -77,7 +76,7 @@ public abstract class AbstractWorkflowHandler<A, R> {
         this.activityClass = activityClass;
         this.workflowOptionsFactory = workflowOptionsFactory;
         this.bindingOptions = bindingOptions == null ? WorkflowBindingOptions.defaults() : bindingOptions;
-        this.activity = Workflow.newActivityStub(
+        this.activity = NativeWorkflowAdapter.newActivityStub(
                 activityClass,
                 workflowOptionsFactory.createActivityOptions(this.bindingOptions, getActivityName(activityClass)));
         Logger.info(
@@ -107,7 +106,7 @@ public abstract class AbstractWorkflowHandler<A, R> {
             if (maxDurationHours != null && maxDurationHours > 0) {
                 ActivityOptions options = workflowOptionsFactory
                         .createActivityOptions(bindingOptions, getActivityName(getActivityClass()), maxDurationHours);
-                A dynamicActivity = Workflow.newActivityStub(getActivityClass(), options);
+                A dynamicActivity = NativeWorkflowAdapter.newActivityStub(getActivityClass(), options);
                 String result = invokeActivity(dynamicActivity, request);
                 Logger.info(
                         false,

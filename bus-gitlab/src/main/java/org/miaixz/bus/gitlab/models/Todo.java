@@ -19,24 +19,23 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.miaixz.bus.gitlab.models.Constants.TodoAction;
 import org.miaixz.bus.gitlab.models.Constants.TodoState;
 import org.miaixz.bus.gitlab.models.Constants.TodoType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * The todo class.
@@ -326,7 +325,7 @@ public class Todo implements Serializable {
      * @author Kimi Liu
      * @since Java 21+
      */
-    private static class TargetDeserializer extends JsonDeserializer<Object> {
+    private static class TargetDeserializer extends ValueDeserializer<Object> {
 
         /**
          * Executes the deserialize operation.
@@ -334,21 +333,18 @@ public class Todo implements Serializable {
          * @param jp      the jp value
          * @param context the context value
          * @return the result
-         * @throws IOException             if the operation fails
-         * @throws JsonProcessingException if the operation fails
+         * @throws JacksonException if the operation fails
          */
 
         @Override
-        public Object deserialize(JsonParser jp, DeserializationContext context)
-                throws IOException, JsonProcessingException {
+        public Object deserialize(JsonParser jp, DeserializationContext context) throws JacksonException {
 
-            ObjectMapper mapper = (ObjectMapper) jp.getCodec();
-            ObjectNode root = (ObjectNode) mapper.readTree(jp);
+            ObjectNode root = jp.readValueAsTree();
             boolean isMergeRequestTarget = root.has("source_branch");
             if (isMergeRequestTarget) {
-                return mapper.treeToValue(root, MergeRequest.class);
+                return context.readTreeAsValue(root, MergeRequest.class);
             } else {
-                return mapper.treeToValue(root, Issue.class);
+                return context.readTreeAsValue(root, Issue.class);
             }
         }
 

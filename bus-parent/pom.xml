@@ -192,6 +192,7 @@
                             <buildArg>--enable-url-protocols=http,https</buildArg>
                             <buildArg>-J-Dfile.encoding=UTF-8</buildArg>
                             <buildArg>-H:+AddAllCharsets</buildArg>
+                            <buildArg>-H:IncludeLocales=${native.include.locales}</buildArg>
                         </buildArgs>
                     </configuration>
                     <executions>

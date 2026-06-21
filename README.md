@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/Java-21+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-3.5.11-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-4.1.0-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.postgresql.org">
     <img src="https://img.shields.io/badge/postgresql-17.x-blue.svg">
@@ -93,6 +93,8 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
    Combined with SpringBoot, it encapsulates commonly used tools for on-demand loading, such as mybatis, xss, i18n, sensitive, validate, and other frameworks.
 
 2. For detailed instructions and usage, please refer to the README in each module.
+
+3. Spring Boot 4.1 migration notes are available in [docs/Spring-Boot-4.1-Migration.md](docs/Spring-Boot-4.1-Migration.md).
 
 
 ### ✨ Installation & Usage

@@ -26,7 +26,6 @@ import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -41,6 +40,7 @@ import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
@@ -49,6 +49,9 @@ import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.handler.VortexHandler;
+import org.miaixz.bus.vortex.magic.Delegate;
+import org.miaixz.bus.vortex.magic.ErrorCode;
+import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
@@ -71,6 +74,7 @@ import org.miaixz.bus.vortex.strategy.vetting.CstVettingStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.McpVettingStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
 
+import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServer;
 
 /**
@@ -365,6 +369,33 @@ public class VortexConfiguration {
     }
 
     /**
+     * Provides a fail-closed authorization provider when applications do not supply one.
+     * <p>
+     * Anonymous routes with {@code policy=0} do not invoke this provider. Protected routes require applications to
+     * provide a real {@link AuthorizeProvider}; otherwise authorization fails instead of silently allowing access.
+     *
+     * @return A conservative default authorization provider.
+     */
+    @Bean
+    @ConditionalOnMissingBean(AuthorizeProvider.class)
+    public AuthorizeProvider authorizeProvider() {
+        return new AuthorizeProvider() {
+
+            /**
+             * Rejects protected routes when no application-specific authorization provider is configured.
+             *
+             * @param principal The principal to authorize.
+             * @return A failed authorization signal.
+             */
+            @Override
+            public Mono<Delegate> authorize(Principal principal) {
+                return Mono.error(new ValidateException(ErrorCode._116002));
+            }
+
+        };
+    }
+
+    /**
      * Provides the basic request strategy bean. This strategy initializes request metadata without protocol-specific
      * body parsing.
      *
@@ -460,7 +491,6 @@ public class VortexConfiguration {
      * @return A new instance of QualifierStrategy.
      */
     @Bean
-    @ConditionalOnBean(AuthorizeProvider.class)
     public QualifierStrategy qualifierStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
         return new QualifierStrategy(authorizeProvider, assetsRegistry);
     }
@@ -474,7 +504,6 @@ public class VortexConfiguration {
      * @return A new instance of RestQualifierStrategy.
      */
     @Bean
-    @ConditionalOnBean(AuthorizeProvider.class)
     public RestQualifierStrategy restQualifierStrategy(
             AuthorizeProvider authorizeProvider,
             AssetsRegistry assetsRegistry) {
@@ -489,7 +518,6 @@ public class VortexConfiguration {
      * @return A new instance of CstQualifierStrategy.
      */
     @Bean
-    @ConditionalOnBean(AuthorizeProvider.class)
     public CstQualifierStrategy cstQualifierStrategy(
             AuthorizeProvider authorizeProvider,
             AssetsRegistry assetsRegistry) {
@@ -505,7 +533,6 @@ public class VortexConfiguration {
      * @return A new instance of McpQualifierStrategy.
      */
     @Bean
-    @ConditionalOnBean(AuthorizeProvider.class)
     public McpQualifierStrategy mcpQualifierStrategy(
             AuthorizeProvider authorizeProvider,
             AssetsRegistry assetsRegistry) {

@@ -631,7 +631,6 @@ public final class ImageConversion {
      * @param img the img.
      * @return the operation result.
      */
-    @SuppressWarnings("java:S1874")
     private static Hashtable<String, Object> createImageProperties(RenderedImage img) {
         String[] keys = img.getPropertyNames();
         if (keys == null || keys.length == 0) {

@@ -34,11 +34,11 @@ module bus.gitlab {
     requires jakarta.annotation;
     requires jakarta.servlet;
     requires jakarta.ws.rs;
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.databind;
-    requires jersey.client;
-    requires jersey.common;
-    requires jersey.media.multipart;
+    requires tools.jackson.core;
+    requires tools.jackson.databind;
+    requires org.glassfish.jersey.core.client;
+    requires org.glassfish.jersey.core.common;
+    requires org.glassfish.jersey.media.multipart;
 
     exports org.miaixz.bus.gitlab;
     exports org.miaixz.bus.gitlab.hooks.system;

@@ -91,7 +91,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      */
     @Override
     public Mono<ServerResponse> execute(Context context, ServerRequest request) {
-        final String method = request.methodName();
+        final String method = request.method().name();
         final String path = request.path();
         final String ip = context == null ? null : context.getX_request_ip();
 

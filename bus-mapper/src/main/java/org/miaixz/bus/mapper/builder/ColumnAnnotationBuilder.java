@@ -106,7 +106,6 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
      * @param columnMeta The column metadata object.
      * @param fieldMeta  The field metadata object.
      */
-    @SuppressWarnings("unchecked")
     protected void processAnnotations(ColumnMeta columnMeta, FieldMeta fieldMeta) {
         // Process the primary key annotation.
         if (!columnMeta.id() && fieldMeta.isAnnotationPresent(Id.class)) {
