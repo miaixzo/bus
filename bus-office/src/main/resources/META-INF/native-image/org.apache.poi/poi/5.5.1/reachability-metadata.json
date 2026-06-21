@@ -1,0 +1,57 @@
+{
+  "reflection": [
+    {
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.apache.poi.extractor.MainExtractorFactory"
+    },
+    {
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.apache.poi.hssf.usermodel.HSSFWorkbookFactory"
+    },
+    {
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.apache.poi.sl.draw.BitmapImageRenderer"
+    }
+  ],
+  "resources": [
+    {
+      "glob": "font_metrics.properties"
+    },
+    {
+      "glob": "META-INF/services/org.apache.poi.extractor.ExtractorProvider"
+    },
+    {
+      "glob": "META-INF/services/org.apache.poi.sl.draw.ImageRenderer"
+    },
+    {
+      "glob": "META-INF/services/org.apache.poi.ss.usermodel.WorkbookProvider"
+    },
+    {
+      "glob": "org/apache/poi/sl/draw/geom/presetShapeDefinitions.xml"
+    },
+    {
+      "glob": "org/apache/poi/ss/formula/function/functionMetadata-asGenerated.txt"
+    },
+    {
+      "glob": "org/apache/poi/ss/formula/function/functionMetadata.txt"
+    },
+    {
+      "glob": "org/apache/poi/ss/formula/function/functionMetadataCetab.txt"
+    }
+  ]
+}

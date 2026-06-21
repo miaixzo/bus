@@ -74,7 +74,6 @@ public final class Voxel<T extends Number> {
      * @param channel the channel.
      * @return the value.
      */
-    @SuppressWarnings("unchecked")
     public T getValue(int channel) {
         return channel >= 0 && channel < values.length ? (T) values[channel] : null;
     }

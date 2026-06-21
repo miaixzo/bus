@@ -34,6 +34,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.logger.Logger;
 
 import reactor.core.publisher.Mono;
@@ -56,11 +57,6 @@ import reactor.util.retry.Retry;
  * @since Java 21+
  */
 public final class Egress {
-
-    /**
-     * Maximum in-memory codec buffer used by the shared outbound {@link WebClient}.
-     */
-    private static final int MAX_IN_MEMORY_SIZE = Math.toIntExact(Normal.MEBI_128);
 
     /**
      * Utility class constructor.
@@ -153,14 +149,14 @@ public final class Egress {
     /**
      * Builds a shared retry policy for outbound requests.
      *
-     * @param retries max retry attempts; values below zero use the Holder default, zero disables retry
+     * @param retries max retry attempts; values below or equal to zero disable retry
      * @param scene   logical outbound scene
      * @param method  outbound HTTP method
      * @param uri     outbound URI
      * @return retry specification
      */
     public static Retry retrySpec(int retries, String scene, String method, URI uri) {
-        int maxRetries = retries >= 0 ? retries : Holder.outboundDefaultRetries();
+        int maxRetries = Math.max(retries, 0);
         if (maxRetries <= 0) {
             return Retry.max(0).filter(error -> false);
         }
@@ -184,11 +180,37 @@ public final class Egress {
     }
 
     /**
+     * Resolves the effective timeout from one route asset.
+     *
+     * @param assets route asset
+     * @return timeout in seconds
+     */
+    public static long timeoutSeconds(Assets assets) {
+        if (assets == null || assets.getTimeout() == null || assets.getTimeout() <= 0) {
+            return Normal._60;
+        }
+        return assets.getTimeout();
+    }
+
+    /**
+     * Resolves the effective retry attempts from one route asset.
+     *
+     * @param assets route asset
+     * @return retry attempts
+     */
+    public static int retryAttempts(Assets assets) {
+        if (assets == null || assets.getRetries() == null || assets.getRetries() <= 0) {
+            return 0;
+        }
+        return assets.getRetries();
+    }
+
+    /**
      * Applies timeout and retry protection to one outbound request.
      *
      * @param mono           outbound publisher
-     * @param timeoutSeconds timeout in seconds; values below or equal zero use Holder default
-     * @param retries        max retry attempts; values below zero use Holder default
+     * @param timeoutSeconds timeout in seconds; values below or equal to zero disable timeout
+     * @param retries        max retry attempts; values below or equal to zero disable retry
      * @param scene          logical outbound scene
      * @param method         outbound HTTP method
      * @param uri            outbound URI
@@ -202,9 +224,8 @@ public final class Egress {
             String scene,
             String method,
             URI uri) {
-        long effectiveTimeout = timeoutSeconds > 0 ? timeoutSeconds : Holder.outboundDefaultTimeoutSeconds();
-        int effectiveRetries = retries >= 0 ? retries : Holder.outboundDefaultRetries();
-        Mono<T> guarded = mono.timeout(Duration.ofSeconds(effectiveTimeout));
+        int effectiveRetries = Math.max(retries, 0);
+        Mono<T> guarded = timeoutSeconds > 0 ? mono.timeout(Duration.ofSeconds(timeoutSeconds)) : mono;
         if (effectiveRetries <= 0) {
             return guarded;
         }
@@ -232,17 +253,12 @@ public final class Egress {
     private static WebClient create() {
         HttpClient httpClient = HttpClient.create(Holder.connectionProvider());
         ExchangeStrategies strategies = ExchangeStrategies.builder()
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE)).build();
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128)))
+                .build();
         WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient))
                 .exchangeStrategies(strategies).build();
 
-        Logger.info(
-                true,
-                "Vortex",
-                "Outbound HTTP client initialized: implementation={}, defaultTimeoutSeconds={}, defaultRetries={}",
-                "reactor-netty",
-                Holder.outboundDefaultTimeoutSeconds(),
-                Holder.outboundDefaultRetries());
+        Logger.info(true, "Vortex", "Outbound HTTP client initialized: implementation={}", "reactor-netty");
         return webClient;
     }
 

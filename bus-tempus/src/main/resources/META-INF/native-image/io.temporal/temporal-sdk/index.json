@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "1.35.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/io/temporal/temporal-sdk/$version$/temporal-sdk-$version$-sources.jar",
+    "repository-url": "https://github.com/temporalio/sdk-java",
+    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/io/temporal/temporal-sdk/$version$/temporal-sdk-$version$-javadoc.jar",
+    "description": "Temporal Java SDK provides workflow, activity, worker, schedule, and client APIs for Java Temporal applications.",
+    "tested-versions": [
+      "1.35.0"
+    ],
+    "allowed-packages": [
+      "io.temporal"
+    ]
+  }
+]

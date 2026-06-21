@@ -21,8 +21,10 @@ package org.miaixz.bus.spring.http;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
@@ -81,6 +83,11 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     protected WrapperRuntimeOptions options;
 
     /**
+     * JSON converter providers resolved from the current BeanFactory.
+     */
+    protected ObjectProvider<HttpMessageConverter> jsonConfigurers;
+
+    /**
      * Constructs a new {@code AwareWebMvcConfigurer} with the specified autoType, prefix, and handler.
      *
      * @param autoType JSON serialization type support configuration.
@@ -90,11 +97,27 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
      */
     public AwareWebMvcConfigurer(String autoType, String prefix, SentinelRequestHandler handler,
             WrapperRuntimeOptions options) {
+        this(autoType, prefix, handler, options, null);
+    }
+
+    /**
+     * Constructs a new {@code AwareWebMvcConfigurer} with the specified autoType, prefix, handler, and JSON converter
+     * provider.
+     *
+     * @param autoType        JSON serialization type support configuration.
+     * @param prefix          Unified URL prefix for controllers.
+     * @param handler         Sentinel request interceptor.
+     * @param options         Runtime wrapper compatibility snapshot used by MVC argument resolvers.
+     * @param jsonConfigurers JSON converter provider resolved from the active BeanFactory.
+     */
+    public AwareWebMvcConfigurer(String autoType, String prefix, SentinelRequestHandler handler,
+            WrapperRuntimeOptions options, ObjectProvider<HttpMessageConverter> jsonConfigurers) {
         super();
         this.autoType = autoType;
         this.prefix = prefix;
         this.handler = handler;
         this.options = options == null ? WrapperRuntimeOptions.of() : options;
+        this.jsonConfigurers = jsonConfigurers;
     }
 
     /**
@@ -160,26 +183,25 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
      * @return A sorted list of {@link HttpMessageConverter} instances.
      */
     protected List<HttpMessageConverter> getJsonConfigurers() {
-        List<HttpMessageConverter> configurers = SpringBuilder.getBeansOfType(HttpMessageConverter.class).values()
-                .stream().peek(configurer -> {
-                    try {
-                        configurer.autoType(this.autoType);
-                        Logger.debug(
-                                false,
-                                "Starter",
-                                "HTTP set autoType '{}' for custom JsonConverterConfigurer: {}",
-                                this.autoType,
-                                configurer.name());
-                    } catch (Exception e) {
-                        Logger.warn(
-                                false,
-                                "Starter",
-                                "HTTP failed to set autoType for custom JsonConverterConfigurer {}: {}",
-                                configurer.name(),
-                                e.getClass().getSimpleName(),
-                                e);
-                    }
-                }).sorted(Comparator.comparingInt(HttpMessageConverter::order)).toList();
+        List<HttpMessageConverter> configurers = getJsonConfigurerBeans().stream().peek(configurer -> {
+            try {
+                configurer.autoType(this.autoType);
+                Logger.debug(
+                        false,
+                        "Starter",
+                        "HTTP set autoType '{}' for custom JsonConverterConfigurer: {}",
+                        this.autoType,
+                        configurer.name());
+            } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Starter",
+                        "HTTP failed to set autoType for custom JsonConverterConfigurer {}: {}",
+                        configurer.name(),
+                        e.getClass().getSimpleName(),
+                        e);
+            }
+        }).sorted(Comparator.comparingInt(HttpMessageConverter::order)).toList();
         Logger.debug(
                 false,
                 "Starter",
@@ -187,6 +209,22 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
                 configurers.size(),
                 configurers.stream().map(HttpMessageConverter::name).toList());
         return configurers;
+    }
+
+    /**
+     * Resolves JSON converter beans from the active container.
+     *
+     * @return available JSON converter beans
+     */
+    protected List<HttpMessageConverter> getJsonConfigurerBeans() {
+        if (this.jsonConfigurers != null) {
+            return this.jsonConfigurers.stream().toList();
+        }
+        if (SpringBuilder.getBeanFactory() == null) {
+            return List.of();
+        }
+        Map<String, HttpMessageConverter> configurers = SpringBuilder.getBeansOfType(HttpMessageConverter.class);
+        return configurers.values().stream().toList();
     }
 
     /**

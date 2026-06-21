@@ -137,7 +137,6 @@ public class PropertyMeta<T extends PropertyMeta<T>> {
      * @param value The property value.
      * @return The current instance for fluent-style chaining.
      */
-    @SuppressWarnings("unchecked")
     public T put(String prop, String value) {
         if (this.props == null) {
             synchronized (this) {
@@ -156,7 +155,6 @@ public class PropertyMeta<T extends PropertyMeta<T>> {
      * @param props The map of properties.
      * @return The current instance for fluent-style chaining.
      */
-    @SuppressWarnings("unchecked")
     public T put(Map<String, String> props) {
         if (props != null && !props.isEmpty()) {
             for (Map.Entry<String, String> entry : props.entrySet()) {

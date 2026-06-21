@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "4.13.0",
+    "source-code-url": "https://github.com/opencv/opencv/tree/4.13.0",
+    "repository-url": "https://github.com/opencv/opencv",
+    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
+    "documentation-url": "https://docs.opencv.org/4.13.0/",
+    "description": "OpenCV Java bindings and native library resources used by Bus OpenCV.",
+    "tested-versions": [
+      "4.13.0"
+    ],
+    "allowed-packages": [
+      "org.opencv"
+    ]
+  }
+]

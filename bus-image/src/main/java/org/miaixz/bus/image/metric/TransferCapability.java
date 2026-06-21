@@ -242,6 +242,15 @@ public class TransferCapability implements Serializable {
     }
 
     /**
+     * Gets the effective preferred transfer syntaxes.
+     *
+     * @return the effective preferred transfer syntaxes.
+     */
+    public String[] preferredTransferSyntaxes() {
+        return prefTransferSyntaxes.length > 0 ? prefTransferSyntaxes : ae.getPreferredTransferSyntaxes();
+    }
+
+    /**
      * Determines whether transfer syntax.
      *
      * @param ts the ts.
@@ -265,8 +274,7 @@ public class TransferCapability implements Serializable {
         if (acceptable.isEmpty())
             return null;
 
-        for (String prefTransferSyntax : prefTransferSyntaxes.length > 0 ? prefTransferSyntaxes
-                : ae.getPreferredTransferSyntaxes())
+        for (String prefTransferSyntax : preferredTransferSyntaxes())
             if (acceptable.contains(prefTransferSyntax))
                 return prefTransferSyntax;
 

@@ -20,12 +20,11 @@
 package org.miaixz.bus.starter.elastic;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import jakarta.annotation.Resource;
 
-import org.apache.http.HttpHost;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
+import org.apache.hc.core5.http.HttpHost;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -40,14 +39,16 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.GeniusBuilder;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.json.jackson.JacksonJsonpMapper;
+import co.elastic.clients.json.jackson.Jackson3JsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
-import co.elastic.clients.transport.rest_client.RestClientTransport;
+import co.elastic.clients.transport.rest5_client.Rest5ClientTransport;
+import co.elastic.clients.transport.rest5_client.low_level.Rest5Client;
+import co.elastic.clients.transport.rest5_client.low_level.Rest5ClientBuilder;
 
 /**
  * Auto-configuration for the Elasticsearch client.
  * <p>
- * This class sets up the {@link RestClientBuilder} and the new {@link ElasticsearchClient} based on the properties
+ * This class sets up the {@link Rest5ClientBuilder} and the new {@link ElasticsearchClient} based on the properties
  * defined in {@link ElasticProperties}.
  *
  * @author Kimi Liu
@@ -68,18 +69,18 @@ public class ElasticConfiguration {
     private ElasticProperties properties;
 
     /**
-     * Creates and configures the {@link RestClientBuilder} bean.
+     * Creates and configures the {@link Rest5ClientBuilder} bean.
      * <p>
      * This builder is the foundation for the Elasticsearch REST client. It is configured with the cluster hosts,
      * timeouts, and connection pool settings from the properties.
      * </p>
      *
-     * @return A configured {@link RestClientBuilder} instance.
+     * @return A configured {@link Rest5ClientBuilder} instance.
      * @throws InternalException if the Elasticsearch host list is not configured.
      */
     @Bean
-    @ConditionalOnClass(RestClientBuilder.class)
-    public RestClientBuilder restClientBuilder() {
+    @ConditionalOnClass(Rest5ClientBuilder.class)
+    public Rest5ClientBuilder restClientBuilder() {
         if (CollKit.isEmpty(this.properties.getHostList())) {
             Logger.error(
                     false,
@@ -91,21 +92,20 @@ public class ElasticConfiguration {
 
         HttpHost[] hosts = this.properties.getHostList().stream().map(this::buildHttpHost).toArray(HttpHost[]::new);
 
-        RestClientBuilder restClientBuilder = RestClient.builder(hosts);
+        Rest5ClientBuilder restClientBuilder = Rest5Client.builder(hosts);
 
         // Configure connection timeouts
         restClientBuilder.setRequestConfigCallback(requestConfigBuilder -> {
-            requestConfigBuilder.setConnectTimeout(this.properties.getConnectTimeout());
-            requestConfigBuilder.setSocketTimeout(this.properties.getSocketTimeout());
-            requestConfigBuilder.setConnectionRequestTimeout(this.properties.getConnectionRequestTimeout());
-            return requestConfigBuilder;
+            requestConfigBuilder.setConnectTimeout(this.properties.getConnectTimeout(), TimeUnit.MILLISECONDS);
+            requestConfigBuilder.setResponseTimeout(this.properties.getSocketTimeout(), TimeUnit.MILLISECONDS);
+            requestConfigBuilder
+                    .setConnectionRequestTimeout(this.properties.getConnectionRequestTimeout(), TimeUnit.MILLISECONDS);
         });
 
         // Configure connection pool size
-        restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> {
-            httpClientBuilder.setMaxConnTotal(this.properties.getMaxConnectTotal());
-            httpClientBuilder.setMaxConnPerRoute(this.properties.getMaxConnectPerRoute());
-            return httpClientBuilder;
+        restClientBuilder.setConnectionManagerCallback(connectionManagerBuilder -> {
+            connectionManagerBuilder.setMaxConnTotal(this.properties.getMaxConnectTotal());
+            connectionManagerBuilder.setMaxConnPerRoute(this.properties.getMaxConnectPerRoute());
         });
 
         return restClientBuilder;
@@ -115,15 +115,16 @@ public class ElasticConfiguration {
      * Creates the modern {@link ElasticsearchClient} bean.
      * <p>
      * This client is the recommended way to interact with Elasticsearch in recent versions. It is built on top of the
-     * low-level {@link RestClient}.
+     * low-level {@link Rest5Client}.
      * </p>
      *
-     * @param restClientBuilder The configured {@link RestClientBuilder} from the context.
+     * @param restClientBuilder The configured {@link Rest5ClientBuilder} from the context.
      * @return A new {@link ElasticsearchClient} instance.
      */
     @Bean
-    public ElasticsearchClient elasticsearchClient(RestClientBuilder restClientBuilder) {
-        ElasticsearchTransport transport = new RestClientTransport(restClientBuilder.build(), new JacksonJsonpMapper());
+    public ElasticsearchClient elasticsearchClient(Rest5ClientBuilder restClientBuilder) {
+        ElasticsearchTransport transport = new Rest5ClientTransport(restClientBuilder.build(),
+                new Jackson3JsonpMapper());
         return new ElasticsearchClient(transport);
     }
 
@@ -140,8 +141,8 @@ public class ElasticConfiguration {
                     "Incorrect Elasticsearch cluster node information configuration. Correct format is [ip1:port,ip2:port...]");
         }
         List<String> hostPort = StringKit.split(host, Symbol.COLON);
-        return new HttpHost(hostPort.get(Consts.INTEGER_ZERO), Integer.parseInt(hostPort.get(Consts.INTEGER_ONE)),
-                this.properties.getSchema());
+        return new HttpHost(this.properties.getSchema(), hostPort.get(Consts.INTEGER_ZERO),
+                Integer.parseInt(hostPort.get(Consts.INTEGER_ONE)));
     }
 
 }

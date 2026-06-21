@@ -533,7 +533,6 @@ public class Criteria<T> {
      * @param orCriterias Other OR criteria.
      * @return This {@code Criteria} object.
      */
-    @SuppressWarnings({ "unchecked", "varargs" })
     public Criteria<T> andOr(OrCriteria<T> orCriteria1, OrCriteria<T> orCriteria2, OrCriteria<T>... orCriterias) {
         List<OrCriteria<T>> orCriteriaList = new ArrayList<>(orCriterias != null ? orCriterias.length + 2 : 2);
         orCriteriaList.add(orCriteria1);

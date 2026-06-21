@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "5.5.1",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml-lite/$version$/poi-ooxml-lite-$version$-sources.jar",
+    "repository-url": "https://github.com/apache/poi",
+    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml-lite/$version$/poi-ooxml-lite-$version$-javadoc.jar",
+    "description": "Apache POI OOXML Lite provides generated OOXML schema metadata used by POI.",
+    "tested-versions": [
+      "5.5.1"
+    ],
+    "allowed-packages": [
+      "org.apache.poi.schemas"
+    ]
+  }
+]

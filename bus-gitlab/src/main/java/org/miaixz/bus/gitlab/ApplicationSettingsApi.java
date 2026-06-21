@@ -24,12 +24,12 @@ import java.util.Iterator;
 
 import jakarta.ws.rs.core.Response;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import org.miaixz.bus.gitlab.models.ApplicationSettings;
 import org.miaixz.bus.gitlab.models.Setting;
 import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.logger.Logger;
+
+import tools.jackson.databind.JsonNode;
 
 /**
  * This class implements the client side API for the GitLab Application Settings API. See
@@ -148,7 +148,7 @@ public class ApplicationSettingsApi extends AbstractApi {
 
         ApplicationSettings appSettings = new ApplicationSettings();
 
-        Iterator<String> fieldNames = root.fieldNames();
+        Iterator<String> fieldNames = root.propertyNames().iterator();
         while (fieldNames.hasNext()) {
 
             String fieldName = fieldNames.next();

@@ -27,38 +27,40 @@ import java.util.List;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.PropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.logger.Logger;
 
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ext.javatime.deser.LocalDateTimeDeserializer;
+import tools.jackson.databind.ext.javatime.ser.LocalDateTimeSerializer;
+import tools.jackson.databind.introspect.AnnotatedMember;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.BeanPropertyWriter;
+import tools.jackson.databind.ser.PropertyFilter;
+import tools.jackson.databind.ser.PropertyWriter;
+import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
+import tools.jackson.databind.ser.std.SimpleFilterProvider;
+
 /**
  * Jackson JSON framework configurer, integrated with Spring MVC.
  * <p>
- * This component configures {@link MappingJackson2HttpMessageConverter} to handle JSON serialization and
- * deserialization using Jackson. It supports custom date formats, Java 8/11 Time API ({@link LocalDateTime}), and an
- * {@code autoType} configuration to restrict deserialization to classes within a specified package prefix, enhancing
- * security. It also applies a unified field exclusion policy based on {@code @Include} and {@code @Transient}
- * annotations via a custom {@link PropertyFilter}.
+ * This component configures {@link JacksonJsonHttpMessageConverter} to handle JSON serialization and deserialization
+ * using Jackson 3. It supports custom date formats, Java Time API ({@link LocalDateTime}), and an {@code autoType}
+ * configuration to restrict deserialization to classes within a specified package prefix, enhancing security. It also
+ * applies a unified field exclusion policy based on {@code @Include} and {@code @Transient} annotations via a custom
+ * {@link PropertyFilter}.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Component
-@ConditionalOnClass({ ObjectMapper.class })
+@ConditionalOnClass({ JsonMapper.class })
 public class JacksonMessageConverter extends AbstractHttpMessageConverter {
 
     /**
@@ -96,10 +98,10 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
     }
 
     /**
-     * Configures the {@link MappingJackson2HttpMessageConverter} and adds it to the list of converters.
+     * Configures the {@link JacksonJsonHttpMessageConverter} and adds it to the list of converters.
      * <p>
-     * It sets up {@link ObjectMapper} with non-null serialization, disables writing dates as timestamps, configures
-     * {@code autoType} restrictions, and registers {@link JavaTimeModule} for {@link LocalDateTime} handling.
+     * It sets up {@link JsonMapper} with a unified filter, configures {@code autoType} restrictions, and registers
+     * custom {@link LocalDateTime} handling.
      * </p>
      *
      * @param converters The list of {@link HttpMessageConverter}s to which the Jackson converter will be added.
@@ -109,23 +111,12 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
         Logger.debug(
                 false,
                 "Starter",
-                "Configuring MappingJackson2HttpMessageConverter with autoType: {}",
+                "Configuring JacksonJsonHttpMessageConverter with autoType: {}",
                 autoTypeMatcher == null ? null : autoTypeMatcher.description());
-        ObjectMapper jacksonMapper = new ObjectMapper();
 
-        // 1. Configure the PropertyFilter to handle @Include/@Transient and null/empty values.
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
         filterProvider.addFilter(FILTER_ID, new IncludeTransientPropertyFilter());
-        jacksonMapper.setFilterProvider(filterProvider);
 
-        // 2. Add a mix-in to apply the filter to all Object classes without modifying them.
-        jacksonMapper.addMixIn(Object.class, FilterMixIn.class);
-
-        // 3. Configure other mapper settings
-        jacksonMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS); // Let the filter handle inclusion
-        jacksonMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        // 4. Configure autoType restrictions
         if (autoTypeMatcher != null) {
             Logger.debug(
                     false,
@@ -134,16 +125,18 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
                     autoTypeMatcher.description());
         }
 
-        // 5. Add support for Java Time API (LocalDateTime)
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Fields.NORM_DATETIME);
+        SimpleModule javaTimeModule = new SimpleModule("BusJavaTimeModule");
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
-        jacksonMapper.registerModule(javaTimeModule);
 
-        // 6. Create and configure Jackson converter
-        MappingJackson2HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter();
-        jacksonConverter.setObjectMapper(jacksonMapper);
+        JsonMapper jacksonMapper = JsonMapper.builder().filterProvider(filterProvider)
+                .addMixIn(Object.class, FilterMixIn.class)
+                .changeDefaultPropertyInclusion(
+                        value -> JsonInclude.Value.construct(JsonInclude.Include.ALWAYS, JsonInclude.Include.ALWAYS))
+                .addModule(javaTimeModule).build();
+
+        JacksonJsonHttpMessageConverter jacksonConverter = new JacksonJsonHttpMessageConverter(jacksonMapper);
         jacksonConverter.setSupportedMediaTypes(
                 List.of(MediaType.APPLICATION_JSON, new MediaType("application", "json+jackson")));
         converters.add(order(), jacksonConverter);
@@ -186,46 +179,42 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
     static class IncludeTransientPropertyFilter extends SimpleBeanPropertyFilter {
 
         @Override
-        public void serializeAsField(
+        public void serializeAsProperty(
                 Object pojo,
-                com.fasterxml.jackson.core.JsonGenerator jgen,
-                com.fasterxml.jackson.databind.SerializerProvider provider,
-                BeanPropertyWriter writer) throws Exception {
+                tools.jackson.core.JsonGenerator jgen,
+                SerializationContext provider,
+                PropertyWriter writer) throws Exception {
             // Robustly find the underlying Field object for annotation checks.
             Field field = null;
-            AnnotatedMember annotatedMember = writer.getMember();
-            Member member = annotatedMember.getMember();
+            Object value = null;
 
-            if (member instanceof Field) {
-                field = (Field) member;
-            } else {
-                // If the property is backed by a method (e.g., a getter), try to find the corresponding field.
-                try {
-                    field = member.getDeclaringClass().getDeclaredField(writer.getName());
-                } catch (NoSuchFieldException e) {
-                    // This can happen for virtual properties without a backing field.
-                    // We'll proceed with 'field' as null, which shouldSkipField can handle.
-                    Logger.debug(
-                            false,
-                            "Starter",
-                            "Jackson could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
-                            writer.getName(),
-                            pojo.getClass().getName());
+            if (writer instanceof BeanPropertyWriter beanWriter) {
+                AnnotatedMember annotatedMember = beanWriter.getMember();
+                if (annotatedMember != null) {
+                    Member member = annotatedMember.getMember();
+                    if (member instanceof Field memberField) {
+                        field = memberField;
+                    } else if (member != null) {
+                        try {
+                            field = member.getDeclaringClass().getDeclaredField(beanWriter.getName());
+                        } catch (NoSuchFieldException e) {
+                            Logger.debug(
+                                    false,
+                                    "Starter",
+                                    "Jackson could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
+                                    beanWriter.getName(),
+                                    pojo.getClass().getName());
+                        }
+                    }
                 }
+                value = beanWriter.get(pojo);
             }
 
-            // Use writer.get(pojo) to get the actual value of the property.
-            Object value = writer.get(pojo);
-
-            // CORRECTED: Invert the condition.
-            // The logic should be: "If the field should NOT be skipped, then serialize it."
             if (!shouldSkipField(field, value)) {
-                writer.serializeAsField(pojo, jgen, provider);
+                writer.serializeAsProperty(pojo, jgen, provider);
             } else {
-                // If the field should be skipped, we can choose to write nothing or write a null.
-                // Writing nothing is cleaner.
-                if (!jgen.canOmitFields()) {
-                    jgen.writeFieldName(writer.getName());
+                if (!jgen.canOmitProperties()) {
+                    jgen.writeName(writer.getName());
                     jgen.writeNull();
                 }
             }

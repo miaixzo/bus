@@ -19,20 +19,19 @@
 */
 package org.miaixz.bus.extra.json.provider;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * A {@link org.miaixz.bus.extra.json.JsonProvider} implementation based on the Jackson library. This class provides
@@ -50,11 +49,10 @@ public class JacksonProvider extends AbstractJsonProvider {
 
     /**
      * Constructs a new {@code JacksonProvider} instance. Initializes an {@link ObjectMapper} with module auto-detection
-     * and disables writing dates as timestamps.
+     * enabled.
      */
     public JacksonProvider() {
-        objectMapper = new ObjectMapper().findAndRegisterModules()
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper = JsonMapper.builder().findAndAddModules().build();
     }
 
     /**
@@ -64,7 +62,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     public String toJsonString(Object object) {
         try {
             return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             Logger.warn(
                     false,
                     "Extra",
@@ -84,7 +82,7 @@ public class JacksonProvider extends AbstractJsonProvider {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         try {
             return objectMapper.writer(sdf).writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             Logger.warn(
                     false,
                     "Extra",
@@ -103,7 +101,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     public <T> T toPojo(String json, Class<T> valueType) {
         try {
             return objectMapper.readValue(json, valueType);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             Logger.warn(
                     false,
                     "Extra",
@@ -130,7 +128,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     public <T> List<T> toList(String json) {
         try {
             return objectMapper.readValue(json, LinkedList.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             Logger.warn(
                     false,
                     "Extra",
@@ -149,7 +147,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     public <T> List<T> toList(String json, Class<T> clazz) {
         try {
             return (List<T>) objectMapper.readValue(json, clazz);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             Logger.warn(
                     false,
                     "Extra",
@@ -178,7 +176,7 @@ public class JacksonProvider extends AbstractJsonProvider {
         };
         try {
             return objectMapper.readValue(json, typeReference);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             Logger.warn(
                     false,
                     "Extra",
@@ -197,7 +195,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     public <K, V> Map<K, V> toMap(String json) {
         try {
             return objectMapper.readValue(json, Map.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             Logger.warn(
                     false,
                     "Extra",
@@ -224,7 +222,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     public <T> T getValue(String json, String field) {
         try {
             return (T) objectMapper.readTree(json).get(field);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             Logger.warn(
                     false,
                     "Extra",
@@ -244,7 +242,7 @@ public class JacksonProvider extends AbstractJsonProvider {
         try {
             objectMapper.readTree(json);
             return true;
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             Logger.warn(
                     false,
                     "Extra",

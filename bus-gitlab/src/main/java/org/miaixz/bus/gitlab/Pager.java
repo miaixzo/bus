@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.gitlab;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,12 +30,13 @@ import java.util.stream.StreamSupport;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.miaixz.bus.gitlab.models.Constants;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.logger.Logger;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * <p>
@@ -528,7 +528,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
                     kaminariNextPage);
             return (currentItems);
 
-        } catch (GitLabApiException | IOException e) {
+        } catch (GitLabApiException | JacksonException e) {
             Logger.warn(
                     false,
                     "GitLab",

@@ -3,13 +3,13 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.5.x-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.8.x-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://jdk.java.net/">
-    <img src="https://img.shields.io/badge/Java-21+-green.svg">
+    <img src="https://img.shields.io/badge/Java-25+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-3.5.11-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-4.1.0-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.postgresql.org">
     <img src="https://img.shields.io/badge/postgresql-17.x-blue.svg">
@@ -93,6 +93,8 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
    以及结合springboot封装常用工具按需加载例如mybatis、xss、i18n、sensitive、validate等框架
 
 2. 详细说明以及使用姿势请参考每个模块下README介绍
+
+3. Spring Boot 4.1 迁移说明见 [docs/Spring-Boot-4.1-Migration.md](docs/Spring-Boot-4.1-Migration.md)。
 
 
 ### ✨ 安装使用

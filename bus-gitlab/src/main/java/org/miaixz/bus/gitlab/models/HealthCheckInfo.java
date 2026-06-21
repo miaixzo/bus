@@ -19,19 +19,17 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * The health check info class.
@@ -223,9 +221,7 @@ public class HealthCheckInfo implements Serializable {
      * @author Kimi Liu
      * @since Java 21+
      */
-    private static class HealthCheckItemDeserializer extends JsonDeserializer<HealthCheckItem> {
-
-        private static final ObjectMapper mapper = new JacksonJson().getObjectMapper();
+    private static class HealthCheckItemDeserializer extends ValueDeserializer<HealthCheckItem> {
 
         /**
          * Executes the deserialize operation.
@@ -233,21 +229,19 @@ public class HealthCheckInfo implements Serializable {
          * @param jsonParser the json parser value
          * @param ctx        the ctx value
          * @return the result
-         * @throws IOException             if the operation fails
-         * @throws JsonProcessingException if the operation fails
+         * @throws JacksonException if the operation fails
          */
 
         @Override
-        public HealthCheckItem deserialize(JsonParser jsonParser, DeserializationContext ctx)
-                throws IOException, JsonProcessingException {
+        public HealthCheckItem deserialize(JsonParser jsonParser, DeserializationContext ctx) throws JacksonException {
 
             HealthCheckItem healthCheckItem = null;
             JsonNode tree = jsonParser.readValueAsTree();
             if (tree.isArray()) {
                 JsonNode node = tree.get(0);
-                healthCheckItem = mapper.treeToValue(node, HealthCheckItem.class);
+                healthCheckItem = ctx.readTreeAsValue(node, HealthCheckItem.class);
             } else if (tree.isObject()) {
-                healthCheckItem = mapper.treeToValue(tree, HealthCheckItem.class);
+                healthCheckItem = ctx.readTreeAsValue(tree, HealthCheckItem.class);
             }
 
             return (healthCheckItem);

@@ -194,7 +194,7 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
      */
     protected static PayloadAdapter tryCreateJacksonAdapter() {
         try {
-            Class<?> objectMapperClass = ClassKit.loadClass("com.fasterxml.jackson.databind.ObjectMapper");
+            Class<?> objectMapperClass = ClassKit.loadClass("tools.jackson.databind.ObjectMapper");
             Object objectMapper = objectMapperClass.getConstructor().newInstance();
             invokeNoArgIfPresent(objectMapperClass, objectMapper, "findAndRegisterModules");
             Method writeValueAsBytes = MethodKit
@@ -205,7 +205,7 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
                     false,
                     "readValue",
                     byte[].class,
-                    ClassKit.loadClass("com.fasterxml.jackson.databind.JavaType"));
+                    ClassKit.loadClass("tools.jackson.databind.JavaType"));
             return new PayloadAdapter() {
 
                 /**

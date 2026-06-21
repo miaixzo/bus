@@ -383,6 +383,5 @@ Copyright © 2015–2026 [miaixz.org](https://miaixz.org) and contributors.
 ## Links
 
 * [GitHub Repository](https://github.com/818000/bus)
-* [Maven Central](https://mvnrepository.com/artifact/org.miaixz)
 * [Issue Tracker](https://github.com/818000/bus/issues)
 * [Changelog](https://github.com/818000/bus/releases)

@@ -24,7 +24,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.ConfigurableBootstrapContext;
+import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.logging.LoggerConfiguration;
 import org.springframework.boot.logging.LoggingSystem;
@@ -135,6 +135,13 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     public void environmentPrepared(
             ConfigurableBootstrapContext bootstrapContext,
             ConfigurableEnvironment environment) {
+        if (jvmStartingStage == null) {
+            jvmStartingStage = new BaseMetrics();
+            jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
+            jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
+            jvmStartingStage.setEndTime(System.currentTimeMillis());
+        }
+
         environmentPrepareStage = new BaseMetrics();
         environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
         environmentPrepareStage.setStartTime(jvmStartingStage.getEndTime());
@@ -172,10 +179,40 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      */
     @Override
     public void contextPrepared(ConfigurableApplicationContext context) {
+        if (environmentPrepareStage == null) {
+            if (jvmStartingStage == null) {
+                jvmStartingStage = new BaseMetrics();
+                jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
+                jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
+                jvmStartingStage.setEndTime(System.currentTimeMillis());
+            }
+            environmentPrepareStage = new BaseMetrics();
+            environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
+            environmentPrepareStage.setStartTime(jvmStartingStage.getEndTime());
+            environmentPrepareStage.setEndTime(System.currentTimeMillis());
+
+            ConfigurableEnvironment environment = context.getEnvironment();
+            startupReporter.setAppName(environment.getProperty(GeniusBuilder.APP_NAME));
+            startupReporter.bindToStartupReporter(environment);
+
+            try {
+                Class.forName("org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup");
+                application.setApplicationStartup(
+                        new org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup(
+                                startupReporter.bufferSize));
+            } catch (ClassNotFoundException e) {
+                Logger.debug(
+                        false,
+                        "Starter",
+                        "Spring bufferingApplicationStartup not available, skipping startup metrics");
+            }
+        }
+
         applicationContextPrepareStage = new ChildrenMetrics<>();
         applicationContextPrepareStage.setName(GeniusBuilder.APPLICATION_CONTEXT_PREPARE_STAGE);
         applicationContextPrepareStage.setStartTime(environmentPrepareStage.getEndTime());
         applicationContextPrepareStage.setEndTime(System.currentTimeMillis());
+        context.setApplicationStartup(application.getApplicationStartup());
 
         // If it's a custom SpringApplication, get initializer statistics
         if (application instanceof org.miaixz.bus.spring.boot.SpringApplication springApplication) {
@@ -202,6 +239,25 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      */
     @Override
     public void contextLoaded(ConfigurableApplicationContext context) {
+        if (applicationContextPrepareStage == null) {
+            if (environmentPrepareStage == null) {
+                if (jvmStartingStage == null) {
+                    jvmStartingStage = new BaseMetrics();
+                    jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
+                    jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
+                    jvmStartingStage.setEndTime(System.currentTimeMillis());
+                }
+                environmentPrepareStage = new BaseMetrics();
+                environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
+                environmentPrepareStage.setStartTime(jvmStartingStage.getEndTime());
+                environmentPrepareStage.setEndTime(System.currentTimeMillis());
+            }
+            applicationContextPrepareStage = new ChildrenMetrics<>();
+            applicationContextPrepareStage.setName(GeniusBuilder.APPLICATION_CONTEXT_PREPARE_STAGE);
+            applicationContextPrepareStage.setStartTime(environmentPrepareStage.getEndTime());
+            applicationContextPrepareStage.setEndTime(System.currentTimeMillis());
+        }
+
         applicationContextLoadStage = new BaseMetrics();
         applicationContextLoadStage.setName(GeniusBuilder.APPLICATION_CONTEXT_LOAD_STAGE);
         applicationContextLoadStage.setStartTime(applicationContextPrepareStage.getEndTime());
@@ -235,19 +291,65 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      */
     @Override
     public void started(ConfigurableApplicationContext context, Duration timeTaken) {
+        if (applicationContextLoadStage == null) {
+            if (applicationContextPrepareStage == null) {
+                if (environmentPrepareStage == null) {
+                    if (jvmStartingStage == null) {
+                        jvmStartingStage = new BaseMetrics();
+                        jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
+                        jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
+                        jvmStartingStage.setEndTime(System.currentTimeMillis());
+                    }
+                    environmentPrepareStage = new BaseMetrics();
+                    environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
+                    environmentPrepareStage.setStartTime(jvmStartingStage.getEndTime());
+                    environmentPrepareStage.setEndTime(System.currentTimeMillis());
+                }
+                applicationContextPrepareStage = new ChildrenMetrics<>();
+                applicationContextPrepareStage.setName(GeniusBuilder.APPLICATION_CONTEXT_PREPARE_STAGE);
+                applicationContextPrepareStage.setStartTime(environmentPrepareStage.getEndTime());
+                applicationContextPrepareStage.setEndTime(System.currentTimeMillis());
+            }
+            applicationContextLoadStage = new BaseMetrics();
+            applicationContextLoadStage.setName(GeniusBuilder.APPLICATION_CONTEXT_LOAD_STAGE);
+            applicationContextLoadStage.setStartTime(applicationContextPrepareStage.getEndTime());
+            applicationContextLoadStage.setEndTime(System.currentTimeMillis());
+        }
+
         // Get application refresh stage statistics
-        ChildrenMetrics<ModuleMetrics> applicationRefreshStage = (ChildrenMetrics<ModuleMetrics>) startupReporter
-                .getStageNyName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
+        BaseMetrics refreshStage = startupReporter.getStageNyName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
+        ChildrenMetrics<ModuleMetrics> applicationRefreshStage;
+        if (refreshStage instanceof ChildrenMetrics<?>) {
+            ChildrenMetrics<ModuleMetrics> typedStage = (ChildrenMetrics<ModuleMetrics>) refreshStage;
+            applicationRefreshStage = typedStage;
+        } else {
+            applicationRefreshStage = new ChildrenMetrics<>();
+            applicationRefreshStage.setName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
+            startupReporter.addCommonStartupStat(applicationRefreshStage);
+        }
 
         // Set time information for the refresh stage
         applicationRefreshStage.setStartTime(applicationContextLoadStage.getEndTime());
-        applicationRefreshStage.setEndTime(System.currentTimeMillis());
-        applicationRefreshStage.setCost(applicationRefreshStage.getEndTime() - applicationRefreshStage.getStartTime());
+        if (applicationRefreshStage.getEndTime() == 0) {
+            applicationRefreshStage.setEndTime(System.currentTimeMillis());
+        }
+        applicationRefreshStage
+                .setCost(Math.max(0, applicationRefreshStage.getEndTime() - applicationRefreshStage.getStartTime()));
 
         // Set time information for the root module
+        if (applicationRefreshStage.getChildren().isEmpty()) {
+            ModuleMetrics rootModule = new ModuleMetrics();
+            rootModule.setName(SpringSmartLifecycle.ROOT_MODULE_NAME);
+            rootModule.setEndTime(applicationRefreshStage.getEndTime());
+            rootModule.setThreadName(Thread.currentThread().getName());
+            applicationRefreshStage.addChild(rootModule);
+        }
         ModuleMetrics rootModule = applicationRefreshStage.getChildren().get(0);
         rootModule.setStartTime(applicationRefreshStage.getStartTime());
-        rootModule.setCost(rootModule.getEndTime() - rootModule.getStartTime());
+        if (rootModule.getEndTime() == 0) {
+            rootModule.setEndTime(applicationRefreshStage.getEndTime());
+        }
+        rootModule.setCost(Math.max(0, rootModule.getEndTime() - rootModule.getStartTime()));
 
         // Add all stage statistics to the startup reporter
         startupReporter.addCommonStartupStat(jvmStartingStage);

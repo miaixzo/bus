@@ -124,7 +124,6 @@ public abstract class AbstractSqlHandler {
      * @param target The proxy object.
      * @return The real target object.
      */
-    @SuppressWarnings("unchecked")
     protected static <T> T realTarget(Object target) {
         if (Proxy.isProxyClass(target.getClass())) {
             Plugin plugin = (Plugin) Proxy.getInvocationHandler(target);

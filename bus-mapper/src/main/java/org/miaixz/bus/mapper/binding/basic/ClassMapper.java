@@ -41,7 +41,6 @@ public interface ClassMapper<T> {
      *
      * @return The entity class type.
      */
-    @SuppressWarnings("unchecked")
     default Class<T> entityClass() {
         return (Class<T>) CachingEntityClass.getEntityClass(getClass());
     }

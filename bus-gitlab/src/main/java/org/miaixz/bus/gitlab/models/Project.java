@@ -29,12 +29,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import org.miaixz.bus.gitlab.models.Constants.*;
 import org.miaixz.bus.gitlab.models.ImportStatus.Status;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import tools.jackson.databind.annotation.JsonSerialize;
 
 /**
  * The project class.

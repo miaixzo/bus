@@ -118,7 +118,6 @@ public class MapperBoundSql {
      * @param <T>      The type of the return value.
      * @return The value of the property.
      */
-    @SuppressWarnings("unchecked")
     private <T> T get(String property) {
         return (T) boundSql.getValue(property);
     }

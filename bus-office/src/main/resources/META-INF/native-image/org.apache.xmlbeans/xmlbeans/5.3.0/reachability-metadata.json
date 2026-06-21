@@ -1,0 +1,69 @@
+{
+  "reflection": [
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "type": "org.apache.xmlbeans.impl.inst2xsd.util.TypeSystemHolder"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "type": "org.apache.xmlbeans.impl.schema.TypeSystemHolder"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "type": "org.apache.xmlbeans.metadata.system.sXMLCONFIG.TypeSystemHolder"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "type": "org.apache.xmlbeans.metadata.system.sXMLLANG.TypeSystemHolder"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "type": "org.apache.xmlbeans.metadata.system.sXMLSCHEMA.TypeSystemHolder"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "type": "org.apache.xmlbeans.metadata.system.sXMLTOOLS.TypeSystemHolder"
+    }
+  ],
+  "resources": [
+    {
+      "glob": "org/apache/xmlbeans/impl/regex/message*.properties"
+    },
+    {
+      "glob": "org/apache/xmlbeans/message.properties"
+    },
+    {
+      "glob": "org/apache/xmlbeans/metadata/**"
+    }
+  ]
+}

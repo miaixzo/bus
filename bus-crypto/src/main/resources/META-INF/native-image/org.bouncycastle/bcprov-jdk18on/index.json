@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "1.84",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-sources.jar",
+    "repository-url": "https://github.com/bcgit/bc-java",
+    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-javadoc.jar",
+    "description": "Bouncy Castle provider services used by Bus Crypto for EC, SM2, and digest operations in GraalVM native images.",
+    "tested-versions": [
+      "1.84"
+    ],
+    "allowed-packages": [
+      "org.bouncycastle"
+    ]
+  }
+]

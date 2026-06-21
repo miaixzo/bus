@@ -382,6 +382,5 @@ Copyright © 2015–2026 [miaixz.org](https://miaixz.org) 及贡献者。
 ## 相关链接
 
 * [GitHub 仓库](https://github.com/818000/bus)
-* [Maven Central](https://mvnrepository.com/artifact/org.miaixz)
 * [问题反馈](https://github.com/818000/bus/issues)
 * [版本记录](https://github.com/818000/bus/releases)

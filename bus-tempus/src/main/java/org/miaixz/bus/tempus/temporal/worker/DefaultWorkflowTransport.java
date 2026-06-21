@@ -19,8 +19,10 @@
 */
 package org.miaixz.bus.tempus.temporal.worker;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -32,6 +34,12 @@ import org.miaixz.bus.tempus.temporal.Binding;
 
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowClientOptions;
+import io.temporal.common.converter.ByteArrayPayloadConverter;
+import io.temporal.common.converter.DataConverter;
+import io.temporal.common.converter.NullPayloadConverter;
+import io.temporal.common.converter.PayloadConverter;
+import io.temporal.common.converter.ProtobufJsonPayloadConverter;
+import io.temporal.common.converter.ProtobufPayloadConverter;
 
 /**
  * Default Temporal workflow transport based on Temporal SDK service stubs.
@@ -42,6 +50,11 @@ import io.temporal.client.WorkflowClientOptions;
  * @since Java 21+
  */
 public class DefaultWorkflowTransport implements WorkflowTransport {
+
+    /**
+     * Jackson 3 data converter used to avoid Temporal's Jackson 2 default converter.
+     */
+    private static final DataConverter DATA_CONVERTER = newDataConverter();
 
     /**
      * Creates a default workflow transport.
@@ -127,6 +140,7 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
             if (StringKit.hasText(binding.getNamespace())) {
                 try {
                     WorkflowClientOptions.Builder builder = WorkflowClientOptions.newBuilder();
+                    builder.setDataConverter(DATA_CONVERTER);
                     builder.setNamespace(binding.getNamespace());
                     if (StringKit.hasText(binding.getIdentity())) {
                         builder.setIdentity(binding.getIdentity());
@@ -311,8 +325,10 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
                 "Workflow client creation from service stubs started: stubsType={}",
                 handle.getClass().getName());
 
-        Method factoryMethod = findWorkflowClientFactory(handle.getClass());
-        WorkflowClient client = MethodKit.invokeStatic(factoryMethod, handle);
+        WorkflowClientOptions.Builder builder = WorkflowClientOptions.newBuilder();
+        builder.setDataConverter(DATA_CONVERTER);
+        Method factoryMethod = findWorkflowClientFactoryWithOptions(handle.getClass());
+        WorkflowClient client = MethodKit.invokeStatic(factoryMethod, handle, builder.validateAndBuildWithDefaults());
         Logger.debug(
                 false,
                 "Tempus",
@@ -594,6 +610,28 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
      */
     private static String unknownTransportState() {
         return WorkflowTransportState.UNKNOWN.value();
+    }
+
+    private static DataConverter newDataConverter() {
+        try {
+            Class<?> converterType = Class.forName("io.temporal.common.converter.PayloadAndFailureDataConverter");
+            Constructor<?> constructor = converterType.getDeclaredConstructor(List.class);
+            constructor.setAccessible(true);
+            return (DataConverter) constructor.newInstance(
+                    (Object) List.of(
+                            new NullPayloadConverter(),
+                            new ByteArrayPayloadConverter(),
+                            new ProtobufJsonPayloadConverter(),
+                            new ProtobufPayloadConverter(),
+                            newJackson3PayloadConverter()));
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Failed to create Temporal Jackson 3 data converter", e);
+        }
+    }
+
+    private static PayloadConverter newJackson3PayloadConverter() throws ReflectiveOperationException {
+        Class<?> converterType = Class.forName("io.temporal.common.converter.Jackson3JsonPayloadConverter");
+        return (PayloadConverter) converterType.getConstructor(boolean.class).newInstance(false);
     }
 
 }

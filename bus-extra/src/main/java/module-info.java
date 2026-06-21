@@ -41,8 +41,8 @@ module bus.extra {
     requires beetl.core;
     requires bopomofo4j;
     requires com.alibaba.fastjson2;
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.core;
+    requires tools.jackson.databind;
     requires com.google.gson;
     requires com.google.zxing;
     requires com.hierynomus.sshj;
