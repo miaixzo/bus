@@ -37,14 +37,14 @@ module bus.cache {
     requires bus.proxy;
     requires bus.setting;
 
-    requires lombok;
-    requires jakarta.annotation;
-    requires com.github.benmanes.caffeine;
-    requires com.google.common;
-    requires com.zaxxer.hikari;
-    requires hessian;
-    requires redis.clients.jedis;
-    requires xmemcached;
+    requires static lombok;
+    requires static jakarta.annotation;
+    requires static com.github.benmanes.caffeine;
+    requires static com.google.common;
+    requires static com.zaxxer.hikari;
+    requires static hessian;
+    requires static redis.clients.jedis;
+    requires static xmemcached;
 
     exports org.miaixz.bus.cache;
     exports org.miaixz.bus.cache.builtin;

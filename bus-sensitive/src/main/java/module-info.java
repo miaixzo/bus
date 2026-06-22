@@ -30,7 +30,7 @@ module bus.sensitive {
     requires bus.extra;
     requires bus.logger;
 
-    requires lombok;
+    requires static lombok;
 
     exports org.miaixz.bus.sensitive;
     exports org.miaixz.bus.sensitive.magic.annotation;

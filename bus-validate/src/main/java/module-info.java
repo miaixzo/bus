@@ -28,7 +28,7 @@ module bus.validate {
     requires bus.core;
     requires bus.logger;
 
-    requires lombok;
+    requires static lombok;
 
     exports org.miaixz.bus.validate;
     exports org.miaixz.bus.validate.magic;

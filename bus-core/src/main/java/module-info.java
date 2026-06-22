@@ -25,15 +25,14 @@
  */
 module bus.core {
 
-    requires java.base;
     requires java.compiler;
     requires java.desktop;
     requires java.management;
     requires java.naming;
     requires java.sql;
 
-    requires lombok;
-    requires jakarta.persistence;
+    requires static lombok;
+    requires static jakarta.persistence;
 
     exports org.miaixz.bus.core;
     exports org.miaixz.bus.core.basic.advice;

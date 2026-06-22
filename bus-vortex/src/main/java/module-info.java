@@ -58,19 +58,19 @@ module bus.vortex {
     requires bus.http;
     requires bus.logger;
 
-    requires lombok;
-    requires jakarta.annotation;
-    requires jakarta.servlet;
-    requires spring.beans;
-    requires spring.context;
-    requires spring.core;
-    requires spring.web;
-    requires spring.webflux;
-    requires reactor.core;
-    requires reactor.netty.core;
-    requires reactor.netty.http;
-    requires io.netty.handler;
-    requires org.reactivestreams;
+    requires static lombok;
+    requires static jakarta.annotation;
+    requires static jakarta.servlet;
+    requires static spring.beans;
+    requires static spring.context;
+    requires static spring.core;
+    requires static spring.web;
+    requires static spring.webflux;
+    requires static reactor.core;
+    requires static reactor.netty.core;
+    requires static reactor.netty.http;
+    requires static io.netty.handler;
+    requires static org.reactivestreams;
 
     exports org.miaixz.bus.vortex;
     exports org.miaixz.bus.vortex.filter;

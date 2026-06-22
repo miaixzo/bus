@@ -35,18 +35,18 @@ module bus.storage {
     requires bus.http;
     requires bus.logger;
 
-    requires lombok;
-    requires com.github.sardine;
-    requires com.hierynomus.smbj;
-    requires com.jcraft.jsch;
-    requires org.reactivestreams;
-    requires software.amazon.awssdk.auth;
-    requires software.amazon.awssdk.core;
-    requires software.amazon.awssdk.http;
-    requires software.amazon.awssdk.http.auth;
-    requires software.amazon.awssdk.regions;
-    requires software.amazon.awssdk.services.s3;
-    requires software.amazon.awssdk.utils;
+    requires static lombok;
+    requires static com.github.sardine;
+    requires static com.hierynomus.smbj;
+    requires static com.jcraft.jsch;
+    requires static org.reactivestreams;
+    requires static software.amazon.awssdk.auth;
+    requires static software.amazon.awssdk.core;
+    requires static software.amazon.awssdk.http;
+    requires static software.amazon.awssdk.http.auth;
+    requires static software.amazon.awssdk.regions;
+    requires static software.amazon.awssdk.services.s3;
+    requires static software.amazon.awssdk.utils;
 
     exports org.miaixz.bus.storage;
     exports org.miaixz.bus.storage.cache;

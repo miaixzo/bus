@@ -32,12 +32,12 @@ module bus.metrics {
     requires bus.health;
     requires bus.logger;
 
-    requires lombok;
-    requires jakarta.servlet;
-    requires io.opentelemetry.api;
-    requires io.prometheus.metrics.core;
-    requires io.prometheus.metrics.model;
-    requires micrometer.core;
+    requires static lombok;
+    requires static jakarta.servlet;
+    requires static io.opentelemetry.api;
+    requires static io.prometheus.metrics.core;
+    requires static io.prometheus.metrics.model;
+    requires static micrometer.core;
 
     exports org.miaixz.bus.metrics.bridge;
     exports org.miaixz.bus.metrics.builtin;
