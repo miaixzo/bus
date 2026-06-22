@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
@@ -163,7 +164,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
      * @author Kimi Liu
      * @since Java 21+
      */
-    @com.fasterxml.jackson.annotation.JsonFilter(FILTER_ID)
+    @JsonFilter(FILTER_ID)
     interface FilterMixIn {
         // This interface is intentionally empty. It's only used to carry the annotation.
 

@@ -27,13 +27,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.cache.CacheFactoryProvider;
 import org.miaixz.bus.storage.cache.StorageCache;
 
 /**
@@ -69,7 +67,6 @@ import org.miaixz.bus.storage.cache.StorageCache;
  */
 @EnableConfigurationProperties(value = { StorageProperties.class })
 @ConditionalOnProperty(prefix = GeniusBuilder.STORAGE, name = "enabled", havingValue = "true", matchIfMissing = true)
-@Import(CacheFactoryProvider.class)
 public class StorageConfiguration {
 
     /**
@@ -116,18 +113,17 @@ public class StorageConfiguration {
      * <li>If neither storage nor global cache is configured, fall back to {@link StorageCache#INSTANCE}.</li>
      * </ul>
      *
-     * @param factory              shared cache factory
      * @param defaultCacheProvider shared default cache provider
+     * @param factoryProvider      optional shared cache factory provider
      * @return storage cache implementation
-     *
      */
     @Bean("storageCache")
     @ConditionalOnMissingBean(name = "storageCache")
     public CacheX<String, Object> storageCache(
-            Factory factory,
-            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider) {
+            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider,
+            ObjectProvider<Factory> factoryProvider) {
         if (hasStorageBackend()) {
-            return factory.initialize(this.properties.getCache());
+            return factoryProvider.getIfAvailable(Factory::new).initialize(this.properties.getCache());
         }
         CacheX<String, Object> defaultCache = defaultCacheProvider.getIfAvailable();
         return defaultCache != null ? defaultCache : StorageCache.INSTANCE;

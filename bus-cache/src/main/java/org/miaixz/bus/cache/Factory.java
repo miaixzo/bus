@@ -20,17 +20,11 @@
 package org.miaixz.bus.cache;
 
 import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.miaixz.bus.cache.metric.*;
+import org.miaixz.bus.cache.metric.internal.RedisBackends;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * Shared cache backend factory used by both the cache starter and downstream modules.
@@ -238,6 +232,8 @@ public class Factory {
                     backend.mirror(),
                     extendedMode);
             return backend;
+        } catch (NoClassDefFoundError e) {
+            throw missingOptionalDependency("memcached", "com.googlecode.xmemcached:xmemcached", e);
         } catch (Exception e) {
             Logger.error(
                     false,
@@ -264,102 +260,51 @@ public class Factory {
     }
 
     /**
-     * Creates a single-node Redis backend with a pooled Jedis client.
+     * Creates a single-node Redis backend without loading Jedis unless Redis is selected.
      *
      * @param options cache options
      * @return Redis cache
      */
     private CacheX<String, Object> redisCache(Options options) {
-        Options.Redis redis = redis(options);
-        Logger.info(
-                true,
-                "Cache",
-                "Redis cache initialization started: hostPresent={}, port={}, timeoutMs={}, passwordPresent={}",
-                StringKit.isNotBlank(redis.getHost()),
-                redis.getPort(),
-                redis.getTimeout(),
-                StringKit.isNotBlank(redis.getPassword()));
-        JedisPoolConfig config = new JedisPoolConfig();
-        config.setMaxTotal(redis.getMaxActive());
-        config.setMaxIdle(redis.getMaxIdle());
-        config.setMinIdle(redis.getMinIdle());
-        CacheX<String, Object> cache = new RedisCache<>(
-                new JedisPool(config, redis.getHost(), redis.getPort(), redis.getTimeout(), redis.getPassword()));
-        Logger.info(
-                false,
-                "Cache",
-                "Redis cache initialization completed: hostPresent={}, port={}, timeoutMs={}, maxActive={}, maxIdle={}, minIdle={}",
-                StringKit.isNotBlank(redis.getHost()),
-                redis.getPort(),
-                redis.getTimeout(),
-                redis.getMaxActive(),
-                redis.getMaxIdle(),
-                redis.getMinIdle());
-        return cache;
+        try {
+            return RedisBackends.redisCache(options);
+        } catch (NoClassDefFoundError e) {
+            throw missingOptionalDependency("redis", "redis.clients:jedis", e);
+        }
     }
 
     /**
-     * Creates a Redis cluster backend from the configured cluster node list.
+     * Creates a Redis cluster backend without loading Jedis unless Redis Cluster is selected.
      *
      * @param options cache options
      * @return Redis cluster cache
      */
     private CacheX<String, Object> redisClusterCache(Options options) {
-        Options.Redis redis = redis(options);
-        String nodes = StringKit.isNotBlank(redis.getNodes()) ? redis.getNodes() : options.getNodes();
-        if (StringKit.isBlank(nodes)) {
-            Logger.warn(false, "Cache", "Redis cluster cache initialization rejected: nodeCount=0");
-            throw new IllegalArgumentException("cache.redis.nodes is required for redis-cluster cache");
-        }
-        long nodeCount = Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank).count();
-        Logger.info(true, "Cache", "Redis cluster cache initialization started: nodeCount={}", nodeCount);
-        Set<HostAndPort> hostAndPorts = Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank)
-                .map(this::hostAndPort).collect(Collectors.toSet());
-        CacheX<String, Object> cache = new RedisClusterCache<>(new JedisCluster(hostAndPorts));
-        Logger.info(false, "Cache", "Redis cluster cache initialization completed: nodeCount={}", hostAndPorts.size());
-        return cache;
-    }
-
-    /**
-     * Parses one {@code host:port} entry into a Jedis node descriptor.
-     *
-     * @param value node text in {@code host:port} format
-     * @return parsed node
-     */
-    private HostAndPort hostAndPort(String value) {
-        String[] parts = value.split(":");
-        if (parts.length != 2) {
-            Logger.warn(
-                    false,
-                    "Cache",
-                    "Cache node parsing rejected: partCount={}, nodePresent={}",
-                    parts.length,
-                    StringKit.isNotBlank(value));
-            throw new IllegalArgumentException("Invalid cache node format, expected host:port: " + value);
-        }
         try {
-            return new HostAndPort(parts[0], Integer.parseInt(parts[1]));
-        } catch (NumberFormatException e) {
-            Logger.warn(
-                    false,
-                    "Cache",
-                    e,
-                    "Cache node parsing failed: hostPresent={}, portPresent={}, exception={}",
-                    StringKit.isNotBlank(parts[0]),
-                    StringKit.isNotBlank(parts[1]),
-                    e.getClass().getSimpleName());
-            throw new IllegalArgumentException("Invalid port in cache node: " + value, e);
+            return RedisBackends.redisClusterCache(options);
+        } catch (NoClassDefFoundError e) {
+            throw missingOptionalDependency("redis-cluster", "redis.clients:jedis", e);
         }
     }
 
     /**
-     * Returns the Redis-specific options block, creating a default one when absent.
+     * Creates an exception for a selected backend whose optional client library is absent.
      *
-     * @param options cache options
-     * @return Redis options
+     * @param type       backend type
+     * @param dependency required dependency coordinate
+     * @param cause      missing class error
+     * @return configuration exception
      */
-    private Options.Redis redis(Options options) {
-        return options.getRedis() == null ? new Options.Redis() : options.getRedis();
+    private IllegalArgumentException missingOptionalDependency(String type, String dependency, NoClassDefFoundError cause) {
+        Logger.error(
+                false,
+                "Cache",
+                cause,
+                "Cache backend creation failed: type={}, missingDependency={}",
+                type,
+                dependency);
+        return new IllegalArgumentException(
+                "Cache backend '" + type + "' requires optional dependency " + dependency, cause);
     }
 
     /**

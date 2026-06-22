@@ -27,14 +27,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 
 import org.miaixz.bus.auth.cache.AuthCache;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.cache.CacheFactoryProvider;
 
 /**
  * Auto-configuration class for authorization, responsible for setting up authorization-related beans.
@@ -73,7 +71,6 @@ import org.miaixz.bus.starter.cache.CacheFactoryProvider;
  */
 @EnableConfigurationProperties(value = { AuthProperties.class })
 @ConditionalOnProperty(prefix = GeniusBuilder.AUTH, name = "enabled", havingValue = "true", matchIfMissing = true)
-@Import(CacheFactoryProvider.class)
 public class AuthConfiguration {
 
     /**
@@ -119,17 +116,17 @@ public class AuthConfiguration {
      * <li>If neither auth nor global cache is configured, fall back to {@link AuthCache#INSTANCE}.</li>
      * </ul>
      *
-     * @param factory              shared cache factory
      * @param defaultCacheProvider shared default cache provider
+     * @param factoryProvider      optional shared cache factory provider
      * @return authorization cache implementation
      */
     @Bean("authCache")
     @ConditionalOnMissingBean(name = "authCache")
     public CacheX<String, Object> authCache(
-            Factory factory,
-            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider) {
+            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider,
+            ObjectProvider<Factory> factoryProvider) {
         if (hasAuthBackend()) {
-            return factory.initialize(this.properties.getCache());
+            return factoryProvider.getIfAvailable(Factory::new).initialize(this.properties.getCache());
         }
         CacheX<String, Object> defaultCache = defaultCacheProvider.getIfAvailable();
         return defaultCache != null ? defaultCache : AuthCache.INSTANCE;

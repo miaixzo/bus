@@ -28,7 +28,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
@@ -36,7 +35,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.cache.PayCache;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.cache.CacheFactoryProvider;
 
 /**
  * Auto-configuration for the integrated payment service. This class sets up the necessary beans for the payment
@@ -47,7 +45,6 @@ import org.miaixz.bus.starter.cache.CacheFactoryProvider;
  */
 @EnableConfigurationProperties(value = { PayProperties.class })
 @ConditionalOnProperty(prefix = GeniusBuilder.PAY, name = "enabled", havingValue = "true", matchIfMissing = true)
-@Import(CacheFactoryProvider.class)
 public class PayConfiguration {
 
     /**
@@ -89,8 +86,8 @@ public class PayConfiguration {
      * <li>If neither pay nor global cache is configured, fall back to {@link PayCache#INSTANCE}.</li>
      * </ul>
      *
-     * @param factory              shared cache factory
      * @param defaultCacheProvider shared default cache provider
+     * @param factoryProvider      optional shared cache factory provider
      * @return payment cache implementation
      *
      */
@@ -98,10 +95,10 @@ public class PayConfiguration {
     @ConditionalOnBean(Complex.class)
     @ConditionalOnMissingBean(name = "payCache")
     public CacheX<String, Object> payCache(
-            Factory factory,
-            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider) {
+            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider,
+            ObjectProvider<Factory> factoryProvider) {
         if (hasPayBackend()) {
-            return factory.initialize(this.properties.getCache());
+            return factoryProvider.getIfAvailable(Factory::new).initialize(this.properties.getCache());
         }
         CacheX<String, Object> defaultCache = defaultCacheProvider.getIfAvailable();
         return defaultCache != null ? defaultCache : PayCache.INSTANCE;
