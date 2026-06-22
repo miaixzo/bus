@@ -1,41 +1,6 @@
 {
   "reflection": [
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.base.mapper.BaseMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.base.mapper.Mapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.base.mapper.SharedMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.base.service.BaseService"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.base.service.SharedService"
-        ]
-      }
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
@@ -102,7 +67,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.base.entity.BaseEntity$BaseEntityBuilderImpl"
+      "type": "org.miaixz.bus.base.entity.BaseEntity"
     },
     {
       "condition": {
@@ -111,24 +76,22 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.miaixz.bus.base.entity.BaseEntity$BaseEntityBuilder"
+          ]
         },
         {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
+          "name": "builder",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.base.entity.BaseEntity$BaseEntityBuilderImpl"
+      "type": "org.miaixz.bus.base.entity.BaseEntity"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.base.entity.BaseEntity$BaseEntityBuilderImpl"
+      "type": "org.miaixz.bus.base.entity.BaseEntity"
     },
     {
       "condition": {
@@ -162,7 +125,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.base.entity.BaseEntity"
+      "type": "org.miaixz.bus.base.entity.BaseEntity$BaseEntityBuilderImpl"
     },
     {
       "condition": {
@@ -171,22 +134,31 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.base.entity.BaseEntity$BaseEntityBuilder"
-          ]
+          "parameterTypes": []
         },
         {
-          "name": "builder",
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.base.entity.BaseEntity"
+      "type": "org.miaixz.bus.base.entity.BaseEntity$BaseEntityBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.base.entity.BaseEntity"
+      "type": "org.miaixz.bus.base.entity.BaseEntity$BaseEntityBuilderImpl"
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.base.mapper.BaseMapper"
+        ]
+      }
     },
     {
       "condition": {
@@ -201,6 +173,13 @@
       "type": "org.miaixz.bus.base.mapper.BaseMapper"
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.base.mapper.Mapper"
+        ]
+      }
+    },
+    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
@@ -211,6 +190,13 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.base.mapper.Mapper"
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.base.mapper.SharedMapper"
+        ]
+      }
     },
     {
       "condition": {
@@ -256,6 +242,18 @@
           ]
         },
         {
+          "name": "delete",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.binding.condition.Condition"
+          ]
+        },
+        {
           "name": "deleteByFieldList",
           "parameterTypes": [
             "org.miaixz.bus.mapper.binding.function.Fn",
@@ -272,18 +270,6 @@
           "name": "deleteByIds",
           "parameterTypes": [
             "java.util.Collection"
-          ]
-        },
-        {
-          "name": "delete",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "delete",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.binding.condition.Condition"
           ]
         },
         {
@@ -308,15 +294,15 @@
           ]
         },
         {
-          "name": "insertBatch",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
           "name": "insert",
           "parameterTypes": [
             "java.lang.Object"
+          ]
+        },
+        {
+          "name": "insertBatch",
+          "parameterTypes": [
+            "java.util.List"
           ]
         },
         {
@@ -338,15 +324,15 @@
           ]
         },
         {
-          "name": "insertSelectiveBatch",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
           "name": "insertSelective",
           "parameterTypes": [
             "java.lang.Object"
+          ]
+        },
+        {
+          "name": "insertSelectiveBatch",
+          "parameterTypes": [
+            "java.util.List"
           ]
         },
         {
@@ -518,6 +504,13 @@
       "type": "org.miaixz.bus.base.service.AbstractService"
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.base.service.BaseService"
+        ]
+      }
+    },
+    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
@@ -552,6 +545,13 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.base.service.DefaultService"
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.base.service.SharedService"
+        ]
+      }
     },
     {
       "condition": {
@@ -635,19 +635,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Authorize$AuthorizeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.core.basic.entity.Authorize"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Entity$EntityBuilder"
+      "type": "org.miaixz.bus.core.basic.entity.Authorize$AuthorizeBuilder"
     },
     {
       "condition": {
@@ -659,7 +653,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilder"
+      "type": "org.miaixz.bus.core.basic.entity.Entity$EntityBuilder"
     },
     {
       "condition": {
@@ -671,7 +665,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Query$QueryBuilder"
+      "type": "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilder"
     },
     {
       "condition": {
@@ -683,13 +677,19 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Tracer$TracerBuilder"
+      "type": "org.miaixz.bus.core.basic.entity.Query$QueryBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.core.basic.entity.Tracer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Tracer$TracerBuilder"
     },
     {
       "condition": {

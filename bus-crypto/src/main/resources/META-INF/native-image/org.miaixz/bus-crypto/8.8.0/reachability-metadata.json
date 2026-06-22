@@ -73,13 +73,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.lang.wrapper.SimpleWrapper"
+      "type": "org.miaixz.bus.core.lang.Wrapper"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.lang.Wrapper"
+      "type": "org.miaixz.bus.core.lang.wrapper.SimpleWrapper"
     },
     {
       "condition": {
@@ -356,15 +356,15 @@
           "parameterTypes": []
         },
         {
-          "name": "initCipher",
-          "parameterTypes": []
-        },
-        {
           "name": "init",
           "parameterTypes": [
             "java.lang.String",
             "java.security.KeyPair"
           ]
+        },
+        {
+          "name": "initCipher",
+          "parameterTypes": []
         },
         {
           "name": "initMode",
@@ -474,41 +474,21 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
+      "type": "org.miaixz.bus.crypto.builtin.Certificate"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
+      "type": "org.miaixz.bus.crypto.builtin.Certificate"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
+      "type": "org.miaixz.bus.crypto.builtin.Certificate"
     },
     {
       "condition": {
@@ -538,15 +518,15 @@
           ]
         },
         {
-          "name": "issuerCN",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "issuer",
           "parameterTypes": [
             "java.security.Principal"
+          ]
+        },
+        {
+          "name": "issuerCN",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         },
         {
@@ -592,15 +572,15 @@
           ]
         },
         {
-          "name": "subjectCN",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "subject",
           "parameterTypes": [
             "java.security.Principal"
+          ]
+        },
+        {
+          "name": "subjectCN",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         },
         {
@@ -630,33 +610,15 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.crypto.builtin.Certificate"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.crypto.builtin.Certificate"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.crypto.builtin.Certificate"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
     },
     {
       "condition": {
@@ -665,50 +627,24 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": [
-            "java.security.MessageDigest"
-          ]
-        },
-        {
-          "name": "checkCloneSupport",
-          "parameterTypes": [
-            "java.security.MessageDigest"
-          ]
-        },
-        {
-          "name": "createDigester",
           "parameterTypes": []
         },
         {
-          "name": "createMessageDigester",
+          "name": "build",
           "parameterTypes": []
         },
         {
-          "name": "of",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.security.MessageDigest"
-          ]
-        },
-        {
-          "name": "ofJdk",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
+          "name": "self",
+          "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
+      "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilderImpl"
     },
     {
       "condition": {
@@ -766,6 +702,38 @@
           ]
         },
         {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
           "name": "digestHex",
           "parameterTypes": [
             "byte[]"
@@ -798,38 +766,6 @@
         },
         {
           "name": "digestHex",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.nio.charset.Charset"
-          ]
-        },
-        {
-          "name": "digest",
-          "parameterTypes": [
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "digest",
-          "parameterTypes": [
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "digest",
-          "parameterTypes": [
-            "java.io.InputStream",
-            "int"
-          ]
-        },
-        {
-          "name": "digest",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "digest",
           "parameterTypes": [
             "java.lang.String",
             "java.nio.charset.Charset"
@@ -895,6 +831,70 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.crypto.builtin.digest.Digester"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.MessageDigest"
+          ]
+        },
+        {
+          "name": "checkCloneSupport",
+          "parameterTypes": [
+            "java.security.MessageDigest"
+          ]
+        },
+        {
+          "name": "createDigester",
+          "parameterTypes": []
+        },
+        {
+          "name": "createMessageDigester",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.security.MessageDigest"
+          ]
+        },
+        {
+          "name": "ofJdk",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.DigesterFactory"
     },
     {
       "condition": {
@@ -1038,6 +1038,18 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.Mac"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.builtin.digest.mac.Mac"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
       "type": "org.miaixz.bus.crypto.builtin.digest.mac.MacFactory"
@@ -1080,18 +1092,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.crypto.builtin.digest.mac.MacFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.crypto.builtin.digest.mac.Mac"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.crypto.builtin.digest.mac.Mac"
     },
     {
       "condition": {
@@ -1152,15 +1152,15 @@
           ]
         },
         {
-          "name": "getSaltedMagic",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
           "name": "getSalt",
           "parameterTypes": [
             "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "getSaltedMagic",
+          "parameterTypes": [
+            "byte[]"
           ]
         }
       ],
@@ -2065,48 +2065,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.crypto.center.FPE$FPEMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.crypto.center.FPE$FPEMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.crypto.center.FPE$FPEMode"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
       "type": "org.miaixz.bus.crypto.center.FPE"
@@ -2154,6 +2112,48 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.crypto.center.FPE"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.center.FPE$FPEMode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.crypto.center.FPE$FPEMode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.center.FPE$FPEMode"
     },
     {
       "condition": {
@@ -2326,6 +2326,44 @@
           ]
         },
         {
+          "name": "digest",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
           "name": "digestBase64",
           "parameterTypes": [
             "java.lang.String",
@@ -2341,12 +2379,6 @@
           ]
         },
         {
-          "name": "digest",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
           "name": "digestHex",
           "parameterTypes": [
             "byte[]"
@@ -2379,38 +2411,6 @@
         },
         {
           "name": "digestHex",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.nio.charset.Charset"
-          ]
-        },
-        {
-          "name": "digest",
-          "parameterTypes": [
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "digest",
-          "parameterTypes": [
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "digest",
-          "parameterTypes": [
-            "java.io.InputStream",
-            "int"
-          ]
-        },
-        {
-          "name": "digest",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "digest",
           "parameterTypes": [
             "java.lang.String",
             "java.nio.charset.Charset"
@@ -2812,6 +2812,19 @@
           ]
         },
         {
+          "name": "sign",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "sign",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
           "name": "signHex",
           "parameterTypes": [
             "byte[]"
@@ -2825,19 +2838,6 @@
         },
         {
           "name": "signHex",
-          "parameterTypes": [
-            "java.io.InputStream",
-            "int"
-          ]
-        },
-        {
-          "name": "sign",
-          "parameterTypes": [
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "sign",
           "parameterTypes": [
             "java.io.InputStream",
             "int"
@@ -3330,16 +3330,16 @@
           ]
         },
         {
+          "name": "generate",
+          "parameterTypes": [
+            "java.time.Instant"
+          ]
+        },
+        {
           "name": "generateGoogleSecretKey",
           "parameterTypes": [
             "java.lang.String",
             "int"
-          ]
-        },
-        {
-          "name": "generate",
-          "parameterTypes": [
-            "java.time.Instant"
           ]
         },
         {
@@ -3456,6 +3456,48 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Cipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Cipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.Cipher$Parameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.Cipher$Parameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.BCCipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.BCCipher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.crypto.cipher.BCCipher"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
       "type": "org.miaixz.bus.crypto.cipher.BCCipher$BCParameters"
@@ -3471,58 +3513,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.crypto.cipher.BCCipher$BCParameters"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.crypto.cipher.BCCipher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.crypto.cipher.BCCipher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.crypto.cipher.BCCipher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.security.Key",
-            "java.security.spec.AlgorithmParameterSpec",
-            "java.security.SecureRandom"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
     },
     {
       "condition": {
@@ -3638,27 +3628,37 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.crypto.Cipher$Parameters"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.crypto.Cipher$Parameters"
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.Cipher"
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.Key",
+            "java.security.spec.AlgorithmParameterSpec",
+            "java.security.SecureRandom"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.Cipher"
+      "type": "org.miaixz.bus.crypto.cipher.JceCipher$JceParameters"
     },
     {
       "condition": {
@@ -3690,11 +3690,11 @@
       },
       "methods": [
         {
-          "name": "_createProvider",
+          "name": "<init>",
           "parameterTypes": []
         },
         {
-          "name": "<init>",
+          "name": "_createProvider",
           "parameterTypes": []
         },
         {

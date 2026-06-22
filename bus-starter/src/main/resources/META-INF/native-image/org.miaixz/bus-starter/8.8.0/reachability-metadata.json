@@ -304,14 +304,14 @@
           ]
         },
         {
-          "name": "getColorDistanceCIE94",
+          "name": "getColorDistance",
           "parameterTypes": [
             "java.awt.Color",
             "java.awt.Color"
           ]
         },
         {
-          "name": "getColorDistance",
+          "name": "getColorDistanceCIE94",
           "parameterTypes": [
             "java.awt.Color",
             "java.awt.Color"
@@ -434,17 +434,6 @@
       "type": "org.miaixz.bus.spring.boot.SpringSmartLifecycle"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.spring.boot.StartupReporterAware"
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
@@ -461,6 +450,17 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.spring.boot.StartupReporter"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.spring.boot.StartupReporterAware"
     },
     {
       "allDeclaredConstructors": true,
@@ -659,9 +659,12 @@
           ]
         },
         {
-          "name": "matchesArrayDescriptor",
+          "name": "match",
           "parameterTypes": [
-            "java.lang.String"
+            "java.lang.String[]",
+            "int",
+            "java.lang.String[]",
+            "int"
           ]
         },
         {
@@ -672,6 +675,12 @@
         },
         {
           "name": "matches",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "matchesArrayDescriptor",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -696,15 +705,6 @@
           "parameterTypes": [
             "java.lang.String",
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "match",
-          "parameterTypes": [
-            "java.lang.String[]",
-            "int",
-            "java.lang.String[]",
-            "int"
           ]
         },
         {
@@ -757,28 +757,6 @@
       "type": "org.miaixz.bus.spring.http.CompositeArgumentResolver"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.spring.http.FastjsonMessageConverter$FastJson2HttpMessageConverter"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.spring.http.FastjsonMessageConverter$FastJson2HttpMessageConverter$PatternAutoTypeBeforeHandler"
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
@@ -823,7 +801,18 @@
       "allPublicMethods": true,
       "queryAllDeclaredMethods": true,
       "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.spring.http.GsonMessageConverter$AutoTypeAdapterFactory"
+      "type": "org.miaixz.bus.spring.http.FastjsonMessageConverter$FastJson2HttpMessageConverter"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.spring.http.FastjsonMessageConverter$FastJson2HttpMessageConverter$PatternAutoTypeBeforeHandler"
     },
     {
       "condition": {
@@ -844,6 +833,17 @@
       "type": "org.miaixz.bus.spring.http.GsonMessageConverter"
     },
     {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.spring.http.GsonMessageConverter$AutoTypeAdapterFactory"
+    },
+    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
@@ -854,6 +854,24 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.spring.http.HttpMessageConverter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.spring.http.JacksonMessageConverter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.spring.http.JacksonMessageConverter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.spring.http.JacksonMessageConverter"
     },
     {
       "allDeclaredConstructors": true,
@@ -876,24 +894,6 @@
       "queryAllDeclaredMethods": true,
       "queryAllPublicMethods": true,
       "type": "org.miaixz.bus.spring.http.JacksonMessageConverter$IncludeTransientPropertyFilter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.spring.http.JacksonMessageConverter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.spring.http.JacksonMessageConverter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.spring.http.JacksonMessageConverter"
     },
     {
       "allDeclaredConstructors": true,
@@ -1083,18 +1083,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.spring.metrics.BeanMetricsCustomizer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.spring.metrics.BeanMetricsCustomizer"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.spring.metrics.BeanMetrics"
@@ -1142,6 +1130,18 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.spring.metrics.BeanMetrics"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.spring.metrics.BeanMetricsCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.spring.metrics.BeanMetricsCustomizer"
     },
     {
       "condition": {
@@ -1303,13 +1303,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilderImpl"
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilderImpl"
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
     },
     {
       "condition": {
@@ -1321,21 +1321,29 @@
           "parameterTypes": []
         },
         {
-          "name": "build",
-          "parameterTypes": []
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "boolean",
+            "boolean",
+            "java.lang.String",
+            "boolean"
+          ]
         },
         {
-          "name": "self",
-          "parameterTypes": []
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilder"
+          ]
         }
       ],
-      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilderImpl"
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilderImpl"
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
     },
     {
       "condition": {
@@ -1405,13 +1413,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilderImpl"
     },
     {
       "condition": {
@@ -1423,29 +1431,21 @@
           "parameterTypes": []
         },
         {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean",
-            "boolean",
-            "boolean",
-            "java.lang.String",
-            "boolean"
-          ]
+          "name": "build",
+          "parameterTypes": []
         },
         {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilder"
-          ]
+          "name": "self",
+          "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilderImpl"
     },
     {
       "condition": {
@@ -2074,17 +2074,6 @@
       "type": "org.miaixz.bus.starter.cors.CorsProperties"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.starter.cortex.CortexConfiguration$TypedRegistryStore"
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
@@ -2101,6 +2090,47 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.starter.cortex.CortexConfiguration"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.starter.cortex.CortexConfiguration$TypedRegistryStore"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties"
     },
     {
       "allDeclaredConstructors": true,
@@ -2167,36 +2197,6 @@
       "queryAllDeclaredMethods": true,
       "queryAllPublicMethods": true,
       "type": "org.miaixz.bus.starter.cortex.CortexProperties$Watch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties"
     },
     {
       "condition": {
@@ -2431,17 +2431,6 @@
       "type": "org.miaixz.bus.starter.health.AvailabilityListener"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.starter.health.HealthConfiguration$EnableHealthCondition"
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
@@ -2458,6 +2447,17 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.starter.health.HealthConfiguration"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.starter.health.HealthConfiguration$EnableHealthCondition"
     },
     {
       "condition": {
@@ -2696,6 +2696,86 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.starter.image.ImageProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.image.ImageProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDcmDir",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImgDir",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isOpencv",
+          "parameterTypes": []
+        },
+        {
+          "name": "isServer",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDcmDir",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setImgDir",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setNode",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.image.ImageProperties$Node"
+          ]
+        },
+        {
+          "name": "setOpencv",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setServer",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.starter.image.ImageProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.image.ImageProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.starter.image.ImageProperties$Node"
     },
     {
@@ -2796,86 +2876,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.starter.image.ImageProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.starter.image.ImageProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDcmDir",
-          "parameterTypes": []
-        },
-        {
-          "name": "getImgDir",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isOpencv",
-          "parameterTypes": []
-        },
-        {
-          "name": "isServer",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDcmDir",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setImgDir",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setNode",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.image.ImageProperties$Node"
-          ]
-        },
-        {
-          "name": "setOpencv",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setServer",
-          "parameterTypes": [
-            "boolean"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.starter.image.ImageProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.starter.image.ImageProperties"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
       "type": "org.miaixz.bus.starter.jdbc.AspectjJdbcProxy"
@@ -2905,17 +2905,6 @@
       "type": "org.miaixz.bus.starter.jdbc.AspectjJdbcProxy"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.starter.jdbc.DataSourceHolder"
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
@@ -2926,6 +2915,17 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.starter.jdbc.DataSource"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.starter.jdbc.DataSourceHolder"
     },
     {
       "allDeclaredConstructors": true,
@@ -3268,6 +3268,36 @@
       "type": "org.miaixz.bus.starter.limiter.LimiterService"
     },
     {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors"
+    },
+    {
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
@@ -3299,36 +3329,6 @@
       "queryAllDeclaredMethods": true,
       "queryAllPublicMethods": true,
       "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors$MyBatisMapperFactoryBeanPostProcessor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors"
     },
     {
       "allDeclaredConstructors": true,
@@ -3373,6 +3373,24 @@
       "queryAllDeclaredMethods": true,
       "queryAllPublicMethods": true,
       "type": "org.miaixz.bus.starter.mapper.MapperFactoryBean"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.starter.mapper.MapperPluginBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.mapper.MapperPluginBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.mapper.MapperPluginBuilder"
     },
     {
       "condition": {
@@ -3428,24 +3446,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.starter.mapper.MapperPluginBuilder$ResolvedSchemaDataSource"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.starter.mapper.MapperPluginBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.starter.mapper.MapperPluginBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.starter.mapper.MapperPluginBuilder"
     },
     {
       "allDeclaredConstructors": true,
@@ -3534,6 +3534,146 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.starter.metrics.MetricsEndpoint"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCardinality",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCortex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRateWindow",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSlo",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEndpoint",
+          "parameterTypes": []
+        },
+        {
+          "name": "isHealth",
+          "parameterTypes": []
+        },
+        {
+          "name": "isHttp",
+          "parameterTypes": []
+        },
+        {
+          "name": "isJvm",
+          "parameterTypes": []
+        },
+        {
+          "name": "isSystem",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCardinality",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Cardinality"
+          ]
+        },
+        {
+          "name": "setCortex",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Cortex"
+          ]
+        },
+        {
+          "name": "setEndpoint",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setHealth",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setHttp",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setJvm",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setProvider",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRateWindow",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.metrics.MetricsProperties$RateWindow"
+          ]
+        },
+        {
+          "name": "setSlo",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "setSystem",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties"
     },
     {
       "condition": {
@@ -3889,13 +4029,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.starter.metrics.MetricsProperties"
+      "type": "org.miaixz.bus.starter.mongo.MongoConfiguration"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.starter.metrics.MetricsProperties"
+      "type": "org.miaixz.bus.starter.mongo.MongoConfiguration"
     },
     {
       "condition": {
@@ -3905,137 +4045,27 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "getCardinality",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCortex",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPath",
-          "parameterTypes": []
-        },
-        {
-          "name": "getProvider",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRateWindow",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSlo",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEndpoint",
-          "parameterTypes": []
-        },
-        {
-          "name": "isHealth",
-          "parameterTypes": []
-        },
-        {
-          "name": "isHttp",
-          "parameterTypes": []
-        },
-        {
-          "name": "isJvm",
-          "parameterTypes": []
-        },
-        {
-          "name": "isSystem",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCardinality",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.metrics.MetricsProperties$Cardinality"
-          ]
-        },
-        {
-          "name": "setCortex",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.metrics.MetricsProperties$Cortex"
-          ]
-        },
-        {
-          "name": "setEndpoint",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setHealth",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setHttp",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setJvm",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setPath",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setProvider",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setRateWindow",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.metrics.MetricsProperties$RateWindow"
-          ]
-        },
-        {
-          "name": "setSlo",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setSystem",
-          "parameterTypes": [
-            "boolean"
-          ]
         }
       ],
-      "type": "org.miaixz.bus.starter.metrics.MetricsProperties"
+      "type": "org.miaixz.bus.starter.mongo.MongoConfiguration"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.starter.metrics.MetricsProperties"
+      "type": "org.miaixz.bus.starter.mongo.MongoConfiguration"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.starter.mongo.MongoConfiguration"
+      "type": "org.miaixz.bus.starter.mongo.MongoProperties"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.starter.mongo.MongoConfiguration"
+      "type": "org.miaixz.bus.starter.mongo.MongoProperties"
     },
     {
       "condition": {
@@ -4045,15 +4075,75 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "getCluster",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnectionPool",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeartbeatSocket",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSocket",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSsl",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCluster",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.mongo.MongoProperties$Cluster"
+          ]
+        },
+        {
+          "name": "setConnectionPool",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.mongo.MongoProperties$Connection"
+          ]
+        },
+        {
+          "name": "setHeartbeatSocket",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.mongo.MongoProperties$Socket"
+          ]
+        },
+        {
+          "name": "setServer",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.mongo.MongoProperties$Server"
+          ]
+        },
+        {
+          "name": "setSocket",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.mongo.MongoProperties$Socket"
+          ]
+        },
+        {
+          "name": "setSsl",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.mongo.MongoProperties$Ssl"
+          ]
         }
       ],
-      "type": "org.miaixz.bus.starter.mongo.MongoConfiguration"
+      "type": "org.miaixz.bus.starter.mongo.MongoProperties"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.starter.mongo.MongoConfiguration"
+      "type": "org.miaixz.bus.starter.mongo.MongoProperties"
     },
     {
       "condition": {
@@ -4436,96 +4526,6 @@
       "type": "org.miaixz.bus.starter.mongo.MongoProperties$Ssl"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.starter.mongo.MongoProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.starter.mongo.MongoProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCluster",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectionPool",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHeartbeatSocket",
-          "parameterTypes": []
-        },
-        {
-          "name": "getServer",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSocket",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSsl",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCluster",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Cluster"
-          ]
-        },
-        {
-          "name": "setConnectionPool",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Connection"
-          ]
-        },
-        {
-          "name": "setHeartbeatSocket",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Socket"
-          ]
-        },
-        {
-          "name": "setServer",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Server"
-          ]
-        },
-        {
-          "name": "setSocket",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Socket"
-          ]
-        },
-        {
-          "name": "setSsl",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Ssl"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.starter.mongo.MongoProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.starter.mongo.MongoProperties"
-    },
-    {
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
@@ -4829,106 +4829,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getType",
-          "parameterTypes": []
-        },
-        {
-          "name": "setKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getType",
-          "parameterTypes": []
-        },
-        {
-          "name": "setKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties"
     },
     {
@@ -4984,6 +4884,106 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "setKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "setKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt"
     },
     {
       "condition": {
@@ -5352,6 +5352,36 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.starter.vortex.VortexProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.vortex.VortexProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.starter.vortex.VortexProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.vortex.VortexProperties"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.starter.vortex.VortexProperties$Assets"
@@ -5439,36 +5469,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.starter.vortex.VortexProperties$Assets"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.starter.vortex.VortexProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.starter.vortex.VortexProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.starter.vortex.VortexProperties"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.starter.vortex.VortexProperties"
     },
     {
       "allDeclaredConstructors": true,

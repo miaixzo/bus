@@ -148,6 +148,24 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.metrics.bridge.HealthMetrics"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.metrics.bridge.HealthMetrics"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.metrics.bridge.HealthMetrics"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
       },
       "type": "org.miaixz.bus.metrics.bridge.HealthMetrics$CpuSnapshot"
@@ -210,24 +228,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.metrics.bridge.HealthMetrics$CpuSnapshot"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.metrics.bridge.HealthMetrics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.metrics.bridge.HealthMetrics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.metrics.bridge.HealthMetrics"
     },
     {
       "condition": {
@@ -356,6 +356,43 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.metrics.builtin.CacheMetrics"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.metrics.builtin.CacheMetrics"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "instrument",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.CacheX",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.metrics.builtin.CacheMetrics"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.metrics.builtin.CacheMetrics"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.metrics.builtin.CacheMetrics$InstrumentedCache"
@@ -470,60 +507,23 @@
           ]
         },
         {
-          "name": "resetAll",
-          "parameterTypes": []
-        },
-        {
           "name": "reset",
           "parameterTypes": [
             "java.lang.String"
           ]
-        }
-      ],
-      "type": "org.miaixz.bus.metrics.builtin.CacheMetricsAdapter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.metrics.builtin.CacheMetricsAdapter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.metrics.builtin.CacheMetrics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.metrics.builtin.CacheMetrics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
         },
         {
-          "name": "instrument",
-          "parameterTypes": [
-            "org.miaixz.bus.cache.CacheX",
-            "java.lang.String"
-          ]
+          "name": "resetAll",
+          "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.builtin.CacheMetrics"
+      "type": "org.miaixz.bus.metrics.builtin.CacheMetricsAdapter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.builtin.CacheMetrics"
+      "type": "org.miaixz.bus.metrics.builtin.CacheMetricsAdapter"
     },
     {
       "allDeclaredConstructors": true,
@@ -574,36 +574,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.builtin.SystemMetrics$RuntimeMXBeanHolder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.metrics.builtin.SystemMetrics$RuntimeMXBeanHolder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.metrics.builtin.SystemMetrics$RuntimeMXBeanHolder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.metrics.builtin.SystemMetrics$RuntimeMXBeanHolder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
       "type": "org.miaixz.bus.metrics.builtin.SystemMetrics"
     },
     {
@@ -633,6 +603,36 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.metrics.builtin.SystemMetrics"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.metrics.builtin.SystemMetrics$RuntimeMXBeanHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.metrics.builtin.SystemMetrics$RuntimeMXBeanHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.metrics.builtin.SystemMetrics$RuntimeMXBeanHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.metrics.builtin.SystemMetrics$RuntimeMXBeanHolder"
     },
     {
       "condition": {
@@ -736,6 +736,42 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.metrics.guard.CardinalityGuard"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.metrics.guard.CardinalityPolicy"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "deny",
+          "parameterTypes": []
+        },
+        {
+          "name": "firstN",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "topN",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.metrics.guard.CardinalityPolicy"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.metrics.guard.CardinalityPolicy"
     },
     {
       "condition": {
@@ -856,42 +892,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.metrics.guard.CardinalityPolicy$TopN"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.metrics.guard.CardinalityPolicy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "deny",
-          "parameterTypes": []
-        },
-        {
-          "name": "firstN",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "topN",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.metrics.guard.CardinalityPolicy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.metrics.guard.CardinalityPolicy"
     },
     {
       "condition": {
@@ -1271,6 +1271,48 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.metrics.observe.tag.Tag[]",
+            "org.miaixz.bus.metrics.metric.indigenous.NativeProvider"
+          ]
+        },
+        {
+          "name": "start",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer$NativeLlmSample"
     },
     {
@@ -1320,48 +1362,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer$NativeLlmSample"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.metrics.observe.tag.Tag[]",
-            "org.miaixz.bus.metrics.metric.indigenous.NativeProvider"
-          ]
-        },
-        {
-          "name": "start",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
     },
     {
       "condition": {
@@ -1611,86 +1611,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean",
-            "long",
-            "double",
-            "double",
-            "org.miaixz.bus.metrics.observe.tag.Tag[]",
-            "org.miaixz.bus.metrics.observe.slo.ErrorBudget"
-          ]
-        },
-        {
-          "name": "budget",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isLatency",
-          "parameterTypes": []
-        },
-        {
-          "name": "maxErrorRatio",
-          "parameterTypes": []
-        },
-        {
-          "name": "tags",
-          "parameterTypes": []
-        },
-        {
-          "name": "target",
-          "parameterTypes": []
-        },
-        {
-          "name": "thresholdMs",
-          "parameterTypes": []
-        },
-        {
-          "name": "timerOrMeterName",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker"
@@ -1776,13 +1696,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
     },
     {
       "condition": {
@@ -1792,18 +1712,17 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "double",
+            "java.lang.String",
+            "boolean",
             "long",
-            "int",
-            "java.util.function.Consumer"
+            "double",
+            "double",
+            "org.miaixz.bus.metrics.observe.tag.Tag[]",
+            "org.miaixz.bus.metrics.observe.slo.ErrorBudget"
           ]
         },
         {
-          "name": "callback",
-          "parameterTypes": []
-        },
-        {
-          "name": "checkEvery",
+          "name": "budget",
           "parameterTypes": []
         },
         {
@@ -1817,11 +1736,27 @@
           "parameterTypes": []
         },
         {
-          "name": "percentile",
+          "name": "isLatency",
           "parameterTypes": []
         },
         {
-          "name": "thresholdNanos",
+          "name": "maxErrorRatio",
+          "parameterTypes": []
+        },
+        {
+          "name": "tags",
+          "parameterTypes": []
+        },
+        {
+          "name": "target",
+          "parameterTypes": []
+        },
+        {
+          "name": "thresholdMs",
+          "parameterTypes": []
+        },
+        {
+          "name": "timerOrMeterName",
           "parameterTypes": []
         },
         {
@@ -1829,13 +1764,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
     },
     {
       "condition": {
@@ -1940,15 +1875,15 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
     },
     {
       "condition": {
@@ -1959,17 +1894,49 @@
           "name": "<init>",
           "parameterTypes": [
             "double",
-            "long"
+            "long",
+            "int",
+            "java.util.function.Consumer"
           ]
+        },
+        {
+          "name": "callback",
+          "parameterTypes": []
+        },
+        {
+          "name": "checkEvery",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "percentile",
+          "parameterTypes": []
+        },
+        {
+          "name": "thresholdNanos",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
     },
     {
       "condition": {
@@ -2046,6 +2013,39 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "double",
+            "long"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
     },
     {
       "condition": {
@@ -2225,6 +2225,18 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.metrics.metric.Timer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.metrics.metric.Timer"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
       },
       "type": "org.miaixz.bus.metrics.metric.Timer$ViolationEvent"
@@ -2342,18 +2354,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.metrics.metric.Timer$Window"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.metrics.metric.Timer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.metrics.metric.Timer"
     },
     {
       "condition": {

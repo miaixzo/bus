@@ -1,6 +1,301 @@
 {
   "reflection": [
     {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.ASN1EncodableVector"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.ASN1InputStream"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.ASN1ObjectIdentifier"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.ASN1OutputStream"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.DERBitString"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.DERObjectIdentifier"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.DERSequence"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.gm.GMObjectIdentifiers"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.pkcs.PrivateKeyInfo"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.sec.ECPrivateKey"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.sec.SECObjectIdentifiers"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.util.ASN1Dump"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.x500.style.BCStyle"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.x500.X500Name"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.x500.X500NameBuilder"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.x509.AlgorithmIdentifier"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.x509.Extension"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.x509.Extensions"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.x9.X9ECParameters"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.asn1.x9.X9ObjectIdentifiers"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.cert.CertIOException"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.cert.jcajce.JcaX509CertificateConverter"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.cert.X509v3CertificateBuilder"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.AlphabetMapper"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.DefaultBufferedBlockCipher"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.digests.SHA256Digest"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.digests.SHA512Digest"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.digests.SM3Digest"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.engines.SM2Engine"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.engines.SM4Engine"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.generators.Argon2BytesGenerator"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.macs.CBCBlockCipherMac"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.modes.CBCBlockCipher"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.modes.CFBBlockCipher"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.modes.CTSBlockCipher"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.modes.OFBBlockCipher"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.modes.SICBlockCipher"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.paddings.ISO10126d2Padding"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.paddings.ZeroBytePadding"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.params.Argon2Parameters"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.params.AsymmetricKeyParameter"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.params.ECDomainParameters"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.params.ECPrivateKeyParameters"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.params.ECPublicKeyParameters"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.params.ParametersWithID"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.params.ParametersWithRandom"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.parsers.ECIESPublicKeyParser"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.parsers.Ed25519PublicKeyParser"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.parsers.PublicKeyParser"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.parsers.X25519PublicKeyParser"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.signers.DSAEncoding"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.signers.PlainDSAEncoding"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.signers.SM2Signer"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.signers.StandardDSAEncoding"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.util.OpenSSHPublicKeyUtil"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.crypto.util.SSHUtil"
+    },
+    {
       "methods": [
         {
           "name": "<init>",
@@ -8,6 +303,16 @@
         }
       ],
       "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.AlgorithmParametersSpi"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey"
     },
     {
       "methods": [
@@ -44,6 +349,31 @@
         }
       ],
       "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.KeyPairGeneratorSpi$EC"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jcajce.provider.BouncyCastleProvider"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
     },
     {
       "methods": [
@@ -107,6 +437,149 @@
         }
       ],
       "type": "org.bouncycastle.jcajce.provider.digest.SM3$Digest"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jcajce.spec.FPEParameterSpec"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jcajce.spec.OpenSSHPrivateKeySpec"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jcajce.spec.OpenSSHPublicKeySpec"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jce.ECNamedCurveTable"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jce.interfaces.ECPrivateKey"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jce.spec.ECNamedCurveParameterSpec"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jce.spec.ECNamedCurveSpec"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jce.spec.ECPrivateKeySpec"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.jce.spec.ECPublicKeySpec"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.math.ec.ECCurve"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.math.ec.ECPoint"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.math.ec.FixedPointCombMultiplier"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.operator.jcajce.JcaContentSignerBuilder"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.operator.OperatorCreationException"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.util.Arrays"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.util.BigIntegers"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.util.encoders.Base64"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.util.encoders.Hex"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.util.io.pem.PemObject"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.util.io.pem.PemObjectGenerator"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.util.io.pem.PemReader"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.util.io.pem.PemWriter"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allPublicConstructors": true,
+      "type": "org.bouncycastle.util.Strings"
+    }
+  ],
+  "resources": [
+    {
+      "glob": "**/*.bks"
+    },
+    {
+      "glob": "**/*.crt"
+    },
+    {
+      "glob": "**/*.jks"
+    },
+    {
+      "glob": "**/*.key"
+    },
+    {
+      "glob": "**/*.p12"
+    },
+    {
+      "glob": "**/*.pem"
+    },
+    {
+      "glob": "META-INF/services/**"
     }
   ]
 }

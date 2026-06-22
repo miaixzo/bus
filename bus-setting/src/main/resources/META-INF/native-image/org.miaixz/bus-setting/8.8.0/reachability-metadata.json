@@ -269,6 +269,24 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.setting.Format"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.setting.Format"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.setting.Format"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.setting.format.AbstractFormatter"
@@ -582,42 +600,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.setting.Format"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.setting.Format"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.setting.Format"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.setting.Loader$ValueEditor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.setting.Loader$ValueEditor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.setting.Loader$ValueEditor"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.setting.Loader"
@@ -803,6 +785,24 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.setting.Loader$ValueEditor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.setting.Loader$ValueEditor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.setting.Loader$ValueEditor"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.setting.magic.AbstractSetting"
@@ -829,6 +829,12 @@
           "parameterTypes": []
         },
         {
+          "name": "get",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.function.FunctionX"
+          ]
+        },
+        {
           "name": "getByGroupNotEmpty",
           "parameterTypes": [
             "java.lang.String",
@@ -844,27 +850,6 @@
           ]
         },
         {
-          "name": "get",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.function.FunctionX"
-          ]
-        },
-        {
-          "name": "getStrsByGroup",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "java.lang.CharSequence"
-          ]
-        },
-        {
-          "name": "getStrsByGroup",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "java.lang.CharSequence",
-            "java.lang.CharSequence"
-          ]
-        },
-        {
           "name": "getStrs",
           "parameterTypes": [
             "java.lang.CharSequence",
@@ -875,6 +860,21 @@
           "name": "getStrs",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "getStrsByGroup",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "java.lang.CharSequence"
+          ]
+        },
+        {
+          "name": "getStrsByGroup",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "java.lang.CharSequence",
+            "java.lang.CharSequence"
           ]
         },
         {
@@ -1051,18 +1051,18 @@
           ]
         },
         {
-          "name": "putAll",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        },
-        {
           "name": "put",
           "parameterTypes": [
             "java.lang.String",
             "java.lang.String",
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "putAll",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
           ]
         },
         {
@@ -1437,120 +1437,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentCreator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentCreator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentCreator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniComment"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniComment"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniComment"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "byValue",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueChanged",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniElement"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniElement"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.setting.metric.ini.IniElement"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.setting.metric.ini.INI"
@@ -1603,12 +1489,6 @@
           ]
         },
         {
-          "name": "plusComment",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "plus",
           "parameterTypes": [
             "java.util.List"
@@ -1618,6 +1498,12 @@
           "name": "plus",
           "parameterTypes": [
             "org.miaixz.bus.setting.metric.ini.INI"
+          ]
+        },
+        {
+          "name": "plusComment",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         },
         {
@@ -1714,19 +1600,115 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyCreator"
+      "type": "org.miaixz.bus.setting.metric.ini.IniComment"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyCreator"
+      "type": "org.miaixz.bus.setting.metric.ini.IniComment"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyCreator"
+      "type": "org.miaixz.bus.setting.metric.ini.IniComment"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniCommentCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniCommentCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniCommentCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "byValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueChanged",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniElement"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniElement"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniElement"
     },
     {
       "condition": {
@@ -1745,6 +1727,24 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.setting.metric.ini.IniProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyCreator"
     },
     {
       "condition": {
@@ -1864,37 +1864,37 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionCreator"
+      "type": "org.miaixz.bus.setting.metric.ini.IniSection"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionCreator"
+      "type": "org.miaixz.bus.setting.metric.ini.IniSection"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionCreator"
+      "type": "org.miaixz.bus.setting.metric.ini.IniSection"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSection"
+      "type": "org.miaixz.bus.setting.metric.ini.IniSectionCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSection"
+      "type": "org.miaixz.bus.setting.metric.ini.IniSectionCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSection"
+      "type": "org.miaixz.bus.setting.metric.ini.IniSectionCreator"
     },
     {
       "condition": {
@@ -2205,6 +2205,18 @@
           ]
         },
         {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.function.FunctionX"
+          ]
+        },
+        {
           "name": "getAndRemoveString",
           "parameterTypes": [
             "java.lang.String[]"
@@ -2217,22 +2229,10 @@
           ]
         },
         {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "getObject",
           "parameterTypes": [
             "java.lang.CharSequence",
             "java.lang.Object"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
@@ -2292,16 +2292,16 @@
           ]
         },
         {
-          "name": "setFields",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.function.SupplierX[]"
-          ]
-        },
-        {
           "name": "set",
           "parameterTypes": [
             "java.lang.String",
             "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setFields",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.function.SupplierX[]"
           ]
         },
         {
@@ -2384,15 +2384,15 @@
           "parameterTypes": []
         },
         {
-          "name": "getFirstFound",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
           "name": "get",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "getFirstFound",
+          "parameterTypes": [
+            "java.lang.String[]"
           ]
         }
       ],
@@ -2648,12 +2648,6 @@
           "parameterTypes": []
         },
         {
-          "name": "writeArray",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
           "name": "write",
           "parameterTypes": [
             "char"
@@ -2669,6 +2663,12 @@
           "name": "write",
           "parameterTypes": [
             "java.util.Map"
+          ]
+        },
+        {
+          "name": "writeArray",
+          "parameterTypes": [
+            "java.util.Collection"
           ]
         },
         {
@@ -2891,6 +2891,12 @@
           ]
         },
         {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
           "name": "getAndRemove",
           "parameterTypes": [
             "java.lang.String[]"
@@ -2903,12 +2909,6 @@
         {
           "name": "getGroups",
           "parameterTypes": []
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
         },
         {
           "name": "getMap",
@@ -2983,6 +2983,13 @@
           "parameterTypes": []
         },
         {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "putAll",
           "parameterTypes": [
             "java.lang.String",
@@ -3004,23 +3011,23 @@
           ]
         },
         {
-          "name": "put",
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "set",
           "parameterTypes": [
             "java.lang.String",
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
           ]
         },
         {
@@ -3035,13 +3042,6 @@
           "name": "setFields",
           "parameterTypes": [
             "org.miaixz.bus.core.center.function.SupplierX[]"
-          ]
-        },
-        {
-          "name": "set",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
           ]
         },
         {

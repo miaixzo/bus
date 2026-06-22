@@ -1485,6 +1485,18 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.ftp.Ftp"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.ftp.Ftp"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.extra.ftp.FtpConfig"
@@ -1588,18 +1600,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.extra.ftp.FtpConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ftp.Ftp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ftp.Ftp"
     },
     {
       "condition": {
@@ -1797,39 +1797,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.awt.image.BufferedImage",
-            "int"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.extra.image.gif.GifDecoder"
     },
     {
@@ -1862,14 +1829,14 @@
           ]
         },
         {
-          "name": "getFrameCount",
-          "parameterTypes": []
-        },
-        {
           "name": "getFrame",
           "parameterTypes": [
             "int"
           ]
+        },
+        {
+          "name": "getFrameCount",
+          "parameterTypes": []
         },
         {
           "name": "getFrameSize",
@@ -1890,6 +1857,24 @@
         {
           "name": "read",
           "parameterTypes": []
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.BufferedInputStream"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         },
         {
           "name": "readBlock",
@@ -1916,24 +1901,6 @@
         {
           "name": "readImage",
           "parameterTypes": []
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.BufferedInputStream"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
         },
         {
           "name": "readLSD",
@@ -1967,6 +1934,39 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.extra.image.gif.GifDecoder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.awt.image.BufferedImage",
+            "int"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
     },
     {
       "condition": {
@@ -2491,28 +2491,6 @@
           ]
         },
         {
-          "name": "drawStringColourful",
-          "parameterTypes": [
-            "java.awt.Graphics",
-            "java.lang.String",
-            "java.awt.Font",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "drawStringColourful",
-          "parameterTypes": [
-            "java.awt.Graphics",
-            "java.lang.String",
-            "java.awt.Font",
-            "int",
-            "int",
-            "java.awt.Color",
-            "int"
-          ]
-        },
-        {
           "name": "drawString",
           "parameterTypes": [
             "java.awt.Graphics",
@@ -2541,6 +2519,28 @@
             "java.awt.Font",
             "java.awt.Color",
             "java.awt.Rectangle"
+          ]
+        },
+        {
+          "name": "drawStringColourful",
+          "parameterTypes": [
+            "java.awt.Graphics",
+            "java.lang.String",
+            "java.awt.Font",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "drawStringColourful",
+          "parameterTypes": [
+            "java.awt.Graphics",
+            "java.lang.String",
+            "java.awt.Font",
+            "int",
+            "int",
+            "java.awt.Color",
+            "int"
           ]
         },
         {
@@ -2622,15 +2622,15 @@
           ]
         },
         {
-          "name": "getImageInputStream",
-          "parameterTypes": [
-            "java.io.InputStream"
-          ]
-        },
-        {
           "name": "getImage",
           "parameterTypes": [
             "java.net.URL"
+          ]
+        },
+        {
+          "name": "getImageInputStream",
+          "parameterTypes": [
+            "java.io.InputStream"
           ]
         },
         {
@@ -2742,38 +2742,6 @@
           ]
         },
         {
-          "name": "pressImageFull",
-          "parameterTypes": [
-            "java.awt.Image",
-            "java.awt.Image",
-            "int",
-            "int",
-            "float"
-          ]
-        },
-        {
-          "name": "pressImageFull",
-          "parameterTypes": [
-            "java.io.File",
-            "java.io.File",
-            "java.io.File",
-            "int",
-            "int",
-            "float"
-          ]
-        },
-        {
-          "name": "pressImageFull",
-          "parameterTypes": [
-            "java.io.InputStream",
-            "java.io.OutputStream",
-            "java.io.InputStream",
-            "int",
-            "int",
-            "float"
-          ]
-        },
-        {
           "name": "pressImage",
           "parameterTypes": [
             "java.awt.Image",
@@ -2848,12 +2816,32 @@
           ]
         },
         {
-          "name": "pressTextFull",
+          "name": "pressImageFull",
           "parameterTypes": [
             "java.awt.Image",
-            "java.lang.String",
-            "java.awt.Color",
-            "java.awt.Font",
+            "java.awt.Image",
+            "int",
+            "int",
+            "float"
+          ]
+        },
+        {
+          "name": "pressImageFull",
+          "parameterTypes": [
+            "java.io.File",
+            "java.io.File",
+            "java.io.File",
+            "int",
+            "int",
+            "float"
+          ]
+        },
+        {
+          "name": "pressImageFull",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "java.io.OutputStream",
+            "java.io.InputStream",
             "int",
             "int",
             "float"
@@ -2904,6 +2892,18 @@
             "java.io.InputStream",
             "java.io.OutputStream",
             "org.miaixz.bus.extra.image.ImageText"
+          ]
+        },
+        {
+          "name": "pressTextFull",
+          "parameterTypes": [
+            "java.awt.Image",
+            "java.lang.String",
+            "java.awt.Color",
+            "java.awt.Font",
+            "int",
+            "int",
+            "float"
           ]
         },
         {
@@ -3107,6 +3107,24 @@
           ]
         },
         {
+          "name": "slice",
+          "parameterTypes": [
+            "java.awt.Image",
+            "java.io.File",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "slice",
+          "parameterTypes": [
+            "java.io.File",
+            "java.io.File",
+            "int",
+            "int"
+          ]
+        },
+        {
           "name": "sliceByRowsAndCols",
           "parameterTypes": [
             "java.awt.Image",
@@ -3127,32 +3145,14 @@
           ]
         },
         {
-          "name": "slice",
-          "parameterTypes": [
-            "java.awt.Image",
-            "java.io.File",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "slice",
-          "parameterTypes": [
-            "java.io.File",
-            "java.io.File",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "toBase64DataUri",
+          "name": "toBase64",
           "parameterTypes": [
             "java.awt.Image",
             "java.lang.String"
           ]
         },
         {
-          "name": "toBase64",
+          "name": "toBase64DataUri",
           "parameterTypes": [
             "java.awt.Image",
             "java.lang.String"
@@ -3583,15 +3583,6 @@
           "parameterTypes": []
         },
         {
-          "name": "pressImageFull",
-          "parameterTypes": [
-            "java.awt.Image",
-            "int",
-            "int",
-            "float"
-          ]
-        },
-        {
           "name": "pressImage",
           "parameterTypes": [
             "java.awt.Image",
@@ -3609,11 +3600,9 @@
           ]
         },
         {
-          "name": "pressTextFull",
+          "name": "pressImageFull",
           "parameterTypes": [
-            "java.lang.String",
-            "java.awt.Color",
-            "java.awt.Font",
+            "java.awt.Image",
             "int",
             "int",
             "float"
@@ -3634,6 +3623,17 @@
           "name": "pressText",
           "parameterTypes": [
             "org.miaixz.bus.extra.image.ImageText"
+          ]
+        },
+        {
+          "name": "pressTextFull",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.awt.Color",
+            "java.awt.Font",
+            "int",
+            "int",
+            "float"
           ]
         },
         {
@@ -3944,384 +3944,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder"
@@ -4417,6 +4039,384 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias"
     },
     {
       "condition": {
@@ -4819,6 +4819,42 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.extra.mail.Mail"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.mail.Mail"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.extra.mail.MailAccount"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.extra.mail.Mail"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.mail.Mail"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.extra.mail.MailAccount"
@@ -5090,42 +5126,6 @@
       "type": "org.miaixz.bus.extra.mail.MailKit"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.mail.Mail"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mail.Mail"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.extra.mail.MailAccount"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.extra.mail.Mail"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mail.Mail"
-    },
-    {
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
@@ -5152,25 +5152,25 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.extra.mq.MessageHandler"
+      "type": "org.miaixz.bus.extra.mq.Message"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.extra.mq.MessageHandler"
+      "type": "org.miaixz.bus.extra.mq.Message"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.extra.mq.Message"
+      "type": "org.miaixz.bus.extra.mq.MessageHandler"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.extra.mq.Message"
+      "type": "org.miaixz.bus.extra.mq.MessageHandler"
     },
     {
       "condition": {
@@ -5333,24 +5333,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
       "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer"
@@ -5366,6 +5348,24 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
+      },
+      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage"
     },
     {
       "condition": {
@@ -7543,6 +7543,24 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp$Mode"
@@ -7577,24 +7595,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp$Mode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp"
     },
     {
       "condition": {
@@ -7785,38 +7785,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode"
+      "type": "org.miaixz.bus.extra.template.Template"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode"
+      "type": "org.miaixz.bus.extra.template.Template"
     },
     {
       "condition": {
@@ -7935,6 +7910,43 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
       "type": "org.miaixz.bus.extra.template.TemplateFactory"
@@ -8031,18 +8043,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.extra.template.TemplateKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.Template"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.Template"
     },
     {
       "condition": {

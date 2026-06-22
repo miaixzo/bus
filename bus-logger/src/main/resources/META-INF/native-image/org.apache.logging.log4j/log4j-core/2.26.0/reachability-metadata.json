@@ -688,25 +688,25 @@
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Holder"
       },
-      "type": "org.apache.logging.log4j.core.async.AsyncLoggerConfig$RootLogger"
+      "type": "org.apache.logging.log4j.core.async.AsyncLoggerConfig"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
       },
-      "type": "org.apache.logging.log4j.core.async.AsyncLoggerConfig$RootLogger"
+      "type": "org.apache.logging.log4j.core.async.AsyncLoggerConfig"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Holder"
       },
-      "type": "org.apache.logging.log4j.core.async.AsyncLoggerConfig"
+      "type": "org.apache.logging.log4j.core.async.AsyncLoggerConfig$RootLogger"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
       },
-      "type": "org.apache.logging.log4j.core.async.AsyncLoggerConfig"
+      "type": "org.apache.logging.log4j.core.async.AsyncLoggerConfig$RootLogger"
     },
     {
       "condition": {
@@ -940,25 +940,25 @@
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Holder"
       },
-      "type": "org.apache.logging.log4j.core.config.LoggerConfig$RootLogger"
+      "type": "org.apache.logging.log4j.core.config.LoggerConfig"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
       },
-      "type": "org.apache.logging.log4j.core.config.LoggerConfig$RootLogger"
+      "type": "org.apache.logging.log4j.core.config.LoggerConfig"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Holder"
       },
-      "type": "org.apache.logging.log4j.core.config.LoggerConfig"
+      "type": "org.apache.logging.log4j.core.config.LoggerConfig$RootLogger"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
       },
-      "type": "org.apache.logging.log4j.core.config.LoggerConfig"
+      "type": "org.apache.logging.log4j.core.config.LoggerConfig$RootLogger"
     },
     {
       "condition": {
@@ -2704,25 +2704,25 @@
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Holder"
       },
-      "type": "org.apache.logging.log4j.core.pattern.RegexReplacementConverter"
+      "type": "org.apache.logging.log4j.core.pattern.RegexReplacement"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
       },
-      "type": "org.apache.logging.log4j.core.pattern.RegexReplacementConverter"
+      "type": "org.apache.logging.log4j.core.pattern.RegexReplacement"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Holder"
       },
-      "type": "org.apache.logging.log4j.core.pattern.RegexReplacement"
+      "type": "org.apache.logging.log4j.core.pattern.RegexReplacementConverter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
       },
-      "type": "org.apache.logging.log4j.core.pattern.RegexReplacement"
+      "type": "org.apache.logging.log4j.core.pattern.RegexReplacementConverter"
     },
     {
       "condition": {
@@ -2860,25 +2860,25 @@
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Holder"
       },
-      "type": "org.apache.logging.log4j.core.script.ScriptFile"
+      "type": "org.apache.logging.log4j.core.script.Script"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
       },
-      "type": "org.apache.logging.log4j.core.script.ScriptFile"
+      "type": "org.apache.logging.log4j.core.script.Script"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Holder"
       },
-      "type": "org.apache.logging.log4j.core.script.Script"
+      "type": "org.apache.logging.log4j.core.script.ScriptFile"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
       },
-      "type": "org.apache.logging.log4j.core.script.Script"
+      "type": "org.apache.logging.log4j.core.script.ScriptFile"
     },
     {
       "condition": {

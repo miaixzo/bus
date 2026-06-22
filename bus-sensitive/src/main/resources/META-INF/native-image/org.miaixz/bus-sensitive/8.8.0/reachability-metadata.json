@@ -300,6 +300,14 @@
           ]
         },
         {
+          "name": "process",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.reflect.Field",
+            "java.lang.Object"
+          ]
+        },
+        {
           "name": "processArray",
           "parameterTypes": [
             "java.lang.Class",
@@ -310,14 +318,6 @@
           "name": "processCollection",
           "parameterTypes": [
             "java.util.Collection"
-          ]
-        },
-        {
-          "name": "process",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.reflect.Field",
-            "java.lang.Object"
           ]
         }
       ],
@@ -1192,7 +1192,7 @@
           ]
         },
         {
-          "name": "handleSensitiveEntry",
+          "name": "handleSensitive",
           "parameterTypes": [
             "org.miaixz.bus.sensitive.Context",
             "java.lang.Object",
@@ -1200,7 +1200,7 @@
           ]
         },
         {
-          "name": "handleSensitive",
+          "name": "handleSensitiveEntry",
           "parameterTypes": [
             "org.miaixz.bus.sensitive.Context",
             "java.lang.Object",

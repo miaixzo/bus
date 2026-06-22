@@ -1,27 +1,6 @@
 {
   "reflection": [
     {
-      "type": {
-        "proxy": [
-          "org.apache.ibatis.executor.Executor"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.apache.ibatis.executor.resultset.ResultSetHandler"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.apache.ibatis.executor.statement.StatementHandler"
-        ]
-      }
-    },
-    {
       "methods": [
         {
           "name": "query",
@@ -54,6 +33,13 @@
       "type": "org.apache.ibatis.executor.Executor"
     },
     {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.Executor"
+        ]
+      }
+    },
+    {
       "methods": [
         {
           "name": "handleResultSets",
@@ -63,6 +49,13 @@
         }
       ],
       "type": "org.apache.ibatis.executor.resultset.ResultSetHandler"
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.resultset.ResultSetHandler"
+        ]
+      }
     },
     {
       "allDeclaredFields": true,
@@ -93,6 +86,13 @@
         }
       ],
       "type": "org.apache.ibatis.executor.statement.StatementHandler"
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.statement.StatementHandler"
+        ]
+      }
     },
     {
       "type": "org.apache.ibatis.javassist.util.proxy.MethodFilter"
@@ -236,13 +236,13 @@
   ],
   "resources": [
     {
-      "glob": "**/*Mapper.xml"
-    },
-    {
       "glob": "**/*mapper*.properties"
     },
     {
       "glob": "**/*mapper*.xml"
+    },
+    {
+      "glob": "**/*Mapper.xml"
     },
     {
       "glob": "**/*mybatis-config.xml"

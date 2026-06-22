@@ -85,36 +85,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.logger.Holder"
     },
     {
@@ -170,6 +140,36 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.logger.Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.logger.Holder$InstanceHolder"
     },
     {
       "condition": {
@@ -1123,20 +1123,20 @@
           "parameterTypes": []
         },
         {
-          "name": "logIfEnabled",
+          "name": "log",
           "parameterTypes": [
             "java.lang.String",
-            "org.apache.logging.log4j.Level",
+            "org.miaixz.bus.logger.Level",
             "java.lang.Throwable",
             "java.lang.String",
             "java.lang.Object[]"
           ]
         },
         {
-          "name": "log",
+          "name": "logIfEnabled",
           "parameterTypes": [
             "java.lang.String",
-            "org.miaixz.bus.logger.Level",
+            "org.apache.logging.log4j.Level",
             "java.lang.Throwable",
             "java.lang.String",
             "java.lang.Object[]"
@@ -1739,20 +1739,20 @@
           "parameterTypes": []
         },
         {
-          "name": "logIfEnabled",
+          "name": "log",
           "parameterTypes": [
             "java.lang.String",
-            "java.util.logging.Level",
+            "org.miaixz.bus.logger.Level",
             "java.lang.Throwable",
             "java.lang.String",
             "java.lang.Object[]"
           ]
         },
         {
-          "name": "log",
+          "name": "logIfEnabled",
           "parameterTypes": [
             "java.lang.String",
-            "org.miaixz.bus.logger.Level",
+            "java.util.logging.Level",
             "java.lang.Throwable",
             "java.lang.String",
             "java.lang.Object[]"
