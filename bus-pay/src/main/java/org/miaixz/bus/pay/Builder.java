@@ -104,7 +104,7 @@ public class Builder {
      * @throws Exception If an error occurs.
      */
     public static PrivateKey getSmPrivateKey(byte[] encPrivate) throws Exception {
-        KeyFactory keyFact = KeyFactory.getInstance("EC", new BouncyCastleProvider());
+        KeyFactory keyFact = KeyFactory.getInstance("EC", bouncyCastleProvider());
         return keyFact.generatePrivate(new PKCS8EncodedKeySpec(encPrivate));
     }
 
@@ -116,7 +116,7 @@ public class Builder {
      * @throws Exception If an error occurs.
      */
     public static PublicKey getSmPublicKey(byte[] encPublic) throws Exception {
-        KeyFactory keyFact = KeyFactory.getInstance("EC", new BouncyCastleProvider());
+        KeyFactory keyFact = KeyFactory.getInstance("EC", bouncyCastleProvider());
         return keyFact.generatePublic(new X509EncodedKeySpec(encPublic));
     }
 
@@ -143,8 +143,8 @@ public class Builder {
      */
     public static String sm2SignWithSm3(PrivateKey privateKey, String content) throws Exception {
         // Generate SM2sign with sm3 signature algorithm instance
-        Signature signature = Signature
-                .getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(), new BouncyCastleProvider());
+        Signature signature = Signature.getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(),
+                bouncyCastleProvider());
         // Initialize the signature instance with the private key
         signature.initSign(privateKey);
         // Original text to be signed
@@ -164,7 +164,7 @@ public class Builder {
      * @throws Exception If an error occurs.
      */
     public static byte[] sm3Hash(String content) throws Exception {
-        MessageDigest digest = MessageDigest.getInstance(Algorithm.SM3.getValue(), new BouncyCastleProvider());
+        MessageDigest digest = MessageDigest.getInstance(Algorithm.SM3.getValue(), bouncyCastleProvider());
         byte[] contentDigest = digest.digest(content.getBytes(Charset.UTF_8));
         return Arrays.copyOf(contentDigest, 16);
     }
@@ -181,7 +181,7 @@ public class Builder {
      */
     public static String sm4DecryptToString(String key3, String cipherText, String nonce, String associatedData)
             throws Exception {
-        Cipher cipher = Cipher.getInstance("SM4/GCM/NoPadding", new BouncyCastleProvider());
+        Cipher cipher = Cipher.getInstance("SM4/GCM/NoPadding", bouncyCastleProvider());
         byte[] keyByte = Builder.sm3Hash(key3);
         SecretKeySpec key = new SecretKeySpec(keyByte, "SM4");
         GCMParameterSpec spec = new GCMParameterSpec(128, nonce.getBytes(Charset.UTF_8));
@@ -214,8 +214,8 @@ public class Builder {
      * @throws Exception If an error occurs.
      */
     public static boolean sm4Verify(PublicKey publicKey, String data, String originalSignature) throws Exception {
-        Signature signature = Signature
-                .getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(), new BouncyCastleProvider());
+        Signature signature = Signature.getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(),
+                bouncyCastleProvider());
         signature.initVerify(publicKey);
         // Update the algorithm with the original data to be verified
         signature.update(data.getBytes(Charset.UTF_8));
@@ -574,8 +574,7 @@ public class Builder {
      */
     public static X509Certificate getCertificate(InputStream inputStream) {
         try {
-            Security.addProvider(new BouncyCastleProvider());
-            CertificateFactory cf = CertificateFactory.getInstance("X.509", new BouncyCastleProvider());
+            CertificateFactory cf = CertificateFactory.getInstance("X.509", bouncyCastleProvider());
             X509Certificate cert = (X509Certificate) cf.generateCertificate(inputStream);
             cert.checkValidity();
             return cert;
@@ -604,6 +603,25 @@ public class Builder {
                     e.getClass().getSimpleName());
             throw new RuntimeException("Invalid certificate", e);
         }
+    }
+
+    /**
+     * Returns the registered Bouncy Castle provider, falling back to JVM registration when necessary.
+     *
+     * @return Bouncy Castle provider
+     */
+    private static java.security.Provider bouncyCastleProvider() {
+        java.security.Provider provider = org.miaixz.bus.crypto.Holder.getProvider();
+        if (null != provider) {
+            return provider;
+        }
+        provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
+        if (null != provider) {
+            return provider;
+        }
+        provider = new BouncyCastleProvider();
+        org.miaixz.bus.crypto.Builder.addProvider(provider);
+        return provider;
     }
 
     /**
