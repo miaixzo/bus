@@ -153,8 +153,8 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
      */
     @Override
     public void configureMessageConverters(HttpMessageConverters.ServerBuilder builder) {
-        builder.withStringConverter(createStringConverter())
-                .configureMessageConvertersList(converters -> configureJsonConverters(converters, getJsonConfigurers()));
+        builder.withStringConverter(createStringConverter()).configureMessageConvertersList(
+                converters -> configureJsonConverters(converters, getJsonConfigurers()));
     }
 
     /**

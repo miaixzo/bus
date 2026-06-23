@@ -143,8 +143,8 @@ public class Builder {
      */
     public static String sm2SignWithSm3(PrivateKey privateKey, String content) throws Exception {
         // Generate SM2sign with sm3 signature algorithm instance
-        Signature signature = Signature.getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(),
-                bouncyCastleProvider());
+        Signature signature = Signature
+                .getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(), bouncyCastleProvider());
         // Initialize the signature instance with the private key
         signature.initSign(privateKey);
         // Original text to be signed
@@ -214,8 +214,8 @@ public class Builder {
      * @throws Exception If an error occurs.
      */
     public static boolean sm4Verify(PublicKey publicKey, String data, String originalSignature) throws Exception {
-        Signature signature = Signature.getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(),
-                bouncyCastleProvider());
+        Signature signature = Signature
+                .getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(), bouncyCastleProvider());
         signature.initVerify(publicKey);
         // Update the algorithm with the original data to be verified
         signature.update(data.getBytes(Charset.UTF_8));

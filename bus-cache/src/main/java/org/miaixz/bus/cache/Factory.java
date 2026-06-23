@@ -295,7 +295,10 @@ public class Factory {
      * @param cause      missing class error
      * @return configuration exception
      */
-    private IllegalArgumentException missingOptionalDependency(String type, String dependency, NoClassDefFoundError cause) {
+    private IllegalArgumentException missingOptionalDependency(
+            String type,
+            String dependency,
+            NoClassDefFoundError cause) {
         Logger.error(
                 false,
                 "Cache",
@@ -303,8 +306,8 @@ public class Factory {
                 "Cache backend creation failed: type={}, missingDependency={}",
                 type,
                 dependency);
-        return new IllegalArgumentException(
-                "Cache backend '" + type + "' requires optional dependency " + dependency, cause);
+        return new IllegalArgumentException("Cache backend '" + type + "' requires optional dependency " + dependency,
+                cause);
     }
 
     /**

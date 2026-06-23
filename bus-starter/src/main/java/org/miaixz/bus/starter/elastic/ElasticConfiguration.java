@@ -55,7 +55,7 @@ import co.elastic.clients.transport.rest5_client.low_level.Rest5ClientBuilder;
  * @author Kimi Liu
  * @since Java 21+
  */
-@EnableConfigurationProperties(value = {ElasticProperties.class})
+@EnableConfigurationProperties(value = { ElasticProperties.class })
 @ConditionalOnProperty(prefix = GeniusBuilder.ELASTIC, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class ElasticConfiguration {
 

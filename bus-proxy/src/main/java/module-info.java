@@ -25,7 +25,6 @@
  */
 module bus.proxy {
 
-
     requires bus.core;
     requires bus.logger;
 
