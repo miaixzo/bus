@@ -828,6 +828,12 @@
     },
     {
       "allDeclaredFields": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
       "type": "org.miaixz.bus.core.basic.entity.Authorize"
     },
     {

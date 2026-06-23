@@ -17658,6 +17658,78 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.cortex.Watch$WatchBuilderImpl"
+    },
+    {
+      "type": "org.miaixz.bus.cortex.registry.RegistryChange",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.registry.RegistryChange$Action",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.registry.api.ApiAssets",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.registry.api.ApiAssets$Meta",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.registry.mcp.McpAssets",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.registry.mcp.McpAssets$Meta",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.registry.prompt.PromptAssets",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.registry.prompt.PromptAssets$Meta",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true
     }
   ],
   "resources": [

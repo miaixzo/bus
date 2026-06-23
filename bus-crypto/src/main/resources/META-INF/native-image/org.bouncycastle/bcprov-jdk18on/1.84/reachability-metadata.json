@@ -580,6 +580,27 @@
     },
     {
       "glob": "META-INF/services/**"
+    },
+    {
+      "glob": "org/bouncycastle/**"
+    },
+    {
+      "glob": "org/bouncycastle/asn1/**"
+    },
+    {
+      "glob": "org/bouncycastle/crypto/**"
+    },
+    {
+      "glob": "org/bouncycastle/jcajce/**"
+    },
+    {
+      "glob": "org/bouncycastle/jce/**"
+    },
+    {
+      "glob": "org/bouncycastle/pkix/**"
+    },
+    {
+      "glob": "org/bouncycastle/util/**"
     }
   ]
 }
