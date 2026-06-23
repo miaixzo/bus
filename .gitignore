@@ -383,6 +383,7 @@ typings/
 
 # LLM assistant local files
 .claude/
+.codex/
 .cursor/
 .aider*
 .roo/

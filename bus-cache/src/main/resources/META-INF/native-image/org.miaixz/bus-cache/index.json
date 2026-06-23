@@ -8,7 +8,8 @@
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-cache/$version$/bus-cache-$version$-javadoc.jar",
     "description": "Bus Cache provides cache abstractions and integrations backed by local and external cache providers.",
     "tested-versions": [
-      "8.8.0"
+      "8.8.0",
+      "8.8.1"
     ],
     "allowed-packages": [
       "org.miaixz"

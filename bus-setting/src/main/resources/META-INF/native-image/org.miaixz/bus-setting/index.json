@@ -8,7 +8,8 @@
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-setting/$version$/bus-setting-$version$-javadoc.jar",
     "description": "Bus Setting provides configuration loading, properties, YAML, TOML, and settings utilities.",
     "tested-versions": [
-      "8.8.0"
+      "8.8.0",
+      "8.8.1"
     ],
     "allowed-packages": [
       "org.miaixz"

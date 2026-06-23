@@ -8,7 +8,8 @@
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-gitlab/$version$/bus-gitlab-$version$-javadoc.jar",
     "description": "Bus Gitlab provides GitLab API models and client integration support.",
     "tested-versions": [
-      "8.8.0"
+      "8.8.0",
+      "8.8.1"
     ],
     "allowed-packages": [
       "org.miaixz"

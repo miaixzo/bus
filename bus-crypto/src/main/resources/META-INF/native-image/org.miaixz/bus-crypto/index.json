@@ -8,7 +8,8 @@
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-crypto/$version$/bus-crypto-$version$-javadoc.jar",
     "description": "Bus Crypto provides cryptographic helpers, key, digest, certificate, signature, and symmetric/asymmetric encryption utilities.",
     "tested-versions": [
-      "8.8.0"
+      "8.8.0",
+      "8.8.1"
     ],
     "allowed-packages": [
       "org.miaixz"

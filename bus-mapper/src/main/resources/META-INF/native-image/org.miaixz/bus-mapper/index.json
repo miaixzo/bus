@@ -8,7 +8,8 @@
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-mapper/$version$/bus-mapper-$version$-javadoc.jar",
     "description": "Bus Mapper provides MyBatis mapper integration, SQL generation, dialect, provider, and schema mapping support.",
     "tested-versions": [
-      "8.8.0"
+      "8.8.0",
+      "8.8.1"
     ],
     "allowed-packages": [
       "org.miaixz"

@@ -8,7 +8,8 @@
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-shade/$version$/bus-shade-$version$-javadoc.jar",
     "description": "Bus Shade provides shaded dependency helpers and relocated integration resources used by Bus modules.",
     "tested-versions": [
-      "8.8.0"
+      "8.8.0",
+      "8.8.1"
     ],
     "allowed-packages": [
       "org.miaixz"
