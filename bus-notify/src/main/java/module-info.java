@@ -32,9 +32,9 @@ module bus.notify {
     requires bus.http;
     requires bus.logger;
 
-    requires lombok;
-    requires jakarta.activation;
-    requires jakarta.mail;
+    requires static lombok;
+    requires static jakarta.activation;
+    requires static jakarta.mail;
 
     exports org.miaixz.bus.notify;
     exports org.miaixz.bus.notify.cache;

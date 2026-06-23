@@ -628,37 +628,37 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.InEnum"
+      "type": "org.miaixz.bus.validate.magic.annotation.In"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.InEnum"
+      "type": "org.miaixz.bus.validate.magic.annotation.In"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.InEnum"
+      "type": "org.miaixz.bus.validate.magic.annotation.In"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.In"
+      "type": "org.miaixz.bus.validate.magic.annotation.InEnum"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.In"
+      "type": "org.miaixz.bus.validate.magic.annotation.InEnum"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.In"
+      "type": "org.miaixz.bus.validate.magic.annotation.InEnum"
     },
     {
       "condition": {
@@ -952,37 +952,37 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.ValidEx"
+      "type": "org.miaixz.bus.validate.magic.annotation.Valid"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.ValidEx"
+      "type": "org.miaixz.bus.validate.magic.annotation.Valid"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.ValidEx"
+      "type": "org.miaixz.bus.validate.magic.annotation.Valid"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.Valid"
+      "type": "org.miaixz.bus.validate.magic.annotation.ValidEx"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.Valid"
+      "type": "org.miaixz.bus.validate.magic.annotation.ValidEx"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.magic.annotation.Valid"
+      "type": "org.miaixz.bus.validate.magic.annotation.ValidEx"
     },
     {
       "condition": {
@@ -1025,16 +1025,16 @@
           ]
         },
         {
-          "name": "doCollectionInside",
-          "parameterTypes": [
-            "org.miaixz.bus.validate.Verified"
-          ]
-        },
-        {
           "name": "doCollection",
           "parameterTypes": [
             "org.miaixz.bus.validate.Verified",
             "org.miaixz.bus.validate.magic.Criterion"
+          ]
+        },
+        {
+          "name": "doCollectionInside",
+          "parameterTypes": [
+            "org.miaixz.bus.validate.Verified"
           ]
         },
         {

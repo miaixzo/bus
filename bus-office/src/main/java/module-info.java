@@ -31,13 +31,13 @@ module bus.office {
     requires bus.core;
     requires bus.logger;
 
-    requires lombok;
-    requires ofdrw.converter;
-    requires ofdrw.font;
-    requires ofdrw.layout;
-    requires ofdrw.reader;
-    requires org.apache.poi.poi;
-    requires org.apache.poi.ooxml;
+    requires static lombok;
+    requires static ofdrw.converter;
+    requires static ofdrw.font;
+    requires static ofdrw.layout;
+    requires static ofdrw.reader;
+    requires static org.apache.poi.poi;
+    requires static org.apache.poi.ooxml;
 
     exports org.miaixz.bus.office;
     exports org.miaixz.bus.office.builtin;

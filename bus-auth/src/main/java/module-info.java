@@ -34,9 +34,9 @@ module bus.auth {
     requires bus.http;
     requires bus.logger;
 
-    requires lombok;
-    requires org.bouncycastle.provider;
-    requires org.bouncycastle.pkix;
+    requires static lombok;
+    requires static org.bouncycastle.provider;
+    requires static org.bouncycastle.pkix;
 
     exports org.miaixz.bus.auth;
     exports org.miaixz.bus.auth.cache;

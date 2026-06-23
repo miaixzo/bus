@@ -220,7 +220,6 @@ mvn help:effective-pom
             <artifactId>bus-core</artifactId>
             <version>8.x.x</version>
         </dependency>
-        <!-- ... 其他依赖 ... -->
     </dependencies>
 </dependencyManagement>
 ```

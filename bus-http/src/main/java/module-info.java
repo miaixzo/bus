@@ -28,8 +28,8 @@ module bus.http {
     requires bus.core;
     requires bus.logger;
 
-    requires lombok;
-    requires jakarta.xml.soap;
+    requires static lombok;
+    requires static jakarta.xml.soap;
 
     exports org.miaixz.bus.http;
     exports org.miaixz.bus.http.accord;

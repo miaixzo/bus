@@ -145,19 +145,49 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.lang.wrapper.SimpleWrapper"
+      "type": "org.miaixz.bus.core.lang.Wrapper"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.lang.Wrapper"
+      "type": "org.miaixz.bus.core.lang.wrapper.SimpleWrapper"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
       },
       "type": "org.miaixz.bus.core.xyz.LookupKit"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.office.Archive"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.Archive"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.office.Archive"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.Archive"
     },
     {
       "condition": {
@@ -494,46 +524,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "java.lang.String",
-            "java.io.File",
-            "java.io.File",
-            "java.io.DataOutputStream",
-            "java.util.List",
-            "java.util.Map",
-            "long",
-            "long"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.office.Archive$Writer"
     },
     {
@@ -569,25 +559,6 @@
           "parameterTypes": []
         },
         {
-          "name": "appendAll",
-          "parameterTypes": [
-            "int",
-            "java.lang.String",
-            "long",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "appendAll",
-          "parameterTypes": [
-            "int",
-            "java.lang.String",
-            "long",
-            "java.util.List",
-            "java.util.Map"
-          ]
-        },
-        {
           "name": "append",
           "parameterTypes": [
             "int",
@@ -603,6 +574,25 @@
             "java.lang.String",
             "long",
             "byte[]",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "appendAll",
+          "parameterTypes": [
+            "int",
+            "java.lang.String",
+            "long",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "appendAll",
+          "parameterTypes": [
+            "int",
+            "java.lang.String",
+            "long",
+            "java.util.List",
             "java.util.Map"
           ]
         },
@@ -663,15 +653,15 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.office.Archive"
+      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.office.Archive"
+      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
     },
     {
       "condition": {
@@ -680,16 +670,173 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "int",
+            "java.lang.String",
+            "java.io.File",
+            "java.io.File",
+            "java.io.DataOutputStream",
+            "java.util.List",
+            "java.util.Map",
+            "long",
+            "long"
+          ]
         }
       ],
-      "type": "org.miaixz.bus.office.Archive"
+      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.office.Archive"
+      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.Broker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.Broker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.office.Broker$FileBroker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.Broker$FileBroker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.office.Bundle$Codec"
+          ]
+        },
+        {
+          "name": "abort",
+          "parameterTypes": [
+            "org.miaixz.bus.office.Broker$FileBroker$Session"
+          ]
+        },
+        {
+          "name": "append",
+          "parameterTypes": [
+            "org.miaixz.bus.office.Broker$FileBroker$Session",
+            "int",
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "appendAll",
+          "parameterTypes": [
+            "org.miaixz.bus.office.Broker$FileBroker$Session",
+            "int",
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "java.util.List",
+            "int",
+            "long"
+          ]
+        },
+        {
+          "name": "deleteRecursively",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "describe",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "ensureWritable",
+          "parameterTypes": [
+            "org.miaixz.bus.office.Broker$FileBroker$Session"
+          ]
+        },
+        {
+          "name": "fetch",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "finish",
+          "parameterTypes": [
+            "org.miaixz.bus.office.Broker$FileBroker$Session"
+          ]
+        },
+        {
+          "name": "open",
+          "parameterTypes": [
+            "int",
+            "long"
+          ]
+        },
+        {
+          "name": "release",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resolveHandleDir",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resolveRootDir",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveSegmentState",
+          "parameterTypes": [
+            "org.miaixz.bus.office.Broker$FileBroker$Session",
+            "int",
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.office.Broker$FileBroker"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.Broker$FileBroker"
     },
     {
       "condition": {
@@ -827,153 +974,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.office.Broker$FileBroker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.office.Bundle$Codec"
-          ]
-        },
-        {
-          "name": "abort",
-          "parameterTypes": [
-            "org.miaixz.bus.office.Broker$FileBroker$Session"
-          ]
-        },
-        {
-          "name": "appendAll",
-          "parameterTypes": [
-            "org.miaixz.bus.office.Broker$FileBroker$Session",
-            "int",
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "append",
-          "parameterTypes": [
-            "org.miaixz.bus.office.Broker$FileBroker$Session",
-            "int",
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "clear",
-          "parameterTypes": []
-        },
-        {
-          "name": "create",
-          "parameterTypes": [
-            "java.util.List",
-            "int",
-            "long"
-          ]
-        },
-        {
-          "name": "deleteRecursively",
-          "parameterTypes": [
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "describe",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "ensureWritable",
-          "parameterTypes": [
-            "org.miaixz.bus.office.Broker$FileBroker$Session"
-          ]
-        },
-        {
-          "name": "fetch",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "finish",
-          "parameterTypes": [
-            "org.miaixz.bus.office.Broker$FileBroker$Session"
-          ]
-        },
-        {
-          "name": "open",
-          "parameterTypes": [
-            "int",
-            "long"
-          ]
-        },
-        {
-          "name": "release",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "resolveHandleDir",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "resolveRootDir",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveSegmentState",
-          "parameterTypes": [
-            "org.miaixz.bus.office.Broker$FileBroker$Session",
-            "int",
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.office.Broker$FileBroker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Broker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Broker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.office.Builder"
     },
     {
@@ -1244,27 +1244,15 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.office.Bundle$Codec"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Codec"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
+      "type": "org.miaixz.bus.office.Bundle"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
+      "type": "org.miaixz.bus.office.Bundle"
     },
     {
       "condition": {
@@ -1274,95 +1262,27 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "attributes",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "expiresAt",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "handleId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "items",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "pageNo",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "pageSize",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "previewRows",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "segmentCount",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "segmentIndex",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "segmentName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "totalItems",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "total",
-          "parameterTypes": [
-            "long"
-          ]
         }
       ],
-      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
+      "type": "org.miaixz.bus.office.Bundle"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
+      "type": "org.miaixz.bus.office.Bundle"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.Bundle$Codec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.Bundle$Codec"
     },
     {
       "condition": {
@@ -1519,13 +1439,13 @@
           ]
         },
         {
-          "name": "setTotalItems",
+          "name": "setTotal",
           "parameterTypes": [
             "long"
           ]
         },
         {
-          "name": "setTotal",
+          "name": "setTotalItems",
           "parameterTypes": [
             "long"
           ]
@@ -1538,6 +1458,116 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.office.Bundle$Paged"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributes",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "expiresAt",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "handleId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "items",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "pageNo",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "pageSize",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "previewRows",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "segmentCount",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "segmentIndex",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "segmentName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "total",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "totalItems",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
     },
     {
       "condition": {
@@ -1603,36 +1633,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.office.Bundle$Segment"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Bundle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Bundle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.office.Bundle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Bundle"
     },
     {
       "condition": {
@@ -1716,19 +1716,6 @@
           ]
         },
         {
-          "name": "readFromString",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "readFromString",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.core.center.function.ConsumerX"
-          ]
-        },
-        {
           "name": "read",
           "parameterTypes": [
             "java.io.File"
@@ -1785,18 +1772,31 @@
           ]
         },
         {
-          "name": "readMapList",
-          "parameterTypes": [
-            "java.io.Reader",
-            "boolean"
-          ]
-        },
-        {
           "name": "read",
           "parameterTypes": [
             "org.miaixz.bus.office.csv.CsvParser",
             "boolean",
             "org.miaixz.bus.core.center.function.ConsumerX"
+          ]
+        },
+        {
+          "name": "readFromString",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readFromString",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.core.center.function.ConsumerX"
+          ]
+        },
+        {
+          "name": "readMapList",
+          "parameterTypes": [
+            "java.io.Reader",
+            "boolean"
           ]
         },
         {
@@ -1938,14 +1938,14 @@
           "parameterTypes": []
         },
         {
-          "name": "getRowCount",
-          "parameterTypes": []
-        },
-        {
           "name": "getRow",
           "parameterTypes": [
             "int"
           ]
+        },
+        {
+          "name": "getRowCount",
+          "parameterTypes": []
         },
         {
           "name": "getRows",
@@ -2355,6 +2355,12 @@
           ]
         },
         {
+          "name": "get",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
           "name": "getByName",
           "parameterTypes": [
             "java.lang.String"
@@ -2363,12 +2369,6 @@
         {
           "name": "getFieldMap",
           "parameterTypes": []
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "int"
-          ]
         },
         {
           "name": "getOriginalLineNumber",
@@ -2640,6 +2640,24 @@
           ]
         },
         {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.Iterable"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.String[][]"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "org.miaixz.bus.office.csv.CsvData"
+          ]
+        },
+        {
           "name": "writeBeans",
           "parameterTypes": [
             "java.lang.Iterable",
@@ -2667,18 +2685,6 @@
           ]
         },
         {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.Iterable"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String[][]"
-          ]
-        },
-        {
           "name": "writeLine",
           "parameterTypes": []
         },
@@ -2686,12 +2692,6 @@
           "name": "writeLine",
           "parameterTypes": [
             "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "org.miaixz.bus.office.csv.CsvData"
           ]
         }
       ],
@@ -2870,6 +2870,18 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetter"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
       "type": "org.miaixz.bus.office.excel.cell.setters.CellSetterFactory"
@@ -2903,18 +2915,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.office.excel.cell.setters.CellSetterFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetter"
     },
     {
       "condition": {
@@ -3720,6 +3720,39 @@
           ]
         },
         {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.File",
+            "java.io.InputStream",
+            "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
+            "org.miaixz.bus.office.excel.sax.handler.RowHandler"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.File",
+            "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
+            "org.miaixz.bus.office.excel.sax.handler.RowHandler"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
+            "org.miaixz.bus.office.excel.sax.handler.RowHandler"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
+            "org.miaixz.bus.office.excel.sax.handler.RowHandler"
+          ]
+        },
+        {
           "name": "readBySax",
           "parameterTypes": [
             "java.io.File",
@@ -3803,39 +3836,6 @@
           "name": "readInStreaming",
           "parameterTypes": [
             "java.io.InputStream",
-            "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
-            "org.miaixz.bus.office.excel.sax.handler.RowHandler"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.File",
-            "java.io.InputStream",
-            "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
-            "org.miaixz.bus.office.excel.sax.handler.RowHandler"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.File",
-            "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
-            "org.miaixz.bus.office.excel.sax.handler.RowHandler"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.InputStream",
-            "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
-            "org.miaixz.bus.office.excel.sax.handler.RowHandler"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.lang.String",
             "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
             "org.miaixz.bus.office.excel.sax.handler.RowHandler"
           ]
@@ -4001,129 +4001,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$BatchRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$BatchRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$ContextBatchRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$ContextBatchRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "fillInStackTrace",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.office.excel.reader.ExcelReadState$SheetContext",
-            "long",
-            "long",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "endRowIndex",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "rows",
-          "parameterTypes": []
-        },
-        {
-          "name": "sheet",
-          "parameterTypes": []
-        },
-        {
-          "name": "startRowIndex",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.office.excel.reader.BigExcelReader"
@@ -4280,20 +4157,6 @@
           "parameterTypes": []
         },
         {
-          "name": "readBatch",
-          "parameterTypes": [
-            "int",
-            "org.miaixz.bus.office.excel.reader.BigExcelReader$BatchRowHandler"
-          ]
-        },
-        {
-          "name": "readBatchWithContext",
-          "parameterTypes": [
-            "int",
-            "org.miaixz.bus.office.excel.reader.BigExcelReader$ContextBatchRowHandler"
-          ]
-        },
-        {
           "name": "read",
           "parameterTypes": [
             "int[]",
@@ -4312,6 +4175,20 @@
           "name": "read",
           "parameterTypes": [
             "org.miaixz.bus.office.excel.sax.handler.RowHandler"
+          ]
+        },
+        {
+          "name": "readBatch",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.office.excel.reader.BigExcelReader$BatchRowHandler"
+          ]
+        },
+        {
+          "name": "readBatchWithContext",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.office.excel.reader.BigExcelReader$ContextBatchRowHandler"
           ]
         },
         {
@@ -4362,6 +4239,129 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$BatchRowHandler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$BatchRowHandler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$ContextBatchRowHandler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$ContextBatchRowHandler"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "fillInStackTrace",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.office.excel.reader.ExcelReadState$SheetContext",
+            "long",
+            "long",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "endRowIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "rows",
+          "parameterTypes": []
+        },
+        {
+          "name": "sheet",
+          "parameterTypes": []
+        },
+        {
+          "name": "startRowIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
       "type": "org.miaixz.bus.office.excel.reader.ColumnSheetReader"
@@ -4393,43 +4393,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.office.excel.reader.ColumnSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode"
     },
     {
       "condition": {
@@ -4593,6 +4556,43 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
       "type": "org.miaixz.bus.office.excel.reader.ExcelReader"
@@ -4620,6 +4620,36 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.office.excel.reader.ExcelReadListener"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
     },
     {
       "condition": {
@@ -4810,36 +4840,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$WorkbookContext"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
     },
     {
       "condition": {
@@ -6147,6 +6147,24 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.office.ppt.PptShape"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.office.ppt.PptShape"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.office.ppt.PptShape"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.office.ppt.PptShape$Data"
@@ -6281,24 +6299,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.office.ppt.PptShape$Type"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptShape"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptShape"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptShape"
     },
     {
       "condition": {

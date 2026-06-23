@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverters;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
@@ -145,22 +146,15 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     }
 
     /**
-     * Configures the list of Spring MVC message converters. Adds {@link StringHttpMessageConverter} and JSON converters
-     * in order. Ensures that at least one JSON framework (Jackson, Fastjson, or custom configurer) is available,
-     * otherwise throws an exception.
+     * Configures the Spring MVC message converter builder. Replaces the default string converter and registers JSON
+     * converters through Spring 7's builder API.
      *
-     * @param converters The list of message converters to configure.
-     * @throws IllegalStateException if no JSON configurer is available.
+     * @param builder The message converter builder to configure.
      */
     @Override
-    public void configureMessageConverters(
-            List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
-        // Configure StringHttpMessageConverter to support string conversion
-        configureConverter(converters, this::configureStringConverter, "StringHttpMessageConverter");
-
-        // Configure JSON converters; users can customize by implementing JsonConverterConfigurer and marking with
-        // @Component
-        configureJsonConverters(converters, getJsonConfigurers());
+    public void configureMessageConverters(HttpMessageConverters.ServerBuilder builder) {
+        builder.withStringConverter(createStringConverter()).configureMessageConvertersList(
+                converters -> configureJsonConverters(converters, getJsonConfigurers()));
     }
 
     /**
@@ -270,14 +264,23 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
         /**
          * String message converter instance, using UTF-8 encoding.
          */
-        StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(Charset.UTF_8);
-        stringConverter.setSupportedMediaTypes(DEFAULT_MEDIA_TYPES);
-        converters.add(stringConverter);
+        converters.add(createStringConverter());
         Logger.debug(
                 false,
                 "Starter",
                 "StringHttpMessageConverter configured with media types: {}",
                 DEFAULT_MEDIA_TYPES);
+    }
+
+    /**
+     * Creates the {@link StringHttpMessageConverter} used by Spring MVC.
+     *
+     * @return UTF-8 string converter
+     */
+    protected StringHttpMessageConverter createStringConverter() {
+        StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(Charset.UTF_8);
+        stringConverter.setSupportedMediaTypes(DEFAULT_MEDIA_TYPES);
+        return stringConverter;
     }
 
 }

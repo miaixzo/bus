@@ -121,13 +121,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.limiter.Context$ContextBuilderImpl"
+      "type": "org.miaixz.bus.limiter.Context"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.limiter.Context$ContextBuilderImpl"
+      "type": "org.miaixz.bus.limiter.Context"
     },
     {
       "condition": {
@@ -135,25 +135,88 @@
       },
       "methods": [
         {
+          "name": "$default$logger",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$seconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$supplier",
+          "parameterTypes": []
+        },
+        {
           "name": "<init>",
           "parameterTypes": []
         },
         {
-          "name": "build",
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "boolean",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.limiter.Context$ContextBuilder"
+          ]
+        },
+        {
+          "name": "builder",
           "parameterTypes": []
         },
         {
-          "name": "self",
+          "name": "getExtension",
           "parameterTypes": []
+        },
+        {
+          "name": "getSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSupplier",
+          "parameterTypes": []
+        },
+        {
+          "name": "isLogger",
+          "parameterTypes": []
+        },
+        {
+          "name": "setExtension",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setLogger",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setSupplier",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ],
-      "type": "org.miaixz.bus.limiter.Context$ContextBuilderImpl"
+      "type": "org.miaixz.bus.limiter.Context"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.limiter.Context$ContextBuilderImpl"
+      "type": "org.miaixz.bus.limiter.Context"
     },
     {
       "condition": {
@@ -217,13 +280,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.limiter.Context"
+      "type": "org.miaixz.bus.limiter.Context$ContextBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.limiter.Context"
+      "type": "org.miaixz.bus.limiter.Context$ContextBuilderImpl"
     },
     {
       "condition": {
@@ -235,84 +298,21 @@
           "parameterTypes": []
         },
         {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "boolean",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.limiter.Context$ContextBuilder"
-          ]
-        },
-        {
-          "name": "$default$logger",
+          "name": "build",
           "parameterTypes": []
         },
         {
-          "name": "$default$seconds",
+          "name": "self",
           "parameterTypes": []
-        },
-        {
-          "name": "$default$supplier",
-          "parameterTypes": []
-        },
-        {
-          "name": "builder",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExtension",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSupplier",
-          "parameterTypes": []
-        },
-        {
-          "name": "isLogger",
-          "parameterTypes": []
-        },
-        {
-          "name": "setExtension",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setLogger",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setSeconds",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setSupplier",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
         }
       ],
-      "type": "org.miaixz.bus.limiter.Context"
+      "type": "org.miaixz.bus.limiter.Context$ContextBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.limiter.Context"
+      "type": "org.miaixz.bus.limiter.Context$ContextBuilderImpl"
     },
     {
       "condition": {
@@ -662,50 +662,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.limiter.magic.annotation.Limiting"
-          ]
-        },
-        {
-          "name": "isAllow",
-          "parameterTypes": []
-        },
-        {
-          "name": "isExpire",
-          "parameterTypes": []
-        },
-        {
-          "name": "reset",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.limiter.metric.ResourceManager"
     },
     {
@@ -754,6 +710,50 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.limiter.metric.ResourceManager"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.limiter.magic.annotation.Limiting"
+          ]
+        },
+        {
+          "name": "isAllow",
+          "parameterTypes": []
+        },
+        {
+          "name": "isExpire",
+          "parameterTypes": []
+        },
+        {
+          "name": "reset",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
     },
     {
       "condition": {

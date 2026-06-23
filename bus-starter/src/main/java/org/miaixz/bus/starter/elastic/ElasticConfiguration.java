@@ -19,12 +19,13 @@
 */
 package org.miaixz.bus.starter.elastic;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.annotation.Resource;
 
-import org.apache.hc.core5.http.HttpHost;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -90,7 +91,7 @@ public class ElasticConfiguration {
                     "Initialization of RestClient failed: Elasticsearch cluster host information is not configured.");
         }
 
-        HttpHost[] hosts = this.properties.getHostList().stream().map(this::buildHttpHost).toArray(HttpHost[]::new);
+        URI[] hosts = this.properties.getHostList().stream().map(this::buildUri).toArray(URI[]::new);
 
         Rest5ClientBuilder restClientBuilder = Rest5Client.builder(hosts);
 
@@ -129,20 +130,26 @@ public class ElasticConfiguration {
     }
 
     /**
-     * Helper method to build an {@link HttpHost} from a host string (e.g., "ip:port").
+     * Helper method to build a {@link URI} from a host string (e.g., "ip:port").
      *
      * @param host The host string.
-     * @return A new {@link HttpHost} instance.
+     * @return A new {@link URI} instance.
      * @throws InternalException if the host string format is incorrect.
      */
-    private HttpHost buildHttpHost(String host) {
+    private URI buildUri(String host) {
         if (StringKit.isBlank(host) || !host.contains(Symbol.COLON)) {
             throw new InternalException(
                     "Incorrect Elasticsearch cluster node information configuration. Correct format is [ip1:port,ip2:port...]");
         }
         List<String> hostPort = StringKit.split(host, Symbol.COLON);
-        return new HttpHost(this.properties.getSchema(), hostPort.get(Consts.INTEGER_ZERO),
-                Integer.parseInt(hostPort.get(Consts.INTEGER_ONE)));
+        try {
+            return new URI(this.properties.getSchema(), null, hostPort.get(Consts.INTEGER_ZERO),
+                    Integer.parseInt(hostPort.get(Consts.INTEGER_ONE)), null, null, null);
+        } catch (URISyntaxException e) {
+            throw new InternalException(
+                    "Incorrect Elasticsearch cluster node information configuration. Correct format is [ip1:port,ip2:port...]",
+                    e);
+        }
     }
 
 }

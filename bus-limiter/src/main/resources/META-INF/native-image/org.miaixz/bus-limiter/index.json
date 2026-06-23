@@ -8,7 +8,8 @@
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-limiter/$version$/bus-limiter-$version$-javadoc.jar",
     "description": "Bus Limiter provides rate limiting, token bucket, sliding window, and distributed limiter support.",
     "tested-versions": [
-      "8.8.0"
+      "8.8.0",
+      "8.8.1"
     ],
     "allowed-packages": [
       "org.miaixz"

@@ -41,6 +41,11 @@ import org.miaixz.bus.logger.Logger;
 public class Holder implements org.miaixz.bus.core.Holder {
 
     /**
+     * Standard Bouncy Castle provider name.
+     */
+    private static final String BOUNCY_CASTLE_PROVIDER_NAME = "BC";
+
+    /**
      * Constructs a new Holder instance.
      */
     public Holder() {
@@ -93,6 +98,17 @@ public class Holder implements org.miaixz.bus.core.Holder {
      *         the JDK's default JCE providers will be used).
      */
     private static java.security.Provider _createProvider() {
+        final java.security.Provider registered = java.security.Security.getProvider(BOUNCY_CASTLE_PROVIDER_NAME);
+        if (null != registered) {
+            Logger.info(
+                    false,
+                    "Crypto",
+                    "Crypto SPI provider reused: providerName={}, providerVersion={}",
+                    registered.getName(),
+                    registered.getVersionStr());
+            return registered;
+        }
+
         Logger.debug(
                 true,
                 "Crypto",

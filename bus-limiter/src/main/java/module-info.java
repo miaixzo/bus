@@ -31,9 +31,9 @@ module bus.limiter {
     requires bus.extra;
     requires bus.logger;
 
-    requires lombok;
-    requires net.bytebuddy;
-    requires sentinel.core;
+    requires static lombok;
+    requires static net.bytebuddy;
+    requires static sentinel.core;
 
     exports org.miaixz.bus.limiter;
     exports org.miaixz.bus.limiter.magic;

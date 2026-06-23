@@ -609,11 +609,14 @@ public class Builder {
      * @param provider The {@link java.security.Provider} to add.
      */
     public static void addProvider(final java.security.Provider provider) {
+        if (null == provider) {
+            return;
+        }
         if (ArrayKit.contains(Security.getProviders(), provider)) {
             // If the provider is already registered, do not re-register
             return;
         }
-        Security.insertProviderAt(provider, 0);
+        Security.insertProviderAt(provider, 1);
     }
 
     /**

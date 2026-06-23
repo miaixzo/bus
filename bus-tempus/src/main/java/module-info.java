@@ -31,8 +31,8 @@ module bus.tempus {
     requires bus.logger;
     requires bus.setting;
 
-    requires lombok;
-    requires temporal.sdk;
+    requires static lombok;
+    requires static temporal.sdk;
 
     exports org.miaixz.bus.tempus;
     exports org.miaixz.bus.tempus.crontab;

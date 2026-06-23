@@ -38,8 +38,8 @@ module bus.cortex {
     requires bus.http;
     requires bus.logger;
 
-    requires lombok;
-    requires jakarta.persistence;
+    requires static lombok;
+    requires static jakarta.persistence;
 
     exports org.miaixz.bus.cortex;
     exports org.miaixz.bus.cortex.bridge;

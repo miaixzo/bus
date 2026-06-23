@@ -8,7 +8,8 @@
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-starter/$version$/bus-starter-$version$-javadoc.jar",
     "description": "Bus Starter provides Spring Boot auto-configuration, mapper, metrics, and Bus application starter integration.",
     "tested-versions": [
-      "8.8.0"
+      "8.8.0",
+      "8.8.1"
     ],
     "allowed-packages": [
       "org.miaixz"

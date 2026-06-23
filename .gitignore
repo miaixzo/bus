@@ -378,12 +378,12 @@ typings/
 # next.js build output
 .next
 
-# flatten-maven-plugin index file
-.flattened-pom.xml
-.groom-pom.xml
+# groom-maven-plugin index file
+.groomed-pom.xml
 
 # LLM assistant local files
 .claude/
+.codex/
 .cursor/
 .aider*
 .roo/

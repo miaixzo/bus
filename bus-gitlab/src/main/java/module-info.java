@@ -30,15 +30,15 @@ module bus.gitlab {
     requires bus.core;
     requires bus.logger;
 
-    requires lombok;
-    requires jakarta.annotation;
-    requires jakarta.servlet;
-    requires jakarta.ws.rs;
-    requires tools.jackson.core;
-    requires tools.jackson.databind;
-    requires org.glassfish.jersey.core.client;
-    requires org.glassfish.jersey.core.common;
-    requires org.glassfish.jersey.media.multipart;
+    requires static lombok;
+    requires static jakarta.annotation;
+    requires static jakarta.servlet;
+    requires static jakarta.ws.rs;
+    requires static tools.jackson.core;
+    requires static tools.jackson.databind;
+    requires static org.glassfish.jersey.core.client;
+    requires static org.glassfish.jersey.core.common;
+    requires static org.glassfish.jersey.media.multipart;
 
     exports org.miaixz.bus.gitlab;
     exports org.miaixz.bus.gitlab.hooks.system;

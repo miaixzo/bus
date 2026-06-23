@@ -8,7 +8,8 @@
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-http/$version$/bus-http-$version$-javadoc.jar",
     "description": "Bus Http provides HTTP client, request, response, cookie, upload, and protocol utilities.",
     "tested-versions": [
-      "8.8.0"
+      "8.8.0",
+      "8.8.1"
     ],
     "allowed-packages": [
       "org.miaixz"

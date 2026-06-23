@@ -157,7 +157,7 @@
         <maven.central.version>0.11.0</maven.central.version>
         <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.version>3.15.0</maven.compiler.version>
-        <maven.groom.version>2.1.5</maven.groom.version>
+        <maven.groom.version>2.1.8</maven.groom.version>
         <maven.gpg.version>3.2.8</maven.gpg.version>
         <maven.javadoc.version>3.12.0</maven.javadoc.version>
         <maven.native.version>1.1.2</maven.native.version>

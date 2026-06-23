@@ -35,9 +35,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import io.temporal.activity.ActivityOptions;
 import io.temporal.activity.ActivityInterface;
 import io.temporal.activity.ActivityMethod;
+import io.temporal.activity.ActivityOptions;
 import io.temporal.activity.DynamicActivity;
 import io.temporal.worker.TypeAlreadyRegisteredException;
 import io.temporal.worker.Worker;
@@ -68,8 +68,8 @@ public final class NativeWorkflowAdapter {
     /**
      * Registers activity implementations with a Temporal worker.
      * <p>
-     * Bypasses Temporal 1.35 metadata validation methods that hard-link Jackson 2 while preserving the same activity type
-     * naming rules used by Temporal.
+     * Bypasses Temporal 1.35 metadata validation methods that hard-link Jackson 2 while preserving the same activity
+     * type naming rules used by Temporal.
      *
      * @param worker     Temporal worker
      * @param activities activity implementations
@@ -89,8 +89,7 @@ public final class NativeWorkflowAdapter {
                 }
                 for (Map.Entry<String, Method> entry : activityMethods(activity).entrySet()) {
                     if (registered.containsKey(entry.getKey())) {
-                        throw new TypeAlreadyRegisteredException(
-                                entry.getKey(),
+                        throw new TypeAlreadyRegisteredException(entry.getKey(),
                                 "\"" + entry.getKey() + "\" activity type is already registered with the worker");
                     }
                     registered.put(entry.getKey(), activityExecutor(taskHandler, activity, entry.getValue()));
@@ -104,9 +103,9 @@ public final class NativeWorkflowAdapter {
     /**
      * Registers a single-argument workflow using Temporal dynamic workflow dispatch.
      * <p>
-     * Temporal 1.35 loads an internal utility class that hard-links Jackson 2 while scanning POJO workflow metadata. This
-     * path keeps the public workflow type unchanged and delegates execution to the original handler without loading the
-     * Jackson 2-bound metadata utility.
+     * Temporal 1.35 loads an internal utility class that hard-links Jackson 2 while scanning POJO workflow metadata.
+     * This path keeps the public workflow type unchanged and delegates execution to the original handler without
+     * loading the Jackson 2-bound metadata utility.
      *
      * @param worker       Temporal worker
      * @param workflowType Temporal workflow type
@@ -156,7 +155,8 @@ public final class NativeWorkflowAdapter {
                     args == null ? new Object[0] : args);
             return defaultValue(result, method.getReturnType());
         };
-        Object proxy = Proxy.newProxyInstance(activityClass.getClassLoader(), new Class<?>[]{activityClass}, handler);
+        Object proxy = Proxy
+                .newProxyInstance(activityClass.getClassLoader(), new Class<?>[] { activityClass }, handler);
         return activityClass.cast(proxy);
     }
 
@@ -164,8 +164,8 @@ public final class NativeWorkflowAdapter {
      * Resolves all Temporal activity methods declared by the implementation's {@link ActivityInterface} interfaces.
      * <p>
      * The returned map uses the final Temporal activity type name as the key, including {@link ActivityMethod#name()}
-     * overrides and {@link ActivityInterface#namePrefix()} based names. Interface inheritance is traversed explicitly so
-     * inherited activity contracts are registered with the worker as well.
+     * overrides and {@link ActivityInterface#namePrefix()} based names. Interface inheritance is traversed explicitly
+     * so inherited activity contracts are registered with the worker as well.
      *
      * @param activity activity implementation instance
      * @return ordered map of activity type name to Java method
@@ -205,8 +205,8 @@ public final class NativeWorkflowAdapter {
      * Creates Temporal's internal POJO activity executor for the supplied implementation method.
      * <p>
      * This mirrors the SDK's normal executor construction while avoiding the metadata validation path that requires
-     * Jackson 2. The data converter, interceptors, context propagators and execution context factory are reused from the
-     * existing worker task handler.
+     * Jackson 2. The data converter, interceptors, context propagators and execution context factory are reused from
+     * the existing worker task handler.
      *
      * @param taskHandler Temporal internal activity task handler
      * @param activity    activity implementation instance
@@ -216,8 +216,8 @@ public final class NativeWorkflowAdapter {
      */
     private static Object activityExecutor(Object taskHandler, Object activity, Method method)
             throws ReflectiveOperationException {
-        Constructor<?> constructor = Class.forName(
-                        "io.temporal.internal.activity.ActivityTaskExecutors$POJOActivityImplementation")
+        Constructor<?> constructor = Class
+                .forName("io.temporal.internal.activity.ActivityTaskExecutors$POJOActivityImplementation")
                 .getDeclaredConstructor(
                         Method.class,
                         Object.class,
@@ -257,8 +257,8 @@ public final class NativeWorkflowAdapter {
     /**
      * Locates the {@link ActivityInterface} annotation that applies to an activity method.
      * <p>
-     * The method declaring interface is checked first because that is the normal Temporal contract location. The activity
-     * class itself is used as a fallback for implementations that place the annotation directly on the class.
+     * The method declaring interface is checked first because that is the normal Temporal contract location. The
+     * activity class itself is used as a fallback for implementations that place the annotation directly on the class.
      *
      * @param activityClass activity interface or implementation class used by the proxy
      * @param method        invoked activity method
@@ -321,10 +321,10 @@ public final class NativeWorkflowAdapter {
     /**
      * Handles {@link Object} methods invoked on a generated activity proxy.
      * <p>
-     * Activity method calls are dispatched to Temporal, but {@code toString}, {@code hashCode} and {@code equals} must be
-     * answered locally to keep proxy identity behavior stable.
+     * Activity method calls are dispatched to Temporal, but {@code toString}, {@code hashCode} and {@code equals} must
+     * be answered locally to keep proxy identity behavior stable.
      *
-     * @param proxy generated activity proxy
+     * @param proxy  generated activity proxy
      * @param method invoked {@link Object} method
      * @param args   invocation arguments
      * @return local result for the invoked {@link Object} method

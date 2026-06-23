@@ -37,8 +37,8 @@ module bus.image {
     requires bus.opencv;
     requires bus.setting;
 
-    requires lombok;
-    requires jakarta.json;
+    requires static lombok;
+    requires static jakarta.json;
 
     exports org.miaixz.bus.image;
     exports org.miaixz.bus.image.builtin;

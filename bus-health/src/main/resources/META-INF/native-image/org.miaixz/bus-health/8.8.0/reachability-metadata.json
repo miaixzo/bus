@@ -109,80 +109,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.builtin.Cpu$CpuBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.Cpu$CpuBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "ioWait",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "logicalCores",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "physicalCores",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "systemUsage",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "totalUsage",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "userUsage",
-          "parameterTypes": [
-            "double"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.health.builtin.Cpu$CpuBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.Cpu$CpuBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.health.builtin.Cpu"
     },
     {
@@ -288,13 +214,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.builtin.Disk$DiskBuilder"
+      "type": "org.miaixz.bus.health.builtin.Cpu$CpuBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.Disk$DiskBuilder"
+      "type": "org.miaixz.bus.health.builtin.Cpu$CpuBuilder"
     },
     {
       "condition": {
@@ -310,51 +236,27 @@
           "parameterTypes": []
         },
         {
-          "name": "description",
+          "name": "ioWait",
           "parameterTypes": [
-            "java.lang.String"
+            "double"
           ]
         },
         {
-          "name": "deviceName",
+          "name": "logicalCores",
           "parameterTypes": [
-            "java.lang.String"
+            "int"
           ]
         },
         {
-          "name": "filesystemType",
+          "name": "physicalCores",
           "parameterTypes": [
-            "java.lang.String"
+            "int"
           ]
         },
         {
-          "name": "freeSpace",
+          "name": "systemUsage",
           "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "label",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "logicalVolumeName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "mountOptions",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "mountPoint",
-          "parameterTypes": [
-            "java.lang.String"
+            "double"
           ]
         },
         {
@@ -362,43 +264,25 @@
           "parameterTypes": []
         },
         {
-          "name": "totalSpace",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "usagePercent",
+          "name": "totalUsage",
           "parameterTypes": [
             "double"
           ]
         },
         {
-          "name": "usedSpace",
+          "name": "userUsage",
           "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "uuid",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "volumeName",
-          "parameterTypes": [
-            "java.lang.String"
+            "double"
           ]
         }
       ],
-      "type": "org.miaixz.bus.health.builtin.Disk$DiskBuilder"
+      "type": "org.miaixz.bus.health.builtin.Cpu$CpuBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.builtin.Disk$DiskBuilder"
+      "type": "org.miaixz.bus.health.builtin.Cpu$CpuBuilder"
     },
     {
       "condition": {
@@ -584,15 +468,15 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.builtin.gpu.AdlKit$Holder"
+      "type": "org.miaixz.bus.health.builtin.Disk$DiskBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.gpu.AdlKit$Holder"
+      "type": "org.miaixz.bus.health.builtin.Disk$DiskBuilder"
     },
     {
       "condition": {
@@ -602,15 +486,101 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "description",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "deviceName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "filesystemType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "freeSpace",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "label",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "logicalVolumeName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "mountOptions",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "mountPoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "totalSpace",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "usagePercent",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "usedSpace",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "uuid",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "volumeName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ],
-      "type": "org.miaixz.bus.health.builtin.gpu.AdlKit$Holder"
+      "type": "org.miaixz.bus.health.builtin.Disk$DiskBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.builtin.gpu.AdlKit$Holder"
+      "type": "org.miaixz.bus.health.builtin.Disk$DiskBuilder"
     },
     {
       "condition": {
@@ -646,13 +616,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.gpu.NvmlKit$Holder"
+      "type": "org.miaixz.bus.health.builtin.gpu.AdlKit$Holder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.gpu.NvmlKit$Holder"
+      "type": "org.miaixz.bus.health.builtin.gpu.AdlKit$Holder"
     },
     {
       "condition": {
@@ -664,13 +634,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.builtin.gpu.NvmlKit$Holder"
+      "type": "org.miaixz.bus.health.builtin.gpu.AdlKit$Holder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.builtin.gpu.NvmlKit$Holder"
+      "type": "org.miaixz.bus.health.builtin.gpu.AdlKit$Holder"
     },
     {
       "condition": {
@@ -704,6 +674,36 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.gpu.NvmlKit$Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.gpu.NvmlKit$Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.builtin.gpu.NvmlKit$Holder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.gpu.NvmlKit$Holder"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.health.builtin.hardware.Baseboard"
@@ -725,6 +725,18 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.hardware.BluetoothDevice"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor"
     },
     {
       "condition": {
@@ -867,47 +879,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorCache$Type"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorCache$Type"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorCache$Type"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorCache"
@@ -985,6 +956,47 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorCache$Type"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorCache$Type"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorCache$Type"
     },
     {
       "condition": {
@@ -1132,18 +1144,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$TickType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor"
     },
     {
       "condition": {
@@ -2681,6 +2681,18 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
+      "type": "org.miaixz.bus.health.builtin.hardware.NetworkIF"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.hardware.NetworkIF"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
       "type": "org.miaixz.bus.health.builtin.hardware.NetworkIF$IfOperStatus"
     },
     {
@@ -2724,18 +2736,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.hardware.NetworkIF$IfOperStatus"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.hardware.NetworkIF"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.hardware.NetworkIF"
     },
     {
       "condition": {
@@ -2811,6 +2811,18 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
+      "type": "org.miaixz.bus.health.builtin.hardware.PowerSource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.hardware.PowerSource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
       "type": "org.miaixz.bus.health.builtin.hardware.PowerSource$CapacityUnits"
     },
     {
@@ -2848,13 +2860,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.hardware.PowerSource"
+      "type": "org.miaixz.bus.health.builtin.hardware.Printer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.builtin.hardware.PowerSource"
+      "type": "org.miaixz.bus.health.builtin.hardware.Printer"
     },
     {
       "condition": {
@@ -2892,18 +2904,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.hardware.Printer$PrinterStatus"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.hardware.Printer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.hardware.Printer"
     },
     {
       "condition": {
@@ -2952,98 +2952,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.hardware.VirtualMemory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.builtin.Host$HostBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.Host$HostBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "ip",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "osArch",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "os",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "rxBytesPerSecond",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "rxPacketsPerSecond",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "txBytesPerSecond",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "txPacketsPerSecond",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "userDir",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.health.builtin.Host$HostBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.Host$HostBuilder"
     },
     {
       "condition": {
@@ -3133,13 +3041,13 @@
           ]
         },
         {
-          "name": "setOsArch",
+          "name": "setOs",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setOs",
+          "name": "setOsArch",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -3182,6 +3090,110 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.Host"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.builtin.Host$HostBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.Host$HostBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "ip",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "os",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "osArch",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rxBytesPerSecond",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "rxPacketsPerSecond",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "txBytesPerSecond",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "txPacketsPerSecond",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "userDir",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.health.builtin.Host$HostBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.Host$HostBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.jna.Adl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.jna.Adl"
     },
     {
       "allDeclaredConstructors": true,
@@ -3242,13 +3254,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.jna.Adl"
+      "type": "org.miaixz.bus.health.builtin.jna.ByRef"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.builtin.jna.Adl"
+      "type": "org.miaixz.bus.health.builtin.jna.ByRef"
     },
     {
       "allDeclaredConstructors": true,
@@ -3353,13 +3365,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.jna.ByRef"
+      "type": "org.miaixz.bus.health.builtin.jna.Nvml"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.builtin.jna.ByRef"
+      "type": "org.miaixz.bus.health.builtin.jna.Nvml"
     },
     {
       "allDeclaredConstructors": true,
@@ -3409,13 +3421,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.jna.Nvml"
+      "type": "org.miaixz.bus.health.builtin.jna.Struct"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.builtin.jna.Nvml"
+      "type": "org.miaixz.bus.health.builtin.jna.Struct"
     },
     {
       "allDeclaredConstructors": true,
@@ -3617,116 +3629,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.jna.Struct"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.jna.Struct"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.builtin.Jvm$JvmBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.Jvm$JvmBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "freeMemory",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "jdkHome",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "jdkName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "jdkVersion",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "maxMemory",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "startTime",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "totalMemory",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "uptime",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "usagePercent",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "usedMemory",
-          "parameterTypes": [
-            "long"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.health.builtin.Jvm$JvmBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.Jvm$JvmBuilder"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.builtin.Jvm"
@@ -3878,13 +3780,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.builtin.Memory$MemoryBuilder"
+      "type": "org.miaixz.bus.health.builtin.Jvm$JvmBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.Memory$MemoryBuilder"
+      "type": "org.miaixz.bus.health.builtin.Jvm$JvmBuilder"
     },
     {
       "condition": {
@@ -3900,9 +3802,39 @@
           "parameterTypes": []
         },
         {
-          "name": "free",
+          "name": "freeMemory",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "jdkHome",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "jdkName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "jdkVersion",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "maxMemory",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "startTime",
+          "parameterTypes": [
+            "long"
           ]
         },
         {
@@ -3910,31 +3842,37 @@
           "parameterTypes": []
         },
         {
-          "name": "total",
+          "name": "totalMemory",
           "parameterTypes": [
-            "java.lang.String"
+            "long"
           ]
         },
         {
-          "name": "usage",
+          "name": "uptime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "usagePercent",
           "parameterTypes": [
             "double"
           ]
         },
         {
-          "name": "used",
+          "name": "usedMemory",
           "parameterTypes": [
-            "java.lang.String"
+            "long"
           ]
         }
       ],
-      "type": "org.miaixz.bus.health.builtin.Memory$MemoryBuilder"
+      "type": "org.miaixz.bus.health.builtin.Jvm$JvmBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.builtin.Memory$MemoryBuilder"
+      "type": "org.miaixz.bus.health.builtin.Jvm$JvmBuilder"
     },
     {
       "condition": {
@@ -4018,6 +3956,68 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.Memory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.builtin.Memory$MemoryBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.Memory$MemoryBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "free",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "total",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "usage",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "used",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.health.builtin.Memory$MemoryBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.Memory$MemoryBuilder"
     },
     {
       "condition": {
@@ -4516,6 +4516,18 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.software.InternetProtocolStats"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.software.InternetProtocolStats"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.builtin.software.InternetProtocolStats$IPConnection"
@@ -4775,25 +4787,25 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.software.InternetProtocolStats"
+      "type": "org.miaixz.bus.health.builtin.software.NetworkParams"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.builtin.software.InternetProtocolStats"
+      "type": "org.miaixz.bus.health.builtin.software.NetworkParams"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.builtin.software.NetworkParams"
+      "type": "org.miaixz.bus.health.builtin.software.OperatingSystem"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.builtin.software.NetworkParams"
+      "type": "org.miaixz.bus.health.builtin.software.OperatingSystem"
     },
     {
       "condition": {
@@ -4907,18 +4919,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.software.OperatingSystem"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.software.OperatingSystem"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.builtin.software.OSDesktopWindow"
@@ -5003,6 +5003,18 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
+      "type": "org.miaixz.bus.health.builtin.software.OSProcess"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.software.OSProcess"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
       "type": "org.miaixz.bus.health.builtin.software.OSProcess$State"
     },
     {
@@ -5035,55 +5047,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.software.OSProcess$State"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.software.OSProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.software.OSProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.software.OSService$State"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.builtin.software.OSService$State"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.software.OSService$State"
     },
     {
       "condition": {
@@ -5130,6 +5093,43 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.software.OSService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.software.OSService$State"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.builtin.software.OSService$State"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.software.OSService$State"
     },
     {
       "condition": {
@@ -5188,6 +5188,18 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.software.OSThread"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.software.OSThread"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.builtin.software.OSThread$ThreadFiltering"
@@ -5215,18 +5227,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.builtin.software.OSThread$ThreadFiltering"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.builtin.software.OSThread"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.builtin.software.OSThread"
     },
     {
       "condition": {
@@ -5290,10 +5290,6 @@
           ]
         },
         {
-          "name": "getConfig",
-          "parameterTypes": []
-        },
-        {
           "name": "get",
           "parameterTypes": [
             "java.lang.String"
@@ -5328,13 +5324,17 @@
           ]
         },
         {
-          "name": "loadExternalConfig",
+          "name": "getConfig",
+          "parameterTypes": []
+        },
+        {
+          "name": "load",
           "parameterTypes": [
             "java.util.Properties"
           ]
         },
         {
-          "name": "load",
+          "name": "loadExternalConfig",
           "parameterTypes": [
             "java.util.Properties"
           ]
@@ -5486,13 +5486,13 @@
           "parameterTypes": []
         },
         {
-          "name": "formatBytesDecimal",
+          "name": "formatBytes",
           "parameterTypes": [
             "long"
           ]
         },
         {
-          "name": "formatBytes",
+          "name": "formatBytesDecimal",
           "parameterTypes": [
             "long"
           ]
@@ -6089,43 +6089,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.linux.driver.proc.DiskStats$IoStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.linux.driver.proc.DiskStats$IoStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.linux.driver.proc.DiskStats$IoStat"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
       "type": "org.miaixz.bus.health.linux.driver.proc.DiskStats"
@@ -6162,7 +6125,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStatM"
+      "type": "org.miaixz.bus.health.linux.driver.proc.DiskStats$IoStat"
     },
     {
       "condition": {
@@ -6187,50 +6150,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStatM"
+      "type": "org.miaixz.bus.health.linux.driver.proc.DiskStats$IoStat"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStatM"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStat"
+      "type": "org.miaixz.bus.health.linux.driver.proc.DiskStats$IoStat"
     },
     {
       "condition": {
@@ -6305,6 +6231,80 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStatM"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStatM"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStatM"
     },
     {
       "condition": {
@@ -6792,62 +6792,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware$VcGenCmdStrings"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware$VcGenCmdStrings"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getDescription",
-          "parameterTypes": []
-        },
-        {
-          "name": "getManufacturer",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getReleaseDate",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVersion",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware$VcGenCmdStrings"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware$VcGenCmdStrings"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware"
     },
     {
@@ -6923,6 +6867,62 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware$VcGenCmdStrings"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware$VcGenCmdStrings"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDescription",
+          "parameterTypes": []
+        },
+        {
+          "name": "getManufacturer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReleaseDate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware$VcGenCmdStrings"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware$VcGenCmdStrings"
     },
     {
       "condition": {
@@ -7081,77 +7081,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard$Attrs"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard$Attrs"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "long",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getDeviceId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDriverName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDrmDevicePath",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPciBusId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVendor",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVersionInfo",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVram",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard$Attrs"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard$Attrs"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard"
     },
     {
@@ -7248,6 +7177,77 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard$Attrs"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard$Attrs"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDeviceId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDriverName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDrmDevicePath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPciBusId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVendor",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersionInfo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVram",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard$Attrs"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard$Attrs"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.health.linux.hardware.LinuxHardwareAbstractionLayer"
     },
     {
@@ -7336,6 +7336,42 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore$UdevStat"
@@ -7375,42 +7411,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore$UdevStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "long",
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore"
     },
     {
       "condition": {
@@ -7542,15 +7542,15 @@
           ]
         },
         {
-          "name": "queryIfModelFromSysfs",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "queryIfModel",
           "parameterTypes": [
             "java.net.NetworkInterface"
+          ]
+        },
+        {
+          "name": "queryIfModelFromSysfs",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         },
         {
@@ -7565,73 +7565,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.linux.hardware.LinuxNetworkIF"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$PropByName"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$PropByName"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$PropByName"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$PropByName"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$Prop"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$Prop"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$Prop"
     },
     {
       "condition": {
@@ -7705,6 +7638,73 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$Prop"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$Prop"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$Prop"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$PropByName"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$PropByName"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$PropByName"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$PropByName"
     },
     {
       "condition": {
@@ -8453,80 +8453,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$TcpStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$TcpStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$TcpStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$UdpStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$UdpStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$UdpStat"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats"
@@ -8596,6 +8522,80 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$TcpStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$TcpStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$TcpStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$UdpStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$UdpStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$UdpStat"
     },
     {
       "condition": {
@@ -8714,48 +8714,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.linux.software.LinuxOSFileStore"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.linux.software.LinuxOSProcess$ProcPidStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "getOrder",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.linux.software.LinuxOSProcess$ProcPidStat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.linux.software.LinuxOSProcess$ProcPidStat"
     },
     {
       "condition": {
@@ -8978,7 +8936,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.linux.software.LinuxOSThread$ThreadPidStat"
+      "type": "org.miaixz.bus.health.linux.software.LinuxOSProcess$ProcPidStat"
     },
     {
       "condition": {
@@ -9008,13 +8966,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.linux.software.LinuxOSThread$ThreadPidStat"
+      "type": "org.miaixz.bus.health.linux.software.LinuxOSProcess$ProcPidStat"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.linux.software.LinuxOSThread$ThreadPidStat"
+      "type": "org.miaixz.bus.health.linux.software.LinuxOSProcess$ProcPidStat"
     },
     {
       "condition": {
@@ -9100,6 +9058,48 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.linux.software.LinuxOSThread"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.linux.software.LinuxOSThread$ThreadPidStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getOrder",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.linux.software.LinuxOSThread$ThreadPidStat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.linux.software.LinuxOSThread$ThreadPidStat"
     },
     {
       "condition": {
@@ -9197,6 +9197,24 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.health.mac.driver.IOReportClient"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.mac.driver.IOReportClient"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.mac.driver.IOReportClient"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.mac.driver.IOReportClient$ChannelStates"
@@ -9235,19 +9253,19 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.health.mac.driver.IOReportClient"
+      "type": "org.miaixz.bus.health.mac.driver.net.NetStat"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.mac.driver.IOReportClient"
+      "type": "org.miaixz.bus.health.mac.driver.net.NetStat"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.mac.driver.IOReportClient"
+      "type": "org.miaixz.bus.health.mac.driver.net.NetStat"
     },
     {
       "condition": {
@@ -9337,21 +9355,39 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.mac.driver.net.NetStat"
+      "type": "org.miaixz.bus.health.mac.driver.ThreadInfo"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.mac.driver.net.NetStat"
+      "type": "org.miaixz.bus.health.mac.driver.ThreadInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryTaskThreads",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.health.mac.driver.ThreadInfo"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.mac.driver.net.NetStat"
+      "type": "org.miaixz.bus.health.mac.driver.ThreadInfo"
     },
     {
       "condition": {
@@ -9413,42 +9449,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.mac.driver.ThreadInfo$ThreadStats"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.mac.driver.ThreadInfo"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.mac.driver.ThreadInfo"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "queryTaskThreads",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.health.mac.driver.ThreadInfo"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.mac.driver.ThreadInfo"
     },
     {
       "condition": {
@@ -9851,6 +9851,24 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.health.mac.hardware.MacHWDiskStore"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.mac.hardware.MacHWDiskStore"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.mac.hardware.MacHWDiskStore"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.health.mac.hardware.MacHWDiskStore$CFKey"
@@ -9890,24 +9908,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.mac.hardware.MacHWDiskStore$CFKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.health.mac.hardware.MacHWDiskStore"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.mac.hardware.MacHWDiskStore"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.mac.hardware.MacHWDiskStore"
     },
     {
       "condition": {
@@ -10651,24 +10651,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.health.mac.software.MacOperatingSystemJNA"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.mac.software.MacOperatingSystemJNA"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.mac.software.MacOperatingSystemJNA"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.mac.software.MacOperatingSystem"
@@ -10751,6 +10733,24 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.mac.software.MacOperatingSystem"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.health.mac.software.MacOperatingSystemJNA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.mac.software.MacOperatingSystemJNA"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.mac.software.MacOperatingSystemJNA"
     },
     {
       "condition": {
@@ -11436,60 +11436,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.Platform$OS"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.Platform$OS"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.Platform$OS"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.Platform"
@@ -11516,6 +11462,26 @@
         {
           "name": "createOperatingSystem",
           "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
         },
         {
           "name": "getBoolean",
@@ -11553,26 +11519,6 @@
           "parameterTypes": [
             "java.lang.String",
             "int"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
           ]
         },
         {
@@ -11722,6 +11668,60 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.Platform"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.Platform$OS"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.Platform$OS"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.Platform$OS"
     },
     {
       "condition": {
@@ -11887,6 +11887,13 @@
           "parameterTypes": []
         },
         {
+          "name": "append",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
           "name": "appendAllDisk",
           "parameterTypes": [
             "java.lang.String",
@@ -11895,13 +11902,6 @@
         },
         {
           "name": "appendHardware",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "append",
           "parameterTypes": [
             "java.lang.String",
             "java.util.Map"
@@ -11935,6 +11935,12 @@
           ]
         },
         {
+          "name": "get",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
           "name": "getAll",
           "parameterTypes": []
         },
@@ -11957,12 +11963,6 @@
         {
           "name": "getHost",
           "parameterTypes": []
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.util.List"
-          ]
         },
         {
           "name": "getJvm",
@@ -12224,6 +12224,40 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
+      "type": "org.miaixz.bus.health.unix.aix.driver.Ls"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.aix.driver.Ls"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryDeviceMajorMinor",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.unix.aix.driver.Ls"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.unix.aix.driver.Ls"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
       "type": "org.miaixz.bus.health.unix.aix.driver.Lscfg"
     },
     {
@@ -12265,40 +12299,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.unix.aix.driver.Lscfg"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.unix.aix.driver.Ls"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.aix.driver.Ls"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "queryDeviceMajorMinor",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.unix.aix.driver.Ls"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.unix.aix.driver.Ls"
     },
     {
       "condition": {
@@ -12804,44 +12804,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem$LsattrStrings"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem$LsattrStrings"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem$LsattrStrings"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem$LsattrStrings"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem"
     },
     {
@@ -12897,6 +12859,44 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem$LsattrStrings"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem$LsattrStrings"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem$LsattrStrings"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.unix.aix.hardware.AixComputerSystem$LsattrStrings"
     },
     {
       "condition": {
@@ -13662,18 +13662,18 @@
           "parameterTypes": []
         },
         {
+          "name": "getProcess",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
           "name": "getProcessCount",
           "parameterTypes": []
         },
         {
           "name": "getProcessId",
           "parameterTypes": []
-        },
-        {
-          "name": "getProcess",
-          "parameterTypes": [
-            "int"
-          ]
         },
         {
           "name": "getProcessListFromProcfs",
@@ -14077,72 +14077,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.unix.bsd.Systat$BatteryFields"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.bsd.Systat$BatteryFields"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "double",
-            "double",
-            "double",
-            "org.miaixz.bus.health.builtin.hardware.PowerSource$CapacityUnits",
-            "int",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "getAmperage",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCapacityUnits",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCurrentCapacity",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDesignCapacity",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxCapacity",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTemperature",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVoltage",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.unix.bsd.Systat$BatteryFields"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.unix.bsd.Systat$BatteryFields"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.health.unix.bsd.Systat"
     },
     {
@@ -14211,6 +14145,72 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.unix.bsd.Systat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.unix.bsd.Systat$BatteryFields"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.bsd.Systat$BatteryFields"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "double",
+            "double",
+            "double",
+            "org.miaixz.bus.health.builtin.hardware.PowerSource$CapacityUnits",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getAmperage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCapacityUnits",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCurrentCapacity",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDesignCapacity",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxCapacity",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTemperature",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVoltage",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.unix.bsd.Systat$BatteryFields"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.unix.bsd.Systat$BatteryFields"
     },
     {
       "condition": {
@@ -15203,6 +15203,24 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem$PsKeywords"
@@ -15237,24 +15255,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem$PsKeywords"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem"
     },
     {
       "condition": {
@@ -15340,6 +15340,24 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess$PsThreadColumns"
@@ -15374,24 +15392,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess$PsThreadColumns"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess"
     },
     {
       "condition": {
@@ -16383,43 +16383,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem$PsKeywords"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem$PsKeywords"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem$PsKeywords"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem"
@@ -16456,18 +16419,18 @@
           "parameterTypes": []
         },
         {
+          "name": "getProcess",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
           "name": "getProcessCount",
           "parameterTypes": []
         },
         {
           "name": "getProcessId",
           "parameterTypes": []
-        },
-        {
-          "name": "getProcess",
-          "parameterTypes": [
-            "int"
-          ]
         },
         {
           "name": "getProcessListFromPS",
@@ -16537,6 +16500,43 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem$PsKeywords"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem$PsKeywords"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem$PsKeywords"
     },
     {
       "condition": {
@@ -16622,6 +16622,24 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess$PsThreadColumns"
@@ -16656,24 +16674,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess$PsThreadColumns"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess"
     },
     {
       "condition": {
@@ -17173,18 +17173,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.shared.hardware.CupsPrinter$PrinterFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.unix.shared.hardware.CupsPrinter$PrinterFactory"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.unix.shared.hardware.CupsPrinter"
@@ -17221,6 +17209,18 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.unix.shared.hardware.CupsPrinter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.shared.hardware.CupsPrinter$PrinterFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.unix.shared.hardware.CupsPrinter$PrinterFactory"
     },
     {
       "condition": {
@@ -17960,6 +17960,74 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "createBaseboard",
+          "parameterTypes": []
+        },
+        {
+          "name": "createFirmware",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHardwareUUID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getManufacturer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSerialNumber",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSmbType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readSerialNumber",
+          "parameterTypes": []
+        },
+        {
+          "name": "readSmbios",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem$SmbiosStrings"
     },
     {
@@ -18026,74 +18094,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem$SmbType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "createBaseboard",
-          "parameterTypes": []
-        },
-        {
-          "name": "createFirmware",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHardwareUUID",
-          "parameterTypes": []
-        },
-        {
-          "name": "getManufacturer",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModel",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSerialNumber",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSmbType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "readSerialNumber",
-          "parameterTypes": []
-        },
-        {
-          "name": "readSmbios",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem"
     },
     {
       "condition": {
@@ -18773,37 +18773,37 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.health.unix.solaris.KstatKit$KstatChain"
+      "type": "org.miaixz.bus.health.unix.solaris.KstatKit"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.unix.solaris.KstatKit$KstatChain"
+      "type": "org.miaixz.bus.health.unix.solaris.KstatKit"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.unix.solaris.KstatKit$KstatChain"
+      "type": "org.miaixz.bus.health.unix.solaris.KstatKit"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.health.unix.solaris.KstatKit"
+      "type": "org.miaixz.bus.health.unix.solaris.KstatKit$KstatChain"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.unix.solaris.KstatKit"
+      "type": "org.miaixz.bus.health.unix.solaris.KstatKit$KstatChain"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.unix.solaris.KstatKit"
+      "type": "org.miaixz.bus.health.unix.solaris.KstatKit$KstatChain"
     },
     {
       "condition": {
@@ -18997,18 +18997,18 @@
           "parameterTypes": []
         },
         {
+          "name": "getProcess",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
           "name": "getProcessCount",
           "parameterTypes": []
         },
         {
           "name": "getProcessId",
           "parameterTypes": []
-        },
-        {
-          "name": "getProcess",
-          "parameterTypes": [
-            "int"
-          ]
         },
         {
           "name": "getProcessListFromProcfs",
@@ -19601,90 +19601,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuAdapterMemoryProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCounter",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuAdapterMemoryProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuAdapterMemoryProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuEngineProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCounter",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuEngineProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuEngineProperty"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation"
@@ -19720,6 +19636,90 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuAdapterMemoryProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCounter",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuAdapterMemoryProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuAdapterMemoryProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuEngineProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCounter",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuEngineProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuEngineProperty"
     },
     {
       "condition": {
@@ -19771,53 +19771,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.MemoryInformation$PageSwapProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCounter",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInstance",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.MemoryInformation$PageSwapProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.MemoryInformation$PageSwapProperty"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
       "type": "org.miaixz.bus.health.windows.driver.perfmon.MemoryInformation"
@@ -19854,6 +19807,87 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.MemoryInformation$PageSwapProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCounter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.MemoryInformation$PageSwapProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.MemoryInformation$PageSwapProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "querySwapUsed",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
       "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile$PagingPercentProperty"
     },
     {
@@ -19896,40 +19930,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile$PagingPercentProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "querySwapUsed",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile"
     },
     {
       "condition": {
@@ -20000,48 +20000,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.PhysicalDisk$PhysicalDiskProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCounter",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.PhysicalDisk$PhysicalDiskProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.PhysicalDisk$PhysicalDiskProperty"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
       "type": "org.miaixz.bus.health.windows.driver.perfmon.PhysicalDisk"
@@ -20078,54 +20036,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$HandleCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCounter",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInstance",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$HandleCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$HandleCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$IdleProcessorTimeProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.PhysicalDisk$PhysicalDiskProperty"
     },
     {
       "condition": {
@@ -20155,55 +20066,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$IdleProcessorTimeProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.PhysicalDisk$PhysicalDiskProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$IdleProcessorTimeProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$ProcessPerformanceProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCounter",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$ProcessPerformanceProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$ProcessPerformanceProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.PhysicalDisk$PhysicalDiskProperty"
     },
     {
       "condition": {
@@ -20251,7 +20120,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$InterruptsProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$HandleCountProperty"
     },
     {
       "condition": {
@@ -20286,19 +20155,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$InterruptsProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$HandleCountProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$InterruptsProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$HandleCountProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorFrequencyProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$IdleProcessorTimeProperty"
     },
     {
       "condition": {
@@ -20328,19 +20197,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorFrequencyProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$IdleProcessorTimeProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorFrequencyProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$IdleProcessorTimeProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorPerformanceProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$ProcessPerformanceProperty"
     },
     {
       "condition": {
@@ -20370,144 +20239,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorPerformanceProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$ProcessPerformanceProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorPerformanceProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorTickCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCounter",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorTickCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorTickCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorUtilityTickCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCounter",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorUtilityTickCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorUtilityTickCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$SystemTickCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCounter",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInstance",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$SystemTickCountProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$SystemTickCountProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$ProcessPerformanceProperty"
     },
     {
       "condition": {
@@ -20567,7 +20305,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ContextSwitchProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$InterruptsProperty"
     },
     {
       "condition": {
@@ -20602,19 +20340,187 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ContextSwitchProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$InterruptsProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ContextSwitchProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$InterruptsProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ProcessorQueueLengthProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorFrequencyProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCounter",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorFrequencyProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorFrequencyProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorPerformanceProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCounter",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorPerformanceProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorPerformanceProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorTickCountProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCounter",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorTickCountProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorTickCountProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorUtilityTickCountProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCounter",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorUtilityTickCountProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorUtilityTickCountProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$SystemTickCountProperty"
     },
     {
       "condition": {
@@ -20649,13 +20555,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ProcessorQueueLengthProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$SystemTickCountProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ProcessorQueueLengthProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$SystemTickCountProperty"
     },
     {
       "condition": {
@@ -20699,7 +20605,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation$ThreadPerformanceProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ContextSwitchProperty"
     },
     {
       "condition": {
@@ -20711,11 +20617,16 @@
           "parameterTypes": [
             "java.lang.String",
             "int",
+            "java.lang.String",
             "java.lang.String"
           ]
         },
         {
           "name": "getCounter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInstance",
           "parameterTypes": []
         },
         {
@@ -20729,13 +20640,60 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation$ThreadPerformanceProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ContextSwitchProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation$ThreadPerformanceProperty"
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ContextSwitchProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ProcessorQueueLengthProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCounter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ProcessorQueueLengthProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ProcessorQueueLengthProperty"
     },
     {
       "condition": {
@@ -20780,6 +20738,48 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation$ThreadPerformanceProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCounter",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation$ThreadPerformanceProperty"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation$ThreadPerformanceProperty"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
       "type": "org.miaixz.bus.health.windows.driver.registry.HkeyPerformanceDataKit"
@@ -20849,6 +20849,55 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.windows.driver.registry.NetSessionData"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessPerformanceData"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessPerformanceData"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "buildProcessMapFromPerfCounters",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "buildProcessMapFromPerfCounters",
+          "parameterTypes": [
+            "java.util.Collection",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "buildProcessMapFromRegistry",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessPerformanceData"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessPerformanceData"
     },
     {
       "condition": {
@@ -20933,52 +20982,21 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessPerformanceData"
+      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessWtsData"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessPerformanceData"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "buildProcessMapFromPerfCounters",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "buildProcessMapFromPerfCounters",
-          "parameterTypes": [
-            "java.util.Collection",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "buildProcessMapFromRegistry",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessPerformanceData"
+      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessWtsData"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessPerformanceData"
+      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessWtsData"
     },
     {
       "condition": {
@@ -21050,24 +21068,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessWtsData"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessWtsData"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessWtsData"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.health.windows.driver.registry.SessionWtsData"
     },
     {
@@ -21081,6 +21081,56 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.windows.driver.registry.SessionWtsData"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "buildThreadMapFromPerfCounters",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "buildThreadMapFromPerfCounters",
+          "parameterTypes": [
+            "java.util.Collection",
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "buildThreadMapFromRegistry",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData"
     },
     {
       "condition": {
@@ -21172,13 +21222,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor"
     },
     {
       "condition": {
@@ -21188,35 +21238,15 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "buildThreadMapFromPerfCounters",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "buildThreadMapFromPerfCounters",
-          "parameterTypes": [
-            "java.util.Collection",
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "buildThreadMapFromRegistry",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor"
     },
     {
       "condition": {
@@ -21296,13 +21326,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSAcpiThermalZoneTemperature"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSAcpiThermalZoneTemperature"
     },
     {
       "condition": {
@@ -21314,13 +21344,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSAcpiThermalZoneTemperature"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSAcpiThermalZoneTemperature"
     },
     {
       "condition": {
@@ -21363,13 +21393,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.MSAcpiThermalZoneTemperature"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.MSAcpiThermalZoneTemperature"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage"
     },
     {
       "condition": {
@@ -21381,13 +21411,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.MSAcpiThermalZoneTemperature"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.MSAcpiThermalZoneTemperature"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage"
     },
     {
       "condition": {
@@ -21541,13 +21571,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmHardware"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmHardware"
     },
     {
       "condition": {
@@ -21559,13 +21589,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmHardware"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmHardware"
     },
     {
       "condition": {
@@ -21608,13 +21638,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmHardware"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmSensor"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmHardware"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmSensor"
     },
     {
       "condition": {
@@ -21626,13 +21656,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmHardware"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmSensor"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmHardware"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmSensor"
     },
     {
       "condition": {
@@ -21675,13 +21705,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmSensor"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmSensor"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard"
     },
     {
       "condition": {
@@ -21693,13 +21723,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmSensor"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.OhmSensor"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard"
     },
     {
       "condition": {
@@ -21742,13 +21772,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Bios"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Bios"
     },
     {
       "condition": {
@@ -21760,13 +21790,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Bios"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Bios"
     },
     {
       "condition": {
@@ -21846,13 +21876,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Bios"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Bios"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem"
     },
     {
       "condition": {
@@ -21864,13 +21894,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Bios"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Bios"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem"
     },
     {
       "condition": {
@@ -21913,13 +21943,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct"
     },
     {
       "condition": {
@@ -21931,13 +21961,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct"
     },
     {
       "condition": {
@@ -21980,13 +22010,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive"
     },
     {
       "condition": {
@@ -21998,13 +22028,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive"
     },
     {
       "condition": {
@@ -22047,13 +22077,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition"
     },
     {
       "condition": {
@@ -22065,13 +22095,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition"
     },
     {
       "condition": {
@@ -22114,13 +22144,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition"
     },
     {
       "condition": {
@@ -22132,13 +22162,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition"
     },
     {
       "condition": {
@@ -22181,13 +22211,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Fan"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Fan"
     },
     {
       "condition": {
@@ -22199,13 +22229,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Fan"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Fan"
     },
     {
       "condition": {
@@ -22248,13 +22278,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Fan"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Fan"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk"
     },
     {
       "condition": {
@@ -22266,13 +22296,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Fan"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Fan"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk"
     },
     {
       "condition": {
@@ -22315,13 +22345,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition"
     },
     {
       "condition": {
@@ -22333,13 +22363,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition"
     },
     {
       "condition": {
@@ -22382,13 +22412,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32OperatingSystem"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32OperatingSystem"
     },
     {
       "condition": {
@@ -22400,13 +22430,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32OperatingSystem"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32OperatingSystem"
     },
     {
       "condition": {
@@ -22449,13 +22479,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32OperatingSystem"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32OperatingSystem"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory"
     },
     {
       "condition": {
@@ -22467,13 +22497,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32OperatingSystem"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32OperatingSystem"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory"
     },
     {
       "condition": {
@@ -22553,13 +22583,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Printer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Printer"
     },
     {
       "condition": {
@@ -22571,13 +22601,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Printer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Printer"
     },
     {
       "condition": {
@@ -22620,13 +22650,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Printer"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Process"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Printer"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Process"
     },
     {
       "condition": {
@@ -22638,13 +22668,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Printer"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Process"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Printer"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Process"
     },
     {
       "condition": {
@@ -22767,6 +22797,36 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor$BitnessProperty"
@@ -22880,13 +22940,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Process"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32VideoController"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Process"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32VideoController"
     },
     {
       "condition": {
@@ -22898,43 +22958,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Process"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32VideoController"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Process"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor"
+      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32VideoController"
     },
     {
       "condition": {
@@ -22972,36 +23002,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32VideoController$VideoControllerProperty"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32VideoController"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32VideoController"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32VideoController"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.driver.wmi.Win32VideoController"
     },
     {
       "condition": {
@@ -23438,66 +23438,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$DiskStats"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$DiskStats"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$DiskStats"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$DiskStats"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$PartitionMaps"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$PartitionMaps"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$PartitionMaps"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$PartitionMaps"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
       "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore"
@@ -23513,6 +23453,66 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$DiskStats"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$DiskStats"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$DiskStats"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$DiskStats"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$PartitionMaps"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$PartitionMaps"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$PartitionMaps"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$PartitionMaps"
     },
     {
       "condition": {
@@ -23932,50 +23932,6 @@
       "type": "org.miaixz.bus.health.windows.jna.PowrProf$SystemBatteryState"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.health.windows.jna.WindowsDxgi$DXGI_ADAPTER_DESC"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.health.windows.jna.WindowsDxgi$DxgiAdapter"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.health.windows.jna.WindowsDxgi$DxgiFactory"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.health.windows.jna.WindowsDxgi$DxgiLib"
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
@@ -24031,6 +23987,68 @@
       "type": "org.miaixz.bus.health.windows.jna.WindowsDxgi"
     },
     {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.health.windows.jna.WindowsDxgi$DXGI_ADAPTER_DESC"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.health.windows.jna.WindowsDxgi$DxgiAdapter"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.health.windows.jna.WindowsDxgi$DxgiFactory"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.health.windows.jna.WindowsDxgi$DxgiLib"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.PerfCounterQuery"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.windows.PerfCounterQuery"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.windows.PerfCounterQuery"
+    },
+    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
@@ -24064,19 +24082,19 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.health.windows.PerfCounterQuery"
+      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.PerfCounterQuery"
+      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.PerfCounterQuery"
+      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery"
     },
     {
       "condition": {
@@ -24094,19 +24112,19 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery"
+      "type": "org.miaixz.bus.health.windows.PerfDataKit"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery"
+      "type": "org.miaixz.bus.health.windows.PerfDataKit"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery"
+      "type": "org.miaixz.bus.health.windows.PerfDataKit"
     },
     {
       "condition": {
@@ -24160,14 +24178,14 @@
           "parameterTypes": []
         },
         {
-          "name": "isBaseCounter",
-          "parameterTypes": []
-        },
-        {
           "name": "isBase",
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "isBaseCounter",
+          "parameterTypes": []
         },
         {
           "name": "stripBaseSuffix",
@@ -24183,24 +24201,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.health.windows.PerfDataKit$PerfCounter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.PerfDataKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.health.windows.PerfDataKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.health.windows.PerfDataKit"
     },
     {
       "condition": {

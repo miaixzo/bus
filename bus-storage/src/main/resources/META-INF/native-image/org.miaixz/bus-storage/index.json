@@ -8,7 +8,8 @@
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-storage/$version$/bus-storage-$version$-javadoc.jar",
     "description": "Bus Storage provides object storage integrations and file storage abstractions.",
     "tested-versions": [
-      "8.8.0"
+      "8.8.0",
+      "8.8.1"
     ],
     "allowed-packages": [
       "org.miaixz"

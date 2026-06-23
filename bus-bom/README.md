@@ -220,7 +220,6 @@ Or check the actual `bus-bom/pom.xml` file:
             <artifactId>bus-core</artifactId>
             <version>8.x.x</version>
         </dependency>
-        <!-- ... other dependencies ... -->
     </dependencies>
 </dependencyManagement>
 ```

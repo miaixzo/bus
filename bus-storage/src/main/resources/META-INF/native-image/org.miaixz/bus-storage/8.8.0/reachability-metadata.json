@@ -365,130 +365,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.storage.Context$ContextBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.storage.Context$ContextBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.storage.Context$ContextBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.storage.Context$ContextBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.storage.Context$ContextBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "accessKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "bucket",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "connectTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "endpoint",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "extension",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "pathStyle",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "prefix",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "readTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "region",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "secretKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "secure",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "writeTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.storage.Context$ContextBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.storage.Context"
     },
     {
@@ -653,13 +529,109 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilderImpl"
+      "type": "org.miaixz.bus.storage.Context$ContextBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilderImpl"
+      "type": "org.miaixz.bus.storage.Context$ContextBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "accessKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "bucket",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "connectTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "endpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "extension",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "pathStyle",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "prefix",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "region",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "secretKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "secure",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.Context$ContextBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.Context$ContextBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.Context$ContextBuilderImpl"
     },
     {
       "condition": {
@@ -675,109 +647,7 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "alias",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "bytes",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "extend",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "hash",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "key",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "owner",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "path",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "platform",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "size",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "status",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "type",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "url",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilder"
+      "type": "org.miaixz.bus.storage.Context$ContextBuilderImpl"
     },
     {
       "condition": {
@@ -932,6 +802,136 @@
         }
       ],
       "type": "org.miaixz.bus.storage.magic.Blob"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "alias",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "bytes",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "extend",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "hash",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "owner",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "path",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "platform",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "status",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "url",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.storage.magic.Blob$BlobBuilderImpl"
     },
     {
       "condition": {
@@ -2118,58 +2118,58 @@
           ]
         },
         {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
           "name": "uploadAsset",
           "parameterTypes": [
             "java.lang.String",
             "byte[]"
-          ]
-        },
-        {
-          "name": "upload",
-          "parameterTypes": [
-            "java.lang.String",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "upload",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "upload",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "upload",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "upload",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "upload",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.io.InputStream"
           ]
         }
       ],

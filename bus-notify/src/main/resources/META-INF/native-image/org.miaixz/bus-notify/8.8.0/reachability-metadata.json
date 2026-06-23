@@ -185,6 +185,18 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.Builder"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.notify.Builder$Type"
@@ -210,18 +222,6 @@
         }
       ],
       "type": "org.miaixz.bus.notify.Builder$Type"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.Builder"
     },
     {
       "condition": {
@@ -289,94 +289,6 @@
         }
       ],
       "type": "org.miaixz.bus.notify.cache.NotifyCache"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.Context$ContextBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.Context$ContextBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.Context$ContextBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.Context$ContextBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.Context$ContextBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "appKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "appSecret",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "corpId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "endpoint",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "extension",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "nonce",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.Context$ContextBuilder"
     },
     {
       "condition": {
@@ -466,19 +378,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.magic.ErrorCode"
+      "type": "org.miaixz.bus.notify.Context$ContextBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.magic.ErrorCode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.magic.Notice$Mode"
+      "type": "org.miaixz.bus.notify.Context$ContextBuilder"
     },
     {
       "condition": {
@@ -486,29 +392,59 @@
       },
       "methods": [
         {
-          "name": "valueOf",
+          "name": "appKey",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "values",
+          "name": "appSecret",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "corpId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "endpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "extension",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "nonce",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.magic.Notice$Mode"
+      "type": "org.miaixz.bus.notify.Context$ContextBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.Context$ContextBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.Context$ContextBuilderImpl"
     },
     {
       "condition": {
@@ -524,121 +460,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.Context$ContextBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilder"
+      "type": "org.miaixz.bus.notify.magic.ErrorCode"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "content",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "extend",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "mode",
-          "parameterTypes": [
-            "org.miaixz.bus.notify.magic.Notice$Mode"
-          ]
-        },
-        {
-          "name": "params",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "receive",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sender",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "signature",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "subject",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "template",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "type",
-          "parameterTypes": [
-            "org.miaixz.bus.notify.magic.Notice$Type"
-          ]
-        },
-        {
-          "name": "url",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.magic.Notice$Type"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.magic.Notice$Type"
+      "type": "org.miaixz.bus.notify.magic.ErrorCode"
     },
     {
       "condition": {
@@ -776,6 +610,172 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.magic.Notice$Mode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.magic.Notice$Mode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "content",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "extend",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "mode",
+          "parameterTypes": [
+            "org.miaixz.bus.notify.magic.Notice$Mode"
+          ]
+        },
+        {
+          "name": "params",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "receive",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sender",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "signature",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "subject",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "template",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": [
+            "org.miaixz.bus.notify.magic.Notice$Type"
+          ]
+        },
+        {
+          "name": "url",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.magic.Notice$Type"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.magic.Notice$Type"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.notify.metric.AbstractProvider"
@@ -850,13 +850,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
     },
     {
       "condition": {
@@ -864,15 +864,25 @@
       },
       "methods": [
         {
-          "name": "build",
+          "name": "builder",
           "parameterTypes": []
         },
         {
-          "name": "self",
+          "name": "getPlayTimes",
           "parameterTypes": []
+        },
+        {
+          "name": "getUrl",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPlayTimes",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
     },
     {
       "condition": {
@@ -908,13 +918,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
+      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
+      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -922,25 +932,15 @@
       },
       "methods": [
         {
-          "name": "builder",
+          "name": "build",
           "parameterTypes": []
         },
         {
-          "name": "getPlayTimes",
+          "name": "self",
           "parameterTypes": []
-        },
-        {
-          "name": "getUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "setPlayTimes",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
+      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -1042,13 +1042,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice"
     },
     {
       "condition": {
@@ -1056,15 +1056,15 @@
       },
       "methods": [
         {
-          "name": "build",
+          "name": "builder",
           "parameterTypes": []
         },
         {
-          "name": "self",
+          "name": "getUrl",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice"
     },
     {
       "condition": {
@@ -1094,13 +1094,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice"
+      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice"
+      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -1108,15 +1108,15 @@
       },
       "methods": [
         {
-          "name": "builder",
+          "name": "build",
           "parameterTypes": []
         },
         {
-          "name": "getUrl",
+          "name": "self",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice"
+      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -1148,58 +1148,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice"
     },
     {
@@ -1228,6 +1176,58 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.notify.metric.cloopen.CloopenSmsProvider"
     },
     {
@@ -1249,70 +1249,6 @@
         }
       ],
       "type": "org.miaixz.bus.notify.metric.cloopen.CloopenSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "action",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "templateName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilder"
     },
     {
       "condition": {
@@ -1370,6 +1306,70 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "action",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "templateName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.notify.metric.ctyun.CtyunSmsProvider"
     },
     {
@@ -1399,100 +1399,6 @@
         }
       ],
       "type": "org.miaixz.bus.notify.metric.ctyun.CtyunSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "agentId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "deptIdList",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "msg",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toAllUser",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "token",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "userIdList",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "whiteList",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
     },
     {
       "condition": {
@@ -1592,6 +1498,100 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "agentId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "deptIdList",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "msg",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toAllUser",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "token",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "userIdList",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "whiteList",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkProvider"
     },
     {
@@ -1648,13 +1648,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice"
     },
     {
       "condition": {
@@ -1662,15 +1662,21 @@
       },
       "methods": [
         {
-          "name": "build",
+          "name": "builder",
           "parameterTypes": []
         },
         {
-          "name": "self",
+          "name": "getRequestUrl",
           "parameterTypes": []
+        },
+        {
+          "name": "setRequestUrl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice"
     },
     {
       "condition": {
@@ -1706,13 +1712,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice"
+      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice"
+      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -1720,21 +1726,15 @@
       },
       "methods": [
         {
-          "name": "builder",
+          "name": "build",
           "parameterTypes": []
         },
         {
-          "name": "getRequestUrl",
+          "name": "self",
           "parameterTypes": []
-        },
-        {
-          "name": "setRequestUrl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice"
+      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -1782,184 +1782,6 @@
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.notify.metric.generic.GenericEmailProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "attachments",
-          "parameterTypes": [
-            "java.io.File[]"
-          ]
-        },
-        {
-          "name": "auth",
-          "parameterTypes": [
-            "java.lang.Boolean"
-          ]
-        },
-        {
-          "name": "bccs",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "ccs",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "charset",
-          "parameterTypes": [
-            "java.nio.charset.Charset"
-          ]
-        },
-        {
-          "name": "connectionTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "content",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "debug",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "host",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "pass",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "port",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "socketFactoryClass",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "socketFactoryFallback",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "socketFactoryPort",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "splitlongparameters",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "sslEnable",
-          "parameterTypes": [
-            "java.lang.Boolean"
-          ]
-        },
-        {
-          "name": "startttlsEnable",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "timeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "title",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "useGlobalSession",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "user",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilder"
     },
     {
       "condition": {
@@ -2215,13 +2037,163 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "attachments",
+          "parameterTypes": [
+            "java.io.File[]"
+          ]
+        },
+        {
+          "name": "auth",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "bccs",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "ccs",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "charset",
+          "parameterTypes": [
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "connectionTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "content",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "debug",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "host",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "pass",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "port",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "socketFactoryClass",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "socketFactoryFallback",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "socketFactoryPort",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "splitlongparameters",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "sslEnable",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "startttlsEnable",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "timeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "title",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "useGlobalSession",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "user",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2237,7 +2209,35 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUrl",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice"
     },
     {
       "condition": {
@@ -2267,13 +2267,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice"
+      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice"
+      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2281,15 +2281,15 @@
       },
       "methods": [
         {
-          "name": "builder",
+          "name": "build",
           "parameterTypes": []
         },
         {
-          "name": "getUrl",
+          "name": "self",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice"
+      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2331,13 +2331,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice"
     },
     {
       "condition": {
@@ -2345,15 +2345,15 @@
       },
       "methods": [
         {
-          "name": "build",
+          "name": "builder",
           "parameterTypes": []
         },
         {
-          "name": "self",
+          "name": "getUrl",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice"
     },
     {
       "condition": {
@@ -2383,13 +2383,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice"
+      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice"
+      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2397,15 +2397,15 @@
       },
       "methods": [
         {
-          "name": "builder",
+          "name": "build",
           "parameterTypes": []
         },
         {
-          "name": "getUrl",
+          "name": "self",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice"
+      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2437,13 +2437,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice"
     },
     {
       "condition": {
@@ -2451,15 +2451,15 @@
       },
       "methods": [
         {
-          "name": "build",
+          "name": "builder",
           "parameterTypes": []
         },
         {
-          "name": "self",
+          "name": "getUrl",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice"
     },
     {
       "condition": {
@@ -2489,13 +2489,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice"
+      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice"
+      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2503,15 +2503,15 @@
       },
       "methods": [
         {
-          "name": "builder",
+          "name": "build",
           "parameterTypes": []
         },
         {
-          "name": "getUrl",
+          "name": "self",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice"
+      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2547,13 +2547,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice"
     },
     {
       "condition": {
@@ -2561,15 +2561,15 @@
       },
       "methods": [
         {
-          "name": "build",
+          "name": "builder",
           "parameterTypes": []
         },
         {
-          "name": "self",
+          "name": "getUrl",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice"
     },
     {
       "condition": {
@@ -2599,13 +2599,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice"
+      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice"
+      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2613,15 +2613,15 @@
       },
       "methods": [
         {
-          "name": "builder",
+          "name": "build",
           "parameterTypes": []
         },
         {
-          "name": "getUrl",
+          "name": "self",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice"
+      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2702,58 +2702,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice"
     },
     {
@@ -2782,6 +2730,58 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.notify.metric.qiniu.QiniuSmsProvider"
     },
     {
@@ -2803,64 +2803,6 @@
         }
       ],
       "type": "org.miaixz.bus.notify.metric.qiniu.QiniuSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "smsAppId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilder"
     },
     {
       "condition": {
@@ -2904,6 +2846,64 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "smsAppId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.notify.metric.tencent.TencentSmsProvider"
     },
     {
@@ -2925,82 +2925,6 @@
         }
       ],
       "type": "org.miaixz.bus.notify.metric.tencent.TencentSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "maxRetries",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "retryInterval",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "simple",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "templateName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilder"
     },
     {
       "condition": {
@@ -3078,6 +3002,82 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "maxRetries",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "retryInterval",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "simple",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "templateName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.notify.metric.unisms.UniSmsProvider"
     },
     {
@@ -3107,6 +3107,44 @@
         }
       ],
       "type": "org.miaixz.bus.notify.metric.unisms.UniSmsProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getToken",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUrl",
+          "parameterTypes": []
+        },
+        {
+          "name": "setToken",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice"
     },
     {
       "condition": {
@@ -3176,34 +3214,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilder"
     },
     {
@@ -3234,13 +3244,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice"
+      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice"
+      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -3248,25 +3258,15 @@
       },
       "methods": [
         {
-          "name": "builder",
+          "name": "build",
           "parameterTypes": []
         },
         {
-          "name": "getToken",
+          "name": "self",
           "parameterTypes": []
-        },
-        {
-          "name": "getUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "setToken",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice"
+      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -3409,58 +3409,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice"
     },
     {
@@ -3485,13 +3433,37 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -3507,37 +3479,7 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "apikey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilder"
+      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -3581,6 +3523,64 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "apikey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.notify.metric.yunpian.YunpianSmsProvider"
     },
     {
@@ -3602,64 +3602,6 @@
         }
       ],
       "type": "org.miaixz.bus.notify.metric.yunpian.YunpianSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "templateName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
     },
     {
       "condition": {
@@ -3703,6 +3645,64 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "templateName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongSmsProvider"
     },
     {
@@ -3717,6 +3717,12 @@
       },
       "methods": [
         {
+          "name": "send",
+          "parameterTypes": [
+            "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice"
+          ]
+        },
+        {
           "name": "sendForCustom",
           "parameterTypes": [
             "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice"
@@ -3724,12 +3730,6 @@
         },
         {
           "name": "sendForTemplate",
-          "parameterTypes": [
-            "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice"
-          ]
-        },
-        {
-          "name": "send",
           "parameterTypes": [
             "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice"
           ]

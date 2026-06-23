@@ -30,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import org.miaixz.bus.core.lang.Fields;
@@ -163,7 +164,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
      * @author Kimi Liu
      * @since Java 21+
      */
-    @com.fasterxml.jackson.annotation.JsonFilter(FILTER_ID)
+    @JsonFilter(FILTER_ID)
     interface FilterMixIn {
         // This interface is intentionally empty. It's only used to carry the annotation.
 

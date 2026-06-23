@@ -25,7 +25,6 @@
  */
 module bus.opencv {
 
-    requires java.base;
     requires java.desktop;
 
     exports org.opencv.core;

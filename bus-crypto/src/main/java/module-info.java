@@ -31,9 +31,9 @@ module bus.crypto {
     requires bus.core;
     requires bus.logger;
 
-    requires lombok;
-    requires org.bouncycastle.provider;
-    requires org.bouncycastle.pkix;
+    requires static lombok;
+    requires static org.bouncycastle.provider;
+    requires static org.bouncycastle.pkix;
 
     exports org.miaixz.bus.crypto;
     exports org.miaixz.bus.crypto.builtin;
