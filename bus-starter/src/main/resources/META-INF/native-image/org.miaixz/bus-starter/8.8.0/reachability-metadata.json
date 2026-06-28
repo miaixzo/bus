@@ -754,6 +754,17 @@
       "allPublicMethods": true,
       "queryAllDeclaredMethods": true,
       "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.spring.http.MessageResponseBodyAdvice"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
       "type": "org.miaixz.bus.spring.http.CompositeArgumentResolver"
     },
     {
@@ -4771,7 +4782,7 @@
       "allPublicMethods": true,
       "queryAllDeclaredMethods": true,
       "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.starter.sensitive.RequestBodyAdvice"
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveRequestBodyAdvice"
     },
     {
       "allDeclaredConstructors": true,
@@ -4782,7 +4793,7 @@
       "allPublicMethods": true,
       "queryAllDeclaredMethods": true,
       "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.starter.sensitive.RequestBodyAdvice$InputMessage"
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveRequestBodyAdvice$InputMessage"
     },
     {
       "allDeclaredConstructors": true,
@@ -4793,7 +4804,7 @@
       "allPublicMethods": true,
       "queryAllDeclaredMethods": true,
       "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.starter.sensitive.ResponseBodyAdvice"
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveResponseBodyAdvice"
     },
     {
       "condition": {
