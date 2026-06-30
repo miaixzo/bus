@@ -42,9 +42,12 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * A JSON converter configurer for Fastjson2. This class configures the
- * {@link org.springframework.http.converter.HttpMessageConverter} for Fastjson2, with support for {@code autoType}
- * functionality.
+ * Fastjson2 JSON converter configurer for Spring MVC.
+ * <p>
+ * The registered converter prefers the standard {@code application/json} media type for normal HTTP content
+ * negotiation, while still keeping {@code application/json+fastjson} available for clients that explicitly opt in to a
+ * Fastjson-specific media type.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -54,6 +57,23 @@ import org.miaixz.bus.logger.Logger;
 public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
 
     /**
+     * Default media types supported by this converter.
+     * <p>
+     * Order matters: Spring uses this list during content negotiation, so {@code application/json} must remain first to
+     * avoid wildcard browser requests selecting a library-specific media type by default.
+     * </p>
+     */
+    private static final List<MediaType> DEFAULT_MEDIA_TYPES = List.of(
+            MediaType.APPLICATION_JSON,
+            new MediaType(MediaType.TEXT_PLAIN, Charset.UTF_8),
+            MediaType.parseMediaType(org.miaixz.bus.core.lang.MediaType.APPLICATION_JSON_FASTJSON));
+
+    /**
+     * Auto type allow-list expression used by Fastjson2 deserialization.
+     */
+    private String autoType;
+
+    /**
      * Constructs a new FastjsonMessageConverter instance.
      */
     public FastjsonMessageConverter() {
@@ -61,26 +81,30 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
     }
 
     /**
-     * The default media types supported by this converter.
+     * Returns the converter configurer name.
+     *
+     * @return converter configurer name
      */
-    private static final List<MediaType> DEFAULT_MEDIA_TYPES = List
-            .of(MediaType.APPLICATION_JSON, new MediaType(MediaType.TEXT_PLAIN, Charset.UTF_8));
-
-    /**
-     * The comma-separated string of whitelisted classes for autoType deserialization.
-     */
-    private String autoType;
-
     @Override
     public String name() {
         return "Fastjson2";
     }
 
+    /**
+     * Returns the converter insertion order.
+     *
+     * @return converter insertion order
+     */
     @Override
     public int order() {
         return 0;
     }
 
+    /**
+     * Adds the Fastjson2 HTTP message converter to the Spring converter list.
+     *
+     * @param converters the mutable Spring converter list
+     */
     @Override
     public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
         Logger.debug(false, "Starter", "Configuring FastJson2HttpMessageConverter for Fastjson2");
@@ -92,6 +116,11 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                 DEFAULT_MEDIA_TYPES);
     }
 
+    /**
+     * Sets the auto type allow-list expression for Fastjson2 deserialization.
+     *
+     * @param autoType auto type allow-list expression
+     */
     @Override
     public void autoType(String autoType) {
         this.autoType = autoType;
@@ -121,7 +150,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
         private static final JSONReader.Feature[] READER_FEATURES = { JSONReader.Feature.FieldBased };
 
         /**
-         * An array of whitelisted class names for autoType deserialization.
+         * Auto type matcher compiled from the allow-list expression.
          */
         private final AutoBindingTypeMatcher autoTypeMatcher;
 
@@ -147,11 +176,25 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
             }
         }
 
+        /**
+         * Supports all application return value types.
+         *
+         * @param clazz the return value class
+         * @return always {@code true}
+         */
         @Override
         protected boolean supports(Class<?> clazz) {
             return true;
         }
 
+        /**
+         * Reads the request body into the target class with Fastjson2.
+         *
+         * @param clazz        the target class
+         * @param inputMessage the HTTP input message
+         * @return deserialized object
+         * @throws HttpMessageNotReadableException if JSON cannot be read
+         */
         @Override
         protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage)
                 throws HttpMessageNotReadableException {
@@ -188,18 +231,23 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
             }
         }
 
+        /**
+         * Writes the response body with Fastjson2.
+         *
+         * @param object        the object to serialize
+         * @param outputMessage the HTTP output message
+         * @throws HttpMessageNotWritableException if JSON cannot be written
+         */
         @Override
         protected void writeInternal(Object object, HttpOutputMessage outputMessage)
                 throws HttpMessageNotWritableException {
             try {
                 Logger.debug(false, "Starter", "Result {}", object != null ? object.getClass().getName() : "null");
 
-                // The PropertyFilter now delegates all logic to the shouldSkipField method.
                 PropertyFilter filter = (source, name, value) -> {
                     try {
                         Field field = FieldKit.getField(source.getClass(), name);
-                        // CORRECTED: Invert the result from shouldSkipField.
-                        // shouldSkipField returns true to SKIP, but PropertyFilter expects true to INCLUDE.
+                        // Fastjson expects true to include; shouldSkipField returns true to skip.
                         return !shouldSkipField(field, value);
                     } catch (Exception e) {
                         Logger.warn(
@@ -208,8 +256,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                                 "Fastjson failed to get field for annotation check: {}, exception={}",
                                 name,
                                 e.getClass().getSimpleName());
-                        // If an error occurs, default to including the field to be safe.
-                        // shouldSkipField(null) returns false (don't skip), so !false is true (include).
+                        // Keep serialization permissive when reflection lookup fails.
                         return !shouldSkipField(null, null);
                     }
                 };
@@ -238,19 +285,35 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
         }
 
         /**
-         * The pattern auto type before handler class.
+         * Fastjson2 auto type guard backed by {@link AutoBindingTypeMatcher}.
          *
          * @author Kimi Liu
          * @since Java 21+
          */
         private static class PatternAutoTypeBeforeHandler implements JSONReader.AutoTypeBeforeHandler {
 
+            /**
+             * Auto type matcher used to approve or reject incoming type names.
+             */
             private final AutoBindingTypeMatcher autoTypeMatcher;
 
+            /**
+             * Constructs a new auto type guard.
+             *
+             * @param autoTypeMatcher auto type matcher
+             */
             private PatternAutoTypeBeforeHandler(AutoBindingTypeMatcher autoTypeMatcher) {
                 this.autoTypeMatcher = autoTypeMatcher;
             }
 
+            /**
+             * Resolves an allowed Fastjson2 auto type.
+             *
+             * @param typeName    incoming type name
+             * @param expectClass expected class supplied by Fastjson2
+             * @param features    enabled Fastjson2 reader features
+             * @return resolved class, or {@code null} if the type is rejected or unavailable
+             */
             @Override
             public Class<?> apply(String typeName, Class<?> expectClass, long features) {
                 if (!autoTypeMatcher.matches(typeName)) {

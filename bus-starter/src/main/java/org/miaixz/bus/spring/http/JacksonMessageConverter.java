@@ -49,13 +49,18 @@ import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
 import tools.jackson.databind.ser.std.SimpleFilterProvider;
 
 /**
- * Jackson JSON framework configurer, integrated with Spring MVC.
+ * Jackson JSON converter configurer for Spring MVC.
  * <p>
  * This component configures {@link JacksonJsonHttpMessageConverter} to handle JSON serialization and deserialization
  * using Jackson 3. It supports custom date formats, Java Time API ({@link LocalDateTime}), and an {@code autoType}
  * configuration to restrict deserialization to classes within a specified package prefix, enhancing security. It also
  * applies a unified field exclusion policy based on {@code @Include} and {@code @Transient} annotations via a custom
  * {@link PropertyFilter}.
+ * </p>
+ * <p>
+ * The registered converter prefers {@code application/json} for ordinary HTTP content negotiation and keeps
+ * {@code application/json+jackson} for clients that explicitly opt in to Jackson-specific responses.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -65,18 +70,32 @@ import tools.jackson.databind.ser.std.SimpleFilterProvider;
 public class JacksonMessageConverter extends AbstractHttpMessageConverter {
 
     /**
+     * A unique ID for the custom property filter used to handle @Include and @Transient.
+     */
+    private static final String FILTER_ID = "includeTransientFilter";
+
+    /**
+     * Default media types supported by this converter.
+     * <p>
+     * Order matters: Spring uses this list during content negotiation, so {@code application/json} must remain first to
+     * avoid wildcard browser requests selecting {@code application/json+jackson} by default.
+     * </p>
+     */
+    private static final List<MediaType> DEFAULT_MEDIA_TYPES = List.of(
+            MediaType.APPLICATION_JSON,
+            MediaType.parseMediaType(org.miaixz.bus.core.lang.MediaType.APPLICATION_JSON_JACKSON));
+
+    /**
+     * Auto type matcher compiled from the configured allow-list expression.
+     */
+    private AutoBindingTypeMatcher autoTypeMatcher;
+
+    /**
      * Constructs a new JacksonMessageConverter instance.
      */
     public JacksonMessageConverter() {
         // No initialization required.
     }
-
-    private AutoBindingTypeMatcher autoTypeMatcher;
-
-    /**
-     * A unique ID for the custom property filter used to handle @Include and @Transient.
-     */
-    private static final String FILTER_ID = "includeTransientFilter";
 
     /**
      * Returns the name of this JSON converter configurer.
@@ -91,11 +110,11 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
     /**
      * Returns the order of this JSON converter configurer. A lower value indicates higher precedence.
      *
-     * @return The order value, typically 0 for Jackson (highest precedence).
+     * @return The order value, typically 1 for Jackson.
      */
     @Override
     public int order() {
-        return 1; // Highest precedence among default JSON converters
+        return 1;
     }
 
     /**
@@ -105,7 +124,8 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
      * custom {@link LocalDateTime} handling.
      * </p>
      *
-     * @param converters The list of {@link HttpMessageConverter}s to which the Jackson converter will be added.
+     * @param converters The list of {@link org.springframework.http.converter.HttpMessageConverter}s to which the
+     *                   Jackson converter will be added.
      */
     @Override
     public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
@@ -138,8 +158,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
                 .addModule(javaTimeModule).build();
 
         JacksonJsonHttpMessageConverter jacksonConverter = new JacksonJsonHttpMessageConverter(jacksonMapper);
-        jacksonConverter.setSupportedMediaTypes(
-                List.of(MediaType.APPLICATION_JSON, new MediaType("application", "json+jackson")));
+        jacksonConverter.setSupportedMediaTypes(DEFAULT_MEDIA_TYPES);
         converters.add(order(), jacksonConverter);
         Logger.debug(
                 false,
@@ -166,7 +185,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
      */
     @JsonFilter(FILTER_ID)
     interface FilterMixIn {
-        // This interface is intentionally empty. It's only used to carry the annotation.
+        // Carries the JsonFilter annotation for the global Object mix-in.
 
     }
 
