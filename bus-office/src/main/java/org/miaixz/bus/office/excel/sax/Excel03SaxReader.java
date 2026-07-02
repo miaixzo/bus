@@ -102,6 +102,11 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     private List<Object> rowCellList = new ArrayList<>();
 
     /**
+     * Current row index, starting from 0.
+     */
+    private int rowIndex = -1;
+
+    /**
      * Custom sheet ID to process. If -1, all sheets are processed.
      */
     private int sheetIndex = -1;
@@ -297,8 +302,9 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 final MissingCellDummyRecord mc = (MissingCellDummyRecord) record;
                 addToRowCellList(mc);
             } else if (record instanceof LastCellOfRowDummyRecord) {
+                this.rowIndex = ((LastCellOfRowDummyRecord) record).getRow();
                 // End of row.
-                processLastCell((LastCellOfRowDummyRecord) record);
+                processLastCell();
             } else {
                 // Process cell value.
                 processCellValue(record);
@@ -328,19 +334,20 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     /**
      * Adds a cell value to the row list at the specified row and column.
      *
-     * @param row    The row index.
-     * @param column The column index.
-     * @param value  The value of the cell.
+     * @param rowIndex    The row index.
+     * @param columnIndex The column index.
+     * @param value       The value of the cell.
      */
-    private void addToRowCellList(final int row, final int column, final Object value) {
-        while (column > this.rowCellList.size()) {
+    private void addToRowCellList(final int rowIndex, final int columnIndex, final Object value) {
+        this.rowIndex = rowIndex;
+        while (columnIndex > this.rowCellList.size()) {
             // Fill in blanks for empty cells in between.
             this.rowCellList.add(Normal.EMPTY);
-            this.rowHandler.handleCell(this.curRid, row, rowCellList.size() - 1, value, null);
+            this.rowHandler.handleCell(this.curRid, rowIndex, rowCellList.size() - 1, value, null);
         }
 
-        this.rowCellList.add(column, value);
-        this.rowHandler.handleCell(this.curRid, row, column, value, null);
+        this.rowCellList.add(columnIndex, value);
+        this.rowHandler.handleCell(this.curRid, rowIndex, columnIndex, value, null);
     }
 
     /**
@@ -421,11 +428,10 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * Processes operations after a row ends. {@link LastCellOfRowDummyRecord} is the indicator record for the end of a
      * row.
      *
-     * @param lastCell The {@link LastCellOfRowDummyRecord} indicating the end of the row.
      */
-    private void processLastCell(final LastCellOfRowDummyRecord lastCell) {
+    private void processLastCell() {
         // At the end of each row, call the handle() method.
-        this.rowHandler.handle(curRid, lastCell.getRow(), this.rowCellList);
+        this.rowHandler.handle(curRid, this.rowIndex, this.rowCellList);
         // Release row cache without retaining a large previous-row capacity.
         this.rowCellList = new ArrayList<>();
     }
@@ -434,6 +440,9 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * Processes operations after a sheet ends.
      */
     private void processLastCellSheet() {
+        if (!this.rowCellList.isEmpty()) {
+            this.rowHandler.handle(curRid, this.rowIndex, this.rowCellList);
+        }
         this.rowHandler.doAfterAllAnalysed();
         this.rowCellList = new ArrayList<>();
     }

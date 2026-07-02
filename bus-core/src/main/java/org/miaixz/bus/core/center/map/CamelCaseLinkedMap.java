@@ -87,7 +87,7 @@ public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {
      * @param loadFactor      The load factor for the map.
      */
     public CamelCaseLinkedMap(final int initialCapacity, final float loadFactor) {
-        super(new LinkedHashMap<>(initialCapacity, loadFactor));
+        super(MapBuilder.of(new LinkedHashMap<>(initialCapacity, loadFactor)));
     }
 
 }
