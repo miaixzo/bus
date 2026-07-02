@@ -23,6 +23,9 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
 
 /**
  * Display refers to the information regarding a video source and monitor identified by the EDID standard.
+ * <p>
+ * For displays that report attributes without providing an EDID, {@link #isEdidSynthetic()} returns {@code true} and
+ * {@link #getEdid()} returns an EDID synthesized from those attributes.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -33,8 +36,22 @@ public interface Display {
     /**
      * The EDID byte array.
      *
-     * @return The original unparsed EDID byte array.
+     * @return The EDID byte array.
      */
     byte[] getEdid();
+
+    /**
+     * The decoded display information.
+     *
+     * @return the decoded display information
+     */
+    DisplayInfo getDisplayInfo();
+
+    /**
+     * Indicates whether the EDID was synthesized from display attributes.
+     *
+     * @return {@code true} if the EDID is synthetic, otherwise {@code false}
+     */
+    boolean isEdidSynthetic();
 
 }

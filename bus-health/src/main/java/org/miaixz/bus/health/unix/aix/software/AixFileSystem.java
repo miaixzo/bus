@@ -77,6 +77,11 @@ public class AixFileSystem extends AbstractFileSystem {
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_AIX_FS_VOLUME_INCLUDES);
 
+    /**
+     * Pattern matching local and remote filesystem names in df output.
+     */
+    private static final java.util.regex.Pattern FS_PATTERN = java.util.regex.Pattern.compile("^(?:[\\w.]+:)?/");
+
     // Called by AixOSFileStore
     /**
      * Returns the file store matching.
@@ -101,26 +106,30 @@ public class AixFileSystem extends AbstractFileSystem {
         // Get inode usage data
         Map<String, Long> inodeFreeMap = new HashMap<>();
         Map<String, Long> inodeTotalMap = new HashMap<>();
-        String command = "df -i" + (localOnly ? " -l" : Normal.EMPTY);
+        // AIX 7.3+ supports POSIX df -i, but AIX 7.1/7.2 only have the native format-specifier syntax.
+        String command = "df -F %n %l" + (localOnly ? " -T local" : Normal.EMPTY);
         for (String line : Executor.runNative(command)) {
             /*- Sample Output:
-             $ df -i
-            Filesystem            Inodes   IUsed   IFree IUse% Mounted on
-            /dev/hd4               75081   16741   58340   23% /
-            /dev/hd2              269640   43104  226536   16% /usr
-            /dev/hd9var            43598    1370   42228    4% /var
-            /dev/hd3               79936     386   79550    1% /tmp
-            /dev/hd11admin         29138       7   29131    1% /admin
-            /proc                      0       0       0    -  /proc
-            /dev/hd10opt           47477    4232   43245    9% /opt
-            /dev/livedump          58204       4   58200    1% /var/adm/ras/livedump
-            /dev/fslv00          12419240  292668 12126572    3% /home
+             * $ df -F %n %l
+             * Filesystem    512-blocks     Ifree    Iused
+             * /dev/hd4         4194304   164951    15969
+             * /dev/hd2        52690944  2894117   196692
+             * /dev/hd9var      6291456   605443     2317
+             * /dev/hd3         6291456   450968     1349
+             * /dev/hd1         6291456   550843      110
+             * /dev/hd11admin    2097152   233048        5
+             * /proc                  -        -        -
+             * /dev/hd10opt    16777216   600058    17220
+             * /dev/livedump     524288    58200        4
+             * NFS mounts appear as hostname:/path or ip:/path and are matched by FS_PATTERN
             */
-            if (line.startsWith("/")) {
+            if (FS_PATTERN.matcher(line).find()) {
                 String[] split = Pattern.SPACES_PATTERN.split(line);
-                if (split.length > 5) {
-                    inodeTotalMap.put(split[0], Parsing.parseLongOrDefault(split[1], 0L));
-                    inodeFreeMap.put(split[0], Parsing.parseLongOrDefault(split[3], 0L));
+                if (split.length >= 4) {
+                    long free = Parsing.parseLongOrDefault(split[split.length - 2], 0L);
+                    long used = Parsing.parseLongOrDefault(split[split.length - 1], 0L);
+                    inodeTotalMap.put(split[0], free + used);
+                    inodeFreeMap.put(split[0], free);
                 }
             }
         }
