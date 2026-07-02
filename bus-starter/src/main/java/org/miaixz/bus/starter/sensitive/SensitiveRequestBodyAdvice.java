@@ -49,13 +49,13 @@ import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class RequestBodyAdvice extends BaseAdvice
+public class SensitiveRequestBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice {
 
     /**
-     * Constructs a new RequestBodyAdvice instance.
+     * Constructs a new SensitiveRequestBodyAdvice instance.
      */
-    public RequestBodyAdvice() {
+    public SensitiveRequestBodyAdvice() {
         // No initialization required.
     }
 

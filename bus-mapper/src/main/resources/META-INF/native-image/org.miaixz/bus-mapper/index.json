@@ -9,7 +9,8 @@
     "description": "Bus Mapper provides MyBatis mapper integration, SQL generation, dialect, provider, and schema mapping support.",
     "tested-versions": [
       "8.8.0",
-      "8.8.1"
+      "8.8.1",
+      "8.8.2"
     ],
     "allowed-packages": [
       "org.miaixz"

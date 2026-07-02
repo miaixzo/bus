@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
@@ -42,6 +43,7 @@ import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.builtin.ResponseBodyInputStream;
 import org.miaixz.bus.storage.magic.Blob;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
@@ -155,6 +157,149 @@ public class SharePointProvider extends AbstractProvider {
     @Override
     public Message download(String fileName) {
         return download(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file in the default SharePoint/OneDrive location.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file using the provider's normal path-building rules.
+     *
+     * @param bucket   The storage location identifier.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return statKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Reads metadata for an exact SharePoint/OneDrive object key.
+     *
+     * @param bucket    The storage location identifier.
+     * @param objectKey The exact object key.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+            Map<String, Object> metadata = getItemMetadata(bucket, objectKey, true);
+            if (metadata == null || metadata.containsKey("folder")) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(toBlob(bucket, objectKey, metadata, null)).build();
+        } catch (Exception e) {
+            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a stream for a file in the default SharePoint/OneDrive location.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Opens a stream for a file using the provider's normal path-building rules.
+     *
+     * @param bucket   The storage location identifier.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return streamKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Opens a stream for an exact SharePoint/OneDrive object key.
+     *
+     * @param bucket    The storage location identifier.
+     * @param objectKey The exact object key.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+            Map<String, Object> metadata = getItemMetadata(bucket, objectKey, true);
+            if (metadata == null || metadata.containsKey("folder")) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            String apiPath = buildApiPath(bucket, objectKey);
+            String url = context.getEndpoint() + apiPath + ":/content";
+            Request request = new Request.Builder().url(url)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()).get().build();
+            Response response = client.newCall(request).execute();
+            if (response.code() == 401) {
+                response.close();
+                refreshAccessToken();
+                return streamKey(bucket, objectKey);
+            }
+            if (!response.isSuccessful()) {
+                Errors error = toError(response.code());
+                response.close();
+                return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            }
+            if (response.body() == null) {
+                response.close();
+                return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                        .build();
+            }
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(toBlob(bucket, objectKey, metadata, new ResponseBodyInputStream(response))).build();
+        } catch (Exception e) {
+            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
     }
 
     /**
@@ -706,6 +851,84 @@ public class SharePointProvider extends AbstractProvider {
 
         // Folder ID or item ID (fallback)
         return "/me/drive/items/" + bucket + ":/" + filePath;
+    }
+
+    /**
+     * Reads Microsoft Graph item metadata for an object key.
+     *
+     * @param bucket    The storage location identifier.
+     * @param objectKey The object key.
+     * @param retry     Whether to refresh token and retry on authentication failure.
+     * @return The item metadata, or {@code null} if not found.
+     * @throws IOException If metadata lookup fails.
+     */
+    private Map<String, Object> getItemMetadata(String bucket, String objectKey, boolean retry) throws IOException {
+        String apiPath = buildApiPath(bucket, objectKey);
+        String url = context.getEndpoint() + apiPath + "?$select=id,name,size,lastModifiedDateTime,file,folder";
+        Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
+                .get().build();
+        try (Response response = client.newCall(request).execute()) {
+            if (response.code() == 401 && retry) {
+                refreshAccessToken();
+                return getItemMetadata(bucket, objectKey, false);
+            }
+            if (response.code() == 404) {
+                return null;
+            }
+            if (!response.isSuccessful()) {
+                throw new IOException("Metadata failed: " + response.code());
+            }
+            return JsonKit.toMap(response.body().string());
+        }
+    }
+
+    /**
+     * Converts Microsoft Graph metadata to a storage blob.
+     *
+     * @param bucket      The storage location identifier.
+     * @param objectKey   The requested object key.
+     * @param metadata    The Microsoft Graph metadata.
+     * @param inputStream The optional file stream.
+     * @return The storage blob.
+     */
+    private Blob toBlob(String bucket, String objectKey, Map<String, Object> metadata, InputStream inputStream) {
+        Map<String, Object> extend = new HashMap<>();
+        extend.put("id", metadata.get("id"));
+        extend.put("lastModified", metadata.get("lastModifiedDateTime"));
+        extend.put("file", metadata.get("file"));
+
+        String mimeType = null;
+        String hash = null;
+        Object fileNodeObject = metadata.get("file");
+        if (fileNodeObject instanceof Map<?, ?> fileNode) {
+            Object mimeTypeObject = fileNode.get("mimeType");
+            mimeType = mimeTypeObject == null ? null : String.valueOf(mimeTypeObject);
+            Object hashesObject = fileNode.get("hashes");
+            if (hashesObject instanceof Map<?, ?> hashes) {
+                Object quickXorHash = hashes.get("quickXorHash");
+                hash = quickXorHash == null ? null : String.valueOf(quickXorHash);
+            }
+        }
+
+        return Blob.builder().inputStream(inputStream).bucket(bucket).key(objectKey).name((String) metadata.get("name"))
+                .path(objectKey).size(metadata.get("size") == null ? "0" : String.valueOf(metadata.get("size")))
+                .type(mimeType).hash(hash).extend(extend).build();
+    }
+
+    /**
+     * Maps HTTP status codes to storage errors.
+     *
+     * @param code The HTTP status code.
+     * @return The storage error.
+     */
+    private Errors toError(int code) {
+        if (code == 401 || code == 403) {
+            return ErrorCode._113009;
+        }
+        if (code == 404) {
+            return ErrorCode._113010;
+        }
+        return ErrorCode._113012;
     }
 
     /**

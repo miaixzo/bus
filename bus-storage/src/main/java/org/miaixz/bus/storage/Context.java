@@ -66,6 +66,11 @@ public class Context {
     private String secretKey;
 
     /**
+     * The temporary access token for session-based authentication.
+     */
+    private String accessToken;
+
+    /**
      * The region where the storage bucket is located.
      */
     private String region;
@@ -79,6 +84,11 @@ public class Context {
      * Indicates whether the connection is secure (e.g., using HTTPS).
      */
     private boolean secure;
+
+    /**
+     * Indicates whether anonymous access is used.
+     */
+    private boolean anonymous;
 
     /**
      * Indicates whether path-style access is used for buckets. Default is {@code true}.

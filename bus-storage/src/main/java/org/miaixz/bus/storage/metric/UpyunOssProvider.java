@@ -28,12 +28,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
@@ -41,6 +43,7 @@ import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.builtin.ResponseBodyInputStream;
 import org.miaixz.bus.storage.magic.Blob;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
@@ -95,6 +98,171 @@ public class UpyunOssProvider extends AbstractProvider {
                 contentLength,
                 org.miaixz.bus.crypto.Builder.md5(this.context.getSecretKey()));
         return org.miaixz.bus.crypto.Builder.md5(signStr);
+    }
+
+    /**
+     * Reads metadata for a file in the default Upyun bucket.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file using the provider's normal Upyun path-building rules.
+     *
+     * @param bucket   The bucket name.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return statKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Reads metadata for an exact Upyun object key.
+     *
+     * @param bucket    The bucket name.
+     * @param objectKey The exact object key.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+
+            String path = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
+            String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
+            String signature = generateSignature(HTTP.HEAD, path, date, 0);
+            Request request = new Request.Builder().url(this.context.getEndpoint() + path)
+                    .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
+                    .addHeader(HTTP.DATE, date).head().build();
+
+            try (Response response = this.client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    return Message.builder().errcode(toError(response.code()).getKey())
+                            .errmsg(toError(response.code()).getValue()).build();
+                }
+
+                String name = nameOf(objectKey);
+                Map<String, Object> extend = new HashMap<>();
+                extend.put("date", response.header(HTTP.DATE));
+                extend.put("lastModified", response.header(HTTP.LAST_MODIFIED));
+
+                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                        .data(
+                                Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
+                                        .size(response.header(HTTP.CONTENT_LENGTH, "0"))
+                                        .type(response.header(HTTP.CONTENT_TYPE)).hash(response.header(HTTP.ETAG))
+                                        .extend(extend).build())
+                        .build();
+            }
+        } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    ErrorCode._113012.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a stream for a file in the default Upyun bucket.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Opens a stream for a file using the provider's normal Upyun path-building rules.
+     *
+     * @param bucket   The bucket name.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return streamKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Opens a stream for an exact Upyun object key.
+     *
+     * @param bucket    The bucket name.
+     * @param objectKey The exact object key.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+
+            String path = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
+            String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
+            String signature = generateSignature(HTTP.GET, path, date, 0);
+            Request request = new Request.Builder().url(this.context.getEndpoint() + path)
+                    .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
+                    .addHeader(HTTP.DATE, date).get().build();
+
+            Response response = this.client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                Errors error = toError(response.code());
+                response.close();
+                return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            }
+            if (response.body() == null) {
+                response.close();
+                return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                        .build();
+            }
+
+            String name = nameOf(objectKey);
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("date", response.header(HTTP.DATE));
+            extend.put("lastModified", response.header(HTTP.LAST_MODIFIED));
+
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().inputStream(new ResponseBodyInputStream(response)).bucket(bucket).key(objectKey)
+                                    .name(name).path(objectKey).size(response.header(HTTP.CONTENT_LENGTH, "0"))
+                                    .type(response.header(HTTP.CONTENT_TYPE)).hash(response.header(HTTP.ETAG))
+                                    .extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    ErrorCode._113012.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue()).build();
+        }
     }
 
     /**
@@ -601,6 +769,33 @@ public class UpyunOssProvider extends AbstractProvider {
     @Override
     public Message remove(String bucket, Path path) {
         return remove(bucket, path.toString(), Normal.EMPTY);
+    }
+
+    /**
+     * Maps HTTP status codes to storage errors.
+     *
+     * @param code The HTTP status code.
+     * @return The storage error.
+     */
+    private Errors toError(int code) {
+        if (code == 401 || code == 403) {
+            return ErrorCode._113009;
+        }
+        if (code == 404) {
+            return ErrorCode._113010;
+        }
+        return ErrorCode._113012;
+    }
+
+    /**
+     * Extracts the object name from an object key.
+     *
+     * @param objectKey The object key.
+     * @return The object name.
+     */
+    private String nameOf(String objectKey) {
+        int index = objectKey.lastIndexOf(Symbol.SLASH);
+        return index < 0 ? objectKey : objectKey.substring(index + 1);
     }
 
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
@@ -40,6 +41,7 @@ import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.builtin.ResponseBodyInputStream;
 import org.miaixz.bus.storage.magic.Blob;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
@@ -123,6 +125,148 @@ public class DropboxProvider extends AbstractProvider {
     @Override
     public Message download(String fileName) {
         return download(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file in the default Dropbox folder.
+     *
+     * @param fileName The file name or Dropbox path to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file in the specified Dropbox folder.
+     *
+     * @param bucket   The folder path in Dropbox.
+     * @param fileName The file name or Dropbox path to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        return statKey(bucket, normalizeObjectPath(bucket, fileName));
+    }
+
+    /**
+     * Reads metadata for an exact Dropbox object path.
+     *
+     * @param bucket    The folder path in Dropbox.
+     * @param objectKey The exact Dropbox path or file name.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+            String path = normalizeObjectPath(bucket, objectKey);
+            Map<String, Object> metadata = getMetadata(path);
+            if (metadata == null || !"file".equals(metadata.get(".tag"))) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(toBlob(bucket, path, metadata, null)).build();
+        } catch (Exception e) {
+            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "409") ? ErrorCode._113010 : ErrorCode._113012;
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a stream for a file in the default Dropbox folder.
+     *
+     * @param fileName The file name or Dropbox path to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Opens a stream for a file in the specified Dropbox folder.
+     *
+     * @param bucket   The folder path in Dropbox.
+     * @param fileName The file name or Dropbox path to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        return streamKey(bucket, normalizeObjectPath(bucket, fileName));
+    }
+
+    /**
+     * Opens a stream for an exact Dropbox object path.
+     *
+     * @param bucket    The folder path in Dropbox.
+     * @param objectKey The exact Dropbox path or file name.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+            String path = normalizeObjectPath(bucket, objectKey);
+            Map<String, Object> metadata = getMetadata(path);
+            if (metadata == null || !"file".equals(metadata.get(".tag"))) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            String url = CONTENT_BASE + "/files/download";
+            Map<String, Object> args = new HashMap<>();
+            args.put("path", path);
+            Request request = new Request.Builder().url(url)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension())
+                    .addHeader("Dropbox-API-Arg", JsonKit.toJsonString(args))
+                    .post(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), new byte[0])).build();
+
+            Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                Errors error = toError(response.code());
+                response.close();
+                return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            }
+            if (response.body() == null) {
+                response.close();
+                return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                        .build();
+            }
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(toBlob(bucket, path, metadata, new ResponseBodyInputStream(response))).build();
+        } catch (Exception e) {
+            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "409") ? ErrorCode._113010 : ErrorCode._113012;
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
     }
 
     /**
@@ -603,6 +747,85 @@ public class DropboxProvider extends AbstractProvider {
         }
         String normalizedBucket = bucket.startsWith(Symbol.SLASH) ? bucket : Symbol.SLASH + bucket;
         return normalizedBucket + Symbol.SLASH + fileName;
+    }
+
+    /**
+     * Normalizes a Dropbox object key to an absolute Dropbox path.
+     *
+     * @param bucket    The folder path in Dropbox.
+     * @param objectKey The object key or file name.
+     * @return The absolute Dropbox path.
+     */
+    private String normalizeObjectPath(String bucket, String objectKey) {
+        return objectKey.startsWith(Symbol.SLASH) ? objectKey : buildPath(bucket, objectKey);
+    }
+
+    /**
+     * Reads Dropbox metadata for a path.
+     *
+     * @param path The Dropbox path.
+     * @return The metadata, or {@code null} if not found.
+     * @throws IOException If metadata lookup fails.
+     */
+    private Map<String, Object> getMetadata(String path) throws IOException {
+        String url = API_BASE + "/files/get_metadata";
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("path", path);
+        requestBody.put("include_media_info", false);
+        requestBody.put("include_deleted", false);
+
+        Request request = new Request.Builder().url(url)
+                .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension())
+                .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .post(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), JsonKit.toJsonString(requestBody)))
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            if (response.code() == 409) {
+                return null;
+            }
+            if (!response.isSuccessful()) {
+                throw new IOException("Metadata failed: " + response.code());
+            }
+            return JsonKit.toMap(response.body().string());
+        }
+    }
+
+    /**
+     * Converts Dropbox metadata to a storage blob.
+     *
+     * @param bucket      The folder path in Dropbox.
+     * @param path        The Dropbox path.
+     * @param metadata    The Dropbox metadata.
+     * @param inputStream The optional file stream.
+     * @return The storage blob.
+     */
+    private Blob toBlob(String bucket, String path, Map<String, Object> metadata, InputStream inputStream) {
+        Map<String, Object> extend = new HashMap<>();
+        extend.put("id", metadata.get("id"));
+        extend.put("path_display", metadata.get("path_display"));
+        extend.put("client_modified", metadata.get("client_modified"));
+        extend.put("server_modified", metadata.get("server_modified"));
+        extend.put("rev", metadata.get("rev"));
+
+        return Blob.builder().inputStream(inputStream).bucket(bucket).key(path).name((String) metadata.get("name"))
+                .path(path).size(metadata.get("size") == null ? "0" : String.valueOf(metadata.get("size")))
+                .hash((String) metadata.get("content_hash")).extend(extend).build();
+    }
+
+    /**
+     * Maps HTTP status codes to storage errors.
+     *
+     * @param code The HTTP status code.
+     * @return The storage error.
+     */
+    private Errors toError(int code) {
+        if (code == 401 || code == 403) {
+            return ErrorCode._113009;
+        }
+        if (code == 404 || code == 409) {
+            return ErrorCode._113010;
+        }
+        return ErrorCode._113012;
     }
 
 }

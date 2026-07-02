@@ -33,7 +33,7 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface Provider extends org.miaixz.bus.core.Provider {
+public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
 
     /**
      * Downloads a file as a stream.
@@ -88,6 +88,70 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      */
     default Message list(String bucket) {
         return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+    }
+
+    /**
+     * Reads metadata for a file in the default bucket using the provider's normal key-building rules.
+     *
+     * @param fileName The file name or provider-level logical name.
+     * @return A {@link Message} containing storage metadata when successful.
+     */
+    default Message stat(String fileName) {
+        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    }
+
+    /**
+     * Reads metadata for a file in the specified bucket using the provider's normal key-building rules.
+     *
+     * @param bucket   The bucket or container name.
+     * @param fileName The file name or provider-level logical name.
+     * @return A {@link Message} containing storage metadata when successful.
+     */
+    default Message stat(String bucket, String fileName) {
+        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    }
+
+    /**
+     * Reads metadata for an exact storage object key.
+     *
+     * @param bucket    The bucket or container name.
+     * @param objectKey The exact object key stored by the backend.
+     * @return A {@link Message} containing storage metadata when successful.
+     */
+    default Message statKey(String bucket, String objectKey) {
+        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    }
+
+    /**
+     * Opens a stream for a file in the default bucket using the provider's normal key-building rules.
+     *
+     * @param fileName The file name or provider-level logical name.
+     * @return A {@link Message} containing a stream resource when successful.
+     */
+    default Message stream(String fileName) {
+        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    }
+
+    /**
+     * Opens a stream for a file in the specified bucket using the provider's normal key-building rules.
+     *
+     * @param bucket   The bucket or container name.
+     * @param fileName The file name or provider-level logical name.
+     * @return A {@link Message} containing a stream resource when successful.
+     */
+    default Message stream(String bucket, String fileName) {
+        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    }
+
+    /**
+     * Opens a stream for an exact storage object key.
+     *
+     * @param bucket    The bucket or container name.
+     * @param objectKey The exact object key stored by the backend.
+     * @return A {@link Message} containing a stream resource when successful.
+     */
+    default Message streamKey(String bucket, String objectKey) {
+        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
     }
 
     /**
@@ -224,6 +288,14 @@ public interface Provider extends org.miaixz.bus.core.Provider {
     @Override
     default Object type() {
         return EnumValue.Povider.STORAGE;
+    }
+
+    /**
+     * Releases provider-level resources.
+     */
+    @Override
+    default void close() {
+        // Default providers do not hold closeable resources.
     }
 
 }

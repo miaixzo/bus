@@ -36,13 +36,18 @@ import com.google.gson.reflect.TypeToken;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Gson JSON converter configurer, integrated with Spring MVC.
+ * Gson JSON converter configurer for Spring MVC.
  * <p>
  * This component configures {@link GsonHttpMessageConverter} to handle JSON serialization and deserialization. It
  * supports an {@code autoType} feature to restrict deserialization to classes within a specified package prefix,
  * enhancing security by preventing arbitrary type deserialization. It also applies a unified field exclusion policy
  * based on {@code @Include} and {@code @Transient} annotations by delegating to the
  * {@link AbstractHttpMessageConverter} base class.
+ * </p>
+ * <p>
+ * The registered converter prefers {@code application/json} for ordinary HTTP content negotiation and keeps
+ * {@code application/json+gson} for clients that explicitly opt in to Gson-specific responses.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -52,13 +57,27 @@ import org.miaixz.bus.logger.Logger;
 public class GsonMessageConverter extends AbstractHttpMessageConverter {
 
     /**
+     * Default media types supported by this converter.
+     * <p>
+     * Order matters: Spring uses this list during content negotiation, so {@code application/json} must remain first to
+     * avoid wildcard browser requests selecting {@code application/json+gson} by default.
+     * </p>
+     */
+    private static final List<MediaType> DEFAULT_MEDIA_TYPES = List.of(
+            MediaType.APPLICATION_JSON,
+            MediaType.parseMediaType(org.miaixz.bus.core.lang.MediaType.APPLICATION_JSON_GSON));
+
+    /**
+     * Auto type matcher compiled from the configured allow-list expression.
+     */
+    private AutoBindingTypeMatcher autoTypeMatcher;
+
+    /**
      * Constructs a new GsonMessageConverter instance.
      */
     public GsonMessageConverter() {
         // No initialization required.
     }
-
-    private AutoBindingTypeMatcher autoTypeMatcher;
 
     /**
      * Returns the name of this JSON converter configurer.
@@ -83,10 +102,12 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
     /**
      * Configures the {@link GsonHttpMessageConverter} and adds it to the list of converters.
      * <p>
-     * It applies {@code autoType} restrictions if configured, creating a custom {@link Gson} instance.
+     * It applies the common field exclusion policy and optional {@code autoType} restrictions before registering the
+     * converter.
      * </p>
      *
-     * @param converters The list of {@link HttpMessageConverter}s to which the Gson converter will be added.
+     * @param converters The list of {@link org.springframework.http.converter.HttpMessageConverter}s to which the Gson
+     *                   converter will be added.
      */
     @Override
     public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
@@ -96,38 +117,33 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
                 "Configuring GsonHttpMessageConverter with autoType: {}",
                 autoTypeMatcher == null ? null : autoTypeMatcher.description());
 
-        // Configure Gson, adding autoType restriction
         GsonBuilder gsonBuilder = new GsonBuilder();
 
-        // Apply the unified exclusion strategy for @Include and @Transient
         gsonBuilder.setExclusionStrategies(new com.google.gson.ExclusionStrategy() {
 
             @Override
             public boolean shouldSkipField(com.google.gson.FieldAttributes f) {
                 try {
-                    // Use reflection to get the Field object from its class and name.
                     Class<?> declaringClass = f.getDeclaringClass();
                     String fieldName = f.getName();
                     Field field = declaringClass.getDeclaredField(fieldName);
 
-                    // CORRECTED: Removed the inversion. Both GSON's strategy and our method
-                    // return true to SKIP, so the result can be used directly.
+                    // Gson and isFieldIgnored both use true to mean "skip this field".
                     return isFieldIgnored(field);
                 } catch (NoSuchFieldException | SecurityException e) {
                     Logger.warn(
                             false,
                             "Starter",
-                            "Gson could not access field '{}' for annotation check. Defaulting to include.",
+                            "Gson could not access field '{}' for annotation check. Defaulting to include: {}",
                             f.getName(),
                             e.getClass().getSimpleName());
-                    // If we can't inspect the field, don't skip it (default to including it).
+                    // Keep serialization permissive when reflection lookup fails.
                     return false;
                 }
             }
 
             @Override
             public boolean shouldSkipClass(Class<?> clazz) {
-                // CORRECTED: Delegate to the base class for consistent class-level skipping logic.
                 return isClassIgnored(clazz);
             }
         });
@@ -144,9 +160,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
         Gson gson = gsonBuilder.create();
         GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
         converter.setGson(gson);
-        // Keep Gson available for explicit opt-in only; regular application/json should prefer
-        // Fastjson2/Jackson to avoid duplicate inherited-field binding issues in Gson.
-        converter.setSupportedMediaTypes(List.of(new MediaType("application", "json+gson")));
+        converter.setSupportedMediaTypes(DEFAULT_MEDIA_TYPES);
         converters.add(order(), converter);
         Logger.debug(
                 false,
@@ -174,6 +188,9 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
      */
     private static class AutoTypeAdapterFactory implements com.google.gson.TypeAdapterFactory {
 
+        /**
+         * Auto type matcher used to approve or reject adapter target types.
+         */
         private final AutoBindingTypeMatcher autoTypeMatcher;
 
         /**
@@ -205,7 +222,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
                 throw new JsonParseException("Type not allowed: " + rawType.getName()
                         + ", must match auto-type patterns: " + autoTypeMatcher.description());
             }
-            return null; // Delegate to default adapter
+            return null;
         }
 
     }

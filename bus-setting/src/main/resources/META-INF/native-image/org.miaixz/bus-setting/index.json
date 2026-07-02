@@ -9,7 +9,8 @@
     "description": "Bus Setting provides configuration loading, properties, YAML, TOML, and settings utilities.",
     "tested-versions": [
       "8.8.0",
-      "8.8.1"
+      "8.8.1",
+      "8.8.2"
     ],
     "allowed-packages": [
       "org.miaixz"

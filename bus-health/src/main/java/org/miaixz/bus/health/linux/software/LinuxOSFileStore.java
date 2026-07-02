@@ -75,6 +75,11 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
     private long totalInodes;
 
     /**
+     * Whether this file store represents an NFS mount whose server was unreachable during enumeration.
+     */
+    private final boolean unreachable;
+
+    /**
      * Creates a new LinuxOSFileStore instance.
      *
      * @param name          the name
@@ -96,6 +101,33 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
     public LinuxOSFileStore(String name, String volume, String label, String mount, String options, String uuid,
             boolean local, String logicalVolume, String description, String fsType, long freeSpace, long usableSpace,
             long totalSpace, long freeInodes, long totalInodes) {
+        this(name, volume, label, mount, options, uuid, local, logicalVolume, description, fsType, freeSpace,
+                usableSpace, totalSpace, freeInodes, totalInodes, false);
+    }
+
+    /**
+     * Creates a new LinuxOSFileStore instance.
+     *
+     * @param name          the name
+     * @param volume        the volume
+     * @param label         the label
+     * @param mount         the mount
+     * @param options       the options
+     * @param uuid          the uuid
+     * @param local         the local
+     * @param logicalVolume the logical volume
+     * @param description   the description
+     * @param fsType        the fs type
+     * @param freeSpace     the free space
+     * @param usableSpace   the usable space
+     * @param totalSpace    the total space
+     * @param freeInodes    the free inodes
+     * @param totalInodes   the total inodes
+     * @param unreachable   whether the backing NFS server was unreachable
+     */
+    LinuxOSFileStore(String name, String volume, String label, String mount, String options, String uuid, boolean local,
+            String logicalVolume, String description, String fsType, long freeSpace, long usableSpace, long totalSpace,
+            long freeInodes, long totalInodes, boolean unreachable) {
         super(name, volume, label, mount, options, uuid, local);
         this.logicalVolume = logicalVolume;
         this.description = description;
@@ -105,6 +137,7 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
         this.totalSpace = totalSpace;
         this.freeInodes = freeInodes;
         this.totalInodes = totalInodes;
+        this.unreachable = unreachable;
     }
 
     /**
@@ -194,6 +227,16 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
      */
     @Override
     public boolean updateAttributes() {
+        if (this.unreachable) {
+            for (OSFileStore fileStore : LinuxFileSystem
+                    .getFileStoreMatching(getName(), LinuxFileSystem.buildUuidMap(), isLocal())) {
+                if (getVolume().equals(fileStore.getVolume()) && getMount().equals(fileStore.getMount())) {
+                    updateFrom(fileStore);
+                    return true;
+                }
+            }
+            return false;
+        }
         long[] vfs = LinuxFileSystem.queryStatvfs(getMount());
         if (vfs != null) {
             long total = vfs[2];
@@ -212,20 +255,30 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
             this.totalInodes = vfs[0];
             return true;
         }
-        for (OSFileStore fileStore : LinuxFileSystem.getFileStoreMatching(getName(), null, isLocal())) {
+        for (OSFileStore fileStore : LinuxFileSystem
+                .getFileStoreMatching(getName(), LinuxFileSystem.buildUuidMap(), isLocal())) {
             if (getVolume().equals(fileStore.getVolume()) && getMount().equals(fileStore.getMount())) {
-                this.logicalVolume = fileStore.getLogicalVolume();
-                this.description = fileStore.getDescription();
-                this.fsType = fileStore.getType();
-                this.freeSpace = fileStore.getFreeSpace();
-                this.usableSpace = fileStore.getUsableSpace();
-                this.totalSpace = fileStore.getTotalSpace();
-                this.freeInodes = fileStore.getFreeInodes();
-                this.totalInodes = fileStore.getTotalInodes();
+                updateFrom(fileStore);
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Updates mutable fields from another file store.
+     *
+     * @param fileStore the source file store
+     */
+    private void updateFrom(OSFileStore fileStore) {
+        this.logicalVolume = fileStore.getLogicalVolume();
+        this.description = fileStore.getDescription();
+        this.fsType = fileStore.getType();
+        this.freeSpace = fileStore.getFreeSpace();
+        this.usableSpace = fileStore.getUsableSpace();
+        this.totalSpace = fileStore.getTotalSpace();
+        this.freeInodes = fileStore.getFreeInodes();
+        this.totalInodes = fileStore.getTotalInodes();
     }
 
 }

@@ -20,6 +20,7 @@
 package org.miaixz.bus.extra.ftp;
 
 import java.io.File;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -558,6 +559,60 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
+     * Reads metadata for a remote FTP file or directory.
+     *
+     * @param path The remote path to inspect.
+     * @return The neutral remote entry metadata, or {@code null} if the entry does not exist.
+     * @throws InternalException if an I/O error occurs.
+     */
+    @Override
+    public FtpEntry entry(final String path) throws InternalException {
+        if (StringKit.isBlank(path)) {
+            return null;
+        }
+        if (isDir(path)) {
+            return FtpEntry.of(path).setName(FileName.getName(path)).setDirectory(true).setRegularFile(false);
+        }
+
+        final FTPFile[] ftpFiles;
+        try {
+            ftpFiles = client.listFiles(path);
+        } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
+            throw new InternalException(e);
+        }
+        if (ArrayKit.isEmpty(ftpFiles)) {
+            return null;
+        }
+
+        FTPFile file = null;
+        final String name = FileName.getName(path);
+        for (final FTPFile ftpFile : ftpFiles) {
+            if (StringKit.equals(name, ftpFile.getName())) {
+                file = ftpFile;
+                break;
+            }
+        }
+        if (file == null && ftpFiles.length == 1 && !ftpFiles[0].isDirectory()) {
+            file = ftpFiles[0];
+        }
+        if (file == null) {
+            return null;
+        }
+
+        return FtpEntry.of(path).setName(StringKit.isBlank(file.getName()) ? name : file.getName())
+                .setSize(file.getSize()).setPermissions(toPermissions(file)).setPermissionsText(file.getRawListing())
+                .setModifiedTime(file.getTimestamp() == null ? 0 : file.getTimestamp().getTimeInMillis())
+                .setDirectory(file.isDirectory()).setRegularFile(file.isFile()).setLink(file.isSymbolicLink());
+    }
+
+    /**
      * Deletes a file on the FTP server. This method is designed to be overridden by subclasses for custom file deletion
      * logic. When overriding, ensure proper validation of file paths and handling of permissions.
      *
@@ -955,7 +1010,8 @@ public class CommonsFtp extends AbstractFtp {
         }
         try {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
-            return client.retrieveFileStream(fileName);
+            final InputStream stream = client.retrieveFileStream(fileName);
+            return stream == null ? null : new PendingCommandInputStream(stream);
         } catch (final IOException e) {
             Logger.warn(
                     false,
@@ -979,6 +1035,82 @@ public class CommonsFtp extends AbstractFtp {
      */
     public FTPClient getClient() {
         return this.client;
+    }
+
+    /**
+     * Converts FTP permissions to a Unix-style permission bitmask.
+     *
+     * @param file The FTP file metadata.
+     * @return The permission bitmask.
+     */
+    private int toPermissions(final FTPFile file) {
+        int permissions = 0;
+        if (file.hasPermission(FTPFile.USER_ACCESS, FTPFile.READ_PERMISSION)) {
+            permissions |= 0400;
+        }
+        if (file.hasPermission(FTPFile.USER_ACCESS, FTPFile.WRITE_PERMISSION)) {
+            permissions |= 0200;
+        }
+        if (file.hasPermission(FTPFile.USER_ACCESS, FTPFile.EXECUTE_PERMISSION)) {
+            permissions |= 0100;
+        }
+        if (file.hasPermission(FTPFile.GROUP_ACCESS, FTPFile.READ_PERMISSION)) {
+            permissions |= 040;
+        }
+        if (file.hasPermission(FTPFile.GROUP_ACCESS, FTPFile.WRITE_PERMISSION)) {
+            permissions |= 020;
+        }
+        if (file.hasPermission(FTPFile.GROUP_ACCESS, FTPFile.EXECUTE_PERMISSION)) {
+            permissions |= 010;
+        }
+        if (file.hasPermission(FTPFile.WORLD_ACCESS, FTPFile.READ_PERMISSION)) {
+            permissions |= 04;
+        }
+        if (file.hasPermission(FTPFile.WORLD_ACCESS, FTPFile.WRITE_PERMISSION)) {
+            permissions |= 02;
+        }
+        if (file.hasPermission(FTPFile.WORLD_ACCESS, FTPFile.EXECUTE_PERMISSION)) {
+            permissions |= 01;
+        }
+        return permissions;
+    }
+
+    /**
+     * Completes the pending FTP transfer when the returned stream is closed.
+     */
+    private class PendingCommandInputStream extends FilterInputStream {
+
+        /**
+         * Constructs a pending-command input stream.
+         *
+         * @param inputStream The FTP data stream.
+         */
+        protected PendingCommandInputStream(final InputStream inputStream) {
+            super(inputStream);
+        }
+
+        @Override
+        public void close() throws IOException {
+            IOException failure = null;
+            try {
+                super.close();
+            } catch (final IOException e) {
+                failure = e;
+            }
+            try {
+                client.completePendingCommand();
+            } catch (final IOException e) {
+                if (failure == null) {
+                    failure = e;
+                } else {
+                    failure.addSuppressed(e);
+                }
+            }
+            if (failure != null) {
+                throw failure;
+            }
+        }
+
     }
 
     /**

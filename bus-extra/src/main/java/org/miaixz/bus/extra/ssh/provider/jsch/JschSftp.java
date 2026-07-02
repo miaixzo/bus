@@ -32,6 +32,7 @@ import com.jcraft.jsch.*;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 
+import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -40,6 +41,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.ftp.AbstractFtp;
 import org.miaixz.bus.extra.ftp.FtpConfig;
+import org.miaixz.bus.extra.ftp.FtpEntry;
 import org.miaixz.bus.extra.ssh.Connector;
 import org.miaixz.bus.extra.ssh.JschKit;
 import org.miaixz.bus.logger.Logger;
@@ -405,6 +407,35 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
+     * Reads metadata for a remote file or directory. JSch-specific attributes are converted to {@link FtpEntry} so
+     * callers do not need to depend on JSch types.
+     *
+     * @param path The remote path to inspect.
+     * @return The neutral remote entry metadata.
+     * @throws InternalException if an SFTP error occurs.
+     */
+    @Override
+    public FtpEntry entry(final String path) {
+        try {
+            final SftpATTRS attributes = getClient().stat(path);
+            return FtpEntry.of(path).setName(FileName.getName(path)).setSize(attributes.getSize())
+                    .setUid(attributes.getUId()).setGid(attributes.getGId()).setPermissions(attributes.getPermissions())
+                    .setPermissionsText(attributes.getPermissionsString()).setAccessTime(attributes.getATime())
+                    .setModifiedTime(attributes.getMTime()).setDirectory(attributes.isDir())
+                    .setRegularFile(attributes.isReg()).setLink(attributes.isLink());
+        } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
+            throw new InternalException(e);
+        }
+    }
+
+    /**
      * Renames a file or directory on the SFTP server. This method is designed to be overridden by subclasses for custom
      * rename logic. When overriding, ensure proper validation of paths and handling of atomic operations.
      *
@@ -729,6 +760,19 @@ public class JschSftp extends AbstractFtp {
             throw new InternalException(e);
         }
         return this;
+    }
+
+    /**
+     * Uploads a local data stream to the target server.
+     *
+     * @param srcStream The local data stream.
+     * @param destPath  The target path.
+     * @param mode      The {@link Mode} for file transfer.
+     * @return This {@code JschSftp} instance.
+     * @throws InternalException if an SftpException occurs.
+     */
+    public JschSftp put(final InputStream srcStream, final String destPath, final Mode mode) {
+        return put(srcStream, destPath, null, mode);
     }
 
     /**

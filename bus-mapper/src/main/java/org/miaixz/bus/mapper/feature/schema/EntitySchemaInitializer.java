@@ -114,22 +114,36 @@ public class EntitySchemaInitializer {
             List<SchemaPlan> plans = new ArrayList<>();
             try {
                 for (Class<?> entityClass : entityClasses) {
-                    if (excluded(entityClass, config)) {
-                        continue;
+                    TableMeta table = null;
+                    try {
+                        if (excluded(entityClass, config)) {
+                            continue;
+                        }
+                        table = MapperFactory.of(entityClass);
+                        if (excluded(table, config)) {
+                            continue;
+                        }
+                        table = prefixedTable(table, tablePrefixConfig);
+                        locks.add(SchemaInitializationLock.acquire(dataSource, table));
+                        locks.add(operations.acquireSchemaInitializationLock(connection, table));
+                        TableSnapshot snapshot = operations.readTable(connection, table);
+                        if (config.mode() == Schema.CREATE && snapshot.exists()) {
+                            report.skippedSqls().add("Table already exists: " + table.tableName());
+                            continue;
+                        }
+                        plans.add(new SchemaPlan(table, new SchemaDiffer(operations, config).diff(table, snapshot)));
+                    } catch (SQLException e) {
+                        String context = "entity=" + (entityClass == null ? null : entityClass.getName()) + ", table="
+                                + (table == null ? null : table.tableName());
+                        Logger.error(false, "Mapper", e, "Schema entity initialization failed: {}", context);
+                        throw new SQLException("Schema entity initialization failed: " + context, e.getSQLState(),
+                                e.getErrorCode(), e);
+                    } catch (RuntimeException e) {
+                        String context = "entity=" + (entityClass == null ? null : entityClass.getName()) + ", table="
+                                + (table == null ? null : table.tableName());
+                        Logger.error(false, "Mapper", e, "Schema entity initialization failed: {}", context);
+                        throw e;
                     }
-                    TableMeta table = MapperFactory.of(entityClass);
-                    if (excluded(table, config)) {
-                        continue;
-                    }
-                    table = prefixedTable(table, tablePrefixConfig);
-                    locks.add(SchemaInitializationLock.acquire(dataSource, table));
-                    locks.add(operations.acquireSchemaInitializationLock(connection, table));
-                    TableSnapshot snapshot = operations.readTable(connection, table);
-                    if (config.mode() == Schema.CREATE && snapshot.exists()) {
-                        report.skippedSqls().add("Table already exists: " + table.tableName());
-                        continue;
-                    }
-                    plans.add(new SchemaPlan(table, new SchemaDiffer(operations, config).diff(table, snapshot)));
                 }
                 executePlans(connection, dialect, operations, config, report, scriptSqls, plans);
             } finally {
@@ -361,28 +375,39 @@ public class EntitySchemaInitializer {
             SchemaReport report,
             List<String> scriptSqls,
             SchemaDiff diff) throws SQLException {
-        if (config.mode() == Schema.VALIDATE) {
-            report.skippedSqls().add(diff.message());
-            return;
-        }
-        if (!allowed(dialect, config, diff, connection)) {
-            report.skippedSqls().add(diff.message());
-            return;
-        }
-        String sql = sql(operations, diff);
-        if (sql == null || sql.isBlank()) {
-            report.skippedSqls().add(diff.message());
-            return;
-        }
-        if (config.printSql()) {
-            Logger.info(
-                    false,
-                    "Mapper",
-                    "Schema SQL generated: type={}, riskLevel={}, table={}, sql={}",
-                    diff.type(),
-                    diff.riskLevel(),
-                    diff.tableMeta().tableName(),
-                    sql);
+        String sql;
+        TableMeta table = diff.tableMeta();
+        String entity = table == null || table.entityClass() == null ? null : table.entityClass().getName();
+        String tableName = table == null ? null : table.tableName();
+        String column = diff.columnMeta() != null ? diff.columnMeta().column()
+                : diff.actualColumn() == null ? null : diff.actualColumn().name();
+        String context = "entity=" + entity + ", table=" + tableName + ", column=" + column + ", operation="
+                + diff.type() + ", riskLevel=" + diff.riskLevel();
+        try {
+            if (config.mode() == Schema.VALIDATE) {
+                report.skippedSqls().add(diff.message());
+                return;
+            }
+            if (!allowed(dialect, config, diff, connection)) {
+                report.skippedSqls().add(diff.message());
+                return;
+            }
+            sql = sql(operations, diff);
+            if (sql == null || sql.isBlank()) {
+                report.skippedSqls().add(diff.message());
+                return;
+            }
+            if (config.printSql()) {
+                Logger.info(false, "Mapper", "Schema SQL generated: {}, sql={}", context, sql);
+            }
+        } catch (SQLException e) {
+            report.failedDiffs().add(diff);
+            Logger.error(false, "Mapper", e, "Schema SQL preparation failed: {}", context);
+            throw new SQLException("Schema SQL preparation failed: " + context, e.getSQLState(), e.getErrorCode(), e);
+        } catch (RuntimeException e) {
+            report.failedDiffs().add(diff);
+            Logger.error(false, "Mapper", e, "Schema SQL preparation failed: {}", context);
+            throw e;
         }
         scriptSqls.add(sql);
         if (config.mode() == Schema.SCRIPT || config.dryRun()) {
@@ -395,8 +420,10 @@ public class EntitySchemaInitializer {
         } catch (SQLException e) {
             report.skippedSqls().add(sql);
             report.failedDiffs().add(diff);
+            Logger.error(false, "Mapper", e, "Schema SQL execution failed: {}, sql={}", context, sql);
             if (config.failFast() || !config.continueOnError()) {
-                throw e;
+                throw new SQLException("Schema SQL execution failed: " + context + ", sql=" + sql, e.getSQLState(),
+                        e.getErrorCode(), e);
             }
         }
     }
@@ -508,9 +535,13 @@ public class EntitySchemaInitializer {
      * @throws SQLException when the row-count query fails
      */
     private boolean hasRows(Connection connection, TableMeta table) throws SQLException {
-        try (Statement statement = connection.createStatement();
-                ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM " + table.tableName())) {
+        String sql = "SELECT COUNT(*) FROM " + table.tableName();
+        try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(sql)) {
             return rs.next() && rs.getLong(1) > 0;
+        } catch (SQLException e) {
+            String context = "entity=" + (table.entityClass() == null ? null : table.entityClass().getName())
+                    + ", table=" + table.tableName() + ", sql=" + sql;
+            throw new SQLException("Schema row-count check failed: " + context, e.getSQLState(), e.getErrorCode(), e);
         }
     }
 

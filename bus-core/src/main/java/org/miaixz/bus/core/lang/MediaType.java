@@ -184,6 +184,36 @@ public class MediaType {
     public static final MediaType APPLICATION_JSON_TYPE = new MediaType("application", "json");
 
     /**
+     * A {@code String} constant representing {@value #APPLICATION_JSON_FASTJSON} media type.
+     */
+    public static final String APPLICATION_JSON_FASTJSON = "application/json+fastjson";
+
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_JSON_FASTJSON} media type.
+     */
+    public static final MediaType APPLICATION_JSON_FASTJSON_TYPE = new MediaType("application", "json+fastjson");
+
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_JSON_GSON} media type.
+     */
+    public static final String APPLICATION_JSON_GSON = "application/json+gson";
+
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_JSON_GSON} media type.
+     */
+    public static final MediaType APPLICATION_JSON_GSON_TYPE = new MediaType("application", "json+gson");
+
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_JSON_JACKSON} media type.
+     */
+    public static final String APPLICATION_JSON_JACKSON = "application/json+jackson";
+
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_JSON_JACKSON} media type.
+     */
+    public static final MediaType APPLICATION_JSON_JACKSON_TYPE = new MediaType("application", "json+jackson");
+
+    /**
      * A {@code String} constant representing {@value #APPLICATION_FORM_URLENCODED} media type.
      */
     public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";

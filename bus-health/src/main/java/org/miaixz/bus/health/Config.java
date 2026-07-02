@@ -140,6 +140,11 @@ public final class Config {
     public static final String _LINUX_PROCFS_LOGWARNING = "bus.health.linux.procfs.logwarning";
 
     /**
+     * Linux configuration: whether to probe NFS servers before querying filesystem statistics.
+     */
+    public static final String _LINUX_FILESYSTEM_CHECKNFS = "bus.health.linux.filesystem.checknfs";
+
+    /**
      * Linux configuration: whether to log mac sysctl warnings.
      */
     public static final String _MAC_SYSCTL_LOGWARNING = "bus.health.mac.sysctl.logwarning";

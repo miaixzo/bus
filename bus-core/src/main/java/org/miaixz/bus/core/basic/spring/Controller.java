@@ -47,7 +47,7 @@ public class Controller {
      * @return A response object.
      */
     public Object write(Object data) {
-        return write(data, false);
+        return write(ErrorCode._SUCCESS, data);
     }
 
     /**
@@ -59,9 +59,9 @@ public class Controller {
      */
     public Object write(Object data, boolean id) {
         if (id) {
-            return write(ErrorCode._SUCCESS, FieldKit.getFieldValue(data, "id"));
+            return write(FieldKit.getFieldValue(data, "id"));
         }
-        return write(ErrorCode._SUCCESS, data);
+        return write(data);
     }
 
     /**
@@ -71,7 +71,7 @@ public class Controller {
      * @return A response object.
      */
     public Object write(String errcode) {
-        return write(errcode, Errors.require(errcode));
+        return write(Errors.require(errcode));
     }
 
     /**
@@ -81,7 +81,7 @@ public class Controller {
      * @return A response object.
      */
     public Object write(Errors errors) {
-        return write(errors.getKey(), errors.getValue());
+        return write(errors, null);
     }
 
     /**
@@ -92,10 +92,7 @@ public class Controller {
      * @return A response object.
      */
     public Object write(String errcode, Object data) {
-        if (Errors.contains(errcode)) {
-            return Message.builder().errcode(errcode).errmsg(Errors.require(errcode).getValue()).data(data).build();
-        }
-        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+        return write(Errors.require(errcode), data);
     }
 
     /**
@@ -106,10 +103,13 @@ public class Controller {
      * @return A response object.
      */
     public Object write(Errors errors, Object data) {
-        if (Errors.contains(errors.getKey())) {
+        if (null == errors || !Errors.contains(errors.getKey())) {
+            return write(ErrorCode._FAILURE);
+        }
+        if (ErrorCode._SUCCESS.getKey().equals(errors.getKey())) {
             return Message.builder().errcode(errors.getKey()).errmsg(errors.getValue()).data(data).build();
         }
-        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+        return write(errors.getKey(), errors.getValue());
     }
 
     /**
@@ -138,7 +138,7 @@ public class Controller {
         if (StringKit.isNotEmpty(errcode) && StringKit.isNotEmpty(format)) {
             return Message.builder().errcode(errcode).errmsg(StringKit.format(format, errmsg)).build();
         }
-        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+        return write(ErrorCode._FAILURE);
     }
 
 }

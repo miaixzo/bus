@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -70,6 +71,161 @@ public class GitlabFileProvider extends AbstractProvider {
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] cannot be blank");
 
         this.client = new GitLabApi(this.context.getEndpoint(), this.context.getAccessKey());
+    }
+
+    /**
+     * Reads metadata for a file in the default GitLab project.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file using the provider's normal GitLab path-building rules.
+     *
+     * @param bucket   The GitLab project ID or path.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return statKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Reads metadata for an exact GitLab repository file path.
+     *
+     * @param bucket    The GitLab project ID or path.
+     * @param objectKey The exact repository file path.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+
+            RepositoryFile file = client.getRepositoryFileApi().getFile(bucket, objectKey, "master", false);
+            String name = StringKit.isBlank(file.getFileName()) ? objectKey : file.getFileName();
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("filePath", file.getFilePath());
+            extend.put("encoding", file.getEncoding());
+            extend.put("ref", file.getRef());
+            extend.put("blobId", file.getBlobId());
+            extend.put("commitId", file.getCommitId());
+            extend.put("lastCommitId", file.getLastCommitId());
+
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
+                                    .size(StringKit.toString(file.getSize())).hash(file.getContentSha256())
+                                    .extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = ErrorCode._113012;
+            if (e instanceof IllegalArgumentException) {
+                error = ErrorCode._113008;
+            } else if (StringKit.containsIgnoreCase(e.getMessage(), "404")
+                    || StringKit.containsIgnoreCase(e.getMessage(), "not found")) {
+                error = ErrorCode._113010;
+            }
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a raw stream for a file in the default GitLab project.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Opens a raw stream for a file using the provider's normal GitLab path-building rules.
+     *
+     * @param bucket   The GitLab project ID or path.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return streamKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Opens a raw stream for an exact GitLab repository file path.
+     *
+     * @param bucket    The GitLab project ID or path.
+     * @param objectKey The exact repository file path.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+
+            RepositoryFile file = client.getRepositoryFileApi().getFile(bucket, objectKey, "master", false);
+            InputStream inputStream = client.getRepositoryFileApi().getRawFile(bucket, "master", objectKey);
+            String name = StringKit.isBlank(file.getFileName()) ? objectKey : file.getFileName();
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("filePath", file.getFilePath());
+            extend.put("encoding", file.getEncoding());
+            extend.put("ref", file.getRef());
+            extend.put("blobId", file.getBlobId());
+            extend.put("commitId", file.getCommitId());
+            extend.put("lastCommitId", file.getLastCommitId());
+
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().inputStream(inputStream).bucket(bucket).key(objectKey).name(name)
+                                    .path(objectKey).size(StringKit.toString(file.getSize()))
+                                    .hash(file.getContentSha256()).extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = ErrorCode._113012;
+            if (e instanceof IllegalArgumentException) {
+                error = ErrorCode._113008;
+            } else if (StringKit.containsIgnoreCase(e.getMessage(), "404")
+                    || StringKit.containsIgnoreCase(e.getMessage(), "not found")) {
+                error = ErrorCode._113010;
+            }
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
     }
 
     /**

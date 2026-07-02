@@ -94,6 +94,17 @@ public interface Ftp extends Closeable {
     boolean exist(final String path);
 
     /**
+     * Reads metadata for a file or directory on the remote server. Implementations should convert provider-specific
+     * attributes to {@link FtpEntry} before returning them.
+     *
+     * @param path The path to the file or directory to inspect.
+     * @return The neutral remote entry metadata, or {@code null} if the implementation does not support metadata.
+     */
+    default FtpEntry entry(final String path) {
+        return null;
+    }
+
+    /**
      * Determines if the given path on the remote server refers to a directory. This method temporarily changes the
      * directory to the given path to verify if it's a directory, then reverts to the original working directory.
      *

@@ -21,11 +21,18 @@ package org.miaixz.bus.health.linux.software;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
@@ -92,6 +99,22 @@ public class LinuxFileSystem extends AbstractFileSystem {
     private static final String UNICODE_SPACE = "\\040";
 
     /**
+     * Whether NFS mounts should be checked for reachability before querying filesystem statistics.
+     */
+    private static final boolean CHECK_NFS = Config.get(Config._LINUX_FILESYSTEM_CHECKNFS, true);
+
+    /**
+     * Pattern matching {@code addr=} or {@code mountaddr=} in NFS mount options.
+     */
+    private static final java.util.regex.Pattern NFS_ADDR_PATTERN = java.util.regex.Pattern
+            .compile("(?:^|,)(?:mount)?addr=([^,]+)");
+
+    /**
+     * Maximum number of concurrent NFS reachability probe threads.
+     */
+    private static final int NFS_PROBE_MAX_THREADS = 64;
+
+    /**
      * Queries the statvfs.
      *
      * @param path the path
@@ -119,6 +142,56 @@ public class LinuxFileSystem extends AbstractFileSystem {
     }
 
     /**
+     * Builds a map of filesystem UUIDs to device paths.
+     *
+     * @return the UUID map
+     */
+    static Map<String, String> buildUuidMap() {
+        // Map of volume with device path as key
+        Map<String, String> volumeDeviceMap = new HashMap<>();
+        File devMapper = new File(DevPath.MAPPER);
+        File[] volumes = devMapper.listFiles();
+        if (volumes != null) {
+            for (File volume : volumes) {
+                try {
+                    volumeDeviceMap.put(volume.getCanonicalPath(), volume.getAbsolutePath());
+                } catch (IOException e) {
+                    Logger.debug(
+                            false,
+                            "Health",
+                            "Couldn't get canonical path for {}. {}",
+                            volume.getName(),
+                            e.getClass().getSimpleName());
+                }
+            }
+        }
+        // Map uuids with device path as key
+        Map<String, String> uuidMap = new HashMap<>();
+        File uuidDir = new File(DevPath.DISK_BY_UUID);
+        File[] uuids = uuidDir.listFiles();
+        if (uuids != null) {
+            for (File uuid : uuids) {
+                try {
+                    // Store UUID as value with path (e.g., /dev/sda1) and volumes as key
+                    String canonicalPath = uuid.getCanonicalPath();
+                    uuidMap.put(canonicalPath, uuid.getName().toLowerCase(Locale.ROOT));
+                    if (volumeDeviceMap.containsKey(canonicalPath)) {
+                        uuidMap.put(volumeDeviceMap.get(canonicalPath), uuid.getName().toLowerCase(Locale.ROOT));
+                    }
+                } catch (IOException e) {
+                    Logger.debug(
+                            false,
+                            "Health",
+                            "Couldn't get canonical path for {}. {}",
+                            uuid.getName(),
+                            e.getClass().getSimpleName());
+                }
+            }
+        }
+        return uuidMap;
+    }
+
+    /**
      * Returns the file store matching.
      *
      * @param nameToMatch the name to match
@@ -133,6 +206,8 @@ public class LinuxFileSystem extends AbstractFileSystem {
 
         // Parse /proc/mounts to get fs types
         List<String> mounts = Builder.readFile(ProcPath.MOUNTS);
+        Map<String, Boolean> nfsHostReachable = CHECK_NFS && !localOnly ? probeNfsHosts(mounts)
+                : Collections.emptyMap();
         for (String mount : mounts) {
             String[] split = mount.split(Symbol.SPACE);
             // As reported in fstab(5) manpage, struct is:
@@ -215,6 +290,17 @@ public class LinuxFileSystem extends AbstractFileSystem {
             long usableSpace = 0L;
             long freeSpace = 0L;
 
+            if (CHECK_NFS && isNfsType(type)) {
+                String host = parseNfsAddr(options);
+                if (host != null && Boolean.FALSE.equals(nfsHostReachable.get(host))) {
+                    description = "Network Disk [unreachable]";
+                    fsList.add(
+                            new LinuxOSFileStore(name, volume, labelMap.getOrDefault(path, name), path, options, uuid,
+                                    isLocal, logicalVolume, description, type, 0L, 0L, 0L, 0L, 0L, true));
+                    continue;
+                }
+            }
+
             long[] vfs = queryStatvfs(path);
             if (vfs != null) {
                 totalInodes = vfs[0];
@@ -237,6 +323,80 @@ public class LinuxFileSystem extends AbstractFileSystem {
                             totalInodes));
         }
         return fsList;
+    }
+
+    /**
+     * Returns whether the filesystem type uses the NFS protocol.
+     *
+     * @param type the filesystem type
+     * @return {@code true} for {@code nfs} or {@code nfs4}
+     */
+    static boolean isNfsType(String type) {
+        return "nfs".equals(type) || "nfs4".equals(type);
+    }
+
+    /**
+     * Extracts the NFS server address from mount options.
+     *
+     * @param options the mount options field
+     * @return the server address, or {@code null} if unavailable
+     */
+    static String parseNfsAddr(String options) {
+        Matcher matcher = NFS_ADDR_PATTERN.matcher(options);
+        return matcher.find() ? matcher.group(1) : null;
+    }
+
+    /**
+     * Attempts a TCP connection to the target host and port.
+     *
+     * @param host      the target host
+     * @param port      the target port
+     * @param timeoutMs the connection timeout in milliseconds
+     * @return {@code true} if the connection succeeds, otherwise {@code false}
+     */
+    private static boolean tcpReachable(String host, int port, int timeoutMs) {
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(host, port), timeoutMs);
+            return true;
+        } catch (IOException e) {
+            Logger.debug(false, "Health", "NFS host {} not reachable on port {}: {}", host, port, e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Probes unique NFS hosts from mount entries in parallel.
+     *
+     * @param mounts the lines read from {@code /proc/mounts}
+     * @return a map of host address to reachability
+     */
+    private static Map<String, Boolean> probeNfsHosts(List<String> mounts) {
+        Set<String> hosts = new HashSet<>();
+        for (String mount : mounts) {
+            String[] split = mount.split(Symbol.SPACE);
+            if (split.length >= 6 && isNfsType(split[2])) {
+                String host = parseNfsAddr(split[3]);
+                if (host != null) {
+                    hosts.add(host);
+                }
+            }
+        }
+        Map<String, Boolean> reachable = new ConcurrentHashMap<>();
+        if (hosts.isEmpty()) {
+            return reachable;
+        }
+        ExecutorService pool = Executors.newFixedThreadPool(Math.min(hosts.size(), NFS_PROBE_MAX_THREADS));
+        try {
+            CompletableFuture<?>[] futures = hosts.stream()
+                    .map(
+                            host -> CompletableFuture
+                                    .runAsync(() -> reachable.put(host, tcpReachable(host, 2049, 2_000)), pool))
+                    .toArray(CompletableFuture[]::new);
+            CompletableFuture.allOf(futures).join();
+        } finally {
+            pool.shutdownNow();
+        }
+        return reachable;
     }
 
     /**
@@ -293,50 +453,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
      */
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
-        // Map of volume with device path as key
-        Map<String, String> volumeDeviceMap = new HashMap<>();
-        File devMapper = new File(DevPath.MAPPER);
-        File[] volumes = devMapper.listFiles();
-        if (volumes != null) {
-            for (File volume : volumes) {
-                try {
-                    volumeDeviceMap.put(volume.getCanonicalPath(), volume.getAbsolutePath());
-                } catch (IOException e) {
-                    Logger.debug(
-                            false,
-                            "Health",
-                            "Couldn't get canonical path for {}. {}",
-                            volume.getName(),
-                            e.getClass().getSimpleName());
-                }
-            }
-        }
-        // Map uuids with device path as key
-        Map<String, String> uuidMap = new HashMap<>();
-        File uuidDir = new File(DevPath.DISK_BY_UUID);
-        File[] uuids = uuidDir.listFiles();
-        if (uuids != null) {
-            for (File uuid : uuids) {
-                try {
-                    // Store UUID as value with path (e.g., /dev/sda1) and volumes as key
-                    String canonicalPath = uuid.getCanonicalPath();
-                    uuidMap.put(canonicalPath, uuid.getName().toLowerCase(Locale.ROOT));
-                    if (volumeDeviceMap.containsKey(canonicalPath)) {
-                        uuidMap.put(volumeDeviceMap.get(canonicalPath), uuid.getName().toLowerCase(Locale.ROOT));
-                    }
-                } catch (IOException e) {
-                    Logger.debug(
-                            false,
-                            "Health",
-                            "Couldn't get canonical path for {}. {}",
-                            uuid.getName(),
-                            e.getClass().getSimpleName());
-                }
-            }
-        }
-
-        // List file systems
-        return getFileStoreMatching(null, uuidMap, localOnly);
+        return getFileStoreMatching(null, buildUuidMap(), localOnly);
     }
 
     /**

@@ -30,11 +30,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.ftp.FtpEntry;
 import org.miaixz.bus.extra.ssh.provider.jsch.JschSftp;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
@@ -87,6 +89,154 @@ public class SftpFileProvider extends AbstractProvider {
                     password);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to initialize SFTP client: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Reads metadata for a file in the default SFTP location.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(Normal.EMPTY, fileName);
+    }
+
+    /**
+     * Reads metadata for a file using the provider's normal SFTP path-building rules.
+     *
+     * @param bucket   The logical bucket/path segment.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        return statKey(this.context.getBucket(), getAbsolutePath(bucket, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Reads metadata for an exact SFTP object path.
+     *
+     * @param bucket    The configured SFTP bucket/path segment.
+     * @param objectKey The exact remote path.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+
+            FtpEntry entry = client.entry(objectKey);
+            if (entry == null || entry.isDirectory()) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).data(
+                    Blob.builder().bucket(this.context.getBucket()).key(objectKey).name(entry.getName()).path(objectKey)
+                            .size(StringKit.toString(entry.getSize())).extend(toExtend(entry)).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = ErrorCode._113012;
+            if (e instanceof IllegalArgumentException) {
+                error = ErrorCode._113008;
+            } else if (StringKit.containsIgnoreCase(e.getMessage(), "No such file")
+                    || StringKit.containsIgnoreCase(e.getMessage(), "does not exist")) {
+                error = ErrorCode._113010;
+            }
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a stream for a file in the default SFTP location.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(Normal.EMPTY, fileName);
+    }
+
+    /**
+     * Opens a stream for a file using the provider's normal SFTP path-building rules.
+     *
+     * @param bucket   The logical bucket/path segment.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        return streamKey(this.context.getBucket(), getAbsolutePath(bucket, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Opens a stream for an exact SFTP object path.
+     *
+     * @param bucket    The configured SFTP bucket/path segment.
+     * @param objectKey The exact remote path.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+
+            FtpEntry entry = client.entry(objectKey);
+            if (entry == null || entry.isDirectory()) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            InputStream inputStream = client.getFileStream(objectKey);
+            if (inputStream == null) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().inputStream(inputStream).bucket(this.context.getBucket()).key(objectKey)
+                                    .name(entry.getName()).path(objectKey).size(StringKit.toString(entry.getSize()))
+                                    .extend(toExtend(entry)).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = ErrorCode._113012;
+            if (e instanceof IllegalArgumentException) {
+                error = ErrorCode._113008;
+            } else if (StringKit.containsIgnoreCase(e.getMessage(), "No such file")
+                    || StringKit.containsIgnoreCase(e.getMessage(), "does not exist")) {
+                error = ErrorCode._113010;
+            }
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
         }
     }
 
@@ -378,7 +528,7 @@ public class SftpFileProvider extends AbstractProvider {
             if (!client.isDir(dirPath)) {
                 client.mkdir(dirPath);
             }
-            client.put(content, objectKey, null, JschSftp.Mode.OVERWRITE);
+            client.put(content, objectKey, JschSftp.Mode.OVERWRITE);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException e) {
@@ -460,6 +610,18 @@ public class SftpFileProvider extends AbstractProvider {
     @Override
     public Message remove(String bucket, Path path) {
         return remove(bucket, path.toString(), Normal.EMPTY);
+    }
+
+    /**
+     * Releases SFTP client resources held by this provider.
+     */
+    @Override
+    public void close() {
+        try {
+            this.client.close();
+        } catch (Exception e) {
+            // Ignore close-time failures.
+        }
     }
 
     /**
@@ -555,6 +717,26 @@ public class SftpFileProvider extends AbstractProvider {
                     e);
             return false;
         }
+    }
+
+    /**
+     * Converts neutral FTP metadata to storage extension fields while preserving the existing SFTP response shape.
+     *
+     * @param entry The FTP metadata entry.
+     * @return The storage extension fields.
+     */
+    private Map<String, Object> toExtend(FtpEntry entry) {
+        Map<String, Object> extend = new HashMap<>();
+        extend.put("uid", entry.getUid());
+        extend.put("gid", entry.getGid());
+        extend.put("permissions", entry.getPermissions());
+        extend.put("permissionsText", entry.getPermissionsText());
+        extend.put("accessTime", entry.getAccessTime());
+        extend.put("modifiedTime", entry.getModifiedTime());
+        extend.put("directory", entry.isDirectory());
+        extend.put("regularFile", entry.isRegularFile());
+        extend.put("link", entry.isLink());
+        return extend;
     }
 
 }

@@ -9,7 +9,8 @@
     "description": "Bus Cortex provides registry, configuration, API, MCP, prompt, and orchestration support for Bus services.",
     "tested-versions": [
       "8.8.0",
-      "8.8.1"
+      "8.8.1",
+      "8.8.2"
     ],
     "allowed-packages": [
       "org.miaixz"

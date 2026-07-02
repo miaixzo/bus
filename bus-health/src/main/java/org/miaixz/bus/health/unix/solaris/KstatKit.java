@@ -203,6 +203,7 @@ public final class KstatKit {
             Kstat2Handle handle = new Kstat2Handle();
             try {
                 for (s = 0; consecutiveMisses < 256; s++) {
+                    boolean hit = false;
                     try {
                         Object[] result = new Object[names.length];
                         Kstat2Map map = handle.lookupMap(beforeStr + s + afterStr);
@@ -210,10 +211,11 @@ public final class KstatKit {
                             result[i] = map.getValue(names[i]);
                         }
                         results.add(result);
-                        consecutiveMisses = 0;
+                        hit = true;
                     } catch (Kstat2StatusException e) {
-                        consecutiveMisses++;
+                        // Instance s is not present.
                     }
+                    consecutiveMisses = hit ? 0 : consecutiveMisses + 1;
                 }
             } finally {
                 handle.close();

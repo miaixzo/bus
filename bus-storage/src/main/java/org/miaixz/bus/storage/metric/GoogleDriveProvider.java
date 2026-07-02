@@ -28,10 +28,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -41,6 +43,7 @@ import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.builtin.ResponseBodyInputStream;
 import org.miaixz.bus.storage.magic.Blob;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
@@ -149,6 +152,146 @@ public class GoogleDriveProvider extends AbstractProvider {
     @Override
     public Message download(String fileName) {
         return download(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file in the default Google Drive folder.
+     *
+     * @param fileName The file name or Google Drive file ID to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file in the specified Google Drive folder.
+     *
+     * @param bucket   The parent folder ID.
+     * @param fileName The file name or Google Drive file ID to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        return statKey(bucket, fileName);
+    }
+
+    /**
+     * Reads metadata for an exact Google Drive object key. The key may be a file ID or a file name in the folder.
+     *
+     * @param bucket    The parent folder ID.
+     * @param objectKey The Google Drive file ID or file name.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+            Map<String, Object> metadata = resolveFileMetadata(bucket, objectKey);
+            if (metadata == null) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(toBlob(bucket, objectKey, metadata, null)).build();
+        } catch (Exception e) {
+            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a stream for a file in the default Google Drive folder.
+     *
+     * @param fileName The file name or Google Drive file ID to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Opens a stream for a file in the specified Google Drive folder.
+     *
+     * @param bucket   The parent folder ID.
+     * @param fileName The file name or Google Drive file ID to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        return streamKey(bucket, fileName);
+    }
+
+    /**
+     * Opens a stream for an exact Google Drive object key. The key may be a file ID or a file name in the folder.
+     *
+     * @param bucket    The parent folder ID.
+     * @param objectKey The Google Drive file ID or file name.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+            Map<String, Object> metadata = resolveFileMetadata(bucket, objectKey);
+            if (metadata == null) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+            String fileId = (String) metadata.get("id");
+            String url = context.getEndpoint() + "/files/" + fileId + "?alt=media";
+            Request request = new Request.Builder().url(url)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()).get().build();
+            Response response = client.newCall(request).execute();
+            if (response.code() == 401) {
+                response.close();
+                refreshAccessToken();
+                return streamKey(bucket, objectKey);
+            }
+            if (!response.isSuccessful()) {
+                Errors error = toError(response.code());
+                response.close();
+                return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            }
+            if (response.body() == null) {
+                response.close();
+                return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                        .build();
+            }
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(toBlob(bucket, objectKey, metadata, new ResponseBodyInputStream(response))).build();
+        } catch (Exception e) {
+            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
     }
 
     /**
@@ -751,6 +894,101 @@ public class GoogleDriveProvider extends AbstractProvider {
 
             return null;
         }
+    }
+
+    /**
+     * Resolves file metadata by treating the key as a file ID first, then as a file name in the parent folder.
+     *
+     * @param bucket    The parent folder ID.
+     * @param objectKey The Google Drive file ID or file name.
+     * @return The file metadata, or {@code null} if not found.
+     * @throws IOException If metadata lookup fails.
+     */
+    private Map<String, Object> resolveFileMetadata(String bucket, String objectKey) throws IOException {
+        Map<String, Object> metadata = getFileMetadata(objectKey, true);
+        if (metadata != null) {
+            return metadata;
+        }
+        String fileId = findFileByName(nameOf(objectKey), resolveParentId(bucket));
+        return fileId == null ? null : getFileMetadata(fileId, true);
+    }
+
+    /**
+     * Reads Google Drive file metadata by file ID.
+     *
+     * @param fileId The Google Drive file ID.
+     * @param retry  Whether to refresh token and retry on authentication failure.
+     * @return The metadata, or {@code null} when the file does not exist.
+     * @throws IOException If metadata lookup fails.
+     */
+    private Map<String, Object> getFileMetadata(String fileId, boolean retry) throws IOException {
+        String fields = "id,name,size,mimeType,modifiedTime,md5Checksum,sha256Checksum";
+        String url = context.getEndpoint() + "/files/" + fileId + "?fields=" + fields;
+        Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
+                .get().build();
+        try (Response response = client.newCall(request).execute()) {
+            if (response.code() == 401 && retry) {
+                refreshAccessToken();
+                return getFileMetadata(fileId, false);
+            }
+            if (response.code() == 404) {
+                return null;
+            }
+            if (!response.isSuccessful()) {
+                throw new IOException("Metadata failed: " + response.code());
+            }
+            return JsonKit.toMap(response.body().string());
+        }
+    }
+
+    /**
+     * Converts Google Drive metadata to a storage blob.
+     *
+     * @param bucket      The parent folder ID.
+     * @param objectKey   The requested object key.
+     * @param metadata    The Google Drive metadata.
+     * @param inputStream The optional file stream.
+     * @return The storage blob.
+     */
+    private Blob toBlob(String bucket, String objectKey, Map<String, Object> metadata, InputStream inputStream) {
+        Map<String, Object> extend = new HashMap<>();
+        extend.put("id", metadata.get("id"));
+        extend.put("mimeType", metadata.get("mimeType"));
+        extend.put("modifiedTime", metadata.get("modifiedTime"));
+        extend.put("sha256Checksum", metadata.get("sha256Checksum"));
+
+        String hash = metadata.get("md5Checksum") == null ? (String) metadata.get("sha256Checksum")
+                : (String) metadata.get("md5Checksum");
+        return Blob.builder().inputStream(inputStream).bucket(bucket).key(objectKey).name((String) metadata.get("name"))
+                .path(objectKey).size(metadata.get("size") == null ? "0" : String.valueOf(metadata.get("size")))
+                .type((String) metadata.get("mimeType")).hash(hash).extend(extend).build();
+    }
+
+    /**
+     * Maps HTTP status codes to storage errors.
+     *
+     * @param code The HTTP status code.
+     * @return The storage error.
+     */
+    private Errors toError(int code) {
+        if (code == 401 || code == 403) {
+            return ErrorCode._113009;
+        }
+        if (code == 404) {
+            return ErrorCode._113010;
+        }
+        return ErrorCode._113012;
+    }
+
+    /**
+     * Extracts a file name from a key or path.
+     *
+     * @param objectKey The object key.
+     * @return The file name.
+     */
+    private String nameOf(String objectKey) {
+        int index = objectKey.lastIndexOf(Symbol.SLASH);
+        return index < 0 ? objectKey : objectKey.substring(index + 1);
     }
 
 }

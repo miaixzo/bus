@@ -19,11 +19,10 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
-import java.util.Arrays;
-
 import org.miaixz.bus.core.lang.annotation.Immutable;
-import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.hardware.Display;
+import org.miaixz.bus.health.builtin.hardware.DisplayInfo;
+import org.miaixz.bus.health.builtin.hardware.DisplayInfoImpl;
 
 /**
  * A Display
@@ -35,17 +34,26 @@ import org.miaixz.bus.health.builtin.hardware.Display;
 public abstract class AbstractDisplay implements Display {
 
     /**
-     * The edid value.
+     * The displayInfo value.
      */
-    private final byte[] edid;
+    private final DisplayInfo displayInfo;
 
     /**
-     * Constructor for AbstractDisplay.
+     * Constructor for AbstractDisplay from a raw EDID byte array.
      *
      * @param edid a byte array representing a display EDID
      */
     protected AbstractDisplay(byte[] edid) {
-        this.edid = Arrays.copyOf(edid, edid.length);
+        this.displayInfo = new DisplayInfoImpl(edid);
+    }
+
+    /**
+     * Constructor for AbstractDisplay from decoded display information.
+     *
+     * @param displayInfo the decoded display information
+     */
+    protected AbstractDisplay(DisplayInfo displayInfo) {
+        this.displayInfo = displayInfo;
     }
 
     /**
@@ -55,7 +63,27 @@ public abstract class AbstractDisplay implements Display {
      */
     @Override
     public byte[] getEdid() {
-        return Arrays.copyOf(this.edid, this.edid.length);
+        return this.displayInfo.getEdid();
+    }
+
+    /**
+     * Returns the display information.
+     *
+     * @return the display information
+     */
+    @Override
+    public DisplayInfo getDisplayInfo() {
+        return this.displayInfo;
+    }
+
+    /**
+     * Returns whether the EDID is synthetic.
+     *
+     * @return {@code true} if the EDID is synthetic, otherwise {@code false}
+     */
+    @Override
+    public boolean isEdidSynthetic() {
+        return this.displayInfo.isEdidSynthetic();
     }
 
     /**
@@ -65,7 +93,7 @@ public abstract class AbstractDisplay implements Display {
      */
     @Override
     public String toString() {
-        return Builder.getEdid(this.edid);
+        return this.displayInfo.toString();
     }
 
 }

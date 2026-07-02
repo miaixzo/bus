@@ -29,9 +29,9 @@ import org.miaixz.bus.starter.sensitive.SensitiveConfiguration;
  * Enables data desensitization and encryption/decryption features.
  * <p>
  * This annotation imports the {@link SensitiveConfiguration}, which sets up the necessary
- * {@link org.miaixz.bus.starter.sensitive.RequestBodyAdvice} and
- * {@link org.miaixz.bus.starter.sensitive.ResponseBodyAdvice} to handle automatic processing of sensitive data in
- * Spring MVC controllers.
+ * {@link org.miaixz.bus.starter.sensitive.SensitiveRequestBodyAdvice} and
+ * {@link org.miaixz.bus.starter.sensitive.SensitiveResponseBodyAdvice} to handle automatic processing of sensitive data
+ * in Spring MVC controllers.
  *
  * @author Kimi Liu
  * @since Java 21+
