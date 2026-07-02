@@ -228,10 +228,8 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
     @Override
     public boolean updateAttributes() {
         if (this.unreachable) {
-            for (OSFileStore fileStore : LinuxFileSystem.getFileStoreMatching(
-                    getName(),
-                    LinuxFileSystem.buildUuidMap(),
-                    isLocal())) {
+            for (OSFileStore fileStore : LinuxFileSystem
+                    .getFileStoreMatching(getName(), LinuxFileSystem.buildUuidMap(), isLocal())) {
                 if (getVolume().equals(fileStore.getVolume()) && getMount().equals(fileStore.getMount())) {
                     updateFrom(fileStore);
                     return true;
@@ -257,10 +255,8 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
             this.totalInodes = vfs[0];
             return true;
         }
-        for (OSFileStore fileStore : LinuxFileSystem.getFileStoreMatching(
-                getName(),
-                LinuxFileSystem.buildUuidMap(),
-                isLocal())) {
+        for (OSFileStore fileStore : LinuxFileSystem
+                .getFileStoreMatching(getName(), LinuxFileSystem.buildUuidMap(), isLocal())) {
             if (getVolume().equals(fileStore.getVolume()) && getMount().equals(fileStore.getMount())) {
                 updateFrom(fileStore);
                 return true;

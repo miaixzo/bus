@@ -358,8 +358,14 @@ public class DisplayInfoImpl implements DisplayInfo {
         sb.append(", Serial=").append(this.serialNo);
         sb.append(", ManufDate=").append(this.week * 12 / 52 + 1).append('/').append(this.year);
         sb.append(", EDID v").append(this.version);
-        sb.append(String.format(Locale.ROOT, "%n  %d x %d cm (%.1f x %.1f in)", this.hcm, this.vcm, this.hcm / 2.54,
-                this.vcm / 2.54));
+        sb.append(
+                String.format(
+                        Locale.ROOT,
+                        "%n  %d x %d cm (%.1f x %.1f in)",
+                        this.hcm,
+                        this.vcm,
+                        this.hcm / 2.54,
+                        this.vcm / 2.54));
         sb.append(String.format(Locale.ROOT, "%n  Preferred Resolution: %s", this.preferredResolution));
         sb.append(String.format(Locale.ROOT, "%n  Monitor Name: %s", this.model));
         if (!this.productSerialNumber.isEmpty()) {

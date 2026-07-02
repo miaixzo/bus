@@ -329,8 +329,7 @@ public final class Builder {
         // Bytes 10-11 are product ID, in hex characters
         return Integer.toHexString(
                 ByteBuffer.wrap(Arrays.copyOfRange(edid, PRODUCT_ID_OFFSET, PRODUCT_ID_OFFSET + 2))
-                        .order(ByteOrder.LITTLE_ENDIAN).getShort()
-                        & 0xffff);
+                        .order(ByteOrder.LITTLE_ENDIAN).getShort() & 0xffff);
     }
 
     /**

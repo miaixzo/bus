@@ -106,8 +106,8 @@ public class LinuxFileSystem extends AbstractFileSystem {
     /**
      * Pattern matching {@code addr=} or {@code mountaddr=} in NFS mount options.
      */
-    private static final java.util.regex.Pattern NFS_ADDR_PATTERN = java.util.regex.Pattern.compile(
-            "(?:^|,)(?:mount)?addr=([^,]+)");
+    private static final java.util.regex.Pattern NFS_ADDR_PATTERN = java.util.regex.Pattern
+            .compile("(?:^|,)(?:mount)?addr=([^,]+)");
 
     /**
      * Maximum number of concurrent NFS reachability probe threads.
@@ -295,23 +295,8 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 if (host != null && Boolean.FALSE.equals(nfsHostReachable.get(host))) {
                     description = "Network Disk [unreachable]";
                     fsList.add(
-                            new LinuxOSFileStore(
-                                    name,
-                                    volume,
-                                    labelMap.getOrDefault(path, name),
-                                    path,
-                                    options,
-                                    uuid,
-                                    isLocal,
-                                    logicalVolume,
-                                    description,
-                                    type,
-                                    0L,
-                                    0L,
-                                    0L,
-                                    0L,
-                                    0L,
-                                    true));
+                            new LinuxOSFileStore(name, volume, labelMap.getOrDefault(path, name), path, options, uuid,
+                                    isLocal, logicalVolume, description, type, 0L, 0L, 0L, 0L, 0L, true));
                     continue;
                 }
             }
@@ -403,9 +388,9 @@ public class LinuxFileSystem extends AbstractFileSystem {
         ExecutorService pool = Executors.newFixedThreadPool(Math.min(hosts.size(), NFS_PROBE_MAX_THREADS));
         try {
             CompletableFuture<?>[] futures = hosts.stream()
-                    .map(host -> CompletableFuture.runAsync(
-                            () -> reachable.put(host, tcpReachable(host, 2049, 2_000)),
-                            pool))
+                    .map(
+                            host -> CompletableFuture
+                                    .runAsync(() -> reachable.put(host, tcpReachable(host, 2049, 2_000)), pool))
                     .toArray(CompletableFuture[]::new);
             CompletableFuture.allOf(futures).join();
         } finally {
