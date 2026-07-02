@@ -9,7 +9,8 @@
     "description": "Bus Limiter provides rate limiting, token bucket, sliding window, and distributed limiter support.",
     "tested-versions": [
       "8.8.0",
-      "8.8.1"
+      "8.8.1",
+      "8.8.2"
     ],
     "allowed-packages": [
       "org.miaixz"

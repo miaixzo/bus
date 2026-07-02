@@ -9,7 +9,8 @@
     "description": "Bus Shade provides shaded dependency helpers and relocated integration resources used by Bus modules.",
     "tested-versions": [
       "8.8.0",
-      "8.8.1"
+      "8.8.1",
+      "8.8.2"
     ],
     "allowed-packages": [
       "org.miaixz"

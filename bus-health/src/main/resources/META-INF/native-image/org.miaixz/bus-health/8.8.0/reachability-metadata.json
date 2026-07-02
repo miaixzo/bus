@@ -2459,6 +2459,127 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
+      "type": "org.miaixz.bus.health.builtin.hardware.DisplayInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.hardware.DisplayInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.health.builtin.hardware.DisplayInfoImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.builtin.hardware.DisplayInfoImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "byte",
+            "int",
+            "java.lang.String",
+            "boolean",
+            "int",
+            "int",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getEdid",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHcm",
+          "parameterTypes": []
+        },
+        {
+          "name": "getManufacturerID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPreferredResolution",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProductID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProductSerialNumber",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSerialNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVcm",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWeek",
+          "parameterTypes": []
+        },
+        {
+          "name": "getYear",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDigital",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEdidSynthetic",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.health.builtin.hardware.DisplayInfoImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.builtin.hardware.DisplayInfoImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
       "type": "org.miaixz.bus.health.builtin.hardware.Firmware"
     },
     {

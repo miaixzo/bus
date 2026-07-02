@@ -9,7 +9,8 @@
     "description": "Bus Storage provides object storage integrations and file storage abstractions.",
     "tested-versions": [
       "8.8.0",
-      "8.8.1"
+      "8.8.1",
+      "8.8.2"
     ],
     "allowed-packages": [
       "org.miaixz"
