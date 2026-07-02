@@ -27,13 +27,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
@@ -60,6 +63,172 @@ public class LocalFileProvider extends AbstractProvider {
 
         Assert.notBlank(this.context.getBucket(), "[bucket] cannot be blank");
         Assert.notBlank(this.context.getRegion(), "[region] cannot be blank");
+    }
+
+    /**
+     * Reads metadata for a file in the default local bucket.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file using the provider's normal local path-building rules.
+     *
+     * @param bucket   The local bucket directory.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return statKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Reads metadata for an exact local object key.
+     *
+     * @param bucket    The local bucket directory.
+     * @param objectKey The exact object key inside the bucket.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+
+            Path filePath = Paths.get(context.getRegion(), bucket, objectKey);
+            if (!Files.isRegularFile(filePath)) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            BasicFileAttributes attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+            String name = objectKey;
+            int index = objectKey.lastIndexOf(Symbol.SLASH);
+            if (index >= 0) {
+                name = objectKey.substring(index + 1);
+            }
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("creationTime", attributes.creationTime().toInstant());
+            extend.put("lastAccessTime", attributes.lastAccessTime().toInstant());
+            extend.put("lastModified", attributes.lastModifiedTime().toInstant());
+            extend.put("directory", attributes.isDirectory());
+            extend.put("regularFile", attributes.isRegularFile());
+            extend.put("symbolicLink", attributes.isSymbolicLink());
+            extend.put("other", attributes.isOther());
+            extend.put("fileKey", attributes.fileKey());
+
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
+                                    .size(StringKit.toString(attributes.size())).type(Files.probeContentType(filePath))
+                                    .extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113008 : ErrorCode._113012;
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a stream for a file in the default local bucket.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Opens a stream for a file using the provider's normal local path-building rules.
+     *
+     * @param bucket   The local bucket directory.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return streamKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Opens a stream for an exact local object key.
+     *
+     * @param bucket    The local bucket directory.
+     * @param objectKey The exact object key inside the bucket.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+
+            Path filePath = Paths.get(context.getRegion(), bucket, objectKey);
+            if (!Files.isRegularFile(filePath)) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            BasicFileAttributes attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+            String name = objectKey;
+            int index = objectKey.lastIndexOf(Symbol.SLASH);
+            if (index >= 0) {
+                name = objectKey.substring(index + 1);
+            }
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("creationTime", attributes.creationTime().toInstant());
+            extend.put("lastAccessTime", attributes.lastAccessTime().toInstant());
+            extend.put("lastModified", attributes.lastModifiedTime().toInstant());
+            extend.put("directory", attributes.isDirectory());
+            extend.put("regularFile", attributes.isRegularFile());
+            extend.put("symbolicLink", attributes.isSymbolicLink());
+            extend.put("other", attributes.isOther());
+            extend.put("fileKey", attributes.fileKey());
+
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().inputStream(Files.newInputStream(filePath)).bucket(bucket).key(objectKey)
+                                    .name(name).path(objectKey).size(StringKit.toString(attributes.size()))
+                                    .type(Files.probeContentType(filePath)).extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113008 : ErrorCode._113012;
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
     }
 
     /**

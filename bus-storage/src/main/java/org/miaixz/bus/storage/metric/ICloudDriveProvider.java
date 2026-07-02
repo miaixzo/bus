@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
@@ -39,6 +40,7 @@ import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.builtin.ResponseBodyInputStream;
 import org.miaixz.bus.storage.magic.Blob;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
@@ -129,6 +131,145 @@ public class ICloudDriveProvider extends AbstractProvider {
     @Override
     public Message download(String fileName) {
         return download(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file in the default iCloud Drive folder.
+     *
+     * @param fileName The file name or iCloud path to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file in the specified iCloud Drive folder.
+     *
+     * @param bucket   The folder path in iCloud Drive.
+     * @param fileName The file name or iCloud path to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        return statKey(bucket, normalizeObjectPath(bucket, fileName));
+    }
+
+    /**
+     * Reads metadata for an exact iCloud Drive object path.
+     *
+     * @param bucket    The folder path in iCloud Drive.
+     * @param objectKey The exact iCloud path or file name.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+            String path = normalizeObjectPath(bucket, objectKey);
+            Map<String, Object> record = queryFileRecord(path);
+            if (record == null) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(toBlob(bucket, path, record, null)).build();
+        } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    ErrorCode._113012.getKey(),
+                    e.getClass().getSimpleName());
+            return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a stream for a file in the default iCloud Drive folder.
+     *
+     * @param fileName The file name or iCloud path to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Opens a stream for a file in the specified iCloud Drive folder.
+     *
+     * @param bucket   The folder path in iCloud Drive.
+     * @param fileName The file name or iCloud path to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        return streamKey(bucket, normalizeObjectPath(bucket, fileName));
+    }
+
+    /**
+     * Opens a stream for an exact iCloud Drive object path.
+     *
+     * @param bucket    The folder path in iCloud Drive.
+     * @param objectKey The exact iCloud path or file name.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+            String path = normalizeObjectPath(bucket, objectKey);
+            Map<String, Object> record = queryFileRecord(path);
+            if (record == null) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            String downloadUrl = getAssetDownloadUrl(record);
+            if (StringKit.isBlank(downloadUrl)) {
+                return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                        .build();
+            }
+
+            Request request = new Request.Builder().url(downloadUrl).get().build();
+            Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                Errors error = toError(response.code());
+                response.close();
+                return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            }
+            if (response.body() == null) {
+                response.close();
+                return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                        .build();
+            }
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(toBlob(bucket, path, record, new ResponseBodyInputStream(response))).build();
+        } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    ErrorCode._113012.getKey(),
+                    e.getClass().getSimpleName());
+            return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue()).build();
+        }
     }
 
     @Override
@@ -732,6 +873,69 @@ public class ICloudDriveProvider extends AbstractProvider {
             return Symbol.SLASH + fileName;
         }
         return bucket.endsWith(Symbol.SLASH) ? bucket + fileName : bucket + Symbol.SLASH + fileName;
+    }
+
+    /**
+     * Normalizes an iCloud object key to an absolute path.
+     *
+     * @param bucket    The folder path in iCloud Drive.
+     * @param objectKey The object key or file name.
+     * @return The absolute iCloud path.
+     */
+    private String normalizeObjectPath(String bucket, String objectKey) {
+        return objectKey.startsWith(Symbol.SLASH) ? objectKey : buildPath(bucket, objectKey);
+    }
+
+    /**
+     * Converts an iCloud record to a storage blob.
+     *
+     * @param bucket      The folder path in iCloud Drive.
+     * @param path        The absolute iCloud path.
+     * @param record      The iCloud record.
+     * @param inputStream The optional file stream.
+     * @return The storage blob.
+     */
+    private Blob toBlob(String bucket, String path, Map<String, Object> record, InputStream inputStream) {
+        Map<String, Object> fields = (Map<String, Object>) record.get("fields");
+        Object sizeObject = fieldValue(fields, "size");
+
+        Map<String, Object> extend = new HashMap<>();
+        extend.put("recordName", record.get("recordName"));
+        extend.put("recordChangeTag", record.get("recordChangeTag"));
+
+        return Blob.builder().inputStream(inputStream).bucket(bucket).key(path)
+                .name(path.substring(path.lastIndexOf(Symbol.SLASH) + 1)).path(path)
+                .size(sizeObject == null ? "0" : String.valueOf(sizeObject)).extend(extend).build();
+    }
+
+    /**
+     * Reads a CloudKit field value.
+     *
+     * @param fields The fields map.
+     * @param name   The field name.
+     * @return The field value.
+     */
+    private Object fieldValue(Map<String, Object> fields, String name) {
+        if (fields == null || !(fields.get(name) instanceof Map<?, ?> field)) {
+            return null;
+        }
+        return field.get("value");
+    }
+
+    /**
+     * Maps HTTP status codes to storage errors.
+     *
+     * @param code The HTTP status code.
+     * @return The storage error.
+     */
+    private Errors toError(int code) {
+        if (code == 401 || code == 403) {
+            return ErrorCode._113009;
+        }
+        if (code == 404) {
+            return ErrorCode._113010;
+        }
+        return ErrorCode._113012;
     }
 
 }

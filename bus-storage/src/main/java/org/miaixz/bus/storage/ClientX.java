@@ -228,6 +228,10 @@ public class ClientX implements SdkHttpClient {
             return new AsyncContentPublisherWrapper(contentPublisher, sdkRequest);
         }
 
+        if (HTTP.requiresRequestBody(sdkRequest.method().name())) {
+            return RequestBody.of(null, new byte[0]);
+        }
+
         // If no request body, return null
         return null;
     }
@@ -320,6 +324,9 @@ public class ClientX implements SdkHttpClient {
                 ContentStreamProvider contentStreamProvider = contentStreamProviderOpt.get();
                 // Create a custom RequestBody to ensure correct content length handling
                 return new CustomRequestBody(contentStreamProvider, request.httpRequest());
+            }
+            if (HTTP.requiresRequestBody(request.httpRequest().method().name())) {
+                return RequestBody.of(null, new byte[0]);
             }
             return null;
         }

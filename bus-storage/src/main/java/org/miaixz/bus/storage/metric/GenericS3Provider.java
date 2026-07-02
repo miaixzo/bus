@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
@@ -42,8 +43,13 @@ import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.Blob;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
+import software.amazon.awssdk.auth.credentials.AnonymousCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -87,17 +93,28 @@ public class GenericS3Provider extends AbstractProvider {
 
         Assert.notBlank(this.context.getEndpoint(), "[endpoint] cannot be blank");
         Assert.notBlank(this.context.getBucket(), "[bucket] cannot be blank");
-        Assert.notBlank(this.context.getAccessKey(), "[accessKey] cannot be blank");
-        Assert.notBlank(this.context.getSecretKey(), "[secretKey] cannot be blank");
+        if (!this.context.isAnonymous()) {
+            Assert.notBlank(this.context.getAccessKey(), "[accessKey] cannot be blank");
+            Assert.notBlank(this.context.getSecretKey(), "[secretKey] cannot be blank");
+        }
 
         ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
                 .apiCallTimeout(Duration.ofSeconds(this.context.getWriteTimeout()))
                 .apiCallAttemptTimeout(Duration.ofSeconds(this.context.getReadTimeout())).build();
 
-        AwsBasicCredentials credentials = AwsBasicCredentials
-                .create(this.context.getAccessKey(), this.context.getSecretKey());
+        AwsCredentialsProvider credentialsProvider;
+        if (this.context.isAnonymous()) {
+            credentialsProvider = AnonymousCredentialsProvider.create();
+        } else {
+            AwsCredentials credentials = StringKit.isBlank(this.context.getAccessToken())
+                    ? AwsBasicCredentials.create(this.context.getAccessKey(), this.context.getSecretKey())
+                    : AwsSessionCredentials.create(
+                            this.context.getAccessKey(),
+                            this.context.getSecretKey(),
+                            this.context.getAccessToken());
+            credentialsProvider = StaticCredentialsProvider.create(credentials);
+        }
 
-        // Create custom ClientX
         ClientX clientx = new ClientX.ClientBuilder()
                 .connectTimeout(Duration.ofSeconds(this.context.getConnectTimeout()))
                 .readTimeout(Duration.ofSeconds(this.context.getReadTimeout()))
@@ -106,19 +123,186 @@ public class GenericS3Provider extends AbstractProvider {
                     return chain.proceed(request);
                 }).build();
 
-        this.client = S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(credentials))
-                .httpClient(clientx).endpointOverride(URI.create(this.context.getEndpoint()))
+        this.client = S3Client.builder().credentialsProvider(credentialsProvider).httpClient(clientx)
+                .endpointOverride(URI.create(this.context.getEndpoint()))
                 .region(Region.of(StringKit.isBlank(this.context.getRegion()) ? "us-east-1" : this.context.getRegion()))
                 .overrideConfiguration(overrideConfig)
                 .serviceConfiguration(s -> s.pathStyleAccessEnabled(this.context.isPathStyle())).build();
 
-        this.presigner = S3Presigner.builder().credentialsProvider(StaticCredentialsProvider.create(credentials))
+        this.presigner = S3Presigner.builder().credentialsProvider(credentialsProvider)
                 .endpointOverride(URI.create(this.context.getEndpoint()))
                 .region(Region.of(StringKit.isBlank(this.context.getRegion()) ? "us-east-1" : this.context.getRegion()))
                 .serviceConfiguration(
                         S3Configuration.builder().pathStyleAccessEnabled(this.context.isPathStyle())
                                 .chunkedEncodingEnabled(false).build())
                 .build();
+    }
+
+    /**
+     * Reads metadata for a file in the default bucket.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file using the provider's normal key-building rules.
+     *
+     * @param bucket   The bucket name.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return statKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Reads metadata for an exact S3 object key.
+     *
+     * @param bucket    The bucket name.
+     * @param objectKey The exact S3 object key.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            HeadObjectResponse response = client
+                    .headObject(HeadObjectRequest.builder().bucket(bucket).key(objectKey).build());
+            String name = objectKey;
+            if (StringKit.isNotBlank(objectKey)) {
+                int index = objectKey.lastIndexOf(Symbol.SLASH);
+                name = index < 0 ? objectKey : objectKey.substring(index + 1);
+            }
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("storageClass", response.storageClassAsString());
+            extend.put("lastModified", response.lastModified());
+            if (response.metadata() != null && !response.metadata().isEmpty()) {
+                extend.put("metadata", new HashMap<>(response.metadata()));
+            }
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
+                                    .size(StringKit.toString(response.contentLength())).type(response.contentType())
+                                    .hash(response.eTag()).extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = ErrorCode._113012;
+            if (e instanceof NoSuchBucketException) {
+                error = ErrorCode._113011;
+            } else if (e instanceof NoSuchKeyException) {
+                error = ErrorCode._113010;
+            } else if (e instanceof S3Exception s3) {
+                if (s3.statusCode() == 401 || s3.statusCode() == 403) {
+                    error = ErrorCode._113009;
+                } else if (s3.statusCode() == 404) {
+                    String code = s3.awsErrorDetails() == null ? null : s3.awsErrorDetails().errorCode();
+                    error = StringKit.containsIgnoreCase(code, "bucket") ? ErrorCode._113011 : ErrorCode._113010;
+                }
+            } else if (e instanceof IllegalArgumentException) {
+                error = ErrorCode._113008;
+            }
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a stream for a file in the default bucket.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Opens a stream for a file using the provider's normal key-building rules.
+     *
+     * @param bucket   The bucket name.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return streamKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Opens a stream for an exact S3 object key.
+     *
+     * @param bucket    The bucket name.
+     * @param objectKey The exact S3 object key.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        try {
+            ResponseInputStream<GetObjectResponse> stream = client
+                    .getObject(GetObjectRequest.builder().bucket(bucket).key(objectKey).build());
+            GetObjectResponse response = stream.response();
+            String name = objectKey;
+            if (StringKit.isNotBlank(objectKey)) {
+                int index = objectKey.lastIndexOf(Symbol.SLASH);
+                name = index < 0 ? objectKey : objectKey.substring(index + 1);
+            }
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("storageClass", response.storageClassAsString());
+            extend.put("lastModified", response.lastModified());
+            if (response.metadata() != null && !response.metadata().isEmpty()) {
+                extend.put("metadata", new HashMap<>(response.metadata()));
+            }
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().inputStream(stream).bucket(bucket).key(objectKey).name(name).path(objectKey)
+                                    .size(StringKit.toString(response.contentLength())).type(response.contentType())
+                                    .hash(response.eTag()).extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = ErrorCode._113012;
+            if (e instanceof NoSuchBucketException) {
+                error = ErrorCode._113011;
+            } else if (e instanceof NoSuchKeyException) {
+                error = ErrorCode._113010;
+            } else if (e instanceof S3Exception s3) {
+                if (s3.statusCode() == 401 || s3.statusCode() == 403) {
+                    error = ErrorCode._113009;
+                } else if (s3.statusCode() == 404) {
+                    String code = s3.awsErrorDetails() == null ? null : s3.awsErrorDetails().errorCode();
+                    error = StringKit.containsIgnoreCase(code, "bucket") ? ErrorCode._113011 : ErrorCode._113010;
+                }
+            } else if (e instanceof IllegalArgumentException) {
+                error = ErrorCode._113008;
+            }
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
     }
 
     /**
@@ -528,6 +712,27 @@ public class GenericS3Provider extends AbstractProvider {
     @Override
     public Message remove(String bucket, Path path) {
         return remove(bucket, path.toString(), Normal.EMPTY);
+    }
+
+    /**
+     * Releases S3 client resources held by this provider.
+     */
+    @Override
+    public void close() {
+        if (this.presigner != null) {
+            try {
+                this.presigner.close();
+            } catch (Exception e) {
+                // Ignore close-time failures.
+            }
+        }
+        if (this.client != null) {
+            try {
+                this.client.close();
+            } catch (Exception e) {
+                // Ignore close-time failures.
+            }
+        }
     }
 
 }

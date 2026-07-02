@@ -81,4 +81,40 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
     public static final Errors _113007 = ErrorRegistry.builder().key("113007")
             .value("Storage service configuration error, please check").build();
 
+    /**
+     * Storage endpoint is invalid.
+     */
+    public static final Errors _113008 = ErrorRegistry.builder().key("113008").value("Storage endpoint invalid")
+            .build();
+
+    /**
+     * Storage authentication failed.
+     */
+    public static final Errors _113009 = ErrorRegistry.builder().key("113009").value("Storage authentication failed")
+            .build();
+
+    /**
+     * Storage object does not exist.
+     */
+    public static final Errors _113010 = ErrorRegistry.builder().key("113010").value("Storage object does not exist")
+            .build();
+
+    /**
+     * Storage bucket does not exist.
+     */
+    public static final Errors _113011 = ErrorRegistry.builder().key("113011").value("Storage bucket does not exist")
+            .build();
+
+    /**
+     * Storage stream operation failed.
+     */
+    public static final Errors _113012 = ErrorRegistry.builder().key("113012").value("Storage stream operation failed")
+            .build();
+
+    /**
+     * Storage operation is not supported.
+     */
+    public static final Errors _113013 = ErrorRegistry.builder().key("113013").value("Storage operation not supported")
+            .build();
+
 }

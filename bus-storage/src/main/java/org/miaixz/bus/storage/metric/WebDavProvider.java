@@ -22,13 +22,16 @@ package org.miaixz.bus.storage.metric;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -71,6 +74,184 @@ public class WebDavProvider extends AbstractProvider {
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] cannot be blank");
 
         this.client = SardineFactory.begin(this.context.getAccessKey(), this.context.getSecretKey());
+    }
+
+    /**
+     * Reads metadata for a file in the default WebDAV bucket.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Reads metadata for a file using the provider's normal WebDAV path-building rules.
+     *
+     * @param bucket   The WebDAV bucket/path segment.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return statKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Reads metadata for an exact WebDAV object key.
+     *
+     * @param bucket    The WebDAV bucket/path segment.
+     * @param objectKey The exact object key.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+
+            String url = getUrl(bucket + Symbol.SLASH + objectKey);
+            if (!client.exists(url)) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            List<DavResource> resources = client.list(url, 0);
+            if (resources == null || resources.isEmpty() || resources.get(0).isDirectory()) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+            DavResource resource = resources.get(0);
+            String name = StringKit.isBlank(resource.getName()) ? objectKey : resource.getName();
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("tag", resource.getEtag());
+            extend.put("creationTime", resource.getCreation());
+            extend.put("lastModified", resource.getModified());
+            extend.put("directory", resource.isDirectory());
+            extend.put("contentLanguage", resource.getContentLanguage());
+            extend.put("statusCode", resource.getStatusCode());
+            extend.put("href", resource.getHref());
+
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
+                                    .size(StringKit.toString(resource.getContentLength()))
+                                    .type(resource.getContentType()).hash(resource.getEtag()).extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = ErrorCode._113012;
+            if (e instanceof IllegalArgumentException) {
+                error = ErrorCode._113008;
+            } else if (StringKit.containsIgnoreCase(e.getMessage(), "404")
+                    || StringKit.containsIgnoreCase(e.getMessage(), "not found")) {
+                error = ErrorCode._113010;
+            }
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a stream for a file in the default WebDAV bucket.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(this.context.getBucket(), fileName);
+    }
+
+    /**
+     * Opens a stream for a file using the provider's normal WebDAV path-building rules.
+     *
+     * @param bucket   The WebDAV bucket/path segment.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+        return streamKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Opens a stream for an exact WebDAV object key.
+     *
+     * @param bucket    The WebDAV bucket/path segment.
+     * @param objectKey The exact object key.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+
+            String url = getUrl(bucket + Symbol.SLASH + objectKey);
+            if (!client.exists(url)) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            List<DavResource> resources = client.list(url, 0);
+            if (resources == null || resources.isEmpty() || resources.get(0).isDirectory()) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+            DavResource resource = resources.get(0);
+            String name = StringKit.isBlank(resource.getName()) ? objectKey : resource.getName();
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("tag", resource.getEtag());
+            extend.put("creationTime", resource.getCreation());
+            extend.put("lastModified", resource.getModified());
+            extend.put("directory", resource.isDirectory());
+            extend.put("contentLanguage", resource.getContentLanguage());
+            extend.put("statusCode", resource.getStatusCode());
+            extend.put("href", resource.getHref());
+
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().inputStream(client.get(url)).bucket(bucket).key(objectKey).name(name)
+                                    .path(objectKey).size(StringKit.toString(resource.getContentLength()))
+                                    .type(resource.getContentType()).hash(resource.getEtag()).extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = ErrorCode._113012;
+            if (e instanceof IllegalArgumentException) {
+                error = ErrorCode._113008;
+            } else if (StringKit.containsIgnoreCase(e.getMessage(), "404")
+                    || StringKit.containsIgnoreCase(e.getMessage(), "not found")) {
+                error = ErrorCode._113010;
+            }
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
     }
 
     /**
@@ -464,6 +645,18 @@ public class WebDavProvider extends AbstractProvider {
     @Override
     public Message remove(String bucket, Path path) {
         return remove(bucket, path.toString(), Normal.EMPTY);
+    }
+
+    /**
+     * Releases WebDAV client resources held by this provider.
+     */
+    @Override
+    public void close() {
+        try {
+            this.client.shutdown();
+        } catch (Exception e) {
+            // Ignore close-time failures.
+        }
     }
 
     /**

@@ -38,10 +38,10 @@ module bus.storage {
     requires static lombok;
     requires static com.github.sardine;
     requires static com.hierynomus.smbj;
-    requires static com.jcraft.jsch;
     requires static org.reactivestreams;
     requires static software.amazon.awssdk.auth;
     requires static software.amazon.awssdk.core;
+    requires static software.amazon.awssdk.awscore;
     requires static software.amazon.awssdk.http;
     requires static software.amazon.awssdk.http.auth;
     requires static software.amazon.awssdk.regions;
@@ -49,6 +49,7 @@ module bus.storage {
     requires static software.amazon.awssdk.utils;
 
     exports org.miaixz.bus.storage;
+    exports org.miaixz.bus.storage.builtin;
     exports org.miaixz.bus.storage.cache;
     exports org.miaixz.bus.storage.magic;
     exports org.miaixz.bus.storage.metric;

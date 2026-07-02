@@ -136,11 +136,8 @@ public class EntitySchemaInitializer {
                         String context = "entity=" + (entityClass == null ? null : entityClass.getName()) + ", table="
                                 + (table == null ? null : table.tableName());
                         Logger.error(false, "Mapper", e, "Schema entity initialization failed: {}", context);
-                        throw new SQLException(
-                                "Schema entity initialization failed: " + context,
-                                e.getSQLState(),
-                                e.getErrorCode(),
-                                e);
+                        throw new SQLException("Schema entity initialization failed: " + context, e.getSQLState(),
+                                e.getErrorCode(), e);
                     } catch (RuntimeException e) {
                         String context = "entity=" + (entityClass == null ? null : entityClass.getName()) + ", table="
                                 + (table == null ? null : table.tableName());
@@ -406,11 +403,7 @@ public class EntitySchemaInitializer {
         } catch (SQLException e) {
             report.failedDiffs().add(diff);
             Logger.error(false, "Mapper", e, "Schema SQL preparation failed: {}", context);
-            throw new SQLException(
-                    "Schema SQL preparation failed: " + context,
-                    e.getSQLState(),
-                    e.getErrorCode(),
-                    e);
+            throw new SQLException("Schema SQL preparation failed: " + context, e.getSQLState(), e.getErrorCode(), e);
         } catch (RuntimeException e) {
             report.failedDiffs().add(diff);
             Logger.error(false, "Mapper", e, "Schema SQL preparation failed: {}", context);
@@ -429,11 +422,8 @@ public class EntitySchemaInitializer {
             report.failedDiffs().add(diff);
             Logger.error(false, "Mapper", e, "Schema SQL execution failed: {}, sql={}", context, sql);
             if (config.failFast() || !config.continueOnError()) {
-                throw new SQLException(
-                        "Schema SQL execution failed: " + context + ", sql=" + sql,
-                        e.getSQLState(),
-                        e.getErrorCode(),
-                        e);
+                throw new SQLException("Schema SQL execution failed: " + context + ", sql=" + sql, e.getSQLState(),
+                        e.getErrorCode(), e);
             }
         }
     }
@@ -546,17 +536,12 @@ public class EntitySchemaInitializer {
      */
     private boolean hasRows(Connection connection, TableMeta table) throws SQLException {
         String sql = "SELECT COUNT(*) FROM " + table.tableName();
-        try (Statement statement = connection.createStatement();
-                ResultSet rs = statement.executeQuery(sql)) {
+        try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(sql)) {
             return rs.next() && rs.getLong(1) > 0;
         } catch (SQLException e) {
             String context = "entity=" + (table.entityClass() == null ? null : table.entityClass().getName())
                     + ", table=" + table.tableName() + ", sql=" + sql;
-            throw new SQLException(
-                    "Schema row-count check failed: " + context,
-                    e.getSQLState(),
-                    e.getErrorCode(),
-                    e);
+            throw new SQLException("Schema row-count check failed: " + context, e.getSQLState(), e.getErrorCode(), e);
         }
     }
 

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.storage.magic;
 
+import java.io.InputStream;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -62,6 +63,11 @@ public class Blob {
     public String path;
 
     /**
+     * The bucket or container where the blob is stored.
+     */
+    public String bucket;
+
+    /**
      * The size of the blob.
      */
     public String size;
@@ -101,6 +107,11 @@ public class Blob {
      * of memory.
      */
     public byte[] bytes;
+
+    /**
+     * The stream content of the blob. Callers are responsible for closing it after use.
+     */
+    public InputStream inputStream;
 
     /**
      * Extended fields for the file, stored as a map.

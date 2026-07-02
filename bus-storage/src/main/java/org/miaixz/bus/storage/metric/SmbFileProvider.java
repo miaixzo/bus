@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.msfscc.FileAttributes;
+import com.hierynomus.msfscc.fileinformation.FileAllInformation;
 import com.hierynomus.msfscc.fileinformation.FileRenameInformation;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
 import com.hierynomus.mssmb2.SMB2CreateOptions;
@@ -41,6 +42,7 @@ import com.hierynomus.smbj.share.DiskEntry;
 import com.hierynomus.smbj.share.DiskShare;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -138,6 +140,197 @@ public class SmbFileProvider extends AbstractProvider {
                         ex);
             }
             throw new IllegalArgumentException("Failed to initialize SMB client: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Reads metadata for a file in the default SMB share.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String fileName) {
+        return stat(Normal.EMPTY, fileName);
+    }
+
+    /**
+     * Reads metadata for a file using the provider's normal SMB path-building rules.
+     *
+     * @param bucket   The logical bucket/path segment.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message stat(String bucket, String fileName) {
+        return statKey(this.context.getBucket(), getAbsolutePath(bucket, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Reads metadata for an exact SMB object path inside the connected share.
+     *
+     * @param bucket    The SMB share name.
+     * @param objectKey The exact path inside the SMB share.
+     * @return A {@link Message} containing storage metadata.
+     */
+    @Override
+    public Message statKey(String bucket, String objectKey) {
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+            if (!share.fileExists(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            FileAllInformation information = share.getFileInformation(objectKey);
+            String name = objectKey;
+            int index = objectKey.lastIndexOf(Symbol.SLASH);
+            if (index >= 0) {
+                name = objectKey.substring(index + 1);
+            }
+
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("creationTime", information.getBasicInformation().getCreationTime().toEpochMillis());
+            extend.put("lastAccessTime", information.getBasicInformation().getLastAccessTime().toEpochMillis());
+            extend.put("lastWriteTime", information.getBasicInformation().getLastWriteTime().toEpochMillis());
+            extend.put("changeTime", information.getBasicInformation().getChangeTime().toEpochMillis());
+            extend.put("fileAttributes", information.getBasicInformation().getFileAttributes());
+            extend.put("allocationSize", information.getStandardInformation().getAllocationSize());
+            extend.put("numberOfLinks", information.getStandardInformation().getNumberOfLinks());
+            extend.put("deletePending", information.getStandardInformation().isDeletePending());
+            extend.put("directory", information.getStandardInformation().isDirectory());
+            extend.put("indexNumber", information.getInternalInformation().getIndexNumber());
+
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().bucket(this.context.getBucket()).key(objectKey).name(name).path(objectKey)
+                                    .size(StringKit.toString(information.getStandardInformation().getEndOfFile()))
+                                    .extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113008 : ErrorCode._113012;
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stat failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        }
+    }
+
+    /**
+     * Opens a stream for a file in the default SMB share.
+     *
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String fileName) {
+        return stream(Normal.EMPTY, fileName);
+    }
+
+    /**
+     * Opens a stream for a file using the provider's normal SMB path-building rules.
+     *
+     * @param bucket   The logical bucket/path segment.
+     * @param fileName The file name to read.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message stream(String bucket, String fileName) {
+        return streamKey(this.context.getBucket(), getAbsolutePath(bucket, Normal.EMPTY, fileName));
+    }
+
+    /**
+     * Opens a stream for an exact SMB object path inside the connected share.
+     *
+     * @param bucket    The SMB share name.
+     * @param objectKey The exact path inside the SMB share.
+     * @return A {@link Message} containing a storage resource.
+     */
+    @Override
+    public Message streamKey(String bucket, String objectKey) {
+        com.hierynomus.smbj.share.File smbFile = null;
+        try {
+            if (StringKit.isBlank(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                        .build();
+            }
+            if (!share.fileExists(objectKey)) {
+                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                        .build();
+            }
+
+            smbFile = share.openFile(
+                    objectKey,
+                    EnumSet.of(AccessMask.GENERIC_READ),
+                    null,
+                    SMB2ShareAccess.ALL,
+                    SMB2CreateDisposition.FILE_OPEN,
+                    null);
+
+            FileAllInformation information = smbFile.getFileInformation();
+            String name = objectKey;
+            int index = objectKey.lastIndexOf(Symbol.SLASH);
+            if (index >= 0) {
+                name = objectKey.substring(index + 1);
+            }
+
+            Map<String, Object> extend = new HashMap<>();
+            extend.put("creationTime", information.getBasicInformation().getCreationTime().toEpochMillis());
+            extend.put("lastAccessTime", information.getBasicInformation().getLastAccessTime().toEpochMillis());
+            extend.put("lastWriteTime", information.getBasicInformation().getLastWriteTime().toEpochMillis());
+            extend.put("changeTime", information.getBasicInformation().getChangeTime().toEpochMillis());
+            extend.put("fileAttributes", information.getBasicInformation().getFileAttributes());
+            extend.put("allocationSize", information.getStandardInformation().getAllocationSize());
+            extend.put("numberOfLinks", information.getStandardInformation().getNumberOfLinks());
+            extend.put("deletePending", information.getStandardInformation().isDeletePending());
+            extend.put("directory", information.getStandardInformation().isDirectory());
+            extend.put("indexNumber", information.getInternalInformation().getIndexNumber());
+
+            InputStream inputStream = new SmbFileInputStream(smbFile.getInputStream(), smbFile);
+            smbFile = null;
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().inputStream(inputStream).bucket(this.context.getBucket()).key(objectKey)
+                                    .name(name).path(objectKey)
+                                    .size(StringKit.toString(information.getStandardInformation().getEndOfFile()))
+                                    .extend(extend).build())
+                    .build();
+        } catch (Exception e) {
+            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113008 : ErrorCode._113012;
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage stream failed; provider={}, bucket={}, object={}, code={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    objectKey,
+                    error.getKey(),
+                    e.getMessage(),
+                    e);
+            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+        } finally {
+            if (smbFile != null) {
+                try {
+                    smbFile.close();
+                } catch (Exception e) {
+                    Logger.warn(
+                            false,
+                            "Storage",
+                            "Storage resource close failed; provider={}, resource=smb-file, status=failure, error={}",
+                            this.getClass().getSimpleName(),
+                            e.getMessage());
+                }
+            }
         }
     }
 
@@ -630,6 +823,75 @@ public class SmbFileProvider extends AbstractProvider {
     @Override
     public Message remove(String bucket, Path path) {
         return remove(bucket, path.toString(), Normal.EMPTY);
+    }
+
+    /**
+     * Releases SMB resources held by this provider.
+     */
+    @Override
+    public void close() {
+        if (this.share != null) {
+            try {
+                this.share.close();
+            } catch (Exception e) {
+                // Ignore close-time failures.
+            }
+        }
+        if (this.session != null) {
+            try {
+                this.session.close();
+            } catch (Exception e) {
+                // Ignore close-time failures.
+            }
+        }
+        if (this.connection != null) {
+            try {
+                this.connection.close();
+            } catch (Exception e) {
+                // Ignore close-time failures.
+            }
+        }
+        try {
+            this.client.close();
+        } catch (Exception e) {
+            // Ignore close-time failures.
+        }
+    }
+
+    /**
+     * Closes the SMB file handle together with the returned stream.
+     */
+    private static class SmbFileInputStream extends FilterInputStream {
+
+        private final com.hierynomus.smbj.share.File file;
+
+        private SmbFileInputStream(InputStream inputStream, com.hierynomus.smbj.share.File file) {
+            super(inputStream);
+            this.file = file;
+        }
+
+        @Override
+        public void close() throws IOException {
+            IOException failure = null;
+            try {
+                super.close();
+            } catch (IOException e) {
+                failure = e;
+            }
+            try {
+                file.close();
+            } catch (Exception e) {
+                if (failure == null) {
+                    failure = new IOException(e);
+                } else {
+                    failure.addSuppressed(e);
+                }
+            }
+            if (failure != null) {
+                throw failure;
+            }
+        }
+
     }
 
     /**
