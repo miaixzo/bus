@@ -48,22 +48,13 @@ public abstract class AbstractDisplay implements Display {
     }
 
     /**
-     * Constructor for AbstractDisplay from decoded display information.
+     * Constructor for AbstractDisplay from decoded display information. This constructor allows platforms to expose
+     * display attributes when a physical EDID is unavailable.
      *
      * @param displayInfo the decoded display information
      */
     protected AbstractDisplay(DisplayInfo displayInfo) {
         this.displayInfo = displayInfo;
-    }
-
-    /**
-     * Returns the edid.
-     *
-     * @return the get edid result
-     */
-    @Override
-    public byte[] getEdid() {
-        return this.displayInfo.getEdid();
     }
 
     /**
@@ -74,16 +65,6 @@ public abstract class AbstractDisplay implements Display {
     @Override
     public DisplayInfo getDisplayInfo() {
         return this.displayInfo;
-    }
-
-    /**
-     * Returns whether the EDID is synthetic.
-     *
-     * @return {@code true} if the EDID is synthetic, otherwise {@code false}
-     */
-    @Override
-    public boolean isEdidSynthetic() {
-        return this.displayInfo.isEdidSynthetic();
     }
 
     /**

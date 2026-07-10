@@ -186,6 +186,9 @@ public class ClassKit {
      * @return An array of classes.
      */
     public static Class<?>[] getClasses(final Object... objects) {
+        if (ArrayKit.isEmpty(objects)) {
+            return new Class<?>[0];
+        }
         final Class<?>[] classes = new Class<?>[objects.length];
         Object object;
         for (int i = 0; i < objects.length; i++) {

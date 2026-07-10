@@ -504,6 +504,21 @@ public class ReflectKit {
     }
 
     /**
+     * Instantiates an object from its class, explicit constructor parameter types and constructor arguments.
+     *
+     * @param <T>        The object type.
+     * @param clazz      The class.
+     * @param paramTypes The explicit constructor parameter types.
+     * @param args       The constructor arguments.
+     * @return The new instance.
+     * @throws InternalException if instantiation fails.
+     */
+    public static <T> T newInstance(final Class<T> clazz, final Class<?>[] paramTypes, final Object[] args)
+            throws InternalException {
+        return DefaultObjectCreator.of(clazz, paramTypes, args).of();
+    }
+
+    /**
      * Tries to instantiate a class by iterating through its constructors.
      *
      * @param <T>  The object type.

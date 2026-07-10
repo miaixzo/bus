@@ -63,7 +63,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-extra](bus-extra)        | Extended functionality package, integrating peripheral services like FTP/QR code/MQ/file processing |
 | [√]    | [bus-gitlab](bus-gitlab)      | Deep GitLab integration, providing full lifecycle management for CI/CD/repositories/issues |
 | [√]    | [bus-health](bus-health)      | Health monitoring center, real-time collection of JVM/OS/container/middleware monitoring metrics |
-| [√]    | [bus-http](bus-http)          | HTTP client wrapper, providing synchronous/asynchronous/reactive three calling modes |
+| [√]    | [bus-fabric](bus-fabric)          | Unified HTTP client and TCP/UDP/WebSocket communication framework |
 | [√]    | [bus-image](bus-image)        | Image processing engine, supporting format conversion/thumbnail generation/OCR recognition |
 | [√]    | [bus-limiter](bus-limiter)    | High-performance rate limiting component, supporting token bucket/sliding window/distributed rate limiting strategies |
 | [√]    | [bus-logger](bus-logger)      | Log enhancement module, supporting dynamic log levels/trace ID/sensitive data filtering |
@@ -78,7 +78,6 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-sensitive](bus-sensitive)| Sensitive data masking, providing annotation-based/rule-based data obfuscation solutions |
 | [√]    | [bus-setting](bus-setting)    | Configuration management tool, supporting multi-environment configuration/dynamic refresh/encrypted storage |
 | [√]    | [bus-shade](bus-shade)        | Code generator, one-click generation of basic code like Entity/Service/Mapper |
-| [√]    | [bus-socket](bus-socket)      | Network communication framework, wrapping NIO/AIO to implement TCP/UDP/WebSocket communication |
 | [√]    | [bus-starter](bus-starter)    | SpringBoot starter, auto-assembly of core components and configurations |
 | [√]    | [bus-storage](bus-storage)    | Object storage service, supporting storage solutions like Alibaba Cloud OSS/Tencent Cloud COS/MinIO |
 | [√]    | [bus-tempus](bus-tempus)          | Distributed task scheduling, supporting CRON expressions and cluster task coordination |

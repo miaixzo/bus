@@ -25,6 +25,7 @@ import java.util.Locale;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Parsing;
 
 /**
  * Default {@link DisplayInfo} implementation.
@@ -324,7 +325,7 @@ public class DisplayInfoImpl implements DisplayInfo {
         byte[] e = Builder.newEdidTemplate();
         Builder.setManufacturerID(e, this.manufacturerID);
         Builder.setProductID(e, this.productID);
-        Builder.setSerialNo(e, this.serialNo);
+        setSerialNoSafe(e, this.serialNo);
         Builder.setWeek(e, this.week);
         Builder.setYear(e, this.year);
         Builder.setVersion(e, this.version);
@@ -338,6 +339,29 @@ public class DisplayInfoImpl implements DisplayInfo {
         }
         Builder.updateChecksum(e);
         return e;
+    }
+
+    /**
+     * Sets the serial number while tolerating serial values that are display attributes rather than EDID round-trippable
+     * values.
+     *
+     * @param edid     the EDID byte array to modify
+     * @param serialNo the serial number to set
+     */
+    private static void setSerialNoSafe(byte[] edid, String serialNo) {
+        if (serialNo == null || serialNo.isEmpty()) {
+            return;
+        }
+        try {
+            Builder.setSerialNo(edid, serialNo);
+        } catch (IllegalArgumentException e) {
+            if (serialNo.length() == 8) {
+                long numeric = Parsing.hexStringToLong(serialNo, 0L);
+                if (numeric != 0L) {
+                    Builder.setSerialNo(edid, numeric);
+                }
+            }
+        }
     }
 
     /**

@@ -75,8 +75,9 @@ public final class ThreadPerformanceData {
         // Iterate instances.
         for (Map<ThreadPerformanceProperty, Object> threadInstanceMap : threadInstanceMaps) {
             Integer pid = ((Integer) threadInstanceMap.get(ThreadPerformanceProperty.IDPROCESS)).intValue();
-            if ((pids == null || pids.contains(pid)) && pid > 0) {
-                int tid = ((Integer) threadInstanceMap.get(ThreadPerformanceProperty.IDTHREAD)).intValue();
+            int tid = ((Integer) threadInstanceMap.get(ThreadPerformanceProperty.IDTHREAD)).intValue();
+            // Skip synthetic or idle rows that have no backing thread.
+            if (tid != 0 && (pids == null || pids.contains(pid)) && pid > 0) {
                 String name = (String) threadInstanceMap.get(ThreadPerformanceProperty.NAME);
                 long upTime = (perfTime100nSec - (Long) threadInstanceMap.get(ThreadPerformanceProperty.ELAPSEDTIME))
                         / 10_000L;
@@ -158,8 +159,9 @@ public final class ThreadPerformanceData {
         int nameIndex = 0;
         for (int inst = 0; inst < instances.size(); inst++) {
             int pid = pidList.get(inst).intValue();
-            if (pids == null || pids.contains(pid)) {
-                int tid = tidList.get(inst).intValue();
+            int tid = tidList.get(inst).intValue();
+            // Skip synthetic or idle rows that have no backing thread.
+            if (tid != 0 && (pids == null || pids.contains(pid))) {
                 String name = Integer.toString(nameIndex++);
                 long startTime = startTimeList.get(inst);
                 startTime = Parsing.filetimeToUtcMs(startTime, false);

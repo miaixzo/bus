@@ -43,6 +43,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.health.builtin.hardware.DisplayInfo;
+import org.miaixz.bus.health.builtin.hardware.DisplayInfoImpl;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -548,6 +550,93 @@ public final class Builder {
     }
 
     /**
+     * Decodes a packed 16-bit manufacturer ID into the EDID three-letter manufacturer code. This is the inverse of
+     * {@link #getManufacturerID(byte[])}: three 5-bit values, where {@code 1=A} through {@code 26=Z}, packed into the
+     * low 15 bits.
+     *
+     * @param packed The packed manufacturer ID.
+     * @return The three-letter manufacturer code, or {@code null} if any field is outside A-Z.
+     */
+    public static String decodeManufacturerId(long packed) {
+        int value = (int) packed;
+        int[] codes = { (value >> 10) & 0x1F, (value >> 5) & 0x1F, value & 0x1F };
+        StringBuilder sb = new StringBuilder(3);
+        for (int code : codes) {
+            if (code < 1 || code > 26) {
+                return null;
+            }
+            sb.append((char) ('A' - 1 + code));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Builds a synthetic {@link DisplayInfo} from individual display properties for displays that report attributes
+     * without providing an EDID. Missing fields are defaulted, and the result is marked synthetic so callers can
+     * distinguish it through {@link DisplayInfo#isEdidSynthetic()}.
+     *
+     * @param legacyManufacturerId The packed manufacturer ID, or {@code null}.
+     * @param modelNumber          The 16-bit model or product number, or {@code null}.
+     * @param serialNumber         The 32-bit serial number, or {@code null}.
+     * @param week                 The week of manufacture, or {@code null}.
+     * @param year                 The year of manufacture, or {@code null}.
+     * @param model                The product name or model, or {@code null}.
+     * @param productSerial        The alphanumeric serial number, or {@code null}.
+     * @param displayWidth         The native pixel width, or {@code null}.
+     * @param displayHeight        The native pixel height, or {@code null}.
+     * @param fallbackName         The fallback display name if {@code model} and {@code displayName} are null.
+     * @param screenWidthMm        The physical width in millimeters, or {@code null}.
+     * @param screenHeightMm       The physical height in millimeters, or {@code null}.
+     * @param displayName          The localized display name, or {@code null}.
+     * @return A synthetic {@link DisplayInfo}, or {@code null} if the manufacturer ID can not be decoded.
+     */
+    public static DisplayInfo synthesizeDisplayInfo(
+            Long legacyManufacturerId,
+            Integer modelNumber,
+            Integer serialNumber,
+            Integer week,
+            Integer year,
+            String model,
+            String productSerial,
+            Long displayWidth,
+            Long displayHeight,
+            String fallbackName,
+            Double screenWidthMm,
+            Double screenHeightMm,
+            String displayName) {
+        if (legacyManufacturerId == null) {
+            return null;
+        }
+        String manufacturer = decodeManufacturerId(legacyManufacturerId);
+        if (manufacturer == null) {
+            return null;
+        }
+        String product = Integer.toHexString(modelNumber == null ? 0 : modelNumber & 0xFFFF);
+        byte wk = (byte) (week == null ? 0 : week);
+        int yr = year == null ? YEAR_BASE : year;
+        String serialNo = serialNumber == null ? "00000000" : String.format(Locale.ROOT, "%08X", serialNumber);
+        String resolution = null;
+        if (displayWidth != null && displayHeight != null && displayWidth > 0 && displayHeight > 0) {
+            resolution = displayWidth + "x" + displayHeight;
+        }
+        int hcm = screenWidthMm == null ? 0 : (int) Math.round(screenWidthMm / 10.0);
+        int vcm = screenHeightMm == null ? 0 : (int) Math.round(screenHeightMm / 10.0);
+        String modelName = model;
+        if (modelName == null) {
+            modelName = displayName;
+        }
+        if (modelName == null) {
+            modelName = fallbackName;
+        }
+        String serialDescriptor = productSerial;
+        if (serialDescriptor == null && serialNumber != null) {
+            serialDescriptor = serialNo;
+        }
+        return new DisplayInfoImpl(manufacturer, product, serialNo, wk, yr, "1.4", true, hcm, vcm, resolution,
+                modelName == null ? Normal.EMPTY : modelName, serialDescriptor == null ? Normal.EMPTY : serialDescriptor);
+    }
+
+    /**
      * Creates a mutable EDID byte array with the fixed header, EDID version 1.4, and unused standard timing slots.
      *
      * @return a new 128-byte EDID template
@@ -727,6 +816,9 @@ public final class Builder {
      * @param resolution The preferred resolution in WIDTHxHEIGHT form.
      */
     public static void setPreferredResolution(byte[] edid, String resolution) {
+        if (resolution == null) {
+            return;
+        }
         int x = resolution.indexOf('x');
         if (x < 0) {
             return;

@@ -42,6 +42,11 @@ public class DefaultObjectCreator<T> implements ObjectCreator<T> {
     final MethodHandle constructor;
 
     /**
+     * The explicit constructor parameter types.
+     */
+    final Class<?>[] paramTypes;
+
+    /**
      * The arguments to be passed to the constructor.
      */
     final Object[] args;
@@ -55,10 +60,24 @@ public class DefaultObjectCreator<T> implements ObjectCreator<T> {
      * @throws NullPointerException     if a suitable constructor is not found for the given class and arguments.
      */
     public DefaultObjectCreator(final Class<T> clazz, final Object... args) {
-        final Class<?>[] paramTypes = ClassKit.getClasses(args);
-        this.constructor = LookupKit.findConstructor(clazz, paramTypes);
+        this(clazz, ClassKit.getClasses(args), args);
+    }
+
+    /**
+     * Constructs a new {@code DefaultObjectCreator}.
+     *
+     * @param clazz      The class to be instantiated. Must not be {@code null}.
+     * @param paramTypes The explicit constructor parameter types.
+     * @param args       The constructor arguments. Can be empty if no-arg constructor is used.
+     * @throws IllegalArgumentException if {@code clazz} is {@code null}.
+     * @throws NullPointerException     if a suitable constructor is not found for the given class and arguments.
+     */
+    public DefaultObjectCreator(final Class<T> clazz, final Class<?>[] paramTypes, final Object[] args) {
+        final Class<?>[] actualParamTypes = null == paramTypes ? new Class<?>[0] : paramTypes;
+        this.constructor = LookupKit.findConstructor(clazz, actualParamTypes);
         Assert.notNull(this.constructor, "Constructor not found!");
-        this.args = args;
+        this.paramTypes = actualParamTypes;
+        this.args = null == args ? new Object[0] : args;
     }
 
     /**
@@ -82,6 +101,22 @@ public class DefaultObjectCreator<T> implements ObjectCreator<T> {
      */
     public static <T> DefaultObjectCreator<T> of(final Class<T> clazz, final Object... args) {
         return new DefaultObjectCreator<>(clazz, args);
+    }
+
+    /**
+     * Creates a default object instantiator for the given class, constructor parameter types and arguments.
+     *
+     * @param clazz      The class to be instantiated.
+     * @param paramTypes The explicit constructor parameter types.
+     * @param args       The constructor arguments. Can be empty if no-arg constructor is used.
+     * @param <T>        The type of the object to be created.
+     * @return A new {@code DefaultObjectCreator} instance.
+     */
+    public static <T> DefaultObjectCreator<T> of(
+            final Class<T> clazz,
+            final Class<?>[] paramTypes,
+            final Object[] args) {
+        return new DefaultObjectCreator<>(clazz, paramTypes, args);
     }
 
     /**

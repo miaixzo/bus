@@ -252,15 +252,15 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                 Matcher m = identifierPattern.matcher(line);
                 if (m.matches()) {
                     cpuVendor = m.group(1);
-                    processorIdBits |= Long.decode(m.group(2));
-                    cpuFamily = Integer.decode(m.group(3)).toString();
-                    cpuModel = Integer.decode(m.group(4)).toString();
-                    cpuStepping = Integer.decode(m.group(5)).toString();
+                    processorIdBits |= Parsing.decodeLongOrDefault(m.group(2), 0L);
+                    cpuFamily = Integer.toString(Parsing.decodeIntOrDefault(m.group(3), 0));
+                    cpuModel = Integer.toString(Parsing.decodeIntOrDefault(m.group(4), 0));
+                    cpuStepping = Integer.toString(Parsing.decodeIntOrDefault(m.group(5), 0));
                 }
             } else if (line.startsWith("Features=")) {
                 Matcher m = featuresPattern.matcher(line);
                 if (m.matches()) {
-                    processorIdBits |= Long.decode(m.group(1)) << 32;
+                    processorIdBits |= Parsing.decodeLongOrDefault(m.group(1), 0L) << 32;
                 }
                 // No further interest in this file
                 break;

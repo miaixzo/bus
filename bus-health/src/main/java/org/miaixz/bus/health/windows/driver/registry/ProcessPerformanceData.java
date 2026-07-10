@@ -156,7 +156,8 @@ public final class ProcessPerformanceData {
 
         for (int inst = 0; inst < instances.size(); inst++) {
             int pid = pidList.get(inst).intValue();
-            if (pids == null || pids.contains(pid)) {
+            // Skip synthetic or idle rows that have no backing process.
+            if (pid != 0 && (pids == null || pids.contains(pid))) {
                 // Field name is elapsed time but the value is the process start time
                 long ctime = elapsedTimeList.get(inst);
                 // if creation time value is less than current millis, it's in 1970 epoch,
