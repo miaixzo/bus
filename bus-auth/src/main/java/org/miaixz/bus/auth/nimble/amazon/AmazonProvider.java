@@ -34,13 +34,12 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -155,7 +154,7 @@ public class AmazonProvider extends AbstractProvider {
         header.put(HTTP.HOST, "api.amazon.com");
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
 
-        String response = Httpx.post(url, param, header);
+        String response = post(url, param, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -217,7 +216,7 @@ public class AmazonProvider extends AbstractProvider {
         header.put(HTTP.HOST, "api.amazon.com");
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
 
-        String userInfo = Httpx.get(this.complex.userinfo(), new HashMap<>(0), header);
+        String userInfo = get(this.complex.userinfo(), new HashMap<>(0), header);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -259,8 +258,7 @@ public class AmazonProvider extends AbstractProvider {
      * @throws AuthorizedException if the token is invalid or an error occurs during validation
      */
     private void checkToken(String token) {
-        String tokenInfo = Httpx
-                .get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UrlEncoder.encodeAll(token));
+        String tokenInfo = get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UrlEncoder.encodeAll(token));
         try {
             Map<String, Object> jsonObject = JsonKit.toPojo(tokenInfo, Map.class);
             if (jsonObject == null) {

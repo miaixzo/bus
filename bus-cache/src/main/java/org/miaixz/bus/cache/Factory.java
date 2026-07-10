@@ -21,8 +21,8 @@ package org.miaixz.bus.cache;
 
 import java.util.Arrays;
 
-import org.miaixz.bus.cache.metric.*;
-import org.miaixz.bus.cache.metric.internal.RedisBackends;
+import org.miaixz.bus.cache.nimble.*;
+import org.miaixz.bus.cache.nimble.internal.RedisBackends;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 

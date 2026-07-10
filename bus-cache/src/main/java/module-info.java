@@ -50,7 +50,7 @@ module bus.cache {
     exports org.miaixz.bus.cache.builtin;
     exports org.miaixz.bus.cache.collect;
     exports org.miaixz.bus.cache.magic;
-    exports org.miaixz.bus.cache.metric;
+    exports org.miaixz.bus.cache.nimble;
     exports org.miaixz.bus.cache.reader;
     exports org.miaixz.bus.cache.serialize;
     exports org.miaixz.bus.cache.magic.annotation;

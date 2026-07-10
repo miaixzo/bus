@@ -37,7 +37,6 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * QQ Mini Program login provider.
@@ -77,7 +76,7 @@ public class QqMiniProvider extends AbstractProvider {
     @Override
     public Message token(Callback authCallback) {
         // Use the code to get the corresponding openId, unionId, etc.
-        String response = Httpx.get(tokenUrl(authCallback.getCode()));
+        String response = get(tokenUrl(authCallback.getCode()));
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(object);

@@ -34,7 +34,6 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -95,7 +94,7 @@ public class RednoteMarketiProvider extends AbstractProvider {
         form.put("app_id", this.context.getClientId());
         form.put("secret", this.context.getClientSecret());
         form.put("code", callback.getCode());
-        String response = Httpx.post(this.complex.token(), form);
+        String response = post(this.complex.token(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -152,7 +151,7 @@ public class RednoteMarketiProvider extends AbstractProvider {
         form.put("secret", this.context.getClientSecret());
         form.put("refresh_token", authorization.getRefresh());
 
-        String response = Httpx.post(this.complex.refresh(), form);
+        String response = post(this.complex.refresh(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

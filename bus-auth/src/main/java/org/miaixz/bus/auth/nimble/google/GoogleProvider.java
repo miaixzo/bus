@@ -37,7 +37,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -125,7 +124,7 @@ public class GoogleProvider extends AbstractProvider {
     public Message userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
-        String userInfo = Httpx.post(userInfoUrl(authorization), null, header);
+        String userInfo = post(userInfoUrl(authorization), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {

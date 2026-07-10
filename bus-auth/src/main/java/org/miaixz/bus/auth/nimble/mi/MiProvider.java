@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -90,7 +89,7 @@ public class MiProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     private Authorization getToken(String tokenUrl) {
-        String response = Httpx.get(tokenUrl);
+        String response = get(tokenUrl);
         String jsonStr = response.replace(PREFIX, Normal.EMPTY);
         try {
             Map<String, Object> object = JsonKit.toPojo(jsonStr, Map.class);
@@ -178,7 +177,7 @@ public class MiProvider extends AbstractProvider {
                     context.getClientId(),
                     authorization.getToken());
 
-            String emailResponse = Httpx.get(emailPhoneUrl);
+            String emailResponse = get(emailPhoneUrl);
             try {
                 Map<String, Object> userEmailPhone = JsonKit.toPojo(emailResponse, Map.class);
                 if (userEmailPhone == null) {

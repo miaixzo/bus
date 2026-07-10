@@ -1,0 +1,305 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.fabric.protocol.stomp;
+
+import java.nio.ByteBuffer;
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
+import org.miaixz.bus.core.lang.exception.TimeoutException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.fabric.Call;
+import org.miaixz.bus.fabric.Headers;
+import org.miaixz.bus.fabric.Message;
+import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.Session;
+import org.miaixz.bus.fabric.observe.ObservationMarker;
+import org.miaixz.bus.fabric.observe.event.FabricEvent;
+import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.stomp.frame.StompCodec;
+import org.miaixz.bus.fabric.protocol.stomp.frame.StompFrame;
+import org.miaixz.bus.logger.Logger;
+
+/**
+ * Opens STOMP sessions from an immutable snapshot snapshot.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+final class StompRunner {
+
+    /**
+     * Logger tag used by the fabric runtime.
+     */
+    private static final String LOG_TAG = "Fabric";
+
+    /**
+     * Execution snapshot.
+     */
+    private final StompSnapshot snapshot;
+
+    /**
+     * Creates a runner.
+     *
+     * @param snapshot execution snapshot
+     */
+    StompRunner(final StompSnapshot snapshot) {
+        this.snapshot = require(snapshot, "STOMP exchange snapshot");
+    }
+
+    /**
+     * Opens a STOMP session over WebSocket.
+     *
+     * @return session
+     */
+    StompSession open() {
+        Session socket = null;
+        Logger.info(
+                true,
+                LOG_TAG,
+                "STOMP open started: scheme={}, host={}, port={}, destinationPresent={}",
+                snapshot.address().scheme(),
+                snapshot.address().host(),
+                snapshot.address().port(),
+                snapshot.destination() != null);
+        try {
+            if (!"ws".equals(snapshot.uri().getScheme()) && !"wss".equals(snapshot.uri().getScheme())) {
+                throw new ProtocolException("STOMP open requires ws or wss target");
+            }
+            checkGuard();
+            final StompCodec inbound = new StompCodec();
+            final CompletableFuture<StompFrame> connected = new CompletableFuture<>();
+            final AtomicReference<StompSession> session = new AtomicReference<>();
+            socket = Mediator.openWebSocket(
+                    snapshot.context(),
+                    snapshot.uri(),
+                    snapshot.headers(),
+                    snapshot.timeout(),
+                    (ignored, message) -> {
+                        try {
+                            for (final StompFrame frame : inbound.decode(
+                                    ByteBuffer.wrap(
+                                            message.payload()
+                                                    .bytes(snapshot.context().options().materializeMaxBytes())))) {
+                                if ("CONNECTED".equals(frame.command())) {
+                                    connected.complete(frame);
+                                } else if ("ERROR".equals(frame.command())) {
+                                    connected.completeExceptionally(
+                                            new ProtocolException(frame.body().text(Charset.UTF_8)));
+                                } else {
+                                    final StompSession opened = session.get();
+                                    if (opened != null) {
+                                        opened.dispatch(frame);
+                                    }
+                                }
+                            }
+                        } catch (final RuntimeException e) {
+                            connected.completeExceptionally(e);
+                        }
+                    });
+            final Session openedSocket = socket;
+            final StompCodec outbound = new StompCodec();
+            awaitSend(openedSocket.send(outbound.encode(connectFrame())));
+            awaitConnected(connected);
+            Logger.info(
+                    false,
+                    LOG_TAG,
+                    "STOMP CONNECT accepted: scheme={}, host={}, port={}",
+                    snapshot.address().scheme(),
+                    snapshot.address().host(),
+                    snapshot.address().port());
+            final StompSession opened = new StompSession(openedSocket::send, openedSocket::close, openedSocket::cancel,
+                    snapshot.handler(), snapshot.address(), snapshot.guard(), snapshot.observer(), snapshot.listener(),
+                    snapshot.context().options().materializeMaxBytes());
+            session.set(opened);
+            emit(ObservationMarker.STOMP_OPEN, null);
+            snapshot.listener().open(opened);
+            snapshot.callback().success(opened);
+            Logger.info(
+                    false,
+                    LOG_TAG,
+                    "STOMP open completed: scheme={}, host={}, port={}",
+                    snapshot.address().scheme(),
+                    snapshot.address().host(),
+                    snapshot.address().port());
+            return opened;
+        } catch (final RuntimeException e) {
+            if (socket != null) {
+                socket.cancel();
+            }
+            emit(ObservationMarker.STOMP_FAILED, e);
+            snapshot.callback().failure(e);
+            Logger.error(
+                    false,
+                    LOG_TAG,
+                    e,
+                    "STOMP open failed: scheme={}, host={}, port={}, exception={}",
+                    snapshot.address().scheme(),
+                    snapshot.address().host(),
+                    snapshot.address().port(),
+                    e.getClass().getSimpleName());
+            throw e;
+        }
+    }
+
+    /**
+     * Builds the CONNECT frame.
+     *
+     * @return connect frame
+     */
+    StompFrame connectFrame() {
+        final Headers.Builder builder = Headers.builder().add("accept-version", "1.2")
+                .add("host", snapshot.address().host());
+        if (snapshot.login() != null) {
+            builder.add("login", snapshot.login());
+        }
+        if (snapshot.passcode() != null) {
+            builder.add("passcode", snapshot.passcode());
+        }
+        for (final Map.Entry<String, List<String>> entry : snapshot.headers().asMap().entrySet()) {
+            for (final String value : entry.getValue()) {
+                builder.add(entry.getKey(), value);
+            }
+        }
+        return StompFrame.of("CONNECT", builder.build(), Payload.empty());
+    }
+
+    /**
+     * Waits for CONNECTED.
+     *
+     * @param connected connected future
+     */
+    private void awaitConnected(final CompletableFuture<StompFrame> connected) {
+        final Duration connectTimeout = connectTimeout();
+        try {
+            if (connectTimeout.isZero()) {
+                connected.get();
+            } else {
+                connected.get(connectTimeout.toNanos(), java.util.concurrent.TimeUnit.NANOSECONDS);
+            }
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new InternalException("Interrupted while waiting for STOMP CONNECTED", e);
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            throw new ProtocolException("STOMP CONNECT failed", cause);
+        } catch (final java.util.concurrent.TimeoutException e) {
+            throw new TimeoutException("STOMP CONNECT timed out", e);
+        }
+    }
+
+    /**
+     * Waits for the CONNECT frame to be written.
+     *
+     * @param call send call
+     */
+    private void awaitSend(final Call<Void> call) {
+        final Duration writeTimeout = snapshot.timeout().write();
+        if (writeTimeout.isZero()) {
+            call.await();
+        } else {
+            call.await(writeTimeout);
+        }
+    }
+
+    /**
+     * Returns the timeout used for the STOMP CONNECTED handshake.
+     *
+     * @return handshake timeout
+     */
+    private Duration connectTimeout() {
+        return snapshot.timeout().call().isZero() ? snapshot.timeout().connect() : snapshot.timeout().call();
+    }
+
+    /**
+     * Checks the optional guard.
+     */
+    private void checkGuard() {
+        if (snapshot.guard() == null) {
+            return;
+        }
+        Logger.debug(
+                true,
+                LOG_TAG,
+                "STOMP guard check started: host={}, port={}, destinationPresent={}",
+                snapshot.address().host(),
+                snapshot.address().port(),
+                snapshot.destination() != null);
+        snapshot.guard()
+                .check(
+                        Message.of(
+                                Protocol.WS,
+                                snapshot.address(),
+                                snapshot.headers(),
+                                Payload.empty(),
+                                snapshot.destination()))
+                .throwIfRejected();
+        Logger.debug(
+                false,
+                LOG_TAG,
+                "STOMP guard check accepted: host={}, port={}, destinationPresent={}",
+                snapshot.address().host(),
+                snapshot.address().port(),
+                snapshot.destination() != null);
+    }
+
+    /**
+     * Emits a STOMP event.
+     *
+     * @param marker marker
+     * @param cause  cause
+     */
+    private void emit(final ObservationMarker marker, final Throwable cause) {
+        FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, snapshot.address().scheme())
+                .tag(Tags.HOST, snapshot.address().host()).tag(Tags.PORT, Integer.toString(snapshot.address().port()));
+        if (cause != null) {
+            event = event.cause(cause);
+        }
+        snapshot.observer().emit(event.build());
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value value
+     * @param name  field name
+     * @param <T>   value type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+}

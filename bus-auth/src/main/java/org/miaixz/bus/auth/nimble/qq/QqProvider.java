@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * QQ login provider.
@@ -85,7 +84,7 @@ public class QqProvider extends AbstractProvider {
      */
     @Override
     public Message refresh(Authorization authorization) {
-        String response = Httpx.get(refreshUrl(authorization.getRefresh()));
+        String response = get(refreshUrl(authorization.getRefresh()));
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 
@@ -130,7 +129,7 @@ public class QqProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error is returned by QQ
      */
     private String getOpenId(Authorization authorization) {
-        String response = Httpx.get(
+        String response = get(
                 Builder.fromUrl("https://graph.qq.com/oauth2.0/me").queryParam("access_token", authorization.getToken())
                         .queryParam("unionid", context.isFlag() ? 1 : 0).build());
         String removePrefix = response.replace("callback(", "");

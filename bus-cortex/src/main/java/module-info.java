@@ -35,7 +35,7 @@ module bus.cortex {
     requires bus.crypto;
     requires bus.extra;
     requires bus.health;
-    requires bus.http;
+    requires bus.fabric;
     requires bus.logger;
 
     requires static lombok;

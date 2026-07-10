@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * Taobao login provider.
@@ -140,7 +139,7 @@ public class TaobaoProvider extends AbstractProvider {
     @Override
     public Message refresh(Authorization authorization) {
         String tokenUrl = refreshUrl(authorization.getRefresh());
-        String response = Httpx.post(tokenUrl);
+        String response = post(tokenUrl);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(object)).build();
     }

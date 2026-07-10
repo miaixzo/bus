@@ -31,7 +31,7 @@ module bus.auth {
     requires bus.core;
     requires bus.crypto;
     requires bus.extra;
-    requires bus.http;
+    requires bus.fabric;
     requires bus.logger;
 
     requires static lombok;

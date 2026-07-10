@@ -34,7 +34,6 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -151,7 +150,7 @@ public class KujialeProvider extends AbstractProvider {
     @Override
     public Message userInfo(Authorization authorization) {
         String openId = this.getOpenId(authorization);
-        String response = Httpx.get(
+        String response = get(
                 Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authorization.getToken())
                         .queryParam("open_id", openId).build());
         try {
@@ -205,7 +204,7 @@ public class KujialeProvider extends AbstractProvider {
      * @throws AuthorizedException if the response indicates an error or is missing the OpenId
      */
     private String getOpenId(Authorization authorization) {
-        String response = Httpx.get(
+        String response = get(
                 Builder.fromUrl("https://oauth.kujiale.com/oauth2/auth/user")
                         .queryParam("access_token", authorization.getToken()).build());
         Map<String, Object> object = checkResponse(response);
@@ -224,7 +223,7 @@ public class KujialeProvider extends AbstractProvider {
      */
     @Override
     public Message refresh(Authorization authorization) {
-        String response = Httpx.post(refreshUrl(authorization.getRefresh()));
+        String response = post(refreshUrl(authorization.getRefresh()));
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 

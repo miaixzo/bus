@@ -30,10 +30,9 @@ import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * WeChat Enterprise third-party QR code login provider.
@@ -131,7 +130,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
         Map<String, Object> data = new HashMap<>();
         data.put("corpid", context.getClientId());
         data.put("provider_secret", context.getClientSecret());
-        return Httpx.post(tokenUrl(code), JsonKit.toJsonString(data), MediaType.APPLICATION_JSON);
+        return post(tokenUrl(code), JsonKit.toJsonString(data), MediaType.APPLICATION_JSON);
     }
 
     /**
@@ -166,7 +165,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
     public String doGetUserInfo(Authorization authorization) {
         Map<String, Object> data = new HashMap<>();
         data.put("auth_code", authorization.getCode());
-        return Httpx.post(userInfoUrl(authorization), JsonKit.toJsonString(data), MediaType.APPLICATION_JSON);
+        return post(userInfoUrl(authorization), JsonKit.toJsonString(data), MediaType.APPLICATION_JSON);
     }
 
     /**

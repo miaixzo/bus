@@ -35,13 +35,12 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * Stack Overflow login provider.
@@ -85,7 +84,7 @@ public class StackOverflowProvider extends AbstractProvider {
 
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        String response = Httpx.post(tokenUrl, form, header);
+        String response = post(tokenUrl, form, header);
 
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
         this.checkResponse(object);
@@ -109,7 +108,7 @@ public class StackOverflowProvider extends AbstractProvider {
         String userInfoUrl = Builder.fromUrl(this.complex.userinfo())
                 .queryParam("access_token", authorization.getToken()).queryParam("site", "stackoverflow")
                 .queryParam("key", this.context.getUnionId()).build();
-        String response = Httpx.get(userInfoUrl);
+        String response = get(userInfoUrl);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
         this.checkResponse(object);
         Map<String, Object> userObj = (Map<String, Object>) ((List<Object>) object.get("items")).get(0);

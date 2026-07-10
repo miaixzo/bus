@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * Alipay login provider.
@@ -123,7 +122,7 @@ public class AlipayProvider extends AbstractProvider {
         params.put("grant_type", "authorization_code");
         params.put("code", callback.getAuth_code());
 
-        String response = Httpx.post(GATEWAY, params);
+        String response = post(GATEWAY, params);
         Map<String, Object> json = JsonKit.toMap(response);
         Map<String, Object> tokenResponse = (Map<String, Object>) json.get("alipay_system_oauth_token_response");
 
@@ -160,7 +159,7 @@ public class AlipayProvider extends AbstractProvider {
         params.put("grant_type", "refresh_token");
         params.put("refresh_token", authorization.getRefresh());
 
-        String response = Httpx.post(GATEWAY, params);
+        String response = post(GATEWAY, params);
         Map<String, Object> json = JsonKit.toMap(response);
         Map<String, Object> tokenResponse = (Map<String, Object>) json.get("alipay_system_oauth_token_response");
 
@@ -196,7 +195,7 @@ public class AlipayProvider extends AbstractProvider {
         params.put("version", "1.0");
         params.put("auth_token", authorization.getToken());
 
-        String response = Httpx.post(GATEWAY, params);
+        String response = post(GATEWAY, params);
         Map<String, Object> json = JsonKit.toMap(response);
         Map<String, Object> userResponse = (Map<String, Object>) json.get("alipay_user_info_share_response");
 

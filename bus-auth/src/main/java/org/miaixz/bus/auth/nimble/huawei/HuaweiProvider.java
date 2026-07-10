@@ -36,13 +36,12 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -96,7 +95,7 @@ public class HuaweiProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>(8);
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
-        String response = Httpx.post(this.complex.token(), header, form);
+        String response = post(this.complex.token(), form, header);
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
@@ -119,7 +118,7 @@ public class HuaweiProvider extends AbstractProvider {
 
             Map<String, String> header = new HashMap<>(7);
             header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-            String response = Httpx.post(this.complex.userinfo(), header, form);
+            String response = post(this.complex.userinfo(), form, header);
             try {
                 Map<String, Object> object = JsonKit.toPojo(response, Map.class);
                 if (object == null) {
@@ -195,7 +194,7 @@ public class HuaweiProvider extends AbstractProvider {
 
         Map<String, String> header = new HashMap<>(7);
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        String response = Httpx.post(this.complex.refresh(), header, form);
+        String response = post(this.complex.refresh(), form, header);
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }

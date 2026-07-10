@@ -42,6 +42,6 @@ module bus.crypto {
     exports org.miaixz.bus.crypto.builtin.symmetric;
     exports org.miaixz.bus.crypto.center;
     exports org.miaixz.bus.crypto.cipher;
-    exports org.miaixz.bus.crypto.metric;
+    exports org.miaixz.bus.crypto.nimble;
 
 }

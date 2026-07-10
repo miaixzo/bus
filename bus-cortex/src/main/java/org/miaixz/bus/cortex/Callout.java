@@ -19,16 +19,31 @@
 */
 package org.miaixz.bus.cortex;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
+import org.miaixz.bus.core.lang.exception.ConvertException;
+import org.miaixz.bus.core.lang.exception.TimeoutException;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
-import org.miaixz.bus.http.Httpv;
-import org.miaixz.bus.http.plugin.httpv.CoverResult;
+import org.miaixz.bus.fabric.Call;
+import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Fabric;
+import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.codec.DataCodec;
+import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -42,7 +57,29 @@ public final class Callout {
     /**
      * Reusable HTTP clients keyed by normalized timeout.
      */
-    private static final ConcurrentHashMap<Long, Httpv> CLIENTS = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, Client> CLIENTS = new ConcurrentHashMap<>();
+
+    /**
+     * Strict UTF-8 text decoder used through the current fabric response decode API.
+     */
+    private static final DataCodec<String> TEXT_CODEC = new DataCodec<>() {
+
+        @Override
+        public Payload encode(String value) {
+            return Payload.of(value == null ? "" : value, StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public String decode(Payload payload) {
+            return decodeText(payload);
+        }
+
+        @Override
+        public MediaType media() {
+            return MediaType.TEXT_PLAIN_TYPE.withCharset(StandardCharsets.UTF_8);
+        }
+
+    };
 
     /**
      * Creates a new Callout utility holder.
@@ -59,7 +96,7 @@ public final class Callout {
      * @return normalized response snapshot
      */
     public static Response get(String url, long timeoutMs) {
-        return adapt(client(timeoutMs).sync(url).nothrow().get());
+        return adapt(client(timeoutMs).get(url));
     }
 
     /**
@@ -71,8 +108,7 @@ public final class Callout {
      * @return normalized response snapshot
      */
     public static Response postJson(String url, String body, long timeoutMs) {
-        return adapt(
-                client(timeoutMs).sync(url).nothrow().bodyType("json").setBodyPara(body == null ? "" : body).post());
+        return adapt(client(timeoutMs).postJson(url, body));
     }
 
     /**
@@ -80,7 +116,7 @@ public final class Callout {
      */
     public static void shutdown() {
         Logger.info(true, "Cortex", "Callout shutdown requested: clientCount={}", CLIENTS.size());
-        CLIENTS.values().forEach(Callout::cancelQuietly);
+        CLIENTS.values().forEach(Client::closeQuietly);
         CLIENTS.clear();
         Logger.info(false, "Cortex", "Callout shutdown completed: clientCount={}", CLIENTS.size());
     }
@@ -107,67 +143,25 @@ public final class Callout {
      * @param timeoutMs requested timeout in milliseconds
      * @return reusable HTTP client
      */
-    private static Httpv client(long timeoutMs) {
+    private static Client client(long timeoutMs) {
         long normalizedTimeout = Math.max(1L, timeoutMs);
-        return CLIENTS.computeIfAbsent(normalizedTimeout, Callout::newHttpv);
+        return CLIENTS.computeIfAbsent(normalizedTimeout, Client::new);
     }
 
     /**
-     * Builds one HTTP client configured for the supplied timeout.
-     *
-     * @param timeoutMs normalized timeout in milliseconds
-     * @return configured HTTP client
-     */
-    private static Httpv newHttpv(long timeoutMs) {
-        Logger.debug(true, "Cortex", "Callout HTTP client creation started: timeoutMs={}", timeoutMs);
-        Httpv client = Httpv.builder().config(
-                builder -> builder.callTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-                        .connectTimeout(timeoutMs, TimeUnit.MILLISECONDS).readTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-                        .writeTimeout(timeoutMs, TimeUnit.MILLISECONDS))
-                .preprocTimeoutTimes(1).build();
-        Logger.debug(false, "Cortex", "Callout HTTP client created: timeoutMs={}", timeoutMs);
-        return client;
-    }
-
-    /**
-     * Cancels one HTTP client without making shutdown fragile.
-     *
-     * @param client HTTP client to cancel
-     */
-    private static void cancelQuietly(Httpv client) {
-        try {
-            client.cancelAll();
-        } catch (RuntimeException ignored) {
-            Logger.warn(
-                    false,
-                    "Cortex",
-                    ignored,
-                    "Callout HTTP client cancel failed: exception={}",
-                    ignored.getClass().getSimpleName());
-        }
-    }
-
-    /**
-     * Converts one raw {@link CoverResult} into the small immutable response snapshot used by callers.
+     * Converts one local HTTP result into the small immutable response snapshot used by callers.
      *
      * @param result raw HTTP execution result
      * @return normalized response snapshot
      */
-    private static Response adapt(CoverResult result) {
-        try {
-            if (result == null) {
-                return new Response(0, null, "unknown", false);
-            }
-            if (result.getState() != CoverResult.State.RESPONSED) {
-                return new Response(0, null, failureMessage(result), result.getState() == CoverResult.State.TIMEOUT);
-            }
-            String body = result.getBody() == null ? null : result.getBody().toString();
-            return new Response(result.getStatus(), body, null, false);
-        } finally {
-            if (result != null) {
-                result.close();
-            }
+    private static Response adapt(Result result) {
+        if (result == null) {
+            return new Response(0, null, "unknown", false);
         }
+        if (result.state() != ResultState.RESPONDED) {
+            return new Response(result.status(), null, failureMessage(result), result.state() == ResultState.TIMEOUT);
+        }
+        return new Response(result.status(), result.body(), null, false);
     }
 
     /**
@@ -176,15 +170,198 @@ public final class Callout {
      * @param result failed execution result
      * @return best-effort failure message
      */
-    private static String failureMessage(CoverResult result) {
+    private static String failureMessage(Result result) {
         if (result == null) {
             return "unknown";
         }
-        if (result.getError() != null && result.getError().getMessage() != null
-                && !result.getError().getMessage().isBlank()) {
-            return result.getError().getMessage();
+        if (result.error() != null && result.error().getMessage() != null && !result.error().getMessage().isBlank()) {
+            return result.error().getMessage();
         }
-        return result.getState() == null ? "unknown" : result.getState().name();
+        return result.state() == null ? "unknown" : result.state().name();
+    }
+
+    /**
+     * Decodes payload bytes strictly as UTF-8.
+     *
+     * @param payload response payload
+     * @return decoded text
+     */
+    private static String decodeText(Payload payload) {
+        byte[] bytes = payload == null ? new byte[0] : payload.bytes();
+        try {
+            return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(bytes)).toString();
+        } catch (CharacterCodingException e) {
+            throw new ConvertException("Unable to decode HTTP response as UTF-8", e);
+        }
+    }
+
+    /**
+     * Returns whether a failure came from a timeout path.
+     *
+     * @param error failure candidate
+     * @return true when timeout-related
+     */
+    private static boolean isTimeout(Throwable error) {
+        Throwable current = error;
+        while (current != null) {
+            if (current instanceof TimeoutException || current instanceof java.util.concurrent.TimeoutException) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    /**
+     * Shared current-fabric HTTP execution context for one timeout bucket.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static final class Client {
+
+        /**
+         * Normalized timeout in milliseconds.
+         */
+        private final long timeoutMs;
+
+        /**
+         * Shared current fabric context.
+         */
+        private final Context context;
+
+        /**
+         * Active calls owned by this client bucket.
+         */
+        private final Set<Call<HttpResponse>> calls;
+
+        /**
+         * Creates one timeout-scoped client bucket.
+         *
+         * @param timeoutMs normalized timeout in milliseconds
+         */
+        private Client(long timeoutMs) {
+            Logger.debug(true, "Cortex", "Callout HTTP client creation started: timeoutMs={}", timeoutMs);
+            this.timeoutMs = timeoutMs;
+            Duration timeout = Duration.ofMillis(timeoutMs);
+            this.context = Context.create().withOptions(Options.of("timeout", Timeout.of(timeout)));
+            this.calls = ConcurrentHashMap.newKeySet();
+            Logger.debug(false, "Cortex", "Callout HTTP client created: timeoutMs={}", timeoutMs);
+        }
+
+        /**
+         * Executes one GET request.
+         *
+         * @param url target URL
+         * @return local result snapshot
+         */
+        private Result get(String url) {
+            return execute(() -> Fabric.http(context).timeout(Duration.ofMillis(timeoutMs)).get(url).build().call());
+        }
+
+        /**
+         * Executes one JSON POST request.
+         *
+         * @param url  target URL
+         * @param body request body
+         * @return local result snapshot
+         */
+        private Result postJson(String url, String body) {
+            return execute(
+                    () -> Fabric.http(context).timeout(Duration.ofMillis(timeoutMs)).post(url)
+                            .json(body == null ? "" : body).build().call());
+        }
+
+        /**
+         * Executes one request and normalizes current fabric failures into local result states.
+         *
+         * @param supplier call supplier
+         * @return local result snapshot
+         */
+        private Result execute(Supplier<Call<HttpResponse>> supplier) {
+            Call<HttpResponse> call = null;
+            try {
+                call = supplier.get();
+                calls.add(call);
+                HttpResponse response = call.execute();
+                int status = response.code();
+                try {
+                    return new Result(ResultState.RESPONDED, status, response.decode(TEXT_CODEC, String.class), null);
+                } catch (RuntimeException e) {
+                    return new Result(ResultState.FAILED, status, null, e);
+                }
+            } catch (RuntimeException e) {
+                return new Result(isTimeout(e) ? ResultState.TIMEOUT : ResultState.FAILED, 0, null, e);
+            } finally {
+                if (call != null) {
+                    calls.remove(call);
+                }
+            }
+        }
+
+        /**
+         * Cancels active calls and closes current fabric resources without making shutdown fragile.
+         */
+        private void closeQuietly() {
+            RuntimeException failure = null;
+            for (Call<HttpResponse> call : calls) {
+                try {
+                    call.cancel();
+                } catch (RuntimeException e) {
+                    failure = e;
+                }
+            }
+            calls.clear();
+            try {
+                context.reactor().close();
+            } catch (RuntimeException e) {
+                failure = e;
+            }
+            if (failure != null) {
+                Logger.warn(
+                        false,
+                        "Cortex",
+                        failure,
+                        "Callout HTTP client close failed: exception={}",
+                        failure.getClass().getSimpleName());
+            }
+        }
+
+    }
+
+    /**
+     * Local replacement for the previous HTTP result state categories used by Callout.
+     */
+    private enum ResultState {
+
+        /**
+         * A response was received and decoded.
+         */
+        RESPONDED,
+
+        /**
+         * The call timed out before producing a usable response.
+         */
+        TIMEOUT,
+
+        /**
+         * Transport, cancellation, protocol, or decode failure.
+         */
+        FAILED
+
+    }
+
+    /**
+     * Cortex-local HTTP execution result.
+     *
+     * @param state  execution state
+     * @param status response status, or 0 when no status was available
+     * @param body   decoded response body
+     * @param error  failure cause
+     */
+    private record Result(ResultState state, int status, String body, Throwable error) {
+
     }
 
     /**

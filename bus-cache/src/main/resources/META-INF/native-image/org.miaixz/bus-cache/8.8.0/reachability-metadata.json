@@ -2315,67 +2315,67 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.CaffeineCache"
+      "type": "org.miaixz.bus.cache.nimble.CaffeineCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.CaffeineCache"
+      "type": "org.miaixz.bus.cache.nimble.CaffeineCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.cache.metric.CaffeineCache"
+      "type": "org.miaixz.bus.cache.nimble.CaffeineCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.GuavaCache"
+      "type": "org.miaixz.bus.cache.nimble.GuavaCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.GuavaCache"
+      "type": "org.miaixz.bus.cache.nimble.GuavaCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.cache.metric.GuavaCache"
+      "type": "org.miaixz.bus.cache.nimble.GuavaCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.MemcachedCache"
+      "type": "org.miaixz.bus.cache.nimble.MemcachedCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.MemcachedCache"
+      "type": "org.miaixz.bus.cache.nimble.MemcachedCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.cache.metric.MemcachedCache"
+      "type": "org.miaixz.bus.cache.nimble.MemcachedCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.cache.metric.MemoryCache"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.MemoryCache"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache"
     },
     {
       "condition": {
@@ -2477,19 +2477,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.cache.metric.MemoryCache"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.cache.metric.MemoryCache"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheScheduler"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheScheduler"
     },
     {
       "condition": {
@@ -2529,25 +2529,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheScheduler"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheScheduler"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheScheduler"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheScheduler"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheState"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheState"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheState"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheState"
     },
     {
       "condition": {
@@ -2599,25 +2599,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheState"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheState"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.cache.metric.MemoryCache$CacheState"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheState"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.cache.metric.NoOpCache"
+      "type": "org.miaixz.bus.cache.nimble.NoOpCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.NoOpCache"
+      "type": "org.miaixz.bus.cache.nimble.NoOpCache"
     },
     {
       "condition": {
@@ -2666,25 +2666,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.cache.metric.NoOpCache"
+      "type": "org.miaixz.bus.cache.nimble.NoOpCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.cache.metric.NoOpCache"
+      "type": "org.miaixz.bus.cache.nimble.NoOpCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.RedisCache"
+      "type": "org.miaixz.bus.cache.nimble.RedisCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.RedisCache"
+      "type": "org.miaixz.bus.cache.nimble.RedisCache"
     },
     {
       "condition": {
@@ -2752,25 +2752,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.cache.metric.RedisCache"
+      "type": "org.miaixz.bus.cache.nimble.RedisCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.cache.metric.RedisCache"
+      "type": "org.miaixz.bus.cache.nimble.RedisCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.RedisClusterCache"
+      "type": "org.miaixz.bus.cache.nimble.RedisClusterCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.cache.metric.RedisClusterCache"
+      "type": "org.miaixz.bus.cache.nimble.RedisClusterCache"
     },
     {
       "condition": {
@@ -2838,13 +2838,13 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.cache.metric.RedisClusterCache"
+      "type": "org.miaixz.bus.cache.nimble.RedisClusterCache"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.cache.metric.RedisClusterCache"
+      "type": "org.miaixz.bus.cache.nimble.RedisClusterCache"
     },
     {
       "condition": {

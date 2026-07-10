@@ -34,12 +34,11 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -96,7 +95,7 @@ public class LinkedinProvider extends AbstractProvider {
         header.put(HTTP.CONNECTION, "Keep-Alive");
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
 
-        String response = Httpx.get(userInfoUrl(authorization), null, header);
+        String response = get(userInfoUrl(authorization), null, header);
         try {
             Map<String, Object> data = JsonKit.toPojo(response, Map.class);
             if (data == null) {
@@ -201,7 +200,7 @@ public class LinkedinProvider extends AbstractProvider {
         header.put(HTTP.CONNECTION, "Keep-Alive");
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
 
-        String emailResponse = Httpx.get(
+        String emailResponse = get(
                 "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))",
                 null,
                 header);
@@ -285,7 +284,7 @@ public class LinkedinProvider extends AbstractProvider {
         header.put(HTTP.HOST, "www.linkedin.com");
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
-        String response = Httpx.post(tokenUrl, null, header);
+        String response = post(tokenUrl, null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

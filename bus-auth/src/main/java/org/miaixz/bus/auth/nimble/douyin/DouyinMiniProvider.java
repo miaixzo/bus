@@ -35,7 +35,6 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -79,7 +78,7 @@ public class DouyinMiniProvider extends AbstractProvider {
         // See https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
         // documentation
         // Use the code to get the corresponding openId, unionId, etc.
-        String response = Httpx.get(tokenUrl(callback.getCode(), callback.getAnonymous_code()));
+        String response = get(tokenUrl(callback.getCode(), callback.getAnonymous_code()));
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(object);
@@ -132,7 +131,7 @@ public class DouyinMiniProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     private Authorization getToken(String tokenUrl) {
-        String response = Httpx.get(tokenUrl);
+        String response = get(tokenUrl);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

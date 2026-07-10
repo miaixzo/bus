@@ -34,12 +34,11 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -103,7 +102,7 @@ public class FigmaProvider extends AbstractProvider {
                         Base64.encode(
                                 (this.context.getClientId().concat(":").concat(this.context.getClientSecret()))
                                         .getBytes(Charset.UTF_8))));
-        String response = Httpx.post(super.tokenUrl(callback.getCode()), headers);
+        String response = post(super.tokenUrl(callback.getCode()), null, headers);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -151,7 +150,7 @@ public class FigmaProvider extends AbstractProvider {
     public Message refresh(Authorization authorization) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        String response = Httpx.post(refreshUrl(authorization.getRefresh()), headers);
+        String response = post(refreshUrl(authorization.getRefresh()), null, headers);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -212,7 +211,7 @@ public class FigmaProvider extends AbstractProvider {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         headers.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
-        String response = Httpx.get(this.complex.userinfo(), null, headers);
+        String response = get(this.complex.userinfo(), null, headers);
         try {
             Map<String, Object> data = JsonKit.toPojo(response, Map.class);
             if (data == null) {

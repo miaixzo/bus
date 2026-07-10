@@ -34,13 +34,12 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -98,7 +97,7 @@ public class OktaProvider extends AbstractProvider {
                 HTTP.AUTHORIZATION,
                 "Basic " + Base64.encode(context.getClientId().concat(Symbol.COLON).concat(context.getClientSecret())));
 
-        String response = Httpx.post(tokenUrl, null, header);
+        String response = post(tokenUrl, null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -161,7 +160,7 @@ public class OktaProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
 
-        String response = Httpx.post(userInfoUrl(authorization), null, header);
+        String response = post(userInfoUrl(authorization), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -218,7 +217,7 @@ public class OktaProvider extends AbstractProvider {
                 HTTP.AUTHORIZATION,
                 "Basic " + Base64.encode(context.getClientId().concat(Symbol.COLON).concat(context.getClientSecret())));
 
-        Httpx.post(revokeUrl(authorization), params, header);
+        post(revokeUrl(authorization), params, header);
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
     }
 

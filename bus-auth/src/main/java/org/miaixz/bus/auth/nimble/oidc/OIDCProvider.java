@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * Generic OIDC (OpenID Connect) protocol provider. This provider allows supporting any OIDC-compatible authentication
@@ -91,7 +90,7 @@ public class OIDCProvider extends AbstractProvider {
     @Override
     public Message token(Callback callback) {
         String tokenUrl = getEndpoint(Endpoint.TOKEN);
-        String response = Httpx.post(tokenUrl, this.tokenParams(callback));
+        String response = post(tokenUrl, this.tokenParams(callback));
         Map<String, Object> object = JsonKit.toMap(response);
 
         this.checkResponse(object);
@@ -115,7 +114,7 @@ public class OIDCProvider extends AbstractProvider {
         String userInfoUrl = getEndpoint(Endpoint.USERINFO);
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
-        String response = Httpx.get(userInfoUrl, null, header);
+        String response = get(userInfoUrl, null, header);
         Map<String, Object> object = JsonKit.toMap(response);
 
         this.checkResponse(object);

@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.cortex.magic.identity;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.miaixz.bus.core.codec.binary.Hex;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -53,7 +53,7 @@ public final class Fingerprint {
         String input = host + ":" + port;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+            byte[] digest = md.digest(input.getBytes(Charset.UTF_8));
             return Hex.encodeString(digest).substring(0, 32);
         } catch (NoSuchAlgorithmException e) {
             Logger.warn(

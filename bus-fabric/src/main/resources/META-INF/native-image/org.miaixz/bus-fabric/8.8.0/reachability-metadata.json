@@ -1,0 +1,4099 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.Headers"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.Headers"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "byteCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "checkName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "checkValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "contentLength",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDate",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getInstant",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "hasVaryAll",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "names",
+          "parameterTypes": []
+        },
+        {
+          "name": "newBuilder",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "parseChallengeHeader",
+          "parameterTypes": [
+            "java.util.List",
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "parseChallenges",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseSeconds",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "readQuotedString",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "readToken",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "repeat",
+          "parameterTypes": [
+            "char",
+            "int"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "skipAll",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer",
+            "byte"
+          ]
+        },
+        {
+          "name": "skipUntil",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "skipWhitespace",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "skipWhitespaceAndCommas",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "stringToLong",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toMultimap",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "varyFields",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "varyHeaders",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers",
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.Headers"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.Headers"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.Headers$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.Headers$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "add",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "add",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "add",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.time.Instant"
+          ]
+        },
+        {
+          "name": "add",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "addAll",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "addLenient",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addLenient",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addUnsafeNonAscii",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "removeAll",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "set",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "set",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.time.Instant"
+          ]
+        },
+        {
+          "name": "set",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Date"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.Headers$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.Headers$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.auth.Challenge"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.auth.Challenge"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "authParams",
+          "parameterTypes": []
+        },
+        {
+          "name": "charset",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "realm",
+          "parameterTypes": []
+        },
+        {
+          "name": "scheme",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "withCharset",
+          "parameterTypes": [
+            "java.nio.charset.Charset"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.auth.Challenge"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.auth.Challenge"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.FormBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.FormBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "contentLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "contentType",
+          "parameterTypes": []
+        },
+        {
+          "name": "encodedName",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "encodedValue",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "writeOrCountBytes",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.sink.BufferSink",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.sink.BufferSink"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.body.FormBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.FormBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.FormBody$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.FormBody$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "add",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addEncoded",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.body.FormBody$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.FormBody$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString",
+            "org.miaixz.bus.core.net.MediaType",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "appendQuotedString",
+          "parameterTypes": [
+            "java.lang.StringBuilder",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "boundary",
+          "parameterTypes": []
+        },
+        {
+          "name": "contentLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "contentType",
+          "parameterTypes": []
+        },
+        {
+          "name": "part",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "parts",
+          "parameterTypes": []
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeOrCountBytes",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.sink.BufferSink",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.sink.BufferSink"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addFormDataPart",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addFormDataPart",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.fabric.codec.body.RequestBody"
+          ]
+        },
+        {
+          "name": "addPart",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Part"
+          ]
+        },
+        {
+          "name": "addPart",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.codec.body.RequestBody"
+          ]
+        },
+        {
+          "name": "addPart",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers",
+            "org.miaixz.bus.fabric.codec.body.RequestBody"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Part"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Part"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers",
+            "org.miaixz.bus.fabric.codec.body.RequestBody"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": []
+        },
+        {
+          "name": "formData",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "formData",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.fabric.codec.body.RequestBody"
+          ]
+        },
+        {
+          "name": "headers",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.codec.body.RequestBody"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers",
+            "org.miaixz.bus.fabric.codec.body.RequestBody"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Part"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Part"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.codec.body.RequestBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.codec.body.RequestBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "contentLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDuplex",
+          "parameterTypes": []
+        },
+        {
+          "name": "isOneShot",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType",
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType",
+            "org.miaixz.bus.core.io.ByteString"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.codec.body.RequestBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.codec.body.RequestBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.codec.body.ResponseBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.codec.body.ResponseBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "bytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "byteStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "charset",
+          "parameterTypes": []
+        },
+        {
+          "name": "charStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType",
+            "long",
+            "org.miaixz.bus.core.io.source.BufferSource"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType",
+            "org.miaixz.bus.core.io.ByteString"
+          ]
+        },
+        {
+          "name": "string",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.codec.body.ResponseBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.codec.body.ResponseBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.codec.body.ProgressBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.codec.body.ProgressBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "contentLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "contentType",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.sink.BufferSink"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.codec.body.ProgressBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.codec.body.ProgressBody"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpX"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpX"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.net.ssl.X509TrustManager"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.HttpX$Builder"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "enqueue",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.HttpX$Builder"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.HttpX$Builder"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "head",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "head",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "head",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpX"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpX"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpX$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpX$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpX$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpX$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpRequest"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpRequest"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.List",
+            "java.lang.String",
+            "org.miaixz.bus.fabric.protocol.http.body.MultipartBody",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "createRequestBody",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "headers",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpRequest"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpRequest"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.registry.connection.ConnectionPool"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.registry.connection.ConnectionPool"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "long",
+            "java.util.concurrent.TimeUnit"
+          ]
+        },
+        {
+          "name": "connectionCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "evictAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "idleConnectionCount",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.registry.connection.ConnectionPool"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.registry.connection.ConnectionPool"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.Cookie"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.Cookie"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "boolean",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "dateCharacterOffset",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "domain",
+          "parameterTypes": []
+        },
+        {
+          "name": "domainMatch",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "expiresAt",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "hostOnly",
+          "parameterTypes": []
+        },
+        {
+          "name": "httpOnly",
+          "parameterTypes": []
+        },
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "parseDomain",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseExpires",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "parseMaxAge",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "path",
+          "parameterTypes": []
+        },
+        {
+          "name": "persistent",
+          "parameterTypes": []
+        },
+        {
+          "name": "secure",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.Cookie"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.Cookie"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.Cookie$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.Cookie$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "domain",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "domain",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "expiresAt",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "hostOnlyDomain",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "httpOnly",
+          "parameterTypes": []
+        },
+        {
+          "name": "name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "path",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "secure",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.Cookie$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.Cookie$Builder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.CookieJar"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.CookieJar"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.concurrent.ExecutorService"
+          ]
+        },
+        {
+          "name": "cancelAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "executorService",
+          "parameterTypes": []
+        },
+        {
+          "name": "findExistingCallWithHost",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "finished",
+          "parameterTypes": [
+            "java.util.Deque",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getMaxRequests",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxRequestsPerHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "promoteAndExecute",
+          "parameterTypes": []
+        },
+        {
+          "name": "queuedCalls",
+          "parameterTypes": []
+        },
+        {
+          "name": "queuedCallsCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "runningCalls",
+          "parameterTypes": []
+        },
+        {
+          "name": "runningCallsCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "setIdleCallback",
+          "parameterTypes": [
+            "java.lang.Runnable"
+          ]
+        },
+        {
+          "name": "setMaxRequests",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxRequestsPerHost",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.calls.HttpCall"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.calls.HttpCall"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpChain"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpChain"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Browser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Browser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addCustomBrowser",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isMobile",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Browser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Browser"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Device"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Device"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isAndroid",
+          "parameterTypes": []
+        },
+        {
+          "name": "isHarmony",
+          "parameterTypes": []
+        },
+        {
+          "name": "isIos",
+          "parameterTypes": []
+        },
+        {
+          "name": "isIPad",
+          "parameterTypes": []
+        },
+        {
+          "name": "isIPhoneOrIPod",
+          "parameterTypes": []
+        },
+        {
+          "name": "isMobile",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Device"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Device"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Engine"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Engine"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Engine"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.Engine"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.UserAgent"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.UserAgent"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.regex.Pattern"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getBrowser",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDevice",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEngine",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEngineVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNos",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isMatch",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isMobile",
+          "parameterTypes": []
+        },
+        {
+          "name": "isUnknown",
+          "parameterTypes": []
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseBrowser",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseDevice",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseEngine",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseNOS",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setBrowser",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.agent.Browser"
+          ]
+        },
+        {
+          "name": "setDevice",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.agent.Device"
+          ]
+        },
+        {
+          "name": "setEngine",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.agent.Engine"
+          ]
+        },
+        {
+          "name": "setEngineVersion",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setMobile",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPattern",
+          "parameterTypes": [
+            "java.util.regex.Pattern"
+          ]
+        },
+        {
+          "name": "setVersion",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.UserAgent"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.agent.UserAgent"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.cache.DiskLruCache$DiskFile",
+            "java.io.File",
+            "int",
+            "int",
+            "long",
+            "java.util.concurrent.Executor"
+          ]
+        },
+        {
+          "name": "checkNotClosed",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "completeEdit",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.cache.DiskLruCache$Editor",
+            "boolean"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.cache.DiskLruCache$DiskFile",
+            "java.io.File",
+            "int",
+            "int",
+            "long"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": []
+        },
+        {
+          "name": "edit",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "edit",
+          "parameterTypes": [
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "evictAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "flush",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDirectory",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "initialize",
+          "parameterTypes": []
+        },
+        {
+          "name": "isClosed",
+          "parameterTypes": []
+        },
+        {
+          "name": "journalRebuildRequired",
+          "parameterTypes": []
+        },
+        {
+          "name": "newJournalWriter",
+          "parameterTypes": []
+        },
+        {
+          "name": "processJournal",
+          "parameterTypes": []
+        },
+        {
+          "name": "readJournal",
+          "parameterTypes": []
+        },
+        {
+          "name": "readJournalLine",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rebuildJournal",
+          "parameterTypes": []
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "removeEntry",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.cache.DiskLruCache$Entry"
+          ]
+        },
+        {
+          "name": "setMaxSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "snapshots",
+          "parameterTypes": []
+        },
+        {
+          "name": "trimToSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "validateKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$DiskFile"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$DiskFile"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Editor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Editor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.cache.DiskLruCache",
+            "org.miaixz.bus.fabric.cache.DiskLruCache$Entry"
+          ]
+        },
+        {
+          "name": "abort",
+          "parameterTypes": []
+        },
+        {
+          "name": "abortUnlessCommitted",
+          "parameterTypes": []
+        },
+        {
+          "name": "commit",
+          "parameterTypes": []
+        },
+        {
+          "name": "detach",
+          "parameterTypes": []
+        },
+        {
+          "name": "newSink",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "newSource",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Editor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Editor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Entry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Entry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.cache.DiskLruCache",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "invalidLengths",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setLengths",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "snapshot",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeLengths",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.sink.BufferSink"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Entry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Entry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Snapshot"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Snapshot"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.cache.DiskLruCache",
+            "java.lang.String",
+            "long",
+            "org.miaixz.bus.core.io.source.Source[]",
+            "long[]"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "edit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLength",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getSource",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Snapshot"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Snapshot"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.HttpCodec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.HttpCodec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http1Codec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http1Codec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "cancel",
+          "parameterTypes": []
+        },
+        {
+          "name": "connection",
+          "parameterTypes": []
+        },
+        {
+          "name": "detachTimeout",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.timout.AssignTimeout"
+          ]
+        },
+        {
+          "name": "finishRequest",
+          "parameterTypes": []
+        },
+        {
+          "name": "flushRequest",
+          "parameterTypes": []
+        },
+        {
+          "name": "isClosed",
+          "parameterTypes": []
+        },
+        {
+          "name": "newChunkedSink",
+          "parameterTypes": []
+        },
+        {
+          "name": "newFixedLengthSource",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "newKnownLengthSink",
+          "parameterTypes": []
+        },
+        {
+          "name": "newUnknownLengthSource",
+          "parameterTypes": []
+        },
+        {
+          "name": "readHeaderLine",
+          "parameterTypes": []
+        },
+        {
+          "name": "readHeaders",
+          "parameterTypes": []
+        },
+        {
+          "name": "readResponseHeaders",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "trailers",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeRequest",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http1Codec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http1Codec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http1Codec$ChunkedSink"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http1Codec$ChunkedSink"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.codec.Http1Codec"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "flush",
+          "parameterTypes": []
+        },
+        {
+          "name": "timeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer",
+            "long"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http1Codec$ChunkedSink"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http1Codec$ChunkedSink"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http2Codec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http2Codec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "cancel",
+          "parameterTypes": []
+        },
+        {
+          "name": "connection",
+          "parameterTypes": []
+        },
+        {
+          "name": "finishRequest",
+          "parameterTypes": []
+        },
+        {
+          "name": "flushRequest",
+          "parameterTypes": []
+        },
+        {
+          "name": "readHttp2HeadersList",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers",
+            "org.miaixz.bus.core.net.Protocol"
+          ]
+        },
+        {
+          "name": "readResponseHeaders",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "trailers",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http2Codec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.codec.Http2Codec"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Connection"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Connection"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "awaitPong",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "failConnection",
+          "parameterTypes": [
+            "java.io.IOException"
+          ]
+        },
+        {
+          "name": "flush",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStream",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "isHealthy",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "maxConcurrentStreams",
+          "parameterTypes": []
+        },
+        {
+          "name": "newStream",
+          "parameterTypes": [
+            "int",
+            "java.util.List",
+            "boolean"
+          ]
+        },
+        {
+          "name": "newStream",
+          "parameterTypes": [
+            "java.util.List",
+            "boolean"
+          ]
+        },
+        {
+          "name": "openStreamCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "pushDataLater",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.core.io.source.BufferSource",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "pushedStream",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "pushHeadersLater",
+          "parameterTypes": [
+            "int",
+            "java.util.List",
+            "boolean"
+          ]
+        },
+        {
+          "name": "pushRequestLater",
+          "parameterTypes": [
+            "int",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "pushStream",
+          "parameterTypes": [
+            "int",
+            "java.util.List",
+            "boolean"
+          ]
+        },
+        {
+          "name": "removeStream",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "sendDegradedPingLater",
+          "parameterTypes": []
+        },
+        {
+          "name": "setSettings",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.http2.Http2Settings"
+          ]
+        },
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "start",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "updateConnectionFlowControl",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "writeData",
+          "parameterTypes": [
+            "int",
+            "boolean",
+            "org.miaixz.bus.core.io.buffer.Buffer",
+            "long"
+          ]
+        },
+        {
+          "name": "writeHeaders",
+          "parameterTypes": [
+            "int",
+            "boolean",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "writePing",
+          "parameterTypes": []
+        },
+        {
+          "name": "writePing",
+          "parameterTypes": [
+            "boolean",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "writePingAndAwaitPong",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeWindowUpdateLater",
+          "parameterTypes": [
+            "int",
+            "long"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Connection"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Connection"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Header"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Header"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString",
+            "org.miaixz.bus.core.io.ByteString"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Header"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Header"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Reader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Reader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.source.BufferSource",
+            "boolean"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "lengthWithoutPadding",
+          "parameterTypes": [
+            "int",
+            "byte",
+            "short"
+          ]
+        },
+        {
+          "name": "readHeaderBlock",
+          "parameterTypes": [
+            "int",
+            "short",
+            "byte",
+            "int"
+          ]
+        },
+        {
+          "name": "readMedium",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.source.BufferSource"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Reader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Reader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Settings"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Settings"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getEnablePush",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getHeaderTableSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInitialWindowSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxConcurrentStreams",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getMaxFrameSize",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getMaxHeaderListSize",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "isSet",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "merge",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.http2.Http2Settings"
+          ]
+        },
+        {
+          "name": "set",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Settings"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Settings"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Stream"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Stream"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.fabric.protocol.http.http2.Http2Connection",
+            "boolean",
+            "boolean",
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "addBytesToWriteWindow",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "cancelStreamIfNecessary",
+          "parameterTypes": []
+        },
+        {
+          "name": "checkOutNotClosed",
+          "parameterTypes": []
+        },
+        {
+          "name": "enqueueTrailers",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "getConnection",
+          "parameterTypes": []
+        },
+        {
+          "name": "getErrorCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSink",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSource",
+          "parameterTypes": []
+        },
+        {
+          "name": "isLocallyInitiated",
+          "parameterTypes": []
+        },
+        {
+          "name": "isOpen",
+          "parameterTypes": []
+        },
+        {
+          "name": "readTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "receiveData",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.source.BufferSource",
+            "int"
+          ]
+        },
+        {
+          "name": "receiveHeaders",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers",
+            "boolean"
+          ]
+        },
+        {
+          "name": "takeHeaders",
+          "parameterTypes": []
+        },
+        {
+          "name": "trailers",
+          "parameterTypes": []
+        },
+        {
+          "name": "waitForIo",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeHeaders",
+          "parameterTypes": [
+            "java.util.List",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeTimeout",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Stream"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Stream"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Writer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Writer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.sink.BufferSink",
+            "boolean"
+          ]
+        },
+        {
+          "name": "applyAndAckSettings",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.http2.Http2Settings"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "connectionPreface",
+          "parameterTypes": []
+        },
+        {
+          "name": "data",
+          "parameterTypes": [
+            "boolean",
+            "int",
+            "org.miaixz.bus.core.io.buffer.Buffer",
+            "int"
+          ]
+        },
+        {
+          "name": "dataFrame",
+          "parameterTypes": [
+            "int",
+            "byte",
+            "org.miaixz.bus.core.io.buffer.Buffer",
+            "int"
+          ]
+        },
+        {
+          "name": "flush",
+          "parameterTypes": []
+        },
+        {
+          "name": "frameHeader",
+          "parameterTypes": [
+            "int",
+            "int",
+            "byte",
+            "byte"
+          ]
+        },
+        {
+          "name": "headers",
+          "parameterTypes": [
+            "boolean",
+            "int",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "maxDataLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "ping",
+          "parameterTypes": [
+            "boolean",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "pushPromise",
+          "parameterTypes": [
+            "int",
+            "int",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "settings",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.http2.Http2Settings"
+          ]
+        },
+        {
+          "name": "windowUpdate",
+          "parameterTypes": [
+            "int",
+            "long"
+          ]
+        },
+        {
+          "name": "writeContinuationFrames",
+          "parameterTypes": [
+            "int",
+            "long"
+          ]
+        },
+        {
+          "name": "writeMedium",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.sink.BufferSink",
+            "int"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Writer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Writer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.PushObserver"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.http2.PushObserver"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.network.kcp.KcpPacket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.fabric.network.kcp.KcpPacket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.network.kcp.KcpPacket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.network.kcp.KcpPacket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.network.kcp.KcpPacket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.socket.SocketSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.socket.SocketSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.socket.SocketSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAttachment",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInputStream",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getSessionID",
+          "parameterTypes": []
+        },
+        {
+          "name": "isInvalid",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAttachment",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.socket.SocketSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.socket.SocketSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.network.udp.UdpChannel"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.fabric.network.udp.UdpChannel"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.network.udp.UdpChannel"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "connect",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "connect",
+          "parameterTypes": [
+            "java.net.SocketAddress"
+          ]
+        },
+        {
+          "name": "doWrite",
+          "parameterTypes": []
+        },
+        {
+          "name": "getChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "send",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.SliceBuffer",
+            "org.miaixz.bus.fabric.network.udp.UdpSession"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.SliceBuffer",
+            "org.miaixz.bus.fabric.network.udp.UdpSession"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.network.udp.UdpChannel"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.network.udp.UdpChannel"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.network.udp.UdpSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.fabric.network.udp.UdpSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.network.udp.UdpSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.network.udp.UdpChannel",
+            "java.net.SocketAddress",
+            "org.miaixz.bus.core.io.buffer.SlabBufferAllocator"
+          ]
+        },
+        {
+          "name": "awaitRead",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getLocalAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRemoteAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "readBuffer",
+          "parameterTypes": []
+        },
+        {
+          "name": "signalRead",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeBuffer",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.network.udp.UdpSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.network.udp.UdpSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.EventSource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.EventSource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.EventSource$Factory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.EventSource$Factory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.EventSourceListener"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.EventSourceListener"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "onClosed",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.sse.EventSource"
+          ]
+        },
+        {
+          "name": "onEvent",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.sse.EventSource",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.sse.EventSourceListener"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.EventSourceListener"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.network.tls.handshake.TlsHandshake"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.network.tls.handshake.TlsHandshake"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "cipherSuite",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "javax.net.ssl.SSLSession"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "localCertificates",
+          "parameterTypes": []
+        },
+        {
+          "name": "localPrincipal",
+          "parameterTypes": []
+        },
+        {
+          "name": "names",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "peerCertificates",
+          "parameterTypes": []
+        },
+        {
+          "name": "peerPrincipal",
+          "parameterTypes": []
+        },
+        {
+          "name": "tlsVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.network.tls.handshake.TlsHandshake"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.network.tls.handshake.TlsHandshake"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "processNextFrame",
+          "parameterTypes": []
+        },
+        {
+          "name": "readControlFrame",
+          "parameterTypes": []
+        },
+        {
+          "name": "readHeader",
+          "parameterTypes": []
+        },
+        {
+          "name": "readMessage",
+          "parameterTypes": []
+        },
+        {
+          "name": "readMessageFrame",
+          "parameterTypes": []
+        },
+        {
+          "name": "readUntilNonControlFrame",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketWriter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketWriter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "org.miaixz.bus.core.io.sink.BufferSink",
+            "java.util.Random"
+          ]
+        },
+        {
+          "name": "newMessageSink",
+          "parameterTypes": [
+            "int",
+            "long"
+          ]
+        },
+        {
+          "name": "writeClose",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.core.io.ByteString"
+          ]
+        },
+        {
+          "name": "writeControlFrame",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.core.io.ByteString"
+          ]
+        },
+        {
+          "name": "writeMessageFrame",
+          "parameterTypes": [
+            "int",
+            "long",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writePing",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString"
+          ]
+        },
+        {
+          "name": "writePong",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketWriter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketWriter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpDownload"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpRunner"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.cache.HttpCache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.calls.HttpCall"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpBridge"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpConnect"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpCoordinator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpRetry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.socket.SocketRunner"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.socket.SocketSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.socket.calls.SocketCall"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.SseRunner"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.SseSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.calls.SseCall"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.stomp.StompRunner"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.stomp.StompSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.stomp.calls.StompCall"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.websocket.WebSocketRunner"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.websocket.WebSocketSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.websocket.calls.WebSocketCall"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.runtime.resource.Cancellation"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.runtime.resource.ResourceScope"
+    }
+  ]
+}

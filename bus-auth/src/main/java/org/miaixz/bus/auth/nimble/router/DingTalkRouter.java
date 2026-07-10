@@ -28,7 +28,6 @@ import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -378,7 +377,7 @@ public class DingTalkRouter extends AbstractRouter {
                     userinfoUrl == null ? null : userinfoUrl.replaceFirst("\\?.*$", ""),
                     authorization != null && StringKit.isNotEmpty(authorization.getToken()));
 
-            String body = Httpx.get(userinfoUrl, null, headers);
+            String body = get(userinfoUrl, null, headers);
             Logger.debug(
                     false,
                     "Auth",

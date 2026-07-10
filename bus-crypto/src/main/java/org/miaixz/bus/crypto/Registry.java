@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.crypto.metric.*;
+import org.miaixz.bus.crypto.nimble.*;
 import org.miaixz.bus.logger.Logger;
 
 /**

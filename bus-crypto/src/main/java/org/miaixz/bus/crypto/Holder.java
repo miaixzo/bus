@@ -20,7 +20,7 @@
 package org.miaixz.bus.crypto;
 
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
-import org.miaixz.bus.crypto.metric.BouncyCastleProvider;
+import org.miaixz.bus.crypto.nimble.BouncyCastleProvider;
 import org.miaixz.bus.logger.Logger;
 
 /**

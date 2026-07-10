@@ -36,9 +36,9 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -111,8 +111,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
         String code = authorization.getToken();
         Map<String, Object> param = new HashMap<>();
         param.put("tmp_auth_code", code);
-        String response = Httpx
-                .post(userInfoUrl(authorization), JsonKit.toJsonString(param), MediaType.APPLICATION_JSON);
+        String response = post(userInfoUrl(authorization), JsonKit.toJsonString(param), MediaType.APPLICATION_JSON);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
