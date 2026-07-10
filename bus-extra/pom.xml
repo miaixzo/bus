@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Extra</description>
+    <description>Bus Extra - Specialized extensions for compression, MQ, QR encoding, segmentation, FTP and multimedia add-ons.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

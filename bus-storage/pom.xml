@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Storage</description>
+    <description>Bus Storage - Object storage contract for S3-compatible endpoints, cloud buckets, FTP/SFTP schemes and filesystem targets.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

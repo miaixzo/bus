@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Limiter</description>
+    <description>Bus Limiter - Flow-control guardrails for quotas, hotspot thresholds, circuit degradation and overload defense.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Base</description>
+    <description>Bus Base - Enterprise base for business entities, persistence contracts and model superclasses.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

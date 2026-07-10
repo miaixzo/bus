@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Office</description>
+    <description>Bus Office - Office document processor for Excel, CSV, Word, PDF, OFD and table import/export flows.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

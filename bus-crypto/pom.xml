@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Crypto</description>
+    <description>Bus Crypto - Cryptographic primitives for ciphers, key pairs, digests, signatures and JCA adapter wiring.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

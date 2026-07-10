@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Tempus</description>
+    <description>Bus Tempus - Temporal orchestration for scheduled jobs, cron coordination, workflow execution and task state control.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

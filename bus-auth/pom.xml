@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Auth</description>
+    <description>Bus Auth - Identity component for OAuth2, OpenID Connect, social sign-in and federated credentials.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

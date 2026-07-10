@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Proxy</description>
+    <description>Bus Proxy - Invocation proxy kernel for interface adaptation, interceptor chains and dynamic delegation.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

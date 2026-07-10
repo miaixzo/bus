@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Cache</description>
+    <description>Bus Cache - Cache SPI spanning local memory, clustered stores, no-op implementations and predictable expiry behavior.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

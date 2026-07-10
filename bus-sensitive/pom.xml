@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Sensitive</description>
+    <description>Bus Sensitive - Privacy protection for field desensitization, token concealment and configurable anonymization strategies.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

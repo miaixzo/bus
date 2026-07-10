@@ -33,7 +33,7 @@
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus parent</description>
+    <description>Bus Parent - Root POM standardizing build phases, plugin baselines, publishing coordinates and quality gates.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 
