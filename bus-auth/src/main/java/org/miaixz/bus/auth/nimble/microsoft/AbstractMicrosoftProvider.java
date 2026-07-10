@@ -40,7 +40,6 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -96,7 +95,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         Map<String, String> form = new HashMap<>();
         UrlDecoder.decodeMap(tokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 
-        String response = Httpx.post(tokenUrl, form);
+        String response = post(tokenUrl, form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -156,7 +155,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, authorization.getToken_type() + Symbol.SPACE + authorization.getToken());
 
-        String userInfo = Httpx.get(userInfoUrl(authorization), null, header);
+        String userInfo = get(userInfoUrl(authorization), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {

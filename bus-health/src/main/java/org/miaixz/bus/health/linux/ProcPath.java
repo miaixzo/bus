@@ -41,6 +41,7 @@ public final class ProcPath {
      * Prevents instantiation of utility class.
      */
     private ProcPath() {
+        // No initialization required.
     }
 
     /**

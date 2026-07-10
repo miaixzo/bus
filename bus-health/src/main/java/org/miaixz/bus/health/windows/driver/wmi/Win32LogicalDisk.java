@@ -40,6 +40,7 @@ public final class Win32LogicalDisk {
      * Prevents instantiation of utility class.
      */
     private Win32LogicalDisk() {
+        // No initialization required.
     }
 
     /**

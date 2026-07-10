@@ -1473,7 +1473,17 @@
           ]
         },
         {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.health.builtin.hardware.DisplayInfo"
+          ]
+        },
+        {
           "name": "getEdid",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisplayInfo",
           "parameterTypes": []
         },
         {
@@ -10382,6 +10392,28 @@
       "allPublicMethods": true,
       "queryAllDeclaredMethods": true,
       "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.health.mac.jna.CoreGraphics$CGSizeByValue"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
+      "type": "org.miaixz.bus.health.mac.jna.ObjCRuntime"
+    },
+    {
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allPublicConstructors": true,
+      "allPublicFields": true,
+      "allPublicMethods": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllPublicMethods": true,
       "type": "org.miaixz.bus.health.mac.jna.IOKit"
     },
     {
@@ -11187,6 +11219,20 @@
           "name": "decodeBinaryToString",
           "parameterTypes": [
             "byte[]"
+          ]
+        },
+        {
+          "name": "decodeIntOrDefault",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "decodeLongOrDefault",
+          "parameterTypes": [
+            "java.lang.String",
+            "long"
           ]
         },
         {

@@ -29,7 +29,7 @@ module bus.notify {
     requires bus.core;
     requires bus.crypto;
     requires bus.extra;
-    requires bus.http;
+    requires bus.fabric;
     requires bus.logger;
 
     requires static lombok;
@@ -39,24 +39,24 @@ module bus.notify {
     exports org.miaixz.bus.notify;
     exports org.miaixz.bus.notify.cache;
     exports org.miaixz.bus.notify.magic;
-    exports org.miaixz.bus.notify.metric;
-    exports org.miaixz.bus.notify.metric.aliyun;
-    exports org.miaixz.bus.notify.metric.baidu;
-    exports org.miaixz.bus.notify.metric.cloopen;
-    exports org.miaixz.bus.notify.metric.ctyun;
-    exports org.miaixz.bus.notify.metric.dingtalk;
-    exports org.miaixz.bus.notify.metric.emay;
-    exports org.miaixz.bus.notify.metric.generic;
-    exports org.miaixz.bus.notify.metric.huawei;
-    exports org.miaixz.bus.notify.metric.jdcloud;
-    exports org.miaixz.bus.notify.metric.jpush;
-    exports org.miaixz.bus.notify.metric.netease;
-    exports org.miaixz.bus.notify.metric.qiniu;
-    exports org.miaixz.bus.notify.metric.tencent;
-    exports org.miaixz.bus.notify.metric.unisms;
-    exports org.miaixz.bus.notify.metric.upyun;
-    exports org.miaixz.bus.notify.metric.wechat;
-    exports org.miaixz.bus.notify.metric.yunpian;
-    exports org.miaixz.bus.notify.metric.zhutong;
+    exports org.miaixz.bus.notify.nimble;
+    exports org.miaixz.bus.notify.nimble.aliyun;
+    exports org.miaixz.bus.notify.nimble.baidu;
+    exports org.miaixz.bus.notify.nimble.cloopen;
+    exports org.miaixz.bus.notify.nimble.ctyun;
+    exports org.miaixz.bus.notify.nimble.dingtalk;
+    exports org.miaixz.bus.notify.nimble.emay;
+    exports org.miaixz.bus.notify.nimble.generic;
+    exports org.miaixz.bus.notify.nimble.huawei;
+    exports org.miaixz.bus.notify.nimble.jdcloud;
+    exports org.miaixz.bus.notify.nimble.jpush;
+    exports org.miaixz.bus.notify.nimble.netease;
+    exports org.miaixz.bus.notify.nimble.qiniu;
+    exports org.miaixz.bus.notify.nimble.tencent;
+    exports org.miaixz.bus.notify.nimble.unisms;
+    exports org.miaixz.bus.notify.nimble.upyun;
+    exports org.miaixz.bus.notify.nimble.wechat;
+    exports org.miaixz.bus.notify.nimble.yunpian;
+    exports org.miaixz.bus.notify.nimble.zhutong;
 
 }

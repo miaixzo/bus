@@ -30,12 +30,12 @@ import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Provider;
 import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.pay.magic.ErrorCode;
-import org.miaixz.bus.pay.metric.alipay.AliPayProvider;
-import org.miaixz.bus.pay.metric.jdpay.JdPayProvider;
-import org.miaixz.bus.pay.metric.paypal.PaypalProvider;
-import org.miaixz.bus.pay.metric.tenpay.TenpayProvider;
-import org.miaixz.bus.pay.metric.unionpay.UnionPayProvider;
-import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
+import org.miaixz.bus.pay.nimble.alipay.AliPayProvider;
+import org.miaixz.bus.pay.nimble.jdpay.JdPayProvider;
+import org.miaixz.bus.pay.nimble.paypal.PaypalProvider;
+import org.miaixz.bus.pay.nimble.tenpay.TenpayProvider;
+import org.miaixz.bus.pay.nimble.unionpay.UnionPayProvider;
+import org.miaixz.bus.pay.nimble.wechat.WechatPayProvider;
 
 /**
  * Integrated payment service. This service manages different payment providers and their configurations. It allows for

@@ -38,6 +38,7 @@ public final class UpTime {
      * Prevents instantiation of utility class.
      */
     private UpTime() {
+        // No initialization required.
     }
 
     /**

@@ -33,11 +33,10 @@ import org.miaixz.bus.auth.nimble.wechat.AbstractWeChatProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * Abstract class for WeChat Enterprise login providers.
@@ -186,7 +185,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         // User basic information
         String userInfoUrl = Builder.fromUrl("https://qyapi.weixin.qq.com/cgi-bin/user/get")
                 .queryParam("access_token", token).queryParam("userid", userId).build();
-        String response = Httpx.get(userInfoUrl);
+        String response = get(userInfoUrl);
         Map<String, Object> object = checkResponse(response);
 
         // User sensitive information
@@ -195,8 +194,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
                     .queryParam("access_token", token).build();
             Map<String, Object> param = new HashMap<>();
             param.put("user_ticket", userTicket);
-            String userDetailResponse = Httpx
-                    .post(userDetailUrl, JsonKit.toJsonString(param), MediaType.APPLICATION_JSON);
+            String userDetailResponse = post(userDetailUrl, JsonKit.toJsonString(param), MediaType.APPLICATION_JSON);
             Map<String, Object> userDetail = checkResponse(userDetailResponse);
 
             object.putAll(userDetail);

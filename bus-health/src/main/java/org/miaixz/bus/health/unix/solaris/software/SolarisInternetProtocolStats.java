@@ -41,6 +41,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
      * Creates a new SolarisInternetProtocolStats instance.
      */
     public SolarisInternetProtocolStats() {
+        // No initialization required.
     }
 
     /**

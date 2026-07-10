@@ -57,6 +57,7 @@ public final class SmcKit {
      * Prevents instantiation of utility class.
      */
     private SmcKit() {
+        // No initialization required.
     }
 
     /**

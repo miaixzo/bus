@@ -69,7 +69,7 @@ public final class ImageIOHandler {
      * Creates a new instance.
      */
     private ImageIOHandler() {
-        // Utility class - prevent instantiation
+        // No initialization required.
     }
 
     /**

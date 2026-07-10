@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.FalseMatcher;
+import org.miaixz.bus.validate.nimble.FalseMatcher;
 
 /**
  * Validates that the annotated boolean value is {@code false}.

@@ -86,6 +86,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Creates a new Rusage instance.
          */
         public Rusage() {
+            // No initialization required.
         }
 
         /**
@@ -292,6 +293,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Creates a new MacUtmpx instance.
          */
         public MacUtmpx() {
+            // No initialization required.
         }
 
         /**
@@ -352,6 +354,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Creates a new ProcFdInfo instance.
          */
         public ProcFdInfo() {
+            // No initialization required.
         }
 
         /**
@@ -383,6 +386,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Creates a new InSockInfo instance.
          */
         public InSockInfo() {
+            // No initialization required.
         }
 
         /**
@@ -463,6 +467,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Creates a new TcpSockInfo instance.
          */
         public TcpSockInfo() {
+            // No initialization required.
         }
 
         /**
@@ -520,6 +525,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Creates a new SocketInfo instance.
          */
         public SocketInfo() {
+            // No initialization required.
         }
 
         /**
@@ -640,6 +646,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Creates a new ProcFileInfo instance.
          */
         public ProcFileInfo() {
+            // No initialization required.
         }
 
         /**
@@ -685,6 +692,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Creates a new SocketFdInfo instance.
          */
         public SocketFdInfo() {
+            // No initialization required.
         }
 
         /**
@@ -722,6 +730,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Creates a new Pri instance.
          */
         public Pri() {
+            // No initialization required.
         }
 
         /**

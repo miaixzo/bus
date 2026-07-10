@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * Teambition login provider.
@@ -79,7 +78,7 @@ public class TeambitionProvider extends AbstractProvider {
         form.put("code", callback.getCode());
         form.put("grant_type", "code");
 
-        String response = Httpx.post(this.complex.token(), form);
+        String response = post(this.complex.token(), form);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(object);
@@ -104,7 +103,7 @@ public class TeambitionProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, "OAuth2 " + token);
 
-        String response = Httpx.get(this.complex.userinfo(), null, header);
+        String response = get(this.complex.userinfo(), null, header);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(object);
@@ -136,7 +135,7 @@ public class TeambitionProvider extends AbstractProvider {
         Map<String, String> form = new HashMap<>(4);
         form.put("_userId", uid);
         form.put("refresh_token", refresh);
-        String response = Httpx.post(this.complex.refresh(), form);
+        String response = post(this.complex.refresh(), form);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(object);

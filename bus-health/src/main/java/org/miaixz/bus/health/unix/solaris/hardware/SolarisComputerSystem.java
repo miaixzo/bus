@@ -108,7 +108,7 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
                 break;
             }
             // Based on the smbTypeID we are processing for
-            Integer colonDelimiterIndex = checkLine.indexOf(Symbol.COLON);
+            int colonDelimiterIndex = checkLine.indexOf(Symbol.COLON);
             if (smbTypeId != null && colonDelimiterIndex >= 0) {
                 String key = checkLine.substring(0, colonDelimiterIndex).trim();
                 String val = checkLine.substring(colonDelimiterIndex + 1).trim();

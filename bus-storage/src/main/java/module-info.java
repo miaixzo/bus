@@ -31,8 +31,8 @@ module bus.storage {
     requires bus.core;
     requires bus.crypto;
     requires bus.extra;
+    requires bus.fabric;
     requires bus.gitlab;
-    requires bus.http;
     requires bus.logger;
 
     requires static lombok;
@@ -49,9 +49,8 @@ module bus.storage {
     requires static software.amazon.awssdk.utils;
 
     exports org.miaixz.bus.storage;
-    exports org.miaixz.bus.storage.builtin;
     exports org.miaixz.bus.storage.cache;
     exports org.miaixz.bus.storage.magic;
-    exports org.miaixz.bus.storage.metric;
+    exports org.miaixz.bus.storage.nimble;
 
 }

@@ -22,9 +22,9 @@ package org.miaixz.bus.core.io.sink;
 import java.io.IOException;
 import java.util.zip.Deflater;
 
-import org.miaixz.bus.core.io.LifeCycle;
-import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.buffer.Segment;
+import org.miaixz.bus.core.io.buffer.SegmentAllocator;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -72,9 +72,9 @@ public class DeflaterSink implements Sink {
      */
     DeflaterSink(BufferSink sink, Deflater deflater) {
         if (sink == null)
-            throw new IllegalArgumentException("source == null");
+            throw new IllegalArgumentException("sink == null");
         if (deflater == null)
-            throw new IllegalArgumentException("inflater == null");
+            throw new IllegalArgumentException("deflater == null");
         this.sink = sink;
         this.deflater = deflater;
     }
@@ -89,9 +89,14 @@ public class DeflaterSink implements Sink {
      */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
+        if (closed)
+            throw new IllegalStateException("closed");
         IoKit.checkOffsetAndCount(source.size, 0, byteCount);
         while (byteCount > 0) {
-            SectionBuffer head = source.head;
+            Segment head = source.head;
             int toDeflate = (int) Math.min(byteCount, head.limit - head.pos);
             deflater.setInput(head.data, head.pos, toDeflate);
             deflate(false);
@@ -99,7 +104,7 @@ public class DeflaterSink implements Sink {
             head.pos += toDeflate;
             if (head.pos == head.limit) {
                 source.head = head.pop();
-                LifeCycle.recycle(head);
+                SegmentAllocator.release(head);
             }
             byteCount -= toDeflate;
         }
@@ -115,10 +120,9 @@ public class DeflaterSink implements Sink {
     private void deflate(boolean syncFlush) throws IOException {
         Buffer buffer = sink.buffer();
         while (true) {
-            SectionBuffer s = buffer.writableSegment(1);
-            int deflated = syncFlush
-                    ? deflater.deflate(s.data, s.limit, SectionBuffer.SIZE - s.limit, Deflater.SYNC_FLUSH)
-                    : deflater.deflate(s.data, s.limit, SectionBuffer.SIZE - s.limit);
+            Segment s = buffer.writableSegment(1);
+            int deflated = syncFlush ? deflater.deflate(s.data, s.limit, Segment.SIZE - s.limit, Deflater.SYNC_FLUSH)
+                    : deflater.deflate(s.data, s.limit, Segment.SIZE - s.limit);
             if (deflated > 0) {
                 s.limit += deflated;
                 buffer.size += deflated;
@@ -126,9 +130,21 @@ public class DeflaterSink implements Sink {
             } else if (deflater.needsInput()) {
                 if (s.pos == s.limit) {
                     buffer.head = s.pop();
-                    LifeCycle.recycle(s);
+                    SegmentAllocator.release(s);
                 }
                 return;
+            } else if (deflater.finished()) {
+                if (s.pos == s.limit) {
+                    buffer.head = s.pop();
+                    SegmentAllocator.release(s);
+                }
+                return;
+            } else {
+                if (s.pos == s.limit) {
+                    buffer.head = s.pop();
+                    SegmentAllocator.release(s);
+                }
+                throw new IOException("Deflater stalled without making progress");
             }
         }
     }
@@ -141,6 +157,8 @@ public class DeflaterSink implements Sink {
      */
     @Override
     public void flush() throws IOException {
+        if (closed)
+            throw new IllegalStateException("closed");
         deflate(true);
         sink.flush();
     }

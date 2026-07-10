@@ -1326,19 +1326,19 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.AbstractElement"
+      "type": "org.miaixz.bus.setting.nimble.ini.AbstractElement"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.AbstractElement"
+      "type": "org.miaixz.bus.setting.nimble.ini.AbstractElement"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.AbstractElement"
+      "type": "org.miaixz.bus.setting.nimble.ini.AbstractElement"
     },
     {
       "condition": {
@@ -1427,31 +1427,31 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.ini.AbstractElement"
+      "type": "org.miaixz.bus.setting.nimble.ini.AbstractElement"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.AbstractElement"
+      "type": "org.miaixz.bus.setting.nimble.ini.AbstractElement"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.INI"
+      "type": "org.miaixz.bus.setting.nimble.ini.INI"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.INI"
+      "type": "org.miaixz.bus.setting.nimble.ini.INI"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.INI"
+      "type": "org.miaixz.bus.setting.nimble.ini.INI"
     },
     {
       "condition": {
@@ -1485,7 +1485,7 @@
         {
           "name": "commentCreator",
           "parameterTypes": [
-            "org.miaixz.bus.setting.metric.ini.IniCommentCreator"
+            "org.miaixz.bus.setting.nimble.ini.IniCommentCreator"
           ]
         },
         {
@@ -1497,7 +1497,7 @@
         {
           "name": "plus",
           "parameterTypes": [
-            "org.miaixz.bus.setting.metric.ini.INI"
+            "org.miaixz.bus.setting.nimble.ini.INI"
           ]
         },
         {
@@ -1523,7 +1523,7 @@
           "name": "plusProperties",
           "parameterTypes": [
             "java.util.Properties",
-            "org.miaixz.bus.setting.metric.ini.IniComment"
+            "org.miaixz.bus.setting.nimble.ini.IniComment"
           ]
         },
         {
@@ -1546,7 +1546,7 @@
           "parameterTypes": [
             "java.lang.String",
             "java.lang.String",
-            "org.miaixz.bus.setting.metric.ini.IniComment"
+            "org.miaixz.bus.setting.nimble.ini.IniComment"
           ]
         },
         {
@@ -1566,19 +1566,19 @@
           "name": "plusSection",
           "parameterTypes": [
             "java.lang.String",
-            "org.miaixz.bus.setting.metric.ini.IniComment"
+            "org.miaixz.bus.setting.nimble.ini.IniComment"
           ]
         },
         {
           "name": "propertyCreator",
           "parameterTypes": [
-            "org.miaixz.bus.setting.metric.ini.IniPropertyCreator"
+            "org.miaixz.bus.setting.nimble.ini.IniPropertyCreator"
           ]
         },
         {
           "name": "sectionCreator",
           "parameterTypes": [
-            "org.miaixz.bus.setting.metric.ini.IniSectionCreator"
+            "org.miaixz.bus.setting.nimble.ini.IniSectionCreator"
           ]
         },
         {
@@ -1588,67 +1588,67 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.ini.INI"
+      "type": "org.miaixz.bus.setting.nimble.ini.INI"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.INI"
+      "type": "org.miaixz.bus.setting.nimble.ini.INI"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniComment"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniComment"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniComment"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniComment"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniComment"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniComment"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentCreator"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniCommentCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentCreator"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniCommentCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentCreator"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniCommentCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniCommentService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniCommentService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniCommentService"
     },
     {
       "condition": {
@@ -1684,85 +1684,85 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniCommentService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniCommentService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniCommentService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniElement"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniElement"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniElement"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniElement"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniElement"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniElement"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniProperty"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniProperty"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniProperty"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniProperty"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyCreator"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniPropertyCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyCreator"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniPropertyCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyCreator"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniPropertyCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniPropertyService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniPropertyService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniPropertyService"
     },
     {
       "condition": {
@@ -1789,7 +1789,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.setting.metric.ini.IniSection",
+            "org.miaixz.bus.setting.nimble.ini.IniSection",
             "java.lang.String",
             "java.lang.String",
             "int"
@@ -1798,7 +1798,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.setting.metric.ini.IniSection",
+            "org.miaixz.bus.setting.nimble.ini.IniSection",
             "java.lang.String",
             "java.lang.String",
             "java.lang.String",
@@ -1842,7 +1842,7 @@
         {
           "name": "setSection",
           "parameterTypes": [
-            "org.miaixz.bus.setting.metric.ini.IniSection"
+            "org.miaixz.bus.setting.nimble.ini.IniSection"
           ]
         },
         {
@@ -1852,67 +1852,67 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniPropertyService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniPropertyService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniPropertyService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSection"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSection"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSection"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSection"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSection"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSection"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionCreator"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSectionCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionCreator"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSectionCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionCreator"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSectionCreator"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSectionService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSectionService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSectionService"
     },
     {
       "condition": {
@@ -1931,7 +1931,7 @@
           "parameterTypes": [
             "java.lang.String",
             "int",
-            "org.miaixz.bus.setting.metric.ini.IniComment"
+            "org.miaixz.bus.setting.nimble.ini.IniComment"
           ]
         },
         {
@@ -1957,7 +1957,7 @@
             "java.lang.String",
             "java.lang.String",
             "int",
-            "org.miaixz.bus.setting.metric.ini.IniComment"
+            "org.miaixz.bus.setting.nimble.ini.IniComment"
           ]
         },
         {
@@ -1966,7 +1966,7 @@
             "java.lang.String",
             "java.lang.String",
             "int",
-            "org.miaixz.bus.setting.metric.ini.IniComment",
+            "org.miaixz.bus.setting.nimble.ini.IniComment",
             "java.util.function.Supplier"
           ]
         },
@@ -1999,31 +1999,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSectionService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSectionService"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSectionService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSetting"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSetting"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSetting"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSetting"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSetting"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSetting"
     },
     {
       "condition": {
@@ -2124,31 +2124,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.ini.IniSetting"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSetting"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.ini.IniSetting"
+      "type": "org.miaixz.bus.setting.nimble.ini.IniSetting"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.props.Props"
+      "type": "org.miaixz.bus.setting.nimble.props.Props"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.props.Props"
+      "type": "org.miaixz.bus.setting.nimble.props.Props"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.props.Props"
+      "type": "org.miaixz.bus.setting.nimble.props.Props"
     },
     {
       "condition": {
@@ -2281,7 +2281,7 @@
         {
           "name": "of",
           "parameterTypes": [
-            "org.miaixz.bus.setting.metric.props.Props"
+            "org.miaixz.bus.setting.nimble.props.Props"
           ]
         },
         {
@@ -2348,31 +2348,31 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.props.Props"
+      "type": "org.miaixz.bus.setting.nimble.props.Props"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.props.Props"
+      "type": "org.miaixz.bus.setting.nimble.props.Props"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.setting.Setting"
+      "type": "org.miaixz.bus.setting.nimble.setting.Setting"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.setting.Setting"
+      "type": "org.miaixz.bus.setting.nimble.setting.Setting"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.setting.Setting"
+      "type": "org.miaixz.bus.setting.nimble.setting.Setting"
     },
     {
       "condition": {
@@ -2396,31 +2396,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.setting.Setting"
+      "type": "org.miaixz.bus.setting.nimble.setting.Setting"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.setting.Setting"
+      "type": "org.miaixz.bus.setting.nimble.setting.Setting"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.Toml"
+      "type": "org.miaixz.bus.setting.nimble.toml.Toml"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.Toml"
+      "type": "org.miaixz.bus.setting.nimble.toml.Toml"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.Toml"
+      "type": "org.miaixz.bus.setting.nimble.toml.Toml"
     },
     {
       "condition": {
@@ -2445,31 +2445,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.toml.Toml"
+      "type": "org.miaixz.bus.setting.nimble.toml.Toml"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.Toml"
+      "type": "org.miaixz.bus.setting.nimble.toml.Toml"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.TomlReader"
+      "type": "org.miaixz.bus.setting.nimble.toml.TomlReader"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.TomlReader"
+      "type": "org.miaixz.bus.setting.nimble.toml.TomlReader"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.TomlReader"
+      "type": "org.miaixz.bus.setting.nimble.toml.TomlReader"
     },
     {
       "condition": {
@@ -2564,31 +2564,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.toml.TomlReader"
+      "type": "org.miaixz.bus.setting.nimble.toml.TomlReader"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.TomlReader"
+      "type": "org.miaixz.bus.setting.nimble.toml.TomlReader"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.TomlWriter"
+      "type": "org.miaixz.bus.setting.nimble.toml.TomlWriter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.TomlWriter"
+      "type": "org.miaixz.bus.setting.nimble.toml.TomlWriter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.TomlWriter"
+      "type": "org.miaixz.bus.setting.nimble.toml.TomlWriter"
     },
     {
       "condition": {
@@ -2707,31 +2707,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.toml.TomlWriter"
+      "type": "org.miaixz.bus.setting.nimble.toml.TomlWriter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.toml.TomlWriter"
+      "type": "org.miaixz.bus.setting.nimble.toml.TomlWriter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.setting.metric.yaml.Yaml"
+      "type": "org.miaixz.bus.setting.nimble.yaml.Yaml"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.yaml.Yaml"
+      "type": "org.miaixz.bus.setting.nimble.yaml.Yaml"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.setting.metric.yaml.Yaml"
+      "type": "org.miaixz.bus.setting.nimble.yaml.Yaml"
     },
     {
       "condition": {
@@ -2743,13 +2743,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.setting.metric.yaml.Yaml"
+      "type": "org.miaixz.bus.setting.nimble.yaml.Yaml"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.setting.metric.yaml.Yaml"
+      "type": "org.miaixz.bus.setting.nimble.yaml.Yaml"
     },
     {
       "condition": {

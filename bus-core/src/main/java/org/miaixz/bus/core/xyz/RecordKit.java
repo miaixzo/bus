@@ -78,12 +78,17 @@ public class RecordKit {
      */
     public static Object newInstance(final Class<?> recordClass, final ValueProvider<String> valueProvider) {
         final Map.Entry<String, Type>[] recordComponents = getRecordComponents(recordClass);
+        if (null == recordComponents) {
+            throw new IllegalArgumentException("Record class [" + recordClass.getName() + "] has no components");
+        }
+        final Class<?>[] argTypes = new Class<?>[recordComponents.length];
         final Object[] args = new Object[recordComponents.length];
         for (int i = 0; i < args.length; i++) {
+            argTypes[i] = TypeKit.getClass(recordComponents[i].getValue());
             args[i] = valueProvider.value(recordComponents[i].getKey(), recordComponents[i].getValue());
         }
 
-        return ReflectKit.newInstance(recordClass, args);
+        return ReflectKit.newInstance(recordClass, argTypes, args);
     }
 
 }

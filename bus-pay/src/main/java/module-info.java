@@ -31,7 +31,7 @@ module bus.pay {
     requires bus.core;
     requires bus.crypto;
     requires bus.extra;
-    requires bus.http;
+    requires bus.fabric;
     requires bus.logger;
 
     requires static lombok;
@@ -40,27 +40,27 @@ module bus.pay {
     exports org.miaixz.bus.pay;
     exports org.miaixz.bus.pay.cache;
     exports org.miaixz.bus.pay.magic;
-    exports org.miaixz.bus.pay.metric;
-    exports org.miaixz.bus.pay.metric.alipay;
-    exports org.miaixz.bus.pay.metric.alipay.api;
-    exports org.miaixz.bus.pay.metric.jdpay;
-    exports org.miaixz.bus.pay.metric.jdpay.api;
-    exports org.miaixz.bus.pay.metric.jdpay.entity;
-    exports org.miaixz.bus.pay.metric.paypal;
-    exports org.miaixz.bus.pay.metric.paypal.api;
-    exports org.miaixz.bus.pay.metric.paypal.entity;
-    exports org.miaixz.bus.pay.metric.tenpay;
-    exports org.miaixz.bus.pay.metric.tenpay.api;
-    exports org.miaixz.bus.pay.metric.tenpay.entity;
-    exports org.miaixz.bus.pay.metric.unionpay;
-    exports org.miaixz.bus.pay.metric.unionpay.api;
-    exports org.miaixz.bus.pay.metric.unionpay.entity;
-    exports org.miaixz.bus.pay.metric.wechat;
-    exports org.miaixz.bus.pay.metric.wechat.api;
-    exports org.miaixz.bus.pay.metric.wechat.api.v2;
-    exports org.miaixz.bus.pay.metric.wechat.api.v3;
-    exports org.miaixz.bus.pay.metric.wechat.entity;
-    exports org.miaixz.bus.pay.metric.wechat.entity.v2;
-    exports org.miaixz.bus.pay.metric.wechat.entity.v3;
+    exports org.miaixz.bus.pay.nimble;
+    exports org.miaixz.bus.pay.nimble.alipay;
+    exports org.miaixz.bus.pay.nimble.alipay.api;
+    exports org.miaixz.bus.pay.nimble.jdpay;
+    exports org.miaixz.bus.pay.nimble.jdpay.api;
+    exports org.miaixz.bus.pay.nimble.jdpay.entity;
+    exports org.miaixz.bus.pay.nimble.paypal;
+    exports org.miaixz.bus.pay.nimble.paypal.api;
+    exports org.miaixz.bus.pay.nimble.paypal.entity;
+    exports org.miaixz.bus.pay.nimble.tenpay;
+    exports org.miaixz.bus.pay.nimble.tenpay.api;
+    exports org.miaixz.bus.pay.nimble.tenpay.entity;
+    exports org.miaixz.bus.pay.nimble.unionpay;
+    exports org.miaixz.bus.pay.nimble.unionpay.api;
+    exports org.miaixz.bus.pay.nimble.unionpay.entity;
+    exports org.miaixz.bus.pay.nimble.wechat;
+    exports org.miaixz.bus.pay.nimble.wechat.api;
+    exports org.miaixz.bus.pay.nimble.wechat.api.v2;
+    exports org.miaixz.bus.pay.nimble.wechat.api.v3;
+    exports org.miaixz.bus.pay.nimble.wechat.entity;
+    exports org.miaixz.bus.pay.nimble.wechat.entity.v2;
+    exports org.miaixz.bus.pay.nimble.wechat.entity.v3;
 
 }

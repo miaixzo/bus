@@ -34,12 +34,11 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -84,7 +83,7 @@ public class LineProvider extends AbstractProvider {
         params.put("redirect_uri", context.getRedirectUri());
         params.put("client_id", context.getClientId());
         params.put("client_secret", context.getClientSecret());
-        String response = Httpx.post(this.complex.token(), params);
+        String response = post(this.complex.token(), params);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -134,7 +133,7 @@ public class LineProvider extends AbstractProvider {
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER.concat(authorization.getToken()));
 
-        String userInfo = Httpx.get(this.complex.userinfo(), null, header);
+        String userInfo = get(this.complex.userinfo(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -182,7 +181,7 @@ public class LineProvider extends AbstractProvider {
         form.put("access_token", authorization.getToken());
         form.put("client_id", context.getClientId());
         form.put("client_secret", context.getClientSecret());
-        String userInfo = Httpx.post(this.complex.revoke(), form);
+        String userInfo = post(this.complex.revoke(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -221,7 +220,7 @@ public class LineProvider extends AbstractProvider {
         form.put("refresh_token", authorization.getRefresh());
         form.put("client_id", context.getClientId());
         form.put("client_secret", context.getClientSecret());
-        String response = Httpx.post(this.complex.token(), form);
+        String response = post(this.complex.token(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

@@ -1,0 +1,376 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.logger.nimble.slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.spi.LocationAwareLogger;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Level;
+import org.miaixz.bus.logger.magic.AbstractProvider;
+
+/**
+ * A logger provider implementation that wraps an {@link org.slf4j.Logger} instance.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+public class Slf4jLoggingProvider extends AbstractProvider {
+
+    private static final long serialVersionUID = -1L;
+
+    /**
+     * The underlying SLF4J logger instance.
+     */
+    private final transient Logger logger;
+
+    /**
+     * Whether the underlying logger is a {@link LocationAwareLogger}. This is used to determine if the FQCN can be
+     * passed.
+     */
+    private final boolean isLocationAwareLogger;
+
+    /**
+     * Constructs a new {@code Slf4jLoggingProvider} with the specified logger.
+     *
+     * @param logger the {@link Logger} instance to use.
+     */
+    public Slf4jLoggingProvider(final Logger logger) {
+        this.logger = logger;
+        this.isLocationAwareLogger = (logger instanceof LocationAwareLogger);
+    }
+
+    /**
+     * Constructs a new {@code Slf4jLoggingProvider} for the specified class.
+     *
+     * @param clazz the class for which to create the logger.
+     */
+    public Slf4jLoggingProvider(final Class<?> clazz) {
+        this(getSlf4jLogger(clazz));
+    }
+
+    /**
+     * Constructs a new {@code Slf4jLoggingProvider} for the specified name.
+     *
+     * @param name the name of the logger.
+     */
+    public Slf4jLoggingProvider(final String name) {
+        this(LoggerFactory.getLogger(name));
+    }
+
+    /**
+     * Gets the SLF4J logger for the specified class.
+     *
+     * @param clazz the class for which to get the logger. If {@code null}, a logger named "null" is returned.
+     * @return the {@link Logger} instance.
+     */
+    private static Logger getSlf4jLogger(final Class<?> clazz) {
+        return (null == clazz) ? LoggerFactory.getLogger(Normal.EMPTY) : LoggerFactory.getLogger(clazz);
+    }
+
+    /**
+     * Gets the name of this logger.
+     *
+     * @return the name of this logger
+     */
+    @Override
+    public String getName() {
+        return logger.getName();
+    }
+
+    /**
+     * Checks whether TRACE level logging is enabled.
+     *
+     * @return {@code true} if TRACE level logging is enabled
+     */
+    @Override
+    public boolean isTraceEnabled() {
+        return logger.isTraceEnabled();
+    }
+
+    /**
+     * Logs a message at TRACE level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
+    @Override
+    public void trace(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isTraceEnabled()) {
+            if (this.isLocationAwareLogger) {
+                locationAwareLog(
+                        (LocationAwareLogger) this.logger,
+                        fqcn,
+                        LocationAwareLogger.TRACE_INT,
+                        t,
+                        format,
+                        args);
+            } else {
+                logger.trace(StringKit.format(format, args), t);
+            }
+        }
+    }
+
+    /**
+     * Checks whether DEBUG level logging is enabled.
+     *
+     * @return {@code true} if DEBUG level logging is enabled
+     */
+    @Override
+    public boolean isDebugEnabled() {
+        return logger.isDebugEnabled();
+    }
+
+    /**
+     * Logs a message at DEBUG level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
+    @Override
+    public void debug(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isDebugEnabled()) {
+            if (this.isLocationAwareLogger) {
+                locationAwareLog(
+                        (LocationAwareLogger) this.logger,
+                        fqcn,
+                        LocationAwareLogger.DEBUG_INT,
+                        t,
+                        format,
+                        args);
+            } else {
+                logger.debug(StringKit.format(format, args), t);
+            }
+        }
+    }
+
+    /**
+     * Checks whether INFO level logging is enabled.
+     *
+     * @return {@code true} if INFO level logging is enabled
+     */
+    @Override
+    public boolean isInfoEnabled() {
+        return logger.isInfoEnabled();
+    }
+
+    /**
+     * Logs a message at INFO level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
+    @Override
+    public void info(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isInfoEnabled()) {
+            if (this.isLocationAwareLogger) {
+                locationAwareLog(
+                        (LocationAwareLogger) this.logger,
+                        fqcn,
+                        LocationAwareLogger.INFO_INT,
+                        t,
+                        format,
+                        args);
+            } else {
+                logger.info(StringKit.format(format, args), t);
+            }
+        }
+    }
+
+    /**
+     * Checks whether WARN level logging is enabled.
+     *
+     * @return {@code true} if WARN level logging is enabled
+     */
+    @Override
+    public boolean isWarnEnabled() {
+        return logger.isWarnEnabled();
+    }
+
+    /**
+     * Logs a message at WARN level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
+    @Override
+    public void warn(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isWarnEnabled()) {
+            if (this.isLocationAwareLogger) {
+                locationAwareLog(
+                        (LocationAwareLogger) this.logger,
+                        fqcn,
+                        LocationAwareLogger.WARN_INT,
+                        t,
+                        format,
+                        args);
+            } else {
+                logger.warn(StringKit.format(format, args), t);
+            }
+        }
+    }
+
+    /**
+     * Checks whether ERROR level logging is enabled.
+     *
+     * @return {@code true} if ERROR level logging is enabled
+     */
+    @Override
+    public boolean isErrorEnabled() {
+        return logger.isErrorEnabled();
+    }
+
+    /**
+     * Logs a message at ERROR level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
+    @Override
+    public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isErrorEnabled()) {
+            if (this.isLocationAwareLogger) {
+                locationAwareLog(
+                        (LocationAwareLogger) this.logger,
+                        fqcn,
+                        LocationAwareLogger.ERROR_INT,
+                        t,
+                        format,
+                        args);
+            } else {
+                logger.error(StringKit.format(format, args), t);
+            }
+        }
+    }
+
+    /**
+     * Logs a message at the specified level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param level  the logging level
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
+    @Override
+    public void log(
+            final String fqcn,
+            final Level level,
+            final Throwable t,
+            final String format,
+            final Object... args) {
+        switch (level) {
+            case TRACE:
+                trace(fqcn, t, format, args);
+                break;
+
+            case DEBUG:
+                debug(fqcn, t, format, args);
+                break;
+
+            case INFO:
+                info(fqcn, t, format, args);
+                break;
+
+            case WARN:
+                warn(fqcn, t, format, args);
+                break;
+
+            case ERROR:
+                error(fqcn, t, format, args);
+                break;
+
+            default:
+                throw new Error(StringKit.format("Can not identify level: {}", level));
+        }
+    }
+
+    /**
+     * Logs a message. This method is used to support underlying logging implementations by passing the fully qualified
+     * class name of the caller, which helps in correcting the line number in the log output.
+     *
+     * @param logger    the {@link LocationAwareLogger} instance.
+     * @param fqcn      the fully qualified class name of the caller.
+     * @param level_int the logging level, using the constants from {@link LocationAwareLogger}.
+     * @param t         the throwable to log.
+     * @param format    the message format.
+     * @param args      the arguments for the message format.
+     */
+    private void locationAwareLog(
+            final LocationAwareLogger logger,
+            final String fqcn,
+            final int level_int,
+            final Throwable t,
+            final String format,
+            final Object[] args) {
+        // The implementation of this method in slf4j-log4j12 has a bug,
+        // so the parameters are concatenated here.
+        logger.log(null, fqcn, level_int, StringKit.format(format, args), null, t);
+    }
+
+    /**
+     * Gets the current logging level.
+     *
+     * @return the current logging level, or {@link Level#OFF} if it cannot be determined
+     */
+    @Override
+    public Level getLevel() {
+        // Try to check if it is a Logback Logger
+        if (logger instanceof ch.qos.logback.classic.Logger logbackLogger) {
+            ch.qos.logback.classic.Level logbackLevel = logbackLogger.getLevel();
+            if (logbackLevel != null) {
+                return switch (logbackLevel.toString()) {
+                    case "TRACE" -> Level.TRACE;
+                    case "DEBUG" -> Level.DEBUG;
+                    case "INFO" -> Level.INFO;
+                    case "WARN" -> Level.WARN;
+                    case "ERROR" -> Level.ERROR;
+                    default -> Level.OFF;
+                };
+            }
+        }
+        // Fallback to inference based on isEnabled()
+        if (logger.isTraceEnabled()) {
+            return Level.TRACE;
+        } else if (logger.isDebugEnabled()) {
+            return Level.DEBUG;
+        } else if (logger.isInfoEnabled()) {
+            return Level.INFO;
+        } else if (logger.isWarnEnabled()) {
+            return Level.WARN;
+        } else if (logger.isErrorEnabled()) {
+            return Level.ERROR;
+        }
+        return Level.OFF;
+    }
+
+}

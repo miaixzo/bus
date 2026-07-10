@@ -35,12 +35,11 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * Slack login provider.
@@ -80,7 +79,7 @@ public class SlackProvider extends AbstractProvider {
     public Message token(Callback callback) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        String response = Httpx.get(tokenUrl(callback.getCode()), null, header);
+        String response = get(tokenUrl(callback.getCode()), null, header);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(object);
@@ -105,7 +104,7 @@ public class SlackProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER.concat(authorization.getToken()));
-        String userInfo = Httpx.get(userInfoUrl(authorization), null, header);
+        String userInfo = get(userInfoUrl(authorization), null, header);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
         Map<String, Object> user = (Map<String, Object>) object.get("user");
@@ -132,7 +131,7 @@ public class SlackProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER.concat(authorization.getToken()));
-        String userInfo = Httpx.get(this.complex.revoke(), null, header);
+        String userInfo = get(this.complex.revoke(), null, header);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
         // Returns true for successful authorization cancellation, otherwise false

@@ -24,7 +24,7 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.DateMatcher;
+import org.miaixz.bus.validate.nimble.DateMatcher;
 
 /**
  * Validates that the annotated string is a valid date according to the specified format.

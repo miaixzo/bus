@@ -25,7 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.spi.FileTypeDetector;
 
-import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.image.Tag;

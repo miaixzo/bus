@@ -69,7 +69,7 @@ public final class MapperAotProcessors {
      * Prevents instantiation of this utility holder.
      */
     private MapperAotProcessors() {
-        // Utility holder; do not instantiate.
+        // No initialization required.
     }
 
     /**

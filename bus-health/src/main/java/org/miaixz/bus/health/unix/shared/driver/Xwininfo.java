@@ -46,6 +46,7 @@ public final class Xwininfo {
      * Prevents instantiation of utility class.
      */
     private Xwininfo() {
+        // No initialization required.
     }
 
     /**

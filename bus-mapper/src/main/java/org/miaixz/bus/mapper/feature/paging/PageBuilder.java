@@ -64,7 +64,7 @@ public class PageBuilder {
      * Creates a new PageBuilder with default settings.
      */
     public PageBuilder() {
-        // No instance state needed
+        // No initialization required.
     }
 
     /**

@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.image.metric.web;
 
-import java.nio.charset.StandardCharsets;
+import org.miaixz.bus.core.lang.Charset;
 
 /**
  * Utility for extracting multipart boundary values from Content-Type headers.
@@ -45,7 +45,7 @@ public final class BoundaryExtractor {
      */
     public static byte[] extractBoundary(String contentType, String requiredType) {
         String boundary = extractBoundaryValue(contentType, requiredType);
-        return boundary == null ? null : boundary.getBytes(StandardCharsets.ISO_8859_1);
+        return boundary == null ? null : boundary.getBytes(Charset.ISO_8859_1);
     }
 
     /**

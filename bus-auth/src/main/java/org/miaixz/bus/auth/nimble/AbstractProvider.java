@@ -40,7 +40,6 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -51,7 +50,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public abstract class AbstractProvider implements Provider {
+public abstract class AbstractProvider extends FabricX implements Provider {
 
     /**
      * The context object containing protocol-specific configurations.
@@ -307,7 +306,7 @@ public abstract class AbstractProvider implements Provider {
                 url == null ? null : url.replaceFirst("\\?.*$", ""),
                 StringKit.isNotEmpty(code));
         try {
-            String response = Httpx.post(url);
+            String response = post(url);
             Logger.debug(
                     false,
                     "Auth",
@@ -347,7 +346,7 @@ public abstract class AbstractProvider implements Provider {
                 url == null ? null : url.replaceFirst("\\?.*$", ""),
                 StringKit.isNotEmpty(code));
         try {
-            String response = Httpx.get(url);
+            String response = get(url);
             Logger.debug(
                     false,
                     "Auth",
@@ -387,7 +386,7 @@ public abstract class AbstractProvider implements Provider {
                 url == null ? null : url.replaceFirst("\\?.*$", ""),
                 authorization != null && StringKit.isNotEmpty(authorization.getToken()));
         try {
-            String response = Httpx.get(url);
+            String response = get(url);
             Logger.debug(
                     false,
                     "Auth",
@@ -427,7 +426,7 @@ public abstract class AbstractProvider implements Provider {
                 url == null ? null : url.replaceFirst("\\?.*$", ""),
                 authorization != null && StringKit.isNotEmpty(authorization.getToken()));
         try {
-            String response = Httpx.get(url);
+            String response = get(url);
             Logger.debug(
                     false,
                     "Auth",

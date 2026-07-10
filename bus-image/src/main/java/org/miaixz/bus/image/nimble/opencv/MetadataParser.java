@@ -19,12 +19,13 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
+
+import org.miaixz.bus.core.lang.Charset;
 
 /**
  * Represents the MetadataParser type.
@@ -85,7 +86,7 @@ public final class MetadataParser {
         int byteCount = (int) row.elemSize() * row.cols() * row.channels();
         var tagBytes = new byte[byteCount];
         row.get(0, 0, tagBytes);
-        return new String(tagBytes, StandardCharsets.UTF_8).trim();
+        return new String(tagBytes, Charset.UTF_8).trim();
     }
 
 }

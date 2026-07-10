@@ -38,8 +38,8 @@ import org.miaixz.bus.limiter.magic.StrategyMode;
 import org.miaixz.bus.limiter.magic.annotation.Downgrade;
 import org.miaixz.bus.limiter.magic.annotation.Hotspot;
 import org.miaixz.bus.limiter.magic.annotation.Limiting;
-import org.miaixz.bus.limiter.metric.MethodManager;
-import org.miaixz.bus.limiter.metric.StrategyManager;
+import org.miaixz.bus.limiter.nimble.MethodManager;
+import org.miaixz.bus.limiter.nimble.StrategyManager;
 import org.miaixz.bus.limiter.proxy.ByteBuddyProxy;
 
 /**

@@ -34,7 +34,6 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * WeChat Mini Program authorization login provider.
@@ -77,7 +76,7 @@ public class WeChatMiniProvider extends AbstractProvider {
         // See https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
         // documentation
         // Use the code to get the corresponding openId, unionId, etc.
-        String response = Httpx.get(tokenUrl(authCallback.getCode()));
+        String response = get(tokenUrl(authCallback.getCode()));
         JSCode2SessionResponse object = JsonKit.toPojo(response, JSCode2SessionResponse.class);
         assert object != null;
         checkResponse(object);

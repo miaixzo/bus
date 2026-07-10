@@ -15753,122 +15753,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.core.io.buffer.CircularBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.io.buffer.CircularBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.core.io.buffer.CircularBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.core.io.buffer.FastBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.io.buffer.FastBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.core.io.buffer.FastBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.core.io.buffer.FastByteBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.io.buffer.FastByteBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.core.io.buffer.FastByteBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.core.io.buffer.FastCharBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.io.buffer.FastCharBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.core.io.buffer.FastCharBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.core.io.ByteOrderMark"
     },
     {
@@ -17620,30 +17504,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.core.io.LifeCycle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.io.LifeCycle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.core.io.LifeCycle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.core.io.LineReader"
     },
     {
@@ -18237,67 +18097,6 @@
         }
       ],
       "type": "org.miaixz.bus.core.io.resource.WebAppResource"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.core.io.SectionBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.io.SectionBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]",
-            "int",
-            "int",
-            "boolean",
-            "boolean"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.core.io.SectionBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.core.io.SegmentBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.io.SegmentBuffer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.io.ByteString[]",
-            "int[]"
-          ]
-        }
-      ],
-      "type": "org.miaixz.bus.core.io.SegmentBuffer"
     },
     {
       "condition": {
@@ -19022,12 +18821,6 @@
         }
       ],
       "type": "org.miaixz.bus.core.io.stream.WriterOutputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.io.StreamProgress"
     },
     {
       "condition": {
@@ -26445,13 +26238,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.core.lang.MediaType"
+      "type": "org.miaixz.bus.core.net.MediaType"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.lang.MediaType"
+      "type": "org.miaixz.bus.core.net.MediaType"
     },
     {
       "condition": {
@@ -26520,7 +26313,7 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.core.lang.MediaType"
+      "type": "org.miaixz.bus.core.net.MediaType"
     },
     {
       "condition": {
@@ -34051,24 +33844,6 @@
         "typeReached": "org.miaixz.bus.core.lang.reflect.ClassScanner"
       },
       "type": "org.miaixz.bus.core.xyz.IoKit$1"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.ClassScanner"
-      },
-      "type": "org.miaixz.bus.core.xyz.IoKit$2"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.ClassScanner"
-      },
-      "type": "org.miaixz.bus.core.xyz.IoKit$3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.ClassScanner"
-      },
-      "type": "org.miaixz.bus.core.xyz.IoKit$4"
     },
     {
       "condition": {

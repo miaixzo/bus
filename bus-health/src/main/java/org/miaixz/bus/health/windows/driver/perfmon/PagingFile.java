@@ -38,6 +38,7 @@ public final class PagingFile {
      * Prevents instantiation of utility class.
      */
     private PagingFile() {
+        // No initialization required.
     }
 
     /**

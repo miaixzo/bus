@@ -17,6 +17,10 @@ on:
     tags-ignore:
       - '*'
 
+env:
+  JAVA_VERSION: '25'
+  COMPILER_RELEASE: '21'
+
 permissions:
   contents: read
 
@@ -36,10 +40,11 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: ${{ env.JAVA_VERSION }}
           cache: maven
 
       - name: Build Project
         uses: ./.github/actions/build-project
         with:
           version: ${{ inputs.version || '' }}
+          compiler-release: ${{ env.COMPILER_RELEASE }}

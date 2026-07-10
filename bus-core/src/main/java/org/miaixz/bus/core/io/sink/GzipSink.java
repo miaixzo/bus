@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 
-import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.buffer.Segment;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.xyz.IoKit;
 
@@ -89,8 +89,13 @@ public class GzipSink implements Sink {
      */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
         if (byteCount < 0)
             throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        if (closed)
+            throw new IllegalStateException("closed");
         if (byteCount == 0)
             return;
         updateCrc(source, byteCount);
@@ -104,6 +109,8 @@ public class GzipSink implements Sink {
      */
     @Override
     public void flush() throws IOException {
+        if (closed)
+            throw new IllegalStateException("closed");
         deflaterSink.flush();
     }
 
@@ -196,7 +203,7 @@ public class GzipSink implements Sink {
      * @param byteCount The number of bytes from the buffer to use for the checksum update.
      */
     private void updateCrc(Buffer buffer, long byteCount) {
-        for (SectionBuffer head = buffer.head; byteCount > 0; head = head.next) {
+        for (Segment head = buffer.head; byteCount > 0; head = head.next) {
             int segmentLength = (int) Math.min(byteCount, head.limit - head.pos);
             crc.update(head.data, head.pos, segmentLength);
             byteCount -= segmentLength;

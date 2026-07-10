@@ -8,7 +8,11 @@ inputs:
   maven-args:
     description: 'Additional Maven arguments.'
     required: false
-    default: '-B -ntp -DskipTests -Djava.version=21 -Dmaven.compiler.release=21'
+    default: '-B -ntp -DskipTests'
+  compiler-release:
+    description: 'Maven compiler release target. Leave empty to use Maven defaults.'
+    required: false
+    default: '21'
   goals:
     description: 'Maven goals to execute for modules that publish themselves.'
     required: false
@@ -38,9 +42,15 @@ runs:
       env:
         MODULES: ${{ inputs.modules }}
         MAVEN_ARGS: ${{ inputs.maven-args }}
+        COMPILER_RELEASE: ${{ inputs.compiler-release }}
         GOALS: ${{ inputs.goals }}
       run: |
         set -euo pipefail
+
+        COMPILER_ARGS=""
+        if [ -n "$COMPILER_RELEASE" ]; then
+          COMPILER_ARGS="-Dmaven.compiler.release=$COMPILER_RELEASE"
+        fi
 
         SOURCE_PARENT_INSTALLED=false
 
@@ -64,7 +74,7 @@ runs:
 
           if [ "$SOURCE_PARENT_INSTALLED" = false ] && requires_source_parent "$module/pom.xml"; then
             echo "::group::Install source bus-parent for module publishing"
-            mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -f bus-parent/pom.xml clean install
+            mvn $MAVEN_ARGS $COMPILER_ARGS -Dgpg.skip=true -Dgroom.skip=true -f bus-parent/pom.xml clean install
             echo "::endgroup::"
             SOURCE_PARENT_INSTALLED=true
           fi
@@ -72,16 +82,16 @@ runs:
           echo "::group::Deploy $module"
           case "$module" in
             bus-parent)
-              mvn $MAVEN_ARGS -Dgroom.updatePomFile=true -Dgroom.pomElements.buildPlugins=remove -f "$module/pom.xml" $GOALS
+              mvn $MAVEN_ARGS $COMPILER_ARGS -Dgroom.updatePomFile=true -Dgroom.pomElements.buildPlugins=remove -f "$module/pom.xml" $GOALS
               echo "::endgroup::"
               echo "::group::Install source bus-parent for module publishing"
-              mvn $MAVEN_ARGS -Dgpg.skip=true -Dgroom.skip=true -f bus-parent/pom.xml clean install
+              mvn $MAVEN_ARGS $COMPILER_ARGS -Dgpg.skip=true -Dgroom.skip=true -f bus-parent/pom.xml clean install
               echo "::endgroup::"
               SOURCE_PARENT_INSTALLED=true
               continue
               ;;
             *)
-              mvn $MAVEN_ARGS -Dgroom.updatePomFile=true -DautoPublish=true -DpublishingServerId=central -f "$module/pom.xml" \
+              mvn $MAVEN_ARGS $COMPILER_ARGS -Dgroom.updatePomFile=true -DautoPublish=true -DpublishingServerId=central -f "$module/pom.xml" \
                 clean install org.apache.maven.plugins:maven-gpg-plugin:sign \
                 org.sonatype.central:central-publishing-maven-plugin:publish
               ;;

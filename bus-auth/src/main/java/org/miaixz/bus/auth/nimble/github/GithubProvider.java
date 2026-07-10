@@ -37,7 +37,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -102,7 +101,7 @@ public class GithubProvider extends AbstractProvider {
     public Message userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, "token " + authorization.getToken());
-        String response = Httpx.get(Builder.fromUrl(this.complex.userinfo()).build(), null, header);
+        String response = get(Builder.fromUrl(this.complex.userinfo()).build(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

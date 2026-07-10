@@ -1,0 +1,124 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.fabric.protocol.socket.frame;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+
+import org.miaixz.bus.core.lang.exception.ConvertException;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+
+/**
+ * Immutable socket frame payload.
+ *
+ * @param payload read-only payload
+ * @param length  payload length
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+public record SocketFrame(ByteBuffer payload, int length) {
+
+    /**
+     * Maximum single wire-frame payload length. Payload materialization remains governed by
+     * {@code Options.DEFAULT_MATERIALIZE_MAX_BYTES} or the active context option.
+     */
+    public static final int MAX_PAYLOAD_LENGTH = 16_777_216;
+
+    /**
+     * Creates a frame.
+     *
+     * @param payload payload
+     * @param length  length
+     */
+    public SocketFrame {
+        if (payload == null) {
+            throw new ValidateException("Socket frame payload must not be null");
+        }
+        final ByteBuffer duplicate = payload.duplicate();
+        if (length != duplicate.remaining()) {
+            throw new ProtocolException("Socket frame length does not match payload");
+        }
+        if (length < 0 || length > MAX_PAYLOAD_LENGTH) {
+            throw new ProtocolException("Socket frame length exceeds maximum");
+        }
+        final byte[] data = new byte[length];
+        duplicate.get(data);
+        payload = ByteBuffer.wrap(data).asReadOnlyBuffer();
+    }
+
+    /**
+     * Creates a frame from remaining bytes.
+     *
+     * @param payload payload
+     * @return frame
+     */
+    public static SocketFrame of(final ByteBuffer payload) {
+        if (payload == null) {
+            throw new ValidateException("Socket frame payload must not be null");
+        }
+        return new SocketFrame(payload, payload.remaining());
+    }
+
+    /**
+     * Creates a text frame.
+     *
+     * @param value   text
+     * @param charset charset
+     * @return frame
+     */
+    public static SocketFrame text(final String value, final Charset charset) {
+        if (value == null) {
+            throw new ValidateException("Socket frame text must not be null");
+        }
+        if (charset == null) {
+            throw new ValidateException("Charset must not be null");
+        }
+        try {
+            return of(ByteBuffer.wrap(value.getBytes(charset)));
+        } catch (final RuntimeException e) {
+            if (e instanceof ValidateException || e instanceof ProtocolException) {
+                throw e;
+            }
+            throw new ConvertException("Unable to encode socket frame text", e);
+        }
+    }
+
+    /**
+     * Returns a read-only payload duplicate.
+     *
+     * @return payload duplicate
+     */
+    @Override
+    public ByteBuffer payload() {
+        return payload.asReadOnlyBuffer();
+    }
+
+    /**
+     * Returns payload length.
+     *
+     * @return length
+     */
+    @Override
+    public int length() {
+        return length;
+    }
+
+}

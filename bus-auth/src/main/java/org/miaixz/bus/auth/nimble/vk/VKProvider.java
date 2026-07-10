@@ -35,11 +35,10 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * VK login provider.
@@ -204,7 +203,7 @@ public class VKProvider extends AbstractProvider {
             form.put("code_verifier", codeVerifier);
         }
 
-        return Httpx.post(this.complex.token(), form, this.buildHeader());
+        return post(this.complex.token(), form, this.buildHeader());
     }
 
     /**
@@ -215,7 +214,7 @@ public class VKProvider extends AbstractProvider {
      * @return the {@link Authorization} containing token details
      */
     private Authorization getToken(Map<String, String> param, String url) {
-        String response = Httpx.post(url, param, this.buildHeader());
+        String response = post(url, param, this.buildHeader());
         Map<String, String> object = JsonKit.toMap(response);
         this.checkResponse(object);
         return Authorization.builder().token(object.get("access_token")).token_type(object.get("token_type"))
@@ -233,7 +232,7 @@ public class VKProvider extends AbstractProvider {
         Map<String, String> form = new HashMap<>(7);
         form.put("access_token", authorization.getToken());
         form.put("client_id", this.context.getClientId());
-        return Httpx.post(this.complex.userinfo(), form, this.buildHeader());
+        return post(this.complex.userinfo(), form, this.buildHeader());
     }
 
     /**
@@ -273,7 +272,7 @@ public class VKProvider extends AbstractProvider {
         form.put("access_token", authorization.getToken());
         form.put("client_id", this.context.getClientId());
 
-        return Httpx.post(this.complex.revoke(), form, this.buildHeader());
+        return post(this.complex.revoke(), form, this.buildHeader());
     }
 
 }

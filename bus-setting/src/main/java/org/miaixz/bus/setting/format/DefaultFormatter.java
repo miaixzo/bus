@@ -24,10 +24,10 @@ import java.util.Objects;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Format;
-import org.miaixz.bus.setting.metric.ini.IniComment;
-import org.miaixz.bus.setting.metric.ini.IniElement;
-import org.miaixz.bus.setting.metric.ini.IniProperty;
-import org.miaixz.bus.setting.metric.ini.IniSection;
+import org.miaixz.bus.setting.nimble.ini.IniComment;
+import org.miaixz.bus.setting.nimble.ini.IniElement;
+import org.miaixz.bus.setting.nimble.ini.IniProperty;
+import org.miaixz.bus.setting.nimble.ini.IniSection;
 
 /**
  * The default line formatter for INI files. It uses a chain of responsibility pattern, attempting to parse a line as a

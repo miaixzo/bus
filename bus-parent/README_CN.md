@@ -1,14 +1,14 @@
 # Bus Framework
 
 <p align="center">
-  <strong>现代化、模块化的 Java 企业级框架 — 基于 Java 21+</strong>
+  <strong>现代化、模块化的 Java 企业级框架 — 基于 Java 25+</strong>
 </p>
 
 <p align="center">
   <a href="https://github.com/818000/bus"><img src="https://img.shields.io/badge/GitHub-miaixz%2Fbus-blue?logo=github" alt="GitHub"/></a>
   <a href="https://mvnrepository.com/artifact/org.miaixz"><img src="https://img.shields.io/maven-central/v/org.miaixz/bus-core?label=Maven%20Central" alt="Maven Central"/></a>
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" alt="License"/></a>
-  <img src="https://img.shields.io/badge/Java-21%2B-orange" alt="Java 21+"/>
+  <img src="https://img.shields.io/badge/Java-25%2B-orange" alt="Java 25+"/>
   <img src="https://img.shields.io/badge/Spring%20Boot-3.5.x-brightgreen" alt="Spring Boot 3.5.x"/>
 </p>
 
@@ -37,7 +37,7 @@
 | **bus-extra** | 核心之外的额外工具与第三方集成 |
 | **bus-gitlab** | GitLab API 客户端与 CI/CD 集成助手 |
 | **bus-health** | 健康检查端点与系统监控 |
-| **bus-http** | 高性能 HTTP 客户端，支持链式 API 与自动重试 |
+| **bus-fabric** | 统一 HTTP 客户端与非阻塞 Socket、WebSocket 抽象 |
 | **bus-image** | 图像处理与 DICOM 医学影像专业支持 |
 | **bus-limiter** | 热点检测、限流与服务降级 |
 | **bus-logger** | 通用日志抽象，统一桥接所有主流日志框架 |
@@ -51,7 +51,6 @@
 | **bus-sensitive** | 数据脱敏与敏感字段保护 |
 | **bus-setting** | 统一配置文件读取（properties、YAML、TOML 等） |
 | **bus-shade** | 依赖 Shade 管理与重定位 |
-| **bus-socket** | 非阻塞 Socket 与 WebSocket 抽象 |
 | **bus-starter** | Bus 生态 Spring Boot 自动配置启动器 |
 | **bus-storage** | 统一云存储抽象（S3、OSS、COS、MinIO 等） |
 | **bus-tempus** | 时间与调度工具：Cron 表达式、日历操作 |
@@ -247,7 +246,6 @@
 
 ```xml
 <properties>
-    <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 </properties>
@@ -257,8 +255,7 @@
 
 | 组件 | 版本 |
 | :--- | :--- |
-| Java 最低版本 | 21+ |
-| Maven 编译版本 | 21 |
+| Java 最低版本 | 25+ |
 | Spring Boot | 3.5.13 |
 | MyBatis | 3.5.19 |
 | MyBatis-Spring | 3.0.5 |
@@ -267,7 +264,7 @@
 
 | 插件 | 用途 |
 | :--- | :--- |
-| `maven-compiler-plugin` | 使用 `--release 21` 编译 Java 代码，保留参数名，并配置 Lombok 注解处理 |
+| `maven-compiler-plugin` | 编译 Java 代码时保留参数名，并配置 Lombok 注解处理；编译 release 由当前 Maven settings/profile 提供 |
 | `maven-resources-plugin` | 使用 UTF-8 和 Bus 资源占位符进行资源过滤 |
 | `maven-jar-plugin` | 生成标准 JAR Manifest，并避免写入 `META-INF/maven` 描述信息 |
 | `maven-war-plugin` | 生成标准 WAR Manifest，并避免写入 `META-INF/maven` 描述信息 |
@@ -353,7 +350,7 @@ mvn help:effective-pom
 
 **Q：最低 Java 版本要求是什么？**
 
-Bus 8.x 要求 **Java 21** 或更高版本。如需支持 Java 11，请使用 Bus 7.x 系列。
+Bus 8.x 要求 **Java 25** 或更高版本。如需支持 Java 11，请使用 Bus 7.x 系列。
 
 **Q：是否支持 GraalVM 原生镜像？**
 
@@ -365,8 +362,8 @@ Bus 8.x 要求 **Java 21** 或更高版本。如需支持 Java 11，请使用 Bu
 
 | Bus 版本 | Java | Spring Boot | 状态 |
 | :--- | :--- | :--- | :--- |
-| **8.6.x** | 21+ | 3.5.x | **维护中** |
-| 8.0.x - 8.5.x | 21+ | 3.x | 维护中 |
+| **8.6.x** | 25+ | 3.5.x | **维护中** |
+| 8.0.x - 8.5.x | 25+ | 3.x | 维护中 |
 | 7.x | 11+ | 2.x | 已停止维护 |
 
 ---

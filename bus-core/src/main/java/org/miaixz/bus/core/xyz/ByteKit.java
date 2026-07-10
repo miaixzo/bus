@@ -33,7 +33,6 @@ import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
 
 import org.miaixz.bus.core.center.regex.Pattern;
-import org.miaixz.bus.core.io.buffer.FastByteBuffer;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 
@@ -662,11 +661,13 @@ public class ByteKit {
             totalLength += byteArray.length;
         }
 
-        final FastByteBuffer buffer = new FastByteBuffer(totalLength);
+        final byte[] result = new byte[totalLength];
+        int offset = 0;
         for (final byte[] byteArray : byteArrays) {
-            buffer.append(byteArray);
+            System.arraycopy(byteArray, 0, result, offset, byteArray.length);
+            offset += byteArray.length;
         }
-        return buffer.toArrayZeroCopyIfPossible();
+        return result;
     }
 
     /**

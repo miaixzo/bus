@@ -24,8 +24,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 
 /**
  * Runtime compatibility options shared by wrapper-related HTTP components.
@@ -53,7 +53,7 @@ public class WrapperRuntimeOptions {
      * Constructs a WrapperRuntimeOptions instance with legacy-compatible defaults.
      */
     public WrapperRuntimeOptions() {
-        // Field initializers provide the default runtime options.
+        // No initialization required.
     }
 
     /**

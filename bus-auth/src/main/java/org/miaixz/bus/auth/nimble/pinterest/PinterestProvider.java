@@ -37,7 +37,6 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -120,7 +119,7 @@ public class PinterestProvider extends AbstractProvider {
     public Message userInfo(Authorization authorization) {
         String userinfoUrl = userInfoUrl(authorization);
         // TODO: Check if .setFollowRedirects(true) is needed
-        String response = Httpx.get(userinfoUrl);
+        String response = get(userinfoUrl);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

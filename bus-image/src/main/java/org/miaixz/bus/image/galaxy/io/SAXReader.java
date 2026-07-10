@@ -24,7 +24,6 @@ import java.io.InputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
@@ -59,8 +58,7 @@ public class SAXReader {
             throws ParserConfigurationException, SAXException, IOException {
         if (attrs == null)
             attrs = new Attributes();
-        SAXParserFactory f = SAXParserFactory.newInstance();
-        SAXParser parser = f.newSAXParser();
+        SAXParser parser = SAXParserFactoryHolder.factory.newSAXParser();
         parser.parse(uri, new ContentHandlerAdapter(attrs));
         return attrs;
     }
@@ -79,8 +77,7 @@ public class SAXReader {
             throws ParserConfigurationException, SAXException, IOException {
         if (attrs == null)
             attrs = new Attributes();
-        SAXParserFactory f = SAXParserFactory.newInstance();
-        SAXParser parser = f.newSAXParser();
+        SAXParser parser = SAXParserFactoryHolder.factory.newSAXParser();
         parser.parse(is, new ContentHandlerAdapter(attrs));
         return attrs;
     }

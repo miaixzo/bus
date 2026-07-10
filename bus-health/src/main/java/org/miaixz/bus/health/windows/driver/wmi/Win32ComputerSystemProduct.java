@@ -40,6 +40,7 @@ public final class Win32ComputerSystemProduct {
      * Prevents instantiation of utility class.
      */
     private Win32ComputerSystemProduct() {
+        // No initialization required.
     }
 
     /**

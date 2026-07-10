@@ -686,7 +686,7 @@ You can override this by explicitly setting the factory:
 
 ```java
 import org.miaixz.bus.logger.Holder;
-import org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory;
+import org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory;
 
 // Force SLF4J usage
 Holder.setDefaultFactory(Slf4jLoggingFactory.class);

@@ -36,12 +36,11 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -119,7 +118,7 @@ public class ElemeProvider extends AbstractProvider {
 
         Map<String, String> header = this.buildHeader(MediaType.APPLICATION_FORM_URLENCODED, this.getRequestId(), true);
 
-        String response = Httpx.post(this.complex.token(), form, header);
+        String response = post(this.complex.token(), form, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -170,7 +169,7 @@ public class ElemeProvider extends AbstractProvider {
         form.put("grant_type", "refresh_token");
 
         Map<String, String> header = this.buildHeader(MediaType.APPLICATION_FORM_URLENCODED, this.getRequestId(), true);
-        String response = Httpx.post(this.complex.refresh(), form, header);
+        String response = post(this.complex.refresh(), form, header);
 
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -246,8 +245,11 @@ public class ElemeProvider extends AbstractProvider {
         paramsMap.put("signature", signature);
 
         Map<String, String> header = this.buildHeader(MediaType.APPLICATION_JSON, requestId, false);
-        String response = Httpx
-                .post(this.complex.userinfo(), JsonKit.toJsonString(paramsMap), header, MediaType.APPLICATION_JSON);
+        String response = post(
+                this.complex.userinfo(),
+                JsonKit.toJsonString(paramsMap),
+                header,
+                MediaType.APPLICATION_JSON);
 
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);

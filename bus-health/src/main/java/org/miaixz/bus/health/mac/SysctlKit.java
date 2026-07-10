@@ -42,6 +42,7 @@ public final class SysctlKit {
      * Prevents instantiation of utility class.
      */
     private SysctlKit() {
+        // No initialization required.
     }
 
     /**

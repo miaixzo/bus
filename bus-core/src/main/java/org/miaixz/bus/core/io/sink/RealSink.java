@@ -26,8 +26,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.buffer.Segment;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Symbol;
@@ -91,8 +91,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.write(source, byteCount);
         emitCompleteSegments();
     }
@@ -108,8 +107,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink write(ByteString byteString) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.write(byteString);
         return emitCompleteSegments();
     }
@@ -125,8 +123,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeUtf8(String string) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeUtf8(string);
         return emitCompleteSegments();
     }
@@ -144,8 +141,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeUtf8(String string, int beginIndex, int endIndex) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeUtf8(string, beginIndex, endIndex);
         return emitCompleteSegments();
     }
@@ -161,8 +157,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeUtf8CodePoint(int codePoint) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeUtf8CodePoint(codePoint);
         return emitCompleteSegments();
     }
@@ -179,8 +174,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeString(String string, Charset charset) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeString(string, charset);
         return emitCompleteSegments();
     }
@@ -199,8 +193,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeString(String string, int beginIndex, int endIndex, Charset charset) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeString(string, beginIndex, endIndex, charset);
         return emitCompleteSegments();
     }
@@ -216,8 +209,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink write(byte[] source) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.write(source);
         return emitCompleteSegments();
     }
@@ -235,8 +227,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink write(byte[] source, int offset, int byteCount) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.write(source, offset, byteCount);
         return emitCompleteSegments();
     }
@@ -252,8 +243,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public int write(ByteBuffer source) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         int result = buffer.write(source);
         emitCompleteSegments();
         return result;
@@ -272,8 +262,9 @@ public final class RealSink implements BufferSink {
         if (null == source) {
             throw new IllegalArgumentException("source == null");
         }
+        assertOpen();
         long totalBytesRead = 0;
-        for (long readCount; (readCount = source.read(buffer, SectionBuffer.SIZE)) != -1;) {
+        for (long readCount; (readCount = source.read(buffer, Segment.SIZE)) != -1;) {
             totalBytesRead += readCount;
             emitCompleteSegments();
         }
@@ -291,6 +282,13 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink write(Source source, long byteCount) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
+        if (byteCount < 0) {
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        }
+        assertOpen();
         while (byteCount > 0) {
             long read = source.read(buffer, byteCount);
             if (read == -1)
@@ -311,8 +309,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeByte(int b) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeByte(b);
         return emitCompleteSegments();
     }
@@ -328,8 +325,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeShort(int s) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeShort(s);
         return emitCompleteSegments();
     }
@@ -345,8 +341,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeShortLe(int s) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeShortLe(s);
         return emitCompleteSegments();
     }
@@ -362,8 +357,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeInt(int i) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeInt(i);
         return emitCompleteSegments();
     }
@@ -379,8 +373,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeIntLe(int i) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeIntLe(i);
         return emitCompleteSegments();
     }
@@ -396,8 +389,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeLong(long v) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeLong(v);
         return emitCompleteSegments();
     }
@@ -413,8 +405,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeLongLe(long v) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeLongLe(v);
         return emitCompleteSegments();
     }
@@ -430,8 +421,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeDecimalLong(long v) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeDecimalLong(v);
         return emitCompleteSegments();
     }
@@ -447,8 +437,7 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink writeHexadecimalUnsignedLong(long v) throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
+        assertOpen();
         buffer.writeHexadecimalUnsignedLong(v);
         return emitCompleteSegments();
     }
@@ -463,11 +452,8 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink emitCompleteSegments() throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
-        long byteCount = buffer.completeSegmentByteCount();
-        if (byteCount > 0)
-            sink.write(buffer, byteCount);
+        assertOpen();
+        emitCompleteSegmentsToSink();
         return this;
     }
 
@@ -481,11 +467,8 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public BufferSink emit() throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
-        long byteCount = buffer.size();
-        if (byteCount > 0)
-            sink.write(buffer, byteCount);
+        assertOpen();
+        emitAllToSink();
         return this;
     }
 
@@ -567,12 +550,42 @@ public final class RealSink implements BufferSink {
      */
     @Override
     public void flush() throws IOException {
-        if (closed)
-            throw new IllegalStateException("closed");
-        if (buffer.size > 0) {
-            sink.write(buffer, buffer.size);
-        }
+        assertOpen();
+        emitAllToSink();
         sink.flush();
+    }
+
+    /**
+     * Verifies that this sink is open.
+     */
+    private void assertOpen() {
+        if (closed) {
+            throw new IllegalStateException("closed");
+        }
+    }
+
+    /**
+     * Writes complete segments from the internal buffer to the underlying sink.
+     *
+     * @throws IOException if an I/O error occurs
+     */
+    private void emitCompleteSegmentsToSink() throws IOException {
+        long byteCount = buffer.completeSegmentByteCount();
+        if (byteCount > 0) {
+            sink.write(buffer, byteCount);
+        }
+    }
+
+    /**
+     * Writes all buffered bytes to the underlying sink.
+     *
+     * @throws IOException if an I/O error occurs
+     */
+    private void emitAllToSink() throws IOException {
+        long byteCount = buffer.size();
+        if (byteCount > 0) {
+            sink.write(buffer, byteCount);
+        }
     }
 
     /**
@@ -596,9 +609,7 @@ public final class RealSink implements BufferSink {
         }
         Throwable thrown = null;
         try {
-            if (buffer.size > 0) {
-                sink.write(buffer, buffer.size);
-            }
+            emitAllToSink();
         } catch (Throwable e) {
             thrown = e;
         }

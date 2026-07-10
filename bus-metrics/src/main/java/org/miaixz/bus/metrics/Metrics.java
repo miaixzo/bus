@@ -22,7 +22,7 @@ package org.miaixz.bus.metrics;
 import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.metrics.metric.*;
+import org.miaixz.bus.metrics.nimble.*;
 import org.miaixz.bus.metrics.observe.slo.SloTracker;
 import org.miaixz.bus.metrics.observe.tag.Tag;
 

@@ -44,6 +44,7 @@ public class OpenBsdFirmware extends AbstractFirmware {
      * Creates a new OpenBsdFirmware instance.
      */
     public OpenBsdFirmware() {
+        // No initialization required.
     }
 
     /**

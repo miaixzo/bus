@@ -24,8 +24,8 @@ import java.io.InputStream;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 
+import org.miaixz.bus.core.io.ByteSelector;
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.SegmentBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 
@@ -270,15 +270,15 @@ public interface BufferSource extends Source, ReadableByteChannel {
     ByteString readByteString(long byteCount) throws IOException;
 
     /**
-     * Finds the first string in {@code options} that is a prefix of this buffer, consumes it from this buffer, and
-     * returns its index. If no byte string in {@code options} is a prefix of this buffer, -1 is returned and no bytes
+     * Finds the first candidate in {@code selector} that is a prefix of this buffer, consumes it from this buffer, and
+     * returns its index. If no byte string in {@code selector} is a prefix of this buffer, -1 is returned and no bytes
      * are consumed.
      *
      * This can be used as an alternative to {@link #readByteString} or even {@link #readUtf8} if the set of expected
      * values is known in advance.
      *
      * <pre>{@code
-     * Options FIELDS = Options
+     * ByteSelector FIELDS = ByteSelector
      *         .of(ByteString.encodeUtf8("depth="), ByteString.encodeUtf8("height="), ByteString.encodeUtf8("width="));
      *
      * Buffer buffer = new Buffer().writeUtf8("width=640\n").writeUtf8("height=480\n");
@@ -291,12 +291,12 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals('\n', buffer.readByte());
      * }</pre>
      *
-     * @param segmentBuffer The {@link SegmentBuffer} containing the options to match against.
-     * @return The index of the matched {@link ByteString} in the {@link SegmentBuffer}, or -1 if no match is found and
+     * @param selector The {@link ByteSelector} containing the candidates to match against.
+     * @return The index of the matched {@link ByteString} in the {@link ByteSelector}, or -1 if no match is found and
      *         the source is exhausted.
      * @throws IOException If an I/O error occurs.
      */
-    int select(SegmentBuffer segmentBuffer) throws IOException;
+    int select(ByteSelector selector) throws IOException;
 
     /**
      * Removes all bytes from this source and returns them as a byte array.

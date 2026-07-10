@@ -1470,7 +1470,7 @@
         {
           "name": "getTransferSyntax",
           "parameterTypes": [
-            "org.miaixz.bus.core.lang.MediaType"
+            "org.miaixz.bus.core.net.MediaType"
           ]
         },
         {
@@ -1669,7 +1669,7 @@
         {
           "name": "sopClassOf",
           "parameterTypes": [
-            "org.miaixz.bus.core.lang.MediaType"
+            "org.miaixz.bus.core.net.MediaType"
           ]
         },
         {
@@ -1697,7 +1697,7 @@
         {
           "name": "transferSyntaxOf",
           "parameterTypes": [
-            "org.miaixz.bus.core.lang.MediaType"
+            "org.miaixz.bus.core.net.MediaType"
           ]
         },
         {
@@ -52481,6 +52481,36 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
       "type": "org.miaixz.bus.image.galaxy.io.SAXReader"
@@ -52652,6 +52682,36 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.image.galaxy.io.SAXTransformer$SetupTransformer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.image.galaxy.io.SAXTransformerFactoryHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.image.galaxy.io.SAXTransformerFactoryHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.image.galaxy.io.SAXTransformerFactoryHolder"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.image.galaxy.io.SAXTransformerFactoryHolder"
     },
     {
       "condition": {

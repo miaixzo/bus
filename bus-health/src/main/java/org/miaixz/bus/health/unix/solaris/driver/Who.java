@@ -44,6 +44,7 @@ public final class Who {
      * Prevents instantiation of utility class.
      */
     private Who() {
+        // No initialization required.
     }
 
     /**

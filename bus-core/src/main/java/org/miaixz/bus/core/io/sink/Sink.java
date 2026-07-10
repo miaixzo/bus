@@ -37,7 +37,8 @@ import org.miaixz.bus.core.io.timout.Timeout;
 public interface Sink extends Closeable, Flushable {
 
     /**
-     * Writes {@code byteCount} bytes from {@code source} to this sink.
+     * Writes exactly {@code byteCount} bytes from {@code source} to this sink. Implementations may consume whole
+     * segments directly or expose them as NIO buffers for gathering writes.
      *
      * @param source    The buffer containing the data to write.
      * @param byteCount The number of bytes to read from {@code source} and write to this sink.

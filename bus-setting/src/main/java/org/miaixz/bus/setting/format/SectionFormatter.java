@@ -22,9 +22,9 @@ package org.miaixz.bus.setting.format;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.setting.metric.ini.IniComment;
-import org.miaixz.bus.setting.metric.ini.IniSection;
-import org.miaixz.bus.setting.metric.ini.IniSectionService;
+import org.miaixz.bus.setting.nimble.ini.IniComment;
+import org.miaixz.bus.setting.nimble.ini.IniSection;
+import org.miaixz.bus.setting.nimble.ini.IniSectionService;
 
 /**
  * A formatter that parses a string value into an {@link IniSection} object.

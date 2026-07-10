@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -186,7 +185,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     private Authorization getToken(String tokenUrl) {
-        String response = Httpx.get(tokenUrl);
+        String response = get(tokenUrl);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

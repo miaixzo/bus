@@ -26,10 +26,9 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
-import org.miaixz.bus.core.io.buffer.FastByteBuffer;
+import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CharKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -110,13 +109,13 @@ public class LineInputStream extends FilterInputStream implements Iterable<byte[
      * @throws IOException If an I/O error occurs during reading.
      */
     private byte[] _readLine() throws IOException {
-        FastByteBuffer out = null;
+        Buffer out = null;
         // Flag to indicate if the preceding character was an escape character (backslash).
         boolean precedingBackslash = false;
         int c;
         while ((c = read()) > 0) {
             if (null == out) {
-                out = new FastByteBuffer();
+                out = new Buffer();
             }
             if (Symbol.C_BACKSLASH == c) {
                 // Handle escape character.
@@ -140,18 +139,18 @@ public class LineInputStream extends FilterInputStream implements Iterable<byte[
                 } else if (Symbol.C_LF == c) {
                     // Not in escape mode, and encountered a newline character, indicating end of line.
                     // If the newline is `\r\n`, remove the trailing `\r`.
-                    final int lastIndex = out.length() - 1;
-                    if (lastIndex >= 0 && Symbol.C_CR == out.get(lastIndex)) {
-                        return out.toArray(0, lastIndex);
+                    final long lastIndex = out.size() - 1;
+                    if (lastIndex >= 0 && Symbol.C_CR == out.getByte(lastIndex)) {
+                        return out.readByteArray(lastIndex);
                     }
                     break;
                 }
             }
 
-            out.append((byte) c);
+            out.writeByte(c);
         }
 
-        return ObjectKit.apply(out, FastByteBuffer::toArray);
+        return out == null ? null : out.readByteArray();
     }
 
 }

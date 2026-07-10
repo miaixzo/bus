@@ -50,6 +50,7 @@ public class WmiQueryHandler {
      * Creates a new WmiQueryHandler instance.
      */
     public WmiQueryHandler() {
+        // No initialization required.
     }
 
     /**

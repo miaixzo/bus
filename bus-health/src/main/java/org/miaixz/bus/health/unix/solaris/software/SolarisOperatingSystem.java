@@ -60,6 +60,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
      * Creates a new SolarisOperatingSystem instance.
      */
     public SolarisOperatingSystem() {
+        // No initialization required.
     }
 
     /**

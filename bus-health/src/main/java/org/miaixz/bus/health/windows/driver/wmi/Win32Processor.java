@@ -40,6 +40,7 @@ public final class Win32Processor {
      * Prevents instantiation of utility class.
      */
     private Win32Processor() {
+        // No initialization required.
     }
 
     /**

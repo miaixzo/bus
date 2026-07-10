@@ -39,12 +39,12 @@ module bus.logger {
     exports org.miaixz.bus.logger;
     exports org.miaixz.bus.logger.magic;
     exports org.miaixz.bus.logger.magic.level;
-    exports org.miaixz.bus.logger.metric.apache.commons;
-    exports org.miaixz.bus.logger.metric.apache.log4j;
-    exports org.miaixz.bus.logger.metric.console;
-    exports org.miaixz.bus.logger.metric.jboss;
-    exports org.miaixz.bus.logger.metric.jdk;
-    exports org.miaixz.bus.logger.metric.slf4j;
-    exports org.miaixz.bus.logger.metric.tinylog;
+    exports org.miaixz.bus.logger.nimble.apache.commons;
+    exports org.miaixz.bus.logger.nimble.apache.log4j;
+    exports org.miaixz.bus.logger.nimble.console;
+    exports org.miaixz.bus.logger.nimble.jboss;
+    exports org.miaixz.bus.logger.nimble.jdk;
+    exports org.miaixz.bus.logger.nimble.slf4j;
+    exports org.miaixz.bus.logger.nimble.tinylog;
 
 }

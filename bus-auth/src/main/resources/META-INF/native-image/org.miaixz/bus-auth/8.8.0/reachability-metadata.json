@@ -2,7 +2,7 @@
   "reflection": [
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "jakarta.servlet.Servlet"
     },
@@ -83,7 +83,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "javax.servlet.Servlet"
     },
@@ -8420,7 +8420,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Logger"
       },
-      "type": "org.miaixz.bus.cache.metric.MemoryCache"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache"
     },
     {
       "condition": {
@@ -8456,7 +8456,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory"
     },
     {
       "condition": {
@@ -8468,13 +8468,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
       },
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory"
     },
     {
       "condition": {
@@ -8486,13 +8486,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
       },
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory"
     },
     {
       "condition": {
@@ -8504,13 +8504,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
       },
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory"
     },
     {
       "condition": {
@@ -8522,7 +8522,7 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory"
     }
   ],
   "resources": [

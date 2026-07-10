@@ -85,7 +85,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Logger"
       },
-      "type": "org.miaixz.bus.cache.metric.MemoryCache"
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache"
     },
     {
       "condition": {
@@ -115,7 +115,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory"
     },
     {
       "condition": {
@@ -127,13 +127,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
       },
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory"
     },
     {
       "condition": {
@@ -145,13 +145,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
       },
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory"
     },
     {
       "condition": {
@@ -163,13 +163,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
       },
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory"
     },
     {
       "condition": {
@@ -181,7 +181,7 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory"
     },
     {
       "condition": {
@@ -778,13 +778,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.AbstractProvider"
+      "type": "org.miaixz.bus.notify.nimble.AbstractProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.AbstractProvider"
+      "type": "org.miaixz.bus.notify.nimble.AbstractProvider"
     },
     {
       "condition": {
@@ -818,19 +818,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.AbstractProvider"
+      "type": "org.miaixz.bus.notify.nimble.AbstractProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunEmailProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunEmailProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunEmailProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunEmailProvider"
     },
     {
       "condition": {
@@ -840,23 +840,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
+            "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunEmailProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunEmailProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
     },
     {
       "condition": {
@@ -882,19 +882,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilder"
     },
     {
       "condition": {
@@ -912,19 +912,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -940,19 +940,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunProvider"
     },
     {
       "condition": {
@@ -984,19 +984,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunSmsProvider"
     },
     {
       "condition": {
@@ -1006,23 +1006,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
+            "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunVmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunVmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunVmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunVmsProvider"
     },
     {
       "condition": {
@@ -1032,23 +1032,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.aliyun.AliyunNotice"
+            "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.aliyun.AliyunVmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunVmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice"
     },
     {
       "condition": {
@@ -1064,19 +1064,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilder"
     },
     {
       "condition": {
@@ -1088,19 +1088,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -1116,19 +1116,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduSmsProvider"
     },
     {
       "condition": {
@@ -1138,23 +1138,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.baidu.BaiduNotice"
+            "org.miaixz.bus.notify.nimble.baidu.BaiduNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.baidu.BaiduSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice"
     },
     {
       "condition": {
@@ -1170,19 +1170,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilder"
     },
     {
       "condition": {
@@ -1194,19 +1194,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -1222,19 +1222,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenSmsProvider"
     },
     {
       "condition": {
@@ -1244,23 +1244,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.cloopen.CloopenNotice"
+            "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.cloopen.CloopenSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice"
     },
     {
       "condition": {
@@ -1300,19 +1300,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilder"
     },
     {
       "condition": {
@@ -1336,19 +1336,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -1364,19 +1364,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunSmsProvider"
     },
     {
       "condition": {
@@ -1386,7 +1386,7 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.ctyun.CtyunNotice"
+            "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice"
           ]
         },
         {
@@ -1398,19 +1398,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.ctyun.CtyunSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice"
     },
     {
       "condition": {
@@ -1492,19 +1492,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
     },
     {
       "condition": {
@@ -1558,19 +1558,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -1586,19 +1586,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkProvider"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkProvider"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkProvider"
     },
     {
       "condition": {
@@ -1620,7 +1620,7 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.dingtalk.DingTalkNotice"
+            "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice"
           ]
         },
         {
@@ -1642,19 +1642,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.dingtalk.DingTalkProvider"
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice"
     },
     {
       "condition": {
@@ -1676,19 +1676,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilder"
     },
     {
       "condition": {
@@ -1706,19 +1706,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -1734,19 +1734,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.emay.EmayNotice$EmayNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmaySmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmaySmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.emay.EmaySmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmaySmsProvider"
     },
     {
       "condition": {
@@ -1765,35 +1765,35 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.emay.EmayNotice"
+            "org.miaixz.bus.notify.nimble.emay.EmayNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.emay.EmaySmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.emay.EmaySmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericEmailProvider"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericEmailProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericEmailProvider"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericEmailProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice"
     },
     {
       "condition": {
@@ -2031,19 +2031,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilder"
     },
     {
       "condition": {
@@ -2181,19 +2181,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2209,19 +2209,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.generic.GenericNotice$GenericNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice"
     },
     {
       "condition": {
@@ -2237,19 +2237,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilder"
     },
     {
       "condition": {
@@ -2261,19 +2261,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2289,19 +2289,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiSmsProvider"
     },
     {
       "condition": {
@@ -2321,23 +2321,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.huawei.HuaweiNotice"
+            "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.huawei.HuaweiSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice"
     },
     {
       "condition": {
@@ -2353,19 +2353,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilder"
     },
     {
       "condition": {
@@ -2377,19 +2377,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2405,19 +2405,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudSmsProvider"
     },
     {
       "condition": {
@@ -2427,23 +2427,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.jdcloud.JdcloudNotice"
+            "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jdcloud.JdcloudSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice"
     },
     {
       "condition": {
@@ -2459,19 +2459,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilder"
     },
     {
       "condition": {
@@ -2483,19 +2483,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2511,19 +2511,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushNotice$JpushNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushSmsProvider"
     },
     {
       "condition": {
@@ -2537,23 +2537,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.jpush.JpushNotice"
+            "org.miaixz.bus.notify.nimble.jpush.JpushNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.jpush.JpushSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice"
     },
     {
       "condition": {
@@ -2569,19 +2569,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilder"
     },
     {
       "condition": {
@@ -2593,19 +2593,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2621,19 +2621,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseProvider"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseProvider"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseProvider"
     },
     {
       "condition": {
@@ -2670,19 +2670,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseProvider"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseSmsProvider"
     },
     {
       "condition": {
@@ -2692,23 +2692,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.netease.NeteaseNotice"
+            "org.miaixz.bus.notify.nimble.netease.NeteaseNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.netease.NeteaseSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice"
     },
     {
       "condition": {
@@ -2724,19 +2724,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilder"
     },
     {
       "condition": {
@@ -2748,19 +2748,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2776,19 +2776,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuSmsProvider"
     },
     {
       "condition": {
@@ -2798,23 +2798,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.qiniu.QiniuNotice"
+            "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.qiniu.QiniuSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice"
     },
     {
       "condition": {
@@ -2840,19 +2840,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilder"
     },
     {
       "condition": {
@@ -2870,19 +2870,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -2898,19 +2898,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentNotice$TencentNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentSmsProvider"
     },
     {
       "condition": {
@@ -2920,23 +2920,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.tencent.TencentNotice"
+            "org.miaixz.bus.notify.nimble.tencent.TencentNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.tencent.TencentSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice"
     },
     {
       "condition": {
@@ -2996,19 +2996,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilder"
     },
     {
       "condition": {
@@ -3044,19 +3044,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -3072,19 +3072,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.unisms.UniNotice$UniNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.unisms.UniSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniSmsProvider"
     },
     {
       "condition": {
@@ -3094,7 +3094,7 @@
         {
           "name": "request",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.unisms.UniNotice",
+            "org.miaixz.bus.notify.nimble.unisms.UniNotice",
             "java.lang.String",
             "java.util.Map"
           ]
@@ -3102,23 +3102,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.unisms.UniNotice"
+            "org.miaixz.bus.notify.nimble.unisms.UniNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.unisms.UniSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice"
     },
     {
       "condition": {
@@ -3144,19 +3144,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$MessageId"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$MessageId"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$MessageId"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$MessageId"
     },
     {
       "condition": {
@@ -3208,19 +3208,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$MessageId"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$MessageId"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilder"
     },
     {
       "condition": {
@@ -3238,19 +3238,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -3266,19 +3266,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunSmsProvider"
     },
     {
       "condition": {
@@ -3288,7 +3288,7 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.upyun.UpyunNotice"
+            "org.miaixz.bus.notify.nimble.upyun.UpyunNotice"
           ]
         },
         {
@@ -3299,19 +3299,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.upyun.UpyunSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatCpProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatCpProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatCpProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatCpProvider"
     },
     {
       "condition": {
@@ -3321,23 +3321,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.wechat.WechatNotice"
+            "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatCpProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatCpProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatKfProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatKfProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatKfProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatKfProvider"
     },
     {
       "condition": {
@@ -3347,23 +3347,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.wechat.WechatNotice"
+            "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatKfProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatKfProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatMiniProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMiniProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatMiniProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMiniProvider"
     },
     {
       "condition": {
@@ -3373,23 +3373,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.wechat.WechatNotice"
+            "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatMiniProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMiniProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatMpProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMpProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatMpProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMpProvider"
     },
     {
       "condition": {
@@ -3399,23 +3399,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.wechat.WechatNotice"
+            "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatMpProvider"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMpProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
     },
     {
       "condition": {
@@ -3427,19 +3427,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilder"
     },
     {
       "condition": {
@@ -3451,19 +3451,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -3479,19 +3479,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.wechat.WechatNotice$WechatNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice"
     },
     {
       "condition": {
@@ -3517,19 +3517,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilder"
     },
     {
       "condition": {
@@ -3547,19 +3547,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -3575,19 +3575,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianSmsProvider"
     },
     {
       "condition": {
@@ -3597,23 +3597,23 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.yunpian.YunpianNotice"
+            "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice"
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.yunpian.YunpianSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice"
     },
     {
       "condition": {
@@ -3639,19 +3639,19 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
     },
     {
       "condition": {
@@ -3669,19 +3669,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
     },
     {
       "condition": {
@@ -3697,19 +3697,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongSmsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongSmsProvider"
     },
     {
       "condition": {
@@ -3719,19 +3719,19 @@
         {
           "name": "send",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice"
+            "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice"
           ]
         },
         {
           "name": "sendForCustom",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice"
+            "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice"
           ]
         },
         {
           "name": "sendForTemplate",
           "parameterTypes": [
-            "org.miaixz.bus.notify.metric.zhutong.ZhutongNotice"
+            "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice"
           ]
         },
         {
@@ -3743,7 +3743,7 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.notify.metric.zhutong.ZhutongSmsProvider"
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongSmsProvider"
     },
     {
       "condition": {

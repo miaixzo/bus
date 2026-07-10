@@ -38,6 +38,7 @@ public final class PerfstatProtocol {
      * Prevents instantiation of utility class.
      */
     private PerfstatProtocol() {
+        // No initialization required.
     }
 
     /**

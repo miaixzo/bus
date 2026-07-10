@@ -46,6 +46,7 @@ public final class WindowInfo {
      * Prevents instantiation of utility class.
      */
     private WindowInfo() {
+        // No initialization required.
     }
 
     /**

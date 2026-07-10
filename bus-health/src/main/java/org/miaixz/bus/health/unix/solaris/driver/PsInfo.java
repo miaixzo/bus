@@ -50,6 +50,7 @@ public final class PsInfo {
      * Prevents instantiation of utility class.
      */
     private PsInfo() {
+        // No initialization required.
     }
 
     /**

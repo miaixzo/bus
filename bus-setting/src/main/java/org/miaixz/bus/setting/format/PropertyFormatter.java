@@ -20,8 +20,8 @@
 package org.miaixz.bus.setting.format;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.setting.metric.ini.IniProperty;
-import org.miaixz.bus.setting.metric.ini.IniPropertyService;
+import org.miaixz.bus.setting.nimble.ini.IniProperty;
+import org.miaixz.bus.setting.nimble.ini.IniPropertyService;
 
 /**
  * A formatter that parses a string value into an {@link IniProperty} object (a key-value pair).

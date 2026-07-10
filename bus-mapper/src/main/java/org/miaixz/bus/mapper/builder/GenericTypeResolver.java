@@ -74,7 +74,7 @@ public class GenericTypeResolver {
      * Private constructor to prevent instantiation of this utility class.
      */
     public GenericTypeResolver() {
-        // Private constructor for utility class
+        // No initialization required.
     }
 
     /**

@@ -66,7 +66,7 @@ public final class ImageAnalyzer {
      * Creates a new instance.
      */
     private ImageAnalyzer() {
-        // Utility class - prevent instantiation
+        // No initialization required.
     }
 
     /**

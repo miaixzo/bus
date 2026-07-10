@@ -40,6 +40,7 @@ public final class Win32Fan {
      * Prevents instantiation of utility class.
      */
     private Win32Fan() {
+        // No initialization required.
     }
 
     /**

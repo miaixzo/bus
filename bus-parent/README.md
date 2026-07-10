@@ -1,14 +1,14 @@
 # Bus Framework
 
 <p align="center">
-  <strong>A Modern, Modular Java Enterprise Framework — Built for Java 21+</strong>
+  <strong>A Modern, Modular Java Enterprise Framework — Built for Java 25+</strong>
 </p>
 
 <p align="center">
   <a href="https://github.com/818000/bus"><img src="https://img.shields.io/badge/GitHub-miaixz%2Fbus-blue?logo=github" alt="GitHub"/></a>
   <a href="https://mvnrepository.com/artifact/org.miaixz"><img src="https://img.shields.io/maven-central/v/org.miaixz/bus-core?label=Maven%20Central" alt="Maven Central"/></a>
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" alt="License"/></a>
-  <img src="https://img.shields.io/badge/Java-21%2B-orange" alt="Java 21+"/>
+  <img src="https://img.shields.io/badge/Java-25%2B-orange" alt="Java 25+"/>
   <img src="https://img.shields.io/badge/Spring%20Boot-3.5.x-brightgreen" alt="Spring Boot 3.5.x"/>
 </p>
 
@@ -37,7 +37,7 @@ Every module is independently usable and integrates seamlessly into Spring Boot 
 | **bus-extra** | Additional utilities and integrations beyond the core |
 | **bus-gitlab** | GitLab API client and CI/CD integration helpers |
 | **bus-health** | Health check endpoints and system health monitoring |
-| **bus-http** | High-performance HTTP client with fluent API and retry support |
+| **bus-fabric** | Unified HTTP client plus non-blocking socket and WebSocket abstractions |
 | **bus-image** | Professional image processing and DICOM medical imaging support |
 | **bus-limiter** | Hotspot detection, rate limiting, and degradation |
 | **bus-logger** | Universal logging abstraction that bridges all major log frameworks |
@@ -51,7 +51,6 @@ Every module is independently usable and integrates seamlessly into Spring Boot 
 | **bus-sensitive** | Data masking and sensitive-field protection |
 | **bus-setting** | Unified configuration file reading (properties, YAML, TOML, …) |
 | **bus-shade** | Shaded dependency management and relocation |
-| **bus-socket** | Non-blocking socket and WebSocket abstractions |
 | **bus-starter** | Spring Boot auto-configuration starter for the entire Bus ecosystem |
 | **bus-storage** | Unified cloud storage abstraction (S3, OSS, COS, MinIO, …) |
 | **bus-tempus** | Time and scheduling utilities: cron expressions, calendar operations |
@@ -247,7 +246,6 @@ Then declare only the modules you need — no version tags required:
 
 ```xml
 <properties>
-    <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 </properties>
@@ -257,8 +255,7 @@ Then declare only the modules you need — no version tags required:
 
 | Component | Version |
 | :--- | :--- |
-| Java baseline | 21+ |
-| Maven compiler release | 21 |
+| Java baseline | 25+ |
 | Spring Boot | 3.5.13 |
 | MyBatis | 3.5.19 |
 | MyBatis-Spring | 3.0.5 |
@@ -267,7 +264,7 @@ Then declare only the modules you need — no version tags required:
 
 | Plugin | Purpose |
 | :--- | :--- |
-| `maven-compiler-plugin` | Java compilation with `--release 21`, parameter metadata, and Lombok annotation processing |
+| `maven-compiler-plugin` | Java compilation with parameter metadata and Lombok annotation processing; compiler release is supplied by the active Maven settings/profile |
 | `maven-resources-plugin` | UTF-8 resource filtering with the Bus resource delimiter |
 | `maven-jar-plugin` | Standard JAR manifest entries without embedding `META-INF/maven` descriptors |
 | `maven-war-plugin` | Standard WAR manifest entries without embedding `META-INF/maven` descriptors |
@@ -353,7 +350,7 @@ mvn help:effective-pom
 
 **Q: What is the minimum Java version?**
 
-Bus 8.x requires **Java 21** or higher. Older Bus 7.x series supports Java 11.
+Bus 8.x requires **Java 25** or higher. Older Bus 7.x series supports Java 11.
 
 **Q: Is GraalVM native image supported?**
 
@@ -366,8 +363,8 @@ one aggregated native-image configuration during packaging.
 
 | Bus Version | Java | Spring Boot | Status |
 | :--- | :--- | :--- | :--- |
-| **8.6.x** | 21+ | 3.5.x | **Active** |
-| 8.0.x - 8.5.x | 21+ | 3.x | Maintenance |
+| **8.6.x** | 25+ | 3.5.x | **Active** |
+| 8.0.x - 8.5.x | 25+ | 3.x | Maintenance |
 | 7.x | 11+ | 2.x | End of Life |
 
 ---

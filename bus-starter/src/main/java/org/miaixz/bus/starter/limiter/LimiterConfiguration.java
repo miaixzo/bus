@@ -29,9 +29,9 @@ import org.springframework.context.annotation.Bean;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.limiter.Supplier;
-import org.miaixz.bus.limiter.metric.FallbackProvider;
-import org.miaixz.bus.limiter.metric.MethodProvider;
-import org.miaixz.bus.limiter.metric.RequestProvider;
+import org.miaixz.bus.limiter.nimble.FallbackProvider;
+import org.miaixz.bus.limiter.nimble.MethodProvider;
+import org.miaixz.bus.limiter.nimble.RequestProvider;
 import org.miaixz.bus.spring.GeniusBuilder;
 
 /**

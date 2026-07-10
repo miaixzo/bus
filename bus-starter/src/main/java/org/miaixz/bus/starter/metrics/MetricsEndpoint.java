@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
-import org.miaixz.bus.metrics.metric.prometheus.PrometheusExporter;
+import org.miaixz.bus.metrics.nimble.prometheus.PrometheusExporter;
 import org.miaixz.bus.spring.ContextBuilder;
 
 /**

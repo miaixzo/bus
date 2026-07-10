@@ -23,9 +23,7 @@ import java.io.*;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.xml.sax.SAXException;
@@ -35,6 +33,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ContentHandlerAdapter;
 import org.miaixz.bus.image.galaxy.io.SAXTransformer;
+import org.miaixz.bus.image.galaxy.io.SAXTransformerFactoryHolder;
 import org.miaixz.bus.image.galaxy.io.SAXWriter;
 import org.miaixz.bus.image.metric.hl7.HL7Charset;
 import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
@@ -47,11 +46,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Parser;
  * @since Java 21+
  */
 public class HL7SAXTransformer {
-
-    /**
-     * The factory value.
-     */
-    private static final SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory.newInstance();
 
     /**
      * Creates a new instance.
@@ -82,7 +76,7 @@ public class HL7SAXTransformer {
         Attributes attrs = new Attributes();
         if (dicomCharset != null)
             attrs.setString(Tag.SpecificCharacterSet, VR.CS, dicomCharset);
-        TransformerHandler th = factory.newTransformerHandler(templates);
+        TransformerHandler th = SAXTransformerFactoryHolder.factory.newTransformerHandler(templates);
         th.setResult(new SAXResult(new ContentHandlerAdapter(attrs)));
         if (setup != null)
             setup.setup(th.getTransformer());
@@ -115,7 +109,7 @@ public class HL7SAXTransformer {
             throws TransformerConfigurationException, SAXException, UnsupportedEncodingException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        TransformerHandler th = factory.newTransformerHandler(templates);
+        TransformerHandler th = SAXTransformerFactoryHolder.factory.newTransformerHandler(templates);
         th.setResult(
                 new SAXResult(
                         new HL7ContentHandler(new OutputStreamWriter(out, HL7Charset.toCharsetName(hl7charset)))));

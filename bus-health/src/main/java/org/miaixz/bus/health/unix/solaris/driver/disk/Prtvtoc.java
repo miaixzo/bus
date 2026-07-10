@@ -43,6 +43,7 @@ public final class Prtvtoc {
      * Prevents instantiation of utility class.
      */
     private Prtvtoc() {
+        // No initialization required.
     }
 
     /**

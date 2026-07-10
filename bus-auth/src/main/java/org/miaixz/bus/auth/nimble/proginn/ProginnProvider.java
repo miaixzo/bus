@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * Proginn (Programmer's Inn) login provider.
@@ -80,7 +79,7 @@ public class ProginnProvider extends AbstractProvider {
         params.put("client_secret", context.getClientSecret());
         params.put("grant_type", "authorization_code");
         params.put("redirect_uri", context.getRedirectUri());
-        String response = Httpx.post(this.complex.token(), params);
+        String response = post(this.complex.token(), params);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
         this.checkResponse(object);
 

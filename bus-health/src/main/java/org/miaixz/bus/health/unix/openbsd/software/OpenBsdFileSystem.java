@@ -51,6 +51,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
      * Creates a new OpenBsdFileSystem instance.
      */
     public OpenBsdFileSystem() {
+        // No initialization required.
     }
 
     /**

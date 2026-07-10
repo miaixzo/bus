@@ -20,9 +20,9 @@
 package org.miaixz.bus.setting;
 
 import org.miaixz.bus.setting.format.ElementFormatter;
-import org.miaixz.bus.setting.metric.ini.IniComment;
-import org.miaixz.bus.setting.metric.ini.IniProperty;
-import org.miaixz.bus.setting.metric.ini.IniSection;
+import org.miaixz.bus.setting.nimble.ini.IniComment;
+import org.miaixz.bus.setting.nimble.ini.IniProperty;
+import org.miaixz.bus.setting.nimble.ini.IniSection;
 
 /**
  * A functional interface for creating an INI {@link Format} instance. It provides the necessary element formatters for

@@ -24,9 +24,9 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.sensitive.metric.ConditionProvider;
-import org.miaixz.bus.sensitive.metric.DafaultProvider;
-import org.miaixz.bus.sensitive.metric.StrategyProvider;
+import org.miaixz.bus.sensitive.nimble.ConditionProvider;
+import org.miaixz.bus.sensitive.nimble.DafaultProvider;
+import org.miaixz.bus.sensitive.nimble.StrategyProvider;
 
 /**
  * Marks a field for desensitization. This annotation specifies the strategy and conditions for masking sensitive

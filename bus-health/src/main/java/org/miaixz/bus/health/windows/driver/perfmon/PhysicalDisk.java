@@ -41,6 +41,7 @@ public final class PhysicalDisk {
      * Prevents instantiation of utility class.
      */
     private PhysicalDisk() {
+        // No initialization required.
     }
 
     /**

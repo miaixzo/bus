@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import org.miaixz.bus.core.lang.Assert;
+
 /**
  * Implementation of the Vigenere cipher. The Vigenere cipher is a polyalphabetic substitution cipher that extends the
  * Caesar cipher. Algorithm implementation from: https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption
@@ -43,8 +45,13 @@ public class Vigenere {
      * @return The ciphertext.
      */
     public static String encrypt(final CharSequence data, final CharSequence cipherKey) {
+        Assert.notNull(data, "data must not be null");
+        Assert.notNull(cipherKey, "cipherKey must not be null");
         final int dataLen = data.length();
         final int cipherKeyLen = cipherKey.length();
+        if (cipherKeyLen == 0) {
+            throw new IllegalArgumentException("cipherKey must not be empty");
+        }
 
         final char[] cipherArray = new char[dataLen];
         for (int i = 0; i < dataLen / cipherKeyLen + 1; i++) {
@@ -68,8 +75,13 @@ public class Vigenere {
      * @return The plaintext.
      */
     public static String decrypt(final CharSequence data, final CharSequence cipherKey) {
+        Assert.notNull(data, "data must not be null");
+        Assert.notNull(cipherKey, "cipherKey must not be null");
         final int dataLen = data.length();
         final int cipherKeyLen = cipherKey.length();
+        if (cipherKeyLen == 0) {
+            throw new IllegalArgumentException("cipherKey must not be empty");
+        }
 
         final char[] clearArray = new char[dataLen];
         for (int i = 0; i < dataLen; i++) {

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.magic.annotation.Strategy;
-import org.miaixz.bus.sensitive.metric.*;
+import org.miaixz.bus.sensitive.nimble.*;
 
 /**
  * A central registry for mapping built-in desensitization strategies to their corresponding types or annotations.

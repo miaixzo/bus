@@ -33,9 +33,9 @@ import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.magic.annotation.*;
-import org.miaixz.bus.sensitive.metric.BuiltInProvider;
-import org.miaixz.bus.sensitive.metric.ConditionProvider;
-import org.miaixz.bus.sensitive.metric.StrategyProvider;
+import org.miaixz.bus.sensitive.nimble.BuiltInProvider;
+import org.miaixz.bus.sensitive.nimble.ConditionProvider;
+import org.miaixz.bus.sensitive.nimble.StrategyProvider;
 
 /**
  * A provider for processing sensitive data. It offers object desensitization capabilities, including support for deep

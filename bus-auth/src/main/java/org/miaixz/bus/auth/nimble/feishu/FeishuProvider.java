@@ -34,13 +34,12 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -94,7 +93,7 @@ public class FeishuProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
-        String response = Httpx.post(url, JsonKit.toJsonString(object), header, MediaType.APPLICATION_JSON);
+        String response = post(url, JsonKit.toJsonString(object), header, MediaType.APPLICATION_JSON);
         object = JsonKit.toPojo(response, Map.class);
         if (object == null) {
             throw new AuthorizedException("Failed to parse app access token response: empty response");
@@ -141,7 +140,7 @@ public class FeishuProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
-        String response = Httpx.get(this.complex.userinfo(), null, header);
+        String response = get(this.complex.userinfo(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -205,7 +204,7 @@ public class FeishuProvider extends AbstractProvider {
     private Authorization getToken(Map<String, Object> param, String url) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        String response = Httpx.post(url, JsonKit.toJsonString(param), header, MediaType.APPLICATION_JSON);
+        String response = post(url, JsonKit.toJsonString(param), header, MediaType.APPLICATION_JSON);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

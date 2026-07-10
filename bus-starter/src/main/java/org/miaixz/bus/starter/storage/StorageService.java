@@ -30,7 +30,7 @@ import org.miaixz.bus.storage.Provider;
 import org.miaixz.bus.storage.Registry;
 import org.miaixz.bus.storage.cache.StorageCache;
 import org.miaixz.bus.storage.magic.ErrorCode;
-import org.miaixz.bus.storage.metric.*;
+import org.miaixz.bus.storage.nimble.*;
 
 /**
  * A service provider class for managing and creating various file storage provider instances. This class maintains a

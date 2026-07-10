@@ -78,7 +78,7 @@ final class MapperOptionsResolver {
      * Prevents instantiation.
      */
     private MapperOptionsResolver() {
-        // Utility class.
+        // No initialization required.
     }
 
     /**

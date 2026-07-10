@@ -38,6 +38,7 @@ public final class Win32DiskDrive {
      * Prevents instantiation of utility class.
      */
     private Win32DiskDrive() {
+        // No initialization required.
     }
 
     /**

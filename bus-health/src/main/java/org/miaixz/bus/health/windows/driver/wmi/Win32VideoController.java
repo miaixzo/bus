@@ -40,6 +40,7 @@ public final class Win32VideoController {
      * Prevents instantiation of utility class.
      */
     private Win32VideoController() {
+        // No initialization required.
     }
 
     /**

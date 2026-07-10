@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.ReflectMatcher;
+import org.miaixz.bus.validate.nimble.ReflectMatcher;
 
 /**
  * Validates by reflectively invoking a method on the validated parameter and then checking the result.

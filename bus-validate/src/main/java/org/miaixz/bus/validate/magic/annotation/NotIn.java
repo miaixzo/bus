@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.NotInMatcher;
+import org.miaixz.bus.validate.nimble.NotInMatcher;
 
 /**
  * Validates that the annotated string is not present in the specified array of strings.

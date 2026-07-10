@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.magic.AbstractSetting;
 import org.miaixz.bus.setting.magic.GroupedMap;
-import org.miaixz.bus.setting.metric.props.Props;
+import org.miaixz.bus.setting.nimble.props.Props;
 
 /**
  * A utility class for handling {@code .setting} files, which are an enhanced version of Java's {@code .properties}

@@ -94,7 +94,7 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-http</artifactId>
+            <artifactId>bus-fabric</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

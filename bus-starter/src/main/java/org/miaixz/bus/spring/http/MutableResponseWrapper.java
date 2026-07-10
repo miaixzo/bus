@@ -29,7 +29,7 @@ import jakarta.servlet.WriteListener;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
 
-import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.MediaType;
 
 /**
  * A repeatable-read response wrapper that supports caching response content for logging and further processing.

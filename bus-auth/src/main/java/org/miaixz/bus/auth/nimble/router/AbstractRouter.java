@@ -23,16 +23,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -49,7 +49,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public abstract class AbstractRouter implements OAuth2Router {
+public abstract class AbstractRouter extends FabricX implements OAuth2Router {
 
     /**
      * Constructs a new AbstractRouter instance.
@@ -149,7 +149,7 @@ public abstract class AbstractRouter implements OAuth2Router {
                     params == null ? 0 : params.size());
 
             // Send request
-            String body = Httpx.get(url);
+            String body = get(url);
             Logger.debug(false, "Auth", "Credential response received: chars={}", body == null ? 0 : body.length());
 
             Map<String, Object> data = JsonKit.toMap(body);
@@ -196,7 +196,7 @@ public abstract class AbstractRouter implements OAuth2Router {
                     authorization != null && StringKit.isNotEmpty(authorization.getToken()));
 
             // Send request
-            String body = Httpx.get(url, null, headers);
+            String body = get(url, null, headers);
             Logger.debug(false, "Auth", "Userinfo response received: chars={}", body == null ? 0 : body.length());
 
             Map<String, Object> data = JsonKit.toMap(body);
@@ -415,7 +415,7 @@ public abstract class AbstractRouter implements OAuth2Router {
      */
     protected String postJson(String url, Map<String, Object> data, Map<String, String> headers) {
         String json = JsonKit.toJsonString(data);
-        return Httpx.post(url, json, headers, MediaType.APPLICATION_JSON);
+        return post(url, json, headers, MediaType.APPLICATION_JSON);
     }
 
     /**

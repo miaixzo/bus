@@ -18,9 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides utilities and implementations for byte buffers, including efficient buffer management and operations. This
- * package focuses on fast and flexible handling of byte data, often leveraging concepts similar to
- * {@link java.nio.Buffer}.
+ * Provides byte-oriented segment buffers, immutable byte snapshots, zero-copy NIO views, and reusable NIO buffer
+ * allocators for high-throughput IO.
  *
  * @author Kimi Liu
  * @since Java 21+

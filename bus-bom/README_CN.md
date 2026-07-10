@@ -57,7 +57,7 @@
     <!-- 额外模块 -->
     <dependency>
         <groupId>org.miaixz</groupId>
-        <artifactId>bus-http</artifactId>
+        <artifactId>bus-fabric</artifactId>
     </dependency>
 
     <dependency>
@@ -110,7 +110,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 ### 集成模块
 
 - **bus-mapper**: MyBatis 增强
-- **bus-http**: HTTP 客户端
+- **bus-fabric**: HTTP 客户端与 Socket/WebSocket 支持
 - **bus-logger**: 日志框架
 - **bus-cache**: 缓存抽象
 - **bus-validate**: 验证框架
@@ -142,7 +142,6 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 - **bus-parent**: 父 POM
 - **bus-gitlab**: GitLab 集成
 - **bus-opencv**: OpenCV 集成
-- **bus-socket**: WebSocket 支持
 - **bus-health**: 健康检查
 - **bus-tempus**: Cron 调度器
 
@@ -250,9 +249,9 @@ mvn help:effective-pom
 ## 🔄 版本兼容性
 
 | Bus BOM 版本 | Spring Boot 版本 | JDK 版本 |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
-| 7.x | 2.x+ | 11+ |
+|:-----------|:---------------|:---|
+| 8.x        | 4.x+           | 17+ |
+| 6.x        | 2.x+           | 11+ |
 
 -----
 

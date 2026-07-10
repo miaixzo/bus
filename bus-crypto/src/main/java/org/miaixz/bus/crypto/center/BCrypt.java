@@ -370,11 +370,15 @@ public class BCrypt {
         final int off;
         final StringBuilder rs = new StringBuilder();
 
-        if (salt.charAt(0) != Symbol.C_DOLLAR || salt.charAt(1) != '2')
+        if (salt.length() < 29) {
+            throw new IllegalArgumentException("Invalid salt");
+        }
+        if (salt.charAt(0) != Symbol.C_DOLLAR || salt.charAt(1) != '2') {
             throw new IllegalArgumentException("Invalid salt version");
-        if (salt.charAt(2) == Symbol.C_DOLLAR)
+        }
+        if (salt.charAt(2) == Symbol.C_DOLLAR) {
             off = 3;
-        else {
+        } else {
             minor = salt.charAt(2);
             // Fix a security risk in the Blowfish implementation
             if ((minor != 'a' && minor != 'x' && minor != 'y' && minor != 'b') || salt.charAt(3) != Symbol.C_DOLLAR)

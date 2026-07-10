@@ -86,12 +86,6 @@
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "java.lang.Throwable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
-      },
-      "type": "org.miaixz.bus.core.xyz.LookupKit"
     }
   ]
 }

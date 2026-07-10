@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.util.zip.CRC32;
 import java.util.zip.Inflater;
 
-import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.buffer.Segment;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.xyz.IoKit;
 
@@ -105,6 +105,11 @@ public class GzipSource implements Source {
     private int section = SECTION_HEADER;
 
     /**
+     * Whether this source has been closed.
+     */
+    private boolean closed;
+
+    /**
      * Constructs a {@code GzipSource} that decompresses data from the given {@link Source}.
      *
      * @param source The underlying source of compressed data.
@@ -133,8 +138,13 @@ public class GzipSource implements Source {
      */
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
+        if (sink == null) {
+            throw new IllegalArgumentException("sink == null");
+        }
         if (byteCount < 0)
             throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        if (closed)
+            throw new IllegalStateException("closed");
         if (byteCount == 0)
             return 0;
 
@@ -265,6 +275,9 @@ public class GzipSource implements Source {
      */
     @Override
     public void close() throws IOException {
+        if (closed)
+            return;
+        closed = true;
         inflaterSource.close();
     }
 
@@ -277,7 +290,7 @@ public class GzipSource implements Source {
      */
     private void updateCrc(Buffer buffer, long offset, long byteCount) {
         // Skip segments that we're not checksumming.
-        SectionBuffer s = buffer.head;
+        Segment s = buffer.head;
         for (; offset >= (s.limit - s.pos); s = s.next) {
             offset -= (s.limit - s.pos);
         }

@@ -162,6 +162,7 @@ public final class WindowsDxgi {
          * Creates a new DXGI_ADAPTER_DESC instance.
          */
         public DXGI_ADAPTER_DESC() {
+            // No initialization required.
         }
 
         /**

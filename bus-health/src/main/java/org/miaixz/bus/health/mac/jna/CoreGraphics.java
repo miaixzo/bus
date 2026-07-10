@@ -25,6 +25,7 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
 import com.sun.jna.platform.mac.CoreFoundation.CFDictionaryRef;
+import com.sun.jna.ptr.IntByReference;
 
 import org.miaixz.bus.health.Builder;
 
@@ -99,6 +100,48 @@ public interface CoreGraphics extends Library {
     boolean CGRectMakeWithDictionaryRepresentation(CFDictionaryRef dict, CGRect rect);
 
     /**
+     * Gets the active display identifiers.
+     *
+     * @param maxDisplays    The maximum number of display identifiers to return.
+     * @param activeDisplays The target array for display identifiers, or {@code null} to query the count.
+     * @param displayCount   The number of active displays.
+     * @return The CoreGraphics result code.
+     */
+    int CGGetActiveDisplayList(int maxDisplays, int[] activeDisplays, IntByReference displayCount);
+
+    /**
+     * Returns whether the display is the built-in display.
+     *
+     * @param display The display identifier.
+     * @return Nonzero when the display is built in.
+     */
+    int CGDisplayIsBuiltin(int display);
+
+    /**
+     * Returns the display model number.
+     *
+     * @param display The display identifier.
+     * @return The model number.
+     */
+    int CGDisplayModelNumber(int display);
+
+    /**
+     * Returns the display serial number.
+     *
+     * @param display The display identifier.
+     * @return The serial number.
+     */
+    int CGDisplaySerialNumber(int display);
+
+    /**
+     * Returns the physical display size in millimeters.
+     *
+     * @param display The display identifier.
+     * @return A size structure containing width and height in millimeters.
+     */
+    CGSizeByValue CGDisplayScreenSize(int display);
+
+    /**
      * JNA wrapper for the CGPoint structure.
      * <p>
      * This class maps to the native macOS structure: {@code struct CGPoint { CGFloat x; CGFloat y; }; }
@@ -145,6 +188,34 @@ public interface CoreGraphics extends Library {
          * Constructs a new CGSize instance.
          */
         public CGSize() {
+            // No initialization required.
+        }
+
+        /**
+         * The width component of the size.
+         */
+        public double width;
+
+        /**
+         * The height component of the size.
+         */
+        public double height;
+
+    }
+
+    /**
+     * JNA wrapper for a CGSize structure returned by value from native functions.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    @FieldOrder({ "width", "height" })
+    class CGSizeByValue extends Structure implements Structure.ByValue {
+
+        /**
+         * Constructs a new CGSizeByValue instance.
+         */
+        public CGSizeByValue() {
             // No initialization required.
         }
 

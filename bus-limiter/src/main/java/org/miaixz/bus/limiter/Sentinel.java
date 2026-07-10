@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.limiter.magic.StrategyMode;
-import org.miaixz.bus.limiter.metric.StrategyManager;
+import org.miaixz.bus.limiter.nimble.StrategyManager;
 import org.miaixz.bus.logger.Logger;
 
 /**

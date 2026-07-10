@@ -34,7 +34,6 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -163,7 +162,7 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     private Authorization getToken(String tokenUrl) {
-        String response = Httpx.get(tokenUrl);
+        String response = get(tokenUrl);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

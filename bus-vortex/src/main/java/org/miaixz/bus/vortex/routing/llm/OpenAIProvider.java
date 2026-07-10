@@ -26,9 +26,9 @@ import java.util.Map;
 import org.springframework.http.HttpMethod;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;

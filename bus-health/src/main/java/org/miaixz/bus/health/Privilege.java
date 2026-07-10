@@ -22,7 +22,6 @@ package org.miaixz.bus.health;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -39,6 +38,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.logger.Logger;
@@ -283,7 +283,7 @@ public final class Privilege {
                 if (exitCode == 0) {
                     return stdout;
                 }
-                String error = new String(stderr, StandardCharsets.UTF_8).trim();
+                String error = new String(stderr, Charset.UTF_8).trim();
                 if (reportError) {
                     Logger.error(false, "Health", "Privileged cat exited with code {}: {}", exitCode, error);
                 } else {

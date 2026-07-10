@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -117,7 +116,7 @@ public class XimalayaProvider extends AbstractProvider {
         map.put("device_id", context.getDeviceId());
         map.put("grant_type", "authorization_code");
         map.put("redirect_uri", context.getRedirectUri());
-        String response = Httpx.post(this.complex.token(), map);
+        String response = post(this.complex.token(), map);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -199,7 +198,7 @@ public class XimalayaProvider extends AbstractProvider {
         map.put("pack_id", context.getUnionId());
         map.put("access_token", authorization.getToken());
         map.put("sig", sign(map, context.getClientSecret()));
-        String rawUserInfo = Httpx.get(this.complex.userinfo(), map);
+        String rawUserInfo = get(this.complex.userinfo(), map);
         try {
             Map<String, Object> object = JsonKit.toPojo(rawUserInfo, Map.class);
             if (object == null) {

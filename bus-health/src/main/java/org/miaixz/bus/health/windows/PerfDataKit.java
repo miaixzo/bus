@@ -55,6 +55,7 @@ public final class PerfDataKit {
      * Prevents instantiation of utility class.
      */
     private PerfDataKit() {
+        // No initialization required.
     }
 
     /**

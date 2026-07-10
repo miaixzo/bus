@@ -35,7 +35,6 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * AfDian login provider.
@@ -79,7 +78,7 @@ public class AfDianProvider extends AbstractProvider {
         params.put("code", callback.getCode());
         params.put("redirect_uri", this.context.getRedirectUri());
 
-        String response = Httpx.post(this.complex.token(), params);
+        String response = post(this.complex.token(), params);
 
         String userId = JsonKit.getValue(JsonKit.getValue(response, Consts.DATA), ("user_id"));
 

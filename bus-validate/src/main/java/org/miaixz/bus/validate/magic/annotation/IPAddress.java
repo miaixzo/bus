@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.IPAddressMatcher;
+import org.miaixz.bus.validate.nimble.IPAddressMatcher;
 
 /**
  * Validates that the annotated string is a valid IP address.

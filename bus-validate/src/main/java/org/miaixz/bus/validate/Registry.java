@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.validate.metric.*;
+import org.miaixz.bus.validate.nimble.*;
 
 /**
  * The validator registry center. This class manages the registration and retrieval of validator instances. It uses a

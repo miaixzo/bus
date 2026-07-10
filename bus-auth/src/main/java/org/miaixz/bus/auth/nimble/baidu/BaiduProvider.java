@@ -37,7 +37,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -192,7 +191,7 @@ public class BaiduProvider extends AbstractProvider {
                 .queryParam("refresh_token", authorization.getRefresh())
                 .queryParam("client_id", this.context.getClientId())
                 .queryParam("client_secret", this.context.getClientSecret()).build();
-        String response = Httpx.get(refreshUrl);
+        String response = get(refreshUrl);
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(response)).build();
     }
 

@@ -3738,13 +3738,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.crypto.metric.AESProvider"
+      "type": "org.miaixz.bus.crypto.nimble.AESProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.metric.AESProvider"
+      "type": "org.miaixz.bus.crypto.nimble.AESProvider"
     },
     {
       "condition": {
@@ -3770,55 +3770,55 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.crypto.metric.AESProvider"
+      "type": "org.miaixz.bus.crypto.nimble.AESProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.metric.AESProvider"
+      "type": "org.miaixz.bus.crypto.nimble.AESProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.metric.BouncyCastleProvider"
+      "type": "org.miaixz.bus.crypto.nimble.BouncyCastleProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.metric.BouncyCastleProvider"
+      "type": "org.miaixz.bus.crypto.nimble.BouncyCastleProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.crypto.metric.BouncyCastleServiceProvider"
+      "type": "org.miaixz.bus.crypto.nimble.BouncyCastleServiceProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.metric.BouncyCastleServiceProvider"
+      "type": "org.miaixz.bus.crypto.nimble.BouncyCastleServiceProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.metric.BouncyCastleServiceProvider"
+      "type": "org.miaixz.bus.crypto.nimble.BouncyCastleServiceProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.crypto.metric.DESProvider"
+      "type": "org.miaixz.bus.crypto.nimble.DESProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.metric.DESProvider"
+      "type": "org.miaixz.bus.crypto.nimble.DESProvider"
     },
     {
       "condition": {
@@ -3844,25 +3844,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.crypto.metric.DESProvider"
+      "type": "org.miaixz.bus.crypto.nimble.DESProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.metric.DESProvider"
+      "type": "org.miaixz.bus.crypto.nimble.DESProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.crypto.metric.RC4Provider"
+      "type": "org.miaixz.bus.crypto.nimble.RC4Provider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.metric.RC4Provider"
+      "type": "org.miaixz.bus.crypto.nimble.RC4Provider"
     },
     {
       "condition": {
@@ -3888,25 +3888,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.crypto.metric.RC4Provider"
+      "type": "org.miaixz.bus.crypto.nimble.RC4Provider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.metric.RC4Provider"
+      "type": "org.miaixz.bus.crypto.nimble.RC4Provider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.crypto.metric.RSAProvider"
+      "type": "org.miaixz.bus.crypto.nimble.RSAProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.metric.RSAProvider"
+      "type": "org.miaixz.bus.crypto.nimble.RSAProvider"
     },
     {
       "condition": {
@@ -3932,25 +3932,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.crypto.metric.RSAProvider"
+      "type": "org.miaixz.bus.crypto.nimble.RSAProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.metric.RSAProvider"
+      "type": "org.miaixz.bus.crypto.nimble.RSAProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.crypto.metric.SM2Provider"
+      "type": "org.miaixz.bus.crypto.nimble.SM2Provider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.metric.SM2Provider"
+      "type": "org.miaixz.bus.crypto.nimble.SM2Provider"
     },
     {
       "condition": {
@@ -3976,25 +3976,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.crypto.metric.SM2Provider"
+      "type": "org.miaixz.bus.crypto.nimble.SM2Provider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.metric.SM2Provider"
+      "type": "org.miaixz.bus.crypto.nimble.SM2Provider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.crypto.metric.SM4Provider"
+      "type": "org.miaixz.bus.crypto.nimble.SM4Provider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.crypto.metric.SM4Provider"
+      "type": "org.miaixz.bus.crypto.nimble.SM4Provider"
     },
     {
       "condition": {
@@ -4020,13 +4020,13 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.crypto.metric.SM4Provider"
+      "type": "org.miaixz.bus.crypto.nimble.SM4Provider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.crypto.metric.SM4Provider"
+      "type": "org.miaixz.bus.crypto.nimble.SM4Provider"
     },
     {
       "condition": {

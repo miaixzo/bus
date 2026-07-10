@@ -313,7 +313,8 @@ public class CIN {
      * @return The province code.
      */
     public String getProvinceCode() {
-        return this.code.substring(0, 2);
+        final String code = this.code;
+        return code.startsWith("9") ? code.substring(1, 3) : code.substring(0, 2);
     }
 
     /**

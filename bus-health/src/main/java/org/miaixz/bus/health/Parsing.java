@@ -60,6 +60,7 @@ public final class Parsing {
      * Prevents instantiation of utility class.
      */
     private Parsing() {
+        // No initialization required.
     }
 
     /**
@@ -467,7 +468,7 @@ public final class Parsing {
     public static long parseLongOrDefault(String s, long defaultLong) {
         try {
             return Long.parseLong(s);
-        } catch (NumberFormatException e) {
+        } catch (NullPointerException | NumberFormatException e) {
             Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
             return defaultLong;
         }
@@ -484,7 +485,39 @@ public final class Parsing {
     public static long parseUnsignedLongOrDefault(String s, long defaultLong) {
         try {
             return new BigInteger(s).longValue();
-        } catch (NumberFormatException e) {
+        } catch (NullPointerException | NumberFormatException e) {
+            Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
+            return defaultLong;
+        }
+    }
+
+    /**
+     * Attempts to decode a string to an integer. If it fails, returns the default value.
+     *
+     * @param s          The string to decode.
+     * @param defaultInt The default integer to return if decoding fails.
+     * @return The decoded integer, or the default value if decoding fails.
+     */
+    public static int decodeIntOrDefault(String s, int defaultInt) {
+        try {
+            return Integer.decode(s);
+        } catch (NullPointerException | NumberFormatException e) {
+            Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
+            return defaultInt;
+        }
+    }
+
+    /**
+     * Attempts to decode a string to a long integer. If it fails, returns the default value.
+     *
+     * @param s           The string to decode.
+     * @param defaultLong The default long integer to return if decoding fails.
+     * @return The decoded long integer, or the default value if decoding fails.
+     */
+    public static long decodeLongOrDefault(String s, long defaultLong) {
+        try {
+            return Long.decode(s);
+        } catch (NullPointerException | NumberFormatException e) {
             Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
             return defaultLong;
         }
@@ -500,7 +533,7 @@ public final class Parsing {
     public static double parseDoubleOrDefault(String s, double defaultDouble) {
         try {
             return Double.parseDouble(s);
-        } catch (NumberFormatException e) {
+        } catch (NullPointerException | NumberFormatException e) {
             Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
             return defaultDouble;
         }

@@ -66,6 +66,18 @@ public class VettingStrategy extends AbstractStrategy {
             HttpHeaders.CONTENT_LENGTH);
 
     /**
+     * Proxy headers consumed by Vortex before routing and replaced by normalized request context fields.
+     */
+    private static final List<String> PROXY_HEADERS = List.of(
+            "Forwarded",
+            "X-Forwarded-For",
+            "X-Forwarded-Host",
+            "X-Forwarded-Port",
+            "X-Forwarded-Proto",
+            "X-Forwarded-Prefix",
+            "X-Forwarded-Ssl");
+
+    /**
      * Creates a basic vetting strategy.
      */
     public VettingStrategy() {
@@ -146,7 +158,7 @@ public class VettingStrategy extends AbstractStrategy {
     }
 
     /**
-     * Removes connection-level headers from one mutable header collection.
+     * Removes connection-level and proxy-derived headers from one mutable header collection.
      *
      * @param headers request headers to sanitize
      */
@@ -167,6 +179,7 @@ public class VettingStrategy extends AbstractStrategy {
             }
         }
         HOP_BY_HOP_HEADERS.forEach(headers::remove);
+        PROXY_HEADERS.forEach(headers::remove);
     }
 
     /**

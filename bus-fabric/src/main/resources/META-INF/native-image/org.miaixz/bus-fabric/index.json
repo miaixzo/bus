@@ -1,0 +1,20 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "8.8.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-fabric/$version$/bus-fabric-$version$-sources.jar",
+    "repository-url": "https://github.com/818000/bus",
+    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-fabric/$version$/bus-fabric-$version$-javadoc.jar",
+    "description": "Bus Fabric provides HTTP, WebSocket, socket, protocol, and network communication support.",
+    "tested-versions": [
+      "8.8.0",
+      "8.8.1",
+      "8.8.2",
+      "8.8.3"
+    ],
+    "allowed-packages": [
+      "org.miaixz"
+    ]
+  }
+]

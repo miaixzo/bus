@@ -1,0 +1,438 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.fabric.codec.body;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiConsumer;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Payload;
+
+/**
+ * Body capability for progress-aware reads or writes.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+public interface ProgressBody extends Body {
+
+    /**
+     * Reads all progress body bytes.
+     *
+     * @return body bytes
+     */
+    @Override
+    default byte[] bytes() {
+        return Payload.materialize(payload(), Options.DEFAULT_MATERIALIZE_MAX_BYTES, "ProgressBody.bytes()");
+    }
+
+    /**
+     * Reads all progress body bytes with an explicit materialize threshold.
+     *
+     * @param maxBytes maximum bytes to materialize
+     * @return body bytes
+     */
+    @Override
+    default byte[] bytes(final long maxBytes) {
+        return Payload.materialize(payload(), maxBytes, "ProgressBody.bytes(long)");
+    }
+
+    /**
+     * Reads progress body text.
+     *
+     * @param charset charset
+     * @return body text
+     */
+    @Override
+    default String text(final Charset charset) {
+        if (charset == null) {
+            throw new ValidateException("Charset must not be null");
+        }
+        return new String(bytes(), charset);
+    }
+
+    /**
+     * Reads progress body text with an explicit materialize threshold.
+     *
+     * @param charset  charset
+     * @param maxBytes maximum bytes to materialize
+     * @return body text
+     */
+    @Override
+    default String text(final Charset charset, final long maxBytes) {
+        if (charset == null) {
+            throw new ValidateException("Charset must not be null");
+        }
+        return new String(bytes(maxBytes), charset);
+    }
+
+    /**
+     * Returns transferred byte count.
+     *
+     * @return transferred byte count
+     */
+    default long transferred() {
+        return 0L;
+    }
+
+    /**
+     * Returns total byte count.
+     *
+     * @return total byte count, or -1 when unknown
+     */
+    default long total() {
+        return length();
+    }
+
+    /**
+     * Sets callback step in bytes.
+     *
+     * @param bytes step bytes
+     * @return this body
+     */
+    default ProgressBody stepBytes(final long bytes) {
+        Tracker.validateStepBytes(bytes);
+        return this;
+    }
+
+    /**
+     * Sets callback step as a total-length rate.
+     *
+     * @param rate step rate
+     * @return this body
+     */
+    default ProgressBody stepRate(final double rate) {
+        Tracker.validateStepRate(rate, total());
+        return this;
+    }
+
+    /**
+     * Shared progress tracker used by concrete body implementations.
+     */
+    final class Tracker {
+
+        /**
+         * Default progress callback step.
+         */
+        private static final long DEFAULT_STEP_BYTES = 8192L;
+
+        /**
+         * Original payload.
+         */
+        private final Payload original;
+
+        /**
+         * Progress listener.
+         */
+        private final BiConsumer<Long, Long> listener;
+
+        /**
+         * Wrapped payload.
+         */
+        private final Payload payload;
+
+        /**
+         * Transferred byte count.
+         */
+        private final AtomicLong transferred = new AtomicLong();
+
+        /**
+         * Callback step in bytes.
+         */
+        private final AtomicLong stepBytes = new AtomicLong(DEFAULT_STEP_BYTES);
+
+        /**
+         * Next byte threshold for callback.
+         */
+        private final AtomicLong nextStep = new AtomicLong(DEFAULT_STEP_BYTES);
+
+        /**
+         * Whether final callback has been fired.
+         */
+        private final AtomicBoolean doneCalled = new AtomicBoolean();
+
+        /**
+         * Creates a tracker.
+         *
+         * @param original original payload
+         * @param listener listener
+         */
+        private Tracker(final Payload original, final BiConsumer<Long, Long> listener) {
+            this.original = require(original, "Progress payload");
+            this.listener = require(listener, "Progress listener");
+            this.payload = new ProgressPayload();
+        }
+
+        /**
+         * Creates a tracker.
+         *
+         * @param payload  payload
+         * @param listener listener
+         * @return tracker
+         */
+        public static Tracker of(final Payload payload, final BiConsumer<Long, Long> listener) {
+            return new Tracker(payload, listener);
+        }
+
+        /**
+         * Returns wrapped payload.
+         *
+         * @return payload
+         */
+        public Payload payload() {
+            return payload;
+        }
+
+        /**
+         * Returns transferred byte count.
+         *
+         * @return transferred bytes
+         */
+        public long transferred() {
+            return transferred.get();
+        }
+
+        /**
+         * Returns total byte count.
+         *
+         * @return total bytes, or -1 when unknown
+         */
+        public long total() {
+            return original.length();
+        }
+
+        /**
+         * Sets callback step in bytes.
+         *
+         * @param bytes step bytes
+         * @return this tracker
+         */
+        public Tracker stepBytes(final long bytes) {
+            validateStepBytes(bytes);
+            stepBytes.set(bytes);
+            nextStep.set(nextThreshold(transferred.get(), bytes));
+            return this;
+        }
+
+        /**
+         * Sets callback step as a total-length rate.
+         *
+         * @param rate step rate
+         * @return this tracker
+         */
+        public Tracker stepRate(final double rate) {
+            validateStepRate(rate, original.length());
+            stepBytes(Math.max(1L, (long) Math.ceil(original.length() * rate)));
+            return this;
+        }
+
+        /**
+         * Validates step bytes.
+         *
+         * @param bytes step bytes
+         */
+        static void validateStepBytes(final long bytes) {
+            if (bytes <= 0) {
+                throw new ValidateException("Progress step bytes must be positive");
+            }
+        }
+
+        /**
+         * Validates step rate.
+         *
+         * @param rate  step rate
+         * @param total total length
+         */
+        static void validateStepRate(final double rate, final long total) {
+            if (!Double.isFinite(rate) || rate <= 0 || rate > 1) {
+                throw new ValidateException("Progress step rate must be greater than 0 and at most 1");
+            }
+            if (total < 0) {
+                throw new ValidateException("Progress step rate requires a known payload length");
+            }
+        }
+
+        /**
+         * Updates progress and emits callbacks when thresholds are crossed.
+         *
+         * @param count transferred count
+         */
+        private void progress(final long count) {
+            if (count <= 0) {
+                return;
+            }
+            final long current = transferred.addAndGet(count);
+            final long total = original.length();
+            long lastNotified = -1L;
+            long threshold = nextStep.get();
+            while (current >= threshold) {
+                if (nextStep.compareAndSet(threshold, threshold + stepBytes.get())) {
+                    notifyListener(threshold, total);
+                    lastNotified = threshold;
+                    threshold = nextStep.get();
+                } else {
+                    threshold = nextStep.get();
+                }
+            }
+            if (total >= 0 && current >= total && doneCalled.compareAndSet(false, true)) {
+                if (current != lastNotified) {
+                    notifyListener(current, total);
+                }
+            }
+        }
+
+        /**
+         * Notifies listener.
+         *
+         * @param current transferred bytes
+         * @param total   total bytes
+         */
+        private void notifyListener(final long current, final long total) {
+            try {
+                listener.accept(current, total);
+            } catch (final RuntimeException e) {
+                throw new InternalException("Progress listener failed", e);
+            }
+        }
+
+        /**
+         * Returns the next threshold after the transferred count.
+         *
+         * @param current current bytes
+         * @param step    step bytes
+         * @return next threshold
+         */
+        private static long nextThreshold(final long current, final long step) {
+            return (current / step + 1) * step;
+        }
+
+        /**
+         * Validates a required value.
+         *
+         * @param value value
+         * @param name  field name
+         * @param <T>   value type
+         * @return value
+         */
+        private static <T> T require(final T value, final String name) {
+            if (value == null) {
+                throw new ValidateException(name + " must not be null");
+            }
+            return value;
+        }
+
+        /**
+         * Progress-aware payload.
+         */
+        private final class ProgressPayload implements Payload {
+
+            @Override
+            public long length() {
+                return original.length();
+            }
+
+            @Override
+            public InputStream stream() {
+                return new ProgressInputStream(original.stream());
+            }
+
+            @Override
+            public byte[] bytes() {
+                return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            }
+
+            @Override
+            public byte[] bytes(final long maxBytes) {
+                return Payload.materialize(this, maxBytes, "ProgressBody.ProgressPayload.bytes(long)");
+            }
+
+            @Override
+            public String text(final Charset charset) {
+                return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            }
+
+            @Override
+            public String text(final Charset charset, final long maxBytes) {
+                if (charset == null) {
+                    throw new ValidateException("Charset must not be null");
+                }
+                return new String(bytes(maxBytes), charset);
+            }
+
+            @Override
+            public boolean repeatable() {
+                return original.repeatable();
+            }
+
+        }
+
+        /**
+         * Progress-aware input stream.
+         */
+        private final class ProgressInputStream extends InputStream {
+
+            /**
+             * Delegate stream.
+             */
+            private final InputStream input;
+
+            /**
+             * Creates a progress stream.
+             *
+             * @param input delegate stream
+             */
+            private ProgressInputStream(final InputStream input) {
+                this.input = input;
+            }
+
+            @Override
+            public int read() throws IOException {
+                final int value = input.read();
+                if (value != -1) {
+                    progress(1);
+                }
+                return value;
+            }
+
+            @Override
+            public int read(final byte[] buffer, final int offset, final int length) throws IOException {
+                final int read = input.read(buffer, offset, length);
+                if (read > 0) {
+                    progress(read);
+                }
+                return read;
+            }
+
+            @Override
+            public void close() throws IOException {
+                input.close();
+            }
+
+        }
+
+    }
+
+}

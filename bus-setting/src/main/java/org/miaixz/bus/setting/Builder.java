@@ -30,10 +30,10 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
-import org.miaixz.bus.setting.metric.ini.IniSetting;
-import org.miaixz.bus.setting.metric.props.Props;
-import org.miaixz.bus.setting.metric.setting.Setting;
-import org.miaixz.bus.setting.metric.yaml.Yaml;
+import org.miaixz.bus.setting.nimble.ini.IniSetting;
+import org.miaixz.bus.setting.nimble.props.Props;
+import org.miaixz.bus.setting.nimble.setting.Setting;
+import org.miaixz.bus.setting.nimble.yaml.Yaml;
 
 /**
  * A builder and facade for creating and accessing various configuration file types like {@link IniSetting},

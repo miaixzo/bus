@@ -155,7 +155,6 @@
         <zxing.version>3.5.4</zxing.version>
         <maven.antrun.version>3.2.0</maven.antrun.version>
         <maven.central.version>0.11.0</maven.central.version>
-        <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.version>3.15.0</maven.compiler.version>
         <maven.groom.version>2.1.8</maven.groom.version>
         <maven.gpg.version>3.2.8</maven.gpg.version>
@@ -210,17 +209,17 @@
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
+                <artifactId>bus-fabric</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.miaixz</groupId>
                 <artifactId>bus-gitlab</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-health</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.miaixz</groupId>
-                <artifactId>bus-http</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -286,11 +285,6 @@
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-shade</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.miaixz</groupId>
-                <artifactId>bus-socket</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

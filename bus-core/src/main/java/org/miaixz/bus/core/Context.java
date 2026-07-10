@@ -58,7 +58,7 @@ public class Context extends Keys {
      * Default constructor for creating a new, empty context.
      */
     public Context() {
-        // No-op
+        // No initialization required.
     }
 
     /**

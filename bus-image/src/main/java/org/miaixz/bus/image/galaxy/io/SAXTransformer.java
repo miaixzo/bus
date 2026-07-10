@@ -21,7 +21,6 @@ package org.miaixz.bus.image.galaxy.io;
 
 import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.xml.sax.SAXException;
@@ -42,11 +41,6 @@ public abstract class SAXTransformer {
     public SAXTransformer() {
         // No initialization required.
     }
-
-    /**
-     * The factory value.
-     */
-    private static final SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory.newInstance();
 
     /**
      * Gets the sax writer.
@@ -98,7 +92,7 @@ public abstract class SAXTransformer {
      */
     public static SAXWriter getSAXWriter(Templates templates, Result result, SetupTransformer setup)
             throws TransformerConfigurationException {
-        return getSAXWriter(factory.newTransformerHandler(templates), result, setup);
+        return getSAXWriter(SAXTransformerFactoryHolder.factory.newTransformerHandler(templates), result, setup);
     }
 
     /**
@@ -122,7 +116,7 @@ public abstract class SAXTransformer {
      */
     public static SAXWriter getSAXWriter(Result result, SetupTransformer setup)
             throws TransformerConfigurationException {
-        return getSAXWriter(factory.newTransformerHandler(), result, setup);
+        return getSAXWriter(SAXTransformerFactoryHolder.factory.newTransformerHandler(), result, setup);
     }
 
     /**
@@ -193,7 +187,7 @@ public abstract class SAXTransformer {
      * @throws TransformerConfigurationException if the operation cannot be completed.
      */
     public static Templates newTemplates(Source source) throws TransformerConfigurationException {
-        return factory.newTemplates(source);
+        return SAXTransformerFactoryHolder.factory.newTemplates(source);
     }
 
     /**

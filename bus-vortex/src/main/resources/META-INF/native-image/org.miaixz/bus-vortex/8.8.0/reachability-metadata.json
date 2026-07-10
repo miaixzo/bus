@@ -2642,13 +2642,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.vortex.metric.CacheStats"
+      "type": "org.miaixz.bus.vortex.nimble.CacheStats"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.vortex.metric.CacheStats"
+      "type": "org.miaixz.bus.vortex.nimble.CacheStats"
     },
     {
       "condition": {
@@ -2713,25 +2713,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.vortex.metric.CacheStats"
+      "type": "org.miaixz.bus.vortex.nimble.CacheStats"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.vortex.metric.CacheStats"
+      "type": "org.miaixz.bus.vortex.nimble.CacheStats"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.vortex.metric.CacheStats$CacheStatsBuilder"
+      "type": "org.miaixz.bus.vortex.nimble.CacheStats$CacheStatsBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.vortex.metric.CacheStats$CacheStatsBuilder"
+      "type": "org.miaixz.bus.vortex.nimble.CacheStats$CacheStatsBuilder"
     },
     {
       "condition": {
@@ -2775,25 +2775,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.vortex.metric.CacheStats$CacheStatsBuilder"
+      "type": "org.miaixz.bus.vortex.nimble.CacheStats$CacheStatsBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.vortex.metric.CacheStats$CacheStatsBuilder"
+      "type": "org.miaixz.bus.vortex.nimble.CacheStats$CacheStatsBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.vortex.metric.DefaultMonitor"
+      "type": "org.miaixz.bus.vortex.nimble.DefaultMonitor"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.vortex.metric.DefaultMonitor"
+      "type": "org.miaixz.bus.vortex.nimble.DefaultMonitor"
     },
     {
       "condition": {
@@ -2836,13 +2836,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.vortex.metric.DefaultMonitor"
+      "type": "org.miaixz.bus.vortex.nimble.DefaultMonitor"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.vortex.metric.DefaultMonitor"
+      "type": "org.miaixz.bus.vortex.nimble.DefaultMonitor"
     },
     {
       "condition": {

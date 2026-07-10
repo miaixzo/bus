@@ -41,6 +41,7 @@ public final class Sysfs {
      * Prevents instantiation of utility class.
      */
     private Sysfs() {
+        // No initialization required.
     }
 
     /**

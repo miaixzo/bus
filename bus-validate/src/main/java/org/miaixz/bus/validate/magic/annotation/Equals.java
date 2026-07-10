@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.EqualsMatcher;
+import org.miaixz.bus.validate.nimble.EqualsMatcher;
 
 /**
  * Validates that the annotated string is equal to the specified value.

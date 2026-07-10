@@ -43,6 +43,7 @@ public final class Win32Process {
      * Prevents instantiation of utility class.
      */
     private Win32Process() {
+        // No initialization required.
     }
 
     /**

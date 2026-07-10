@@ -48,6 +48,7 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
      * Creates a new WindowsInternetProtocolStats instance.
      */
     public WindowsInternetProtocolStats() {
+        // No initialization required.
     }
 
     /**

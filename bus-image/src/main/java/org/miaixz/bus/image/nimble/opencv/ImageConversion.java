@@ -72,7 +72,7 @@ public final class ImageConversion {
      * Creates a new instance.
      */
     private ImageConversion() {
-        // Utility class - prevent instantiation
+        // No initialization required.
     }
 
     // Channel band offsets for color conversions

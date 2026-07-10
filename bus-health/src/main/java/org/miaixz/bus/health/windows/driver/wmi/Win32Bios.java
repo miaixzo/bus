@@ -40,6 +40,7 @@ public final class Win32Bios {
      * Prevents instantiation of utility class.
      */
     private Win32Bios() {
+        // No initialization required.
     }
 
     /**

@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.setting.format;
 
-import org.miaixz.bus.setting.metric.ini.IniElement;
+import org.miaixz.bus.setting.nimble.ini.IniElement;
 
 /**
  * An abstract base class for formatters that convert string values into {@link IniElement} objects. All concrete

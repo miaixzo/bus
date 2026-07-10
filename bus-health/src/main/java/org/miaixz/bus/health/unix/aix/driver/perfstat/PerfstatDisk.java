@@ -38,6 +38,7 @@ public final class PerfstatDisk {
      * Prevents instantiation of utility class.
      */
     private PerfstatDisk() {
+        // No initialization required.
     }
 
     /**

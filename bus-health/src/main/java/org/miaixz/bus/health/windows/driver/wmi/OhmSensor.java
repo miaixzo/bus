@@ -39,6 +39,7 @@ public final class OhmSensor {
      * Prevents instantiation of utility class.
      */
     private OhmSensor() {
+        // No initialization required.
     }
 
     /**

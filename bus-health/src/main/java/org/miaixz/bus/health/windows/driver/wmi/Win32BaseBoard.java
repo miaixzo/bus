@@ -40,6 +40,7 @@ public final class Win32BaseBoard {
      * Prevents instantiation of utility class.
      */
     private Win32BaseBoard() {
+        // No initialization required.
     }
 
     /**

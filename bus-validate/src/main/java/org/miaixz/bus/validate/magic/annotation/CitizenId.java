@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.CitizenIdMatcher;
+import org.miaixz.bus.validate.nimble.CitizenIdMatcher;
 
 /**
  * Validates that the annotated string is a Chinese citizen ID number.

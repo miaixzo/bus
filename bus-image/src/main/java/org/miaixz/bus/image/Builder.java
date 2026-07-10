@@ -46,8 +46,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -1838,6 +1838,25 @@ public class Builder {
         for (String s : ss)
             requireNotEmpty(s, message);
         return ss;
+    }
+
+    /**
+     * Gets a value from a system property or environment variable.
+     *
+     * @param property the system property.
+     * @param env      the environment variable.
+     * @param def      the default value.
+     * @return the resolved value.
+     */
+    public static String getPropertyOrEnv(String property, String env, String def) {
+        String value = System.getProperty(property);
+        if (value == null) {
+            value = System.getenv(env);
+            if (value == null) {
+                value = def;
+            }
+        }
+        return value;
     }
 
     /**

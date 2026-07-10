@@ -35,7 +35,6 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -80,7 +79,7 @@ public class MeituanProvider extends AbstractProvider {
         form.put("code", callback.getCode());
         form.put("grant_type", "authorization_code");
 
-        String response = Httpx.post(this.complex.token(), form);
+        String response = post(this.complex.token(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -127,7 +126,7 @@ public class MeituanProvider extends AbstractProvider {
         form.put("secret", context.getClientSecret());
         form.put("access_token", authorization.getToken());
 
-        String response = Httpx.post(this.complex.userinfo(), form);
+        String response = post(this.complex.userinfo(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -178,7 +177,7 @@ public class MeituanProvider extends AbstractProvider {
         form.put("refresh_token", authorization.getRefresh());
         form.put("grant_type", "refresh_token");
 
-        String response = Httpx.post(this.complex.refresh(), form);
+        String response = post(this.complex.refresh(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

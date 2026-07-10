@@ -29,7 +29,7 @@ import java.util.Properties;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.setting.metric.props.Props;
+import org.miaixz.bus.setting.nimble.props.Props;
 
 /**
  * Global configuration utility class. Default values can be found in {@code META-INF/health/bus.health.properties}.

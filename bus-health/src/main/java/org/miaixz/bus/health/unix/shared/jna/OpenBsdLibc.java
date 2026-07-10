@@ -330,6 +330,7 @@ public interface OpenBsdLibc extends CLibrary {
          * Creates a new Timeval instance.
          */
         public Timeval() {
+            // No initialization required.
         }
 
         /**

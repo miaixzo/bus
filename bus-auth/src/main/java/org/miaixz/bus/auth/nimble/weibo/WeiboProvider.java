@@ -40,7 +40,6 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -131,7 +130,7 @@ public class WeiboProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, "OAuth2 " + oauthParam);
         header.put("API-RemoteIP", NetKit.getLocalhostStringV4());
-        String userInfo = Httpx.get(userInfoUrl(authorization), null, header);
+        String userInfo = get(userInfoUrl(authorization), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {

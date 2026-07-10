@@ -34,8 +34,8 @@ import org.miaixz.bus.metrics.builtin.JvmMetrics;
 import org.miaixz.bus.metrics.builtin.SystemMetrics;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
 import org.miaixz.bus.metrics.guard.CardinalityPolicy;
-import org.miaixz.bus.metrics.metric.indigenous.NativeProvider;
-import org.miaixz.bus.metrics.metric.micrometer.MicrometerProvider;
+import org.miaixz.bus.metrics.nimble.indigenous.NativeProvider;
+import org.miaixz.bus.metrics.nimble.micrometer.MicrometerProvider;
 import org.miaixz.bus.spring.GeniusBuilder;
 
 import io.micrometer.core.instrument.MeterRegistry;

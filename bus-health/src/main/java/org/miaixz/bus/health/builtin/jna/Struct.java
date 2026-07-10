@@ -57,6 +57,7 @@ public interface Struct {
          * Creates a new CloseableSysinfo instance.
          */
         public CloseableSysinfo() {
+            // No initialization required.
         }
 
         /**
@@ -85,6 +86,7 @@ public interface Struct {
          * Creates a new CloseableHostCpuLoadInfo instance.
          */
         public CloseableHostCpuLoadInfo() {
+            // No initialization required.
         }
 
         /**
@@ -109,6 +111,7 @@ public interface Struct {
          * Creates a new CloseableProcTaskInfo instance.
          */
         public CloseableProcTaskInfo() {
+            // No initialization required.
         }
 
         /**
@@ -133,6 +136,7 @@ public interface Struct {
          * Creates a new CloseableProcTaskAllInfo instance.
          */
         public CloseableProcTaskAllInfo() {
+            // No initialization required.
         }
 
         /**
@@ -157,6 +161,7 @@ public interface Struct {
          * Creates a new CloseableRUsageInfoV2 instance.
          */
         public CloseableRUsageInfoV2() {
+            // No initialization required.
         }
 
         /**
@@ -181,6 +186,7 @@ public interface Struct {
          * Creates a new CloseableTimeval instance.
          */
         public CloseableTimeval() {
+            // No initialization required.
         }
 
         /**
@@ -205,6 +211,7 @@ public interface Struct {
          * Creates a new CloseableVMStatistics instance.
          */
         public CloseableVMStatistics() {
+            // No initialization required.
         }
 
         /**
@@ -229,6 +236,7 @@ public interface Struct {
          * Creates a new CloseableVnodePathInfo instance.
          */
         public CloseableVnodePathInfo() {
+            // No initialization required.
         }
 
         /**
@@ -253,6 +261,7 @@ public interface Struct {
          * Creates a new CloseableXswUsage instance.
          */
         public CloseableXswUsage() {
+            // No initialization required.
         }
 
         /**
@@ -281,6 +290,7 @@ public interface Struct {
          * Creates a new CloseableMibIfRow instance.
          */
         public CloseableMibIfRow() {
+            // No initialization required.
         }
 
         /**
@@ -305,6 +315,7 @@ public interface Struct {
          * Creates a new CloseableMibIfRow2 instance.
          */
         public CloseableMibIfRow2() {
+            // No initialization required.
         }
 
         /**
@@ -329,6 +340,7 @@ public interface Struct {
          * Creates a new CloseableMibTcpStats instance.
          */
         public CloseableMibTcpStats() {
+            // No initialization required.
         }
 
         /**
@@ -353,6 +365,7 @@ public interface Struct {
          * Creates a new CloseableMibUdpStats instance.
          */
         public CloseableMibUdpStats() {
+            // No initialization required.
         }
 
         /**
@@ -377,6 +390,7 @@ public interface Struct {
          * Creates a new CloseablePdhRawCounter instance.
          */
         public CloseablePdhRawCounter() {
+            // No initialization required.
         }
 
         /**
@@ -401,6 +415,7 @@ public interface Struct {
          * Creates a new CloseablePerformanceInformation instance.
          */
         public CloseablePerformanceInformation() {
+            // No initialization required.
         }
 
         /**
@@ -425,6 +440,7 @@ public interface Struct {
          * Creates a new CloseableSpDeviceInterfaceData instance.
          */
         public CloseableSpDeviceInterfaceData() {
+            // No initialization required.
         }
 
         /**
@@ -449,6 +465,7 @@ public interface Struct {
          * Creates a new CloseableSpDevinfoData instance.
          */
         public CloseableSpDevinfoData() {
+            // No initialization required.
         }
 
         /**
@@ -473,6 +490,7 @@ public interface Struct {
          * Creates a new CloseableSystemInfo instance.
          */
         public CloseableSystemInfo() {
+            // No initialization required.
         }
 
         /**

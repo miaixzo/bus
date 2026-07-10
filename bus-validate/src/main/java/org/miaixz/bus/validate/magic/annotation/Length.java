@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.LengthMatcher;
+import org.miaixz.bus.validate.nimble.LengthMatcher;
 
 /**
  * Validates the length of a String, array, or collection.

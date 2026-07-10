@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.format.*;
 import org.miaixz.bus.setting.magic.GroupedMap;
-import org.miaixz.bus.setting.metric.ini.*;
+import org.miaixz.bus.setting.nimble.ini.*;
 
 /**
  * A loader for {@code .setting} files. This class handles the parsing of INI-style configuration files, including

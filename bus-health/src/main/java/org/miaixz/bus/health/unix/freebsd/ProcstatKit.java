@@ -42,6 +42,7 @@ public final class ProcstatKit {
      * Prevents instantiation of utility class.
      */
     private ProcstatKit() {
+        // No initialization required.
     }
 
     /**

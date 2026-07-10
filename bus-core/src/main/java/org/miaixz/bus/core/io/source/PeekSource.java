@@ -21,8 +21,8 @@ package org.miaixz.bus.core.io.source;
 
 import java.io.IOException;
 
-import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.buffer.Segment;
 import org.miaixz.bus.core.io.timout.Timeout;
 
 /**
@@ -48,10 +48,9 @@ public class PeekSource implements Source {
     private final Buffer buffer;
 
     /**
-     * The expected {@link SectionBuffer} head of the upstream buffer at the time this peek source was created or last
-     * reset.
+     * The expected {@link Segment} head of the upstream buffer at the time this peek source was created or last reset.
      */
-    private SectionBuffer expectedSegment;
+    private Segment expectedSegment;
 
     /**
      * The expected position within the {@link #expectedSegment} of the upstream buffer.
@@ -75,6 +74,9 @@ public class PeekSource implements Source {
      * @param upstream The {@link BufferSource} to peek into.
      */
     public PeekSource(BufferSource upstream) {
+        if (upstream == null) {
+            throw new IllegalArgumentException("upstream == null");
+        }
         this.upstream = upstream;
         this.buffer = upstream.getBuffer();
         this.expectedSegment = buffer.head;
@@ -95,12 +97,15 @@ public class PeekSource implements Source {
      */
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
+        if (sink == null) {
+            throw new IllegalArgumentException("sink == null");
+        }
         if (byteCount < 0)
             throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         if (closed)
             throw new IllegalStateException("closed");
 
-        // If a SectionBuffer exists, and its position does not match the buffer's position,
+        // If a Segment exists, and its position does not match the buffer's position,
         // the source becomes invalid.
         if (expectedSegment != null && (expectedSegment != buffer.head || expectedPos != buffer.head.pos)) {
             throw new IllegalStateException("Peek source is invalid because upstream source was used");
@@ -111,7 +116,7 @@ public class PeekSource implements Source {
             return -1L;
 
         if (expectedSegment == null && buffer.head != null) {
-            // Only record the expected SectionBuffer and position when the buffer actually holds data.
+            // Only record the expected Segment and position when the buffer actually holds data.
             expectedSegment = buffer.head;
             expectedPos = buffer.head.pos;
         }

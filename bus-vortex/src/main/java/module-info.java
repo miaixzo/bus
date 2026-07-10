@@ -55,7 +55,6 @@ module bus.vortex {
     requires bus.crypto;
     requires bus.extra;
     requires bus.health;
-    requires bus.http;
     requires bus.logger;
 
     requires static lombok;

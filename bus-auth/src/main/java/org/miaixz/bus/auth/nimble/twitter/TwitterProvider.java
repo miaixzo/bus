@@ -37,13 +37,12 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * Twitter login provider, supporting OAuth 1.0a authentication flow. Implements Twitter's single sign-on to obtain user
@@ -150,8 +149,8 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, buildHeader(form));
-        header.put(HTTP.USER_AGENT, "'Httpx' HTTP Client Simple-Http");
-        String requestToken = Httpx.post(baseUrl, null, header);
+        header.put(HTTP.USER_AGENT, "Bus-Fabric");
+        String requestToken = post(baseUrl, null, header);
 
         Map<String, String> res = Builder.parseStringToMap(requestToken);
 
@@ -182,7 +181,7 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> form = new HashMap<>(3);
         form.put("oauth_verifier", callback.getOauth_verifier());
-        String response = Httpx.post(this.complex.token(), form, header);
+        String response = post(this.complex.token(), form, header);
 
         Map<String, String> requestToken = Builder.parseStringToMap(response);
 
@@ -220,7 +219,7 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, buildHeader(form));
-        String response = Httpx.get(userInfoUrl(authorization), null, header);
+        String response = get(userInfoUrl(authorization), null, header);
 
         // Parse JSON response using JsonKit
         Map<String, Object> userInfo = JsonKit.toPojo(response, Map.class);

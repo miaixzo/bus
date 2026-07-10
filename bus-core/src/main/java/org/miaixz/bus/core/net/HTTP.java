@@ -888,39 +888,39 @@ public class HTTP {
         /**
          * GET request.
          */
-        GET(1, HTTP.GET),
+        GET(1, "GET", false, false),
         /**
          * POST request.
          */
-        POST(2, HTTP.POST),
+        POST(2, "POST", true, true),
         /**
          * HEAD request.
          */
-        HEAD(3, HTTP.HEAD),
+        HEAD(3, "HEAD", false, false),
         /**
          * PUT request.
          */
-        PUT(4, HTTP.PUT),
+        PUT(4, "PUT", true, true),
         /**
          * PATCH request.
          */
-        PATCH(5, HTTP.PATCH),
+        PATCH(5, "PATCH", true, true),
         /**
          * DELETE request.
          */
-        DELETE(6, HTTP.DELETE),
+        DELETE(6, "DELETE", false, false),
         /**
          * OPTIONS request.
          */
-        OPTIONS(7, HTTP.OPTIONS),
+        OPTIONS(7, "OPTIONS", false, false),
         /**
          * TRACE request.
          */
-        TRACE(8, HTTP.TRACE),
+        TRACE(8, "TRACE", true, false),
         /**
          * CONNECT request.
          */
-        CONNECT(9, HTTP.CONNECT);
+        CONNECT(9, "CONNECT", true, false);
 
         /**
          * Lookup table keyed by registry verb code.
@@ -945,14 +945,26 @@ public class HTTP {
         private final String value;
 
         /**
+         * Body support flag.
+         */
+        private final boolean supportsBody;
+
+        /**
+         * Body requirement flag.
+         */
+        private final boolean requiresBody;
+
+        /**
          * Creates one canonical HTTP method mapping.
          *
          * @param verb  registry verb code
          * @param value HTTP method token
          */
-        Method(int verb, String value) {
+        Method(final int verb, final String value, final boolean supportsBody, final boolean requiresBody) {
             this.verb = verb;
             this.value = value;
+            this.supportsBody = supportsBody;
+            this.requiresBody = requiresBody;
         }
 
         /**
@@ -971,6 +983,24 @@ public class HTTP {
          */
         public String value() {
             return this.value;
+        }
+
+        /**
+         * Returns whether this method supports an HTTP body.
+         *
+         * @return true when a body is allowed
+         */
+        public boolean supportsBody() {
+            return this.supportsBody;
+        }
+
+        /**
+         * Returns whether this method requires an HTTP body.
+         *
+         * @return true when a body is required
+         */
+        public boolean requiresBody() {
+            return this.requiresBody;
         }
 
         /**

@@ -24,11 +24,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.metric.CaffeineCache;
+import org.miaixz.bus.cache.nimble.CaffeineCache;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.Monitor;
-import org.miaixz.bus.vortex.metric.CacheStats;
+import org.miaixz.bus.vortex.nimble.CacheStats;
 
 /**
  * Generic two-level cache manager.

@@ -33,8 +33,8 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -99,7 +99,7 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
         params.put("clientId", context.getClientId());
         params.put("clientSecret", context.getClientSecret());
         params.put("code", callback.getCode());
-        String response = Httpx.get(this.complex.token(), JsonKit.toJsonString(params));
+        String response = post(this.complex.token(), JsonKit.toJsonString(params), MediaType.APPLICATION_JSON);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -143,7 +143,7 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
     public Message userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put("x-acs-dingtalk-access-token", authorization.getToken());
-        String response = Httpx.get(this.complex.userinfo(), new HashMap<>(0), header);
+        String response = get(this.complex.userinfo(), new HashMap<>(0), header);
 
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);

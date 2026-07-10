@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 
 /**
  * Renren login provider.
@@ -119,7 +118,7 @@ public class RenrenProvider extends AbstractProvider {
      * @throws AuthorizedException if the response indicates an error or is missing required token information
      */
     private Authorization getToken(String url) {
-        String response = Httpx.post(url);
+        String response = post(url);
         Map<String, Object> jsonObject = JsonKit.toPojo(response, Map.class);
         if (jsonObject.containsKey("error")) {
             throw new AuthorizedException("Failed to get token from Renren: " + jsonObject);

@@ -20,7 +20,6 @@
 package org.miaixz.bus.vortex.routing.mcp;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -542,7 +541,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String ip,
             String method,
             String path) {
-        String text = dataBuffer.toString(StandardCharsets.UTF_8);
+        String text = dataBuffer.toString(Charset.UTF_8);
         String rewritten = text.replace("data: " + downstreamPrefix, "data: " + gatewayPrefix)
                 .replace("data:" + downstreamPrefix, "data:" + gatewayPrefix);
         if (text.equals(rewritten)) {
@@ -561,7 +560,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
         if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
             pooledDataBuffer.release();
         }
-        return bufferFactory.wrap(rewritten.getBytes(StandardCharsets.UTF_8));
+        return bufferFactory.wrap(rewritten.getBytes(Charset.UTF_8));
     }
 
     /**

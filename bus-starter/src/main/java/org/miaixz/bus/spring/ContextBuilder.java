@@ -35,8 +35,8 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.util.WebUtils;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.metric.CaffeineCache;
-import org.miaixz.bus.cache.metric.MemoryCache;
+import org.miaixz.bus.cache.nimble.CaffeineCache;
+import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
@@ -45,6 +45,7 @@ import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.lang.annotation.Nullable;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.MapKit;

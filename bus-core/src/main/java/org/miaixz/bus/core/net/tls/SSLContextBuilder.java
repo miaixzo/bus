@@ -262,26 +262,22 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     /**
      * Sets the trust managers.
      *
-     * @param trustManagers The list of trust managers.
+     * @param trustManagers The list of trust managers, or {@code null} to use the platform defaults.
      * @return This builder.
      */
     public SSLContextBuilder setTrustManagers(final TrustManager... trustManagers) {
-        if (ArrayKit.isNotEmpty(trustManagers)) {
-            this.trustManagers = trustManagers;
-        }
+        this.trustManagers = ArrayKit.isNotEmpty(trustManagers) ? trustManagers : null;
         return this;
     }
 
     /**
      * Sets the JSSE key managers.
      *
-     * @param keyManagers The JSSE key managers.
+     * @param keyManagers The JSSE key managers, or {@code null} to use the platform defaults.
      * @return This builder.
      */
     public SSLContextBuilder setKeyManagers(final KeyManager... keyManagers) {
-        if (ArrayKit.isNotEmpty(keyManagers)) {
-            this.keyManagers = keyManagers;
-        }
+        this.keyManagers = ArrayKit.isNotEmpty(keyManagers) ? keyManagers : null;
         return this;
     }
 

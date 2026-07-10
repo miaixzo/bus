@@ -33,6 +33,6 @@ module bus.validate {
     exports org.miaixz.bus.validate;
     exports org.miaixz.bus.validate.magic;
     exports org.miaixz.bus.validate.magic.annotation;
-    exports org.miaixz.bus.validate.metric;
+    exports org.miaixz.bus.validate.nimble;
 
 }

@@ -54,6 +54,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
      * Creates a new OpenBsdCentralProcessor instance.
      */
     public OpenBsdCentralProcessor() {
+        // No initialization required.
     }
 
     /**

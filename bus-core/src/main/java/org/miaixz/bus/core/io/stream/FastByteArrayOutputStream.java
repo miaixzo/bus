@@ -19,11 +19,12 @@
 */
 package org.miaixz.bus.core.io.stream;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.miaixz.bus.core.io.buffer.FastByteBuffer;
+import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -31,11 +32,9 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * An {@link OutputStream} implementation based on {@link FastByteBuffer}, which automatically expands its buffer as
- * data grows. Data can be retrieved using {@link #toByteArray()} and {@link #toString()}. The {@link #close()} method
- * has no effect, and no {@link IOException} will be thrown when the stream is closed. This design avoids reallocating
- * memory blocks by allocating new buffers as needed, and buffers are not garbage collected, nor is data copied to other
- * buffers.
+ * An {@link OutputStream} implementation backed by {@link Buffer}. Data can be retrieved using {@link #toByteArray()}
+ * and {@link #toString()}. The {@link #close()} method has no effect, and no {@link IOException} will be thrown when
+ * the stream is closed.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -43,9 +42,9 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class FastByteArrayOutputStream extends OutputStream {
 
     /**
-     * The underlying {@link FastByteBuffer} used to store the written bytes.
+     * Buffer used to store the written bytes.
      */
-    private final FastByteBuffer buffer;
+    private final Buffer buffer;
 
     /**
      * Constructs a new {@code FastByteArrayOutputStream} with a default initial buffer size of 1024 bytes.
@@ -60,7 +59,7 @@ public class FastByteArrayOutputStream extends OutputStream {
      * @param size The estimated initial size of the buffer.
      */
     public FastByteArrayOutputStream(final int size) {
-        buffer = new FastByteBuffer(size);
+        buffer = new Buffer();
     }
 
     /**
@@ -93,7 +92,7 @@ public class FastByteArrayOutputStream extends OutputStream {
      */
     @Override
     public void write(final byte[] b, final int off, final int len) {
-        buffer.append(b, off, len);
+        buffer.write(b, off, len);
     }
 
     /**
@@ -103,7 +102,7 @@ public class FastByteArrayOutputStream extends OutputStream {
      */
     @Override
     public void write(final int b) {
-        buffer.append((byte) b);
+        buffer.writeByte(b);
     }
 
     /**
@@ -112,7 +111,7 @@ public class FastByteArrayOutputStream extends OutputStream {
      * @return The current size of the buffer.
      */
     public int size() {
-        return buffer.length();
+        return Math.toIntExact(buffer.size());
     }
 
     /**
@@ -129,7 +128,7 @@ public class FastByteArrayOutputStream extends OutputStream {
      * reused for writing new data.
      */
     public void reset() {
-        buffer.reset();
+        buffer.clear();
     }
 
     /**
@@ -139,18 +138,8 @@ public class FastByteArrayOutputStream extends OutputStream {
      * @throws InternalException If an {@link IOException} occurs during writing.
      */
     public void writeTo(final OutputStream out) throws InternalException {
-        final int index = buffer.index();
-        if (index < 0) {
-            // No data to write
-            return;
-        }
-        byte[] buf;
         try {
-            for (int i = 0; i < index; i++) {
-                buf = buffer.array(i);
-                out.write(buf);
-            }
-            out.write(buffer.array(index), 0, buffer.offset());
+            buffer.copyTo(out);
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -163,7 +152,7 @@ public class FastByteArrayOutputStream extends OutputStream {
      * @return The current contents of this output stream, as a byte array.
      */
     public byte[] toByteArray() {
-        return buffer.toArray();
+        return buffer.clone().readByteArray();
     }
 
     /**
@@ -174,19 +163,33 @@ public class FastByteArrayOutputStream extends OutputStream {
      * @return A byte array containing the specified portion of the buffer.
      */
     public byte[] toByteArray(final int start, final int len) {
-        return buffer.toArray(start, len);
+        if (start < 0) {
+            throw new IllegalArgumentException("Start must be greater than zero!");
+        }
+        if (len < 0) {
+            throw new IllegalArgumentException("Length must be greater than zero!");
+        }
+        if (start >= buffer.size() || len == 0) {
+            return new byte[0];
+        }
+        Buffer copy = buffer.clone();
+        int byteCount = (int) Math.min(len, buffer.size() - start);
+        try {
+            copy.skip(start);
+            return copy.readByteArray(byteCount);
+        } catch (EOFException e) {
+            throw new AssertionError(e);
+        }
     }
 
     /**
-     * Returns the internal byte array directly if the buffer's data length is fixed and fits within a single array.
-     * <p>
-     * WARNING: This method shares the internal array. Modifying the returned array will affect the internal state of
-     * this stream.
+     * Returns the current contents as a byte array. This method keeps the legacy name but returns an isolated copy
+     * because the stream is backed by segmented buffers.
      *
-     * @return The internal byte array, or a copy if the data spans multiple internal arrays.
+     * @return A byte array containing the current contents.
      */
     public byte[] toByteArrayZeroCopyIfPossible() {
-        return buffer.toArrayZeroCopyIfPossible();
+        return toByteArray();
     }
 
     /**
@@ -196,7 +199,7 @@ public class FastByteArrayOutputStream extends OutputStream {
      * @return The byte at the specified index.
      */
     public byte get(final int index) {
-        return buffer.get(index);
+        return buffer.getByte(index);
     }
 
     /**
