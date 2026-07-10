@@ -102,9 +102,9 @@ public interface CoreGraphics extends Library {
     /**
      * Gets the active display identifiers.
      *
-     * @param maxDisplays   The maximum number of display identifiers to return.
+     * @param maxDisplays    The maximum number of display identifiers to return.
      * @param activeDisplays The target array for display identifiers, or {@code null} to query the count.
-     * @param displayCount  The number of active displays.
+     * @param displayCount   The number of active displays.
      * @return The CoreGraphics result code.
      */
     int CGGetActiveDisplayList(int maxDisplays, int[] activeDisplays, IntByReference displayCount);

@@ -462,9 +462,9 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[6], (byte) 0x79) && Objects.equals(bytes[7], (byte) 0x70)
                     && Objects.equals(bytes[8], (byte) 0x4d) && Objects.equals(bytes[9], (byte) 0x34)
                     && Objects.equals(bytes[10], (byte) 0x41))
-                    || bytes.length > 3 && (Objects.equals(bytes[0], (byte) 0x4d)
-                            && Objects.equals(bytes[1], (byte) 0x34)
-                            && Objects.equals(bytes[2], (byte) 0x41) && Objects.equals(bytes[3], (byte) 0x20));
+                    || bytes.length > 3
+                            && (Objects.equals(bytes[0], (byte) 0x4d) && Objects.equals(bytes[1], (byte) 0x34)
+                                    && Objects.equals(bytes[2], (byte) 0x41) && Objects.equals(bytes[3], (byte) 0x20));
         }
     },
     /**

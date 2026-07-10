@@ -342,8 +342,8 @@ public class DisplayInfoImpl implements DisplayInfo {
     }
 
     /**
-     * Sets the serial number while tolerating serial values that are display attributes rather than EDID round-trippable
-     * values.
+     * Sets the serial number while tolerating serial values that are display attributes rather than EDID
+     * round-trippable values.
      *
      * @param edid     the EDID byte array to modify
      * @param serialNo the serial number to set

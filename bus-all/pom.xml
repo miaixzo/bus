@@ -117,17 +117,17 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-fabric</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-gitlab</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-health</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-http</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -188,11 +188,6 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-shade</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-socket</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

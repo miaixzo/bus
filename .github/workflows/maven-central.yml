@@ -12,6 +12,10 @@ on:
     tags:
       - '*.*.*'
 
+env:
+  JAVA_VERSION: '25'
+  COMPILER_RELEASE: '21'
+
 permissions:
   contents: read
 
@@ -95,7 +99,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: ${{ env.JAVA_VERSION }}
           cache: maven
 
       - name: Build Project
@@ -103,6 +107,7 @@ jobs:
         uses: ./.github/actions/build-project
         with:
           version: ${{ steps.release.outputs.version }}
+          compiler-release: ${{ env.COMPILER_RELEASE }}
 
   publish:
     name: Publish to Maven Central
@@ -124,7 +129,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: ${{ env.JAVA_VERSION }}
           cache: maven
           server-id: central
           server-username: MAVEN_CENTRAL_TOKEN_USERNAME
@@ -136,6 +141,7 @@ jobs:
         uses: ./.github/actions/maven-central
         with:
           modules: ${{ needs.build.outputs.modules }}
+          compiler-release: ${{ env.COMPILER_RELEASE }}
         env:
           MAVEN_CENTRAL_TOKEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_TOKEN_USERNAME }}
           MAVEN_CENTRAL_TOKEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN_PASSWORD }}

@@ -633,7 +633,8 @@ public final class Builder {
             serialDescriptor = serialNo;
         }
         return new DisplayInfoImpl(manufacturer, product, serialNo, wk, yr, "1.4", true, hcm, vcm, resolution,
-                modelName == null ? Normal.EMPTY : modelName, serialDescriptor == null ? Normal.EMPTY : serialDescriptor);
+                modelName == null ? Normal.EMPTY : modelName,
+                serialDescriptor == null ? Normal.EMPTY : serialDescriptor);
     }
 
     /**

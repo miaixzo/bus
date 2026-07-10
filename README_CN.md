@@ -45,7 +45,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 |---------|-----------------------------------------------------------------------------|------------------------------------------------------------------------|
 | Java 8  | [bus-all:5.x](https://central.sonatype.com/artifact/org.aoju/bus-all/5.9.9) | Compiled with java 8                                                   |
 | Java 17 | [bus-all:6.x](https://central.sonatype.com/artifact/org.aoju/bus-all/6.6.1) | Compiled with java 17, uses Jakarta EE, compatible with java 11, 17    |
-| Java 21 | [bus-all:8.x](https://central.sonatype.com/artifact/org.miaixz/bus-all)     | Compiled with java 25, uses Jakarta EE, compatible with java 21, 25 |
+| Java 21 | [bus-all:8.x](https://central.sonatype.com/artifact/org.miaixz/bus-all)     | Compiled with java 21 by JDK 25, uses Jakarta EE, compatible with java 21-25 |
 
 
 ### ✨ 组件信息
@@ -63,7 +63,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-extra](bus-extra)         | 扩展功能包，集成FTP/二维码/MQ/文件处理等外围服务                   |
 | [√]  | [bus-gitlab](bus-gitlab)       | GitLab深度集成，提供CI/CD/仓库/问题等全生命周期管理               |
 | [√]  | [bus-health](bus-health)       | 健康监控中心，实时采集JVM/OS/容器/中间件监控指标                   |
-| [√]  | [bus-fabric](bus-fabric)           | 统一 HTTP 客户端与 TCP/UDP/WebSocket 通信框架                 |
+| [√]  | [bus-fabric](bus-fabric)       | 统一 HTTP 客户端与 TCP/UDP/WebSocket 通信框架                 |
 | [√]  | [bus-image](bus-image)         | 图像处理引擎，支持格式转换/缩略图生成/OCR识别等功能                   |
 | [√]  | [bus-limiter](bus-limiter)     | 高性能限流组件，支持令牌桶/滑动窗口/分布式限流策略                     |
 | [√]  | [bus-logger](bus-logger)       | 日志增强模块，支持动态日志级别/链路追踪ID/敏感数据过滤                  |
@@ -80,7 +80,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-shade](bus-shade)         | 代码生成器，一键生成Entity/Service/Mapper等基础代码           |
 | [√]  | [bus-starter](bus-starter)     | SpringBoot启动器，自动装配核心组件及配置                      |
 | [√]  | [bus-storage](bus-storage)     | 对象存储服务，支持阿里云OSS/腾讯云COS/MinIO等存储方案              |
-| [√]  | [bus-tempus](bus-tempus)           | 分布式任务调度，支持CRON表达式及集群任务协调                       |
+| [√]  | [bus-tempus](bus-tempus)       | 分布式任务调度，支持CRON表达式及集群任务协调                       |
 | [×]  | [bus-tracer](bus-tracer)       | 分布式链路追踪，集成Zipkin/Pinpoint实现全链路监控（开发中）          |
 | [√]  | [bus-validate](bus-validate)   | 参数校验框架，扩展JSR-303注解支持自定义校验规则                    |
 | [√]  | [bus-vortex](bus-vortex)       | 响应式网关，基于WebFlux构建的高性能API网关                     |

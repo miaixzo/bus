@@ -42,17 +42,20 @@ public class SAXTransformerFactoryHolder {
     static {
         factory = (SAXTransformerFactory) TransformerFactory.newInstance();
         try {
-            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, !"false".equalsIgnoreCase(
-                    Builder.getPropertyOrEnv(
-                            "javax.xml.featureSecureProcessing",
-                            "JAVAX_XML_FEATURE_SECURE_PROCESSING",
-                            null)));
+            factory.setFeature(
+                    XMLConstants.FEATURE_SECURE_PROCESSING,
+                    !"false".equalsIgnoreCase(
+                            Builder.getPropertyOrEnv(
+                                    "javax.xml.featureSecureProcessing",
+                                    "JAVAX_XML_FEATURE_SECURE_PROCESSING",
+                                    null)));
         } catch (TransformerConfigurationException e) {
             throw new AssertionError(
                     "All implementations are required to support the XMLConstants.FEATURE_SECURE_PROCESSING feature",
                     e);
         }
-        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET,
+        factory.setAttribute(
+                XMLConstants.ACCESS_EXTERNAL_STYLESHEET,
                 Builder.getPropertyOrEnv(
                         "javax.xml.accessExternalStylesheet",
                         "JAVAX_XML_ACCESS_EXTERNAL_STYLESHEET",

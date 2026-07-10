@@ -44,11 +44,13 @@ public class SAXParserFactoryHolder {
     static {
         factory = SAXParserFactory.newInstance();
         try {
-            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, !"false".equalsIgnoreCase(
-                    Builder.getPropertyOrEnv(
-                            "javax.xml.featureSecureProcessing",
-                            "JAVAX_XML_FEATURE_SECURE_PROCESSING",
-                            null)));
+            factory.setFeature(
+                    XMLConstants.FEATURE_SECURE_PROCESSING,
+                    !"false".equalsIgnoreCase(
+                            Builder.getPropertyOrEnv(
+                                    "javax.xml.featureSecureProcessing",
+                                    "JAVAX_XML_FEATURE_SECURE_PROCESSING",
+                                    null)));
         } catch (ParserConfigurationException | SAXNotRecognizedException | SAXNotSupportedException e) {
             throw new AssertionError(
                     "All implementations are required to support the XMLConstants.FEATURE_SECURE_PROCESSING feature",

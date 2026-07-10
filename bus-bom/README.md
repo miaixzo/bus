@@ -249,9 +249,9 @@ If a dependency is not found:
 ## 🔄 Version Compatibility
 
 | Bus BOM Version | Spring Boot Version | JDK Version |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
-| 7.x | 2.x+ | 11+ |
+|:----------------|:--------------------|:---|
+| 8.x             | 4.x+                | 17+ |
+| 6.x             | 2.x+                | 11+ |
 
 -----
 

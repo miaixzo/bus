@@ -10,7 +10,8 @@
     "tested-versions" : [
       "8.8.0",
       "8.8.1",
-      "8.8.2"
+      "8.8.2",
+      "8.8.3"
     ],
     "allowed-packages" : [
       "org.miaixz"

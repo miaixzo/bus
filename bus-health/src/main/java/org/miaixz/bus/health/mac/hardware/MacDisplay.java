@@ -156,9 +156,9 @@ final class MacDisplay extends AbstractDisplay {
     }
 
     /**
-     * Discovers the Apple Silicon built-in display by matching the stable {@code IOMobileFramebuffer} base class. External
-     * monitors are skipped because they are enumerated through {@code IOPortTransportStateDisplayPort}; only the built-in
-     * panel without a physical EDID is synthesized from {@code DisplayAttributes}.
+     * Discovers the Apple Silicon built-in display by matching the stable {@code IOMobileFramebuffer} base class.
+     * External monitors are skipped because they are enumerated through {@code IOPortTransportStateDisplayPort}; only
+     * the built-in panel without a physical EDID is synthesized from {@code DisplayAttributes}.
      *
      * @return A list containing the built-in display, or an empty list if it is not found.
      */
@@ -279,14 +279,28 @@ final class MacDisplay extends AbstractDisplay {
                 widthMm = size.width;
                 heightMm = size.height;
             } catch (Exception e) {
-                Logger.debug(false, "Health", "Failed to get built-in display CoreGraphics properties: {}",
+                Logger.debug(
+                        false,
+                        "Health",
+                        "Failed to get built-in display CoreGraphics properties: {}",
                         e.getMessage());
             }
             displayName = getLocalizedDisplayName(builtInId);
         }
-        return Builder.synthesizeDisplayInfo(legacyMfg, cgModel, cgSerial, week == null ? null : week.intValue(),
-                year == null ? null : year.intValue(), model, serial, displayWidth, displayHeight, fallbackName,
-                widthMm, heightMm, displayName);
+        return Builder.synthesizeDisplayInfo(
+                legacyMfg,
+                cgModel,
+                cgSerial,
+                week == null ? null : week.intValue(),
+                year == null ? null : year.intValue(),
+                model,
+                serial,
+                displayWidth,
+                displayHeight,
+                fallbackName,
+                widthMm,
+                heightMm,
+                displayName);
     }
 
     /**
@@ -438,7 +452,8 @@ final class MacDisplay extends AbstractDisplay {
     }
 
     /**
-     * Reads a dictionary value from a CoreFoundation dictionary. The returned value is borrowed and must not be released.
+     * Reads a dictionary value from a CoreFoundation dictionary. The returned value is borrowed and must not be
+     * released.
      *
      * @param dict The source dictionary.
      * @param key  The dictionary key.

@@ -15,10 +15,8 @@ inputs:
       bus-core
       bus-opencv
       bus-logger
-      bus-fabric
       bus-crypto
       bus-gitlab
-      bus-http
       bus-mapper
       bus-office
       bus-proxy
@@ -28,6 +26,7 @@ inputs:
       bus-validate
       bus-base
       bus-extra
+      bus-fabric
       bus-health
       bus-cache
       bus-image
@@ -46,7 +45,11 @@ inputs:
   maven-args:
     description: 'Additional Maven arguments.'
     required: false
-    default: '-B -ntp -DskipTests -Djava.version=21 -Dmaven.compiler.release=21'
+    default: '-B -ntp -DskipTests'
+  compiler-release:
+    description: 'Maven compiler release target. Leave empty to use Maven defaults.'
+    required: false
+    default: '21'
   goals:
     description: 'Maven goals to execute for every module.'
     required: false
@@ -273,10 +276,16 @@ runs:
       env:
         MODULES: ${{ steps.metadata.outputs.modules }}
         MAVEN_ARGS: ${{ inputs.maven-args }}
+        COMPILER_RELEASE: ${{ inputs.compiler-release }}
         GOALS: ${{ inputs.goals }}
         GPG_SKIP: ${{ inputs.gpg-skip }}
       run: |
         set -euo pipefail
+
+        COMPILER_ARGS=""
+        if [ -n "$COMPILER_RELEASE" ]; then
+          COMPILER_ARGS="-Dmaven.compiler.release=$COMPILER_RELEASE"
+        fi
 
         for module in $MODULES; do
           echo "::group::Build $module"
@@ -286,9 +295,9 @@ runs:
           fi
 
           if [ "$GPG_SKIP" = "true" ]; then
-            mvn $MAVEN_ARGS -Dgpg.skip=true $GROOM_ARGS -f "$module/pom.xml" $GOALS
+            mvn $MAVEN_ARGS $COMPILER_ARGS -Dgpg.skip=true $GROOM_ARGS -f "$module/pom.xml" $GOALS
           else
-            mvn $MAVEN_ARGS $GROOM_ARGS -f "$module/pom.xml" $GOALS
+            mvn $MAVEN_ARGS $COMPILER_ARGS $GROOM_ARGS -f "$module/pom.xml" $GOALS
           fi
           echo "::endgroup::"
         done
