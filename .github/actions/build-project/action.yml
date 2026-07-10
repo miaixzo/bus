@@ -15,6 +15,7 @@ inputs:
       bus-core
       bus-opencv
       bus-logger
+      bus-fabric
       bus-crypto
       bus-gitlab
       bus-http
@@ -23,7 +24,6 @@ inputs:
       bus-proxy
       bus-setting
       bus-shade
-      bus-socket
       bus-tracer
       bus-validate
       bus-base
