@@ -41,6 +41,7 @@ public final class SysPath {
      * Prevents instantiation of utility class.
      */
     private SysPath() {
+        // No initialization required.
     }
 
     /**

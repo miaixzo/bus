@@ -1,0 +1,129 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.sensitive.nimble;
+
+import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.xyz.StringKit;
+
+/**
+ * An abstract base class for desensitization strategy providers. It provides static helper methods for common masking
+ * patterns.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+public abstract class AbstractProvider implements StrategyProvider {
+
+    /**
+     * Constructs a new AbstractProvider instance.
+     */
+    public AbstractProvider() {
+        // No initialization required.
+    }
+
+    /**
+     * Builds a masked string in automatic mode, where the number of masked characters is calculated based on the
+     * string's length, typically masking the middle part.
+     *
+     * @param mode   The desensitization mode (e.g., HEAD, TAIL, MIDDLE).
+     * @param rawVal The original string to be masked.
+     * @param shadow The character to use for masking.
+     * @return the string
+     */
+    public static String build(EnumValue.Mode mode, String rawVal, String shadow) {
+        StringBuilder resultBuilder = new StringBuilder();
+        int length = rawVal.length();
+        if (mode == EnumValue.Mode.TAIL || mode == EnumValue.Mode.HEAD) {
+            // Mask approximately half of the string.
+            int half = (int) Math.ceil(length / 2.0);
+            boolean head = mode == EnumValue.Mode.HEAD;
+            if (head) {
+                resultBuilder.append(StringKit.repeat(shadow, half)).append(rawVal, half, length);
+            } else {
+                resultBuilder.append(rawVal, 0, length - half).append(StringKit.repeat(shadow, half));
+            }
+            return resultBuilder.toString();
+        }
+        // For MIDDLE mode, if only two characters, mask the second one.
+        if (length == 2) {
+            return resultBuilder.append(rawVal, 0, 1).append(shadow).toString();
+        }
+        // Aim to mask about half the characters in the middle.
+        int middle = Math.max((int) Math.ceil(length / 2.0), 1);
+        // Calculate the length of the visible side parts.
+        int side = Math.max((int) Math.floor((length - middle) / 2.0), 1);
+        // Adjust the middle part to fill the rest.
+        middle = length - side * 2;
+        resultBuilder.append(rawVal, 0, side).append(StringKit.repeat(shadow, middle))
+                .append(rawVal, side + middle, length);
+        return resultBuilder.toString();
+    }
+
+    /**
+     * Builds a masked string in manual mode, using fixed sizes for the unmasked header and trailer.
+     *
+     * @param mode            The desensitization mode (e.g., HEAD, TAIL, MIDDLE).
+     * @param fixedHeaderSize The number of characters to keep visible at the beginning.
+     * @param fixedTailorSize The number of characters to keep visible at the end.
+     * @param rawVal          The original string to be masked.
+     * @param shadow          The character to use for masking.
+     * @return the string
+     */
+    public static String build(
+            EnumValue.Mode mode,
+            int fixedHeaderSize,
+            int fixedTailorSize,
+            String rawVal,
+            String shadow) {
+        StringBuilder resultBuilder = new StringBuilder();
+        int length = rawVal.length();
+        int maskLength;
+        switch (mode) {
+            case TAIL:
+                if (length <= fixedHeaderSize) {
+                    return rawVal;
+                }
+                maskLength = length - fixedHeaderSize;
+                resultBuilder.append(rawVal, 0, fixedHeaderSize).append(StringKit.repeat(shadow, maskLength));
+                break;
+
+            default:
+            case HEAD:
+                if (length <= fixedTailorSize) {
+                    return rawVal;
+                }
+                maskLength = length - fixedTailorSize;
+                resultBuilder.append(StringKit.repeat(shadow, maskLength)).append(rawVal.substring(maskLength));
+                break;
+
+            case MIDDLE:
+                int unmaskLength = fixedTailorSize + fixedHeaderSize;
+                if (length <= unmaskLength) {
+                    return rawVal;
+                }
+                maskLength = length - unmaskLength;
+                resultBuilder.append(rawVal, 0, fixedHeaderSize).append(StringKit.repeat(shadow, maskLength))
+                        .append(rawVal, fixedHeaderSize + maskLength, length);
+                break;
+        }
+        return resultBuilder.toString();
+    }
+
+}

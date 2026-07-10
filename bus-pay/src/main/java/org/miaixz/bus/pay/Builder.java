@@ -54,8 +54,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.Certificate;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.pay.metric.wechat.AuthType;
-import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
+import org.miaixz.bus.pay.nimble.wechat.AuthType;
+import org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder;
 
 /**
  * Payment-related support class.

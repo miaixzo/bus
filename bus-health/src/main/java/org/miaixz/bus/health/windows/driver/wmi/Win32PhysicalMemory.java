@@ -40,6 +40,7 @@ public final class Win32PhysicalMemory {
      * Prevents instantiation of utility class.
      */
     private Win32PhysicalMemory() {
+        // No initialization required.
     }
 
     /**

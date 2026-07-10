@@ -39,7 +39,7 @@ public final class MapperEntityResolver {
      * Prevents instantiation of this utility class.
      */
     private MapperEntityResolver() {
-        // Utility class; do not instantiate.
+        // No initialization required.
     }
 
     /**

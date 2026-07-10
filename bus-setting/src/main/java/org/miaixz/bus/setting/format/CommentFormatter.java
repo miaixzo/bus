@@ -20,8 +20,8 @@
 package org.miaixz.bus.setting.format;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.setting.metric.ini.IniComment;
-import org.miaixz.bus.setting.metric.ini.IniCommentService;
+import org.miaixz.bus.setting.nimble.ini.IniComment;
+import org.miaixz.bus.setting.nimble.ini.IniCommentService;
 
 /**
  * A formatter that parses a string value into an {@link IniComment} object.

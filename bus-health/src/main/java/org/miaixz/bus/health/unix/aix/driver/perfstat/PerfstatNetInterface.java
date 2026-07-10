@@ -38,6 +38,7 @@ public final class PerfstatNetInterface {
      * Prevents instantiation of utility class.
      */
     private PerfstatNetInterface() {
+        // No initialization required.
     }
 
     /**

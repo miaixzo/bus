@@ -33,10 +33,10 @@ module bus.setting {
     exports org.miaixz.bus.setting;
     exports org.miaixz.bus.setting.format;
     exports org.miaixz.bus.setting.magic;
-    exports org.miaixz.bus.setting.metric.ini;
-    exports org.miaixz.bus.setting.metric.props;
-    exports org.miaixz.bus.setting.metric.setting;
-    exports org.miaixz.bus.setting.metric.toml;
-    exports org.miaixz.bus.setting.metric.yaml;
+    exports org.miaixz.bus.setting.nimble.ini;
+    exports org.miaixz.bus.setting.nimble.props;
+    exports org.miaixz.bus.setting.nimble.setting;
+    exports org.miaixz.bus.setting.nimble.toml;
+    exports org.miaixz.bus.setting.nimble.yaml;
 
 }

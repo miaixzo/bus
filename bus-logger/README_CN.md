@@ -686,7 +686,7 @@ Bus Logger 按以下顺序检测日志框架：
 
 ```java
 import org.miaixz.bus.logger.Holder;
-import org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory;
+import org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory;
 
 // 强制使用 SLF4J
 Holder.setDefaultFactory(Slf4jLoggingFactory.class);

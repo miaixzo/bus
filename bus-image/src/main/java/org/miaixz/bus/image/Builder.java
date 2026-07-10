@@ -46,8 +46,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;

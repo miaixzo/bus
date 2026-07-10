@@ -43,6 +43,7 @@ public class OpenBsdComputerSystem extends AbstractComputerSystem {
      * Creates a new OpenBsdComputerSystem instance.
      */
     public OpenBsdComputerSystem() {
+        // No initialization required.
     }
 
     /**

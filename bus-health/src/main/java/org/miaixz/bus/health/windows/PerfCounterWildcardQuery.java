@@ -49,6 +49,7 @@ public final class PerfCounterWildcardQuery {
      * Prevents instantiation of utility class.
      */
     private PerfCounterWildcardQuery() {
+        // No initialization required.
     }
 
     /**

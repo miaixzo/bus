@@ -46,6 +46,7 @@ public final class PerfCounterQuery {
      * Prevents instantiation of utility class.
      */
     private PerfCounterQuery() {
+        // No initialization required.
     }
 
     /**

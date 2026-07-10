@@ -23,7 +23,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.SeekableByteChannel;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.GeneralSecurityException;
@@ -41,9 +40,10 @@ import javax.xml.transform.stream.StreamResult;
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
 
-import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -503,7 +503,7 @@ public class StowRS {
                 return null;
             }
             byte[] bytes = inputStream.readNBytes(MAX_BODY_LOG);
-            return bytes.length == 0 ? null : new String(bytes, StandardCharsets.UTF_8);
+            return bytes.length == 0 ? null : new String(bytes, Charset.UTF_8);
         } catch (IOException e) {
             Logger.debug(false, "Image", "Cannot read STOW-RS response body", e);
             return null;

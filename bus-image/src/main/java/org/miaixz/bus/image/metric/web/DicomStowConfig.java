@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.MediaType;
 
 /**
  * Configuration for DICOM STOW-RS operations.

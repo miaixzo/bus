@@ -260,6 +260,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
          * Creates a new BATTERY_QUERY_INFORMATION instance.
          */
         public BATTERY_QUERY_INFORMATION() {
+            // No initialization required.
         }
 
         /**
@@ -311,6 +312,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
          * Creates a new BATTERY_INFORMATION instance.
          */
         public BATTERY_INFORMATION() {
+            // No initialization required.
         }
 
         /**
@@ -389,6 +391,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
          * Creates a new BATTERY_WAIT_STATUS instance.
          */
         public BATTERY_WAIT_STATUS() {
+            // No initialization required.
         }
 
         /**
@@ -443,6 +446,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
          * Creates a new BATTERY_STATUS instance.
          */
         public BATTERY_STATUS() {
+            // No initialization required.
         }
 
         /**
@@ -492,6 +496,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
          * Creates a new BATTERY_MANUFACTURE_DATE instance.
          */
         public BATTERY_MANUFACTURE_DATE() {
+            // No initialization required.
         }
 
         /**

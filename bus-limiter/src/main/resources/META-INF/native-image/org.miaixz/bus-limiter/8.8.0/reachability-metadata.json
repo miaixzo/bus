@@ -473,13 +473,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.limiter.metric.FallbackProvider"
+      "type": "org.miaixz.bus.limiter.nimble.FallbackProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.limiter.metric.FallbackProvider"
+      "type": "org.miaixz.bus.limiter.nimble.FallbackProvider"
     },
     {
       "condition": {
@@ -503,25 +503,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.limiter.metric.FallbackProvider"
+      "type": "org.miaixz.bus.limiter.nimble.FallbackProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.limiter.metric.FallbackProvider"
+      "type": "org.miaixz.bus.limiter.nimble.FallbackProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.limiter.metric.MethodManager"
+      "type": "org.miaixz.bus.limiter.nimble.MethodManager"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.limiter.metric.MethodManager"
+      "type": "org.miaixz.bus.limiter.nimble.MethodManager"
     },
     {
       "condition": {
@@ -552,25 +552,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.limiter.metric.MethodManager"
+      "type": "org.miaixz.bus.limiter.nimble.MethodManager"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.limiter.metric.MethodManager"
+      "type": "org.miaixz.bus.limiter.nimble.MethodManager"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.limiter.metric.MethodProvider"
+      "type": "org.miaixz.bus.limiter.nimble.MethodProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.limiter.metric.MethodProvider"
+      "type": "org.miaixz.bus.limiter.nimble.MethodProvider"
     },
     {
       "condition": {
@@ -594,25 +594,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.limiter.metric.MethodProvider"
+      "type": "org.miaixz.bus.limiter.nimble.MethodProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.limiter.metric.MethodProvider"
+      "type": "org.miaixz.bus.limiter.nimble.MethodProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.limiter.metric.RequestProvider"
+      "type": "org.miaixz.bus.limiter.nimble.RequestProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.limiter.metric.RequestProvider"
+      "type": "org.miaixz.bus.limiter.nimble.RequestProvider"
     },
     {
       "condition": {
@@ -650,25 +650,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.limiter.metric.RequestProvider"
+      "type": "org.miaixz.bus.limiter.nimble.RequestProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.limiter.metric.RequestProvider"
+      "type": "org.miaixz.bus.limiter.nimble.RequestProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager"
+      "type": "org.miaixz.bus.limiter.nimble.ResourceManager"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager"
+      "type": "org.miaixz.bus.limiter.nimble.ResourceManager"
     },
     {
       "condition": {
@@ -703,25 +703,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager"
+      "type": "org.miaixz.bus.limiter.nimble.ResourceManager"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager"
+      "type": "org.miaixz.bus.limiter.nimble.ResourceManager"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
+      "type": "org.miaixz.bus.limiter.nimble.ResourceManager$Protection"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
+      "type": "org.miaixz.bus.limiter.nimble.ResourceManager$Protection"
     },
     {
       "condition": {
@@ -747,25 +747,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
+      "type": "org.miaixz.bus.limiter.nimble.ResourceManager$Protection"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.limiter.metric.ResourceManager$Protection"
+      "type": "org.miaixz.bus.limiter.nimble.ResourceManager$Protection"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.limiter.metric.StrategyManager"
+      "type": "org.miaixz.bus.limiter.nimble.StrategyManager"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.limiter.metric.StrategyManager"
+      "type": "org.miaixz.bus.limiter.nimble.StrategyManager"
     },
     {
       "condition": {
@@ -789,13 +789,13 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.limiter.metric.StrategyManager"
+      "type": "org.miaixz.bus.limiter.nimble.StrategyManager"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.limiter.metric.StrategyManager"
+      "type": "org.miaixz.bus.limiter.nimble.StrategyManager"
     },
     {
       "condition": {

@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.setting.format;
 
-import org.miaixz.bus.setting.metric.ini.IniElement;
+import org.miaixz.bus.setting.nimble.ini.IniElement;
 
 /**
  * An interface for formatters that convert a string value from a configuration file into a specific {@link IniElement}

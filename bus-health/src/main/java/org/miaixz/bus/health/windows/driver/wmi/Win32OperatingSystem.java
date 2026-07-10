@@ -40,6 +40,7 @@ public final class Win32OperatingSystem {
      * Prevents instantiation of utility class.
      */
     private Win32OperatingSystem() {
+        // No initialization required.
     }
 
     /**

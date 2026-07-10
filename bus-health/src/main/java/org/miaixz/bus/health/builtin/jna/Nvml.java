@@ -189,6 +189,7 @@ public interface Nvml {
          * Creates a new NvmlUtilization instance.
          */
         public NvmlUtilization() {
+            // No initialization required.
         }
 
         /**
@@ -216,6 +217,7 @@ public interface Nvml {
          * Creates a new NvmlMemory instance.
          */
         public NvmlMemory() {
+            // No initialization required.
         }
 
         /**
@@ -248,6 +250,7 @@ public interface Nvml {
          * Creates a new NvmlPciInfo instance.
          */
         public NvmlPciInfo() {
+            // No initialization required.
         }
 
         /**

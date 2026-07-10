@@ -25,11 +25,11 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
-import org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory;
-import org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory;
-import org.miaixz.bus.logger.metric.console.NormalLoggingFactory;
-import org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory;
-import org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory;
+import org.miaixz.bus.logger.nimble.apache.commons.CommonsLoggingFactory;
+import org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory;
+import org.miaixz.bus.logger.nimble.console.NormalLoggingFactory;
+import org.miaixz.bus.logger.nimble.jdk.JdkLoggingFactory;
+import org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory;
 
 /**
  * A simple factory for retrieving {@link Factory} instances. This class provides a static factory method to obtain a

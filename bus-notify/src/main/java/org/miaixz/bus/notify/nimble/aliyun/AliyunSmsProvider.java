@@ -1,0 +1,116 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.notify.nimble.aliyun;
+
+import static org.miaixz.bus.notify.FabricX.get;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.notify.Context;
+
+/**
+ * Alibaba Cloud SMS service provider.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+public class AliyunSmsProvider extends AliyunProvider<AliyunNotice, Context> {
+
+    /**
+     * Constructs an {@code AliyunSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
+    public AliyunSmsProvider(Context context) {
+        super(context);
+    }
+
+    /**
+     * Sends an SMS notification using Alibaba Cloud SMS service.
+     *
+     * @param entity The {@link AliyunNotice} containing SMS details like recipient, signature, template, and
+     *               parameters.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
+    @Override
+    public Message send(AliyunNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "Aliyun SMS send started: template={}, targetCount={}, signaturePresent={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity != null && entity.getSignature() != null);
+        Map<String, String> bodys = new HashMap<>();
+        // 1. System parameters
+        // The signature method used for authentication.
+        bodys.put("SignatureMethod", "HMAC-SHA1");
+        // A unique random number to prevent replay attacks.
+        bodys.put("SignatureNonce", UUID.randomUUID().toString());
+        // The AccessKey ID of your Alibaba Cloud account.
+        bodys.put("AccessKeyId", context.getAppKey());
+        // The version of the signature algorithm.
+        bodys.put("SignatureVersion", "1.0");
+        // The timestamp of the API request in UTC format.
+        bodys.put("Timestamp", DateKit.format(new Date(), Fields.UTC));
+        // The format of the response, typically JSON.
+        bodys.put("Format", "JSON");
+
+        // 2. Business API parameters
+        // The API action to be performed, e.g., SendSms.
+        bodys.put("Action", "SendSms");
+        // The API version.
+        bodys.put("Version", "2017-05-25");
+        // The region ID of the service, e.g., cn-hangzhou.
+        bodys.put("RegionId", "cn-hangzhou");
+        // The recipient's mobile number(s).
+        bodys.put("PhoneNumbers", entity.getReceive());
+        // The SMS signature name.
+        bodys.put("SignName", entity.getSignature());
+        // The parameters for the SMS template in JSON format.
+        bodys.put("TemplateParam", entity.getParams());
+        // The SMS template code.
+        bodys.put("TemplateCode", entity.getTemplate());
+
+        bodys.put("Signature", getSign(bodys));
+
+        Map<String, String> map = new HashMap<>();
+        for (String text : bodys.keySet()) {
+            map.put(specialUrlEncode(text), specialUrlEncode(bodys.get(text)));
+        }
+        Message result = checkResponse(get(this.getUrl(entity), map));
+        Logger.info(
+                false,
+                "Notify",
+                "Aliyun SMS send completed: template={}, targetCount={}, errcode={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                result == null ? null : result.getErrcode());
+        return result;
+    }
+
+}

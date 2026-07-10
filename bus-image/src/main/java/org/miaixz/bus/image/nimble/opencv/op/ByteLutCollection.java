@@ -20,7 +20,6 @@
 package org.miaixz.bus.image.nimble.opencv.op;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.image.nimble.opencv.lut.ByteLut;
 
 /**
@@ -150,7 +150,7 @@ public final class ByteLutCollection {
      * @param filePath   the file path.
      */
     private static void loadLutFile(List<ByteLut> lutEntries, Path filePath) {
-        try (var scanner = new Scanner(filePath, StandardCharsets.UTF_8)) {
+        try (var scanner = new Scanner(filePath, Charset.UTF_8)) {
             lutEntries.add(new ByteLut(nameWithoutExtension(filePath.getFileName().toString()), readLutFile(scanner)));
         } catch (Exception e) {
             throw new IllegalStateException("Cannot read LUT file: " + filePath, e);

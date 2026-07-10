@@ -21,7 +21,7 @@ package org.miaixz.bus.setting;
 
 import java.io.Closeable;
 
-import org.miaixz.bus.setting.metric.ini.IniElement;
+import org.miaixz.bus.setting.nimble.ini.IniElement;
 
 /**
  * An interface for an INI file line formatter. It is responsible for parsing a single line into a corresponding

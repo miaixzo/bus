@@ -36,6 +36,7 @@ public class OpenBsdNetworkParams extends AbstractNetworkParams {
      * Creates a new OpenBsdNetworkParams instance.
      */
     public OpenBsdNetworkParams() {
+        // No initialization required.
     }
 
     /**

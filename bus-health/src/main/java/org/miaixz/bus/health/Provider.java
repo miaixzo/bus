@@ -54,6 +54,7 @@ public class Provider implements org.miaixz.bus.core.Provider {
      * Creates a new Provider instance.
      */
     public Provider() {
+        // No initialization required.
     }
 
     /**

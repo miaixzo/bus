@@ -41,6 +41,7 @@ public final class OpenBsdHardwareAbstractionLayer extends AbstractHardwareAbstr
      * Creates a new OpenBsdHardwareAbstractionLayer instance.
      */
     public OpenBsdHardwareAbstractionLayer() {
+        // No initialization required.
     }
 
     /**

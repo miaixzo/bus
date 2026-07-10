@@ -117,6 +117,7 @@ public interface SolarisLibc extends CLibrary {
          * Creates a new SolarisUtmpx instance.
          */
         public SolarisUtmpx() {
+            // No initialization required.
         }
 
         /**
@@ -182,6 +183,7 @@ public interface SolarisLibc extends CLibrary {
          * Creates a new Exit_status instance.
          */
         public Exit_status() {
+            // No initialization required.
         }
 
         /**
@@ -212,6 +214,7 @@ public interface SolarisLibc extends CLibrary {
          * Creates a new Timeval instance.
          */
         public Timeval() {
+            // No initialization required.
         }
 
         /**

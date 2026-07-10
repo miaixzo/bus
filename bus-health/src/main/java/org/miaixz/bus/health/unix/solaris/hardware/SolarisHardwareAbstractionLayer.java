@@ -40,6 +40,7 @@ public final class SolarisHardwareAbstractionLayer extends AbstractHardwareAbstr
      * Creates a new SolarisHardwareAbstractionLayer instance.
      */
     public SolarisHardwareAbstractionLayer() {
+        // No initialization required.
     }
 
     /**

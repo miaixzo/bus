@@ -37,6 +37,7 @@ public class OpenBsdInternetProtocolStats extends AbstractInternetProtocolStats 
      * Creates a new OpenBsdInternetProtocolStats instance.
      */
     public OpenBsdInternetProtocolStats() {
+        // No initialization required.
     }
 
     /**

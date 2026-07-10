@@ -39,6 +39,7 @@ public final class OhmHardware {
      * Prevents instantiation of utility class.
      */
     private OhmHardware() {
+        // No initialization required.
     }
 
     /**

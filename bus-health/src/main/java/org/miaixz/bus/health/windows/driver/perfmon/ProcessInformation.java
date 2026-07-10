@@ -41,6 +41,7 @@ public final class ProcessInformation {
      * Prevents instantiation of utility class.
      */
     private ProcessInformation() {
+        // No initialization required.
     }
 
     /**

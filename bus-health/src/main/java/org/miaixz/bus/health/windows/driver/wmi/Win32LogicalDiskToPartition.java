@@ -38,6 +38,7 @@ public final class Win32LogicalDiskToPartition {
      * Prevents instantiation of utility class.
      */
     private Win32LogicalDiskToPartition() {
+        // No initialization required.
     }
 
     /**

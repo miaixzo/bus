@@ -46,6 +46,7 @@ public final class WmiKit {
      * Prevents instantiation of utility class.
      */
     private WmiKit() {
+        // No initialization required.
     }
 
     /**

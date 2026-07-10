@@ -44,7 +44,7 @@ public final class MapperMethodTypeResolver {
      * Prevents instantiation of this utility class.
      */
     private MapperMethodTypeResolver() {
-        // Utility class; do not instantiate.
+        // No initialization required.
     }
 
     /**

@@ -21,10 +21,10 @@ package org.miaixz.bus.image.galaxy.media;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
@@ -114,7 +114,7 @@ public interface ManifestXml {
      * @return XML charset name
      */
     default String getCharsetEncoding() {
-        return StandardCharsets.UTF_8.name();
+        return Charset.UTF_8.name();
     }
 
     /**

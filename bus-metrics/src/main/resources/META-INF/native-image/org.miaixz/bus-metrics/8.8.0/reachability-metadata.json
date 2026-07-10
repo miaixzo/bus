@@ -1047,49 +1047,49 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.Counter"
+      "type": "org.miaixz.bus.metrics.nimble.Counter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.Counter"
+      "type": "org.miaixz.bus.metrics.nimble.Counter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.Gauge"
+      "type": "org.miaixz.bus.metrics.nimble.Gauge"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.Gauge"
+      "type": "org.miaixz.bus.metrics.nimble.Gauge"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.Histogram"
+      "type": "org.miaixz.bus.metrics.nimble.Histogram"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.Histogram"
+      "type": "org.miaixz.bus.metrics.nimble.Histogram"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.LlmPriceTable"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.LlmPriceTable"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.LlmPriceTable"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.LlmPriceTable"
     },
     {
       "condition": {
@@ -1117,25 +1117,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.LlmPriceTable"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.LlmPriceTable"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.LlmPriceTable"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.LlmPriceTable"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeCounter"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeCounter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeCounter"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeCounter"
     },
     {
       "condition": {
@@ -1161,25 +1161,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeCounter"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeCounter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeCounter"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeCounter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeGauge"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeGauge"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeGauge"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeGauge"
     },
     {
       "condition": {
@@ -1198,25 +1198,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeGauge"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeGauge"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeGauge"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeGauge"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeHistogram"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeHistogram"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeHistogram"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeHistogram"
     },
     {
       "condition": {
@@ -1259,25 +1259,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeHistogram"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeHistogram"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeHistogram"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeHistogram"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeLlmTimer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeLlmTimer"
     },
     {
       "condition": {
@@ -1289,7 +1289,7 @@
           "parameterTypes": [
             "java.lang.String",
             "org.miaixz.bus.metrics.observe.tag.Tag[]",
-            "org.miaixz.bus.metrics.metric.indigenous.NativeProvider"
+            "org.miaixz.bus.metrics.nimble.indigenous.NativeProvider"
           ]
         },
         {
@@ -1301,25 +1301,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeLlmTimer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeLlmTimer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer$NativeLlmSample"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeLlmTimer$NativeLlmSample"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer$NativeLlmSample"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeLlmTimer$NativeLlmSample"
     },
     {
       "condition": {
@@ -1329,7 +1329,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer",
+            "org.miaixz.bus.metrics.nimble.indigenous.NativeLlmTimer",
             "long",
             "java.lang.String",
             "java.lang.String",
@@ -1355,25 +1355,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer$NativeLlmSample"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeLlmTimer$NativeLlmSample"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeLlmTimer$NativeLlmSample"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeLlmTimer$NativeLlmSample"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeMeter"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeMeter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeMeter"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeMeter"
     },
     {
       "condition": {
@@ -1419,25 +1419,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeMeter"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeMeter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeMeter"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeMeter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeProvider"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeProvider"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeProvider"
     },
     {
       "condition": {
@@ -1539,25 +1539,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeProvider"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeProvider"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeRatePair"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeRatePair"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeRatePair"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeRatePair"
     },
     {
       "condition": {
@@ -1601,25 +1601,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeRatePair"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeRatePair"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeRatePair"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeRatePair"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker"
     },
     {
       "condition": {
@@ -1684,25 +1684,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker$SloDefinition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker$SloDefinition"
     },
     {
       "condition": {
@@ -1764,25 +1764,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker$SloDefinition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeSloTracker$SloDefinition"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker$SloDefinition"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeTimer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeTimer"
     },
     {
       "condition": {
@@ -1832,7 +1832,7 @@
           "parameterTypes": [
             "double",
             "java.util.concurrent.TimeUnit",
-            "org.miaixz.bus.metrics.metric.Timer$Window"
+            "org.miaixz.bus.metrics.nimble.Timer$Window"
           ]
         },
         {
@@ -1865,25 +1865,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeTimer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeTimer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeTimer$ViolationSpec"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeTimer$ViolationSpec"
     },
     {
       "condition": {
@@ -1930,25 +1930,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeTimer$ViolationSpec"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.NativeTimer$ViolationSpec"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeTimer$ViolationSpec"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.TDigest"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.TDigest"
     },
     {
       "condition": {
@@ -2006,25 +2006,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.TDigest"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.TDigest"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.TDigest$Centroid"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.TDigest$Centroid"
     },
     {
       "condition": {
@@ -2039,97 +2039,97 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.TDigest$Centroid"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.indigenous.TDigest$Centroid"
+      "type": "org.miaixz.bus.metrics.nimble.indigenous.TDigest$Centroid"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.LlmSample"
+      "type": "org.miaixz.bus.metrics.nimble.LlmSample"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.LlmSample"
+      "type": "org.miaixz.bus.metrics.nimble.LlmSample"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.LlmTimer"
+      "type": "org.miaixz.bus.metrics.nimble.LlmTimer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.LlmTimer"
+      "type": "org.miaixz.bus.metrics.nimble.LlmTimer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.Meter"
+      "type": "org.miaixz.bus.metrics.nimble.Meter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.Meter"
+      "type": "org.miaixz.bus.metrics.nimble.Meter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.micrometer.MicrometerProvider"
+      "type": "org.miaixz.bus.metrics.nimble.micrometer.MicrometerProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.micrometer.MicrometerProvider"
+      "type": "org.miaixz.bus.metrics.nimble.micrometer.MicrometerProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.micrometer.MicrometerProvider"
+      "type": "org.miaixz.bus.metrics.nimble.micrometer.MicrometerProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.opentelemetry.OpenTelemetryProvider"
+      "type": "org.miaixz.bus.metrics.nimble.opentelemetry.OpenTelemetryProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.opentelemetry.OpenTelemetryProvider"
+      "type": "org.miaixz.bus.metrics.nimble.opentelemetry.OpenTelemetryProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.opentelemetry.OpenTelemetryProvider"
+      "type": "org.miaixz.bus.metrics.nimble.opentelemetry.OpenTelemetryProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.prometheus.PrometheusExporter"
+      "type": "org.miaixz.bus.metrics.nimble.prometheus.PrometheusExporter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.prometheus.PrometheusExporter"
+      "type": "org.miaixz.bus.metrics.nimble.prometheus.PrometheusExporter"
     },
     {
       "condition": {
@@ -2173,79 +2173,79 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.prometheus.PrometheusExporter"
+      "type": "org.miaixz.bus.metrics.nimble.prometheus.PrometheusExporter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.prometheus.PrometheusExporter"
+      "type": "org.miaixz.bus.metrics.nimble.prometheus.PrometheusExporter"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.prometheus.PrometheusProvider"
+      "type": "org.miaixz.bus.metrics.nimble.prometheus.PrometheusProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.prometheus.PrometheusProvider"
+      "type": "org.miaixz.bus.metrics.nimble.prometheus.PrometheusProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.prometheus.PrometheusProvider"
+      "type": "org.miaixz.bus.metrics.nimble.prometheus.PrometheusProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.RatePair"
+      "type": "org.miaixz.bus.metrics.nimble.RatePair"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.RatePair"
+      "type": "org.miaixz.bus.metrics.nimble.RatePair"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.Sample"
+      "type": "org.miaixz.bus.metrics.nimble.Sample"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.Sample"
+      "type": "org.miaixz.bus.metrics.nimble.Sample"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.Timer"
+      "type": "org.miaixz.bus.metrics.nimble.Timer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.Timer"
+      "type": "org.miaixz.bus.metrics.nimble.Timer"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
       },
-      "type": "org.miaixz.bus.metrics.metric.Timer$ViolationEvent"
+      "type": "org.miaixz.bus.metrics.nimble.Timer$ViolationEvent"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.Timer$ViolationEvent"
+      "type": "org.miaixz.bus.metrics.nimble.Timer$ViolationEvent"
     },
     {
       "condition": {
@@ -2310,19 +2310,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.Timer$ViolationEvent"
+      "type": "org.miaixz.bus.metrics.nimble.Timer$ViolationEvent"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.Timer$ViolationEvent"
+      "type": "org.miaixz.bus.metrics.nimble.Timer$ViolationEvent"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.metrics.metric.Timer$Window"
+      "type": "org.miaixz.bus.metrics.nimble.Timer$Window"
     },
     {
       "condition": {
@@ -2347,13 +2347,13 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.metrics.metric.Timer$Window"
+      "type": "org.miaixz.bus.metrics.nimble.Timer$Window"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.metrics.metric.Timer$Window"
+      "type": "org.miaixz.bus.metrics.nimble.Timer$Window"
     },
     {
       "condition": {

@@ -38,6 +38,7 @@ public final class WindowsHardwareAbstractionLayer extends AbstractHardwareAbstr
      * Creates a new WindowsHardwareAbstractionLayer instance.
      */
     public WindowsHardwareAbstractionLayer() {
+        // No initialization required.
     }
 
     /**

@@ -40,6 +40,7 @@ public final class PerfstatProcess {
      * Prevents instantiation of utility class.
      */
     private PerfstatProcess() {
+        // No initialization required.
     }
 
     /**

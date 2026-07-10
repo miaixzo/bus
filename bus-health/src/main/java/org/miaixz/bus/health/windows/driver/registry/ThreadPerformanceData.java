@@ -44,6 +44,7 @@ public final class ThreadPerformanceData {
      * Prevents instantiation of utility class.
      */
     private ThreadPerformanceData() {
+        // No initialization required.
     }
 
     /**

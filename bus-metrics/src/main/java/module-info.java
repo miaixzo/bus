@@ -43,13 +43,13 @@ module bus.metrics {
     exports org.miaixz.bus.metrics.builtin;
     exports org.miaixz.bus.metrics.guard;
     exports org.miaixz.bus.metrics.magic;
-    exports org.miaixz.bus.metrics.metric;
+    exports org.miaixz.bus.metrics.nimble;
     exports org.miaixz.bus.metrics.observe;
     exports org.miaixz.bus.metrics.window;
-    exports org.miaixz.bus.metrics.metric.indigenous;
-    exports org.miaixz.bus.metrics.metric.micrometer;
-    exports org.miaixz.bus.metrics.metric.opentelemetry;
-    exports org.miaixz.bus.metrics.metric.prometheus;
+    exports org.miaixz.bus.metrics.nimble.indigenous;
+    exports org.miaixz.bus.metrics.nimble.micrometer;
+    exports org.miaixz.bus.metrics.nimble.opentelemetry;
+    exports org.miaixz.bus.metrics.nimble.prometheus;
     exports org.miaixz.bus.metrics;
 
 }

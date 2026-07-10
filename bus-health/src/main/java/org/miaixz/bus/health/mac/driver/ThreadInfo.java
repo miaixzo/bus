@@ -45,6 +45,7 @@ public final class ThreadInfo {
      * Prevents instantiation of utility class.
      */
     private ThreadInfo() {
+        // No initialization required.
     }
 
     /**

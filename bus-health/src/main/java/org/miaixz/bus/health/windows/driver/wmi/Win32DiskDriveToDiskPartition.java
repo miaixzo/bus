@@ -38,6 +38,7 @@ public final class Win32DiskDriveToDiskPartition {
      * Prevents instantiation of utility class.
      */
     private Win32DiskDriveToDiskPartition() {
+        // No initialization required.
     }
 
     /**

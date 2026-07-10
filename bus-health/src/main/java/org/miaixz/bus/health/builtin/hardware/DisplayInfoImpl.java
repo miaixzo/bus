@@ -143,7 +143,6 @@ public class DisplayInfoImpl implements DisplayInfo {
      * @param model               the model name
      * @param productSerialNumber the product serial number descriptor text
      */
-    @SuppressWarnings("java:S107")
     public DisplayInfoImpl(String manufacturerID, String productID, String serialNo, byte week, int year,
             String version, boolean digital, int hcm, int vcm, String preferredResolution, String model,
             String productSerialNumber) {

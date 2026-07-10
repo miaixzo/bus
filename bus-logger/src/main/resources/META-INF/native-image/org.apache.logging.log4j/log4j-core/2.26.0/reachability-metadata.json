@@ -8,7 +8,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.AppenderSet"
     },
@@ -20,7 +20,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.AsyncAppender"
     },
@@ -32,7 +32,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.ConsoleAppender"
     },
@@ -44,7 +44,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.CountingNoOpAppender"
     },
@@ -56,7 +56,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.db.ColumnMapping"
     },
@@ -68,7 +68,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.db.jdbc.ColumnConfig"
     },
@@ -80,7 +80,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.db.jdbc.DataSourceConnectionSource"
     },
@@ -92,7 +92,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.db.jdbc.DriverManagerConnectionSource"
     },
@@ -104,7 +104,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.db.jdbc.FactoryMethodConnectionSource"
     },
@@ -116,7 +116,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender"
     },
@@ -128,7 +128,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.FailoverAppender"
     },
@@ -140,7 +140,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.FailoversPlugin"
     },
@@ -152,7 +152,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.FileAppender"
     },
@@ -164,7 +164,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.HttpAppender"
     },
@@ -176,7 +176,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.MemoryMappedFileAppender"
     },
@@ -188,7 +188,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.mom.jeromq.JeroMqAppender"
     },
@@ -200,7 +200,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.mom.JmsAppender"
     },
@@ -212,7 +212,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender"
     },
@@ -224,7 +224,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.nosql.NoSqlAppender"
     },
@@ -236,7 +236,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.NullAppender"
     },
@@ -248,7 +248,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.OutputStreamAppender"
     },
@@ -260,7 +260,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.RandomAccessFileAppender"
     },
@@ -272,7 +272,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rewrite.LoggerNameLevelRewritePolicy"
     },
@@ -284,7 +284,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rewrite.MapRewritePolicy"
     },
@@ -296,7 +296,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rewrite.PropertiesRewritePolicy"
     },
@@ -308,7 +308,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rewrite.RewriteAppender"
     },
@@ -320,7 +320,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.DeleteAction"
     },
@@ -332,7 +332,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.IfAccumulatedFileCount"
     },
@@ -344,7 +344,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.IfAccumulatedFileSize"
     },
@@ -356,7 +356,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.IfAll"
     },
@@ -368,7 +368,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.IfAny"
     },
@@ -380,7 +380,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.IfFileName"
     },
@@ -392,7 +392,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.IfLastModified"
     },
@@ -404,7 +404,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.IfNot"
     },
@@ -416,7 +416,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.PathSortByModificationTime"
     },
@@ -428,7 +428,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction"
     },
@@ -440,7 +440,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.action.ScriptCondition"
     },
@@ -452,7 +452,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy"
     },
@@ -464,7 +464,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.CronTriggeringPolicy"
     },
@@ -476,7 +476,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy"
     },
@@ -488,7 +488,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy"
     },
@@ -500,7 +500,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.NoOpTriggeringPolicy"
     },
@@ -512,7 +512,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.OnStartupTriggeringPolicy"
     },
@@ -524,7 +524,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy"
     },
@@ -536,7 +536,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy"
     },
@@ -548,7 +548,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.RollingFileAppender"
     },
@@ -560,7 +560,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender"
     },
@@ -572,7 +572,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.routing.IdlePurgePolicy"
     },
@@ -584,7 +584,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.routing.Route"
     },
@@ -596,7 +596,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.routing.Routes"
     },
@@ -608,7 +608,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.routing.RoutingAppender"
     },
@@ -620,7 +620,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.ScriptAppenderSelector"
     },
@@ -632,7 +632,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.SmtpAppender"
     },
@@ -644,7 +644,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.SocketAppender"
     },
@@ -656,7 +656,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.SyslogAppender"
     },
@@ -668,7 +668,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.appender.WriterAppender"
     },
@@ -680,7 +680,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory"
     },
@@ -692,7 +692,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.async.AsyncLoggerConfig"
     },
@@ -704,7 +704,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.async.AsyncLoggerConfig$RootLogger"
     },
@@ -716,7 +716,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.async.AsyncWaitStrategyFactoryConfig"
     },
@@ -728,7 +728,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.async.DisruptorBlockingQueueFactory"
     },
@@ -740,7 +740,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory"
     },
@@ -752,7 +752,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.async.LinkedTransferQueueFactory"
     },
@@ -764,7 +764,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.AppenderControlArraySet"
     },
@@ -776,7 +776,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.AppenderRef"
     },
@@ -788,7 +788,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.AppendersPlugin"
     },
@@ -800,7 +800,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.arbiters.ClassArbiter"
     },
@@ -812,7 +812,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.arbiters.DefaultArbiter"
     },
@@ -824,7 +824,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.arbiters.EnvironmentArbiter"
     },
@@ -836,7 +836,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.arbiters.ScriptArbiter"
     },
@@ -848,7 +848,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.arbiters.SelectArbiter"
     },
@@ -860,7 +860,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.arbiters.SystemPropertyArbiter"
     },
@@ -872,7 +872,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.CustomLevelConfig"
     },
@@ -884,7 +884,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.CustomLevels"
     },
@@ -896,7 +896,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.DefaultAdvertiser"
     },
@@ -908,7 +908,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.HttpWatcher"
     },
@@ -926,7 +926,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -944,7 +944,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.LoggerConfig"
     },
@@ -956,7 +956,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.LoggerConfig$RootLogger"
     },
@@ -968,7 +968,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.LoggersPlugin"
     },
@@ -980,7 +980,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.MonitorResource"
     },
@@ -992,7 +992,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.MonitorResources"
     },
@@ -1004,7 +1004,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$BigDecimalConverter"
     },
@@ -1016,7 +1016,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$BigIntegerConverter"
     },
@@ -1028,7 +1028,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$BooleanConverter"
     },
@@ -1040,7 +1040,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ByteArrayConverter"
     },
@@ -1052,7 +1052,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ByteConverter"
     },
@@ -1064,7 +1064,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CharacterConverter"
     },
@@ -1076,7 +1076,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CharArrayConverter"
     },
@@ -1088,7 +1088,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CharsetConverter"
     },
@@ -1100,7 +1100,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ClassConverter"
     },
@@ -1112,7 +1112,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CronExpressionConverter"
     },
@@ -1124,7 +1124,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$DoubleConverter"
     },
@@ -1136,7 +1136,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$DurationConverter"
     },
@@ -1148,7 +1148,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$FileConverter"
     },
@@ -1160,7 +1160,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$FloatConverter"
     },
@@ -1172,7 +1172,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$InetAddressConverter"
     },
@@ -1184,7 +1184,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$IntegerConverter"
     },
@@ -1196,7 +1196,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$LevelConverter"
     },
@@ -1208,7 +1208,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$LongConverter"
     },
@@ -1220,7 +1220,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$PathConverter"
     },
@@ -1232,7 +1232,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$PatternConverter"
     },
@@ -1244,7 +1244,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$SecurityProviderConverter"
     },
@@ -1256,7 +1256,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ShortConverter"
     },
@@ -1268,7 +1268,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$StringConverter"
     },
@@ -1280,7 +1280,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$UriConverter"
     },
@@ -1292,7 +1292,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$UrlConverter"
     },
@@ -1304,7 +1304,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$UuidConverter"
     },
@@ -1322,7 +1322,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -1340,7 +1340,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.PropertiesPlugin"
     },
@@ -1352,7 +1352,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.Property"
     },
@@ -1364,7 +1364,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.config.ScriptsPlugin"
     },
@@ -1382,7 +1382,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -1406,7 +1406,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -1424,7 +1424,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.BurstFilter"
     },
@@ -1436,7 +1436,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.CompositeFilter"
     },
@@ -1448,7 +1448,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.DenyAllFilter"
     },
@@ -1460,7 +1460,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.DynamicThresholdFilter"
     },
@@ -1472,7 +1472,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.LevelMatchFilter"
     },
@@ -1484,7 +1484,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.LevelRangeFilter"
     },
@@ -1496,7 +1496,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.MapFilter"
     },
@@ -1508,7 +1508,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.MarkerFilter"
     },
@@ -1520,7 +1520,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.MutableThreadContextMapFilter"
     },
@@ -1532,7 +1532,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.NoMarkerFilter"
     },
@@ -1544,7 +1544,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.RegexFilter"
     },
@@ -1556,7 +1556,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.ScriptFilter"
     },
@@ -1568,7 +1568,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.StringMatchFilter"
     },
@@ -1580,7 +1580,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.StructuredDataFilter"
     },
@@ -1592,7 +1592,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.ThreadContextMapFilter"
     },
@@ -1604,7 +1604,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.ThresholdFilter"
     },
@@ -1616,7 +1616,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.filter.TimeFilter"
     },
@@ -1628,7 +1628,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.impl.Log4jProvider"
     },
@@ -1640,7 +1640,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.impl.ThreadContextDataProvider"
     },
@@ -1652,7 +1652,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.CsvLogEventLayout"
     },
@@ -1664,7 +1664,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.CsvParameterLayout"
     },
@@ -1676,7 +1676,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.GelfLayout"
     },
@@ -1688,7 +1688,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.HtmlLayout"
     },
@@ -1700,7 +1700,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.JsonLayout"
     },
@@ -1712,7 +1712,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.LevelPatternSelector"
     },
@@ -1724,7 +1724,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.LoggerFields"
     },
@@ -1736,7 +1736,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.MarkerPatternSelector"
     },
@@ -1748,7 +1748,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.MessageLayout"
     },
@@ -1760,7 +1760,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.PatternLayout"
     },
@@ -1772,7 +1772,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.PatternMatch"
     },
@@ -1784,7 +1784,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.Rfc5424Layout"
     },
@@ -1796,7 +1796,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.ScriptPatternSelector"
     },
@@ -1808,7 +1808,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.SerializedLayout"
     },
@@ -1820,7 +1820,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.SyslogLayout"
     },
@@ -1832,7 +1832,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.XmlLayout"
     },
@@ -1844,7 +1844,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.layout.YamlLayout"
     },
@@ -1862,7 +1862,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -1886,7 +1886,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -1910,7 +1910,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -1934,7 +1934,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -1958,7 +1958,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -1976,7 +1976,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.lookup.JndiLookup"
     },
@@ -1994,7 +1994,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -2018,7 +2018,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -2042,7 +2042,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -2066,7 +2066,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -2090,7 +2090,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -2114,7 +2114,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -2138,7 +2138,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -2162,7 +2162,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -2186,7 +2186,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "methods": [
         {
@@ -2204,7 +2204,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.net.MulticastDnsAdvertiser"
     },
@@ -2216,7 +2216,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.net.SocketAddress"
     },
@@ -2228,7 +2228,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.net.SocketOptions"
     },
@@ -2240,7 +2240,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.net.SocketPerformancePreferences"
     },
@@ -2252,7 +2252,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration"
     },
@@ -2264,7 +2264,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.net.ssl.SslConfiguration"
     },
@@ -2276,7 +2276,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration"
     },
@@ -2288,7 +2288,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Black"
     },
@@ -2300,7 +2300,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Blue"
     },
@@ -2312,7 +2312,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Cyan"
     },
@@ -2324,7 +2324,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Green"
     },
@@ -2336,7 +2336,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Magenta"
     },
@@ -2348,7 +2348,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Red"
     },
@@ -2360,7 +2360,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$White"
     },
@@ -2372,7 +2372,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Yellow"
     },
@@ -2384,7 +2384,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.ClassNamePatternConverter"
     },
@@ -2396,7 +2396,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.DatePatternConverter"
     },
@@ -2408,7 +2408,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.EncodingPatternConverter"
     },
@@ -2420,7 +2420,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.EndOfBatchPatternConverter"
     },
@@ -2432,7 +2432,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.EqualsIgnoreCaseReplacementConverter"
     },
@@ -2444,7 +2444,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.EqualsReplacementConverter"
     },
@@ -2456,7 +2456,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.ExtendedThrowablePatternConverter"
     },
@@ -2468,7 +2468,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.FileDatePatternConverter"
     },
@@ -2480,7 +2480,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.FileLocationPatternConverter"
     },
@@ -2492,7 +2492,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.FullLocationPatternConverter"
     },
@@ -2504,7 +2504,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.HighlightConverter"
     },
@@ -2516,7 +2516,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.IntegerPatternConverter"
     },
@@ -2528,7 +2528,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.LevelPatternConverter"
     },
@@ -2540,7 +2540,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.LineLocationPatternConverter"
     },
@@ -2552,7 +2552,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.LineSeparatorPatternConverter"
     },
@@ -2564,7 +2564,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.LoggerFqcnPatternConverter"
     },
@@ -2576,7 +2576,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.LoggerPatternConverter"
     },
@@ -2588,7 +2588,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.MapPatternConverter"
     },
@@ -2600,7 +2600,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.MarkerPatternConverter"
     },
@@ -2612,7 +2612,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.MarkerSimpleNamePatternConverter"
     },
@@ -2624,7 +2624,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.MaxLengthConverter"
     },
@@ -2636,7 +2636,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.MdcPatternConverter"
     },
@@ -2648,7 +2648,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.MessagePatternConverter"
     },
@@ -2660,7 +2660,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.MethodLocationPatternConverter"
     },
@@ -2672,7 +2672,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.NanoTimePatternConverter"
     },
@@ -2684,7 +2684,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.NdcPatternConverter"
     },
@@ -2696,7 +2696,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.ProcessIdPatternConverter"
     },
@@ -2708,7 +2708,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.RegexReplacement"
     },
@@ -2720,7 +2720,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.RegexReplacementConverter"
     },
@@ -2732,7 +2732,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.RelativeTimePatternConverter"
     },
@@ -2744,7 +2744,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.RepeatPatternConverter"
     },
@@ -2756,7 +2756,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.RootThrowablePatternConverter"
     },
@@ -2768,7 +2768,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.SequenceNumberPatternConverter"
     },
@@ -2780,7 +2780,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.StyleConverter"
     },
@@ -2792,7 +2792,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.ThreadIdPatternConverter"
     },
@@ -2804,7 +2804,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.ThreadNamePatternConverter"
     },
@@ -2816,7 +2816,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.ThreadPriorityPatternConverter"
     },
@@ -2828,7 +2828,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.ThrowablePatternConverter"
     },
@@ -2840,7 +2840,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.UuidPatternConverter"
     },
@@ -2852,7 +2852,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.pattern.VariablesNotEmptyReplacementConverter"
     },
@@ -2864,7 +2864,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.script.Script"
     },
@@ -2876,7 +2876,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.script.ScriptFile"
     },
@@ -2888,7 +2888,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.script.ScriptRef"
     },
@@ -2900,7 +2900,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.core.util.KeyValuePair"
     },
@@ -2912,7 +2912,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.util.EnvironmentPropertySource"
     },
@@ -2924,7 +2924,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.apache.logging.log4j.util.SystemPropertiesPropertySource"
     },
@@ -2936,7 +2936,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "type": "org.osgi.framework.FrameworkUtil"
     }
@@ -2950,7 +2950,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test.jsn"
     },
@@ -2962,7 +2962,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test.json"
     },
@@ -2974,7 +2974,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test.properties"
     },
@@ -2986,7 +2986,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test.xml"
     },
@@ -2998,7 +2998,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test.yaml"
     },
@@ -3010,7 +3010,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test.yml"
     },
@@ -3022,7 +3022,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test14dad5dc.jsn"
     },
@@ -3034,7 +3034,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test14dad5dc.json"
     },
@@ -3046,7 +3046,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test14dad5dc.properties"
     },
@@ -3058,7 +3058,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test14dad5dc.xml"
     },
@@ -3070,7 +3070,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test14dad5dc.yaml"
     },
@@ -3082,7 +3082,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2-test14dad5dc.yml"
     },
@@ -3094,7 +3094,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2.component.properties"
     },
@@ -3106,7 +3106,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2.jsn"
     },
@@ -3118,7 +3118,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2.json"
     },
@@ -3130,7 +3130,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2.properties"
     },
@@ -3142,7 +3142,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2.StatusLogger.properties"
     },
@@ -3154,7 +3154,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2.system.properties"
     },
@@ -3166,7 +3166,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2.xml"
     },
@@ -3178,7 +3178,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2.yaml"
     },
@@ -3190,7 +3190,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j2.yml"
     },
@@ -3202,7 +3202,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j214dad5dc.jsn"
     },
@@ -3214,7 +3214,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j214dad5dc.json"
     },
@@ -3226,7 +3226,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j214dad5dc.properties"
     },
@@ -3238,7 +3238,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j214dad5dc.xml"
     },
@@ -3250,7 +3250,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j214dad5dc.yaml"
     },
@@ -3262,7 +3262,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "log4j214dad5dc.yml"
     },
@@ -3274,7 +3274,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "META-INF/log4j-provider.properties"
     },
@@ -3286,7 +3286,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat"
     },
@@ -3298,7 +3298,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider"
     },
@@ -3310,7 +3310,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "META-INF/services/org.apache.logging.log4j.core.util.WatchEventService"
     },
@@ -3322,7 +3322,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "META-INF/services/org.apache.logging.log4j.spi.Provider"
     },
@@ -3334,7 +3334,7 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
       },
       "glob": "META-INF/services/org.apache.logging.log4j.util.PropertySource"
     }

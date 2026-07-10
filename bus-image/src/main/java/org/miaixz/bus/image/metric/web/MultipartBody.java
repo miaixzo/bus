@@ -23,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.net.http.HttpRequest;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +34,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.net.MediaType;
 
 /**
  * Builder for multipart/related HTTP request bodies.
@@ -197,7 +197,7 @@ public final class MultipartBody {
      * @return the operation result.
      */
     private InputStream createPartHeaderStream(MultipartPart part) {
-        return new ByteArrayInputStream(part.generateHeader(boundary).getBytes(StandardCharsets.UTF_8));
+        return new ByteArrayInputStream(part.generateHeader(boundary).getBytes(Charset.UTF_8));
     }
 
     /**
@@ -207,7 +207,7 @@ public final class MultipartBody {
      */
     private InputStream createClosingStream() {
         closed.set(true);
-        return new ByteArrayInputStream(("\r\n--" + boundary + "--").getBytes(StandardCharsets.UTF_8));
+        return new ByteArrayInputStream(("\r\n--" + boundary + "--").getBytes(Charset.UTF_8));
     }
 
     /**

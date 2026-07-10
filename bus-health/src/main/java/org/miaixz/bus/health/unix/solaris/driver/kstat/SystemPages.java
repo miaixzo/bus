@@ -40,6 +40,7 @@ public final class SystemPages {
      * Prevents instantiation of utility class.
      */
     private SystemPages() {
+        // No initialization required.
     }
 
     /**

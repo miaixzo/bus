@@ -459,19 +459,19 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.AbstractProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.AbstractProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.AbstractProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.AbstractProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.AbstractProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.AbstractProvider"
     },
     {
       "condition": {
@@ -501,31 +501,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.AbstractProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.AbstractProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.AbstractProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.AbstractProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.AddressProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.AddressProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.AddressProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.AddressProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.AddressProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.AddressProvider"
     },
     {
       "condition": {
@@ -544,31 +544,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.AddressProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.AddressProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.AddressProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.AddressProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.BandCardProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.BandCardProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.BandCardProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.BandCardProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.BandCardProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.BandCardProvider"
     },
     {
       "condition": {
@@ -587,31 +587,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.BandCardProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.BandCardProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.BandCardProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.BandCardProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.BuiltInProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.BuiltInProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.BuiltInProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.BuiltInProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.BuiltInProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.BuiltInProvider"
     },
     {
       "condition": {
@@ -630,31 +630,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.BuiltInProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.BuiltInProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.BuiltInProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.BuiltInProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CardProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CardProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CardProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CardProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CardProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CardProvider"
     },
     {
       "condition": {
@@ -673,31 +673,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.CardProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CardProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CardProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CardProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CitizenIdProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CitizenIdProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CitizenIdProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CitizenIdProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CitizenIdProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CitizenIdProvider"
     },
     {
       "condition": {
@@ -723,31 +723,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.CitizenIdProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CitizenIdProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CitizenIdProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CitizenIdProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CnapsProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CnapsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CnapsProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CnapsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CnapsProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CnapsProvider"
     },
     {
       "condition": {
@@ -766,49 +766,49 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.CnapsProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CnapsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.CnapsProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.CnapsProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.ConditionProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.ConditionProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.ConditionProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.ConditionProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.ConditionProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.ConditionProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.DafaultProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.DafaultProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.DafaultProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.DafaultProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.DafaultProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.DafaultProvider"
     },
     {
       "condition": {
@@ -827,31 +827,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.DafaultProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.DafaultProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.DafaultProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.DafaultProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.EmailProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.EmailProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.EmailProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.EmailProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.EmailProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.EmailProvider"
     },
     {
       "condition": {
@@ -877,31 +877,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.EmailProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.EmailProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.EmailProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.EmailProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.MobileProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.MobileProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.MobileProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.MobileProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.MobileProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.MobileProvider"
     },
     {
       "condition": {
@@ -920,31 +920,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.MobileProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.MobileProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.MobileProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.MobileProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.NameProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.NameProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.NameProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.NameProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.NameProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.NameProvider"
     },
     {
       "condition": {
@@ -970,31 +970,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.NameProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.NameProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.NameProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.NameProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.NoneProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.NoneProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.NoneProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.NoneProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.NoneProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.NoneProvider"
     },
     {
       "condition": {
@@ -1013,31 +1013,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.NoneProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.NoneProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.NoneProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.NoneProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.PasswordProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.PasswordProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.PasswordProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.PasswordProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.PasswordProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.PasswordProvider"
     },
     {
       "condition": {
@@ -1056,31 +1056,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.PasswordProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.PasswordProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.PasswordProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.PasswordProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.sensitive.metric.PhoneProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.PhoneProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.PhoneProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.PhoneProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.PhoneProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.PhoneProvider"
     },
     {
       "condition": {
@@ -1106,31 +1106,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.sensitive.metric.PhoneProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.PhoneProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.PhoneProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.PhoneProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.StrategyProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.StrategyProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.sensitive.metric.StrategyProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.StrategyProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.sensitive.metric.StrategyProvider"
+      "type": "org.miaixz.bus.sensitive.nimble.StrategyProvider"
     },
     {
       "condition": {
@@ -1290,7 +1290,7 @@
           "name": "register",
           "parameterTypes": [
             "org.miaixz.bus.core.lang.EnumValue$Masking",
-            "org.miaixz.bus.sensitive.metric.StrategyProvider"
+            "org.miaixz.bus.sensitive.nimble.StrategyProvider"
           ]
         },
         {

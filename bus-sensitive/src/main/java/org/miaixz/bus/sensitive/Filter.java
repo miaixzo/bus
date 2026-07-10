@@ -32,8 +32,8 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.magic.annotation.Condition;
 import org.miaixz.bus.sensitive.magic.annotation.Entry;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
-import org.miaixz.bus.sensitive.metric.ConditionProvider;
-import org.miaixz.bus.sensitive.metric.StrategyProvider;
+import org.miaixz.bus.sensitive.nimble.ConditionProvider;
+import org.miaixz.bus.sensitive.nimble.StrategyProvider;
 
 /**
  * A context-aware filter for processing sensitive data. It handles the desensitization logic for fields annotated with

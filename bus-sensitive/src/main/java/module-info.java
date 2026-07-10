@@ -34,6 +34,6 @@ module bus.sensitive {
 
     exports org.miaixz.bus.sensitive;
     exports org.miaixz.bus.sensitive.magic.annotation;
-    exports org.miaixz.bus.sensitive.metric;
+    exports org.miaixz.bus.sensitive.nimble;
 
 }

@@ -822,13 +822,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.commons.CommonsLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.commons.CommonsLoggingFactory"
     },
     {
       "condition": {
@@ -858,25 +858,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.commons.CommonsLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.commons.CommonsLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.apache.commons.CommonsLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.apache.commons.CommonsLoggingProvider"
     },
     {
       "condition": {
@@ -982,25 +982,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.apache.commons.CommonsLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.apache.commons.CommonsLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory"
     },
     {
       "condition": {
@@ -1024,25 +1024,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
     },
     {
       "condition": {
@@ -1161,25 +1161,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.console.ColorLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.console.ColorLoggingFactory"
     },
     {
       "condition": {
@@ -1203,25 +1203,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.console.ColorLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.console.ColorLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.console.ColorLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.console.ColorLoggingProvider"
     },
     {
       "condition": {
@@ -1261,25 +1261,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.console.ColorLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.console.ColorLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.console.ColorLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.console.NormalLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.console.NormalLoggingFactory"
     },
     {
       "condition": {
@@ -1303,25 +1303,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.console.NormalLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.console.NormalLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.console.NormalLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.console.NormalLoggingProvider"
     },
     {
       "condition": {
@@ -1436,25 +1436,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.console.NormalLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.console.NormalLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.console.NormalLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory"
     },
     {
       "condition": {
@@ -1478,25 +1478,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingProvider"
     },
     {
       "condition": {
@@ -1587,25 +1587,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.jboss.JbossLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jdk.JdkLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jdk.JdkLoggingFactory"
     },
     {
       "condition": {
@@ -1633,25 +1633,25 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jdk.JdkLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.jdk.JdkLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.jdk.JdkLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.jdk.JdkLoggingProvider"
     },
     {
       "condition": {
@@ -1777,25 +1777,25 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.jdk.JdkLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.jdk.JdkLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.jdk.JdkLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory"
     },
     {
       "condition": {
@@ -1825,43 +1825,43 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory"
     },
     {
       "condition": {
@@ -1885,31 +1885,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingProvider"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.logger.metric.tinylog.TinyLoggingProvider"
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingProvider"
     },
     {
       "condition": {

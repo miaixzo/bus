@@ -43,6 +43,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      * Creates a new PerfCounterQueryHandler instance.
      */
     public PerfCounterQueryHandler() {
+        // No initialization required.
     }
 
     // Map of counter handles

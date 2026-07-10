@@ -54,6 +54,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
      * Creates a new SolarisFileSystem instance.
      */
     public SolarisFileSystem() {
+        // No initialization required.
     }
 
     /**

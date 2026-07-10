@@ -1,0 +1,94 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.notify.nimble.tencent;
+
+import static org.miaixz.bus.notify.FabricX.post;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.ErrorCode;
+import org.miaixz.bus.notify.nimble.AbstractProvider;
+
+/**
+ * Tencent Cloud SMS service provider.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+public class TencentSmsProvider extends AbstractProvider<TencentNotice, Context> {
+
+    /**
+     * Constructs a {@code TencentSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
+    public TencentSmsProvider(Context context) {
+        super(context);
+    }
+
+    /**
+     * Sends an SMS notification using Tencent Cloud SMS service.
+     *
+     * @param entity The {@link TencentNotice} containing SMS details such as App ID, signature, template, parameters,
+     *               and recipient.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
+    @Override
+    public Message send(TencentNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "Tencent SMS send started: template={}, targetCount={}, smsAppPresent={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity != null && entity.getSmsAppId() != null);
+        Map<String, String> bodys = new HashMap<>();
+        bodys.put("SmsSdkAppid", entity.getSmsAppId());
+        bodys.put("Sign", entity.getSignature());
+        bodys.put("TemplateID", entity.getTemplate());
+        bodys.put("TemplateParamSet", entity.getParams());
+        bodys.put("PhoneNumberSet", entity.getReceive());
+
+        String response = post(this.getUrl(entity), bodys);
+        Integer status = JsonKit.getValue(response, "status");
+
+        String errcode = (status != null && status == 200) ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String errmsg = (status != null && status == 200) ? ErrorCode._SUCCESS.getValue()
+                : ErrorCode._FAILURE.getValue();
+
+        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Logger.info(
+                false,
+                "Notify",
+                "Tencent SMS send completed: template={}, targetCount={}, status={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                status,
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
+    }
+
+}

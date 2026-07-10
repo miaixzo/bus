@@ -102,6 +102,7 @@ public interface LinuxLibc extends LibC, CLibrary {
          * Creates a new Rusage instance.
          */
         public Rusage() {
+            // No initialization required.
         }
 
         /**

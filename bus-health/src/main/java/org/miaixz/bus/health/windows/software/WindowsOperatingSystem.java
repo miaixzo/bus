@@ -64,6 +64,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      * Creates a new WindowsOperatingSystem instance.
      */
     public WindowsOperatingSystem() {
+        // No initialization required.
     }
 
     /**

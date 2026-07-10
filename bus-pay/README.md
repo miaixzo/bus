@@ -67,7 +67,7 @@ This library supports mainstream payment gateways including **Alipay**, **WeChat
 
 * **Sandbox/Production Mode**: Easy switching between test and production environments
 * **Cache Support**: Built-in caching for access tokens and certificates (using `bus-cache`)
-* **HTTP Client Integration**: Seamless integration with `bus-http` for request handling
+* **HTTP Client Integration**: Seamless integration with `bus-fabric` for request handling
 * **Crypto Operations**: Integration with `bus-crypto` for encryption and signing
 * **Flexible Configuration**: Support for multiple merchant accounts and service provider mode
 * **Callback Verification**: Built-in signature verification for payment notifications

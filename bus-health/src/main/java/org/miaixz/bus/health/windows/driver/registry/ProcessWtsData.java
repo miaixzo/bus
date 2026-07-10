@@ -52,6 +52,7 @@ public final class ProcessWtsData {
      * Prevents instantiation of utility class.
      */
     private ProcessWtsData() {
+        // No initialization required.
     }
 
     /**

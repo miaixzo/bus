@@ -87,6 +87,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * Creates a new PROCESS_BASIC_INFORMATION instance.
          */
         public PROCESS_BASIC_INFORMATION() {
+            // No initialization required.
         }
 
         /**
@@ -123,6 +124,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * Creates a new PEB instance.
          */
         public PEB() {
+            // No initialization required.
         }
 
         /**
@@ -165,6 +167,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * Creates a new RTL_USER_PROCESS_PARAMETERS instance.
          */
         public RTL_USER_PROCESS_PARAMETERS() {
+            // No initialization required.
         }
 
         /**
@@ -371,6 +374,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * Creates a new UNICODE_STRING instance.
          */
         public UNICODE_STRING() {
+            // No initialization required.
         }
 
         /**
@@ -407,6 +411,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * Creates a new STRING instance.
          */
         public STRING() {
+            // No initialization required.
         }
 
         /**
@@ -442,6 +447,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * Creates a new CURDIR instance.
          */
         public CURDIR() {
+            // No initialization required.
         }
 
         /**
@@ -472,6 +478,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * Creates a new RTL_DRIVE_LETTER_CURDIR instance.
          */
         public RTL_DRIVE_LETTER_CURDIR() {
+            // No initialization required.
         }
 
         /**

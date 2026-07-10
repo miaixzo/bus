@@ -46,6 +46,7 @@ public final class ProcessPerformanceData {
      * Prevents instantiation of utility class.
      */
     private ProcessPerformanceData() {
+        // No initialization required.
     }
 
     /**

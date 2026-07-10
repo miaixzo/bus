@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.pay.metric.AbstractProvider;
+import org.miaixz.bus.pay.nimble.AbstractProvider;
 
 /**
  * A unified interface for the API addresses of payment platforms, providing the following methods: 1)

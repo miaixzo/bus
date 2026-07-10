@@ -49,6 +49,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
      * Creates a new OpenBsdOperatingSystem instance.
      */
     public OpenBsdOperatingSystem() {
+        // No initialization required.
     }
 
     /**

@@ -44,6 +44,7 @@ public final class OpenBsdSysctlKit {
      * Prevents instantiation of utility class.
      */
     private OpenBsdSysctlKit() {
+        // No initialization required.
     }
 
     /**

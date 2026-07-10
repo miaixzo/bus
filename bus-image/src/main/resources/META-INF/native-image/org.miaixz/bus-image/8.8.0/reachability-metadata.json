@@ -1470,7 +1470,7 @@
         {
           "name": "getTransferSyntax",
           "parameterTypes": [
-            "org.miaixz.bus.core.lang.MediaType"
+            "org.miaixz.bus.core.net.MediaType"
           ]
         },
         {
@@ -1669,7 +1669,7 @@
         {
           "name": "sopClassOf",
           "parameterTypes": [
-            "org.miaixz.bus.core.lang.MediaType"
+            "org.miaixz.bus.core.net.MediaType"
           ]
         },
         {
@@ -1697,7 +1697,7 @@
         {
           "name": "transferSyntaxOf",
           "parameterTypes": [
-            "org.miaixz.bus.core.lang.MediaType"
+            "org.miaixz.bus.core.net.MediaType"
           ]
         },
         {

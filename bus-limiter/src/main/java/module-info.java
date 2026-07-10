@@ -38,7 +38,7 @@ module bus.limiter {
     exports org.miaixz.bus.limiter;
     exports org.miaixz.bus.limiter.magic;
     exports org.miaixz.bus.limiter.magic.annotation;
-    exports org.miaixz.bus.limiter.metric;
+    exports org.miaixz.bus.limiter.nimble;
     exports org.miaixz.bus.limiter.proxy;
 
 }
