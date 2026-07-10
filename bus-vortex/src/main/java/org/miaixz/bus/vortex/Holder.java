@@ -28,6 +28,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.magic.Performance;
 
 import reactor.netty.resources.ConnectionProvider;
+import reactor.netty.resources.LoopResources;
 
 /**
  * Global holder for performance configuration and resources in the Vortex gateway (Singleton).
@@ -40,6 +41,7 @@ import reactor.netty.resources.ConnectionProvider;
  * <ul>
  * <li>{@link Performance} - Performance configuration (request limits, streaming thresholds, etc.)</li>
  * <li>{@link ConnectionProvider} - HTTP connection pool for REST requests</li>
+ * <li>{@link LoopResources} - HTTP event loops for outbound REST requests</li>
  * </ul>
  * <p>
  * <b>Thread Safety:</b> This class is thread-safe as it delegates to {@link Instances} which provides thread-safe
@@ -59,6 +61,11 @@ public final class Holder {
      * The key used to store the ConnectionProvider in {@link Instances}.
      */
     public static final String CONNECTION_PROVIDER_KEY = "vortex:connection-provider";
+
+    /**
+     * The key used to store the outbound LoopResources in {@link Instances}.
+     */
+    public static final String LOOP_RESOURCES_KEY = "vortex:loop-resources";
 
     /**
      * Marker key to track initialization status.
@@ -157,6 +164,29 @@ public final class Holder {
                     .pendingAcquireMaxCount(pendingAcquireMaxCount).maxIdleTime(Duration.ofSeconds(maxIdleSeconds))
                     .maxLifeTime(Duration.ofMinutes(maxLifeMinutes)).evictInBackground(Duration.ofSeconds(evictSeconds))
                     .build();
+        });
+    }
+
+    /**
+     * Initializes outbound HTTP event loops.
+     * <p>
+     * Vortex outbound routing uses these resources with Reactor Netty native transport disabled so DNS and socket
+     * channels stay on NIO in native images while preserving an explicit event-loop lifecycle.
+     *
+     * @return The configured LoopResources
+     */
+    public static LoopResources loopResources() {
+        return Instances.get(LOOP_RESOURCES_KEY, () -> {
+            Logger.info(true, "Vortex", "HTTP event loops initialized");
+            Logger.info(true, "Vortex", "  - Transport Preference: nio");
+            Logger.info(true, "Vortex", "  - Worker Count: {}", LoopResources.DEFAULT_IO_WORKER_COUNT);
+            Logger.info(true, "Vortex", "  - Select Count: {}", LoopResources.DEFAULT_IO_SELECT_COUNT);
+            return LoopResources.create(
+                    "vortex-http",
+                    LoopResources.DEFAULT_IO_SELECT_COUNT,
+                    LoopResources.DEFAULT_IO_WORKER_COUNT,
+                    true,
+                    true);
         });
     }
 
@@ -265,6 +295,15 @@ public final class Holder {
      */
     public static ConnectionProvider getConnectionProviderIfPresent() {
         return Instances.get(CONNECTION_PROVIDER_KEY, () -> null);
+    }
+
+    /**
+     * Gets the LoopResources if it has been initialized, without creating a new one.
+     *
+     * @return The LoopResources if initialized, or {@code null} if never created
+     */
+    public static LoopResources getLoopResourcesIfPresent() {
+        return Instances.get(LOOP_RESOURCES_KEY, () -> null);
     }
 
     /**

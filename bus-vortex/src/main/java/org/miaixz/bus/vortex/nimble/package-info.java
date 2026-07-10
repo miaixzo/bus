@@ -23,14 +23,14 @@
  * This package contains classes for tracking and analyzing gateway performance metrics in real-time.
  * </p>
  * <ul>
- * <li>{@link org.miaixz.bus.vortex.metric.DefaultMonitor}: A default in-memory implementation of the
+ * <li>{@link org.miaixz.bus.vortex.nimble.DefaultMonitor}: A default in-memory implementation of the
  * {@link org.miaixz.bus.vortex.Monitor} interface for tracking request metrics, cache statistics, and database
  * operations.</li>
- * <li>{@link org.miaixz.bus.vortex.metric.CacheStats}: Data transfer object for capturing cache performance metrics
+ * <li>{@link org.miaixz.bus.vortex.nimble.CacheStats}: Data transfer object for capturing cache performance metrics
  * including hit/miss counts, hit rate, and cache size.</li>
  * </ul>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.vortex.metric;
+package org.miaixz.bus.vortex.nimble;

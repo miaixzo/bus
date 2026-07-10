@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.metric;
+package org.miaixz.bus.vortex.nimble;
 
 import lombok.*;
 
@@ -34,7 +34,7 @@ import org.miaixz.bus.vortex.Monitor;
  * <b>Responsibility:</b>
  * </p>
  * <ul>
- * <li>Located in the {@code metrics} package as part of performance metrics collection</li>
+ * <li>Located in the {@code nimble} package as part of performance metrics collection</li>
  * <li>Coexists with {@link Monitor} and {@link org.miaixz.bus.vortex.magic.Metrics}</li>
  * <li>Focuses on being a data carrier without involving cache implementation details</li>
  * </ul>

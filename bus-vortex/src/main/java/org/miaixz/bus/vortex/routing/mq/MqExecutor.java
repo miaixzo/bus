@@ -28,9 +28,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.cache.provider.LRUCache;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.mq.MQConfig;
