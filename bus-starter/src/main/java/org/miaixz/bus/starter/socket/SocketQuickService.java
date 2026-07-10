@@ -19,20 +19,20 @@
 */
 package org.miaixz.bus.starter.socket;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
 import jakarta.annotation.Resource;
 
+import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Handler;
+import org.miaixz.bus.fabric.Message;
+import org.miaixz.bus.fabric.Session;
+import org.miaixz.bus.fabric.codec.frame.FrameCodec;
+import org.miaixz.bus.fabric.network.tcp.TcpServer;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.socket.Handler;
-import org.miaixz.bus.socket.Message;
-import org.miaixz.bus.socket.accord.AioServer;
 
 /**
- * A service class that manages the lifecycle of a {@link AioServer}.
- * <p>
- * This service acts as a bridge between the Spring application context and the underlying socket server, allowing the
- * server to be started and stopped along with the application.
+ * Service class that manages a current-fabric TCP socket server lifecycle.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -45,60 +45,113 @@ public class SocketQuickService {
     private final SocketProperties properties;
 
     /**
-     * The message handler for processing incoming socket data.
+     * Current fabric message handler.
      */
     @Resource
     private Handler handler;
 
     /**
-     * The message protocol definition.
+     * Current fabric frame codec factory.
      */
     @Resource
-    private Message message;
+    private Supplier<FrameCodec> frameCodec;
 
     /**
-     * The underlying AIO (Asynchronous I/O) server instance.
+     * Running TCP server.
      */
-    private AioServer aioQuickServer;
+    private TcpServer server;
+
+    /**
+     * Accepted-connection adapter.
+     */
+    private SocketHandlerAdapter adapter;
 
     /**
      * Constructs a new SocketQuickService with the given properties.
      *
-     * @param properties The socket configuration properties.
+     * @param properties socket configuration properties
      */
     public SocketQuickService(SocketProperties properties) {
         this.properties = properties;
     }
 
     /**
-     * Starts the AIO socket server.
-     * <p>
-     * This method initializes the {@link AioServer} with the configured port, message protocol, and handler, and then
-     * starts it. This method is intended to be called as a bean's {@code init-method}.
-     * </p>
+     * Sets the current fabric message handler.
+     *
+     * @param handler handler
      */
-    public void start() {
-        this.aioQuickServer = new AioServer(this.properties.getPort(), message, handler);
+    public void setHandler(Handler handler) {
+        this.handler = handler;
+    }
+
+    /**
+     * Sets the current fabric frame codec factory.
+     *
+     * @param frameCodec frame codec factory
+     */
+    public void setFrameCodec(Supplier<FrameCodec> frameCodec) {
+        this.frameCodec = frameCodec;
+    }
+
+    /**
+     * Starts the socket server.
+     */
+    public synchronized void start() {
+        if (server != null && server.running()) {
+            return;
+        }
+        final Handler currentHandler = handler == null ? SocketQuickService::noop : handler;
+        final SocketFrameDecoder currentDecoder = frameCodec == null ? SocketFrameDecoder.line()
+                : SocketFrameDecoder.of(frameCodec);
+        final TcpServer currentServer = new TcpServer(Address.parse("tcp://0.0.0.0:" + properties.getPort()));
+        final SocketHandlerAdapter currentAdapter = new SocketHandlerAdapter(currentHandler, currentDecoder);
+        currentServer.accept(currentAdapter);
         try {
-            aioQuickServer.start();
-            Logger.info(true, "Starter", "AIO socket server started on port: {}", this.properties.getPort());
-        } catch (IOException e) {
-            Logger.error(false, "Starter", "Failed to start AIO socket server", e);
+            currentServer.start();
+            server = currentServer;
+            adapter = currentAdapter;
+            Logger.info(true, "Starter", "Socket server started on port: {}", properties.getPort());
+        } catch (RuntimeException e) {
+            currentAdapter.close();
+            currentServer.close();
+            Logger.error(false, "Starter", "Failed to start socket server", e);
         }
     }
 
     /**
-     * Stops the AIO socket server.
-     * <p>
-     * This method gracefully shuts down the running server instance. It is intended to be called as a bean's
-     * {@code destroy-method}.
-     * </p>
+     * Stops the socket server.
      */
-    public void stop() {
-        if (aioQuickServer != null) {
-            aioQuickServer.shutdown();
-            Logger.info(false, "Starter", "AIO socket server stopped.");
+    public synchronized void stop() {
+        final TcpServer currentServer = server;
+        final SocketHandlerAdapter currentAdapter = adapter;
+        server = null;
+        adapter = null;
+        if (currentAdapter != null) {
+            currentAdapter.close();
         }
+        if (currentServer != null) {
+            currentServer.close();
+            Logger.info(false, "Starter", "Socket server stopped.");
+        }
+    }
+
+    /**
+     * Returns whether the current server is running.
+     *
+     * @return true when running
+     */
+    public synchronized boolean running() {
+        return server != null && server.running();
+    }
+
+    /**
+     * Default handler used when no Spring handler bean is provided.
+     *
+     * @param session session
+     * @param message message
+     */
+    private static void noop(Session session, Message message) {
+        // No-op keeps lifecycle-only starter configurations valid.
     }
 
 }

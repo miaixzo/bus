@@ -83,7 +83,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
      */
     private static final List<MediaType> DEFAULT_MEDIA_TYPES = List.of(
             MediaType.APPLICATION_JSON,
-            MediaType.parseMediaType(org.miaixz.bus.core.lang.MediaType.APPLICATION_JSON_JACKSON));
+            MediaType.parseMediaType(org.miaixz.bus.core.net.MediaType.APPLICATION_JSON_JACKSON));
 
     /**
      * Auto type matcher compiled from the configured allow-list expression.

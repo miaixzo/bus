@@ -38,7 +38,7 @@ module bus.starter {
     requires bus.crypto;
     requires bus.extra;
     requires bus.health;
-    requires bus.http;
+    requires bus.fabric;
     requires bus.image;
     requires bus.limiter;
     requires bus.logger;
@@ -50,7 +50,6 @@ module bus.starter {
     requires bus.proxy;
     requires bus.sensitive;
     requires bus.setting;
-    requires bus.socket;
     requires bus.storage;
     requires bus.tempus;
     requires bus.tracer;

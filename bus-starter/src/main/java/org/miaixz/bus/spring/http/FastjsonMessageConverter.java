@@ -66,7 +66,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
     private static final List<MediaType> DEFAULT_MEDIA_TYPES = List.of(
             MediaType.APPLICATION_JSON,
             new MediaType(MediaType.TEXT_PLAIN, Charset.UTF_8),
-            MediaType.parseMediaType(org.miaixz.bus.core.lang.MediaType.APPLICATION_JSON_FASTJSON));
+            MediaType.parseMediaType(org.miaixz.bus.core.net.MediaType.APPLICATION_JSON_FASTJSON));
 
     /**
      * Auto type allow-list expression used by Fastjson2 deserialization.

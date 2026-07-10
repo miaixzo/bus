@@ -157,7 +157,7 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-socket</artifactId>
+            <artifactId>bus-fabric</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
