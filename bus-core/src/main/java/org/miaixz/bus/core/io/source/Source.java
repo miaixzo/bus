@@ -37,12 +37,13 @@ public interface Source extends Closeable {
 
     /**
      * Removes at least 1 byte and at most {@code byteCount} bytes from this source and appends them to {@code sink}.
-     * Returns the number of bytes read, or -1 if this source has been exhausted.
+     * Returns 0 only when {@code byteCount} is 0, and returns -1 only after this source is exhausted.
      *
      * @param sink      The buffer to which bytes will be appended.
      * @param byteCount The maximum number of bytes to read.
-     * @return The number of bytes read, or -1 if the source is exhausted.
-     * @throws IOException If an I/O error occurs.
+     * @return The number of bytes read, 0 for a zero-byte request, or -1 if the source is exhausted.
+     * @throws IllegalArgumentException If {@code byteCount} is negative.
+     * @throws IOException              If an I/O error occurs.
      */
     long read(Buffer sink, long byteCount) throws IOException;
 

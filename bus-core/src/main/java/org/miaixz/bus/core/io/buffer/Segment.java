@@ -17,14 +17,14 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.io;
+package org.miaixz.bus.core.io.buffer;
 
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * A segment of a buffer. Each segment in a buffer is a circularly-linked list node that references the following and
- * preceding segments in the buffer. Each segment in the pool is a singly-linked list node that references the pool's
- * next segment.
+ * A fixed-size buffer segment. Each segment in a buffer is a circularly-linked list node that references the following
+ * and preceding segments in the buffer. Each cached segment is a singly-linked list node that references the
+ * allocator's next segment.
  *
  * <p>
  * The underlying byte array of a segment can be shared between a buffer and a byte string. When a segment cannot be
@@ -37,12 +37,12 @@ import org.miaixz.bus.core.lang.Normal;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class SectionBuffer {
+public class Segment {
 
     /**
      * The size of all segments in bytes.
      */
-    public static final int SIZE = 8192;
+    public static final int SIZE = Normal._8192;
 
     /**
      * This avoids {@code arraycopy()} for this many bytes when they will be shared.
@@ -77,24 +77,29 @@ public class SectionBuffer {
     /**
      * The next segment in the circularly-linked list.
      */
-    public SectionBuffer next;
+    public Segment next;
 
     /**
      * The previous segment in the circularly-linked list.
      */
-    public SectionBuffer prev;
+    public Segment prev;
 
     /**
-     * Constructs a new, unshared SectionBuffer with a default size.
+     * True if this segment is currently linked into the segment allocator.
      */
-    public SectionBuffer() {
+    volatile boolean cached;
+
+    /**
+     * Constructs a new, unshared segment with the default size.
+     */
+    public Segment() {
         this.data = new byte[SIZE];
         this.owner = true;
         this.shared = false;
     }
 
     /**
-     * Constructs a new SectionBuffer with the given data and properties.
+     * Constructs a new segment with the given data and properties.
      *
      * @param data   The byte array for this segment.
      * @param pos    The next byte of application data to read in this segment.
@@ -102,7 +107,7 @@ public class SectionBuffer {
      * @param shared True if other segments or byte strings share the same byte array.
      * @param owner  True if this segment owns the byte array and can append to it.
      */
-    public SectionBuffer(byte[] data, int pos, int limit, boolean shared, boolean owner) {
+    public Segment(byte[] data, int pos, int limit, boolean shared, boolean owner) {
         this.data = data;
         this.pos = pos;
         this.limit = limit;
@@ -112,22 +117,22 @@ public class SectionBuffer {
 
     /**
      * Returns a new segment that shares the underlying byte array with this. Adjusting pos and limit are safe but
-     * writes are forbidden. This also marks the current segment as shared, which prevents it from being pooled.
+     * writes are forbidden. This also marks the current segment as shared, which prevents it from being cached.
      *
-     * @return A new shared {@link SectionBuffer} instance.
+     * @return A new shared {@link Segment} instance.
      */
-    public final SectionBuffer sharedCopy() {
+    public final Segment sharedCopy() {
         shared = true;
-        return new SectionBuffer(data, pos, limit, true, false);
+        return new Segment(data, pos, limit, true, false);
     }
 
     /**
      * Returns a new segment that has its own private copy of the underlying byte array.
      *
-     * @return A new unshared {@link SectionBuffer} instance with a copy of the data.
+     * @return A new unshared {@link Segment} instance with a copy of the data.
      */
-    public final SectionBuffer unsharedCopy() {
-        return new SectionBuffer(data.clone(), pos, limit, false, true);
+    public final Segment unsharedCopy() {
+        return new Segment(data.clone(), pos, limit, false, true);
     }
 
     /**
@@ -136,8 +141,8 @@ public class SectionBuffer {
      *
      * @return The successor segment, or null if the list becomes empty.
      */
-    public final SectionBuffer pop() {
-        SectionBuffer result = next != this ? next : null;
+    public final Segment pop() {
+        Segment result = next != this ? next : null;
         prev.next = next;
         next.prev = prev;
         next = null;
@@ -151,7 +156,7 @@ public class SectionBuffer {
      * @param segment The segment to push.
      * @return The pushed segment.
      */
-    public final SectionBuffer push(SectionBuffer segment) {
+    public final Segment push(Segment segment) {
         segment.prev = this;
         segment.next = next;
         next.prev = segment;
@@ -171,10 +176,10 @@ public class SectionBuffer {
      * @return The new head of the circularly-linked list.
      * @throws IllegalArgumentException if {@code byteCount} is negative or exceeds the available data.
      */
-    public final SectionBuffer split(int byteCount) {
+    public final Segment split(int byteCount) {
         if (byteCount <= 0 || byteCount > limit - pos)
             throw new IllegalArgumentException();
-        SectionBuffer prefix;
+        Segment prefix;
 
         // We have two competing performance goals:
         // - Avoid copying data. We accomplish this by sharing segments.
@@ -184,7 +189,7 @@ public class SectionBuffer {
         if (byteCount >= SHARE_MINIMUM) {
             prefix = sharedCopy();
         } else {
-            prefix = LifeCycle.take();
+            prefix = SegmentAllocator.allocate();
             System.arraycopy(data, pos, prefix.data, 0, byteCount);
         }
 
@@ -196,7 +201,7 @@ public class SectionBuffer {
 
     /**
      * Compacts this segment by moving its data to the previous segment if possible. This operation is only allowed if
-     * the previous segment is owned and has enough space. If successful, this segment is recycled.
+     * the previous segment is owned and has enough space. If successful, this segment is released.
      *
      * @throws IllegalStateException if this segment is the only segment in the list (i.e., {@code prev == this}).
      */
@@ -214,7 +219,7 @@ public class SectionBuffer {
         }
         writeTo(prev, byteCount);
         pop();
-        LifeCycle.recycle(this);
+        SegmentAllocator.release(this);
     }
 
     /**
@@ -224,7 +229,7 @@ public class SectionBuffer {
      * @param byteCount The number of bytes to move.
      * @throws IllegalArgumentException if the sink is not an owner, or if the data cannot fit.
      */
-    public final void writeTo(SectionBuffer sink, int byteCount) {
+    public final void writeTo(Segment sink, int byteCount) {
         if (!sink.owner)
             throw new IllegalArgumentException();
         if (sink.limit + byteCount > SIZE) {

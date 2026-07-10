@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 
-import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.buffer.Segment;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Symbol;
@@ -261,7 +261,7 @@ public class AsyncTimeout extends Timeout {
                 while (byteCount > 0L) {
                     // Compute the number of bytes to write. This loop ensures we split on segment boundaries.
                     long toWrite = 0L;
-                    for (SectionBuffer s = source.head; toWrite < TIMEOUT_WRITE_SIZE; s = s.next) {
+                    for (Segment s = source.head; toWrite < TIMEOUT_WRITE_SIZE; s = s.next) {
                         int segmentSize = s.limit - s.pos;
                         toWrite += segmentSize;
                         if (toWrite >= byteCount) {

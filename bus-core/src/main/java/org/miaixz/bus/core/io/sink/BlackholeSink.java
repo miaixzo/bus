@@ -17,61 +17,72 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.http.accord;
+package org.miaixz.bus.core.io.sink;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.io.IOException;
 
-import org.miaixz.bus.http.Route;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.timout.Timeout;
 
 /**
- * A blacklist of failed routes to avoid when creating new connections to a target address. If a failure occurs when
- * attempting to connect to a specific IP address or proxy server, that failure is remembered and alternate routes will
- * be preferred.
+ * A {@link Sink} implementation that discards every byte written to it.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class RouteDatabase {
+public final class BlackholeSink implements Sink {
 
     /**
-     * Constructs a new RouteDatabase instance.
+     * Shared stateless blackhole sink.
      */
-    public RouteDatabase() {
+    public static final BlackholeSink INSTANCE = new BlackholeSink();
+
+    /**
+     * Creates a blackhole sink.
+     */
+    private BlackholeSink() {
         // No initialization required.
     }
 
     /**
-     * The set of failed routes.
-     */
-    private final Set<Route> failedRoutes = new LinkedHashSet<>();
-
-    /**
-     * Records a failure connecting to {@code route}.
+     * Discards bytes from {@code source}.
      *
-     * @param route The route that failed.
+     * @param source    the source buffer
+     * @param byteCount the number of bytes to discard
+     * @throws IOException if the source cannot skip the requested bytes
      */
-    public synchronized void failed(Route route) {
-        failedRoutes.add(route);
+    @Override
+    public void write(Buffer source, long byteCount) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
+        source.skip(byteCount);
     }
 
     /**
-     * Records a successful connection to {@code route}.
-     *
-     * @param route The route that successfully connected.
+     * Flushes this sink. Nothing is buffered.
      */
-    public synchronized void connected(Route route) {
-        failedRoutes.remove(route);
+    @Override
+    public void flush() {
+        // Nothing to flush.
     }
 
     /**
-     * Returns true if {@code route} has recently failed and should be avoided.
+     * Returns the timeout for this sink.
      *
-     * @param route The route to check.
-     * @return {@code true} if the route should be postponed.
+     * @return the timeout
      */
-    public synchronized boolean shouldPostpone(Route route) {
-        return failedRoutes.contains(route);
+    @Override
+    public Timeout timeout() {
+        return Timeout.NONE;
+    }
+
+    /**
+     * Closes this sink. Nothing is owned.
+     */
+    @Override
+    public void close() {
+        // Nothing to close.
     }
 
 }

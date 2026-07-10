@@ -25,7 +25,6 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
@@ -67,7 +66,7 @@ public class ByteBuffer extends ByteString {
 
         int offset = 0;
         int segmentCount = 0;
-        for (SectionBuffer s = buffer.head; offset < byteCount; s = s.next) {
+        for (Segment s = buffer.head; offset < byteCount; s = s.next) {
             if (s.limit == s.pos) {
                 throw new AssertionError("s.limit == s.pos");
             }
@@ -80,7 +79,7 @@ public class ByteBuffer extends ByteString {
         this.directory = new int[segmentCount * 2];
         offset = 0;
         segmentCount = 0;
-        for (SectionBuffer s = buffer.head; offset < byteCount; s = s.next) {
+        for (Segment s = buffer.head; offset < byteCount; s = s.next) {
             segments[segmentCount] = s.data;
             offset += s.limit - s.pos;
             if (offset > byteCount) {
@@ -303,6 +302,9 @@ public class ByteBuffer extends ByteString {
      */
     @Override
     public java.nio.ByteBuffer asByteBuffer() {
+        if (segments.length == 1) {
+            return java.nio.ByteBuffer.wrap(segments[0], directory[1], directory[0]).asReadOnlyBuffer();
+        }
         return java.nio.ByteBuffer.wrap(toByteArray()).asReadOnlyBuffer();
     }
 
@@ -338,8 +340,8 @@ public class ByteBuffer extends ByteString {
         for (int s = 0, segmentCount = segments.length; s < segmentCount; s++) {
             int segmentPos = directory[segmentCount + s];
             int nextSegmentOffset = directory[s];
-            SectionBuffer segment = new SectionBuffer(segments[s], segmentPos,
-                    segmentPos + nextSegmentOffset - segmentOffset, true, false);
+            Segment segment = new Segment(segments[s], segmentPos, segmentPos + nextSegmentOffset - segmentOffset, true,
+                    false);
             if (null == buffer.head) {
                 buffer.head = segment.next = segment.prev = segment;
             } else {

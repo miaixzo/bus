@@ -34,18 +34,21 @@ import java.util.function.Predicate;
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.iterator.LineIterator;
 import org.miaixz.bus.core.io.BomReader;
-import org.miaixz.bus.core.io.LifeCycle;
-import org.miaixz.bus.core.io.SectionBuffer;
-import org.miaixz.bus.core.io.StreamProgress;
+import org.miaixz.bus.core.io.TransferObserver;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.copier.ChannelCopier;
 import org.miaixz.bus.core.io.copier.FileChannelCopier;
 import org.miaixz.bus.core.io.copier.ReaderWriterCopier;
 import org.miaixz.bus.core.io.copier.StreamCopier;
+import org.miaixz.bus.core.io.sink.BlackholeSink;
 import org.miaixz.bus.core.io.sink.BufferSink;
+import org.miaixz.bus.core.io.sink.ChannelSink;
+import org.miaixz.bus.core.io.sink.OutputStreamSink;
 import org.miaixz.bus.core.io.sink.RealSink;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.BufferSource;
+import org.miaixz.bus.core.io.source.ChannelSource;
+import org.miaixz.bus.core.io.source.InputStreamSource;
 import org.miaixz.bus.core.io.source.RealSource;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
@@ -102,10 +105,10 @@ public class IoKit {
     /**
      * Copies content from a {@link Reader} to a {@link Writer}. The Reader is not closed after copying.
      *
-     * @param reader         The source Reader.
-     * @param writer         The destination Writer.
-     * @param bufferSize     The size of the buffer to use for copying.
-     * @param streamProgress The progress handler for monitoring the copy operation, can be {@code null}.
+     * @param reader           The source Reader.
+     * @param writer           The destination Writer.
+     * @param bufferSize       The size of the buffer to use for copying.
+     * @param transferObserver The transfer observer for monitoring the copy operation, can be {@code null}.
      * @return The number of characters copied.
      * @throws InternalException If an I/O error occurs.
      */
@@ -113,18 +116,18 @@ public class IoKit {
             final Reader reader,
             final Writer writer,
             final int bufferSize,
-            final StreamProgress streamProgress) throws InternalException {
-        return copy(reader, writer, bufferSize, -1, streamProgress);
+            final TransferObserver transferObserver) throws InternalException {
+        return copy(reader, writer, bufferSize, -1, transferObserver);
     }
 
     /**
      * Copies content from a {@link Reader} to a {@link Writer}. The Reader is not closed after copying.
      *
-     * @param reader         The source Reader, must not be {@code null}.
-     * @param writer         The destination Writer, must not be {@code null}.
-     * @param bufferSize     The size of the buffer to use for copying. Use -1 for default size.
-     * @param count          The maximum number of characters to copy. Use -1 for unlimited.
-     * @param streamProgress The progress handler for monitoring the copy operation, can be {@code null}.
+     * @param reader           The source Reader, must not be {@code null}.
+     * @param writer           The destination Writer, must not be {@code null}.
+     * @param bufferSize       The size of the buffer to use for copying. Use -1 for default size.
+     * @param count            The maximum number of characters to copy. Use -1 for unlimited.
+     * @param transferObserver The transfer observer for monitoring the copy operation, can be {@code null}.
      * @return The number of characters copied.
      * @throws InternalException If an I/O error occurs.
      */
@@ -133,10 +136,10 @@ public class IoKit {
             final Writer writer,
             final int bufferSize,
             final long count,
-            final StreamProgress streamProgress) throws InternalException {
+            final TransferObserver transferObserver) throws InternalException {
         Assert.notNull(reader, "Reader is null !");
         Assert.notNull(writer, "Writer is null !");
-        return new ReaderWriterCopier(bufferSize, count, streamProgress).copy(reader, writer);
+        return new ReaderWriterCopier(bufferSize, count, transferObserver).copy(reader, writer);
     }
 
     /**
@@ -163,16 +166,16 @@ public class IoKit {
      */
     public static long copy(final InputStream in, final OutputStream out, final int bufferSize)
             throws InternalException {
-        return copy(in, out, bufferSize, (StreamProgress) null);
+        return copy(in, out, bufferSize, (TransferObserver) null);
     }
 
     /**
      * Copies content from an {@link InputStream} to an {@link OutputStream}. The streams are not closed after copying.
      *
-     * @param in             The source InputStream.
-     * @param out            The destination OutputStream.
-     * @param bufferSize     The size of the buffer to use for copying.
-     * @param streamProgress The progress handler for monitoring the copy operation, can be {@code null}.
+     * @param in               The source InputStream.
+     * @param out              The destination OutputStream.
+     * @param bufferSize       The size of the buffer to use for copying.
+     * @param transferObserver The transfer observer for monitoring the copy operation, can be {@code null}.
      * @return The number of bytes copied.
      * @throws InternalException If an I/O error occurs.
      */
@@ -180,18 +183,18 @@ public class IoKit {
             final InputStream in,
             final OutputStream out,
             final int bufferSize,
-            final StreamProgress streamProgress) throws InternalException {
-        return copy(in, out, bufferSize, -1, streamProgress);
+            final TransferObserver transferObserver) throws InternalException {
+        return copy(in, out, bufferSize, -1, transferObserver);
     }
 
     /**
      * Copies content from an {@link InputStream} to an {@link OutputStream}. The streams are not closed after copying.
      *
-     * @param in             The source InputStream.
-     * @param out            The destination OutputStream.
-     * @param bufferSize     The size of the buffer to use for copying.
-     * @param count          The total number of bytes to copy. Use -1 for unlimited.
-     * @param streamProgress The progress handler for monitoring the copy operation, can be {@code null}.
+     * @param in               The source InputStream.
+     * @param out              The destination OutputStream.
+     * @param bufferSize       The size of the buffer to use for copying.
+     * @param count            The total number of bytes to copy. Use -1 for unlimited.
+     * @param transferObserver The transfer observer for monitoring the copy operation, can be {@code null}.
      * @return The number of bytes copied.
      * @throws InternalException If an I/O error occurs.
      */
@@ -200,10 +203,10 @@ public class IoKit {
             final OutputStream out,
             final int bufferSize,
             final long count,
-            final StreamProgress streamProgress) throws InternalException {
+            final TransferObserver transferObserver) throws InternalException {
         Assert.notNull(in, "InputStream is null !");
         Assert.notNull(out, "OutputStream is null !");
-        return new StreamCopier(bufferSize, count, streamProgress).copy(in, out);
+        return new StreamCopier(bufferSize, count, transferObserver).copy(in, out);
     }
 
     /**
@@ -1183,12 +1186,12 @@ public class IoKit {
 
     /**
      * Copies content from a {@link ReadableByteChannel} to a {@link WritableByteChannel} using NIO with a specified
-     * buffer size and progress handler. The channels are not closed after copying.
+     * buffer size and transfer observer. The channels are not closed after copying.
      *
-     * @param in             The source {@link ReadableByteChannel}.
-     * @param out            The destination {@link WritableByteChannel}.
-     * @param bufferSize     The buffer size. If less than or equal to 0, the default size is used.
-     * @param streamProgress The {@link StreamProgress} progress handler.
+     * @param in               The source {@link ReadableByteChannel}.
+     * @param out              The destination {@link WritableByteChannel}.
+     * @param bufferSize       The buffer size. If less than or equal to 0, the default size is used.
+     * @param transferObserver The transfer observer.
      * @return The number of bytes copied.
      * @throws InternalException If an I/O error occurs.
      */
@@ -1196,19 +1199,19 @@ public class IoKit {
             final ReadableByteChannel in,
             final WritableByteChannel out,
             final int bufferSize,
-            final StreamProgress streamProgress) throws InternalException {
-        return copy(in, out, bufferSize, -1, streamProgress);
+            final TransferObserver transferObserver) throws InternalException {
+        return copy(in, out, bufferSize, -1, transferObserver);
     }
 
     /**
      * Copies content from a {@link ReadableByteChannel} to a {@link WritableByteChannel} using NIO with a specified
-     * buffer size, total count, and progress handler. The channels are not closed after copying.
+     * buffer size, total count, and transfer observer. The channels are not closed after copying.
      *
-     * @param in             The source {@link ReadableByteChannel}.
-     * @param out            The destination {@link WritableByteChannel}.
-     * @param bufferSize     The buffer size. If less than or equal to 0, the default size is used.
-     * @param totalCount     The total number of bytes to read.
-     * @param streamProgress The {@link StreamProgress} progress handler.
+     * @param in               The source {@link ReadableByteChannel}.
+     * @param out              The destination {@link WritableByteChannel}.
+     * @param bufferSize       The buffer size. If less than or equal to 0, the default size is used.
+     * @param totalCount       The total number of bytes to read.
+     * @param transferObserver The transfer observer.
      * @return The number of bytes copied.
      */
     public static long copy(
@@ -1216,20 +1219,20 @@ public class IoKit {
             final WritableByteChannel out,
             final int bufferSize,
             final long totalCount,
-            final StreamProgress streamProgress) {
+            final TransferObserver transferObserver) {
         Assert.notNull(in, "In channel is null!");
         Assert.notNull(out, "Out channel is null!");
-        return new ChannelCopier(bufferSize, totalCount, streamProgress).copy(in, out);
+        return new ChannelCopier(bufferSize, totalCount, transferObserver).copy(in, out);
     }
 
     /**
      * Copies content from an {@link InputStream} to an {@link OutputStream} using NIO. This method does not close the
      * streams.
      *
-     * @param in             The input stream.
-     * @param out            The output stream.
-     * @param bufferSize     The buffer size.
-     * @param streamProgress The progress handler.
+     * @param in               The input stream.
+     * @param out              The output stream.
+     * @param bufferSize       The buffer size.
+     * @param transferObserver The transfer observer.
      * @return The number of bytes transferred.
      * @throws InternalException If an I/O error occurs.
      */
@@ -1237,19 +1240,19 @@ public class IoKit {
             final InputStream in,
             final OutputStream out,
             final int bufferSize,
-            final StreamProgress streamProgress) throws InternalException {
-        return copyNio(in, out, bufferSize, -1, streamProgress);
+            final TransferObserver transferObserver) throws InternalException {
+        return copyNio(in, out, bufferSize, -1, transferObserver);
     }
 
     /**
      * Copies content from an {@link InputStream} to an {@link OutputStream} using NIO. This method does not close the
      * streams.
      *
-     * @param in             The input stream, must not be {@code null}.
-     * @param out            The output stream, must not be {@code null}.
-     * @param bufferSize     The buffer size. Use -1 for default size.
-     * @param count          The maximum length to copy. Use -1 for unlimited.
-     * @param streamProgress The progress handler, can be {@code null}.
+     * @param in               The input stream, must not be {@code null}.
+     * @param out              The output stream, must not be {@code null}.
+     * @param bufferSize       The buffer size. Use -1 for default size.
+     * @param count            The maximum length to copy. Use -1 for unlimited.
+     * @param transferObserver The transfer observer, can be {@code null}.
      * @return The number of bytes transferred.
      * @throws InternalException If an I/O error occurs.
      */
@@ -1258,7 +1261,7 @@ public class IoKit {
             final OutputStream out,
             final int bufferSize,
             final long count,
-            final StreamProgress streamProgress) throws InternalException {
+            final TransferObserver transferObserver) throws InternalException {
         Assert.notNull(in, "InputStream channel is null!");
         Assert.notNull(out, "OutputStream channel is null!");
         final long copySize = copy(
@@ -1266,7 +1269,7 @@ public class IoKit {
                 Channels.newChannel(out),
                 bufferSize,
                 count,
-                streamProgress);
+                transferObserver);
         flush(out);
         return copySize;
     }
@@ -1442,6 +1445,20 @@ public class IoKit {
     }
 
     /**
+     * Returns a {@link Sink} that writes to the given {@link WritableByteChannel}.
+     *
+     * <p>
+     * When the channel supports gathering writes, this sink exposes readable {@link Buffer} segments as NIO buffer
+     * views and writes multiple segments in one channel call where possible.
+     *
+     * @param channel The writable byte channel.
+     * @return A new {@link Sink}.
+     */
+    public static Sink sink(WritableByteChannel channel) {
+        return sink(channel, new Timeout());
+    }
+
+    /**
      * Returns a {@link Sink} that writes to the given {@link OutputStream} with a specified timeout. This method is
      * preferred over {@link #sink(OutputStream)} when dealing with sockets, as it supports timeouts. When a socket
      * write times out, the socket will be asynchronously closed by a watchdog thread.
@@ -1452,70 +1469,19 @@ public class IoKit {
      * @throws IllegalArgumentException if {@code out} or {@code timeout} is {@code null}.
      */
     private static Sink sink(final OutputStream out, final Timeout timeout) {
-        if (null == out) {
-            throw new IllegalArgumentException("out == null");
-        }
-        if (null == timeout) {
-            throw new IllegalArgumentException("timeout == null");
-        }
+        return new OutputStreamSink(out, timeout);
+    }
 
-        return new Sink() {
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public void write(Buffer source, long byteCount) throws IOException {
-                checkOffsetAndCount(source.size, 0, byteCount);
-                while (byteCount > 0) {
-                    timeout.throwIfReached();
-                    SectionBuffer head = source.head;
-                    int toCopy = (int) Math.min(byteCount, head.limit - head.pos);
-                    out.write(head.data, head.pos, toCopy);
-
-                    head.pos += toCopy;
-                    byteCount -= toCopy;
-                    source.size -= toCopy;
-
-                    if (head.pos == head.limit) {
-                        source.head = head.pop();
-                        LifeCycle.recycle(head);
-                    }
-                }
-            }
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public void flush() throws IOException {
-                out.flush();
-            }
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public void close() throws IOException {
-                out.close();
-            }
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public Timeout timeout() {
-                return timeout;
-            }
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public String toString() {
-                return "sink(" + out + Symbol.PARENTHESE_RIGHT;
-            }
-        };
+    /**
+     * Returns a {@link Sink} that writes to the given {@link WritableByteChannel} with a specified timeout.
+     *
+     * @param channel The writable byte channel.
+     * @param timeout The timeout information.
+     * @return A new {@link Sink}.
+     * @throws IllegalArgumentException if {@code channel} or {@code timeout} is {@code null}.
+     */
+    private static Sink sink(final WritableByteChannel channel, final Timeout timeout) {
+        return new ChannelSink(channel, timeout);
     }
 
     /**
@@ -1541,96 +1507,54 @@ public class IoKit {
     }
 
     /**
-     * Returns a buffered {@link Source} that reads from the given {@link InputStream}.
+     * Returns a {@link Source} that reads from the given {@link InputStream}.
      *
      * @param in The data input stream.
-     * @return A new buffered {@link Source}.
+     * @return A new {@link Source}.
      */
     public static Source source(InputStream in) {
         return source(in, new Timeout());
     }
 
     /**
-     * Returns a buffered {@link Source} that reads from the given {@link InputStream} with a specified timeout.
+     * Returns a {@link Source} that reads from the given {@link ReadableByteChannel}.
      *
-     * @param in      The data input stream.
-     * @param timeout The timeout information.
-     * @return A new buffered {@link Source}.
-     * @throws IllegalArgumentException if {@code in} or {@code timeout} is {@code null}.
+     * @param channel The readable byte channel.
+     * @return A new {@link Source}.
      */
-    private static Source source(final InputStream in, final Timeout timeout) {
-        if (null == in) {
-            throw new IllegalArgumentException("in == null");
-        }
-        if (null == timeout) {
-            throw new IllegalArgumentException("timeout == null");
-        }
-
-        return new Source() {
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public long read(Buffer sink, long byteCount) throws IOException {
-                if (byteCount < 0)
-                    throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-                if (byteCount == 0)
-                    return 0;
-                try {
-                    timeout.throwIfReached();
-                    SectionBuffer tail = sink.writableSegment(1);
-                    int maxToCopy = (int) Math.min(byteCount, SectionBuffer.SIZE - tail.limit);
-                    int bytesRead = in.read(tail.data, tail.limit, maxToCopy);
-                    if (bytesRead == -1) {
-                        if (tail.pos == tail.limit) {
-                            // We allocated a tail segment, but didn't end up needing it. Recycle!
-                            sink.head = tail.pop();
-                            LifeCycle.recycle(tail);
-                        }
-                        return -1;
-                    }
-                    tail.limit += bytesRead;
-                    sink.size += bytesRead;
-                    return bytesRead;
-                } catch (AssertionError e) {
-                    if (isAndroidGetsocknameError(e))
-                        throw new IOException(e);
-                    throw e;
-                }
-            }
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public void close() throws IOException {
-                in.close();
-            }
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public Timeout timeout() {
-                return timeout;
-            }
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public String toString() {
-                return "source(" + in + Symbol.PARENTHESE_RIGHT;
-            }
-        };
+    public static Source source(ReadableByteChannel channel) {
+        return source(channel, new Timeout());
     }
 
     /**
-     * Returns a buffered {@link Source} that reads from the given {@link File}.
+     * Returns a {@link Source} that reads from the given {@link InputStream} with a specified timeout.
+     *
+     * @param in      The data input stream.
+     * @param timeout The timeout information.
+     * @return A new {@link Source}.
+     * @throws IllegalArgumentException if {@code in} or {@code timeout} is {@code null}.
+     */
+    private static Source source(final InputStream in, final Timeout timeout) {
+        return new InputStreamSource(in, timeout);
+    }
+
+    /**
+     * Returns a {@link Source} that reads from the given {@link ReadableByteChannel} with a specified timeout.
+     *
+     * @param channel The readable byte channel.
+     * @param timeout The timeout information.
+     * @return A new {@link Source}.
+     * @throws IllegalArgumentException if {@code channel} or {@code timeout} is {@code null}.
+     */
+    private static Source source(final ReadableByteChannel channel, final Timeout timeout) {
+        return new ChannelSource(channel, timeout);
+    }
+
+    /**
+     * Returns a {@link Source} that reads from the given {@link File}.
      *
      * @param file The file.
-     * @return A new buffered {@link Source}.
+     * @return A new {@link Source}.
      * @throws FileNotFoundException    If the file does not exist.
      * @throws IllegalArgumentException if {@code file} is {@code null}.
      */
@@ -1642,11 +1566,11 @@ public class IoKit {
     }
 
     /**
-     * Returns a buffered {@link Source} that reads from the given {@link Path}.
+     * Returns a {@link Source} that reads from the given {@link Path}.
      *
      * @param path    The path.
      * @param options Open options for the file.
-     * @return A new buffered {@link Source}.
+     * @return A new {@link Source}.
      * @throws IOException              If an I/O error occurs.
      * @throws IllegalArgumentException if {@code path} is {@code null}.
      */
@@ -1706,50 +1630,19 @@ public class IoKit {
     /**
      * Returns a "blackhole" {@link Sink} that discards all written data.
      *
-     * @return A new blackhole {@link Sink}.
+     * @return the shared blackhole {@link Sink}.
      */
     public static Sink blackhole() {
-        return new Sink() {
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public void write(Buffer source, long byteCount) throws IOException {
-                source.skip(byteCount);
-            }
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public void flush() {
-            }
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public Timeout timeout() {
-                return Timeout.NONE;
-            }
-
-            /**
-             * Description inherited from parent class or interface.
-             */
-            @Override
-            public void close() {
-            }
-        };
+        return BlackholeSink.INSTANCE;
     }
 
     /**
-     * Returns a buffered {@link Source} that reads from the given {@link Socket}. This method is preferred over
+     * Returns a {@link Source} that reads from the given {@link Socket}. This method is preferred over
      * {@link #source(InputStream)} as it supports timeouts. When a socket read times out, the socket will be
      * asynchronously closed by a task thread.
      *
      * @param socket The socket.
-     * @return A new buffered {@link Source}.
+     * @return A new {@link Source}.
      * @throws IOException              If an I/O error occurs or the socket's input stream is {@code null}.
      * @throws IllegalArgumentException if {@code socket} is {@code null}.
      */

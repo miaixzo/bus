@@ -25,17 +25,17 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 
 /**
- * A set of indexed values that can be read by {@link BufferSource#select}.
+ * A selector that stores byte string candidates for fast {@link BufferSource#select} matching.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class SegmentBuffer extends AbstractList<ByteString> implements RandomAccess {
+public final class ByteSelector extends AbstractList<ByteString> implements RandomAccess {
 
     /**
-     * The array of ByteString options.
+     * The candidate byte strings used by this selector.
      */
-    public final ByteString[] byteStrings;
+    public final ByteString[] candidates;
 
     /**
      * The trie structure for efficient lookup.
@@ -43,38 +43,48 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
     public final int[] trie;
 
     /**
-     * Private constructor for {@code SegmentBuffer}.
+     * Private constructor for {@code ByteSelector}.
      *
-     * @param byteStrings The array of {@link ByteString} options.
-     * @param trie        The trie structure as an array of integers.
+     * @param candidates The candidate {@link ByteString} values.
+     * @param trie       The trie structure as an array of integers.
      */
-    private SegmentBuffer(ByteString[] byteStrings, int[] trie) {
-        this.byteStrings = byteStrings;
+    private ByteSelector(ByteString[] candidates, int[] trie) {
+        this.candidates = candidates;
         this.trie = trie;
     }
 
     /**
-     * Creates a {@code SegmentBuffer} from an array of {@link ByteString} options.
+     * Creates a trie-backed selector from the supplied byte string candidates. Returned indexes always refer to the
+     * caller's original option order, even though the trie is built from a sorted copy.
      *
-     * @param byteStrings The {@link ByteString} options.
-     * @return A new {@link SegmentBuffer} instance.
-     * @throws IllegalArgumentException if an empty byte string is provided, or if duplicate options exist.
+     * @param candidates The {@link ByteString} candidates to match.
+     * @return A new {@link ByteSelector} instance.
+     * @throws IllegalArgumentException if the option array is null, any option is null, an empty option is provided, or
+     *                                  duplicate candidates exist.
      */
-    public static SegmentBuffer of(ByteString... byteStrings) {
-        if (byteStrings.length == 0) {
-            // No options, we must always return -1. Create an empty set.
-            return new SegmentBuffer(new ByteString[0], new int[] { 0, -1 });
+    public static ByteSelector of(ByteString... candidates) {
+        if (candidates == null) {
+            throw new IllegalArgumentException("candidates == null");
+        }
+        if (candidates.length == 0) {
+            // No candidates, we must always return -1. Create an empty selector.
+            return new ByteSelector(new ByteString[0], new int[] { 0, -1 });
+        }
+        for (int i = 0; i < candidates.length; i++) {
+            if (candidates[i] == null) {
+                throw new IllegalArgumentException("candidates[" + i + "] == null");
+            }
         }
 
         // Sort the byte strings needed for recursive construction. Map the sorted indices to the caller's indices.
-        List<ByteString> list = new ArrayList<>(Arrays.asList(byteStrings));
+        List<ByteString> list = new ArrayList<>(Arrays.asList(candidates));
         Collections.sort(list);
         List<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             indexes.add(-1);
         }
         for (int i = 0; i < list.size(); i++) {
-            int sortedIndex = Collections.binarySearch(list, byteStrings[i]);
+            int sortedIndex = Collections.binarySearch(list, candidates[i]);
             indexes.set(sortedIndex, i);
         }
         if (list.get(0).size() == 0) {
@@ -112,7 +122,7 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
             throw new AssertionError();
         }
 
-        return new SegmentBuffer(byteStrings.clone(), trie);
+        return new ByteSelector(candidates.clone(), trie);
     }
 
     /**
@@ -138,48 +148,48 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
      * <li>nextStep: The result index (>= 0) or offset (< 0) to the next node. Offsets are negative and must be
      * multiplied by -1 before use.</li>
      * </ul>
-     * This structure is used to improve locality and performance when selecting from a list of options.
+     * This structure is used to improve locality and performance when selecting from a candidate list.
      *
-     * @param nodeOffset       The offset of the current node.
-     * @param node             The buffer to write the trie node to.
-     * @param byteStringOffset The current offset within the byte strings being processed.
-     * @param byteStrings      The list of {@link ByteString} options.
-     * @param fromIndex        The starting index (inclusive) in {@code byteStrings} for the current sub-trie.
-     * @param toIndex          The ending index (exclusive) in {@code byteStrings} for the current sub-trie.
-     * @param indexes          A list mapping sorted {@link ByteString} indices to their original indices.
+     * @param nodeOffset      The offset of the current node.
+     * @param node            The buffer to write the trie node to.
+     * @param candidateOffset The current offset within the byte strings being processed.
+     * @param candidates      The list of {@link ByteString} candidates.
+     * @param fromIndex       The starting index (inclusive) in {@code candidates} for the current sub-trie.
+     * @param toIndex         The ending index (exclusive) in {@code candidates} for the current sub-trie.
+     * @param indexes         A list mapping sorted {@link ByteString} indices to their original indices.
      * @throws AssertionError if an internal consistency check fails.
      */
     private static void buildTrieRecursive(
             long nodeOffset,
             Buffer node,
-            int byteStringOffset,
-            List<ByteString> byteStrings,
+            int candidateOffset,
+            List<ByteString> candidates,
             int fromIndex,
             int toIndex,
             List<Integer> indexes) {
         if (fromIndex >= toIndex)
             throw new AssertionError();
         for (int i = fromIndex; i < toIndex; i++) {
-            if (byteStrings.get(i).size() < byteStringOffset)
+            if (candidates.get(i).size() < candidateOffset)
                 throw new AssertionError();
         }
 
-        ByteString from = byteStrings.get(fromIndex);
-        ByteString to = byteStrings.get(toIndex - 1);
+        ByteString from = candidates.get(fromIndex);
+        ByteString to = candidates.get(toIndex - 1);
         int prefixIndex = -1;
 
         // If the first element already matches, it's a prefix.
-        if (byteStringOffset == from.size()) {
+        if (candidateOffset == from.size()) {
             prefixIndex = indexes.get(fromIndex);
             fromIndex++;
-            from = byteStrings.get(fromIndex);
+            from = candidates.get(fromIndex);
         }
 
-        if (from.getByte(byteStringOffset) != to.getByte(byteStringOffset)) {
+        if (from.getByte(candidateOffset) != to.getByte(candidateOffset)) {
             // If there are multiple bytes to choose from, encode a SELECT node.
             int selectChoiceCount = 1;
             for (int i = fromIndex + 1; i < toIndex; i++) {
-                if (byteStrings.get(i - 1).getByte(byteStringOffset) != byteStrings.get(i).getByte(byteStringOffset)) {
+                if (candidates.get(i - 1).getByte(candidateOffset) != candidates.get(i).getByte(candidateOffset)) {
                     selectChoiceCount++;
                 }
             }
@@ -190,8 +200,8 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
             node.writeInt(prefixIndex);
 
             for (int i = fromIndex; i < toIndex; i++) {
-                byte rangeByte = byteStrings.get(i).getByte(byteStringOffset);
-                if (i == fromIndex || rangeByte != byteStrings.get(i - 1).getByte(byteStringOffset)) {
+                byte rangeByte = candidates.get(i).getByte(candidateOffset);
+                if (i == fromIndex || rangeByte != candidates.get(i - 1).getByte(candidateOffset)) {
                     node.writeInt(rangeByte & 0xff);
                 }
             }
@@ -199,16 +209,16 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
             Buffer childNodes = new Buffer();
             int rangeStart = fromIndex;
             while (rangeStart < toIndex) {
-                byte rangeByte = byteStrings.get(rangeStart).getByte(byteStringOffset);
+                byte rangeByte = candidates.get(rangeStart).getByte(candidateOffset);
                 int rangeEnd = toIndex;
                 for (int i = rangeStart + 1; i < toIndex; i++) {
-                    if (rangeByte != byteStrings.get(i).getByte(byteStringOffset)) {
+                    if (rangeByte != candidates.get(i).getByte(candidateOffset)) {
                         rangeEnd = i;
                         break;
                     }
                 }
 
-                if (rangeStart + 1 == rangeEnd && byteStringOffset + 1 == byteStrings.get(rangeStart).size()) {
+                if (rangeStart + 1 == rangeEnd && candidateOffset + 1 == candidates.get(rangeStart).size()) {
                     // The result is a single index.
                     node.writeInt(indexes.get(rangeStart));
                 } else {
@@ -217,8 +227,8 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
                     buildTrieRecursive(
                             childNodesOffset,
                             childNodes,
-                            byteStringOffset + 1,
-                            byteStrings,
+                            candidateOffset + 1,
+                            candidates,
                             rangeStart,
                             rangeEnd,
                             indexes);
@@ -232,7 +242,7 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
         } else {
             // If all bytes are the same, encode a SCAN node.
             int scanByteCount = 0;
-            for (int i = byteStringOffset, max = Math.min(from.size(), to.size()); i < max; i++) {
+            for (int i = candidateOffset, max = Math.min(from.size(), to.size()); i < max; i++) {
                 if (from.getByte(i) == to.getByte(i)) {
                     scanByteCount++;
                 } else {
@@ -245,13 +255,13 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
             node.writeInt(-scanByteCount);
             node.writeInt(prefixIndex);
 
-            for (int i = byteStringOffset; i < byteStringOffset + scanByteCount; i++) {
+            for (int i = candidateOffset; i < candidateOffset + scanByteCount; i++) {
                 node.writeInt(from.getByte(i) & 0xff);
             }
 
             if (fromIndex + 1 == toIndex) {
                 // The result is a single index.
-                if (byteStringOffset + scanByteCount != byteStrings.get(fromIndex).size()) {
+                if (candidateOffset + scanByteCount != candidates.get(fromIndex).size()) {
                     throw new AssertionError();
                 }
                 node.writeInt(indexes.get(fromIndex));
@@ -262,8 +272,8 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
                 buildTrieRecursive(
                         childNodesOffset,
                         childNodes,
-                        byteStringOffset + scanByteCount,
-                        byteStrings,
+                        candidateOffset + scanByteCount,
+                        candidates,
                         fromIndex,
                         toIndex,
                         indexes);
@@ -291,7 +301,7 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
      */
     @Override
     public ByteString get(int i) {
-        return byteStrings[i];
+        return candidates[i];
     }
 
     /**
@@ -300,8 +310,8 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
      * @return The number of elements in this list.
      */
     @Override
-    public final int size() {
-        return byteStrings.length;
+    public int size() {
+        return candidates.length;
     }
 
 }

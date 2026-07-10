@@ -58,13 +58,18 @@ public class FaultHideSink extends AssignSink {
      */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
         if (hasErrors) {
             source.skip(byteCount);
             return;
         }
+        long sizeBeforeWrite = source.size();
         try {
             super.write(source, byteCount);
         } catch (IOException e) {
+            skipRemaining(source, byteCount, sizeBeforeWrite);
             hasErrors = true;
             onException(e);
         }
@@ -116,6 +121,25 @@ public class FaultHideSink extends AssignSink {
      */
     protected void onException(IOException e) {
 
+    }
+
+    /**
+     * Skips bytes that were not consumed before a hidden write failure.
+     *
+     * @param source          the source buffer
+     * @param byteCount       the requested byte count
+     * @param sizeBeforeWrite source size before the delegate write
+     */
+    private void skipRemaining(Buffer source, long byteCount, long sizeBeforeWrite) {
+        long consumed = Math.max(0, sizeBeforeWrite - source.size());
+        long remaining = byteCount - consumed;
+        if (remaining > 0) {
+            try {
+                source.skip(Math.min(remaining, source.size()));
+            } catch (IOException ignored) {
+                // Ignore cleanup failures after the original write failure has already been hidden.
+            }
+        }
     }
 
 }

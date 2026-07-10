@@ -18,10 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides interfaces and classes for reading data from various sources. This package defines the fundamental
- * {@link org.miaixz.bus.core.io.source.Source} interface and its buffered counterpart
- * {@link org.miaixz.bus.core.io.source.BufferSource}, along with implementations for common data reading scenarios such
- * as GZIP decompression and peeking into streams.
+ * Provides byte source interfaces and implementations for streams, channels, buffered reads, GZIP, raw DEFLATE, and
+ * peeking. Implementations read directly into segment-backed buffers to minimize intermediate allocations.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -18,9 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides interfaces and implementations for byte stream sinks, which are used to write data to various destinations.
- * This package supports layered processing for data transformation such as compression, encryption, throttling, or
- * protocol framing.
+ * Provides byte sink interfaces and implementations for streams, channels, buffered writes, GZIP, raw DEFLATE,
+ * blackhole sinks, and forwarding sinks. Channel sinks can write segment-backed buffers through NIO views to reduce
+ * copying.
  *
  * @author Kimi Liu
  * @since Java 21+

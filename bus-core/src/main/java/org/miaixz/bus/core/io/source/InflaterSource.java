@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-import org.miaixz.bus.core.io.LifeCycle;
-import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.buffer.Segment;
+import org.miaixz.bus.core.io.buffer.SegmentAllocator;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.xyz.IoKit;
 
@@ -109,6 +109,9 @@ public final class InflaterSource implements Source {
      */
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
+        if (sink == null) {
+            throw new IllegalArgumentException("sink == null");
+        }
         if (byteCount < 0)
             throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         if (closed)
@@ -118,11 +121,11 @@ public final class InflaterSource implements Source {
 
         while (true) {
             boolean sourceExhausted = refill();
+            Segment tail = sink.writableSegment(1);
+            int toRead = (int) Math.min(byteCount, Segment.SIZE - tail.limit);
 
             // Decompress data from the buffer into the sink.
             try {
-                SectionBuffer tail = sink.writableSegment(1);
-                int toRead = (int) Math.min(byteCount, SectionBuffer.SIZE - tail.limit);
                 int bytesInflated = inflater.inflate(tail.data, tail.limit, toRead);
                 if (bytesInflated > 0) {
                     tail.limit += bytesInflated;
@@ -131,17 +134,22 @@ public final class InflaterSource implements Source {
                 }
                 if (inflater.finished() || inflater.needsDictionary()) {
                     releaseInflatedBytes();
-                    if (tail.pos == tail.limit) {
-                        // A tail segment was allocated but not ultimately needed. Recycle!
-                        sink.head = tail.pop();
-                        LifeCycle.recycle(tail);
-                    }
+                    recycleTailIfEmpty(sink, tail);
                     return -1;
                 }
-                if (sourceExhausted)
+                if (sourceExhausted) {
+                    recycleTailIfEmpty(sink, tail);
                     throw new EOFException("source exhausted prematurely");
+                }
+                if (inflater.needsInput()) {
+                    recycleTailIfEmpty(sink, tail);
+                    continue;
+                }
+                recycleTailIfEmpty(sink, tail);
+                throw new IOException("Inflater stalled without making progress");
             } catch (DataFormatException e) {
-                throw new IOException(e);
+                recycleTailIfEmpty(sink, tail);
+                throw new IOException("Malformed deflate stream", e);
             }
         }
     }
@@ -168,7 +176,7 @@ public final class InflaterSource implements Source {
         }
 
         // Assign buffer bytes to the inflater.
-        SectionBuffer head = source.getBuffer().head;
+        Segment head = source.getBuffer().head;
         bufferBytesHeldByInflater = head.limit - head.pos;
         inflater.setInput(head.data, head.pos, bufferBytesHeldByInflater);
         return false;
@@ -186,6 +194,19 @@ public final class InflaterSource implements Source {
         int toRelease = bufferBytesHeldByInflater - inflater.getRemaining();
         bufferBytesHeldByInflater -= toRelease;
         source.skip(toRelease);
+    }
+
+    /**
+     * Recycles an unused writable tail segment.
+     *
+     * @param sink the sink that owns the segment
+     * @param tail the candidate tail segment
+     */
+    private void recycleTailIfEmpty(Buffer sink, Segment tail) {
+        if (tail.pos == tail.limit) {
+            sink.head = tail.pop();
+            SegmentAllocator.release(tail);
+        }
     }
 
     /**

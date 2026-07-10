@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.miaixz.bus.core.io.StreamProgress;
+import org.miaixz.bus.core.io.TransferObserver;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -64,15 +64,15 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
     }
 
     /**
-     * Constructs a {@code StreamCopier} with the specified buffer size, total count of bytes to copy, and a progress
-     * listener.
+     * Constructs a {@code StreamCopier} with the specified buffer size, total count of bytes to copy, and a transfer
+     * observer.
      *
-     * @param bufferSize The size of the byte buffer to use for copying.
-     * @param count      The total number of bytes to copy. A value of -1 indicates no limit.
-     * @param progress   The progress listener to report copy progress.
+     * @param bufferSize       The size of the byte buffer to use for copying.
+     * @param count            The total number of bytes to copy. A value of -1 indicates no limit.
+     * @param transferObserver The observer to receive transfer progress events.
      */
-    public StreamCopier(final int bufferSize, final long count, final StreamProgress progress) {
-        super(bufferSize, count, progress);
+    public StreamCopier(final int bufferSize, final long count, final TransferObserver transferObserver) {
+        super(bufferSize, count, transferObserver);
     }
 
     /**
@@ -88,20 +88,20 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
         Assert.notNull(source, "InputStream is null !");
         Assert.notNull(target, "OutputStream is null !");
 
-        final StreamProgress progress = this.progress;
-        if (null != progress) {
-            progress.start();
+        final TransferObserver transferObserver = this.transferObserver;
+        if (null != transferObserver) {
+            transferObserver.start();
         }
         final long size;
         try {
-            size = doCopy(source, target, new byte[bufferSize(this.count)], progress);
+            size = doCopy(source, target, new byte[bufferSize(this.count)], transferObserver);
             target.flush();
         } catch (final IOException e) {
             throw new InternalException(e);
         }
 
-        if (null != progress) {
-            progress.finish();
+        if (null != transferObserver) {
+            transferObserver.finish();
         }
 
         return size;
@@ -111,10 +111,10 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
      * Performs the actual copy operation. If a maximum length is specified, it reads up to that length; otherwise, it
      * reads until the end of the source (when -1 is encountered).
      *
-     * @param source   The {@link InputStream} to read from.
-     * @param target   The {@link OutputStream} to write to.
-     * @param buffer   The byte array buffer used for copying.
-     * @param progress The progress listener to report copy progress, can be {@code null}.
+     * @param source           The {@link InputStream} to read from.
+     * @param target           The {@link OutputStream} to write to.
+     * @param buffer           The byte array buffer used for copying.
+     * @param transferObserver The observer to receive transfer progress events, can be {@code null}.
      * @return The total number of bytes copied.
      * @throws IOException If an I/O error occurs during the copy.
      */
@@ -122,7 +122,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
             final InputStream source,
             final OutputStream target,
             final byte[] buffer,
-            final StreamProgress progress) throws IOException {
+            final TransferObserver transferObserver) throws IOException {
         long numToRead = this.count > 0 ? this.count : Long.MAX_VALUE;
         long total = 0;
 
@@ -140,8 +140,8 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
 
             numToRead -= read;
             total += read;
-            if (null != progress) {
-                progress.progress(this.count, total);
+            if (null != transferObserver) {
+                transferObserver.progress(this.count, total);
             }
         }
 

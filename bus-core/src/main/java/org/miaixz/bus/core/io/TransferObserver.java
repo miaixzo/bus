@@ -20,31 +20,30 @@
 package org.miaixz.bus.core.io;
 
 /**
- * Stream progress monitor. Provides stream copy progress monitoring, such as start and end triggers, and progress
- * callbacks. Note that the {@code total} parameter in the progress callback represents the total size. In some
- * scenarios where the total size is unknown, this value should be -1 or {@link Long#MAX_VALUE}, indicating that this
- * parameter is invalid.
+ * Observes an IO transfer lifecycle. Implementations receive start, progress, and finish callbacks while data is copied
+ * between streams, readers, writers, or channels. When the total length is unknown, implementations should treat
+ * {@code -1} or {@link Long#MAX_VALUE} as an unavailable total length.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface StreamProgress {
+public interface TransferObserver {
 
     /**
-     * Called when the stream copy starts.
+     * Called when the transfer starts.
      */
     void start();
 
     /**
-     * Called during the stream copy process.
+     * Called during the transfer process.
      *
-     * @param total        The total size. If unknown, it will be -1 or {@link Long#MAX_VALUE}.
-     * @param progressSize The size that has already been processed.
+     * @param total       The total size. If unknown, it will be -1 or {@link Long#MAX_VALUE}.
+     * @param transferred The size that has already been transferred.
      */
-    void progress(long total, long progressSize);
+    void progress(long total, long transferred);
 
     /**
-     * Called when the stream copy finishes.
+     * Called when the transfer finishes.
      */
     void finish();
 

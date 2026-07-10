@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.lang;
+package org.miaixz.bus.core.net;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -27,7 +27,9 @@ import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Represents an HTTP Media Type (also known as MIME type).
@@ -342,7 +344,7 @@ public class MediaType {
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_WILDCARD} media type.
      */
-    public final static MediaType IMAGE_WILDCARD_TYPE = new MediaType("image", "*");
+    public final static MediaType IMAGE_WILDCARD_TYPE = new MediaType("image", Symbol.STAR);
 
     /**
      * A {@code String} constant representing {@value #IMAGE_GIF} media type.
@@ -452,7 +454,7 @@ public class MediaType {
     /**
      * A {@link MediaType} constant representing {@value #VIDEO_WILDCARD} media type.
      */
-    public final static MediaType VIDEO_WILDCARD_TYPE = new MediaType("video", "*");
+    public final static MediaType VIDEO_WILDCARD_TYPE = new MediaType("video", Symbol.STAR);
 
     /**
      * A {@code String} constant representing {@value #VIDEO_MPEG} media type.
@@ -547,7 +549,8 @@ public class MediaType {
     /**
      * A {@code String} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM} media type.
      */
-    public final static String MULTIPART_RELATED_APPLICATION_DICOM = "multipart/related;type=\"application/dicom\"";
+    public final static String MULTIPART_RELATED_APPLICATION_DICOM = "multipart/related;type=" + Symbol.DOUBLE_QUOTES
+            + "application/dicom" + Symbol.DOUBLE_QUOTES;
 
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM} media type.
@@ -558,7 +561,8 @@ public class MediaType {
     /**
      * A {@code String} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM_XML} media type.
      */
-    public final static String MULTIPART_RELATED_APPLICATION_DICOM_XML = "multipart/related;type=\"application/dicom+xml\"";
+    public final static String MULTIPART_RELATED_APPLICATION_DICOM_XML = "multipart/related;type="
+            + Symbol.DOUBLE_QUOTES + "application/dicom+xml" + Symbol.DOUBLE_QUOTES;
 
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM_XML} media type.
@@ -664,7 +668,8 @@ public class MediaType {
     /**
      * Regular expression pattern for matching quoted strings.
      */
-    public static final String QUOTED = "\"([^\"]*)\"";
+    public static final String QUOTED = Symbol.DOUBLE_QUOTES + "([^" + Symbol.DOUBLE_QUOTES + "]*)"
+            + Symbol.DOUBLE_QUOTES;
 
     /**
      * Compiled pattern for matching type/subtype in media type strings.
@@ -715,7 +720,20 @@ public class MediaType {
      * @param mediaType the media type string
      */
     public MediaType(String mediaType) {
-        this(mediaType, MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD, null, null);
+        this(parse(mediaType));
+    }
+
+    /**
+     * Creates a copy from a parsed media type.
+     *
+     * @param source parsed source
+     */
+    private MediaType(final MediaType source) {
+        this.type = source.type;
+        this.subtype = source.subtype;
+        this.charset = source.charset;
+        this.mediaType = source.mediaType;
+        this.parameters = source.parameters;
     }
 
     /**
@@ -784,19 +802,51 @@ public class MediaType {
      * @param params    the parameters map
      */
     public MediaType(String mediaType, String type, String subtype, String charset, Map<String, String> params) {
-        this.type = null == type ? MEDIA_TYPE_WILDCARD : type;
-        this.subtype = null == subtype ? MEDIA_TYPE_WILDCARD : subtype;
-        this.charset = null == charset ? Charset.DEFAULT_UTF_8 : charset;
-        this.mediaType = null == mediaType ? this.type + Symbol.C_SLASH + this.subtype + ";charset=" + this.charset
-                : mediaType;
-        if (MapKit.isNotEmpty(params)) {
-            params = new TreeMap((Comparator<String>) (o1, o2) -> o1.compareToIgnoreCase(o2));
+        final String currentType = null == type ? MEDIA_TYPE_WILDCARD : type;
+        if (currentType.isBlank() || currentType.indexOf(Symbol.C_CR) >= 0 || currentType.indexOf(Symbol.C_LF) >= 0) {
+            throw new ValidateException("Media type must be non-blank and single-line");
         }
-        params = null == params ? new HashMap<>() : params;
+        this.type = currentType.toLowerCase(Locale.ROOT);
+        final String currentSubtype = null == subtype ? MEDIA_TYPE_WILDCARD : subtype;
+        if (currentSubtype.isBlank() || currentSubtype.indexOf(Symbol.C_CR) >= 0
+                || currentSubtype.indexOf(Symbol.C_LF) >= 0) {
+            throw new ValidateException("Media subtype must be non-blank and single-line");
+        }
+        this.subtype = currentSubtype.toLowerCase(Locale.ROOT);
+        final LinkedHashMap<String, String> copy = new LinkedHashMap<>();
+        if (params != null) {
+            for (final Entry<String, String> entry : params.entrySet()) {
+                final String name = entry.getKey();
+                if (name == null || name.isBlank() || name.indexOf(Symbol.C_CR) >= 0
+                        || name.indexOf(Symbol.C_LF) >= 0) {
+                    throw new ValidateException("Media parameter name must be non-blank and single-line");
+                }
+                final String value = entry.getValue();
+                if (value == null || value.isBlank() || value.indexOf(Symbol.C_CR) >= 0
+                        || value.indexOf(Symbol.C_LF) >= 0) {
+                    throw new ValidateException("Media parameter value must be non-blank and single-line");
+                }
+                copy.put(name.toLowerCase(Locale.ROOT), value);
+            }
+        }
         if (null != charset && !charset.isEmpty()) {
-            params.put(CHARSET_PARAMETER, charset);
+            if (charset.isBlank() || charset.indexOf(Symbol.C_CR) >= 0 || charset.indexOf(Symbol.C_LF) >= 0) {
+                throw new ValidateException("Media parameter value must be non-blank and single-line");
+            }
+            copy.put(CHARSET_PARAMETER, charset);
         }
-        this.parameters = Collections.unmodifiableMap((Map) params);
+        this.charset = copy.get(CHARSET_PARAMETER);
+        this.parameters = Collections.unmodifiableMap(copy);
+        if (null == mediaType) {
+            final StringBuilder builder = new StringBuilder(this.type).append(Symbol.C_SLASH).append(this.subtype);
+            for (final Entry<String, String> entry : copy.entrySet()) {
+                builder.append(Symbol.SEMICOLON).append(Symbol.SPACE).append(entry.getKey()).append(Symbol.C_EQUAL)
+                        .append(entry.getValue());
+            }
+            this.mediaType = builder.toString();
+        } else {
+            this.mediaType = mediaType;
+        }
     }
 
     /**
@@ -807,42 +857,59 @@ public class MediaType {
      * @throws IllegalArgumentException if the string is not a valid media type
      */
     public static MediaType valueOf(String text) {
-        Matcher typeSubtype = TYPE_SUBTYPE.matcher(text);
+        return parse(text);
+    }
+
+    /**
+     * Parses a media type string into a MediaType object.
+     *
+     * @param text the media type string to parse
+     * @return the parsed MediaType
+     */
+    public static MediaType parse(final String text) {
+        if (text == null || text.isBlank()) {
+            throw new ValidateException("Media value must be non-blank");
+        }
+        final Matcher typeSubtype = TYPE_SUBTYPE.matcher(text);
         if (!typeSubtype.lookingAt()) {
-            throw new IllegalArgumentException("No subtype found for: \"" + text + Symbol.C_DOUBLE_QUOTES);
+            throw new ProtocolException("No subtype found for: " + Symbol.DOUBLE_QUOTES + text + Symbol.DOUBLE_QUOTES);
         }
-        String type = typeSubtype.group(1).toLowerCase(Locale.US);
-        String subtype = typeSubtype.group(2).toLowerCase(Locale.US);
-
+        final String type = typeSubtype.group(1).toLowerCase(Locale.ROOT);
+        final String subtype = typeSubtype.group(2).toLowerCase(Locale.ROOT);
+        final LinkedHashMap<String, String> parameters = new LinkedHashMap<>();
         String charset = null;
-        Matcher parameter = PARAMETER.matcher(text);
-        for (int s = typeSubtype.end(); s < text.length(); s = parameter.end()) {
-            parameter.region(s, text.length());
-            if (!parameter.lookingAt()) {
-                throw new IllegalArgumentException(
-                        "Parameter is not formatted correctly: " + text.substring(s) + " for:" + text);
+        final Matcher parameter = PARAMETER.matcher(text);
+        for (int start = typeSubtype.end(); start < text.length(); start = parameter.end()) {
+            parameter.region(start, text.length());
+            if (!parameter.lookingAt() || parameter.group(1) == null) {
+                throw new ProtocolException(
+                        "Parameter is not formatted correctly: " + text.substring(start) + " for:" + text);
             }
-
-            String name = parameter.group(1);
-            if (null == name || !name.equalsIgnoreCase("charset")) {
-                continue;
+            final String name = parameter.group(1).toLowerCase(Locale.ROOT);
+            String validValue = null == parameter.group(2) ? parameter.group(3) : parameter.group(2);
+            if (validValue != null && validValue.length() >= 2 && validValue.startsWith(Symbol.DOUBLE_QUOTES)
+                    && validValue.endsWith(Symbol.DOUBLE_QUOTES)) {
+                validValue = validValue.substring(1, validValue.length() - 1);
             }
-            String charsetParameter;
-            String token = parameter.group(2);
-            if (null != token) {
-                charsetParameter = (token.startsWith(Symbol.SINGLE_QUOTE) && token.endsWith(Symbol.SINGLE_QUOTE)
-                        && token.length() > 2) ? token.substring(1, token.length() - 1) : token;
-            } else {
-                charsetParameter = parameter.group(3);
+            if (validValue == null || validValue.isBlank() || validValue.indexOf(Symbol.C_CR) >= 0
+                    || validValue.indexOf(Symbol.C_LF) >= 0) {
+                throw new ValidateException("Media parameter value must be non-blank and single-line");
             }
-            if (null != charset && !charsetParameter.equalsIgnoreCase(charset)) {
-                throw new IllegalArgumentException(
-                        "Multiple charsets defined: " + charset + " and: " + charsetParameter + " for: " + text);
+            if (CHARSET_PARAMETER.equals(name)) {
+                try {
+                    java.nio.charset.Charset.forName(validValue);
+                } catch (final IllegalArgumentException e) {
+                    throw new ProtocolException("Invalid media charset", e);
+                }
+                if (null != charset && !validValue.equalsIgnoreCase(charset)) {
+                    throw new ProtocolException(
+                            "Multiple charsets defined: " + charset + " and: " + validValue + " for: " + text);
+                }
+                charset = validValue;
             }
-            charset = charsetParameter;
+            parameters.put(name, validValue);
         }
-
-        return new MediaType(text, type, subtype, charset);
+        return new MediaType(null, type, subtype, charset, parameters);
     }
 
     /**
@@ -852,13 +919,20 @@ public class MediaType {
      * @return a new TreeMap with case-insensitive keys
      */
     private static TreeMap<String, String> createParametersMap(Map<String, String> initialValues) {
-        TreeMap<String, String> map = new TreeMap((Comparator<String>) (o1, o2) -> o1.compareToIgnoreCase(o2));
+        TreeMap<String, String> map = new TreeMap<>((o1, o2) -> o1.compareToIgnoreCase(o2));
         if (null != initialValues) {
-            Iterator i$ = initialValues.entrySet().iterator();
-
-            while (i$.hasNext()) {
-                Entry<String, String> e = (Entry) i$.next();
-                map.put(e.getKey().toLowerCase(), e.getValue());
+            for (final Entry<String, String> e : initialValues.entrySet()) {
+                final String name = e.getKey();
+                if (name == null || name.isBlank() || name.indexOf(Symbol.C_CR) >= 0
+                        || name.indexOf(Symbol.C_LF) >= 0) {
+                    throw new ValidateException("Media parameter name must be non-blank and single-line");
+                }
+                final String value = e.getValue();
+                if (value == null || value.isBlank() || value.indexOf(Symbol.C_CR) >= 0
+                        || value.indexOf(Symbol.C_LF) >= 0) {
+                    throw new ValidateException("Media parameter value must be non-blank and single-line");
+                }
+                map.put(name.toLowerCase(Locale.ROOT), value);
             }
         }
         return map;
@@ -958,6 +1032,15 @@ public class MediaType {
     }
 
     /**
+     * Returns the encoded media type value.
+     *
+     * @return media type value
+     */
+    public String value() {
+        return mediaType;
+    }
+
+    /**
      * Returns the high-level media type, such as "text", "image", "audio", "video", or "application".
      *
      * @return the primary type of this media type
@@ -973,6 +1056,19 @@ public class MediaType {
      */
     public String subtype() {
         return subtype;
+    }
+
+    /**
+     * Returns a parameter value by name.
+     *
+     * @param name parameter name
+     * @return parameter value or null
+     */
+    public String parameter(final String name) {
+        if (name == null || name.isBlank() || name.indexOf(Symbol.C_CR) >= 0 || name.indexOf(Symbol.C_LF) >= 0) {
+            throw new ValidateException("Media parameter name must be non-blank and single-line");
+        }
+        return parameters.get(name.toLowerCase(Locale.ROOT));
     }
 
     /**
@@ -997,6 +1093,21 @@ public class MediaType {
         } catch (IllegalArgumentException e) {
             return defaultValue;
         }
+    }
+
+    /**
+     * Returns a media type with the supplied charset parameter.
+     *
+     * @param charset charset
+     * @return media type with charset
+     */
+    public MediaType withCharset(final java.nio.charset.Charset charset) {
+        if (charset == null) {
+            throw new ValidateException("Charset must not be null");
+        }
+        final LinkedHashMap<String, String> copy = new LinkedHashMap<>(parameters);
+        copy.put(CHARSET_PARAMETER, charset.name());
+        return new MediaType(null, type, subtype, charset.name(), copy);
     }
 
     /**

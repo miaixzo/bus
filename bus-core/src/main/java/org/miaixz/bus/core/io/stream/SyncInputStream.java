@@ -21,7 +21,7 @@ package org.miaixz.bus.core.io.stream;
 
 import java.io.*;
 
-import org.miaixz.bus.core.io.StreamProgress;
+import org.miaixz.bus.core.io.TransferObserver;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -126,16 +126,15 @@ public class SyncInputStream extends FilterInputStream {
      * Copies the content of this input stream to the specified output stream. The input stream is closed after the copy
      * operation.
      *
-     * @param out            The {@link OutputStream} to copy the content to.
-     * @param streamProgress An optional {@link StreamProgress} listener to monitor the copy progress. Can be
-     *                       {@code null}.
+     * @param out              The {@link OutputStream} to copy the content to.
+     * @param transferObserver An optional transfer observer. Can be {@code null}.
      * @return The total number of bytes copied.
      * @throws InternalException If an I/O error occurs during copying, unless it's an ignorable EOF error.
      */
-    public long copyTo(final OutputStream out, final StreamProgress streamProgress) {
+    public long copyTo(final OutputStream out, final TransferObserver transferObserver) {
         long copyLength = -1;
         try {
-            copyLength = IoKit.copy(this.in, out, Normal._8192, this.length, streamProgress);
+            copyLength = IoKit.copy(this.in, out, Normal._8192, this.length, transferObserver);
         } catch (final InternalException e) {
             if (!(isIgnoreEOFError && isEOFException(e.getCause()))) {
                 throw e;
