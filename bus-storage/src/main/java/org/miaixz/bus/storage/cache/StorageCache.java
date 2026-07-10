@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.metric.MemoryCache;
+import org.miaixz.bus.cache.nimble.MemoryCache;
 
 /**
  * Default cache implementation for storage operations. This enum provides a singleton instance of a cache that uses

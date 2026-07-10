@@ -1351,19 +1351,19 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.AlwaysMatcher"
+      "type": "org.miaixz.bus.validate.nimble.AlwaysMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.AlwaysMatcher"
+      "type": "org.miaixz.bus.validate.nimble.AlwaysMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.AlwaysMatcher"
+      "type": "org.miaixz.bus.validate.nimble.AlwaysMatcher"
     },
     {
       "condition": {
@@ -1383,31 +1383,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.AlwaysMatcher"
+      "type": "org.miaixz.bus.validate.nimble.AlwaysMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.AlwaysMatcher"
+      "type": "org.miaixz.bus.validate.nimble.AlwaysMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.BlankMatcher"
+      "type": "org.miaixz.bus.validate.nimble.BlankMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.BlankMatcher"
+      "type": "org.miaixz.bus.validate.nimble.BlankMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.BlankMatcher"
+      "type": "org.miaixz.bus.validate.nimble.BlankMatcher"
     },
     {
       "condition": {
@@ -1434,31 +1434,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.BlankMatcher"
+      "type": "org.miaixz.bus.validate.nimble.BlankMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.BlankMatcher"
+      "type": "org.miaixz.bus.validate.nimble.BlankMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.ChineseMatcher"
+      "type": "org.miaixz.bus.validate.nimble.ChineseMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.ChineseMatcher"
+      "type": "org.miaixz.bus.validate.nimble.ChineseMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.ChineseMatcher"
+      "type": "org.miaixz.bus.validate.nimble.ChineseMatcher"
     },
     {
       "condition": {
@@ -1478,31 +1478,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.ChineseMatcher"
+      "type": "org.miaixz.bus.validate.nimble.ChineseMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.ChineseMatcher"
+      "type": "org.miaixz.bus.validate.nimble.ChineseMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.CitizenIdMatcher"
+      "type": "org.miaixz.bus.validate.nimble.CitizenIdMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.CitizenIdMatcher"
+      "type": "org.miaixz.bus.validate.nimble.CitizenIdMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.CitizenIdMatcher"
+      "type": "org.miaixz.bus.validate.nimble.CitizenIdMatcher"
     },
     {
       "condition": {
@@ -1522,31 +1522,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.CitizenIdMatcher"
+      "type": "org.miaixz.bus.validate.nimble.CitizenIdMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.CitizenIdMatcher"
+      "type": "org.miaixz.bus.validate.nimble.CitizenIdMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.CompareMatcher"
+      "type": "org.miaixz.bus.validate.nimble.CompareMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.CompareMatcher"
+      "type": "org.miaixz.bus.validate.nimble.CompareMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.CompareMatcher"
+      "type": "org.miaixz.bus.validate.nimble.CompareMatcher"
     },
     {
       "condition": {
@@ -1566,31 +1566,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.CompareMatcher"
+      "type": "org.miaixz.bus.validate.nimble.CompareMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.CompareMatcher"
+      "type": "org.miaixz.bus.validate.nimble.CompareMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.DateMatcher"
+      "type": "org.miaixz.bus.validate.nimble.DateMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.DateMatcher"
+      "type": "org.miaixz.bus.validate.nimble.DateMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.DateMatcher"
+      "type": "org.miaixz.bus.validate.nimble.DateMatcher"
     },
     {
       "condition": {
@@ -1610,31 +1610,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.DateMatcher"
+      "type": "org.miaixz.bus.validate.nimble.DateMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.DateMatcher"
+      "type": "org.miaixz.bus.validate.nimble.DateMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.EachMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EachMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.EachMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EachMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.EachMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EachMatcher"
     },
     {
       "condition": {
@@ -1662,31 +1662,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.EachMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EachMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.EachMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EachMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.EmailMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EmailMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.EmailMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EmailMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.EmailMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EmailMatcher"
     },
     {
       "condition": {
@@ -1706,31 +1706,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.EmailMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EmailMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.EmailMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EmailMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.EnglishMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EnglishMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.EnglishMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EnglishMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.EnglishMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EnglishMatcher"
     },
     {
       "condition": {
@@ -1750,31 +1750,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.EnglishMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EnglishMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.EnglishMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EnglishMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.EqualsMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EqualsMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.EqualsMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EqualsMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.EqualsMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EqualsMatcher"
     },
     {
       "condition": {
@@ -1794,31 +1794,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.EqualsMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EqualsMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.EqualsMatcher"
+      "type": "org.miaixz.bus.validate.nimble.EqualsMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.FalseMatcher"
+      "type": "org.miaixz.bus.validate.nimble.FalseMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.FalseMatcher"
+      "type": "org.miaixz.bus.validate.nimble.FalseMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.FalseMatcher"
+      "type": "org.miaixz.bus.validate.nimble.FalseMatcher"
     },
     {
       "condition": {
@@ -1838,31 +1838,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.FalseMatcher"
+      "type": "org.miaixz.bus.validate.nimble.FalseMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.FalseMatcher"
+      "type": "org.miaixz.bus.validate.nimble.FalseMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.InEnumMatcher"
+      "type": "org.miaixz.bus.validate.nimble.InEnumMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.InEnumMatcher"
+      "type": "org.miaixz.bus.validate.nimble.InEnumMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.InEnumMatcher"
+      "type": "org.miaixz.bus.validate.nimble.InEnumMatcher"
     },
     {
       "condition": {
@@ -1882,31 +1882,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.InEnumMatcher"
+      "type": "org.miaixz.bus.validate.nimble.InEnumMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.InEnumMatcher"
+      "type": "org.miaixz.bus.validate.nimble.InEnumMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.InMatcher"
+      "type": "org.miaixz.bus.validate.nimble.InMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.InMatcher"
+      "type": "org.miaixz.bus.validate.nimble.InMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.InMatcher"
+      "type": "org.miaixz.bus.validate.nimble.InMatcher"
     },
     {
       "condition": {
@@ -1926,31 +1926,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.InMatcher"
+      "type": "org.miaixz.bus.validate.nimble.InMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.InMatcher"
+      "type": "org.miaixz.bus.validate.nimble.InMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.IntRangeMatcher"
+      "type": "org.miaixz.bus.validate.nimble.IntRangeMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.IntRangeMatcher"
+      "type": "org.miaixz.bus.validate.nimble.IntRangeMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.IntRangeMatcher"
+      "type": "org.miaixz.bus.validate.nimble.IntRangeMatcher"
     },
     {
       "condition": {
@@ -1970,31 +1970,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.IntRangeMatcher"
+      "type": "org.miaixz.bus.validate.nimble.IntRangeMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.IntRangeMatcher"
+      "type": "org.miaixz.bus.validate.nimble.IntRangeMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.IPAddressMatcher"
+      "type": "org.miaixz.bus.validate.nimble.IPAddressMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.IPAddressMatcher"
+      "type": "org.miaixz.bus.validate.nimble.IPAddressMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.IPAddressMatcher"
+      "type": "org.miaixz.bus.validate.nimble.IPAddressMatcher"
     },
     {
       "condition": {
@@ -2014,31 +2014,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.IPAddressMatcher"
+      "type": "org.miaixz.bus.validate.nimble.IPAddressMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.IPAddressMatcher"
+      "type": "org.miaixz.bus.validate.nimble.IPAddressMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.LengthMatcher"
+      "type": "org.miaixz.bus.validate.nimble.LengthMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.LengthMatcher"
+      "type": "org.miaixz.bus.validate.nimble.LengthMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.LengthMatcher"
+      "type": "org.miaixz.bus.validate.nimble.LengthMatcher"
     },
     {
       "condition": {
@@ -2058,31 +2058,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.LengthMatcher"
+      "type": "org.miaixz.bus.validate.nimble.LengthMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.LengthMatcher"
+      "type": "org.miaixz.bus.validate.nimble.LengthMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.MobileMatcher"
+      "type": "org.miaixz.bus.validate.nimble.MobileMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.MobileMatcher"
+      "type": "org.miaixz.bus.validate.nimble.MobileMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.MobileMatcher"
+      "type": "org.miaixz.bus.validate.nimble.MobileMatcher"
     },
     {
       "condition": {
@@ -2102,31 +2102,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.MobileMatcher"
+      "type": "org.miaixz.bus.validate.nimble.MobileMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.MobileMatcher"
+      "type": "org.miaixz.bus.validate.nimble.MobileMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.MultipleMatcher"
+      "type": "org.miaixz.bus.validate.nimble.MultipleMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.MultipleMatcher"
+      "type": "org.miaixz.bus.validate.nimble.MultipleMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.MultipleMatcher"
+      "type": "org.miaixz.bus.validate.nimble.MultipleMatcher"
     },
     {
       "condition": {
@@ -2146,31 +2146,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.MultipleMatcher"
+      "type": "org.miaixz.bus.validate.nimble.MultipleMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.MultipleMatcher"
+      "type": "org.miaixz.bus.validate.nimble.MultipleMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.NotBlankMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotBlankMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.NotBlankMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotBlankMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.NotBlankMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotBlankMatcher"
     },
     {
       "condition": {
@@ -2197,31 +2197,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.NotBlankMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotBlankMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.NotBlankMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotBlankMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.NotEmptyMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotEmptyMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.NotEmptyMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotEmptyMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.NotEmptyMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotEmptyMatcher"
     },
     {
       "condition": {
@@ -2241,31 +2241,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.NotEmptyMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotEmptyMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.NotEmptyMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotEmptyMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.NotInMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotInMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.NotInMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotInMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.NotInMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotInMatcher"
     },
     {
       "condition": {
@@ -2285,31 +2285,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.NotInMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotInMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.NotInMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotInMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.NotNullMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotNullMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.NotNullMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotNullMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.NotNullMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotNullMatcher"
     },
     {
       "condition": {
@@ -2329,31 +2329,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.NotNullMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotNullMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.NotNullMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NotNullMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.NullMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NullMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.NullMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NullMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.NullMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NullMatcher"
     },
     {
       "condition": {
@@ -2380,31 +2380,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.NullMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NullMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.NullMatcher"
+      "type": "org.miaixz.bus.validate.nimble.NullMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.PhoneMatcher"
+      "type": "org.miaixz.bus.validate.nimble.PhoneMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.PhoneMatcher"
+      "type": "org.miaixz.bus.validate.nimble.PhoneMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.PhoneMatcher"
+      "type": "org.miaixz.bus.validate.nimble.PhoneMatcher"
     },
     {
       "condition": {
@@ -2424,31 +2424,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.PhoneMatcher"
+      "type": "org.miaixz.bus.validate.nimble.PhoneMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.PhoneMatcher"
+      "type": "org.miaixz.bus.validate.nimble.PhoneMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.ReflectMatcher"
+      "type": "org.miaixz.bus.validate.nimble.ReflectMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.ReflectMatcher"
+      "type": "org.miaixz.bus.validate.nimble.ReflectMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.ReflectMatcher"
+      "type": "org.miaixz.bus.validate.nimble.ReflectMatcher"
     },
     {
       "condition": {
@@ -2468,31 +2468,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.ReflectMatcher"
+      "type": "org.miaixz.bus.validate.nimble.ReflectMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.ReflectMatcher"
+      "type": "org.miaixz.bus.validate.nimble.ReflectMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.RegexMatcher"
+      "type": "org.miaixz.bus.validate.nimble.RegexMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.RegexMatcher"
+      "type": "org.miaixz.bus.validate.nimble.RegexMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.RegexMatcher"
+      "type": "org.miaixz.bus.validate.nimble.RegexMatcher"
     },
     {
       "condition": {
@@ -2512,31 +2512,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.RegexMatcher"
+      "type": "org.miaixz.bus.validate.nimble.RegexMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.RegexMatcher"
+      "type": "org.miaixz.bus.validate.nimble.RegexMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.SizeMatcher"
+      "type": "org.miaixz.bus.validate.nimble.SizeMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.SizeMatcher"
+      "type": "org.miaixz.bus.validate.nimble.SizeMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.SizeMatcher"
+      "type": "org.miaixz.bus.validate.nimble.SizeMatcher"
     },
     {
       "condition": {
@@ -2556,31 +2556,31 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.SizeMatcher"
+      "type": "org.miaixz.bus.validate.nimble.SizeMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.SizeMatcher"
+      "type": "org.miaixz.bus.validate.nimble.SizeMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
       },
-      "type": "org.miaixz.bus.validate.metric.TrueMatcher"
+      "type": "org.miaixz.bus.validate.nimble.TrueMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.TrueMatcher"
+      "type": "org.miaixz.bus.validate.nimble.TrueMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.validate.metric.TrueMatcher"
+      "type": "org.miaixz.bus.validate.nimble.TrueMatcher"
     },
     {
       "condition": {
@@ -2600,13 +2600,13 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.validate.metric.TrueMatcher"
+      "type": "org.miaixz.bus.validate.nimble.TrueMatcher"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.validate.metric.TrueMatcher"
+      "type": "org.miaixz.bus.validate.nimble.TrueMatcher"
     },
     {
       "condition": {

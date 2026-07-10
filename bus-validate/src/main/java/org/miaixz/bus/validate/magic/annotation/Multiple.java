@@ -24,7 +24,7 @@ import java.lang.annotation.*;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.magic.Matcher;
-import org.miaixz.bus.validate.metric.MultipleMatcher;
+import org.miaixz.bus.validate.nimble.MultipleMatcher;
 
 /**
  * A multiple validator that allows for the configuration of several validators to be applied to a single field.

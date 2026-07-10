@@ -24,7 +24,7 @@ import java.lang.annotation.*;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.magic.Matcher;
-import org.miaixz.bus.validate.metric.EachMatcher;
+import org.miaixz.bus.validate.nimble.EachMatcher;
 
 /**
  * Validates each element of an array, collection, or map.

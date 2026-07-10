@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.InEnumMatcher;
+import org.miaixz.bus.validate.nimble.InEnumMatcher;
 
 /**
  * Validates that the annotated object is a member of the specified enum. By default, the object is matched against the

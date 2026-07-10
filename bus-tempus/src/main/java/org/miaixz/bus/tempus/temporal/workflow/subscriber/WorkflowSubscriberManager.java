@@ -450,14 +450,12 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
     Worker createWorker(WorkerFactory workerFactory, String taskQueue, WorkerOptions workerOptions) {
         synchronized (workerFactory) {
             try {
-                @SuppressWarnings("unchecked")
                 Map<String, Worker> workers = (Map<String, Worker>) field(workerFactory, "workers");
                 Worker existingWorker = workers.get(taskQueue);
                 if (existingWorker != null) {
                     return existingWorker;
                 }
                 WorkflowClient workflowClient = (WorkflowClient) field(workerFactory, "workflowClient");
-                @SuppressWarnings("unchecked")
                 List<WorkerPlugin> plugins = (List<WorkerPlugin>) field(workerFactory, "plugins");
                 WorkerOptions.Builder optionsBuilder = workerOptions == null ? WorkerOptions.newBuilder()
                         : WorkerOptions.newBuilder(workerOptions);

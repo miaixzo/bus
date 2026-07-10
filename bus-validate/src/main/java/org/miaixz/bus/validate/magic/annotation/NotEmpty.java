@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.NotEmptyMatcher;
+import org.miaixz.bus.validate.nimble.NotEmptyMatcher;
 
 /**
  * Validates that the annotated string, collection, map, or array is not null and not empty.

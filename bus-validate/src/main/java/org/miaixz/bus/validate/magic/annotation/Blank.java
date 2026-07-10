@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.BlankMatcher;
+import org.miaixz.bus.validate.nimble.BlankMatcher;
 
 /**
  * Validates that the annotated string is blank or null. A string is blank if it is null, empty, or contains only

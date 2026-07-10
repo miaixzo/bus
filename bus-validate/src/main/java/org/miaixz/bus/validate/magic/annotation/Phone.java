@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.PhoneMatcher;
+import org.miaixz.bus.validate.nimble.PhoneMatcher;
 
 /**
  * Validates that the annotated string is a valid landline phone number.

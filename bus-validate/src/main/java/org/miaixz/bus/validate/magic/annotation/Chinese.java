@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.metric.ChineseMatcher;
+import org.miaixz.bus.validate.nimble.ChineseMatcher;
 
 /**
  * Validates that the annotated string consists of Chinese characters.

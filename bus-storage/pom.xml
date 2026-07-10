@@ -94,11 +94,11 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-gitlab</artifactId>
+            <artifactId>bus-fabric</artifactId>
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-http</artifactId>
+            <artifactId>bus-gitlab</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
