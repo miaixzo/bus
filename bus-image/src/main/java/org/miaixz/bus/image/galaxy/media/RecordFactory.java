@@ -27,7 +27,6 @@ import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
@@ -37,6 +36,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ContentHandlerAdapter;
+import org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder;
 
 /**
  * Represents the RecordFactory type.
@@ -163,8 +163,7 @@ public class RecordFactory {
      */
     private Attributes parseXML(String uri) throws ParserConfigurationException, SAXException, IOException {
         Attributes attrs = new Attributes();
-        SAXParserFactory f = SAXParserFactory.newInstance();
-        SAXParser parser = f.newSAXParser();
+        SAXParser parser = SAXParserFactoryHolder.factory.newSAXParser();
         parser.parse(uri, new ContentHandlerAdapter(attrs));
         return attrs;
     }

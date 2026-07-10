@@ -24,7 +24,6 @@ import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -37,6 +36,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Code;
 import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.image.galaxy.data.VR;
+import org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder;
 
 /**
  * Represents a DICOM Information Object Definition (IOD), which specifies the modules and attributes for a particular
@@ -183,8 +183,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
      */
     public void parse(String uri) throws IOException {
         try {
-            SAXParserFactory f = SAXParserFactory.newInstance();
-            SAXParser parser = f.newSAXParser();
+            SAXParser parser = SAXParserFactoryHolder.factory.newSAXParser();
             parser.parse(uri, new SAXHandler(this));
         } catch (SAXException e) {
             throw new IOException("Failed to parse " + uri, e);

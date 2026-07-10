@@ -1841,6 +1841,25 @@ public class Builder {
     }
 
     /**
+     * Gets a value from a system property or environment variable.
+     *
+     * @param property the system property.
+     * @param env      the environment variable.
+     * @param def      the default value.
+     * @return the resolved value.
+     */
+    public static String getPropertyOrEnv(String property, String env, String def) {
+        String value = System.getProperty(property);
+        if (value == null) {
+            value = System.getenv(env);
+            if (value == null) {
+                value = def;
+            }
+        }
+        return value;
+    }
+
+    /**
      * Determines the appropriate {@link MediaType} for a given Transfer Syntax UID.
      *
      * @param ts the Transfer Syntax UID.

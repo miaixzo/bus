@@ -1450,6 +1450,9 @@ public class Builder {
      * @return The 16-bit MD5 hexadecimal string.
      */
     public static String md5HexTo16(final String md5Hex) {
+        if (md5Hex.length() < 24) {
+            throw new IllegalArgumentException("md5Hex length must be at least 24");
+        }
         return md5Hex.substring(8, 24);
     }
 
