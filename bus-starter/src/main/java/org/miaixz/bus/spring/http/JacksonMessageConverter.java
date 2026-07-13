@@ -204,39 +204,37 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
                 tools.jackson.core.JsonGenerator jgen,
                 SerializationContext provider,
                 PropertyWriter writer) throws Exception {
-            // Robustly find the underlying Field object for annotation checks.
-            Field field = null;
-            Object value = null;
-
-            if (writer instanceof BeanPropertyWriter beanWriter) {
-                AnnotatedMember annotatedMember = beanWriter.getMember();
-                if (annotatedMember != null) {
-                    Member member = annotatedMember.getMember();
-                    if (member instanceof Field memberField) {
-                        field = memberField;
-                    } else if (member != null) {
-                        try {
-                            field = member.getDeclaringClass().getDeclaredField(beanWriter.getName());
-                        } catch (NoSuchFieldException e) {
-                            Logger.debug(
-                                    false,
-                                    "Starter",
-                                    "Jackson could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
-                                    beanWriter.getName(),
-                                    pojo.getClass().getName());
-                        }
-                    }
-                }
-                value = beanWriter.get(pojo);
+            if (!(writer instanceof BeanPropertyWriter beanWriter)) {
+                writer.serializeAsProperty(pojo, jgen, provider);
+                return;
             }
 
+            Field field = null;
+            AnnotatedMember annotatedMember = beanWriter.getMember();
+            if (annotatedMember != null) {
+                Member member = annotatedMember.getMember();
+                if (member instanceof Field memberField) {
+                    field = memberField;
+                } else if (member != null) {
+                    try {
+                        field = member.getDeclaringClass().getDeclaredField(beanWriter.getName());
+                    } catch (NoSuchFieldException e) {
+                        Logger.debug(
+                                false,
+                                "Starter",
+                                "Jackson could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
+                                beanWriter.getName(),
+                                pojo.getClass().getName());
+                    }
+                }
+            }
+
+            Object value = beanWriter.get(pojo);
             if (!shouldSkipField(field, value)) {
                 writer.serializeAsProperty(pojo, jgen, provider);
-            } else {
-                if (!jgen.canOmitProperties()) {
-                    jgen.writeName(writer.getName());
-                    jgen.writeNull();
-                }
+            } else if (!jgen.canOmitProperties()) {
+                jgen.writeName(writer.getName());
+                jgen.writeNull();
             }
         }
 

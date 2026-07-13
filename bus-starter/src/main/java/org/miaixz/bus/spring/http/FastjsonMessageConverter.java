@@ -22,6 +22,7 @@ package org.miaixz.bus.spring.http;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpInputMessage;
@@ -245,6 +246,9 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                 Logger.debug(false, "Starter", "Result {}", object != null ? object.getClass().getName() : "null");
 
                 PropertyFilter filter = (source, name, value) -> {
+                    if (source == null || source instanceof Map<?, ?>) {
+                        return true;
+                    }
                     try {
                         Field field = FieldKit.getField(source.getClass(), name);
                         // Fastjson expects true to include; shouldSkipField returns true to skip.
@@ -257,7 +261,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                                 name,
                                 e.getClass().getSimpleName());
                         // Keep serialization permissive when reflection lookup fails.
-                        return !shouldSkipField(null, null);
+                        return true;
                     }
                 };
 
