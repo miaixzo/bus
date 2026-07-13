@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
 import org.miaixz.bus.vortex.magic.ErrorCode;
@@ -103,11 +102,6 @@ public class PrimaryFilter extends AbstractFilter {
                 "Request parameters: clientIp=N/A, parameters={}",
                 exchange.getRequest().getQueryParams().toSingleValueMap());
 
-        if (!Args.isKnownRequest(path)) {
-            Logger.warn(false, "Vortex", "Unknown path blocked: clientIp=N/A, path={}", path);
-            throw new ValidateException(ErrorCode._BLOCKED);
-        }
-
         if (isPathTraversalAttempt(path)) {
             Logger.warn(false, "Vortex", "Path traversal attempt detected: clientIp=N/A, path={}", path);
             throw new ValidateException(ErrorCode._LIMITER);
@@ -115,6 +109,10 @@ public class PrimaryFilter extends AbstractFilter {
 
         return Mono.defer(() -> {
             List<Strategy> strategies = factory.getStrategiesFor(exchange);
+            if (strategies == null || strategies.isEmpty()) {
+                Logger.warn(false, "Vortex", "Unknown path blocked: clientIp=N/A, path={}", path);
+                throw new ValidateException(ErrorCode._BLOCKED);
+            }
             Context context = new Context();
             context.setX_request_id(exchange.getRequest().getId());
             context.setTimestamp(DateKit.current());

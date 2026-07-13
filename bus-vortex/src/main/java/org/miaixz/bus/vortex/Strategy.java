@@ -41,6 +41,25 @@ import reactor.core.publisher.Mono;
 public interface Strategy {
 
     /**
+     * Returns the optional protocol this strategy contributes to dynamic route chains.
+     *
+     * @return protocol number, or {@code null} for fixed legacy chains
+     */
+    default Integer protocol() {
+        return null;
+    }
+
+    /**
+     * Returns whether this strategy's dynamic protocol chain supports the current request.
+     *
+     * @param exchange The current server exchange.
+     * @return {@code true} when this strategy can handle the request
+     */
+    default boolean supports(ServerWebExchange exchange) {
+        return false;
+    }
+
+    /**
      * Applies the strategy's logic to the given request and delegates to the next strategy in the chain.
      * <p>
      * An implementation of this method should perform its specific task. To access the request-specific state, it must

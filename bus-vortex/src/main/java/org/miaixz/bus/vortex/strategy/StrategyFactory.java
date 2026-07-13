@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,24 +57,19 @@ import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
 public class StrategyFactory {
 
     /**
-     * Route key used for the fallback REST-like chain.
-     */
-    private static final String DEFAULT_ROUTE = "fallback";
-
-    /**
      * Route specifications in selection order.
      */
     private final List<ChainSpec> chainSpecs;
 
     /**
-     * The default ordered chain used when no specialized route matches.
-     */
-    private final List<Strategy> defaultChain;
-
-    /**
      * Pre-built ordered strategy chains keyed by route name.
      */
     private final Map<String, List<Strategy>> chains;
+
+    /**
+     * Pre-built dynamic strategy chains keyed by protocol.
+     */
+    private final Map<Integer, List<Strategy>> dynamicChains;
 
     /**
      * Constructs a new {@code StrategyFactory} and pre-calculates the strategy chains.
@@ -94,15 +90,6 @@ public class StrategyFactory {
                 new ChainSpec(Args.WS_PATH_PREFIX, Args::isWsRequest, this::isWsStrategy),
                 new ChainSpec(Args.LLM_PATH_PREFIX, Args::isLlmRequest, this::isLlmStrategy));
 
-        this.defaultChain = buildChain(chain, this::isRestStrategy);
-        Logger.info(
-                false,
-                "Vortex",
-                "Strategy chain built: route={}, strategyCount={}, strategies={}",
-                DEFAULT_ROUTE,
-                this.defaultChain.size(),
-                getStrategyNames(this.defaultChain));
-
         Map<String, List<Strategy>> builtChains = new LinkedHashMap<>();
         for (ChainSpec spec : this.chainSpecs) {
             List<Strategy> routeChain = buildChain(chain, spec.strategyFilter());
@@ -116,12 +103,21 @@ public class StrategyFactory {
                     getStrategyNames(routeChain));
         }
         this.chains = Map.copyOf(builtChains);
+        this.dynamicChains = buildDynamicChains(chain);
 
-        StringBuilder routeSummary = new StringBuilder(DEFAULT_ROUTE).append(Symbol.EQUAL)
-                .append(this.defaultChain.size());
+        StringBuilder routeSummary = new StringBuilder();
         for (ChainSpec spec : this.chainSpecs) {
-            routeSummary.append(Symbol.COMMA).append(Symbol.SPACE).append(spec.route()).append(Symbol.EQUAL)
+            if (routeSummary.length() > 0) {
+                routeSummary.append(Symbol.COMMA).append(Symbol.SPACE);
+            }
+            routeSummary.append(spec.route()).append(Symbol.EQUAL)
                     .append(this.chains.get(spec.route()).size());
+        }
+        for (Map.Entry<Integer, List<Strategy>> entry : this.dynamicChains.entrySet()) {
+            if (routeSummary.length() > 0) {
+                routeSummary.append(Symbol.COMMA).append(Symbol.SPACE);
+            }
+            routeSummary.append("protocol-").append(entry.getKey()).append(Symbol.EQUAL).append(entry.getValue().size());
         }
         Logger.info(false, "Vortex", "Strategy chain initialization completed: routes={}", routeSummary);
     }
@@ -158,14 +154,13 @@ public class StrategyFactory {
             }
         }
 
-        Logger.debug(
-                false,
-                "Vortex",
-                "Path matched strategy chain: clientIp={}, route={}, strategyCount={}",
-                ipTag,
-                DEFAULT_ROUTE,
-                this.defaultChain.size());
-        return this.defaultChain;
+        List<Strategy> routeChain = dynamicChain(exchange);
+        if (!routeChain.isEmpty()) {
+            return routeChain;
+        }
+
+        Logger.debug(false, "Vortex", "No strategy chain matched: clientIp={}, path={}", ipTag, path);
+        return List.of();
     }
 
     /**
@@ -266,6 +261,80 @@ public class StrategyFactory {
      */
     private List<Strategy> buildChain(List<Strategy> strategies, Predicate<Strategy> filter) {
         return strategies.stream().filter(filter).collect(Collectors.toUnmodifiableList());
+    }
+
+    /**
+     * Builds dynamic chains from strategies that declare one protocol.
+     *
+     * @param strategies sorted strategy list
+     * @return immutable dynamic chains keyed by protocol
+     */
+    private Map<Integer, List<Strategy>> buildDynamicChains(List<Strategy> strategies) {
+        Map<Integer, List<Strategy>> builtChains = new LinkedHashMap<>();
+        for (Strategy strategy : strategies) {
+            Integer protocol = strategy.protocol();
+            if (protocol == null) {
+                continue;
+            }
+            builtChains.computeIfAbsent(protocol, key -> new ArrayList<>()).add(strategy);
+        }
+
+        List<Strategy> shared = strategies.stream().filter(this::isDynamicSharedStrategy).toList();
+        Map<Integer, List<Strategy>> immutableChains = new LinkedHashMap<>();
+        for (Map.Entry<Integer, List<Strategy>> entry : builtChains.entrySet()) {
+            List<Strategy> routeChain = new ArrayList<>(entry.getValue());
+            for (Strategy strategy : shared) {
+                if (!routeChain.contains(strategy)) {
+                    routeChain.add(strategy);
+                }
+            }
+            immutableChains.put(entry.getKey(), List.copyOf(routeChain));
+            Logger.info(
+                    false,
+                    "Vortex",
+                    "Strategy chain built: route=protocol-{}, strategyCount={}, strategies={}",
+                    entry.getKey(),
+                    routeChain.size(),
+                    getStrategyNames(routeChain));
+        }
+        return Map.copyOf(immutableChains);
+    }
+
+    /**
+     * Returns whether a strategy is shared by dynamic protocol chains.
+     *
+     * @param strategy candidate strategy
+     * @return {@code true} when the strategy can be appended to dynamic chains
+     */
+    private boolean isDynamicSharedStrategy(Strategy strategy) {
+        return strategy instanceof LimiterStrategy || strategy instanceof ResponseStrategy;
+    }
+
+    /**
+     * Resolves one dynamic strategy chain for the current request.
+     *
+     * @param exchange current server exchange
+     * @return matched chain, or an empty list
+     */
+    private List<Strategy> dynamicChain(ServerWebExchange exchange) {
+        final String ipTag = "N/A";
+        for (Map.Entry<Integer, List<Strategy>> entry : this.dynamicChains.entrySet()) {
+            List<Strategy> routeChain = entry.getValue();
+            boolean matched = routeChain.stream().filter(strategy -> !isDynamicSharedStrategy(strategy))
+                    .anyMatch(strategy -> strategy.supports(exchange));
+            if (!matched) {
+                continue;
+            }
+            Logger.debug(
+                    false,
+                    "Vortex",
+                    "Path matched strategy chain: clientIp={}, route=protocol-{}, strategyCount={}",
+                    ipTag,
+                    entry.getKey(),
+                    routeChain.size());
+            return routeChain;
+        }
+        return List.of();
     }
 
     /**

@@ -22,6 +22,7 @@ package org.miaixz.bus.vortex.provider;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.vortex.Provider;
@@ -67,7 +68,9 @@ public class XmlProvider implements Provider<Object, String> {
         return Mono.fromCallable(() -> {
             Map<String, Object> map = JsonKit.toMap(input);
             String buffer = XmlKit.mapToXmlString(map, "response");
-            return buffer.replaceFirst(" standalone=\"[^\"]*\"", Normal.EMPTY);
+            String standalone = Symbol.SPACE + "standalone" + Symbol.EQUAL + Symbol.DOUBLE_QUOTES + "[^"
+                    + Symbol.DOUBLE_QUOTES + "]*" + Symbol.DOUBLE_QUOTES;
+            return buffer.replaceFirst(standalone, Normal.EMPTY);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 

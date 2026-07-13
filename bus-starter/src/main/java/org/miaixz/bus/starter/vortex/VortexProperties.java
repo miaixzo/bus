@@ -125,6 +125,11 @@ public class VortexProperties {
          */
         private int refreshStartupDelaySeconds = 10;
 
+        /**
+         * Registry method used to resolve public slug forwarding assets.
+         */
+        private String slugMethod = "vortex.slug.get";
+
     }
 
 }
