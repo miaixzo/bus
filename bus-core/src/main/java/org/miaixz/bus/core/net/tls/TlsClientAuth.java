@@ -17,7 +17,11 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.network.tls;
+package org.miaixz.bus.core.net.tls;
+
+import javax.net.ssl.SSLEngine;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * Client certificate authentication mode for TLS engines.
@@ -40,6 +44,32 @@ public enum TlsClientAuth {
     /**
      * Require a client certificate.
      */
-    REQUIRE
+    REQUIRE;
+
+    /**
+     * Returns whether this mode requests or requires a client certificate.
+     *
+     * @return true when client authentication is enabled
+     */
+    public boolean enabled() {
+        return this != NONE;
+    }
+
+    /**
+     * Applies this client authentication mode to an SSL engine.
+     *
+     * @param engine SSL engine
+     */
+    public void apply(final SSLEngine engine) {
+        final SSLEngine checkedEngine = Assert.notNull(engine, "SSL engine must not be null");
+        switch (this) {
+            case REQUIRE -> checkedEngine.setNeedClientAuth(true);
+            case OPTIONAL -> checkedEngine.setWantClientAuth(true);
+            case NONE -> {
+                checkedEngine.setNeedClientAuth(false);
+                checkedEngine.setWantClientAuth(false);
+            }
+        }
+    }
 
 }

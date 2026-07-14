@@ -94,6 +94,50 @@ public final class NioBuffer implements AutoCloseable {
     }
 
     /**
+     * Returns the current position of the underlying buffer.
+     *
+     * @return the current position
+     * @throws IllegalStateException if this lease is already closed
+     */
+    public int position() {
+        assertOpen();
+        return buffer.position();
+    }
+
+    /**
+     * Returns the current limit of the underlying buffer.
+     *
+     * @return the current limit
+     * @throws IllegalStateException if this lease is already closed
+     */
+    public int limit() {
+        assertOpen();
+        return buffer.limit();
+    }
+
+    /**
+     * Returns the number of bytes between the current position and limit.
+     *
+     * @return the number of remaining bytes
+     * @throws IllegalStateException if this lease is already closed
+     */
+    public int remaining() {
+        assertOpen();
+        return buffer.remaining();
+    }
+
+    /**
+     * Returns whether bytes remain between the current position and limit.
+     *
+     * @return {@code true} if bytes remain
+     * @throws IllegalStateException if this lease is already closed
+     */
+    public boolean hasRemaining() {
+        assertOpen();
+        return buffer.hasRemaining();
+    }
+
+    /**
      * Clears the underlying buffer.
      *
      * @return this lease
@@ -115,6 +159,80 @@ public final class NioBuffer implements AutoCloseable {
         assertOpen();
         buffer.flip();
         return this;
+    }
+
+    /**
+     * Reads bytes from {@code source} into this NIO buffer.
+     *
+     * @param source the core buffer to drain
+     * @return the number of bytes read, or {@code -1} if {@code source} is empty
+     * @throws IllegalArgumentException if {@code source} is null
+     * @throws IllegalStateException    if this lease is already closed
+     */
+    public int readFrom(final Buffer source) {
+        return readFrom(source, buffer.remaining());
+    }
+
+    /**
+     * Reads up to {@code maxBytes} from {@code source} into this NIO buffer.
+     *
+     * @param source   the core buffer to drain
+     * @param maxBytes the maximum number of bytes to read
+     * @return the number of bytes read, or {@code -1} if {@code source} is empty
+     * @throws IllegalArgumentException if {@code source} is null or {@code maxBytes} is negative
+     * @throws IllegalStateException    if this lease is already closed
+     */
+    public int readFrom(final Buffer source, final int maxBytes) {
+        assertOpen();
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
+        return source.readTo(buffer, Math.min(maxBytes, buffer.remaining()));
+    }
+
+    /**
+     * Writes all remaining bytes from this NIO buffer to {@code target}.
+     *
+     * @param target the destination core buffer
+     * @return the number of bytes written
+     * @throws IllegalArgumentException if {@code target} is null
+     * @throws IllegalStateException    if this lease is already closed
+     */
+    public int writeTo(final Buffer target) {
+        return writeTo(target, buffer.remaining());
+    }
+
+    /**
+     * Writes up to {@code maxBytes} from this NIO buffer to {@code target}.
+     *
+     * @param target   the destination core buffer
+     * @param maxBytes the maximum number of bytes to write
+     * @return the number of bytes written
+     * @throws IllegalArgumentException if {@code target} is null or {@code maxBytes} is negative
+     * @throws IllegalStateException    if this lease is already closed
+     */
+    public int writeTo(final Buffer target, final int maxBytes) {
+        assertOpen();
+        if (target == null) {
+            throw new IllegalArgumentException("target == null");
+        }
+        if (maxBytes < 0) {
+            throw new IllegalArgumentException("maxBytes < 0: " + maxBytes);
+        }
+        final int byteCount = Math.min(maxBytes, buffer.remaining());
+        if (byteCount == 0) {
+            return 0;
+        }
+        final int originalLimit = buffer.limit();
+        buffer.limit(buffer.position() + byteCount);
+        try {
+            target.write(buffer);
+        } catch (java.io.IOException e) {
+            throw new IllegalStateException(e);
+        } finally {
+            buffer.limit(originalLimit);
+        }
+        return byteCount;
     }
 
     /**

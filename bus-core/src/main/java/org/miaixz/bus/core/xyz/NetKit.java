@@ -37,6 +37,7 @@ import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.NonAuthenticator;
 import org.miaixz.bus.core.net.ip.IPv4;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -516,6 +517,45 @@ public class NetKit {
      */
     public static String idnToASCII(final String unicode) {
         return IDN.toASCII(unicode);
+    }
+
+    /**
+     * Normalizes a host name or IP literal for DNS and connection routing.
+     *
+     * @param host The host name or IP literal.
+     * @return The normalized host.
+     */
+    public static String normalizeHost(final String host) {
+        return normalizeHost(host, "Host");
+    }
+
+    /**
+     * Normalizes a host name or IP literal for DNS and connection routing.
+     *
+     * @param host  The host name or IP literal.
+     * @param label The validation label used in exception messages.
+     * @return The normalized host.
+     */
+    public static String normalizeHost(final String host, final String label) {
+        final String name = StringKit.isBlank(label) ? "Host" : label;
+        if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException(name + " must be non-blank and single-line");
+        }
+        String normalized = host.trim().toLowerCase(Locale.ROOT);
+        while (normalized.endsWith(Symbol.DOT)) {
+            normalized = normalized.substring(0, normalized.length() - Normal._1);
+        }
+        if (normalized.isBlank()) {
+            throw new ValidateException(name + " must be non-blank");
+        }
+        if (normalized.indexOf(Symbol.C_COLON) >= Normal._0) {
+            return normalized;
+        }
+        try {
+            return IDN.toASCII(normalized, IDN.USE_STD3_ASCII_RULES).toLowerCase(Locale.ROOT);
+        } catch (final IllegalArgumentException e) {
+            throw new ValidateException(name + " must be a valid domain", e);
+        }
     }
 
     /**

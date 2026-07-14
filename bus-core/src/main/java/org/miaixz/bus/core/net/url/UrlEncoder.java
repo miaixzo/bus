@@ -20,6 +20,8 @@
 package org.miaixz.bus.core.net.url;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CharKit;
 
@@ -74,6 +76,47 @@ public class UrlEncoder {
     }
 
     /**
+     * Encodes a single URL component with only RFC 3986 unreserved characters left unescaped.
+     *
+     * @param value component value
+     * @return encoded component
+     */
+    public static String encodeComponent(final String value) {
+        return encodeComponent(value, DEFAULT_CHARSET);
+    }
+
+    /**
+     * Encodes a single URL component with only RFC 3986 unreserved characters left unescaped.
+     *
+     * @param value   component value
+     * @param charset charset used for non-ASCII characters; if null, the original value is returned
+     * @return encoded component
+     */
+    public static String encodeComponent(final String value, final java.nio.charset.Charset charset) {
+        if (value == null || charset == null) {
+            return value;
+        }
+        StringBuilder builder = null;
+        for (int i = 0; i < value.length(); i++) {
+            final char current = value.charAt(i);
+            if (isUnreserved(current)) {
+                if (builder != null) {
+                    builder.append(current);
+                }
+            } else if (current < 0x80) {
+                if (builder == null) {
+                    builder = new StringBuilder(value.length() + 8);
+                    builder.append(value, 0, i);
+                }
+                appendPercentEncoded(builder, current);
+            } else {
+                return RFC3986.UNRESERVED.encode(value, charset);
+            }
+        }
+        return builder == null ? value : builder.toString();
+    }
+
+    /**
      * Encodes a URL for a query string using the default UTF-8 charset. This method is intended for automatically
      * encoding the request body in POST requests, and it escapes most special characters.
      *
@@ -120,6 +163,29 @@ public class UrlEncoder {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * Returns whether a character can remain unescaped in a URL component.
+     *
+     * @param value character
+     * @return true when the character is RFC 3986 unreserved
+     */
+    private static boolean isUnreserved(final char value) {
+        return value >= Symbol.C_ZERO && value <= Symbol.C_NINE || value >= 'A' && value <= 'Z'
+                || value >= 'a' && value <= 'z' || value == Symbol.C_MINUS || value == Symbol.C_DOT
+                || value == Symbol.C_UNDERLINE || value == Symbol.C_TILDE;
+    }
+
+    /**
+     * Appends one byte value as an uppercase percent escape.
+     *
+     * @param builder target builder
+     * @param value   byte value
+     */
+    private static void appendPercentEncoded(final StringBuilder builder, final int value) {
+        builder.append(Symbol.C_PERCENT).append(Normal.DIGITS_16_UPPER[value >> 4])
+                .append(Normal.DIGITS_16_UPPER[value & 0xf]);
     }
 
 }

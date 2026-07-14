@@ -25,6 +25,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * HTTP protocol related constants including HTTP methods, status codes, header fields, and HTTP/2 settings parameters.
  * <p>
@@ -335,39 +337,39 @@ public class HTTP {
     /**
      * HTTP/2 SETTINGS frame: Header compression table size in bytes. Default: 4096 bytes. RFC 7540, Section 6.5.2
      */
-    public static final int HEADER_TABLE_SIZE = 1;
+    public static final int HEADER_TABLE_SIZE = Normal._1;
 
     /**
      * HTTP/2 SETTINGS frame: Enable PUSH_PROMISE frames. 0 = disable push, 1 = enable push. RFC 7540, Section 6.5.2
      */
-    public static final int ENABLE_PUSH = 2;
+    public static final int ENABLE_PUSH = Normal._2;
 
     /**
      * HTTP/2 SETTINGS frame: Maximum number of concurrent streams. Default: unlimited (2^31-1). RFC 7540, Section 6.5.2
      */
-    public static final int MAX_CONCURRENT_STREAMS = 4;
+    public static final int MAX_CONCURRENT_STREAMS = Normal._3;
+
+    /**
+     * HTTP/2 SETTINGS frame: Initial window size for stream flow control. Default: 65535 bytes. RFC 7540, Section 6.5.2
+     */
+    public static final int INITIAL_WINDOW_SIZE = Normal._4;
 
     /**
      * HTTP/2 SETTINGS frame: Largest frame payload sender accepts (16KB to 16MB). Default: 16KB (16384). RFC 7540,
      * Section 6.5.2
      */
-    public static final int MAX_FRAME_SIZE = 5;
+    public static final int MAX_FRAME_SIZE = Normal._5;
 
     /**
      * HTTP/2 SETTINGS frame: Maximum header list size sender accepts. Default: unlimited (2^31-1). RFC 7540, Section
      * 6.5.2
      */
-    public static final int MAX_HEADER_LIST_SIZE = 6;
-
-    /**
-     * HTTP/2 SETTINGS frame: Initial window size for stream flow control. Default: 65535 bytes. RFC 7540, Section 6.5.2
-     */
-    public static final int INITIAL_WINDOW_SIZE = 7;
+    public static final int MAX_HEADER_LIST_SIZE = Normal._6;
 
     /**
      * HTTP/2 default initial window size for all streams: 64 KiB (65535 bytes). RFC 7540, Section 6.9.2
      */
-    public static final int DEFAULT_INITIAL_WINDOW_SIZE = 65535;
+    public static final int DEFAULT_INITIAL_WINDOW_SIZE = Normal._65535;
 
     /**
      * HTTP Accept header field name. RFC 7231, Section 5.3.2
@@ -470,9 +472,84 @@ public class HTTP {
     public static final String CACHE_CONTROL = "Cache-Control";
 
     /**
+     * Cache-Control immutable directive.
+     */
+    public static final String CACHE_DIRECTIVE_IMMUTABLE = "immutable";
+
+    /**
+     * Cache-Control max-age directive.
+     */
+    public static final String CACHE_DIRECTIVE_MAX_AGE = "max-age";
+
+    /**
+     * Cache-Control max-stale directive.
+     */
+    public static final String CACHE_DIRECTIVE_MAX_STALE = "max-stale";
+
+    /**
+     * Cache-Control min-fresh directive.
+     */
+    public static final String CACHE_DIRECTIVE_MIN_FRESH = "min-fresh";
+
+    /**
+     * Cache-Control must-revalidate directive.
+     */
+    public static final String CACHE_DIRECTIVE_MUST_REVALIDATE = "must-revalidate";
+
+    /**
+     * Cache-Control no-cache directive.
+     */
+    public static final String CACHE_DIRECTIVE_NO_CACHE = "no-cache";
+
+    /**
+     * Cache-Control no-store directive.
+     */
+    public static final String CACHE_DIRECTIVE_NO_STORE = "no-store";
+
+    /**
+     * Cache-Control no-transform directive.
+     */
+    public static final String CACHE_DIRECTIVE_NO_TRANSFORM = "no-transform";
+
+    /**
+     * Cache-Control only-if-cached directive.
+     */
+    public static final String CACHE_DIRECTIVE_ONLY_IF_CACHED = "only-if-cached";
+
+    /**
+     * Cache-Control private directive.
+     */
+    public static final String CACHE_DIRECTIVE_PRIVATE = "private";
+
+    /**
+     * Cache-Control public directive.
+     */
+    public static final String CACHE_DIRECTIVE_PUBLIC = "public";
+
+    /**
+     * Cache-Control s-maxage directive.
+     */
+    public static final String CACHE_DIRECTIVE_S_MAXAGE = "s-maxage";
+
+    /**
      * HTTP Connection header field name. RFC 7230, Section 6.1
      */
     public static final String CONNECTION = "Connection";
+
+    /**
+     * HTTP Connection header close token. RFC 7230, Section 6.1
+     */
+    public static final String CONNECTION_CLOSE = "close";
+
+    /**
+     * HTTP Connection header keep-alive token. RFC 7230, Section 6.3
+     */
+    public static final String CONNECTION_KEEP_ALIVE = "keep-alive";
+
+    /**
+     * HTTP gzip content coding token. RFC 7231, Section 3.1.2.2
+     */
+    public static final String CONTENT_CODING_GZIP = "gzip";
 
     /**
      * HTTP Content-Encoding header field name. RFC 7231, Section 3.1.2.2
@@ -663,6 +740,11 @@ public class HTTP {
      * HTTP Transfer-Encoding header field name. RFC 7230, Section 3.3.1
      */
     public static final String TRANSFER_ENCODING = "Transfer-Encoding";
+
+    /**
+     * HTTP chunked transfer coding token. RFC 7230, Section 4.1
+     */
+    public static final String TRANSFER_CODING_CHUNKED = "chunked";
 
     /**
      * HTTP Upgrade header field name. RFC 7230, Section 6.7

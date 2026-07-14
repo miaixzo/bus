@@ -62,6 +62,25 @@ public class UrlKit {
     }
 
     /**
+     * Returns whether the value is a legal URI scheme token.
+     *
+     * @param value scheme value
+     * @return true when the value is a legal URI scheme token
+     */
+    public static boolean isScheme(final CharSequence value) {
+        if (StringKit.isBlank(value) || !Character.isLetter(value.charAt(0))) {
+            return false;
+        }
+        for (int i = 1; i < value.length(); i++) {
+            final char ch = value.charAt(i);
+            if (!Character.isLetterOrDigit(ch) && ch != Symbol.C_PLUS && ch != Symbol.C_MINUS && ch != Symbol.C_DOT) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Converts a {@link URI} to a {@link URL}.
      *
      * @param uri The {@link URI} to convert.

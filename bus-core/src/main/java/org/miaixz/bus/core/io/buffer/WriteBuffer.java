@@ -26,6 +26,9 @@ import java.nio.channels.WritePendingException;
 import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.source.Source;
+
 /**
  * Queue-backed output stream that writes {@link SliceBuffer} slices asynchronously.
  *
@@ -252,6 +255,140 @@ public final class WriteBuffer extends OutputStream {
         flushWriteBuffer(true);
         if (length > remaining) {
             write(bytes, offset + remaining, length - remaining);
+        }
+    }
+
+    /**
+     * Writes all bytes from {@code byteString} into this buffer.
+     *
+     * @param byteString the source bytes
+     * @throws IOException if writing fails
+     */
+    public synchronized void write(final ByteString byteString) throws IOException {
+        write(byteString, null);
+    }
+
+    /**
+     * Writes all bytes from {@code byteString} and registers a completion callback.
+     *
+     * @param byteString the source bytes
+     * @param consumer   the completion callback
+     * @throws IOException if writing fails
+     */
+    public synchronized void write(final ByteString byteString, final Consumer<WriteBuffer> consumer)
+            throws IOException {
+        if (byteString == null) {
+            throw new IllegalArgumentException("byteString == null");
+        }
+        if (byteString.size() == 0) {
+            if (consumer != null) {
+                consumer.accept(this);
+            }
+            return;
+        }
+        Buffer source = new Buffer();
+        source.write(byteString);
+        write(source, consumer);
+    }
+
+    /**
+     * Writes all readable bytes from {@code source} into this buffer.
+     *
+     * @param source the source buffer
+     * @throws IOException if writing fails
+     */
+    public synchronized void write(final Buffer source) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
+        writeBuffer(source, source.size());
+    }
+
+    /**
+     * Writes all readable bytes from {@code source} and registers a completion callback.
+     *
+     * @param source   the source buffer
+     * @param consumer the completion callback
+     * @throws IOException if writing fails
+     */
+    public synchronized void write(final Buffer source, final Consumer<WriteBuffer> consumer) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
+        if (source.size() == 0) {
+            if (consumer != null) {
+                consumer.accept(this);
+            }
+            return;
+        }
+        if (completionConsumer != null) {
+            throw new WritePendingException();
+        }
+        completionConsumer = consumer;
+        writeBuffer(source, source.size());
+        flush();
+    }
+
+    /**
+     * Reads up to {@code maxBytes} from {@code source} and writes them into this buffer.
+     *
+     * @param source   the source to drain
+     * @param maxBytes the maximum number of bytes to write
+     * @return the number of bytes written
+     * @throws IOException if reading or writing fails
+     */
+    public long write(final Source source, final long maxBytes) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
+        if (maxBytes < 0) {
+            throw new IllegalArgumentException("maxBytes < 0: " + maxBytes);
+        }
+        long total = 0;
+        Buffer buffer = new Buffer();
+        while (total < maxBytes) {
+            final long read = source.read(buffer, Math.min(Segment.SIZE, maxBytes - total));
+            if (read == -1) {
+                break;
+            }
+            if (read == 0) {
+                continue;
+            }
+            total += read;
+            writeBuffer(buffer, buffer.size());
+        }
+        flush();
+        return total;
+    }
+
+    /**
+     * Copies {@code byteCount} bytes from {@code source} into queued slices.
+     *
+     * @param source    the source buffer
+     * @param byteCount the number of bytes to copy
+     * @throws IOException if writing fails
+     */
+    private synchronized void writeBuffer(final Buffer source, long byteCount) throws IOException {
+        if (byteCount < 0 || byteCount > source.size()) {
+            throw new IllegalArgumentException("byteCount out of range: " + byteCount);
+        }
+        while (byteCount > 0) {
+            if (currentWriteSliceBuffer == null) {
+                currentWriteSliceBuffer = slabBuffer.allocate(chunkSize);
+            }
+            final ByteBuffer writeBuffer = currentWriteSliceBuffer.buffer();
+            if (closed) {
+                currentWriteSliceBuffer.release();
+                currentWriteSliceBuffer = null;
+                throw new IOException("writeBuffer has closed");
+            }
+            final int toCopy = (int) Math.min(byteCount, writeBuffer.remaining());
+            final int read = source.readTo(writeBuffer, toCopy);
+            if (read == -1) {
+                throw new IOException("source buffer exhausted");
+            }
+            byteCount -= read;
+            flushWriteBuffer(false);
         }
     }
 
