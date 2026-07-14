@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -54,6 +55,16 @@ import org.miaixz.bus.fabric.protocol.stomp.calls.StompCall;
  * @since Java 21+
  */
 public final class StompX {
+
+    /**
+     * Runtime option key for default timeout.
+     */
+    private static final String TIMEOUT_OPTION = "timeout";
+
+    /**
+     * STOMP CONNECT heartbeat header name.
+     */
+    private static final String HEADER_HEART_BEAT = "heart-beat";
 
     /**
      * Immutable execution snapshot.
@@ -230,10 +241,7 @@ public final class StompX {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -249,7 +257,8 @@ public final class StompX {
         try {
             final URI parsed = new URI(value.trim());
             final String scheme = parsed.getScheme();
-            if (!"ws".equalsIgnoreCase(scheme) && !"wss".equalsIgnoreCase(scheme) && !"tcp".equalsIgnoreCase(scheme)) {
+            if (!Protocol.WS.name.equalsIgnoreCase(scheme) && !Protocol.WSS.name.equalsIgnoreCase(scheme)
+                    && !Protocol.TCP.name.equalsIgnoreCase(scheme)) {
                 throw new ProtocolException("STOMP URL must use ws, wss, or tcp");
             }
             Address.from(parsed);
@@ -266,10 +275,21 @@ public final class StompX {
      * @return duration
      */
     private static Duration validateDuration(final Duration duration) {
-        if (duration == null || duration.isNegative()) {
-            throw new ValidateException("Timeout must be non-null and non-negative");
-        }
-        return duration;
+        return validateDuration(duration, "Timeout");
+    }
+
+    /**
+     * Validates a duration.
+     *
+     * @param duration duration
+     * @param name     field name
+     * @return duration
+     */
+    private static Duration validateDuration(final Duration duration, final String name) {
+        final Duration checked = Assert
+                .notNull(duration, () -> new ValidateException(name + " must be non-null and non-negative"));
+        Assert.isFalse(checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
+        return checked;
     }
 
     /**
@@ -358,7 +378,7 @@ public final class StompX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get("timeout", Timeout.class);
+            final Timeout configured = context.options().get(TIMEOUT_OPTION, Timeout.class);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.observer = EventObserver.noop();
             this.callback = Wiring.callback();
@@ -432,7 +452,7 @@ public final class StompX {
          * @return this builder
          */
         public Builder heartBeat(final Duration outgoing, final Duration incoming) {
-            headers.set("heart-beat", heartbeat(outgoing) + "," + heartbeat(incoming));
+            headers.set(HEADER_HEART_BEAT, heartbeat(outgoing) + "," + heartbeat(incoming));
             return this;
         }
 
@@ -582,9 +602,7 @@ public final class StompX {
          * @return exchange
          */
         public StompX build() {
-            if (uri == null) {
-                throw new ValidateException("STOMP target must be set");
-            }
+            Assert.notNull(uri, () -> new ValidateException("STOMP target must be set"));
             return new StompX(this);
         }
 
@@ -661,11 +679,9 @@ public final class StompX {
          * @return milliseconds
          */
         private static long heartbeat(final Duration duration) {
-            if (duration == null || duration.isNegative()) {
-                throw new ValidateException("STOMP heart-beat must be non-null and non-negative");
-            }
+            final Duration checked = validateDuration(duration, "STOMP heart-beat");
             try {
-                return duration.toMillis();
+                return checked.toMillis();
             } catch (final ArithmeticException e) {
                 throw new ValidateException("STOMP heart-beat is too large", e);
             }

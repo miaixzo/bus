@@ -17,11 +17,12 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.observe.watch;
+package org.miaixz.bus.fabric.observe.timing;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Clock;
@@ -73,10 +74,8 @@ public final class StopWatch {
      * @return stopwatch
      */
     public static StopWatch start(final Clock clock) {
-        if (clock == null) {
-            throw new ValidateException("Runtime clock must not be null");
-        }
-        return new StopWatch(clock, clock.nanos());
+        final Clock checked = Assert.notNull(clock, () -> new ValidateException("Runtime clock must not be null"));
+        return new StopWatch(checked, checked.nanos());
     }
 
     /**
@@ -122,9 +121,7 @@ public final class StopWatch {
      * @return duration
      */
     private Duration duration(final long endNanos) {
-        if (endNanos < startNanos) {
-            throw new StatefulException("Runtime clock moved backwards");
-        }
+        Assert.isFalse(endNanos < startNanos, () -> new StatefulException("Runtime clock moved backwards"));
         return Duration.ofNanos(endNanos - startNanos);
     }
 

@@ -21,10 +21,12 @@ package org.miaixz.bus.fabric.protocol.socket;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
  * Socket traffic observer backed by current observation markers.
@@ -136,13 +138,13 @@ public final class SocketTrafficObserver implements EventObserver {
      */
     private static long bytes(final FabricEvent event) {
         final String value = event.tags().get(Tags.BYTES);
-        if (value == null || value.isBlank()) {
-            return 0L;
+        if (StringKit.isBlank(value)) {
+            return Normal.LONG_ZERO;
         }
         try {
             return Long.parseLong(value);
         } catch (final NumberFormatException ignored) {
-            return 0L;
+            return Normal.LONG_ZERO;
         }
     }
 

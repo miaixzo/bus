@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Validate</description>
+    <description>Bus Validate - Constraint validation suite with composable predicates, rule evaluators and domain-specific annotations.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

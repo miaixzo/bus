@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.registry;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -45,9 +46,7 @@ public record Binding<T>(String key, T value, Options options) {
      */
     public Binding {
         key = validateKey(key);
-        if (value == null) {
-            throw new ValidateException("Registry value must not be null");
-        }
+        value = require(value, "Registry value");
         if (options == null) {
             options = Options.empty();
         }
@@ -73,10 +72,7 @@ public record Binding<T>(String key, T value, Options options) {
      * @return copied binding
      */
     public Binding<T> with(final String key, final Object value) {
-        if (value == null) {
-            throw new ValidateException("Option value must not be null");
-        }
-        return new Binding<>(this.key, this.value, options.with(validateKey(key), value));
+        return new Binding<>(this.key, this.value, options.with(validateKey(key), require(value, "Option value")));
     }
 
     /**
@@ -120,6 +116,18 @@ public record Binding<T>(String key, T value, Options options) {
             throw new ValidateException("Registry key must be non-blank and single-line");
         }
         return key.trim();
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value value
+     * @param name  name
+     * @param <T>   value type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

@@ -28,8 +28,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.UnoUrl;
 
@@ -52,7 +55,7 @@ public final class ProxySelectorAdapter {
      * @param selector selector
      */
     private ProxySelectorAdapter(final ProxySelector selector) {
-        this.selector = require(selector, "Proxy selector");
+        this.selector = Assert.notNull(selector, () -> new ValidateException("Proxy selector must not be null"));
     }
 
     /**
@@ -72,7 +75,7 @@ public final class ProxySelectorAdapter {
      * @return plans
      */
     public List<ProxyPlan> select(final UnoUrl url) {
-        return select(require(url, "URL").toUri());
+        return select(Assert.notNull(url, () -> new ValidateException("URL must not be null")).toUri());
     }
 
     /**
@@ -82,7 +85,7 @@ public final class ProxySelectorAdapter {
      * @return plans
      */
     public List<ProxyPlan> select(final URI uri) {
-        final URI current = require(uri, "URI");
+        final URI current = Assert.notNull(uri, () -> new ValidateException("URI must not be null"));
         final List<Proxy> proxies = selector.select(current);
         if (proxies == null || proxies.isEmpty()) {
             return List.of(ProxyPlan.direct());
@@ -102,7 +105,10 @@ public final class ProxySelectorAdapter {
      * @param failure failure
      */
     public void connectFailed(final URI uri, final SocketAddress address, final IOException failure) {
-        selector.connectFailed(require(uri, "URI"), require(address, "Socket address"), require(failure, "Failure"));
+        selector.connectFailed(
+                Assert.notNull(uri, () -> new ValidateException("URI must not be null")),
+                Assert.notNull(address, () -> new ValidateException("Socket address must not be null")),
+                Assert.notNull(failure, () -> new ValidateException("Failure must not be null")));
     }
 
     /**
@@ -112,7 +118,7 @@ public final class ProxySelectorAdapter {
      * @return proxy plan
      */
     private static ProxyPlan plan(final Proxy proxy) {
-        final Proxy current = require(proxy, "Proxy");
+        final Proxy current = Assert.notNull(proxy, () -> new ValidateException("Proxy must not be null"));
         if (current.type() == Proxy.Type.DIRECT) {
             return ProxyPlan.direct();
         }
@@ -122,25 +128,10 @@ public final class ProxySelectorAdapter {
         final String host = address.getHostString();
         final int port = address.getPort();
         return switch (current.type()) {
-            case HTTP -> ProxyPlan.http(new Address("http", host, port, "/"));
-            case SOCKS -> ProxyPlan.socks(new Address("tcp", host, port, "/"));
+            case HTTP -> ProxyPlan.http(new Address(Protocol.HTTP.name, host, port, Symbol.SLASH));
+            case SOCKS -> ProxyPlan.socks(new Address(Protocol.TCP.name, host, port, Symbol.SLASH));
             case DIRECT -> ProxyPlan.direct();
         };
-    }
-
-    /**
-     * Validates selector inputs before they are delegated to JDK proxy selection APIs.
-     *
-     * @param value value
-     * @param name  field name used in validation messages
-     * @param <T>   value type
-     * @return validated value
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
 }

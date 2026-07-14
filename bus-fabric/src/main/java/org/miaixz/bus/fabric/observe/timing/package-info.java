@@ -18,15 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines bounded stream reading and writing utilities for payload materialization.
+ * Contains timing helpers built on the fabric runtime clock.
  *
  * <p>
- * Stream sources, sinks and segmented buffers provide the low-level copy and materialization behavior used by bodies
- * and codecs. They enforce size limits and reduce copying, but they do not parse protocol messages or own connection
- * lifecycle.
+ * Stopwatches measure elapsed time for protocol and runtime events using the configured clock source. They do not
+ * schedule work or emit events by themselves; callers decide how timing data is attached to observations.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.fabric.codec.stream;
+package org.miaixz.bus.fabric.observe.timing;

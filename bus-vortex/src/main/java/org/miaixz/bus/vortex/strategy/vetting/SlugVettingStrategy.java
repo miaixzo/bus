@@ -17,50 +17,52 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.codec.stream;
+package org.miaixz.bus.vortex.strategy.vetting;
 
-import java.nio.ByteBuffer;
+import org.springframework.web.server.ServerWebExchange;
 
-import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.core.Order;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.vortex.Args;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.magic.ErrorCode;
+import org.miaixz.bus.vortex.strategy.VettingStrategy;
+
+import reactor.core.publisher.Mono;
 
 /**
- * Stream sink contract for incremental writes and payload transfer.
+ * Performs public slug request vetting.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface StreamSink extends AutoCloseable {
+@org.springframework.core.annotation.Order(Order.SECOND)
+public class SlugVettingStrategy extends VettingStrategy {
 
     /**
-     * Writes source bytes.
+     * Returns this strategy's dynamic protocol.
      *
-     * @param source source buffer
-     */
-    void write(ByteBuffer source);
-
-    /**
-     * Writes a payload.
-     *
-     * @param payload payload
-     */
-    void write(Payload payload);
-
-    /**
-     * Returns the written byte count.
-     *
-     * @return written byte count
-     */
-    long written();
-
-    /**
-     * Flushes pending data.
-     */
-    void flush();
-
-    /**
-     * Closes the sink.
+     * @return slug protocol number
      */
     @Override
-    void close();
+    public Integer protocol() {
+        return Args.PROTOCOL_SLUG;
+    }
+
+    /**
+     * Validates public slug request state, then delegates shared validation and header cleanup to the base strategy.
+     *
+     * @param exchange current exchange
+     * @param context  request context
+     * @return completion signal
+     */
+    @Override
+    protected Mono<Void> validateAndEnrich(ServerWebExchange exchange, Context context) {
+        return Mono.fromRunnable(() -> {
+            if (context == null || context.getHttpMethod() == null) {
+                throw new ValidateException(ErrorCode._100802);
+            }
+        }).then(super.validateAndEnrich(exchange, context));
+    }
 
 }

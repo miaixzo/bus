@@ -21,6 +21,8 @@ package org.miaixz.bus.fabric.registry.route;
 
 import java.time.Instant;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -39,15 +41,13 @@ public record Backoff(Route route, Instant failedAt, int failures, Instant backo
      * Creates route retry backoff memory.
      */
     public Backoff {
-        if (route == null) {
-            throw new ValidateException("Route must not be null");
-        }
-        if (failedAt == null || backoffUntil == null) {
-            throw new ValidateException("Route backoff times must not be null");
-        }
-        if (failures <= 0) {
-            throw new ValidateException("Route backoff failure count must be positive");
-        }
+        route = Assert.notNull(route, () -> new ValidateException("Route must not be null"));
+        failedAt = Assert.notNull(failedAt, () -> new ValidateException("Route backoff times must not be null"));
+        backoffUntil = Assert
+                .notNull(backoffUntil, () -> new ValidateException("Route backoff times must not be null"));
+        Assert.isTrue(
+                failures > Normal._0,
+                () -> new ValidateException("Route backoff failure count must be positive"));
     }
 
     /**
@@ -57,10 +57,8 @@ public record Backoff(Route route, Instant failedAt, int failures, Instant backo
      * @return true when postponed
      */
     public boolean postponed(final Instant now) {
-        if (now == null) {
-            throw new ValidateException("Current time must not be null");
-        }
-        return now.isBefore(backoffUntil);
+        final Instant current = Assert.notNull(now, () -> new ValidateException("Current time must not be null"));
+        return current.isBefore(backoffUntil);
     }
 
     /**

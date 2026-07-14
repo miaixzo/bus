@@ -160,27 +160,25 @@ public class DatePattern {
                 buffer.append('0');
             }
             switch (nDigits) {
-                case 4 -> {
+                case 4:
                     buffer.append((char) (value / 1000 + '0'));
                     value %= 1000;
-                }
-                case 3 -> {
+                case 3:
                     if (value >= 100) {
                         buffer.append((char) (value / 100 + '0'));
                         value %= 100;
                     } else {
                         buffer.append('0');
                     }
-                }
-                case 2 -> {
+                case 2:
                     if (value >= 10) {
                         buffer.append((char) (value / 10 + '0'));
                         value %= 10;
                     } else {
                         buffer.append('0');
                     }
-                }
-                case 1 -> buffer.append((char) (value + '0'));
+                case 1:
+                    buffer.append((char) (value + '0'));
             }
         } else {
             char[] work = new char[Normal._10];

@@ -19,13 +19,11 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp;
 
-import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,6 +31,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.miaixz.bus.core.data.id.UUID;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -49,7 +53,7 @@ import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.stomp.body.StompBody;
 import org.miaixz.bus.fabric.protocol.stomp.broker.StompReceipt;
 import org.miaixz.bus.fabric.protocol.stomp.broker.StompTopic;
@@ -71,6 +75,101 @@ public final class StompSession {
     private static final String LOG_TAG = "Fabric";
 
     /**
+     * STOMP SEND command.
+     */
+    private static final String COMMAND_SEND = "SEND";
+
+    /**
+     * STOMP SUBSCRIBE command.
+     */
+    private static final String COMMAND_SUBSCRIBE = "SUBSCRIBE";
+
+    /**
+     * STOMP UNSUBSCRIBE command.
+     */
+    private static final String COMMAND_UNSUBSCRIBE = "UNSUBSCRIBE";
+
+    /**
+     * STOMP DISCONNECT command.
+     */
+    private static final String COMMAND_DISCONNECT = "DISCONNECT";
+
+    /**
+     * STOMP RECEIPT command.
+     */
+    private static final String COMMAND_RECEIPT = "RECEIPT";
+
+    /**
+     * STOMP ERROR command.
+     */
+    private static final String COMMAND_ERROR = "ERROR";
+
+    /**
+     * STOMP MESSAGE command.
+     */
+    private static final String COMMAND_MESSAGE = "MESSAGE";
+
+    /**
+     * STOMP ACK command.
+     */
+    private static final String COMMAND_ACK = "ACK";
+
+    /**
+     * STOMP NACK command.
+     */
+    private static final String COMMAND_NACK = "NACK";
+
+    /**
+     * STOMP destination header.
+     */
+    private static final String HEADER_DESTINATION = "destination";
+
+    /**
+     * STOMP content-length header.
+     */
+    private static final String HEADER_CONTENT_LENGTH = "content-length";
+
+    /**
+     * STOMP content-type header.
+     */
+    private static final String HEADER_CONTENT_TYPE = "content-type";
+
+    /**
+     * STOMP id header.
+     */
+    private static final String HEADER_ID = "id";
+
+    /**
+     * STOMP receipt-id header.
+     */
+    private static final String HEADER_RECEIPT_ID = "receipt-id";
+
+    /**
+     * STOMP message-id header.
+     */
+    private static final String HEADER_MESSAGE_ID = "message-id";
+
+    /**
+     * STOMP subscription header.
+     */
+    private static final String HEADER_SUBSCRIPTION = "subscription";
+
+    /**
+     * Guard tag for inbound frames.
+     */
+    private static final String TAG_READ = "stomp-read";
+
+    /**
+     * Guard tag for outbound frames.
+     */
+    private static final String TAG_WRITE = "stomp-write";
+
+    /**
+     * Fallback log value for sessions without an address.
+     */
+    private static final String UNKNOWN = "unknown";
+
+    /**
      * Old topic destination prefix.
      */
     public static final String TOPIC_PREFIX = "/topic";
@@ -83,7 +182,7 @@ public final class StompSession {
     /**
      * Frame sender.
      */
-    private final Function<ByteBuffer, Call<Void>> sender;
+    private final Function<Buffer, Call<Void>> sender;
 
     /**
      * Close hook.
@@ -158,7 +257,7 @@ public final class StompSession {
      * @param cancelHook cancel hook
      * @param handler    default message handler
      */
-    StompSession(final Function<ByteBuffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
+    StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler) {
         this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), Wiring.noop(),
                 Options.DEFAULT_MATERIALIZE_MAX_BYTES);
@@ -176,7 +275,7 @@ public final class StompSession {
      * @param observer   observer
      * @param listener   lifecycle listener
      */
-    StompSession(final Function<ByteBuffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
+    StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
             final EventObserver observer, final Listener<? super StompSession> listener) {
         this(sender, closeHook, cancelHook, handler, address, guard, observer, listener,
@@ -196,7 +295,7 @@ public final class StompSession {
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      */
-    StompSession(final Function<ByteBuffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
+    StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
             final EventObserver observer, final Listener<? super StompSession> listener,
             final long materializeMaxBytes) {
@@ -232,8 +331,8 @@ public final class StompSession {
         final String target = StompMessage.validateToken(destination, "STOMP destination");
         require(payload, "STOMP payload");
         final Payload outgoing = snapshot(payload);
-        final Headers headers = Headers.builder().add("destination", target)
-                .add("content-length", Long.toString(outgoing.length())).build();
+        final Headers headers = Headers.builder().add(HEADER_DESTINATION, target)
+                .add(HEADER_CONTENT_LENGTH, Long.toString(outgoing.length())).build();
         Logger.info(
                 false,
                 LOG_TAG,
@@ -243,7 +342,7 @@ public final class StompSession {
                 port(),
                 target,
                 outgoing.length());
-        return write(StompFrame.of("SEND", headers, outgoing));
+        return write(StompFrame.of(COMMAND_SEND, headers, outgoing));
     }
 
     /**
@@ -254,7 +353,9 @@ public final class StompSession {
      * @return send call
      */
     public Call<Void> sendTo(final String destination, final String data) {
-        return send(destination, Payload.of(data == null ? "" : data, java.nio.charset.StandardCharsets.UTF_8));
+        return send(
+                destination,
+                Payload.of(data == null ? Normal.EMPTY : data, java.nio.charset.StandardCharsets.UTF_8));
     }
 
     /**
@@ -280,9 +381,9 @@ public final class StompSession {
         final String target = StompMessage.validateToken(destination, "STOMP destination");
         require(body, "STOMP body");
         final Payload outgoing = snapshot(body.payload());
-        final Headers headers = Headers.builder().add("destination", target)
-                .add("content-type", body.media().toString()).add("content-length", Long.toString(outgoing.length()))
-                .build();
+        final Headers headers = Headers.builder().add(HEADER_DESTINATION, target)
+                .add(HEADER_CONTENT_TYPE, body.media().toString())
+                .add(HEADER_CONTENT_LENGTH, Long.toString(outgoing.length())).build();
         Logger.info(
                 false,
                 LOG_TAG,
@@ -293,7 +394,7 @@ public final class StompSession {
                 target,
                 body.media(),
                 outgoing.length());
-        return write(StompFrame.of("SEND", headers, outgoing));
+        return write(StompFrame.of(COMMAND_SEND, headers, outgoing));
     }
 
     /**
@@ -318,14 +419,13 @@ public final class StompSession {
     public StompTopic subscribe(final String destination, final Headers headers, final Consumer<StompMessage> handler) {
         ensureOpen();
         final String target = StompMessage.validateToken(destination, "STOMP destination");
-        if (handler == null) {
-            throw new ValidateException("STOMP subscription handler must not be null");
-        }
+        Assert.notNull(handler, () -> new ValidateException("STOMP subscription handler must not be null"));
         final Headers extraHeaders = headers == null ? Headers.empty() : headers;
         final StompTopic topic = StompTopic.of(UUID.randomUUID().toString(), target);
-        final Headers.Builder builder = Headers.builder().add("id", topic.id()).add("destination", topic.destination());
+        final Headers.Builder builder = Headers.builder().add(HEADER_ID, topic.id())
+                .add(HEADER_DESTINATION, topic.destination());
         extraHeaders.asMap().forEach((name, values) -> {
-            if (!"id".equalsIgnoreCase(name) && !"destination".equalsIgnoreCase(name)) {
+            if (!HEADER_ID.equalsIgnoreCase(name) && !HEADER_DESTINATION.equalsIgnoreCase(name)) {
                 values.forEach(value -> builder.add(name, value));
             }
         });
@@ -333,7 +433,7 @@ public final class StompSession {
             topics.put(topic.id(), new Subscription(topic, handler));
         }
         try {
-            write(StompFrame.of("SUBSCRIBE", builder.build(), Payload.empty()));
+            write(StompFrame.of(COMMAND_SUBSCRIBE, builder.build(), Payload.empty()));
             Logger.info(
                     false,
                     LOG_TAG,
@@ -429,7 +529,7 @@ public final class StompSession {
      * @return send call
      */
     public Call<Void> ack(final String messageId) {
-        return acknowledge("ACK", messageId);
+        return acknowledge(COMMAND_ACK, messageId);
     }
 
     /**
@@ -439,7 +539,7 @@ public final class StompSession {
      * @return send call
      */
     public Call<Void> ack(final StompMessage message) {
-        return acknowledge("ACK", message);
+        return acknowledge(COMMAND_ACK, message);
     }
 
     /**
@@ -449,7 +549,7 @@ public final class StompSession {
      * @return send call
      */
     public Call<Void> nack(final String messageId) {
-        return acknowledge("NACK", messageId);
+        return acknowledge(COMMAND_NACK, messageId);
     }
 
     /**
@@ -459,7 +559,7 @@ public final class StompSession {
      * @return send call
      */
     public Call<Void> nack(final StompMessage message) {
-        return acknowledge("NACK", message);
+        return acknowledge(COMMAND_NACK, message);
     }
 
     /**
@@ -469,9 +569,7 @@ public final class StompSession {
      * @return true when removed
      */
     public boolean unsubscribe(final StompTopic topic) {
-        if (topic == null) {
-            throw new ValidateException("STOMP topic must not be null");
-        }
+        Assert.notNull(topic, () -> new ValidateException("STOMP topic must not be null"));
         if (!opened()) {
             return false;
         }
@@ -482,7 +580,11 @@ public final class StompSession {
         if (removed == null) {
             return false;
         }
-        write(StompFrame.of("UNSUBSCRIBE", Headers.builder().add("id", topic.id()).build(), Payload.empty()));
+        write(
+                StompFrame.of(
+                        COMMAND_UNSUBSCRIBE,
+                        Headers.builder().add(HEADER_ID, topic.id()).build(),
+                        Payload.empty()));
         Logger.info(
                 false,
                 LOG_TAG,
@@ -548,7 +650,7 @@ public final class StompSession {
                     host(),
                     port());
             try {
-                write(StompFrame.of("DISCONNECT", Headers.empty(), Payload.empty()));
+                write(StompFrame.of(COMMAND_DISCONNECT, Headers.empty(), Payload.empty()));
             } catch (final RuntimeException ignored) {
                 // The close hook still owns transport cleanup after a best-effort DISCONNECT.
             } finally {
@@ -644,8 +746,8 @@ public final class StompSession {
      */
     void dispatch(final StompFrame frame) {
         require(frame, "STOMP frame");
-        if ("RECEIPT".equals(frame.command())) {
-            final String receiptId = frame.headers().get("receipt-id");
+        if (COMMAND_RECEIPT.equals(frame.command())) {
+            final String receiptId = frame.headers().get(HEADER_RECEIPT_ID);
             if (receiptId != null) {
                 receipts.complete(receiptId);
                 Logger.debug(
@@ -659,7 +761,7 @@ public final class StompSession {
             }
             return;
         }
-        if ("ERROR".equals(frame.command())) {
+        if (COMMAND_ERROR.equals(frame.command())) {
             final ProtocolException failure = new ProtocolException(
                     frame.body().text(java.nio.charset.StandardCharsets.UTF_8));
             fail(failure);
@@ -673,12 +775,12 @@ public final class StompSession {
                     port());
             throw failure;
         }
-        if (!"MESSAGE".equals(frame.command())) {
+        if (!COMMAND_MESSAGE.equals(frame.command())) {
             return;
         }
-        final String destination = frame.headers().get("destination");
+        final String destination = frame.headers().get(HEADER_DESTINATION);
         final StompMessage message = StompMessage.of(destination, frame.headers(), frame.body());
-        checkGuard(frame, "stomp-read");
+        checkGuard(frame, TAG_READ);
         emit(ObservationMarker.STOMP_MESSAGE, frame.body(), null);
         Logger.debug(
                 false,
@@ -806,7 +908,7 @@ public final class StompSession {
                 host(),
                 port(),
                 command);
-        return write(StompFrame.of(command, Headers.builder().add("id", id).build(), Payload.empty()));
+        return write(StompFrame.of(command, Headers.builder().add(HEADER_ID, id).build(), Payload.empty()));
     }
 
     /**
@@ -819,11 +921,12 @@ public final class StompSession {
     private Call<Void> acknowledge(final String command, final StompMessage message) {
         ensureOpen();
         final StompMessage current = require(message, "STOMP message");
-        final String id = current.headers().get("message-id");
-        final String subscription = current.headers().get("subscription");
-        final Headers.Builder headers = Headers.builder().add("id", StompMessage.validateToken(id, "STOMP message id"));
+        final String id = current.headers().get(HEADER_MESSAGE_ID);
+        final String subscription = current.headers().get(HEADER_SUBSCRIPTION);
+        final Headers.Builder headers = Headers.builder()
+                .add(HEADER_ID, StompMessage.validateToken(id, "STOMP message id"));
         if (subscription != null) {
-            headers.add("subscription", StompMessage.validateToken(subscription, "STOMP subscription id"));
+            headers.add(HEADER_SUBSCRIPTION, StompMessage.validateToken(subscription, "STOMP subscription id"));
         }
         return write(StompFrame.of(command, headers.build(), Payload.empty()));
     }
@@ -860,10 +963,10 @@ public final class StompSession {
      */
     private static String prefixed(final String prefix, final String destination) {
         final String value = StompMessage.validateToken(destination, "STOMP destination");
-        if (value.equals(prefix) || value.startsWith(prefix + "/")) {
+        if (value.equals(prefix) || value.startsWith(prefix + Symbol.SLASH)) {
             return value;
         }
-        return value.charAt(0) == '/' ? prefix + value : prefix + '/' + value;
+        return value.charAt(Normal._0) == Symbol.C_SLASH ? prefix + value : prefix + Symbol.SLASH + value;
     }
 
     /**
@@ -873,8 +976,10 @@ public final class StompSession {
      * @return send call
      */
     private Call<Void> write(final StompFrame frame) {
-        checkGuard(frame, "stomp-write");
-        final Call<Void> call = sender.apply(codec.encode(frame));
+        checkGuard(frame, TAG_WRITE);
+        final Buffer output = new Buffer();
+        codec.encode(frame, output);
+        final Call<Void> call = sender.apply(output);
         final ObservedCall observed = new ObservedCall(call, frame.body());
         observed.observeIfDone();
         Logger.debug(
@@ -932,7 +1037,7 @@ public final class StompSession {
         }
         final FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, address.scheme())
                 .tag(Tags.HOST, address.host()).tag(Tags.PORT, Integer.toString(address.port()));
-        if (body != null && body.length() >= 0) {
+        if (body != null && body.length() >= Normal.LONG_ZERO) {
             event.tag(Tags.BYTES, Long.toString(body.length()));
         }
         if (cause != null) {
@@ -962,10 +1067,25 @@ public final class StompSession {
         if (length > Integer.MAX_VALUE) {
             throw new ValidateException("STOMP payload is too large");
         }
-        if (length >= 0 && payload.repeatable()) {
+        if (length >= Normal.LONG_ZERO && payload.repeatable()) {
             return payload;
         }
-        return Payload.of(payload.bytes(materializeMaxBytes));
+        return Payload.of(materialize(payload, "StompSession.snapshot(Payload)"));
+    }
+
+    /**
+     * Materializes a payload through the configured session limit.
+     *
+     * @param payload   payload
+     * @param operation operation name
+     * @return payload bytes
+     */
+    private byte[] materialize(final Payload payload, final String operation) {
+        try {
+            return Payload.materialize(payload, materializeMaxBytes, operation);
+        } catch (final RuntimeException e) {
+            throw new InternalException("Unable to materialize STOMP payload for " + operation, e);
+        }
     }
 
     /**
@@ -983,7 +1103,7 @@ public final class StompSession {
      * @return scheme or unknown
      */
     private String scheme() {
-        return address == null ? "unknown" : address.scheme();
+        return address == null ? UNKNOWN : address.scheme();
     }
 
     /**
@@ -992,7 +1112,7 @@ public final class StompSession {
      * @return host or unknown
      */
     private String host() {
-        return address == null ? "unknown" : address.host();
+        return address == null ? UNKNOWN : address.host();
     }
 
     /**
@@ -1001,7 +1121,7 @@ public final class StompSession {
      * @return port or -1
      */
     private int port() {
-        return address == null ? -1 : address.port();
+        return address == null ? Normal.__1 : address.port();
     }
 
     /**
@@ -1013,10 +1133,7 @@ public final class StompSession {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

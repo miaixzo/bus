@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.guard.body;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Message;
@@ -32,11 +34,6 @@ import org.miaixz.bus.fabric.guard.GuardRule;
  * @since Java 21+
  */
 public final class LimitGuard implements GuardRule {
-
-    /**
-     * Maximum allowed bytes.
-     */
-    private static final long MAX_BYTES = 16_777_216L;
 
     /**
      * Rule name.
@@ -75,13 +72,9 @@ public final class LimitGuard implements GuardRule {
      */
     @Override
     public GuardResult check(final Message message) {
-        if (message == null) {
-            throw new ValidateException("Message must not be null");
-        }
-        final long length = knownLength(message);
-        if (length < -1) {
-            throw new ProtocolException("Body length must be -1 or greater");
-        }
+        final Message checkedMessage = Assert.notNull(message, () -> new ValidateException("Message must not be null"));
+        final long length = knownLength(checkedMessage);
+        Assert.isTrue(length >= Normal.__1, () -> new ProtocolException("Body length must be -1 or greater"));
         return length > maxBytes ? GuardResult.reject("body length " + length + " exceeds max " + maxBytes)
                 : GuardResult.pass();
     }
@@ -113,9 +106,7 @@ public final class LimitGuard implements GuardRule {
      */
     private static long knownLength(final Message message) {
         final long payloadLength = message.payload().length();
-        if (payloadLength < -1) {
-            throw new ProtocolException("Body length must be -1 or greater");
-        }
+        Assert.isTrue(payloadLength >= Normal.__1, () -> new ProtocolException("Body length must be -1 or greater"));
         final int headerLength = message.headers().contentLength();
         if (payloadLength >= 0 && headerLength >= 0) {
             return Math.max(payloadLength, headerLength);
@@ -130,9 +121,9 @@ public final class LimitGuard implements GuardRule {
      * @return maximum bytes
      */
     private static long validateMaxBytes(final long maxBytes) {
-        if (maxBytes <= 0 || maxBytes > MAX_BYTES) {
-            throw new ValidateException("Body limit must be between 1 and 16777216");
-        }
+        Assert.isTrue(
+                maxBytes > 0 && maxBytes <= Normal._16 * Normal.MEBI,
+                () -> new ValidateException("Body limit must be between 1 and 16777216"));
         return maxBytes;
     }
 

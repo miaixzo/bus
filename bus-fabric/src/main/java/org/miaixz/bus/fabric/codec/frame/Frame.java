@@ -22,6 +22,8 @@ package org.miaixz.bus.fabric.codec.frame;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -29,12 +31,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Immutable binary frame payload.
  *
- * @param payload read-only payload
+ * @param payload immutable payload
  * @param length  payload length
  * @author Kimi Liu
  * @since Java 21+
  */
-public record Frame(ByteBuffer payload, int length) {
+public record Frame(ByteString payload, int length) {
 
     /**
      * Creates a frame from a payload snapshot.
@@ -43,19 +45,13 @@ public record Frame(ByteBuffer payload, int length) {
      * @param length  expected payload length
      */
     public Frame {
-        if (payload == null) {
-            throw new ValidateException("Frame payload must not be null");
-        }
-        final ByteBuffer duplicate = payload.duplicate();
-        if (length != duplicate.remaining()) {
-            throw new ProtocolException("Frame length does not match payload remaining bytes");
-        }
-        if (length < 0) {
-            throw new ProtocolException("Frame length must be non-negative");
-        }
-        final byte[] data = new byte[length];
-        duplicate.get(data);
-        payload = ByteBuffer.wrap(data).asReadOnlyBuffer();
+        final ByteString checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("Frame payload must not be null"));
+        Assert.isTrue(length >= 0, () -> new ProtocolException("Frame length must be non-negative"));
+        Assert.isTrue(
+                length == checkedPayload.size(),
+                () -> new ProtocolException("Frame length does not match payload bytes"));
+        payload = ByteString.of(checkedPayload.asByteBuffer());
     }
 
     /**
@@ -63,12 +59,26 @@ public record Frame(ByteBuffer payload, int length) {
      *
      * @param payload payload buffer
      * @return frame
+     * @deprecated use {@link #of(ByteString)}
      */
+    @Deprecated(since = "8.8.3")
     public static Frame of(final ByteBuffer payload) {
-        if (payload == null) {
-            throw new ValidateException("Frame payload must not be null");
-        }
-        return new Frame(payload, payload.remaining());
+        return of(
+                ByteString.of(
+                        Assert.notNull(payload, () -> new ValidateException("Frame payload must not be null"))
+                                .duplicate()));
+    }
+
+    /**
+     * Creates a frame from immutable bytes.
+     *
+     * @param payload payload bytes
+     * @return frame
+     */
+    public static Frame of(final ByteString payload) {
+        final ByteString checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("Frame payload must not be null"));
+        return new Frame(checkedPayload, checkedPayload.size());
     }
 
     /**
@@ -79,12 +89,9 @@ public record Frame(ByteBuffer payload, int length) {
      * @return frame
      */
     public static Frame text(final String value, final Charset charset) {
-        if (value == null) {
-            throw new ValidateException("Frame text must not be null");
-        }
-        validateCharset(charset);
+        final String checkedValue = Assert.notNull(value, () -> new ValidateException("Frame text must not be null"));
         try {
-            return of(ByteBuffer.wrap(value.getBytes(charset)));
+            return of(ByteString.encodeString(checkedValue, validateCharset(charset)));
         } catch (final RuntimeException e) {
             if (e instanceof ValidateException || e instanceof ProtocolException) {
                 throw e;
@@ -94,13 +101,14 @@ public record Frame(ByteBuffer payload, int length) {
     }
 
     /**
-     * Returns a read-only payload duplicate.
+     * Returns a read-only byte buffer view of the payload.
      *
-     * @return payload duplicate
+     * @return payload buffer
+     * @deprecated use {@link #payload()}
      */
-    @Override
-    public ByteBuffer payload() {
-        return payload.asReadOnlyBuffer();
+    @Deprecated(since = "8.8.3")
+    public ByteBuffer byteBuffer() {
+        return payload.asByteBuffer();
     }
 
     /**
@@ -110,12 +118,8 @@ public record Frame(ByteBuffer payload, int length) {
      * @return text
      */
     public String text(final Charset charset) {
-        validateCharset(charset);
         try {
-            final ByteBuffer duplicate = payload();
-            final byte[] data = new byte[duplicate.remaining()];
-            duplicate.get(data);
-            return new String(data, charset);
+            return payload.string(validateCharset(charset));
         } catch (final RuntimeException e) {
             if (e instanceof ValidateException) {
                 throw e;
@@ -128,11 +132,10 @@ public record Frame(ByteBuffer payload, int length) {
      * Validates a charset.
      *
      * @param charset charset
+     * @return charset
      */
-    private static void validateCharset(final Charset charset) {
-        if (charset == null) {
-            throw new ValidateException("Charset must not be null");
-        }
+    private static Charset validateCharset(final Charset charset) {
+        return Assert.notNull(charset, () -> new ValidateException("Charset must not be null"));
     }
 
 }

@@ -42,6 +42,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.PORT;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -62,17 +63,22 @@ import org.miaixz.bus.vortex.routing.llm.LlmFactory;
 import org.miaixz.bus.vortex.routing.mcp.McpExecutor;
 import org.miaixz.bus.vortex.routing.mq.MqExecutor;
 import org.miaixz.bus.vortex.routing.rest.RestExecutor;
+import org.miaixz.bus.vortex.routing.slug.SlugExecutor;
+import org.miaixz.bus.vortex.routing.slug.SlugRouteMatcher;
 import org.miaixz.bus.vortex.routing.ws.WsExecutor;
 import org.miaixz.bus.vortex.strategy.*;
 import org.miaixz.bus.vortex.strategy.qualifier.CstQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy;
+import org.miaixz.bus.vortex.strategy.qualifier.SlugQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.request.CstRequestStrategy;
 import org.miaixz.bus.vortex.strategy.request.McpRequestStrategy;
 import org.miaixz.bus.vortex.strategy.request.RestRequestStrategy;
+import org.miaixz.bus.vortex.strategy.request.SlugRequestStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.CstVettingStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.McpVettingStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
+import org.miaixz.bus.vortex.strategy.vetting.SlugVettingStrategy;
 
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServer;
@@ -141,6 +147,7 @@ public class VortexConfiguration {
      * @param grpcRouter The gRPC router bean.
      * @param wsRouter   The WebSocket router bean.
      * @param llmRouter  The LLM router bean.
+     * @param slugRouter The public slug forwarding router bean.
      * @return A {@link Vortex} core component instance, including the HTTP server.
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
@@ -152,7 +159,8 @@ public class VortexConfiguration {
             @Qualifier("mcp") Router<ServerRequest, ?> mcpRouter,
             @Qualifier("grpc") Router<ServerRequest, ?> grpcRouter,
             @Qualifier("ws") Router<ServerRequest, ?> wsRouter,
-            @Qualifier("llm") Router<ServerRequest, ?> llmRouter) {
+            @Qualifier("llm") Router<ServerRequest, ?> llmRouter,
+            @Qualifier("slug") Router<ServerRequest, ?> slugRouter) {
         Holder.of(properties.getPerformance());
 
         Map<Integer, Router<ServerRequest, ?>> routers = Map.of(
@@ -167,12 +175,29 @@ public class VortexConfiguration {
                 Args.PROTOCOL_WS,
                 wsRouter,
                 Args.PROTOCOL_LLM,
-                llmRouter);
+                llmRouter,
+                Args.PROTOCOL_SLUG,
+                slugRouter);
         VortexHandler vortexHandler = new VortexHandler(handlers, routers);
 
-        RouterFunction<ServerResponse> routerFunction = RouterFunctions.route(
-                RequestPredicates.path(this.properties.getPath() + Symbol.SLASH + Symbol.STAR + Symbol.STAR),
-                vortexHandler::handle);
+        String routePath = this.properties.getPath();
+        routePath = StringKit.isBlank(routePath) ? Symbol.SLASH + Symbol.STAR + Symbol.STAR : routePath.trim();
+        if (Symbol.SLASH.equals(routePath)) {
+            routePath = Symbol.SLASH + Symbol.STAR + Symbol.STAR;
+        } else {
+            if (!routePath.startsWith(Symbol.SLASH)) {
+                routePath = Symbol.SLASH + routePath;
+            }
+            while (routePath.length() > 1 && routePath.endsWith(Symbol.SLASH)) {
+                routePath = routePath.substring(0, routePath.length() - 1);
+            }
+            if (!routePath.endsWith(Symbol.SLASH + Symbol.STAR + Symbol.STAR)) {
+                routePath = routePath + Symbol.SLASH + Symbol.STAR + Symbol.STAR;
+            }
+        }
+
+        RouterFunction<ServerResponse> routerFunction = RouterFunctions
+                .route(RequestPredicates.path(routePath), vortexHandler::handle);
 
         ServerCodecConfigurer configurer = ServerCodecConfigurer.create();
         configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128));
@@ -279,6 +304,17 @@ public class VortexConfiguration {
     }
 
     /**
+     * Configures and provides the public slug forwarding router bean.
+     *
+     * @param executor The SlugExecutor instance to be used by the router.
+     * @return A new instance of SlugRouter.
+     */
+    @Bean(name = "slug")
+    public Router<ServerRequest, ServerResponse> slug(SlugExecutor executor) {
+        return new SlugRouter(executor);
+    }
+
+    /**
      * Provides the GrpcExecutor bean. This executor is responsible for executing gRPC requests to downstream services.
      *
      * @return A new instance of GrpcExecutor.
@@ -353,6 +389,28 @@ public class VortexConfiguration {
     @Bean
     public LlmExecutor llmExecutor(LlmFactory providerFactory) {
         return new LlmExecutor(providerFactory);
+    }
+
+    /**
+     * Provides the public slug forwarding executor bean.
+     *
+     * @param matcher The slug route matcher.
+     * @return A new instance of SlugExecutor.
+     */
+    @Bean
+    public SlugExecutor slugExecutor(SlugRouteMatcher matcher) {
+        return new SlugExecutor(matcher);
+    }
+
+    /**
+     * Provides the public slug route matcher bean.
+     *
+     * @param registry The assets registry.
+     * @return A new instance of SlugRouteMatcher.
+     */
+    @Bean
+    public SlugRouteMatcher slugRouteMatcher(AssetsRegistry registry) {
+        return new SlugRouteMatcher(registry, properties.getAssets().getSlugMethod());
     }
 
     /**
@@ -438,6 +496,17 @@ public class VortexConfiguration {
     }
 
     /**
+     * Provides the public slug request strategy bean.
+     *
+     * @param matcher The slug route matcher.
+     * @return A new instance of SlugRequestStrategy.
+     */
+    @Bean
+    public SlugRequestStrategy slugRequestStrategy(SlugRouteMatcher matcher) {
+        return new SlugRequestStrategy(matcher);
+    }
+
+    /**
      * Provides the basic vetting strategy bean. This strategy supplies common undefined-value validation,
      * authorization-attribute merge, and request metadata enrichment for routes that do not yet have protocol-specific
      * vetting.
@@ -480,6 +549,16 @@ public class VortexConfiguration {
     @Bean
     public McpVettingStrategy mcpVettingStrategy() {
         return new McpVettingStrategy();
+    }
+
+    /**
+     * Provides the public slug vetting strategy bean.
+     *
+     * @return A new instance of SlugVettingStrategy.
+     */
+    @Bean
+    public SlugVettingStrategy slugVettingStrategy() {
+        return new SlugVettingStrategy();
     }
 
     /**
@@ -537,6 +616,18 @@ public class VortexConfiguration {
             AuthorizeProvider authorizeProvider,
             AssetsRegistry assetsRegistry) {
         return new McpQualifierStrategy(authorizeProvider, assetsRegistry);
+    }
+
+    /**
+     * Provides the public slug qualifier strategy bean.
+     *
+     * @param matcher           The slug route matcher.
+     * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
+     * @return A new instance of SlugQualifierStrategy.
+     */
+    @Bean
+    public SlugQualifierStrategy slugQualifierStrategy(SlugRouteMatcher matcher, AuthorizeProvider authorizeProvider) {
+        return new SlugQualifierStrategy(matcher, authorizeProvider);
     }
 
     /**

@@ -26,14 +26,17 @@ import java.nio.channels.CompletionHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.ExceptionKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Listener;
@@ -116,9 +119,9 @@ public final class AioNetwork implements AutoCloseable {
      */
     private AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
             final Listener<Object> listener, final SocketOptions socketOptions) {
-        this.group = require(group, "AIO group");
-        this.provider = require(provider, "AIO provider");
-        this.resolver = require(resolver, "DNS resolver");
+        this.group = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
+        this.provider = Assert.notNull(provider, () -> new ValidateException("AIO provider must not be null"));
+        this.resolver = Assert.notNull(resolver, () -> new ValidateException("DNS resolver must not be null"));
         this.managed = new ConcurrentLinkedDeque<>();
         this.closed = new AtomicBoolean();
         this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
@@ -213,7 +216,8 @@ public final class AioNetwork implements AutoCloseable {
         try {
             final SocketOptions current = socketOptions == null ? SocketOptions.defaults() : socketOptions;
             group = AioGroup.create(current.threadNum());
-            return new AioNetwork(group, AioProvider.system(), require(resolver, "DNS resolver"),
+            return new AioNetwork(group, AioProvider.system(),
+                    Assert.notNull(resolver, () -> new ValidateException("DNS resolver must not be null")),
                     listener == null ? Wiring.noop() : listener, current);
         } catch (final RuntimeException e) {
             if (group != null) {
@@ -255,8 +259,11 @@ public final class AioNetwork implements AutoCloseable {
         AioGroup group = null;
         try {
             final SocketOptions current = socketOptions == null ? SocketOptions.defaults() : socketOptions;
-            group = AioGroup.create(current.threadNum(), require(dispatcher, "Dispatcher"));
-            return new AioNetwork(group, AioProvider.system(), require(resolver, "DNS resolver"),
+            group = AioGroup.create(
+                    current.threadNum(),
+                    Assert.notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null")));
+            return new AioNetwork(group, AioProvider.system(),
+                    Assert.notNull(resolver, () -> new ValidateException("DNS resolver must not be null")),
                     listener == null ? Wiring.noop() : listener, current);
         } catch (final RuntimeException e) {
             if (group != null) {
@@ -307,18 +314,15 @@ public final class AioNetwork implements AutoCloseable {
             final Address address,
             final Timeout timeout,
             final Listener<Object> listener) {
-        if (address == null) {
-            throw new ValidateException("Address must not be null");
-        }
-        if (timeout == null) {
-            throw new ValidateException("Timeout must not be null");
-        }
+        final Address checkedAddress = Assert.notNull(address, () -> new ValidateException("Address must not be null"));
+        final Timeout checkedTimeout = Assert.notNull(timeout, () -> new ValidateException("Timeout must not be null"));
         final Listener<Object> current = Wiring.safe(Wiring.compose(this.listener, listener), null);
-        final DnsResult result = resolver.resolve(address.host());
+        final DnsResult result = resolver.resolve(checkedAddress.host());
         if (result.empty()) {
-            return CompletableFuture.failedFuture(new SocketException("Unable to resolve host " + address.host()));
+            return CompletableFuture
+                    .failedFuture(new SocketException("Unable to resolve host " + checkedAddress.host()));
         }
-        return connectCandidate(address, timeout, current, result.addresses(), 0, null);
+        return connectCandidate(checkedAddress, checkedTimeout, current, result.addresses(), Normal._0, null);
     }
 
     /**
@@ -340,7 +344,7 @@ public final class AioNetwork implements AutoCloseable {
             final int index,
             final Throwable failure) {
         if (index >= addresses.size()) {
-            final Throwable root = unwrap(failure);
+            final Throwable root = ExceptionKit.unwrap(failure);
             if (root instanceof TimeoutException timedOut) {
                 listener.failure(this, timedOut);
                 return CompletableFuture.failedFuture(timedOut);
@@ -357,13 +361,13 @@ public final class AioNetwork implements AutoCloseable {
         channel.connect(socket, timeout).whenComplete((ignored, cause) -> {
             if (cause != null) {
                 managed.remove(channel);
-                closeQuietly(channel);
-                connectCandidate(address, timeout, listener, addresses, index + 1, unwrap(cause))
+                IoKit.closeQuietly(channel);
+                connectCandidate(address, timeout, listener, addresses, index + Normal._1, ExceptionKit.unwrap(cause))
                         .whenComplete((connection, next) -> {
                             if (next == null) {
                                 opened.complete(connection);
                             } else {
-                                opened.completeExceptionally(unwrap(next));
+                                opened.completeExceptionally(ExceptionKit.unwrap(next));
                             }
                         });
                 return;
@@ -396,15 +400,13 @@ public final class AioNetwork implements AutoCloseable {
      * @return server
      */
     public TcpServer server(final Address address, final Handler handler, final Listener<Object> listener) {
-        if (address == null) {
-            throw new ValidateException("Server address must not be null");
-        }
-        if (handler == null) {
-            throw new ValidateException("Server handler must not be null");
-        }
+        final Address checkedAddress = Assert
+                .notNull(address, () -> new ValidateException("Server address must not be null"));
+        final Handler checkedHandler = Assert
+                .notNull(handler, () -> new ValidateException("Server handler must not be null"));
         final TcpServer server = provider
-                .openServer(address, group, Wiring.compose(this.listener, listener), socketOptions);
-        server.accept(handler);
+                .openServer(checkedAddress, group, Wiring.compose(this.listener, listener), socketOptions);
+        server.accept(checkedHandler);
         managed.add(server);
         return server;
     }
@@ -434,48 +436,6 @@ public final class AioNetwork implements AutoCloseable {
                 throw new InternalException("Unable to close AIO network", failures.get(0));
             }
         }
-    }
-
-    /**
-     * Requires a non-null reference.
-     *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
-    }
-
-    /**
-     * Closes a channel without masking connection failures.
-     *
-     * @param channel channel
-     */
-    private static void closeQuietly(final AioChannel channel) {
-        try {
-            channel.close();
-        } catch (final RuntimeException ignored) {
-            // Keep original connection failure.
-        }
-    }
-
-    /**
-     * Unwraps asynchronous failures.
-     *
-     * @param cause cause
-     * @return unwrapped cause
-     */
-    private static Throwable unwrap(final Throwable cause) {
-        Throwable current = cause;
-        while (current instanceof CompletionException && current.getCause() != null) {
-            current = current.getCause();
-        }
-        return current;
     }
 
     /**
@@ -516,9 +476,10 @@ public final class AioNetwork implements AutoCloseable {
          * @param listener    lifecycle listener
          */
         private AioConnection(final Destination destination, final AioChannel aio, final Listener<Object> listener) {
-            this.destination = require(destination, "Connection destination");
-            this.aio = require(aio, "AIO channel");
-            this.conduit = new AioConduit(aio);
+            this.destination = Assert
+                    .notNull(destination, () -> new ValidateException("Connection destination must not be null"));
+            this.aio = Assert.notNull(aio, () -> new ValidateException("AIO channel must not be null"));
+            this.conduit = new AioConduit(this.aio);
             this.listener = Wiring.safe(listener, null);
         }
 
@@ -624,7 +585,7 @@ public final class AioNetwork implements AutoCloseable {
          * @param aio channel
          */
         private AioConduit(final AioChannel aio) {
-            this.aio = require(aio, "AIO channel");
+            this.aio = Assert.notNull(aio, () -> new ValidateException("AIO channel must not be null"));
         }
 
         /**

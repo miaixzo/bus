@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Setting</description>
+    <description>Bus Setting - Typed resource readers for properties, YAML, TOML and INI backed configuration access.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

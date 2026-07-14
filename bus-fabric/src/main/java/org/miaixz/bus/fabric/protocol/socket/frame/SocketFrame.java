@@ -22,6 +22,9 @@ package org.miaixz.bus.fabric.protocol.socket.frame;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -29,18 +32,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Immutable socket frame payload.
  *
- * @param payload read-only payload
+ * @param payload immutable payload
  * @param length  payload length
  * @author Kimi Liu
  * @since Java 21+
  */
-public record SocketFrame(ByteBuffer payload, int length) {
-
-    /**
-     * Maximum single wire-frame payload length. Payload materialization remains governed by
-     * {@code Options.DEFAULT_MATERIALIZE_MAX_BYTES} or the active context option.
-     */
-    public static final int MAX_PAYLOAD_LENGTH = 16_777_216;
+public record SocketFrame(ByteString payload, int length) {
 
     /**
      * Creates a frame.
@@ -49,19 +46,15 @@ public record SocketFrame(ByteBuffer payload, int length) {
      * @param length  length
      */
     public SocketFrame {
-        if (payload == null) {
-            throw new ValidateException("Socket frame payload must not be null");
-        }
-        final ByteBuffer duplicate = payload.duplicate();
-        if (length != duplicate.remaining()) {
-            throw new ProtocolException("Socket frame length does not match payload");
-        }
-        if (length < 0 || length > MAX_PAYLOAD_LENGTH) {
-            throw new ProtocolException("Socket frame length exceeds maximum");
-        }
-        final byte[] data = new byte[length];
-        duplicate.get(data);
-        payload = ByteBuffer.wrap(data).asReadOnlyBuffer();
+        final ByteString checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("Socket frame payload must not be null"));
+        Assert.isTrue(
+                length >= Normal._0 && length <= Normal._16 * Normal.MEBI,
+                () -> new ProtocolException("Socket frame length exceeds maximum"));
+        Assert.isTrue(
+                length == checkedPayload.size(),
+                () -> new ProtocolException("Socket frame length does not match payload"));
+        payload = ByteString.of(checkedPayload.asByteBuffer());
     }
 
     /**
@@ -69,12 +62,26 @@ public record SocketFrame(ByteBuffer payload, int length) {
      *
      * @param payload payload
      * @return frame
+     * @deprecated use {@link #of(ByteString)}
      */
+    @Deprecated(since = "8.8.3")
     public static SocketFrame of(final ByteBuffer payload) {
-        if (payload == null) {
-            throw new ValidateException("Socket frame payload must not be null");
-        }
-        return new SocketFrame(payload, payload.remaining());
+        return of(
+                ByteString.of(
+                        Assert.notNull(payload, () -> new ValidateException("Socket frame payload must not be null"))
+                                .duplicate()));
+    }
+
+    /**
+     * Creates a frame from immutable bytes.
+     *
+     * @param payload payload bytes
+     * @return frame
+     */
+    public static SocketFrame of(final ByteString payload) {
+        final ByteString checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("Socket frame payload must not be null"));
+        return new SocketFrame(checkedPayload, checkedPayload.size());
     }
 
     /**
@@ -85,14 +92,11 @@ public record SocketFrame(ByteBuffer payload, int length) {
      * @return frame
      */
     public static SocketFrame text(final String value, final Charset charset) {
-        if (value == null) {
-            throw new ValidateException("Socket frame text must not be null");
-        }
-        if (charset == null) {
-            throw new ValidateException("Charset must not be null");
-        }
+        final String checkedValue = Assert
+                .notNull(value, () -> new ValidateException("Socket frame text must not be null"));
+        final Charset checkedCharset = Assert.notNull(charset, () -> new ValidateException("Charset must not be null"));
         try {
-            return of(ByteBuffer.wrap(value.getBytes(charset)));
+            return of(ByteString.encodeString(checkedValue, checkedCharset));
         } catch (final RuntimeException e) {
             if (e instanceof ValidateException || e instanceof ProtocolException) {
                 throw e;
@@ -102,13 +106,14 @@ public record SocketFrame(ByteBuffer payload, int length) {
     }
 
     /**
-     * Returns a read-only payload duplicate.
+     * Returns a read-only byte buffer view of the payload.
      *
-     * @return payload duplicate
+     * @return payload buffer
+     * @deprecated use {@link #payload()}
      */
-    @Override
-    public ByteBuffer payload() {
-        return payload.asReadOnlyBuffer();
+    @Deprecated(since = "8.8.3")
+    public ByteBuffer byteBuffer() {
+        return payload.asByteBuffer();
     }
 
     /**

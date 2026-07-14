@@ -75,6 +75,71 @@ public class UrlDecoder implements Serializable {
     }
 
     /**
+     * Strictly decodes a URL component and rejects malformed percent escapes.
+     *
+     * @param text component text
+     * @return decoded component
+     */
+    public static String decodeStrict(final String text) {
+        return decodeStrict(text, Charset.UTF_8, true);
+    }
+
+    /**
+     * Strictly decodes a URL path component and rejects malformed percent escapes.
+     *
+     * @param text    component text
+     * @param charset charset used to decode percent-escaped bytes; if null, the original text is returned
+     * @return decoded component
+     */
+    public static String decodeStrictForPath(final String text, final java.nio.charset.Charset charset) {
+        return decodeStrict(text, charset, false);
+    }
+
+    /**
+     * Strictly decodes a URL component and rejects malformed percent escapes.
+     *
+     * @param text          component text
+     * @param charset       charset used to decode percent-escaped bytes; if null, the original text is returned
+     * @param isPlusToSpace whether plus signs are decoded as spaces
+     * @return decoded component
+     */
+    public static String decodeStrict(
+            final String text,
+            final java.nio.charset.Charset charset,
+            final boolean isPlusToSpace) {
+        if (charset == null || text == null) {
+            return text;
+        }
+        if (text.isEmpty()) {
+            return Normal.EMPTY;
+        }
+        StringBuilder builder = null;
+        for (int i = 0; i < text.length();) {
+            final char current = text.charAt(i);
+            if (current == Symbol.C_PLUS && isPlusToSpace) {
+                if (builder == null) {
+                    builder = new StringBuilder(text.length());
+                    builder.append(text, 0, i);
+                }
+                builder.append(Symbol.C_SPACE);
+                i++;
+            } else if (current == Symbol.C_PERCENT) {
+                if (builder == null) {
+                    builder = new StringBuilder(text.length());
+                    builder.append(text, 0, i);
+                }
+                i = appendStrictPercentDecoded(builder, text, i, charset);
+            } else {
+                if (builder != null) {
+                    builder.append(current);
+                }
+                i++;
+            }
+        }
+        return builder == null ? text : builder.toString();
+    }
+
+    /**
      * Decodes a URL-encoded string according to the rules at
      * <a href="https://url.spec.whatwg.org/#urlencoded-parsing">https://url.spec.whatwg.org/#urlencoded-parsing</a>.
      *
@@ -260,6 +325,52 @@ public class UrlDecoder implements Serializable {
             final java.nio.charset.Charset charset,
             final boolean isPlusToSpace) {
         return new String(decode(text.substring(begin, end).getBytes(Charset.ISO_8859_1), isPlusToSpace), charset);
+    }
+
+    /**
+     * Decodes a contiguous strict percent-escaped byte run.
+     *
+     * @param builder target builder
+     * @param value   encoded value
+     * @param offset  first percent sign offset
+     * @param charset charset used for decoded bytes
+     * @return offset after the decoded byte run
+     */
+    private static int appendStrictPercentDecoded(
+            final StringBuilder builder,
+            final String value,
+            final int offset,
+            final java.nio.charset.Charset charset) {
+        if (offset + 2 >= value.length() || !CharKit.isHexChar(value.charAt(offset + 1))
+                || !CharKit.isHexChar(value.charAt(offset + 2))) {
+            throw new IllegalArgumentException("Invalid URL percent encoding");
+        }
+        final byte[] bytes = new byte[(value.length() - offset) / 3 + 1];
+        int count = 0;
+        int index = offset;
+        while (index + 2 < value.length() && value.charAt(index) == Symbol.C_PERCENT
+                && CharKit.isHexChar(value.charAt(index + 1)) && CharKit.isHexChar(value.charAt(index + 2))) {
+            bytes[count++] = (byte) ((hexDigit(value.charAt(index + 1)) << 4) + hexDigit(value.charAt(index + 2)));
+            index += 3;
+        }
+        builder.append(new String(bytes, 0, count, charset));
+        return index;
+    }
+
+    /**
+     * Converts a validated hexadecimal character to its numeric value.
+     *
+     * @param value hexadecimal character
+     * @return value between 0 and 15
+     */
+    private static int hexDigit(final char value) {
+        if (value >= Symbol.C_ZERO && value <= Symbol.C_NINE) {
+            return value - Symbol.C_ZERO;
+        }
+        if (value >= 'A' && value <= 'F') {
+            return value - 'A' + 10;
+        }
+        return value - 'a' + 10;
     }
 
     /**

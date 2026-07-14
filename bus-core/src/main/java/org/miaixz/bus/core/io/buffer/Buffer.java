@@ -466,6 +466,37 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
+     * Writes all bytes from this buffer to {@code sink}. This method consumes the bytes from this buffer.
+     *
+     * @param sink the destination sink
+     * @return this buffer
+     * @throws IOException              if an I/O error occurs while writing
+     * @throws IllegalArgumentException if {@code sink} is null
+     */
+    public final Buffer writeTo(Sink sink) throws IOException {
+        return writeTo(sink, size);
+    }
+
+    /**
+     * Writes {@code byteCount} bytes from this buffer to {@code sink}. This method consumes the bytes from this buffer.
+     *
+     * @param sink      the destination sink
+     * @param byteCount the number of bytes to write
+     * @return this buffer
+     * @throws IOException               if an I/O error occurs while writing
+     * @throws IllegalArgumentException  if {@code sink} is null
+     * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
+     */
+    public final Buffer writeTo(Sink sink, long byteCount) throws IOException {
+        if (sink == null) {
+            throw new IllegalArgumentException("sink == null");
+        }
+        IoKit.checkOffsetAndCount(size, 0, byteCount);
+        sink.write(this, byteCount);
+        return this;
+    }
+
+    /**
      * Reads all bytes from the specified input stream into this buffer. This method reads until the end of the stream
      * is reached.
      *
@@ -494,6 +525,60 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         if (byteCount < 0)
             throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         readFrom(in, byteCount, false);
+        return this;
+    }
+
+    /**
+     * Reads up to {@code maxBytes} from {@code source} into this buffer.
+     *
+     * @param source   the source to read from
+     * @param maxBytes the maximum number of bytes to read
+     * @return the number of bytes read
+     * @throws IOException              if an I/O error occurs while reading
+     * @throws IllegalArgumentException if {@code source} is null or {@code maxBytes} is negative
+     */
+    public final long readFrom(Source source, long maxBytes) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
+        if (maxBytes < 0) {
+            throw new IllegalArgumentException("maxBytes < 0: " + maxBytes);
+        }
+        long total = 0;
+        while (total < maxBytes) {
+            long read = source.read(this, Math.min(Segment.SIZE, maxBytes - total));
+            if (read == -1) {
+                break;
+            }
+            total += read;
+        }
+        return total;
+    }
+
+    /**
+     * Reads exactly {@code byteCount} bytes from {@code source} into this buffer.
+     *
+     * @param source    the source to read from
+     * @param byteCount the exact number of bytes to read
+     * @return this buffer
+     * @throws EOFException             if the source is exhausted before {@code byteCount} bytes are read
+     * @throws IOException              if an I/O error occurs while reading
+     * @throws IllegalArgumentException if {@code source} is null or {@code byteCount} is negative
+     */
+    public final Buffer readFully(Source source, long byteCount) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
+        if (byteCount < 0) {
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        }
+        while (byteCount > 0) {
+            long read = source.read(this, byteCount);
+            if (read == -1) {
+                throw new EOFException();
+            }
+            byteCount -= read;
+        }
         return this;
     }
 
@@ -3175,7 +3260,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
          * @throws IllegalStateException    if the cursor is not attached to a buffer or is read-only
          * @throws IllegalArgumentException if {@code minByteCount} is invalid
          */
-        public final long expandBuffer(int minByteCount) {
+        public long expandBuffer(int minByteCount) {
             if (minByteCount <= 0) {
                 throw new IllegalArgumentException("minByteCount <= 0: " + minByteCount);
             }

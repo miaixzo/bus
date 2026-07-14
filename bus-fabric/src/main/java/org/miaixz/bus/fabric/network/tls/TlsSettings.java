@@ -27,10 +27,13 @@ import java.util.Set;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.net.tls.TlsCipherSuite;
+import org.miaixz.bus.core.net.tls.TlsClientAuth;
+import org.miaixz.bus.core.net.tls.TlsVersion;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.network.tls.cert.CertificatePolicy;
 
@@ -45,7 +48,8 @@ public final class TlsSettings {
     /**
      * Default TLS versions.
      */
-    private static final List<String> DEFAULT_VERSIONS = List.of(Protocol.TLSv1_3.name, Protocol.TLSv1_2.name);
+    private static final List<String> DEFAULT_VERSIONS = List
+            .of(TlsVersion.TLSv1_3.javaName(), TlsVersion.TLSv1_2.javaName());
 
     /**
      * TLS versions.
@@ -98,15 +102,10 @@ public final class TlsSettings {
             final boolean tlsExtensions) {
         this.versions = validateVersions(versions);
         this.ciphers = validateCiphers(ciphers, true);
-        if (clientAuth == null) {
-            throw new ValidateException("Client auth mode must not be null");
-        }
-        this.clientAuth = clientAuth;
+        this.clientAuth = Assert.notNull(clientAuth, () -> new ValidateException("Client auth mode must not be null"));
         this.verifyHostname = verifyHostname;
-        if (certificate == null) {
-            throw new ValidateException("Certificate policy must not be null");
-        }
-        this.certificate = certificate;
+        this.certificate = Assert
+                .notNull(certificate, () -> new ValidateException("Certificate policy must not be null"));
         this.applicationProtocols = validateApplicationProtocols(applicationProtocols);
         this.tlsExtensions = tlsExtensions;
     }
@@ -153,7 +152,7 @@ public final class TlsSettings {
      * @return true when enabled
      */
     public boolean clientAuth() {
-        return clientAuth != TlsClientAuth.NONE;
+        return clientAuth.enabled();
     }
 
     /**
@@ -247,11 +246,16 @@ public final class TlsSettings {
         final LinkedHashSet<String> checked = new LinkedHashSet<>();
         for (final String version : versions) {
             final String token = validateToken(version, "TLS version");
-            if (!Protocol.TLSv1_3.name.equals(token) && !Protocol.TLSv1_2.name.equals(token)
-                    && !Protocol.TLSv1_1.name.equals(token) && !Protocol.TLSv1.name.equals(token)) {
+            final TlsVersion tlsVersion;
+            try {
+                tlsVersion = TlsVersion.forJavaName(token);
+            } catch (final IllegalArgumentException e) {
                 throw new ValidateException("Unsupported TLS version: " + token);
             }
-            checked.add(token);
+            if (tlsVersion == TlsVersion.SSLv3) {
+                throw new ValidateException("Unsupported TLS version: " + token);
+            }
+            checked.add(tlsVersion.javaName());
         }
         return List.copyOf(checked);
     }
@@ -264,15 +268,17 @@ public final class TlsSettings {
      * @return cipher snapshot
      */
     private static List<String> validateCiphers(final List<String> ciphers, final boolean allowDefault) {
-        if (ciphers == null || (!allowDefault && ciphers.isEmpty())) {
+        final List<String> checkedCiphers = Assert
+                .notNull(ciphers, () -> new ValidateException("TLS ciphers must not be null or empty"));
+        if (!allowDefault && checkedCiphers.isEmpty()) {
             throw new ValidateException("TLS ciphers must not be null or empty");
         }
-        if (ciphers.isEmpty()) {
+        if (checkedCiphers.isEmpty()) {
             return defaultCiphers();
         }
         final Set<String> supported = supportedCiphers();
         final LinkedHashSet<String> checked = new LinkedHashSet<>();
-        for (final String cipher : ciphers) {
+        for (final String cipher : checkedCiphers) {
             final String token = validateToken(cipher, "TLS cipher");
             final String javaName = TlsCipherSuite.resolveJavaName(token, supported);
             if (!supported.contains(javaName)) {
@@ -290,11 +296,10 @@ public final class TlsSettings {
      * @return protocol snapshot
      */
     private static List<String> validateApplicationProtocols(final List<String> protocols) {
-        if (protocols == null) {
-            throw new ValidateException("TLS application protocols must not be null");
-        }
+        final List<String> checkedProtocols = Assert
+                .notNull(protocols, () -> new ValidateException("TLS application protocols must not be null"));
         final LinkedHashSet<String> checked = new LinkedHashSet<>();
-        for (final String protocol : protocols) {
+        for (final String protocol : checkedProtocols) {
             checked.add(validateToken(protocol, "TLS application protocol"));
         }
         return List.copyOf(checked);
@@ -399,10 +404,11 @@ public final class TlsSettings {
          * @return this builder
          */
         public Builder ciphers(final TlsCipherSuite... ciphers) {
-            if (ciphers == null) {
-                throw new ValidateException("TLS cipher suites must not be null");
-            }
-            return cipherSuites(List.of(ciphers));
+            return cipherSuites(
+                    List.of(
+                            Assert.notNull(
+                                    ciphers,
+                                    () -> new ValidateException("TLS cipher suites must not be null"))));
         }
 
         /**
@@ -444,10 +450,7 @@ public final class TlsSettings {
          * @return this builder
          */
         public Builder clientAuth(final TlsClientAuth mode) {
-            if (mode == null) {
-                throw new ValidateException("Client auth mode must not be null");
-            }
-            this.clientAuth = mode;
+            this.clientAuth = Assert.notNull(mode, () -> new ValidateException("Client auth mode must not be null"));
             return this;
         }
 
@@ -469,10 +472,8 @@ public final class TlsSettings {
          * @return this builder
          */
         public Builder certificate(final CertificatePolicy policy) {
-            if (policy == null) {
-                throw new ValidateException("Certificate policy must not be null");
-            }
-            this.certificate = policy;
+            this.certificate = Assert
+                    .notNull(policy, () -> new ValidateException("Certificate policy must not be null"));
             return this;
         }
 

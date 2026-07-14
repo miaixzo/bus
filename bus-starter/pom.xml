@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Starter</description>
+    <description>Bus Starter - Spring Boot auto-configuration bundle for conditional beans, starter defaults and startup conventions.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

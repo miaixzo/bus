@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -56,9 +57,7 @@ public final class StompReceipt {
      */
     public void waitFor(final String receiptId, final CompletableFuture<Void> future) {
         final String id = validate(receiptId);
-        if (future == null) {
-            throw new ValidateException("STOMP receipt future must not be null");
-        }
+        Assert.notNull(future, () -> new ValidateException("STOMP receipt future must not be null"));
         final CompletableFuture<Void> previous = pending.put(id, future);
         if (previous != null) {
             previous.completeExceptionally(new StatefulException("STOMP receipt was replaced"));
@@ -84,9 +83,7 @@ public final class StompReceipt {
      * @param cause     cause
      */
     public void fail(final String receiptId, final Throwable cause) {
-        if (cause == null) {
-            throw new ValidateException("STOMP receipt failure cause must not be null");
-        }
+        Assert.notNull(cause, () -> new ValidateException("STOMP receipt failure cause must not be null"));
         final CompletableFuture<Void> future = pending.remove(validate(receiptId));
         if (future != null) {
             future.completeExceptionally(cause);
@@ -99,9 +96,7 @@ public final class StompReceipt {
      * @param cause cause
      */
     public void failAll(final Throwable cause) {
-        if (cause == null) {
-            throw new ValidateException("STOMP receipt failure cause must not be null");
-        }
+        Assert.notNull(cause, () -> new ValidateException("STOMP receipt failure cause must not be null"));
         for (final Map.Entry<String, CompletableFuture<Void>> entry : pending.entrySet()) {
             if (pending.remove(entry.getKey(), entry.getValue())) {
                 entry.getValue().completeExceptionally(cause);

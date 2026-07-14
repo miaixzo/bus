@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol.http.auth;
 
 import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -27,7 +28,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 
 /**
@@ -89,10 +90,7 @@ public final class HttpAuth {
      * @return updated headers
      */
     public Headers apply(final Headers headers) {
-        if (headers == null) {
-            throw new ValidateException("Headers must not be null");
-        }
-        return headers.with(HTTP.AUTHORIZATION, value());
+        return require(headers, "Headers").with(HTTP.AUTHORIZATION, value());
     }
 
     /**
@@ -102,10 +100,7 @@ public final class HttpAuth {
      * @return updated headers
      */
     public Headers applyProxy(final Headers headers) {
-        if (headers == null) {
-            throw new ValidateException("Headers must not be null");
-        }
-        return headers.with(HTTP.PROXY_AUTHORIZATION, value());
+        return require(headers, "Headers").with(HTTP.PROXY_AUTHORIZATION, value());
     }
 
     /**
@@ -116,17 +111,13 @@ public final class HttpAuth {
      * @return authenticated request
      */
     public HttpRequest authenticate(final HttpRequest request, final Challenge challenge) {
-        if (request == null) {
-            throw new ValidateException("Request must not be null");
-        }
-        if (challenge == null) {
-            throw new ValidateException("Challenge must not be null");
-        }
-        if (!BASIC_LOWER.equals(challenge.scheme())) {
+        final HttpRequest current = require(request, "Request");
+        final Challenge currentChallenge = require(challenge, "Challenge");
+        if (!BASIC_LOWER.equals(currentChallenge.scheme())) {
             throw new ProtocolException("Unsupported authentication scheme");
         }
-        final String header = proxy(challenge) ? HTTP.PROXY_AUTHORIZATION : HTTP.AUTHORIZATION;
-        return request.toBuilder().headers(request.headers().with(header, value())).build();
+        final String header = proxy(currentChallenge) ? HTTP.PROXY_AUTHORIZATION : HTTP.AUTHORIZATION;
+        return current.toBuilder().headers(current.headers().with(header, value())).build();
     }
 
     /**
@@ -169,9 +160,9 @@ public final class HttpAuth {
      * @return username
      */
     private static String validateUsername(final String username) {
-        if (StringKit.isBlank(username) || StringKit.containsAny(username, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Username must be non-blank and single-line");
-        }
+        Assert.isFalse(
+                StringKit.isBlank(username) || StringKit.containsAny(username, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Username must be non-blank and single-line"));
         return username;
     }
 
@@ -182,10 +173,23 @@ public final class HttpAuth {
      * @return password
      */
     private static String validatePassword(final String password) {
-        if (password == null || StringKit.containsAny(password, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Password must be single-line");
-        }
-        return password;
+        final String current = Assert.notNull(password, () -> new ValidateException("Password must be single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Password must be single-line"));
+        return current;
+    }
+
+    /**
+     * Validates a required collaborator.
+     *
+     * @param value value
+     * @param name  field name
+     * @param <T>   value type
+     * @return validated value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

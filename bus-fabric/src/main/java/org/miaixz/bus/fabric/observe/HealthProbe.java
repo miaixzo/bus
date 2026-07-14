@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.observe;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -41,14 +42,13 @@ public interface HealthProbe {
      * @return true when healthy
      */
     default boolean healthy(final Object target) {
-        if (target == null) {
-            throw new ValidateException("Health target must not be null");
-        }
+        final Object checkedTarget = Assert
+                .notNull(target, () -> new ValidateException("Health target must not be null"));
         try {
-            if (target instanceof Connection connection) {
+            if (checkedTarget instanceof Connection connection) {
                 return connection.healthy();
             }
-            if (target instanceof Session session) {
+            if (checkedTarget instanceof Session session) {
                 return session.opened();
             }
             return false;

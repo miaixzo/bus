@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.runtime;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Clock;
@@ -157,10 +158,7 @@ public final class Reactor implements AutoCloseable {
      * @return true when cancellation matched work
      */
     public boolean cancel(final Object tag) {
-        if (tag == null) {
-            throw new ValidateException("Tag must not be null");
-        }
-        return dispatcher.cancel(tag);
+        return dispatcher.cancel(Assert.notNull(tag, () -> new ValidateException("Tag must not be null")));
     }
 
     /**
@@ -205,10 +203,7 @@ public final class Reactor implements AutoCloseable {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -217,7 +212,7 @@ public final class Reactor implements AutoCloseable {
      * @author Kimi Liu
      * @since Java 21+
      */
-    public static final class Builder {
+    public static final class Builder implements org.miaixz.bus.core.Builder<Reactor> {
 
         /**
          * Dispatcher candidate.
@@ -300,6 +295,7 @@ public final class Reactor implements AutoCloseable {
          *
          * @return reactor
          */
+        @Override
         public Reactor build() {
             return new Reactor(dispatcher, clock, directory, observer, scope);
         }

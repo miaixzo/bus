@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.io.ByteString;
 
 /**
  * Observer for HTTP/2 server push events.
@@ -51,7 +52,7 @@ public interface PushObserver {
             }
 
             @Override
-            public boolean onData(final int streamId, final ByteBuffer data, final boolean endStream) {
+            public boolean onData(final int streamId, final ByteString data, final boolean endStream) {
                 return true;
             }
 
@@ -89,7 +90,23 @@ public interface PushObserver {
      * @param endStream true when the stream ends with this event
      * @return true to cancel the pushed stream
      */
-    boolean onData(int streamId, ByteBuffer data, boolean endStream);
+    default boolean onData(final int streamId, final ByteString data, final boolean endStream) {
+        return onData(streamId, data == null ? ByteString.EMPTY.asByteBuffer() : data.asByteBuffer(), endStream);
+    }
+
+    /**
+     * Handles pushed data through the JDK byte buffer compatibility boundary.
+     *
+     * @param streamId  pushed stream id
+     * @param data      data snapshot
+     * @param endStream true when the stream ends with this event
+     * @return true to cancel the pushed stream
+     * @deprecated use {@link #onData(int, ByteString, boolean)}
+     */
+    @Deprecated(since = "8.8.3")
+    default boolean onData(final int streamId, final ByteBuffer data, final boolean endStream) {
+        return true;
+    }
 
     /**
      * Handles a pushed stream reset.

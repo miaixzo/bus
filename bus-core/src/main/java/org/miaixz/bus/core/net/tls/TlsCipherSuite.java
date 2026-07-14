@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.network.tls;
+package org.miaixz.bus.core.net.tls;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -40,6 +41,21 @@ import org.miaixz.bus.core.xyz.StringKit;
 public final class TlsCipherSuite {
 
     /**
+     * TLS cipher suite Java-name prefix.
+     */
+    private static final String TLS_PREFIX = "TLS_";
+
+    /**
+     * SSL cipher suite Java-name prefix.
+     */
+    private static final String SSL_PREFIX = "SSL_";
+
+    /**
+     * Number of characters in the JSSE TLS/SSL prefix.
+     */
+    private static final int PREFIX_LENGTH = Normal._4;
+
+    /**
      * Known instances by Java name.
      */
     private static final Map<String, TlsCipherSuite> INSTANCES = new LinkedHashMap<>();
@@ -48,11 +64,11 @@ public final class TlsCipherSuite {
      * Comparator that treats TLS_ and SSL_ prefixed Java names consistently.
      */
     public static final Comparator<String> ORDER_BY_NAME = (left, right) -> {
-        for (int i = 4, limit = Math.min(left.length(), right.length()); i < limit; i++) {
+        for (int i = PREFIX_LENGTH, limit = Math.min(left.length(), right.length()); i < limit; i++) {
             final char a = left.charAt(i);
             final char b = right.charAt(i);
             if (a != b) {
-                return a < b ? -1 : 1;
+                return a < b ? Normal.__1 : Normal._1;
             }
         }
         return Integer.compare(left.length(), right.length());
@@ -214,7 +230,7 @@ public final class TlsCipherSuite {
      * @param supported supported Java names
      * @return supported Java name when an alias is present
      */
-    static String resolveJavaName(final String javaName, final Set<String> supported) {
+    public static String resolveJavaName(final String javaName, final Set<String> supported) {
         final String name = forJavaName(javaName).javaName();
         if (supported.contains(name)) {
             return name;
@@ -242,11 +258,11 @@ public final class TlsCipherSuite {
      * @return alternate name
      */
     private static String secondaryName(final String javaName) {
-        if (javaName.startsWith("TLS_")) {
-            return "SSL_" + javaName.substring(4);
+        if (javaName.startsWith(TLS_PREFIX)) {
+            return SSL_PREFIX + javaName.substring(PREFIX_LENGTH);
         }
-        if (javaName.startsWith("SSL_")) {
-            return "TLS_" + javaName.substring(4);
+        if (javaName.startsWith(SSL_PREFIX)) {
+            return TLS_PREFIX + javaName.substring(PREFIX_LENGTH);
         }
         return javaName;
     }

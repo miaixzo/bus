@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Message;
 
@@ -79,10 +80,8 @@ public final class GuardChain implements GuardRule {
      * @return guard chain
      */
     public static GuardChain of(final GuardRule... rules) {
-        if (rules == null) {
-            throw new ValidateException("Guard rules must not be null");
-        }
-        return new GuardChain(Arrays.asList(rules));
+        return new GuardChain(
+                Arrays.asList(Assert.notNull(rules, () -> new ValidateException("Guard rules must not be null"))));
     }
 
     /**
@@ -103,14 +102,10 @@ public final class GuardChain implements GuardRule {
      */
     @Override
     public GuardResult check(final Message message) {
-        if (message == null) {
-            throw new ValidateException("Message must not be null");
-        }
+        final Message checkedMessage = Assert.notNull(message, () -> new ValidateException("Message must not be null"));
         for (final GuardRule rule : rules) {
-            final GuardResult result = rule.check(message);
-            if (result == null) {
-                throw new ValidateException("Guard result must not be null");
-            }
+            final GuardResult result = Assert
+                    .notNull(rule.check(checkedMessage), () -> new ValidateException("Guard result must not be null"));
             if (!result.passed()) {
                 return result;
             }
@@ -147,13 +142,12 @@ public final class GuardChain implements GuardRule {
      * @return rules
      */
     private static List<GuardRule> validateRules(final List<GuardRule> rules) {
-        if (rules == null) {
-            throw new ValidateException("Guard rules must not be null");
-        }
-        for (final GuardRule rule : rules) {
+        final List<GuardRule> checkedRules = Assert
+                .notNull(rules, () -> new ValidateException("Guard rules must not be null"));
+        for (final GuardRule rule : checkedRules) {
             validateRule(rule);
         }
-        return rules;
+        return checkedRules;
     }
 
     /**
@@ -162,9 +156,7 @@ public final class GuardChain implements GuardRule {
      * @param rule rule
      */
     private static void validateRule(final GuardRule rule) {
-        if (rule == null) {
-            throw new ValidateException("Guard rule must not be null");
-        }
+        Assert.notNull(rule, () -> new ValidateException("Guard rule must not be null"));
     }
 
 }

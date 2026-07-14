@@ -25,14 +25,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.http.agent.UserAgent;
 
 /**
@@ -61,7 +64,7 @@ public final class HttpHeaders {
         require(url, "URL");
         final Headers source = require(headers, "Headers");
         final Headers.Builder builder = copy(source);
-        if (source.contains("Host")) {
+        if (source.contains(HTTP.HOST)) {
             return builder.build();
         }
         final String scheme = url.address().scheme();
@@ -72,7 +75,7 @@ public final class HttpHeaders {
         }
         final int defaultPort = defaultPort(scheme);
         final String value = port == defaultPort ? formatHost(host) : formatHost(host) + Symbol.COLON + port;
-        return builder.set("Host", value).build();
+        return builder.set(HTTP.HOST, value).build();
     }
 
     /**
@@ -83,12 +86,10 @@ public final class HttpHeaders {
      * @return updated headers
      */
     public static Headers contentLength(final Headers headers, final long length) {
-        if (length < -1) {
-            throw new ValidateException("Content length must be -1 or greater");
-        }
+        Assert.isTrue(length >= Normal.__1, () -> new ValidateException("Content length must be -1 or greater"));
         final Headers.Builder builder = copy(require(headers, "Headers"));
-        return length == -1 ? builder.remove("Content-Length").build()
-                : builder.set("Content-Length", Long.toString(length)).build();
+        return length == Normal.__1 ? builder.remove(HTTP.CONTENT_LENGTH).build()
+                : builder.set(HTTP.CONTENT_LENGTH, Long.toString(length)).build();
     }
 
     /**
@@ -104,7 +105,7 @@ public final class HttpHeaders {
         require(request, "Request headers");
         require(response, "Response headers");
         final Map<String, String> vary = new LinkedHashMap<>();
-        for (final String name : values(response, "Vary")) {
+        for (final String name : values(response, HTTP.VARY)) {
             if (Symbol.STAR.equals(name)) {
                 return false;
             }
@@ -144,7 +145,7 @@ public final class HttpHeaders {
      * @return parsed User-Agent, or null when absent or blank
      */
     public static UserAgent userAgent(final Headers headers) {
-        return UserAgent.parse(require(headers, "Headers").get("User-Agent"));
+        return UserAgent.parse(require(headers, "Headers").get(HTTP.USER_AGENT));
     }
 
     /**
@@ -183,11 +184,18 @@ public final class HttpHeaders {
         if (value == null || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
             throw new ProtocolException("Invalid HTTP header value");
         }
-        for (final String part : value.split(Symbol.COMMA)) {
-            final String trimmed = part.trim();
+        int start = 0;
+        while (start <= value.length()) {
+            final int comma = value.indexOf(Symbol.C_COMMA, start);
+            final int end = comma < 0 ? value.length() : comma;
+            final String trimmed = value.substring(start, end).trim();
             if (!trimmed.isEmpty()) {
                 target.add(trimmed);
             }
+            if (comma < 0) {
+                break;
+            }
+            start = comma + 1;
         }
     }
 
@@ -224,9 +232,9 @@ public final class HttpHeaders {
      * @return header name
      */
     private static String validateName(final String name) {
-        if (StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Header name must be non-blank and single-line");
-        }
+        Assert.isFalse(
+                StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Header name must be non-blank and single-line"));
         return name;
     }
 
@@ -239,10 +247,7 @@ public final class HttpHeaders {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

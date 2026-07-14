@@ -25,6 +25,9 @@ import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.io.timout.Timeout;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Options;
@@ -70,9 +73,9 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     private final AtomicBoolean finished = new AtomicBoolean();
 
     /**
-     * Current stream.
+     * Current source.
      */
-    private InputStream current;
+    private Source current;
 
     /**
      * Creates a cache-writing payload.
@@ -84,10 +87,12 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      */
     HttpCacheWriter(final Payload delegate, final CacheWriter writer, final Runnable commitCallback,
             final Runnable abortCallback) {
-        this.delegate = require(delegate, "Payload");
-        this.writer = require(writer, "Cache writer");
-        this.commitCallback = require(commitCallback, "Commit callback");
-        this.abortCallback = require(abortCallback, "Abort callback");
+        this.delegate = Assert.notNull(delegate, () -> new ValidateException("Payload must not be null"));
+        this.writer = Assert.notNull(writer, () -> new ValidateException("Cache writer must not be null"));
+        this.commitCallback = Assert
+                .notNull(commitCallback, () -> new ValidateException("Commit callback must not be null"));
+        this.abortCallback = Assert
+                .notNull(abortCallback, () -> new ValidateException("Abort callback must not be null"));
     }
 
     /**
@@ -101,17 +106,23 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     }
 
     /**
-     * Opens a tee stream.
+     * Opens a tee source.
      *
-     * @return tee stream
+     * @return tee source
      */
     @Override
-    public InputStream stream() {
+    public Source source() {
         if (!opened.compareAndSet(false, true)) {
             throw new StatefulException("Cache writing payload can only be opened once");
         }
-        current = delegate.stream();
-        return new CacheWritingInputStream(current, writer, this::commit, this::abort);
+        current = delegate.source();
+        return new CacheWritingSource(current, writer, this::commit, this::abort);
+    }
+
+    @Override
+    @Deprecated(since = "8.8.3")
+    public InputStream stream() {
+        return Payload.super.stream();
     }
 
     /**
@@ -155,10 +166,8 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      */
     @Override
     public String text(final Charset charset, final long maxBytes) {
-        if (charset == null) {
-            throw new ValidateException("Charset must not be null");
-        }
-        return new String(bytes(maxBytes), charset);
+        return new String(bytes(maxBytes),
+                Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
     }
 
     /**
@@ -209,29 +218,14 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     }
 
     /**
-     * Validates collaborators used by the cache-writing response body.
-     *
-     * @param value value
-     * @param name  field name used in validation messages
-     * @param <T>   value type
-     * @return validated value
+     * Source that tees network bytes into a cache writer.
      */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
-    }
-
-    /**
-     * Input stream that tees network bytes into a cache writer.
-     */
-    private static final class CacheWritingInputStream extends InputStream {
+    private static final class CacheWritingSource implements Source {
 
         /**
          * Source stream.
          */
-        private final InputStream source;
+        private final Source source;
 
         /**
          * Cache writer.
@@ -249,11 +243,6 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
         private final Runnable abort;
 
         /**
-         * Single-byte buffer.
-         */
-        private final byte[] single = new byte[1];
-
-        /**
          * Bus-core transfer buffer.
          */
         private final Buffer buffer = new Buffer();
@@ -264,14 +253,14 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
         private final AtomicBoolean closed = new AtomicBoolean();
 
         /**
-         * Creates a tee stream.
+         * Creates a tee source.
          *
          * @param source source stream
          * @param writer cache writer
          * @param commit commit callback
          * @param abort  abort callback
          */
-        private CacheWritingInputStream(final InputStream source, final CacheWriter writer, final Runnable commit,
+        private CacheWritingSource(final Source source, final CacheWriter writer, final Runnable commit,
                 final Runnable abort) {
             this.source = source;
             this.writer = writer;
@@ -280,40 +269,27 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
         }
 
         /**
-         * Reads one byte.
-         *
-         * @return byte or -1
-         * @throws IOException when reading fails
-         */
-        @Override
-        public int read() throws IOException {
-            final int read = read(single, 0, 1);
-            return read < 0 ? -1 : single[0] & 0xff;
-        }
-
-        /**
          * Reads bytes and writes them to cache.
          *
          * @param target target buffer
-         * @param offset offset
-         * @param length length
          * @return byte count or -1
          * @throws IOException when reading fails
          */
         @Override
-        public int read(final byte[] target, final int offset, final int length) throws IOException {
+        public long read(final Buffer target, final long byteCount) throws IOException {
             if (closed.get()) {
                 return -1;
             }
             try {
-                final int read = source.read(target, offset, length);
+                final long offset = target.size();
+                final long read = source.read(target, byteCount);
                 if (read < 0) {
                     commit.run();
                     closed.set(true);
                     return -1;
                 }
                 if (read > 0) {
-                    buffer.write(target, offset, read);
+                    target.copyTo(buffer, offset, read);
                     writer.write(buffer, read);
                 }
                 return read;
@@ -323,8 +299,13 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
             }
         }
 
+        @Override
+        public Timeout timeout() {
+            return source.timeout();
+        }
+
         /**
-         * Closes this stream and aborts if EOF was not reached.
+         * Closes this source and aborts if EOF was not reached.
          *
          * @throws IOException when source close fails
          */

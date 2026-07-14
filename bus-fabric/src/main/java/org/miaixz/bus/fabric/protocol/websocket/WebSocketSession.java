@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.websocket;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -28,8 +27,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -52,7 +55,7 @@ import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.websocket.body.WebSocketBody;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketFrame;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader;
@@ -77,14 +80,89 @@ public final class WebSocketSession implements Session {
     private static final String LOG_TAG = "Fabric";
 
     /**
-     * Maximum queued application payload bytes.
-     */
-    public static final long MAX_QUEUE_SIZE = 16L * 1024L * 1024L;
-
-    /**
      * Time to wait for peer close after sending a close frame.
      */
-    public static final Duration CANCEL_AFTER_CLOSE = Duration.ofSeconds(60);
+    public static final Duration CANCEL_AFTER_CLOSE = Duration.ofSeconds(Normal._60);
+
+    /**
+     * Normal close status code.
+     */
+    private static final int NORMAL_CLOSE_CODE = 1000;
+
+    /**
+     * Close status code used when the outbound queue is full.
+     */
+    private static final int QUEUE_FULL_CLOSE_CODE = 1001;
+
+    /**
+     * Maximum bytes in a WebSocket control payload.
+     */
+    private static final int MAX_CONTROL_PAYLOAD_BYTES = 125;
+
+    /**
+     * Maximum queued outbound bytes.
+     */
+    private static final long MAX_QUEUE_BYTES = Normal._16 * Normal.MEBI;
+
+    /**
+     * Guard tag for outbound WebSocket messages.
+     */
+    private static final String TAG_WRITE = "websocket-write";
+
+    /**
+     * Guard tag for inbound WebSocket messages.
+     */
+    private static final String TAG_READ = "websocket-read";
+
+    /**
+     * Guard tag for WebSocket ping frames.
+     */
+    private static final String TAG_PING = "websocket-ping";
+
+    /**
+     * Activity name for the native reader loop.
+     */
+    private static final String ACTIVITY_READ = "websocket-read";
+
+    /**
+     * Activity name for automatic ping scheduling.
+     */
+    private static final String ACTIVITY_PING = "websocket-ping";
+
+    /**
+     * Activity name for close timeout cancellation.
+     */
+    private static final String ACTIVITY_CLOSE_TIMEOUT = "websocket-close-timeout";
+
+    /**
+     * Queue bytes observation tag.
+     */
+    private static final String EVENT_QUEUE_BYTES = "queueBytes";
+
+    /**
+     * Sent ping count observation tag.
+     */
+    private static final String EVENT_SENT_PING_COUNT = "sentPingCount";
+
+    /**
+     * Received ping count observation tag.
+     */
+    private static final String EVENT_RECEIVED_PING_COUNT = "receivedPingCount";
+
+    /**
+     * Received pong count observation tag.
+     */
+    private static final String EVENT_RECEIVED_PONG_COUNT = "receivedPongCount";
+
+    /**
+     * Materialization operation name for generic payload sends.
+     */
+    private static final String MATERIALIZE_SEND_PAYLOAD = "WebSocketSession.send(Payload)";
+
+    /**
+     * Close reason used when the outbound queue is full.
+     */
+    private static final String QUEUE_FULL_REASON = "queue full";
 
     /**
      * Session address.
@@ -149,17 +227,17 @@ public final class WebSocketSession implements Session {
     /**
      * Sent ping count.
      */
-    private final java.util.concurrent.atomic.AtomicInteger sentPingCount;
+    private final AtomicInteger sentPingCount;
 
     /**
      * Received ping count.
      */
-    private final java.util.concurrent.atomic.AtomicInteger receivedPingCount;
+    private final AtomicInteger receivedPingCount;
 
     /**
      * Received pong count.
      */
-    private final java.util.concurrent.atomic.AtomicInteger receivedPongCount;
+    private final AtomicInteger receivedPongCount;
 
     /**
      * Optional guard.
@@ -266,25 +344,20 @@ public final class WebSocketSession implements Session {
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
             final Duration ping, final GuardRule guard, final EventObserver observer,
             final Listener<? super WebSocketSession> listener, final long materializeMaxBytes) {
-        if (address == null) {
-            throw new ValidateException("WebSocket address must not be null");
-        }
-        if (reader != null && handler == null) {
-            throw new ValidateException("Handler must not be null");
-        }
-        if (reader != null && dispatcher == null) {
-            throw new ValidateException("Dispatcher must not be null");
-        }
-        this.address = address;
+        this.address = require(address, "WebSocket address");
+        Assert.isFalse(reader != null && handler == null, () -> new ValidateException("Handler must not be null"));
+        Assert.isFalse(
+                reader != null && dispatcher == null,
+                () -> new ValidateException("Dispatcher must not be null"));
         this.writer = writer;
         this.reader = reader;
         this.lease = lease;
         this.state = new AtomicReference<>(Status.OPENED);
         this.closeNotified = new AtomicBoolean();
         this.awaitingPong = new AtomicBoolean();
-        this.sentPingCount = new java.util.concurrent.atomic.AtomicInteger();
-        this.receivedPingCount = new java.util.concurrent.atomic.AtomicInteger();
-        this.receivedPongCount = new java.util.concurrent.atomic.AtomicInteger();
+        this.sentPingCount = new AtomicInteger();
+        this.receivedPingCount = new AtomicInteger();
+        this.receivedPongCount = new AtomicInteger();
         this.readerHandle = new AtomicReference<>();
         this.pingHandle = new AtomicReference<>();
         this.closeTimeoutHandle = new AtomicReference<>();
@@ -325,7 +398,7 @@ public final class WebSocketSession implements Session {
      * @return queued bytes
      */
     public long queueSize() {
-        return writer == null ? 0L : writer.queuedBytes();
+        return writer == null ? Normal.LONG_ZERO : writer.queuedBytes();
     }
 
     /**
@@ -372,10 +445,18 @@ public final class WebSocketSession implements Session {
      */
     @Override
     public Call<Void> send(final Payload payload) {
-        if (payload == null) {
-            throw new ValidateException("WebSocket payload must not be null");
+        final Payload checkedPayload = require(payload, "WebSocket payload");
+        ensureOpened();
+        if (writer == null) {
+            throw new StatefulException("WebSocket session has no transport");
         }
-        return send(ByteBuffer.wrap(payload.bytes(materializeMaxBytes)));
+        checkGuard(checkedPayload, TAG_WRITE);
+        final long length = checkedPayload.length();
+        if (length >= Normal.LONG_ZERO) {
+            checkQueueLimit(length);
+            return writeNative(() -> writeBinary(checkedPayload, length), checkedPayload);
+        }
+        return send(ByteString.of(materialize(checkedPayload, MATERIALIZE_SEND_PAYLOAD)));
     }
 
     /**
@@ -385,18 +466,18 @@ public final class WebSocketSession implements Session {
      * @return send call
      */
     public Call<Void> send(final WebSocketBody body) {
-        if (body == null) {
-            throw new ValidateException("WebSocket body must not be null");
-        }
+        final WebSocketBody checkedBody = require(body, "WebSocket body");
         ensureOpened();
         if (writer == null) {
             throw new StatefulException("WebSocket session has no transport");
         }
-        final Payload payload = body.payload();
-        checkGuard(payload, "websocket-write");
+        final Payload payload = checkedBody.payload();
+        if (checkedBody.binaryMessage()) {
+            return send(payload);
+        }
+        checkGuard(payload, TAG_WRITE);
         checkQueueLimit(payload.length());
-        return body.textMessage() ? writeNative(() -> writer.write(WebSocketFrame.text(body.textValue())), payload)
-                : writeNative(() -> writer.write(WebSocketFrame.binary(body.binaryValue())), payload);
+        return writeNative(() -> writer.write(WebSocketFrame.text(checkedBody.textValue())), payload);
     }
 
     /**
@@ -406,10 +487,10 @@ public final class WebSocketSession implements Session {
      * @return send call
      */
     public Call<Void> send(final String text) {
-        final String value = validateSendText(text);
+        final ByteString value = validateSendText(text);
         ensureOpened();
-        final Payload payload = Payload.of(value, StandardCharsets.UTF_8);
-        checkGuard(payload, "websocket-write");
+        final Payload payload = Payload.of(value);
+        checkGuard(payload, TAG_WRITE);
         if (writer != null) {
             checkQueueLimit(payload.length());
             return writeNative(() -> writer.write(WebSocketFrame.text(value)), payload);
@@ -418,27 +499,48 @@ public final class WebSocketSession implements Session {
     }
 
     /**
+     * Sends a binary message through the JDK byte buffer compatibility boundary.
+     *
+     * @param bytes binary bytes
+     * @return send call
+     * @deprecated use {@link #send(ByteString)}
+     */
+    @Override
+    @Deprecated(since = "8.8.3")
+    public Call<Void> send(final ByteBuffer bytes) {
+        final ByteBuffer checkedBytes = require(bytes, "WebSocket binary payload");
+        return send(ByteString.of(checkedBytes.duplicate()));
+    }
+
+    /**
      * Sends a binary message.
      *
      * @param bytes binary bytes
      * @return send call
      */
-    @Override
-    public Call<Void> send(final ByteBuffer bytes) {
-        if (bytes == null) {
-            throw new ValidateException("WebSocket binary payload must not be null");
-        }
+    public Call<Void> send(final ByteString bytes) {
+        final ByteString checkedBytes = require(bytes, "WebSocket binary payload");
         ensureOpened();
-        final ByteBuffer duplicate = bytes.duplicate();
-        final ByteBuffer copy = ByteBuffer.allocate(duplicate.remaining());
-        copy.put(duplicate).flip();
-        final Payload payload = Payload.of(bytes(copy.asReadOnlyBuffer()));
-        checkGuard(payload, "websocket-write");
+        final Payload payload = Payload.of(checkedBytes);
+        checkGuard(payload, TAG_WRITE);
         if (writer != null) {
             checkQueueLimit(payload.length());
-            return writeNative(() -> writer.write(WebSocketFrame.binary(copy.asReadOnlyBuffer())), payload);
+            return writeNative(() -> writer.write(WebSocketFrame.binary(checkedBytes)), payload);
         }
         throw new StatefulException("WebSocket session has no transport");
+    }
+
+    /**
+     * Sends a ping through the JDK byte buffer compatibility boundary.
+     *
+     * @param payload ping payload
+     * @return send call
+     * @deprecated use {@link #ping(ByteString)}
+     */
+    @Deprecated(since = "8.8.3")
+    public Call<Void> ping(final ByteBuffer payload) {
+        final ByteBuffer checkedPayload = require(payload, "WebSocket ping payload");
+        return ping(ByteString.of(checkedPayload.duplicate()));
     }
 
     /**
@@ -447,22 +549,17 @@ public final class WebSocketSession implements Session {
      * @param payload ping payload
      * @return send call
      */
-    public Call<Void> ping(final ByteBuffer payload) {
-        if (payload == null) {
-            throw new ValidateException("WebSocket ping payload must not be null");
-        }
-        if (payload.remaining() > 125) {
+    public Call<Void> ping(final ByteString payload) {
+        final ByteString checkedPayload = require(payload, "WebSocket ping payload");
+        if (checkedPayload.size() > MAX_CONTROL_PAYLOAD_BYTES) {
             throw new ValidateException("WebSocket ping payload is too large");
         }
         ensureOpened();
-        final ByteBuffer duplicate = payload.duplicate();
-        final ByteBuffer copy = ByteBuffer.allocate(duplicate.remaining());
-        copy.put(duplicate).flip();
-        final Payload body = Payload.of(bytes(copy.asReadOnlyBuffer()));
-        checkGuard(body, "websocket-ping");
+        final Payload body = Payload.of(checkedPayload);
+        checkGuard(body, TAG_PING);
         if (writer != null) {
             sentPingCount.incrementAndGet();
-            return writeNative(() -> writer.ping(copy.asReadOnlyBuffer()), body);
+            return writeNative(() -> writer.ping(checkedPayload), body);
         }
         throw new StatefulException("WebSocket session has no transport");
     }
@@ -474,7 +571,7 @@ public final class WebSocketSession implements Session {
      */
     @Override
     public boolean close() {
-        return close(1000, Normal.EMPTY);
+        return close(NORMAL_CLOSE_CODE, Normal.EMPTY);
     }
 
     /**
@@ -639,6 +736,20 @@ public final class WebSocketSession implements Session {
     }
 
     /**
+     * Writes a binary payload through the native WebSocket writer.
+     *
+     * @param payload payload
+     * @param length  payload length
+     */
+    private void writeBinary(final Payload payload, final long length) {
+        try (Source source = payload.source()) {
+            writer.binary(source, length);
+        } catch (final java.io.IOException e) {
+            throw new InternalException("Unable to write WebSocket binary payload", e);
+        }
+    }
+
+    /**
      * Checks the optional guard.
      *
      * @param payload payload
@@ -660,12 +771,13 @@ public final class WebSocketSession implements Session {
     private void emit(final ObservationMarker marker, final Payload payload, final Throwable cause) {
         final FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, address.scheme())
                 .tag(Tags.HOST, address.host()).tag(Tags.PORT, Integer.toString(address.port()));
-        if (payload != null && payload.length() >= 0) {
+        if (payload != null && payload.length() >= Normal.LONG_ZERO) {
             event.tag(Tags.BYTES, Long.toString(payload.length()));
         }
-        event.tag("queueBytes", Long.toString(queueSize())).tag("sentPingCount", Integer.toString(sentPingCount()))
-                .tag("receivedPingCount", Integer.toString(receivedPingCount()))
-                .tag("receivedPongCount", Integer.toString(receivedPongCount()));
+        event.tag(EVENT_QUEUE_BYTES, Long.toString(queueSize()))
+                .tag(EVENT_SENT_PING_COUNT, Integer.toString(sentPingCount()))
+                .tag(EVENT_RECEIVED_PING_COUNT, Integer.toString(receivedPingCount()))
+                .tag(EVENT_RECEIVED_PONG_COUNT, Integer.toString(receivedPongCount()));
         if (cause != null) {
             event.cause(cause);
         }
@@ -678,12 +790,12 @@ public final class WebSocketSession implements Session {
      * @param length message length
      */
     private void checkQueueLimit(final long length) {
-        if (length < 0) {
+        if (length < Normal.LONG_ZERO) {
             return;
         }
-        if (length > MAX_QUEUE_SIZE || queueSize() + length > MAX_QUEUE_SIZE) {
+        if (length > MAX_QUEUE_BYTES || queueSize() + length > MAX_QUEUE_BYTES) {
             if (opened()) {
-                close(1001, "queue full");
+                close(QUEUE_FULL_CLOSE_CODE, QUEUE_FULL_REASON);
             }
             throw new StatefulException("WebSocket write queue is full");
         }
@@ -694,7 +806,7 @@ public final class WebSocketSession implements Session {
      */
     private void scheduleCloseTimeout() {
         final DispatchHandle next = dispatcher
-                .schedule(dispatchKey, CANCEL_AFTER_CLOSE, Activity.of("websocket-close-timeout", () -> {
+                .schedule(dispatchKey, CANCEL_AFTER_CLOSE, Activity.of(ACTIVITY_CLOSE_TIMEOUT, () -> {
                     if (state.get() == Status.CLOSING) {
                         cancel();
                     }
@@ -706,16 +818,18 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Copies buffer bytes.
+     * Materializes a payload through the configured session limit.
      *
-     * @param buffer buffer
-     * @return bytes
+     * @param payload   payload
+     * @param operation operation name
+     * @return payload bytes
      */
-    private static byte[] bytes(final ByteBuffer buffer) {
-        final ByteBuffer view = buffer.duplicate();
-        final byte[] data = new byte[view.remaining()];
-        view.get(data);
-        return data;
+    private byte[] materialize(final Payload payload, final String operation) {
+        try {
+            return Payload.materialize(payload, materializeMaxBytes, operation);
+        } catch (final RuntimeException e) {
+            throw new InternalException("Unable to materialize WebSocket payload for " + operation, e);
+        }
     }
 
     /**
@@ -724,12 +838,11 @@ public final class WebSocketSession implements Session {
      * @param text text
      * @return text
      */
-    private static String validateSendText(final String text) {
+    private static ByteString validateSendText(final String text) {
         if (StringKit.isBlank(text) || StringKit.containsAny(text, Symbol.C_CR, Symbol.C_LF)) {
             throw new ValidateException("WebSocket text must be non-blank and single-line");
         }
-        text.getBytes(StandardCharsets.UTF_8);
-        return text;
+        return ByteString.encodeUtf8(text);
     }
 
     /**
@@ -739,10 +852,13 @@ public final class WebSocketSession implements Session {
      * @return interval
      */
     private static Duration validatePing(final Duration interval) {
-        if (interval == null || interval.isNegative()) {
-            throw new ValidateException("WebSocket ping interval must be non-null and non-negative");
-        }
-        return interval;
+        final Duration checked = Assert.notNull(
+                interval,
+                () -> new ValidateException("WebSocket ping interval must be non-null and non-negative"));
+        Assert.isFalse(
+                checked.isNegative(),
+                () -> new ValidateException("WebSocket ping interval must be non-null and non-negative"));
+        return checked;
     }
 
     /**
@@ -766,7 +882,7 @@ public final class WebSocketSession implements Session {
         if (StringKit.isBlank(dispatchKey) || StringKit.containsAny(dispatchKey, Symbol.C_CR, Symbol.C_LF)) {
             throw new ValidateException("WebSocket dispatch key must be non-blank and single-line");
         }
-        final Activity activity = Activity.of("websocket-read", () -> {
+        final Activity activity = Activity.of(ACTIVITY_READ, () -> {
             final AtomicBoolean delivered = new AtomicBoolean();
             try {
                 reader.readLoop(WebSocketSession.this, new Handler() {
@@ -774,7 +890,7 @@ public final class WebSocketSession implements Session {
                     @Override
                     public void message(final Session session, final org.miaixz.bus.fabric.Message message) {
                         delivered.set(true);
-                        checkGuard(message.payload(), "websocket-read");
+                        checkGuard(message.payload(), TAG_READ);
                         emit(ObservationMarker.WEBSOCKET_MESSAGE, message.payload(), null);
                         Logger.debug(
                                 false,
@@ -799,7 +915,7 @@ public final class WebSocketSession implements Session {
                 }, new WebSocketReader.Control() {
 
                     @Override
-                    public void ping(final Session session, final ByteBuffer payload) {
+                    public void ping(final Session session, final ByteString payload) {
                         receivedPingCount.incrementAndGet();
                         Logger.debug(
                                 false,
@@ -808,14 +924,14 @@ public final class WebSocketSession implements Session {
                                 address.scheme(),
                                 address.host(),
                                 address.port(),
-                                payload.remaining());
+                                payload.size());
                         if (writer != null && opened()) {
                             writer.pong(payload);
                         }
                     }
 
                     @Override
-                    public void pong(final Session session, final ByteBuffer payload) {
+                    public void pong(final Session session, final ByteString payload) {
                         receivedPongCount.incrementAndGet();
                         awaitingPong.set(false);
                         Logger.debug(
@@ -825,7 +941,7 @@ public final class WebSocketSession implements Session {
                                 address.scheme(),
                                 address.host(),
                                 address.port(),
-                                payload.remaining());
+                                payload.size());
                     }
 
                     @Override
@@ -864,7 +980,7 @@ public final class WebSocketSession implements Session {
         if (dispatcher == null) {
             throw new ValidateException("Dispatcher must not be null when WebSocket ping is enabled");
         }
-        return dispatcher.schedule(dispatchKey, interval, Activity.of("websocket-ping", () -> {
+        return dispatcher.schedule(dispatchKey, interval, Activity.of(ACTIVITY_PING, () -> {
             scheduledPing();
             if (opened()) {
                 final DispatchHandle current = pingHandle.get();
@@ -908,7 +1024,7 @@ public final class WebSocketSession implements Session {
                     address.scheme(),
                     address.host(),
                     address.port());
-            ping(ByteBuffer.allocate(0));
+            ping(ByteString.EMPTY);
         } catch (final RuntimeException e) {
             awaitingPong.set(false);
             if (!state.get().terminal()) {
@@ -1027,6 +1143,18 @@ public final class WebSocketSession implements Session {
     }
 
     /**
+     * Validates required references.
+     *
+     * @param value value
+     * @param name  field name
+     * @param <T>   value type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Future-backed send call.
      */
     private static final class SessionCall implements Call<Void> {
@@ -1048,8 +1176,8 @@ public final class WebSocketSession implements Session {
          * @param source source future
          */
         private SessionCall(final CompletableFuture<Void> future, final CompletableFuture<?> source) {
-            this.future = future;
-            this.source = source;
+            this.future = require(future, "WebSocket send future");
+            this.source = require(source, "WebSocket source future");
         }
 
         /**
@@ -1147,9 +1275,11 @@ public final class WebSocketSession implements Session {
          * @param timeout timeout
          */
         private static void validateTimeout(final Duration timeout) {
-            if (timeout == null || timeout.isNegative()) {
-                throw new ValidateException("Timeout must be non-null and non-negative");
-            }
+            final Duration checked = Assert
+                    .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
+            Assert.isFalse(
+                    checked.isNegative(),
+                    () -> new ValidateException("Timeout must be non-null and non-negative"));
         }
 
     }

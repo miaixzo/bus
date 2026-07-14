@@ -22,8 +22,8 @@ package org.miaixz.bus.fabric.protocol.sse;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Callback;
@@ -122,10 +122,7 @@ public final class EventSourceFactory implements EventSource.Factory {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, name + " must not be null");
     }
 
     /**
@@ -202,9 +199,9 @@ public final class EventSourceFactory implements EventSource.Factory {
          */
         private DefaultEventSource(final Context context, final HttpRequest request,
                 final EventSourceListener listener) {
-            this.context = context;
-            this.request = request;
-            this.listener = listener;
+            this.context = require(context, "Context");
+            this.request = require(request, "Request");
+            this.listener = require(listener, "Listener");
             this.response = new AtomicReference<>();
             this.call = new AtomicReference<>();
             this.session = new AtomicReference<>();

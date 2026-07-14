@@ -23,6 +23,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.fabric.Payload;
@@ -45,6 +47,8 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Default UTF-8 text media type.
      */
+    private static final MediaType TEXT = MediaType.TEXT_PLAIN_TYPE.withCharset(StandardCharsets.UTF_8);
+
     /**
      * Payload.
      */
@@ -158,7 +162,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
 
     @Override
     public long transferred() {
-        return progress == null ? 0L : progress.transferred();
+        return progress == null ? Normal.LONG_ZERO : progress.transferred();
     }
 
     @Override
@@ -195,10 +199,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -208,7 +209,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
      * @return media type
      */
     private static MediaType textMedia(final Charset charset) {
-        return MediaType.parse("text/plain; charset=" + charset.name());
+        return StandardCharsets.UTF_8.equals(charset) ? TEXT : MediaType.TEXT_PLAIN_TYPE.withCharset(charset);
     }
 
 }

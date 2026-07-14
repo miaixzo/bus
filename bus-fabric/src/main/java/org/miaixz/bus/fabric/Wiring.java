@@ -27,11 +27,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
  * Wires lifecycle listener callbacks, composition, dispatching, and failure protection.
@@ -122,9 +123,12 @@ public final class Wiring {
             final Consumer<? super T> open,
             final Consumer<? super T> close,
             final BiConsumer<? super T, ? super Throwable> failure) {
-        final Consumer<? super T> openConsumer = require(open, "Open listener");
-        final Consumer<? super T> closeConsumer = require(close, "Close listener");
-        final BiConsumer<? super T, ? super Throwable> failureConsumer = require(failure, "Failure listener");
+        final Consumer<? super T> openConsumer = Assert
+                .notNull(open, () -> new ValidateException("Open listener must not be null"));
+        final Consumer<? super T> closeConsumer = Assert
+                .notNull(close, () -> new ValidateException("Close listener must not be null"));
+        final BiConsumer<? super T, ? super Throwable> failureConsumer = Assert
+                .notNull(failure, () -> new ValidateException("Failure listener must not be null"));
         return new FunctionalListener<>(openConsumer, closeConsumer, failureConsumer);
     }
 
@@ -184,7 +188,8 @@ public final class Wiring {
      * @return asynchronous listener
      */
     public static <T> Listener<T> async(final Executor executor, final Listener<? super T> listener) {
-        final Executor current = require(executor, "Listener executor");
+        final Executor current = Assert
+                .notNull(executor, () -> new ValidateException("Listener executor must not be null"));
         final Listener<? super T> target = listener == null ? noop() : safe(listener, EventObserver.noop());
         return new AsyncListener<>(current, target);
     }
@@ -568,21 +573,6 @@ public final class Wiring {
         if (failure != null) {
             throw failure;
         }
-    }
-
-    /**
-     * Requires a non-null value.
-     *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
 }

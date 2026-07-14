@@ -20,9 +20,14 @@
 package org.miaixz.bus.fabric.protocol.websocket.body;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -40,11 +45,6 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
 public final class WebSocketBody implements MessageBody, ProgressBody {
 
     /**
-     * Maximum in-memory payload.
-     */
-    private static final int MAX_PAYLOAD = 16 * 1024 * 1024;
-
-    /**
      * Default binary media.
      */
     private static final MediaType BINARY = MediaType.APPLICATION_OCTET_STREAM_TYPE;
@@ -52,7 +52,12 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Default UTF-8 text media.
      */
-    private static final MediaType TEXT = MediaType.parse("text/plain; charset=UTF-8");
+    private static final MediaType TEXT = MediaType.TEXT_PLAIN_TYPE.withCharset(StandardCharsets.UTF_8);
+
+    /**
+     * Maximum materialized WebSocket body bytes.
+     */
+    private static final long MAX_BODY_BYTES = Normal._16 * Normal.MEBI;
 
     /**
      * Message kind.
@@ -116,8 +121,21 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      * @return WebSocket body
      */
     public static WebSocketBody text(final String text) {
-        final String value = validateText(text);
-        return new WebSocketBody(Kind.TEXT, value, Payload.of(value, StandardCharsets.UTF_8), TEXT);
+        final ByteString bytes = validateText(text);
+        return text(bytes, bytes.utf8());
+    }
+
+    /**
+     * Creates a text body.
+     *
+     * @param text text bytes
+     * @return WebSocket body
+     */
+    public static WebSocketBody text(final ByteString text) {
+        final ByteString checked = require(text, "WebSocket text");
+        final String value = decodeUtf8(checked);
+        validateTextValue(value);
+        return text(checked, value);
     }
 
     /**
@@ -133,9 +151,21 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a binary body.
      *
-     * @param buffer binary buffer
+     * @param bytes bytes
      * @return WebSocket body
      */
+    public static WebSocketBody binary(final ByteString bytes) {
+        return new WebSocketBody(Kind.BINARY, null, Payload.of(require(bytes, "WebSocket binary value")), BINARY);
+    }
+
+    /**
+     * Creates a binary body.
+     *
+     * @param buffer binary buffer
+     * @return WebSocket body
+     * @deprecated use {@link #binary(ByteString)}
+     */
+    @Deprecated(since = "8.8.3")
     public static WebSocketBody binary(final ByteBuffer buffer) {
         return binary(snapshot(buffer));
     }
@@ -149,11 +179,10 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      */
     public static WebSocketBody of(final Payload payload, final MediaType media) {
         final Payload current = require(payload, "WebSocket payload");
-        if (current.length() > MAX_PAYLOAD) {
+        if (current.length() > MAX_BODY_BYTES) {
             throw new ProtocolException("WebSocket body payload is too large");
         }
-        return new WebSocketBody(Kind.BINARY, null, Payload.of(current.bytes(MAX_PAYLOAD)),
-                require(media, "WebSocket media"));
+        return new WebSocketBody(Kind.BINARY, null, current, require(media, "WebSocket media"));
     }
 
     /**
@@ -196,9 +225,20 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      * Returns a read-only binary buffer.
      *
      * @return binary buffer
+     * @deprecated use {@link #binaryBytes()}
      */
+    @Deprecated(since = "8.8.3")
     public ByteBuffer binaryValue() {
-        return ByteBuffer.wrap(payload().bytes()).asReadOnlyBuffer();
+        return binaryBytes().asByteBuffer();
+    }
+
+    /**
+     * Returns immutable binary bytes.
+     *
+     * @return binary bytes
+     */
+    public ByteString binaryBytes() {
+        return ByteString.of(payload().bytes(MAX_BODY_BYTES));
     }
 
     /**
@@ -223,7 +263,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
 
     @Override
     public long transferred() {
-        return progress == null ? 0L : progress.transferred();
+        return progress == null ? Normal.LONG_ZERO : progress.transferred();
     }
 
     @Override
@@ -258,13 +298,11 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      * @return bytes
      */
     private static byte[] snapshot(final ByteBuffer buffer) {
-        if (buffer == null) {
-            throw new ValidateException("WebSocket binary value must not be null");
-        }
-        if (buffer.remaining() > MAX_PAYLOAD) {
+        final ByteBuffer checked = require(buffer, "WebSocket binary value");
+        if (checked.remaining() > MAX_BODY_BYTES) {
             throw new ProtocolException("WebSocket body payload is too large");
         }
-        final ByteBuffer duplicate = buffer.duplicate();
+        final ByteBuffer duplicate = checked.duplicate();
         final byte[] bytes = new byte[duplicate.remaining()];
         duplicate.get(bytes);
         return bytes;
@@ -276,18 +314,50 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      * @param text text
      * @return text
      */
-    private static String validateText(final String text) {
-        if (text == null) {
-            throw new ValidateException("WebSocket text must not be null");
-        }
-        for (int i = 0; i < text.length(); i++) {
+    private static ByteString validateText(final String text) {
+        final String checked = require(text, "WebSocket text");
+        validateTextValue(checked);
+        return ByteString.encodeUtf8(checked);
+    }
+
+    /**
+     * Creates a text body from validated values.
+     *
+     * @param bytes text bytes
+     * @param text  text value
+     * @return WebSocket body
+     */
+    private static WebSocketBody text(final ByteString bytes, final String text) {
+        return new WebSocketBody(Kind.TEXT, text, Payload.of(bytes), TEXT);
+    }
+
+    /**
+     * Validates text characters.
+     *
+     * @param text text
+     */
+    private static void validateTextValue(final String text) {
+        for (int i = Normal._0; i < text.length(); i++) {
             final char current = text.charAt(i);
             if (current < Symbol.C_SPACE && current != Symbol.C_CR && current != Symbol.C_LF) {
                 throw new ValidateException("WebSocket text contains an invalid control character");
             }
         }
-        text.getBytes(StandardCharsets.UTF_8);
-        return text;
+    }
+
+    /**
+     * Decodes text bytes as strict UTF-8.
+     *
+     * @param text text bytes
+     * @return decoded text
+     */
+    private static String decodeUtf8(final ByteString text) {
+        try {
+            return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(text.asByteBuffer()).toString();
+        } catch (final CharacterCodingException e) {
+            throw new ValidateException("WebSocket text must be valid UTF-8", e);
+        }
     }
 
     /**
@@ -299,10 +369,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

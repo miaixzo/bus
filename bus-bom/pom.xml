@@ -34,7 +34,7 @@
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus BOM</description>
+    <description>Bus BOM - Bill of materials declaring aligned dependency versions for reproducible releases.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

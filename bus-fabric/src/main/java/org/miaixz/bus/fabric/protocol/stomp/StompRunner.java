@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp;
 
-import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -40,7 +41,7 @@ import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompCodec;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompFrame;
@@ -58,6 +59,46 @@ final class StompRunner {
      * Logger tag used by the fabric runtime.
      */
     private static final String LOG_TAG = "Fabric";
+
+    /**
+     * STOMP CONNECT command.
+     */
+    private static final String COMMAND_CONNECT = "CONNECT";
+
+    /**
+     * STOMP CONNECTED command.
+     */
+    private static final String COMMAND_CONNECTED = "CONNECTED";
+
+    /**
+     * STOMP ERROR command.
+     */
+    private static final String COMMAND_ERROR = "ERROR";
+
+    /**
+     * STOMP accept-version header.
+     */
+    private static final String HEADER_ACCEPT_VERSION = "accept-version";
+
+    /**
+     * STOMP host header.
+     */
+    private static final String HEADER_HOST = "host";
+
+    /**
+     * STOMP login header.
+     */
+    private static final String HEADER_LOGIN = "login";
+
+    /**
+     * STOMP passcode header.
+     */
+    private static final String HEADER_PASSCODE = "passcode";
+
+    /**
+     * STOMP protocol version used by CONNECT.
+     */
+    private static final String VERSION_1_2 = "1.2";
 
     /**
      * Execution snapshot.
@@ -89,7 +130,8 @@ final class StompRunner {
                 snapshot.address().port(),
                 snapshot.destination() != null);
         try {
-            if (!"ws".equals(snapshot.uri().getScheme()) && !"wss".equals(snapshot.uri().getScheme())) {
+            if (!Protocol.WS.name.equals(snapshot.uri().getScheme())
+                    && !Protocol.WSS.name.equals(snapshot.uri().getScheme())) {
                 throw new ProtocolException("STOMP open requires ws or wss target");
             }
             checkGuard();
@@ -103,13 +145,12 @@ final class StompRunner {
                     snapshot.timeout(),
                     (ignored, message) -> {
                         try {
-                            for (final StompFrame frame : inbound.decode(
-                                    ByteBuffer.wrap(
-                                            message.payload()
-                                                    .bytes(snapshot.context().options().materializeMaxBytes())))) {
-                                if ("CONNECTED".equals(frame.command())) {
+                            final Buffer input = new Buffer();
+                            input.write(message.payload().bytes(snapshot.context().options().materializeMaxBytes()));
+                            for (final StompFrame frame : inbound.decode(input)) {
+                                if (COMMAND_CONNECTED.equals(frame.command())) {
                                     connected.complete(frame);
-                                } else if ("ERROR".equals(frame.command())) {
+                                } else if (COMMAND_ERROR.equals(frame.command())) {
                                     connected.completeExceptionally(
                                             new ProtocolException(frame.body().text(Charset.UTF_8)));
                                 } else {
@@ -125,7 +166,9 @@ final class StompRunner {
                     });
             final Session openedSocket = socket;
             final StompCodec outbound = new StompCodec();
-            awaitSend(openedSocket.send(outbound.encode(connectFrame())));
+            final Buffer output = new Buffer();
+            outbound.encode(connectFrame(), output);
+            awaitSend(openedSocket.send(Payload.of(output.readByteString())));
             awaitConnected(connected);
             Logger.info(
                     false,
@@ -134,9 +177,10 @@ final class StompRunner {
                     snapshot.address().scheme(),
                     snapshot.address().host(),
                     snapshot.address().port());
-            final StompSession opened = new StompSession(openedSocket::send, openedSocket::close, openedSocket::cancel,
-                    snapshot.handler(), snapshot.address(), snapshot.guard(), snapshot.observer(), snapshot.listener(),
-                    snapshot.context().options().materializeMaxBytes());
+            final StompSession opened = new StompSession(
+                    buffer -> openedSocket.send(Payload.of(buffer.readByteString())), openedSocket::close,
+                    openedSocket::cancel, snapshot.handler(), snapshot.address(), snapshot.guard(), snapshot.observer(),
+                    snapshot.listener(), snapshot.context().options().materializeMaxBytes());
             session.set(opened);
             emit(ObservationMarker.STOMP_OPEN, null);
             snapshot.listener().open(opened);
@@ -174,20 +218,20 @@ final class StompRunner {
      * @return connect frame
      */
     StompFrame connectFrame() {
-        final Headers.Builder builder = Headers.builder().add("accept-version", "1.2")
-                .add("host", snapshot.address().host());
+        final Headers.Builder builder = Headers.builder().add(HEADER_ACCEPT_VERSION, VERSION_1_2)
+                .add(HEADER_HOST, snapshot.address().host());
         if (snapshot.login() != null) {
-            builder.add("login", snapshot.login());
+            builder.add(HEADER_LOGIN, snapshot.login());
         }
         if (snapshot.passcode() != null) {
-            builder.add("passcode", snapshot.passcode());
+            builder.add(HEADER_PASSCODE, snapshot.passcode());
         }
         for (final Map.Entry<String, List<String>> entry : snapshot.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
                 builder.add(entry.getKey(), value);
             }
         }
-        return StompFrame.of("CONNECT", builder.build(), Payload.empty());
+        return StompFrame.of(COMMAND_CONNECT, builder.build(), Payload.empty());
     }
 
     /**
@@ -296,10 +340,7 @@ final class StompRunner {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Logger</description>
+    <description>Bus Logger - Log event enrichment with MDC fields, sanitization rules, severity controls and layout templates.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

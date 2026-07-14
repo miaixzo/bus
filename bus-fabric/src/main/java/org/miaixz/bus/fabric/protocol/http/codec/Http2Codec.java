@@ -20,9 +20,7 @@
 package org.miaixz.bus.fabric.protocol.http.codec;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -30,8 +28,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -63,7 +65,7 @@ public final class Http2Codec implements HttpCodec {
     /**
      * Binary media fallback.
      */
-    private static final MediaType BINARY = MediaType.parse("application/octet-stream");
+    private static final MediaType BINARY = MediaType.APPLICATION_OCTET_STREAM_TYPE;
 
     /**
      * HTTP/2 connection.
@@ -109,7 +111,7 @@ public final class Http2Codec implements HttpCodec {
         final Http2Stream stream = connection.newStream(headers, true);
         calls.put(current, stream);
         connection.startReader();
-        writer.headers(stream.id(), headers, current.body().length() == 0);
+        writer.headers(stream.id(), headers, current.body().length() == Normal._0);
         return stream;
     }
 
@@ -124,7 +126,7 @@ public final class Http2Codec implements HttpCodec {
         state.set(Status.RUNNING);
         writer.timeout(current.timeout().write());
         final Http2Stream stream = newStream(current);
-        if (current.body().length() > 0 && current.method() != HTTP.Method.GET
+        if (current.body().length() > Normal._0 && current.method() != HTTP.Method.GET
                 && current.method() != HTTP.Method.HEAD) {
             writeBody(stream, current);
         }
@@ -145,15 +147,15 @@ public final class Http2Codec implements HttpCodec {
             throw new StatefulException("HTTP/2 stream is missing for request");
         }
         state.set(Status.RUNNING);
-        int code = -1;
+        int code = Normal.__1;
         Headers headers = Headers.empty();
         boolean end = false;
         try {
-            while (!end || code < 0) {
+            while (!end || code < Normal._0) {
                 final Http2Frame frame = connection.nextFrame(stream.id(), current.timeout().read());
                 if (frame.type() == Http2Frame.HEADERS) {
                     headers = fromHttp2(frame.headers(), true);
-                    final String status = pseudo(frame.headers(), ":status");
+                    final String status = pseudo(frame.headers(), HTTP.RESPONSE_STATUS_UTF8);
                     if (status == null) {
                         throw new ProtocolException("HTTP/2 response is missing :status");
                     }
@@ -163,9 +165,12 @@ public final class Http2Codec implements HttpCodec {
                 }
                 end = frame.endStream();
             }
-            return HttpResponse.builder().request(current).code(code).message(Normal.EMPTY).headers(headers).body(
-                    HttpBody.of(Payload.stream(stream.source().stream(), stream.source().length()), media(headers)))
-                    .protocol(Protocol.HTTP_2).trailers(Headers.empty()).build();
+            if (!(stream.source() instanceof Payload payload)) {
+                throw new InternalException("HTTP/2 stream source is not payload-backed");
+            }
+            return HttpResponse.builder().request(current).code(code).message(Normal.EMPTY).headers(headers)
+                    .body(HttpBody.of(payload, media(headers))).protocol(Protocol.HTTP_2).trailers(Headers.empty())
+                    .build();
         } finally {
             if (end) {
                 connection.discardFrames(stream.id());
@@ -186,7 +191,7 @@ public final class Http2Codec implements HttpCodec {
         }
         synchronized (calls) {
             for (final Http2Stream stream : calls.values()) {
-                writer.rstStream(stream.id(), 0);
+                writer.rstStream(stream.id(), Normal._0);
             }
         }
         connection.close();
@@ -209,20 +214,22 @@ public final class Http2Codec implements HttpCodec {
      * @param request request
      */
     private void writeBody(final Http2Stream stream, final HttpRequest request) {
-        final byte[] buffer = new byte[8192];
-        try (InputStream input = request.body().stream()) {
+        final Buffer buffer = new Buffer();
+        try (Source input = request.body().source()) {
             final long declared = request.body().length();
             long remaining = declared;
-            int read = input.read(buffer);
-            while (read >= 0) {
-                if (read > 0) {
-                    final boolean end = declared >= 0 && (remaining -= read) <= 0;
-                    writer.data(stream.id(), ByteBuffer.wrap(buffer, 0, read), end);
+            long read = input.read(buffer, Normal._8192);
+            while (read >= Normal._0) {
+                if (read > Normal._0) {
+                    final boolean end = declared >= Normal._0 && (remaining -= read) <= Normal._0;
+                    final Buffer data = new Buffer();
+                    data.write(buffer, read);
+                    writer.data(stream.id(), data, end);
                 }
-                read = input.read(buffer);
+                read = input.read(buffer, Normal._8192);
             }
-            if (declared < 0) {
-                writer.data(stream.id(), ByteBuffer.allocate(0), true);
+            if (declared < Normal._0) {
+                writer.data(stream.id(), new Buffer(), true);
             }
         } catch (final IOException e) {
             throw new SocketException("Unable to read HTTP/2 request body", e);
@@ -237,9 +244,9 @@ public final class Http2Codec implements HttpCodec {
      */
     private static Headers pseudoHeaders(final HttpRequest request) {
         final UnoUrl url = request.url();
-        Headers headers = Headers.builder().add(":method", request.method().value())
-                .add(":scheme", url.address().scheme()).add(":authority", authority(url))
-                .add(":path", path(url.toUri())).build();
+        Headers headers = Headers.builder().add(HTTP.TARGET_METHOD_UTF8, request.method().value())
+                .add(HTTP.TARGET_SCHEME_UTF8, url.address().scheme()).add(HTTP.TARGET_AUTHORITY_UTF8, authority(url))
+                .add(HTTP.TARGET_PATH_UTF8, path(url.toUri())).build();
         for (final Map.Entry<String, List<String>> entry : request.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
                 headers = headers.with(entry.getKey().toLowerCase(Locale.ROOT), value);
@@ -312,7 +319,7 @@ public final class Http2Codec implements HttpCodec {
     private static int parseStatus(final String value) {
         try {
             final int code = Integer.parseInt(value);
-            if (code < 100 || code > 599) {
+            if (code < HTTP.HTTP_CONTINUE || code >= Normal._600) {
                 throw new ProtocolException("Invalid HTTP/2 status");
             }
             return code;
@@ -328,7 +335,7 @@ public final class Http2Codec implements HttpCodec {
      * @return media
      */
     private static MediaType media(final Headers headers) {
-        final String contentType = headers.get("Content-Type");
+        final String contentType = headers.get(HTTP.CONTENT_TYPE);
         return contentType == null ? BINARY : MediaType.parse(contentType);
     }
 
@@ -341,10 +348,7 @@ public final class Http2Codec implements HttpCodec {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

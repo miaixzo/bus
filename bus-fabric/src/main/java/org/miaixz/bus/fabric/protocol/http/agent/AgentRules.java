@@ -22,7 +22,9 @@ package org.miaixz.bus.fabric.protocol.http.agent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Shared helpers for User-Agent classifiers.
@@ -46,7 +48,7 @@ final class AgentRules {
      * @return pattern or null
      */
     static Pattern compile(final String rule) {
-        return rule == null ? null : Pattern.compile(rule, Pattern.CASE_INSENSITIVE);
+        return rule == null ? null : org.miaixz.bus.core.center.regex.Pattern.get(rule, Pattern.CASE_INSENSITIVE);
     }
 
     /**
@@ -82,9 +84,7 @@ final class AgentRules {
      * @return name
      */
     static String name(final String name) {
-        if (name == null || name.isBlank()) {
-            throw new ValidateException("Agent component name must be non-blank");
-        }
+        Assert.isFalse(StringKit.isBlank(name), () -> new ValidateException("Agent component name must be non-blank"));
         return name;
     }
 

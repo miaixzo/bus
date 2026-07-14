@@ -22,9 +22,13 @@ package org.miaixz.bus.fabric.protocol.http.codec;
 import java.net.URI;
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 
@@ -35,11 +39,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  * @since Java 21+
  */
 public final class HttpLine {
-
-    /**
-     * HTTP version token used by HTTP/1 codecs.
-     */
-    private static final String HTTP_1_1 = "HTTP/1.1";
 
     /**
      * Creates utility helpers.
@@ -55,11 +54,10 @@ public final class HttpLine {
      * @return request line
      */
     public static String request(final HttpRequest request) {
-        if (request == null) {
-            throw new ValidateException("HTTP request must not be null");
-        }
-        final String method = token(request.method().value(), "HTTP method").toUpperCase(Locale.ROOT);
-        return method + Symbol.SPACE + target(request.url().toUri()) + Symbol.SPACE + HTTP_1_1;
+        final HttpRequest current = Assert
+                .notNull(request, () -> new ValidateException("HTTP request must not be null"));
+        final String method = token(current.method().value(), "HTTP method").toUpperCase(Locale.ROOT);
+        return method + Symbol.SPACE + target(current.url().toUri()) + Symbol.SPACE + Protocol.HTTP_1_1;
     }
 
     /**
@@ -71,17 +69,18 @@ public final class HttpLine {
     public static int status(final String line) {
         final String value = singleLine(line, "HTTP status line");
         final int first = value.indexOf(Symbol.SPACE);
-        if (first <= 0 || !value.substring(0, first).startsWith("HTTP/")) {
+        if (first <= Normal._0 || !value.substring(Normal._0, first).startsWith("HTTP/")) {
             throw new ValidateException("Invalid HTTP status line");
         }
-        final int second = value.indexOf(Symbol.SPACE, first + 1);
-        final String codeText = second < 0 ? value.substring(first + 1) : value.substring(first + 1, second);
-        if (codeText.length() != 3) {
+        final int second = value.indexOf(Symbol.SPACE, first + Normal._1);
+        final String codeText = second < Normal._0 ? value.substring(first + Normal._1)
+                : value.substring(first + Normal._1, second);
+        if (codeText.length() != Normal._3) {
             throw new ProtocolException("Invalid HTTP status code");
         }
         try {
             final int code = Integer.parseInt(codeText);
-            if (code < 100 || code > 999) {
+            if (code < HTTP.HTTP_CONTINUE || code >= Normal.KILO) {
                 throw new ProtocolException("HTTP status code out of range");
             }
             return code;
@@ -108,11 +107,9 @@ public final class HttpLine {
      * @return target
      */
     private static String target(final URI uri) {
-        if (uri == null) {
-            throw new ValidateException("HTTP request URI must not be null");
-        }
-        final String path = StringKit.isBlank(uri.getRawPath()) ? Symbol.SLASH : uri.getRawPath();
-        final String query = uri.getRawQuery();
+        final URI current = Assert.notNull(uri, () -> new ValidateException("HTTP request URI must not be null"));
+        final String path = StringKit.isBlank(current.getRawPath()) ? Symbol.SLASH : current.getRawPath();
+        final String query = current.getRawQuery();
         if (StringKit.containsAny(path, Symbol.C_CR, Symbol.C_LF)
                 || StringKit.containsAny(query, Symbol.C_CR, Symbol.C_LF)) {
             throw new ProtocolException("Invalid HTTP request target");
@@ -129,7 +126,7 @@ public final class HttpLine {
      */
     private static String token(final String value, final String name) {
         final String token = singleLine(value, name);
-        for (int i = 0; i < token.length(); i++) {
+        for (int i = Normal._0; i < token.length(); i++) {
             final char c = token.charAt(i);
             if (!tchar(c)) {
                 throw new ProtocolException(name + " contains invalid token characters");
@@ -145,9 +142,9 @@ public final class HttpLine {
      * @return value
      */
     private static String headerValue(final String value) {
-        if (value == null || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("HTTP header value must be non-null and single-line");
-        }
+        Assert.isFalse(
+                value == null || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("HTTP header value must be non-null and single-line"));
         return value;
     }
 
@@ -159,9 +156,9 @@ public final class HttpLine {
      * @return value
      */
     private static String singleLine(final String value, final String name) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(name + " must be non-blank and single-line");
-        }
+        Assert.isFalse(
+                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(name + " must be non-blank and single-line"));
         return value;
     }
 

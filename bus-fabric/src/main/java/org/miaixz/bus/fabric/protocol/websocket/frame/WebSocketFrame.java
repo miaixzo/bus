@@ -20,25 +20,29 @@
 package org.miaixz.bus.fabric.protocol.websocket.frame;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.protocol.websocket.WebSocketClose;
 
 /**
  * Immutable WebSocket frame payload snapshot.
  *
  * @param opcode  frame opcode
  * @param fin     final-fragment flag
- * @param payload payload snapshot
+ * @param payload immutable payload snapshot
  * @param control control-frame flag
  * @author Kimi Liu
  * @since Java 21+
  */
-public record WebSocketFrame(int opcode, boolean fin, ByteBuffer payload, boolean control) {
+public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolean control) {
 
     /**
      * Continuation opcode.
@@ -71,9 +75,19 @@ public record WebSocketFrame(int opcode, boolean fin, ByteBuffer payload, boolea
     private static final int PONG = 0xA;
 
     /**
-     * Maximum in-memory payload.
+     * Maximum message payload bytes accepted by this implementation.
      */
-    private static final int MAX_PAYLOAD = 16 * 1024 * 1024;
+    private static final long MAX_PAYLOAD_BYTES = Normal._16 * Normal.MEBI;
+
+    /**
+     * Maximum control frame payload bytes.
+     */
+    private static final int MAX_CONTROL_PAYLOAD_BYTES = 125;
+
+    /**
+     * First disallowed text control code point.
+     */
+    private static final char MIN_TEXT_CODE_POINT = 0x20;
 
     /**
      * Creates a frame snapshot.
@@ -90,7 +104,7 @@ public record WebSocketFrame(int opcode, boolean fin, ByteBuffer payload, boolea
         if (control && !fin) {
             throw new ProtocolException("WebSocket control frame must be final");
         }
-        if (control && payload.remaining() > 125) {
+        if (control && payload.size() > MAX_CONTROL_PAYLOAD_BYTES) {
             throw new ProtocolException("WebSocket control payload is too large");
         }
     }
@@ -102,8 +116,18 @@ public record WebSocketFrame(int opcode, boolean fin, ByteBuffer payload, boolea
      * @return text frame
      */
     public static WebSocketFrame text(final String value) {
+        return of(TEXT, true, validateText(value));
+    }
+
+    /**
+     * Creates a text frame.
+     *
+     * @param value text bytes
+     * @return text frame
+     */
+    public static WebSocketFrame text(final ByteString value) {
         validateText(value);
-        return of(TEXT, true, ByteBuffer.wrap(value.getBytes(StandardCharsets.UTF_8)));
+        return of(TEXT, true, value);
     }
 
     /**
@@ -111,9 +135,21 @@ public record WebSocketFrame(int opcode, boolean fin, ByteBuffer payload, boolea
      *
      * @param payload payload
      * @return binary frame
+     * @deprecated use {@link #binary(ByteString)}
      */
+    @Deprecated(since = "8.8.3")
     public static WebSocketFrame binary(final ByteBuffer payload) {
-        return of(BINARY, true, payload);
+        return of(BINARY, true, ByteString.of(require(payload, "WebSocket payload").duplicate()));
+    }
+
+    /**
+     * Creates a binary frame.
+     *
+     * @param payload payload bytes
+     * @return binary frame
+     */
+    public static WebSocketFrame binary(final ByteString payload) {
+        return of(BINARY, true, require(payload, "WebSocket payload"));
     }
 
     /**
@@ -124,14 +160,14 @@ public record WebSocketFrame(int opcode, boolean fin, ByteBuffer payload, boolea
      * @return close frame
      */
     public static WebSocketFrame close(final int code, final String reason) {
-        final String text = validateClose(code, reason);
-        final byte[] reasonBytes = text.getBytes(StandardCharsets.UTF_8);
-        if (reasonBytes.length > 123) {
-            throw new ProtocolException("WebSocket close reason is too large");
-        }
-        final ByteBuffer buffer = ByteBuffer.allocate(2 + reasonBytes.length);
-        buffer.putShort((short) code).put(reasonBytes).flip();
-        return of(CLOSE, true, buffer);
+        final WebSocketClose close = WebSocketClose.of(code, reason);
+        final ByteString reasonBytes = ByteString.encodeUtf8(close.reason());
+        final byte[] reasonData = reasonBytes.toByteArray();
+        final byte[] payload = new byte[Short.BYTES + reasonData.length];
+        payload[0] = (byte) (code >>> Byte.SIZE);
+        payload[1] = (byte) code;
+        System.arraycopy(reasonData, 0, payload, Short.BYTES, reasonData.length);
+        return of(CLOSE, true, ByteString.of(payload));
     }
 
     /**
@@ -142,18 +178,19 @@ public record WebSocketFrame(int opcode, boolean fin, ByteBuffer payload, boolea
      * @param payload payload
      * @return frame
      */
-    private static WebSocketFrame of(final int opcode, final boolean fin, final ByteBuffer payload) {
+    private static WebSocketFrame of(final int opcode, final boolean fin, final ByteString payload) {
         return new WebSocketFrame(opcode, fin, payload, opcode >= CLOSE);
     }
 
     /**
-     * Returns a read-only payload view.
+     * Returns a read-only payload buffer view.
      *
-     * @return read-only payload
+     * @return read-only payload buffer
+     * @deprecated use {@link #payload()}
      */
-    @Override
-    public ByteBuffer payload() {
-        return payload.asReadOnlyBuffer();
+    @Deprecated(since = "8.8.3")
+    public ByteBuffer byteBuffer() {
+        return payload.asByteBuffer();
     }
 
     /**
@@ -175,17 +212,12 @@ public record WebSocketFrame(int opcode, boolean fin, ByteBuffer payload, boolea
      * @param payload payload
      * @return read-only payload
      */
-    private static ByteBuffer snapshot(final ByteBuffer payload) {
-        if (payload == null) {
-            throw new ValidateException("WebSocket payload must not be null");
-        }
-        if (payload.remaining() > MAX_PAYLOAD) {
+    private static ByteString snapshot(final ByteString payload) {
+        final ByteString checked = require(payload, "WebSocket payload");
+        if (checked.size() > MAX_PAYLOAD_BYTES) {
             throw new ProtocolException("WebSocket payload is too large");
         }
-        final ByteBuffer duplicate = payload.duplicate();
-        final ByteBuffer copy = ByteBuffer.allocate(duplicate.remaining());
-        copy.put(duplicate).flip();
-        return copy.asReadOnlyBuffer();
+        return ByteString.of(checked.toByteArray());
     }
 
     /**
@@ -193,48 +225,51 @@ public record WebSocketFrame(int opcode, boolean fin, ByteBuffer payload, boolea
      *
      * @param value text value
      */
-    private static void validateText(final String value) {
-        if (value == null) {
-            throw new ValidateException("WebSocket text must not be null");
-        }
-        for (int i = 0; i < value.length(); i++) {
-            final char current = value.charAt(i);
-            if (current < 0x20 && current != Symbol.C_CR && current != Symbol.C_LF) {
+    private static ByteString validateText(final String value) {
+        final String checked = require(value, "WebSocket text");
+        for (int i = Normal._0; i < checked.length(); i++) {
+            final char current = checked.charAt(i);
+            if (current < MIN_TEXT_CODE_POINT && current != Symbol.C_CR && current != Symbol.C_LF) {
                 throw new ValidateException("WebSocket text contains an invalid control character");
             }
         }
+        return ByteString.encodeUtf8(checked);
     }
 
     /**
-     * Validates close code and reason.
+     * Validates text bytes.
      *
-     * @param code   close code
-     * @param reason close reason
-     * @return normalized reason
+     * @param value text bytes
      */
-    private static String validateClose(final int code, final String reason) {
-        if (!validCloseCode(code)) {
-            throw new ValidateException("Invalid WebSocket close code");
-        }
-        final String text = reason == null ? Normal.EMPTY : reason;
-        if (StringKit.containsAny(text, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("WebSocket close reason must be single-line");
-        }
-        if (text.getBytes(StandardCharsets.UTF_8).length > 123) {
-            throw new ValidateException("WebSocket close reason is too large");
-        }
-        return text;
+    private static void validateText(final ByteString value) {
+        validateText(decodeUtf8(require(value, "WebSocket text")));
     }
 
     /**
-     * Returns whether a close code can be sent on the wire.
+     * Decodes text bytes as strict UTF-8.
      *
-     * @param code close code
-     * @return true when valid
+     * @param value text bytes
+     * @return decoded text
      */
-    private static boolean validCloseCode(final int code) {
-        return code == 1000 || code >= 1001 && code <= 1014 && code != 1005 && code != 1006
-                || code >= 3000 && code <= 4999;
+    private static String decodeUtf8(final ByteString value) {
+        try {
+            return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(value.asByteBuffer()).toString();
+        } catch (final CharacterCodingException e) {
+            throw new ValidateException("WebSocket text must be valid UTF-8", e);
+        }
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value value
+     * @param name  name
+     * @param <T>   value type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

@@ -26,10 +26,9 @@
 module bus.fabric {
 
     requires bus.core;
-    requires bus.logger;
     requires bus.crypto;
+    requires bus.logger;
 
-    requires static lombok;
     requires static jakarta.servlet;
     requires static jakarta.xml.soap;
 
@@ -40,7 +39,6 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.codec;
     exports org.miaixz.bus.fabric.codec.body;
     exports org.miaixz.bus.fabric.codec.frame;
-    exports org.miaixz.bus.fabric.codec.stream;
     exports org.miaixz.bus.fabric.guard;
     exports org.miaixz.bus.fabric.guard.body;
     exports org.miaixz.bus.fabric.guard.frame;
@@ -48,31 +46,30 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.guard.tls;
     exports org.miaixz.bus.fabric.network;
     exports org.miaixz.bus.fabric.network.aio;
-    exports org.miaixz.bus.fabric.network.proxy;
-    exports org.miaixz.bus.fabric.network.tcp;
-    exports org.miaixz.bus.fabric.network.udp;
-    exports org.miaixz.bus.fabric.network.kcp;
     exports org.miaixz.bus.fabric.network.dns;
     exports org.miaixz.bus.fabric.network.dns.suffix;
+    exports org.miaixz.bus.fabric.network.kcp;
+    exports org.miaixz.bus.fabric.network.proxy;
+    exports org.miaixz.bus.fabric.network.tcp;
     exports org.miaixz.bus.fabric.network.tls;
     exports org.miaixz.bus.fabric.network.tls.cert;
     exports org.miaixz.bus.fabric.network.tls.context;
-    exports org.miaixz.bus.fabric.network.tls.handshake;
+    exports org.miaixz.bus.fabric.network.udp;
     exports org.miaixz.bus.fabric.observe;
     exports org.miaixz.bus.fabric.observe.event;
-    exports org.miaixz.bus.fabric.observe.nimble;
-    exports org.miaixz.bus.fabric.observe.tag;
-    exports org.miaixz.bus.fabric.observe.watch;
+    exports org.miaixz.bus.fabric.observe.metrics;
+    exports org.miaixz.bus.fabric.observe.tags;
+    exports org.miaixz.bus.fabric.observe.timing;
     exports org.miaixz.bus.fabric.observe.window;
     exports org.miaixz.bus.fabric.protocol;
     exports org.miaixz.bus.fabric.protocol.http;
     exports org.miaixz.bus.fabric.protocol.http.agent;
     exports org.miaixz.bus.fabric.protocol.http.auth;
     exports org.miaixz.bus.fabric.protocol.http.body;
-    exports org.miaixz.bus.fabric.protocol.http.chain;
     exports org.miaixz.bus.fabric.protocol.http.cache;
-    exports org.miaixz.bus.fabric.protocol.http.codec;
     exports org.miaixz.bus.fabric.protocol.http.calls;
+    exports org.miaixz.bus.fabric.protocol.http.chain;
+    exports org.miaixz.bus.fabric.protocol.http.codec;
     exports org.miaixz.bus.fabric.protocol.http.http2;
     exports org.miaixz.bus.fabric.protocol.socket;
     exports org.miaixz.bus.fabric.protocol.socket.body;
@@ -80,8 +77,8 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.protocol.socket.frame;
     exports org.miaixz.bus.fabric.protocol.sse;
     exports org.miaixz.bus.fabric.protocol.sse.body;
-    exports org.miaixz.bus.fabric.protocol.sse.event;
     exports org.miaixz.bus.fabric.protocol.sse.calls;
+    exports org.miaixz.bus.fabric.protocol.sse.event;
     exports org.miaixz.bus.fabric.protocol.stomp;
     exports org.miaixz.bus.fabric.protocol.stomp.body;
     exports org.miaixz.bus.fabric.protocol.stomp.broker;

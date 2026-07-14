@@ -17,17 +17,18 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.observe.nimble;
+package org.miaixz.bus.fabric.observe.metrics;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -98,10 +99,10 @@ public final class FabricMeter {
      * @param duration duration
      */
     public void timing(final String name, final Duration duration) {
-        if (duration == null || duration.isNegative()) {
-            throw new ValidateException("Duration must be non-null and non-negative");
-        }
-        timings.computeIfAbsent(validateName(name), key -> new Timing()).record(duration.toNanos());
+        final Duration checked = Assert
+                .notNull(duration, () -> new ValidateException("Duration must be non-null and non-negative"));
+        Assert.isFalse(checked.isNegative(), () -> new ValidateException("Duration must be non-null and non-negative"));
+        timings.computeIfAbsent(validateName(name), key -> new Timing()).record(checked.toNanos());
     }
 
     /**
@@ -110,7 +111,7 @@ public final class FabricMeter {
      * @return metric snapshot
      */
     public Map<String, Long> snapshot() {
-        final LinkedHashMap<String, Long> snapshot = new LinkedHashMap<>();
+        final Map<String, Long> snapshot = MapKit.newHashMap(counters.size() + timings.size() * 3, true);
         counters.forEach((name, value) -> snapshot.put(name, value.sum()));
         timings.forEach((name, timing) -> {
             snapshot.put(name + ".count", timing.count());
@@ -135,10 +136,12 @@ public final class FabricMeter {
      * @return metric name
      */
     private static String validateName(final String name) {
-        if (StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Metric name must be non-blank and single-line");
-        }
-        return name;
+        final String checked = Assert
+                .notBlank(name, () -> new ValidateException("Metric name must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Metric name must be non-blank and single-line"));
+        return checked;
     }
 
     /**

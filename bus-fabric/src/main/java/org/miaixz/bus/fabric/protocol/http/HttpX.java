@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -230,10 +233,7 @@ public final class HttpX {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -626,7 +626,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder userAgent(final String value) {
-            return replaceHeader("User-Agent", value);
+            return replaceHeader(HTTP.USER_AGENT, value);
         }
 
         /**
@@ -858,7 +858,7 @@ public final class HttpX {
             ensureBodyMode(BodyMode.MULTIPART);
             parts.add(
                     MultipartBody.Part.file(
-                            name == null || name.isBlank() ? "file" : name,
+                            StringKit.isBlank(name) ? "file" : name,
                             path,
                             MediaType.APPLICATION_OCTET_STREAM_TYPE));
             return this;
@@ -898,12 +898,11 @@ public final class HttpX {
             final File current = require(file, "File");
             final Path path = current.toPath();
             final Path fileName = path.getFileName();
-            final String selected = filename == null || filename.isBlank()
-                    ? fileName == null ? "file" : fileName.toString()
+            final String selected = StringKit.isBlank(filename) ? fileName == null ? "file" : fileName.toString()
                     : stringValue(filename, "File name");
             parts.add(
                     MultipartBody.Part.file(
-                            name == null || name.isBlank() ? "file" : name,
+                            StringKit.isBlank(name) ? "file" : name,
                             selected,
                             path,
                             MediaType.APPLICATION_OCTET_STREAM_TYPE));
@@ -922,7 +921,7 @@ public final class HttpX {
             ensureBodyMode(BodyMode.MULTIPART);
             parts.add(
                     MultipartBody.Part.file(
-                            name == null || name.isBlank() ? "file" : name,
+                            StringKit.isBlank(name) ? "file" : name,
                             stringValue(filename, "File name"),
                             Payload.of(require(content, "File content")),
                             MediaType.APPLICATION_OCTET_STREAM_TYPE));
@@ -943,22 +942,37 @@ public final class HttpX {
         }
 
         /**
-         * Appends a file part from a stream.
+         * Appends a file part from a source.
+         *
+         * @param name     file part name
+         * @param filename filename
+         * @param input    file source
+         * @param length   declared length, or -1 when unknown
+         * @return this builder
+         */
+        public Builder file(final String name, final String filename, final Source input, final long length) {
+            ensureBodyMode(BodyMode.MULTIPART);
+            parts.add(
+                    MultipartBody.Part.file(
+                            StringKit.isBlank(name) ? "file" : name,
+                            stringValue(filename, "File name"),
+                            Payload.source(require(input, "File source"), length),
+                            MediaType.APPLICATION_OCTET_STREAM_TYPE));
+            return this;
+        }
+
+        /**
+         * Appends a file part from a stream through the JDK stream compatibility boundary.
          *
          * @param name     file part name
          * @param filename filename
          * @param input    file input
          * @return this builder
+         * @deprecated use {@link #file(String, String, Source, long)}
          */
+        @Deprecated(since = "8.8.3")
         public Builder file(final String name, final String filename, final InputStream input) {
-            ensureBodyMode(BodyMode.MULTIPART);
-            parts.add(
-                    MultipartBody.Part.file(
-                            name == null || name.isBlank() ? "file" : name,
-                            stringValue(filename, "File name"),
-                            Payload.stream(require(input, "File input"), -1),
-                            MediaType.APPLICATION_OCTET_STREAM_TYPE));
-            return this;
+            return file(name, filename, org.miaixz.bus.core.xyz.IoKit.source(require(input, "File input")), -1);
         }
 
         /**
@@ -984,10 +998,10 @@ public final class HttpX {
          */
         public Builder file(final String name, final String filename, final String content, final String charsetName) {
             final Charset charset = Charset.forName(validateText(charsetName, "Charset name"));
-            if (content == null) {
-                throw new ValidateException("File content must not be null");
-            }
-            return file(name, filename, content.getBytes(charset));
+            return file(
+                    name,
+                    filename,
+                    ByteString.encodeString(require(content, "File content"), charset).toByteArray());
         }
 
         /**
@@ -1063,13 +1077,13 @@ public final class HttpX {
         /**
          * Sets a streaming body.
          *
-         * @param input  body stream
+         * @param input  body source
          * @param length declared length, or -1 when unknown
          * @return this builder
          */
-        public Builder body(final InputStream input, final long length) {
+        public Builder body(final Source input, final long length) {
             ensureBodyMode(BodyMode.BODY);
-            this.body = Payload.stream(require(input, "Body stream"), length);
+            this.body = Payload.source(require(input, "Body source"), length);
             this.media = MediaType.APPLICATION_OCTET_STREAM_TYPE;
             return this;
         }
@@ -1077,11 +1091,38 @@ public final class HttpX {
         /**
          * Sets a streaming body with explicit media.
          *
-         * @param input  body stream
+         * @param input  body source
          * @param length declared length, or -1 when unknown
          * @param media  media
          * @return this builder
          */
+        public Builder body(final Source input, final long length, final MediaType media) {
+            return body(input, length).media(media);
+        }
+
+        /**
+         * Sets a streaming body through the JDK stream compatibility boundary.
+         *
+         * @param input  body stream
+         * @param length declared length, or -1 when unknown
+         * @return this builder
+         * @deprecated use {@link #body(Source, long)}
+         */
+        @Deprecated(since = "8.8.3")
+        public Builder body(final InputStream input, final long length) {
+            return body(org.miaixz.bus.core.xyz.IoKit.source(require(input, "Body stream")), length);
+        }
+
+        /**
+         * Sets a streaming body with explicit media through the JDK stream compatibility boundary.
+         *
+         * @param input  body stream
+         * @param length declared length, or -1 when unknown
+         * @param media  media
+         * @return this builder
+         * @deprecated use {@link #body(Source, long, MediaType)}
+         */
+        @Deprecated(since = "8.8.3")
         public Builder body(final InputStream input, final long length, final MediaType media) {
             return body(input, length).media(media);
         }
@@ -1257,7 +1298,7 @@ public final class HttpX {
          */
         public Builder soap(final String namespace, final String method, final Map<String, ?> params) {
             final SoapBody soap = SoapBody.envelope().namespace(namespace).method(method).params(params).build();
-            headers.set("SOAPAction", soap.action());
+            headers.set(HTTP.SOAPACTION, soap.action());
             return body(soap.body());
         }
 
@@ -1291,10 +1332,10 @@ public final class HttpX {
          * @return this builder
          */
         public Builder range(final long start, final long end) {
-            if (start < 0 || end < 0 || end < start) {
-                throw new ValidateException("Range bounds must be non-negative and ordered");
-            }
-            headers.set("Range", "bytes=" + start + Symbol.C_MINUS + end);
+            Assert.isTrue(
+                    start >= 0 && end >= 0 && end >= start,
+                    () -> new ValidateException("Range bounds must be non-negative and ordered"));
+            headers.set(HTTP.RANGE, "bytes=" + start + Symbol.C_MINUS + end);
             return this;
         }
 
@@ -1444,9 +1485,9 @@ public final class HttpX {
          * @return this builder
          */
         public Builder timeout(final Duration timeout) {
-            if (timeout == null || timeout.isNegative()) {
-                throw new ValidateException("Timeout must be non-null and non-negative");
-            }
+            Assert.isTrue(
+                    timeout != null && !timeout.isNegative(),
+                    () -> new ValidateException("Timeout must be non-null and non-negative"));
             this.timeout = Timeout.of(timeout);
             return this;
         }
@@ -1544,11 +1585,11 @@ public final class HttpX {
             final Headers current = headers.build();
             final Headers.Builder builder = Headers.builder();
             current.asMap().forEach((name, values) -> values.forEach(value -> builder.add(name, value)));
-            if (body.length() > 0 && !current.contains("Content-Length")) {
-                builder.set("Content-Length", Long.toString(body.length()));
+            if (body.length() > 0 && !current.contains(HTTP.CONTENT_LENGTH)) {
+                builder.set(HTTP.CONTENT_LENGTH, Long.toString(body.length()));
             }
-            if (!current.contains("Content-Type") && body.length() != 0) {
-                builder.set("Content-Type", body.media().value());
+            if (!current.contains(HTTP.CONTENT_TYPE) && body.length() != 0) {
+                builder.set(HTTP.CONTENT_TYPE, body.media().value());
             }
             return builder.build();
         }
@@ -1774,9 +1815,9 @@ public final class HttpX {
          * @return value
          */
         private static String validateText(final String value, final String name) {
-            if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-                throw new ValidateException(name + " must be non-blank and single-line");
-            }
+            Assert.isFalse(
+                    StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                    () -> new ValidateException(name + " must be non-blank and single-line"));
             return value;
         }
 

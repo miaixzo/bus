@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -57,6 +58,16 @@ import org.miaixz.bus.fabric.protocol.websocket.calls.WebSocketCall;
  * @since Java 21+
  */
 public final class WebSocketX {
+
+    /**
+     * Runtime option key for default timeout.
+     */
+    private static final String TIMEOUT_OPTION = "timeout";
+
+    /**
+     * WebSocket subprotocol request header.
+     */
+    private static final String HEADER_SEC_WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
 
     /**
      * Immutable execution snapshot.
@@ -228,10 +239,7 @@ public final class WebSocketX {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -247,7 +255,7 @@ public final class WebSocketX {
         try {
             final URI uri = new URI(value.trim());
             final String scheme = uri.getScheme();
-            if (!"ws".equalsIgnoreCase(scheme) && !"wss".equalsIgnoreCase(scheme)) {
+            if (!Protocol.WS.name.equalsIgnoreCase(scheme) && !Protocol.WSS.name.equalsIgnoreCase(scheme)) {
                 throw new ProtocolException("WebSocket URL must use ws or wss");
             }
             Address.from(uri);
@@ -265,10 +273,10 @@ public final class WebSocketX {
      * @return duration
      */
     private static Duration validateDuration(final Duration duration, final String name) {
-        if (duration == null || duration.isNegative()) {
-            throw new ValidateException(name + " must be non-null and non-negative");
-        }
-        return duration;
+        final Duration checked = Assert
+                .notNull(duration, () -> new ValidateException(name + " must be non-null and non-negative"));
+        Assert.isFalse(checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
+        return checked;
     }
 
     /**
@@ -342,7 +350,7 @@ public final class WebSocketX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get("timeout", Timeout.class);
+            final Timeout configured = context.options().get(TIMEOUT_OPTION, Timeout.class);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.observer = EventObserver.noop();
             this.callback = Wiring.callback();
@@ -394,7 +402,7 @@ public final class WebSocketX {
          * @return this builder
          */
         public Builder protocol(final String protocol) {
-            headers.set("Sec-WebSocket-Protocol", protocol);
+            headers.set(HEADER_SEC_WEBSOCKET_PROTOCOL, protocol);
             return this;
         }
 
@@ -536,9 +544,7 @@ public final class WebSocketX {
          * @return exchange
          */
         public WebSocketX build() {
-            if (uri == null) {
-                throw new ValidateException("WebSocket target must be set");
-            }
+            Assert.notNull(uri, () -> new ValidateException("WebSocket target must be set"));
             return new WebSocketX(this);
         }
 

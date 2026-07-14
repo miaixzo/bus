@@ -25,9 +25,12 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.runtime.Activity;
 
@@ -119,7 +122,7 @@ public final class DispatchWorker implements AutoCloseable {
         }
         executor.shutdown();
         try {
-            if (!executor.awaitTermination(5L, TimeUnit.SECONDS)) {
+            if (!executor.awaitTermination(Normal._5, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
             }
         } catch (final InterruptedException e) {
@@ -143,7 +146,7 @@ public final class DispatchWorker implements AutoCloseable {
             future.complete(null);
         } catch (final RuntimeException e) {
             final Throwable failure = activity.failure();
-            future.completeExceptionally(failure == null ? e : failure);
+            future.completeExceptionally(ObjectKit.defaultIfNull(failure, e));
         }
     }
 
@@ -156,10 +159,7 @@ public final class DispatchWorker implements AutoCloseable {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

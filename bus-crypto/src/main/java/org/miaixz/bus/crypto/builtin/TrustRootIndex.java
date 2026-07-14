@@ -17,10 +17,10 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.network.tls.cert;
+package org.miaixz.bus.crypto.builtin;
 
-import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -29,7 +29,9 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.crypto.Keeper;
 
 /**
  * In-memory trusted root lookup keyed by subject principal.
@@ -37,7 +39,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class TrustRootIndexAdapter {
+public final class TrustRootIndex {
 
     /**
      * CA certificates by subject.
@@ -49,7 +51,7 @@ public final class TrustRootIndexAdapter {
      *
      * @param caCerts CA certificates
      */
-    private TrustRootIndexAdapter(final Collection<X509Certificate> caCerts) {
+    private TrustRootIndex(final Collection<X509Certificate> caCerts) {
         if (caCerts == null || caCerts.stream().anyMatch(certificate -> certificate == null)) {
             throw new ValidateException("CA certificates must be non-null and contain no null elements");
         }
@@ -68,11 +70,9 @@ public final class TrustRootIndexAdapter {
      * @param caCerts CA certificates
      * @return index
      */
-    public static TrustRootIndexAdapter of(final X509Certificate... caCerts) {
-        if (caCerts == null) {
-            throw new ValidateException("CA certificates must not be null");
-        }
-        return new TrustRootIndexAdapter(java.util.Arrays.asList(caCerts));
+    public static TrustRootIndex of(final X509Certificate... caCerts) {
+        return new TrustRootIndex(Arrays
+                .asList(Assert.notNull(caCerts, () -> new ValidateException("CA certificates must not be null"))));
     }
 
     /**
@@ -81,8 +81,8 @@ public final class TrustRootIndexAdapter {
      * @param caCerts CA certificates
      * @return index
      */
-    public static TrustRootIndexAdapter of(final Collection<X509Certificate> caCerts) {
-        return new TrustRootIndexAdapter(caCerts);
+    public static TrustRootIndex of(final Collection<X509Certificate> caCerts) {
+        return new TrustRootIndex(caCerts);
     }
 
     /**
@@ -92,20 +92,15 @@ public final class TrustRootIndexAdapter {
      * @return trusted signing certificate or null
      */
     public X509Certificate findByIssuerAndSignature(final X509Certificate certificate) {
-        if (certificate == null) {
-            throw new ValidateException("Certificate must not be null");
-        }
-        final Set<X509Certificate> candidates = subjectToCaCerts.get(certificate.getIssuerX500Principal());
+        final X509Certificate checkedCertificate = Assert
+                .notNull(certificate, () -> new ValidateException("Certificate must not be null"));
+        final Set<X509Certificate> candidates = subjectToCaCerts.get(checkedCertificate.getIssuerX500Principal());
         if (candidates == null) {
             return null;
         }
         for (final X509Certificate candidate : candidates) {
-            final PublicKey publicKey = candidate.getPublicKey();
-            try {
-                certificate.verify(publicKey);
+            if (Keeper.isSignedBy(checkedCertificate, candidate)) {
                 return candidate;
-            } catch (final Exception ignored) {
-                // Try the next certificate with the same subject.
             }
         }
         return null;

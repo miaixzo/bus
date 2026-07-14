@@ -178,6 +178,11 @@ public class Args extends Specifics {
     public static final int PROTOCOL_LLM = 6;
 
     /**
+     * Route protocol for public slug forwarding assets.
+     */
+    public static final int PROTOCOL_SLUG = 7;
+
+    /**
      * Checks if the given path is a RESTful API proxy request path.
      *
      * @param path The URL path string to check.

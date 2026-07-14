@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.protocol.http.http2;
 
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -44,7 +45,7 @@ public record Http2Header(String name, String value, boolean pseudo) {
      * @param pseudo caller supplied pseudo flag
      */
     public Http2Header {
-        name = validate(name, "HTTP/2 header name").toLowerCase(Locale.ROOT);
+        name = normalize(validate(name, "HTTP/2 header name"));
         value = validate(value, "HTTP/2 header value");
         pseudo = name.startsWith(Symbol.COLON);
     }
@@ -57,8 +58,7 @@ public record Http2Header(String name, String value, boolean pseudo) {
      * @return header
      */
     public static Http2Header of(final String name, final String value) {
-        final String checkedName = validate(name, "HTTP/2 header name").toLowerCase(Locale.ROOT);
-        return new Http2Header(checkedName, value, checkedName.startsWith(Symbol.COLON));
+        return new Http2Header(name, value, false);
     }
 
     /**
@@ -69,10 +69,20 @@ public record Http2Header(String name, String value, boolean pseudo) {
      * @return value
      */
     private static String validate(final String value, final String name) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(name + " must be non-blank and single-line");
-        }
+        Assert.isFalse(
+                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(name + " must be non-blank and single-line"));
         return value;
+    }
+
+    /**
+     * Normalizes an HTTP/2 header name.
+     *
+     * @param value header name
+     * @return lower-case name
+     */
+    private static String normalize(final String value) {
+        return value.toLowerCase(Locale.ROOT);
     }
 
 }

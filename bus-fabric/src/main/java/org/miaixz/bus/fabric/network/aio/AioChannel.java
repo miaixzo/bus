@@ -31,6 +31,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
@@ -121,14 +123,8 @@ public final class AioChannel implements AutoCloseable {
      */
     private AioChannel(final AsynchronousSocketChannel channel, final Dispatcher dispatcher,
             final boolean ownsDispatcher, final SocketOptions options) {
-        if (channel == null) {
-            throw new ValidateException("AIO channel must not be null");
-        }
-        if (dispatcher == null) {
-            throw new ValidateException("AIO dispatcher must not be null");
-        }
-        this.channel = channel;
-        this.dispatcher = dispatcher;
+        this.channel = Assert.notNull(channel, () -> new ValidateException("AIO channel must not be null"));
+        this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("AIO dispatcher must not be null"));
         this.ownsDispatcher = ownsDispatcher;
         this.options = options == null ? SocketOptions.defaults() : options;
         this.closed = new AtomicBoolean();
@@ -143,29 +139,27 @@ public final class AioChannel implements AutoCloseable {
      * @return connection future
      */
     public CompletableFuture<Void> connect(final SocketAddress address, final Timeout timeout) {
-        if (address == null) {
-            throw new ValidateException("Socket address must not be null");
-        }
-        if (timeout == null) {
-            throw new ValidateException("Timeout must not be null");
-        }
-        if (!timeout.connect().isZero() && timeout.connect().toNanos() <= 1L) {
+        final SocketAddress checkedAddress = Assert
+                .notNull(address, () -> new ValidateException("Socket address must not be null"));
+        final Timeout checkedTimeout = Assert.notNull(timeout, () -> new ValidateException("Timeout must not be null"));
+        final long connectNanos = checkedTimeout.connect().toNanos();
+        if (!checkedTimeout.connect().isZero() && connectNanos <= Normal._1) {
             close();
             return CompletableFuture.failedFuture(new TimeoutException("AIO connect timed out"));
         }
         final Future<Void> operation;
         try {
-            operation = channel.connect(address);
+            operation = channel.connect(checkedAddress);
         } catch (final RuntimeException e) {
             close();
             return CompletableFuture.failedFuture(new SocketException("AIO connect failed", e));
         }
         return dispatcher.run("aio:connect", () -> {
             try {
-                if (timeout.connect().isZero()) {
+                if (checkedTimeout.connect().isZero()) {
                     operation.get();
                 } else {
-                    operation.get(timeout.connect().toNanos(), TimeUnit.NANOSECONDS);
+                    operation.get(connectNanos, TimeUnit.NANOSECONDS);
                 }
                 local = channel.getLocalAddress();
                 remote = channel.getRemoteAddress();
@@ -194,11 +188,10 @@ public final class AioChannel implements AutoCloseable {
      * @return read future
      */
     public CompletableFuture<Integer> read(final ByteBuffer target) {
-        if (target == null) {
-            throw new ValidateException("Read target must not be null");
-        }
+        final ByteBuffer checkedTarget = Assert
+                .notNull(target, () -> new ValidateException("Read target must not be null"));
         try {
-            final Future<Integer> operation = channel.read(target.duplicate());
+            final Future<Integer> operation = channel.read(checkedTarget.duplicate());
             return integerFuture(operation, "AIO read failed");
         } catch (final RuntimeException e) {
             return CompletableFuture.failedFuture(new SocketException("AIO read failed", e));
@@ -212,10 +205,9 @@ public final class AioChannel implements AutoCloseable {
      * @param handler completion handler
      */
     public void read(final ByteBuffer target, final CompletionHandler<Integer, ByteBuffer> handler) {
-        if (handler == null) {
-            throw new ValidateException("Read handler must not be null");
-        }
-        complete(target, handler, read(target));
+        final CompletionHandler<Integer, ByteBuffer> checkedHandler = Assert
+                .notNull(handler, () -> new ValidateException("Read handler must not be null"));
+        complete(target, checkedHandler, read(target));
     }
 
     /**
@@ -225,11 +217,10 @@ public final class AioChannel implements AutoCloseable {
      * @return write future
      */
     public CompletableFuture<Integer> write(final ByteBuffer source) {
-        if (source == null) {
-            throw new ValidateException("Write source must not be null");
-        }
+        final ByteBuffer checkedSource = Assert
+                .notNull(source, () -> new ValidateException("Write source must not be null"));
         try {
-            final ByteBuffer view = source.asReadOnlyBuffer();
+            final ByteBuffer view = checkedSource.asReadOnlyBuffer();
             if (view.remaining() > options.writeChunkSize()) {
                 view.limit(view.position() + options.writeChunkSize());
             }
@@ -247,10 +238,9 @@ public final class AioChannel implements AutoCloseable {
      * @param handler completion handler
      */
     public void write(final ByteBuffer source, final CompletionHandler<Integer, ByteBuffer> handler) {
-        if (handler == null) {
-            throw new ValidateException("Write handler must not be null");
-        }
-        complete(source, handler, write(source));
+        final CompletionHandler<Integer, ByteBuffer> checkedHandler = Assert
+                .notNull(handler, () -> new ValidateException("Write handler must not be null"));
+        complete(source, checkedHandler, write(source));
     }
 
     /**

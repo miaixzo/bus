@@ -27,6 +27,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -98,13 +100,13 @@ public final class DispatchQueue {
                 iterator.remove();
                 continue;
             }
-            final int countForKey = runningByKey.getOrDefault(handle.key(), 0);
+            final int countForKey = runningByKey.getOrDefault(handle.key(), Normal._0);
             if (!limit.canPromote(running.size(), countForKey)) {
                 continue;
             }
             iterator.remove();
             running.add(handle);
-            runningByKey.put(handle.key(), countForKey + 1);
+            runningByKey.put(handle.key(), countForKey + Normal._1);
             promoted.add(handle);
         }
         return List.copyOf(promoted);
@@ -119,11 +121,11 @@ public final class DispatchQueue {
         require(handle, "Dispatch handle");
         if (running.remove(handle)) {
             final String key = handle.key();
-            final int count = runningByKey.getOrDefault(key, 0);
-            if (count <= 1) {
+            final int count = runningByKey.getOrDefault(key, Normal._0);
+            if (count <= Normal._1) {
                 runningByKey.remove(key);
             } else {
-                runningByKey.put(key, count - 1);
+                runningByKey.put(key, count - Normal._1);
             }
         }
     }
@@ -181,11 +183,11 @@ public final class DispatchQueue {
      * @param key dispatch key
      */
     private void decrement(final String key) {
-        final int count = runningByKey.getOrDefault(key, 0);
-        if (count <= 1) {
+        final int count = runningByKey.getOrDefault(key, Normal._0);
+        if (count <= Normal._1) {
             runningByKey.remove(key);
         } else {
-            runningByKey.put(key, count - 1);
+            runningByKey.put(key, count - Normal._1);
         }
     }
 
@@ -198,10 +200,7 @@ public final class DispatchQueue {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

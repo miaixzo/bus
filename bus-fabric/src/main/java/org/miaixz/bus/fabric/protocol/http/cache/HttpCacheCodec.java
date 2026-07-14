@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.http.cache;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
@@ -163,7 +164,7 @@ final class HttpCacheCodec {
             throw new ProtocolException("Cache entry is not an HTTP entry");
         }
         final HttpRequest request = HttpRequest.builder()
-                .method(HTTP.Method.valueOf(requiredMetadata(metadata, META_METHOD)))
+                .method(HTTP.Method.of(requiredMetadata(metadata, META_METHOD)))
                 .url(UnoUrl.parse(requiredMetadata(metadata, META_URL)))
                 .headers(readHeaders(metadata, META_REQUEST_HEADER_NAME, META_REQUEST_HEADER_VALUE)).build();
         return HttpResponse.builder().request(request).code(readCode(metadata))
@@ -215,13 +216,13 @@ final class HttpCacheCodec {
      * @return merged headers
      */
     static Headers mergeHeaders(final Headers cached, final Headers network) {
-        Headers merged = cached;
+        final Headers.Builder merged = cached.newBuilder();
         for (final Map.Entry<String, List<String>> entry : network.asMap().entrySet()) {
             for (final String value : entry.getValue()) {
-                merged = merged.with(entry.getKey(), value);
+                merged.set(entry.getKey(), value);
             }
         }
-        return merged;
+        return merged.build();
     }
 
     /**
@@ -275,10 +276,7 @@ final class HttpCacheCodec {
      */
     private static String requiredMetadata(final Headers metadata, final String name) {
         final String value = metadata.get(name);
-        if (value == null) {
-            throw new ProtocolException("Cache entry missing metadata " + name);
-        }
-        return value;
+        return Assert.notNull(value, () -> new ProtocolException("Cache entry missing metadata " + name));
     }
 
     /**
@@ -327,9 +325,7 @@ final class HttpCacheCodec {
         }
         try {
             final long parsed = Long.parseLong(value);
-            if (parsed < 0) {
-                throw new ProtocolException("Cached HTTP timestamp must be non-negative");
-            }
+            Assert.isFalse(parsed < 0, () -> new ProtocolException("Cached HTTP timestamp must be non-negative"));
             return parsed;
         } catch (final NumberFormatException e) {
             throw new ProtocolException("Invalid cached HTTP timestamp", e);

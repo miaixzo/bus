@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.protocol.websocket;
 
 import java.net.URI;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Callback;
@@ -77,10 +78,7 @@ record WebSocketSnapshot(Context context, URI uri, Address address, Headers head
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

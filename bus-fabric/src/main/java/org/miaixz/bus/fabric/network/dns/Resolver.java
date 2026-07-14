@@ -23,10 +23,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.NetKit;
 
 /**
  * Host resolver contract with a default JDK DNS implementation.
@@ -43,7 +41,7 @@ public interface Resolver {
      * @return immutable address list
      */
     default List<InetAddress> resolve(final String host) {
-        final String validHost = validateHost(host);
+        final String validHost = NetKit.normalizeHost(host, "Resolver host");
         try {
             return List.of(InetAddress.getAllByName(validHost));
         } catch (final UnknownHostException e) {
@@ -58,21 +56,8 @@ public interface Resolver {
      * @return true when supported
      */
     default boolean supports(final String host) {
-        validateHost(host);
+        NetKit.normalizeHost(host, "Resolver host");
         return true;
-    }
-
-    /**
-     * Validates host names.
-     *
-     * @param host host
-     * @return normalized host
-     */
-    private static String validateHost(final String host) {
-        if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Resolver host must be non-blank and single-line");
-        }
-        return host.trim();
     }
 
 }

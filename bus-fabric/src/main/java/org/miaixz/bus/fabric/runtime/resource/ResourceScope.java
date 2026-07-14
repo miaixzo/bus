@@ -22,9 +22,11 @@ package org.miaixz.bus.fabric.runtime.resource;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -75,19 +77,17 @@ public final class ResourceScope implements AutoCloseable {
      * @return original resource
      */
     public synchronized <T extends AutoCloseable> T add(final T resource) {
-        if (resource == null) {
-            throw new ValidateException("Resource must not be null");
-        }
+        final T current = Assert.notNull(resource, () -> new ValidateException("Resource must not be null"));
         if (closed.get()) {
             try {
-                resource.close();
+                current.close();
             } catch (final Exception e) {
                 throw new InternalException("Unable to close rejected resource", e);
             }
             throw new StatefulException("Resource scope is closed");
         }
-        resources.addLast(resource);
-        return resource;
+        resources.addLast(current);
+        return current;
     }
 
     /**
@@ -97,10 +97,9 @@ public final class ResourceScope implements AutoCloseable {
      * @return true when removed
      */
     public synchronized boolean remove(final AutoCloseable resource) {
-        if (resource == null) {
-            throw new ValidateException("Resource must not be null");
-        }
-        return resources.remove(resource);
+        final AutoCloseable current = Assert
+                .notNull(resource, () -> new ValidateException("Resource must not be null"));
+        return resources.remove(current);
     }
 
     /**
@@ -126,9 +125,7 @@ public final class ResourceScope implements AutoCloseable {
             try {
                 resource.close();
             } catch (final Exception e) {
-                if (failure == null) {
-                    failure = e;
-                }
+                failure = ObjectKit.defaultIfNull(failure, e);
             }
         }
         if (failure != null) {
@@ -142,10 +139,8 @@ public final class ResourceScope implements AutoCloseable {
      * @param owner owner object
      */
     public void leak(final Object owner) {
-        if (owner == null) {
-            throw new ValidateException("Leak owner must not be null");
-        }
-        Logger.debug(false, LOG_TAG, "Resource scope leak detected: owner={}, resources={}", owner, size());
+        final Object current = Assert.notNull(owner, () -> new ValidateException("Leak owner must not be null"));
+        Logger.debug(false, LOG_TAG, "Resource scope leak detected: owner={}, resources={}", current, size());
         close();
     }
 

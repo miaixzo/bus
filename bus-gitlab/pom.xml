@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Gitlab</description>
+    <description>Bus GitLab - GitLab client surface for repositories, pipelines, issues, merge requests and project administration.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

@@ -22,6 +22,9 @@ package org.miaixz.bus.fabric.codec.frame;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import org.miaixz.bus.core.codec.Decoder;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -31,7 +34,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface FrameCodec {
+public interface FrameCodec extends Decoder<Buffer, List<Frame>> {
 
     /**
      * Creates the default line codec.
@@ -56,7 +59,25 @@ public interface FrameCodec {
      * @return fixed-length codec
      */
     static FrameCodec length(final int length) {
-        return LengthCodec.of(length);
+        return FixedCodec.of(length);
+    }
+
+    /**
+     * Creates the default length-field codec.
+     *
+     * @return length-field codec
+     */
+    static FrameCodec lengthField() {
+        return LengthCodec.create();
+    }
+
+    /**
+     * Creates a raw byte codec.
+     *
+     * @return raw codec
+     */
+    static FrameCodec raw() {
+        return RawCodec.create();
     }
 
     /**
@@ -65,15 +86,49 @@ public interface FrameCodec {
      * @param input input bytes
      * @return decoded frames
      */
-    List<Frame> decode(ByteBuffer input);
+    List<Frame> decode(Buffer input);
 
     /**
      * Encodes a frame.
      *
+     * @param frame  frame
+     * @param output output buffer
+     */
+    void encode(Frame frame, Buffer output);
+
+    /**
+     * Decodes frames from a JDK byte buffer compatibility boundary.
+     *
+     * @param input input bytes
+     * @return decoded frames
+     * @deprecated use {@link #decode(Buffer)}
+     */
+    @Deprecated(since = "8.8.3")
+    default List<Frame> decode(final ByteBuffer input) {
+        final ByteBuffer checkedInput = Assert
+                .notNull(input, () -> new ValidateException("Frame input must not be null"));
+        final Buffer buffer = new Buffer();
+        try {
+            buffer.write(checkedInput.duplicate());
+        } catch (final java.io.IOException e) {
+            throw new InternalException("Unable to adapt frame input", e);
+        }
+        return decode(buffer);
+    }
+
+    /**
+     * Encodes a frame to a JDK byte buffer compatibility boundary.
+     *
      * @param frame frame
      * @return encoded bytes
+     * @deprecated use {@link #encode(Frame, Buffer)}
      */
-    ByteBuffer encode(Frame frame);
+    @Deprecated(since = "8.8.3")
+    default ByteBuffer encode(final Frame frame) {
+        final Buffer output = new Buffer();
+        encode(frame, output);
+        return ByteBuffer.wrap(output.readByteArray()).asReadOnlyBuffer();
+    }
 
     /**
      * Resets codec state.

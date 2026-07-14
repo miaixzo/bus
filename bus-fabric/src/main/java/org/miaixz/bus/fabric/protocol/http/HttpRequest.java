@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
@@ -255,9 +256,9 @@ public final class HttpRequest {
      * @param body   body
      */
     private static void validateBodyPolicy(final HTTP.Method method, final HttpBody body) {
-        if (!method.supportsBody() && body.length() > 0) {
-            throw new ValidateException("HTTP method does not support a body");
-        }
+        Assert.isFalse(
+                !method.supportsBody() && body.length() > 0,
+                () -> new ValidateException("HTTP method does not support a body"));
     }
 
     /**
@@ -289,10 +290,7 @@ public final class HttpRequest {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -385,7 +383,7 @@ public final class HttpRequest {
          * @return this builder
          */
         public Builder userAgent(final String value) {
-            headers = headers.with("User-Agent", validateUserAgent(value));
+            headers = headers.with(HTTP.USER_AGENT, validateUserAgent(value));
             return this;
         }
 
@@ -533,9 +531,9 @@ public final class HttpRequest {
          * @return validated value
          */
         private static String validateUserAgent(final String value) {
-            if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-                throw new ValidateException("User-Agent must be non-blank and single-line");
-            }
+            Assert.isFalse(
+                    StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                    () -> new ValidateException("User-Agent must be non-blank and single-line"));
             return StringKit.trim(value);
         }
 

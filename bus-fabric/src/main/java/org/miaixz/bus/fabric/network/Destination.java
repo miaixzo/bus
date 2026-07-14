@@ -21,6 +21,8 @@ package org.miaixz.bus.fabric.network;
 
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
@@ -38,24 +40,13 @@ import org.miaixz.bus.fabric.Options;
 public record Destination(Protocol protocol, Address address, Options options) {
 
     /**
-     * Default HTTP/2 multiplex stream capacity.
-     */
-    private static final int DEFAULT_MULTIPLEX_STREAMS = 100;
-
-    /**
      * Creates a connection destination.
      */
     public Destination {
-        if (protocol == null) {
-            throw new ValidateException("Connection protocol must not be null");
-        }
-        if (address == null) {
-            throw new ValidateException("Connection address must not be null");
-        }
-        if (options == null) {
-            throw new ValidateException("Connection options must not be null");
-        }
-        options = Options.from(options.asMap());
+        protocol = Assert.notNull(protocol, () -> new ValidateException("Connection protocol must not be null"));
+        address = Assert.notNull(address, () -> new ValidateException("Connection address must not be null"));
+        options = Options.from(
+                Assert.notNull(options, () -> new ValidateException("Connection options must not be null")).asMap());
     }
 
     /**
@@ -138,12 +129,10 @@ public record Destination(Protocol protocol, Address address, Options options) {
         final Object value = options.get("maxMultiplexStreams") == null ? options.get("maxConcurrentStreams")
                 : options.get("maxMultiplexStreams");
         if (value == null) {
-            return DEFAULT_MULTIPLEX_STREAMS;
+            return Normal._100;
         }
         final int parsed = value instanceof Number number ? number.intValue() : Integer.parseInt(value.toString());
-        if (parsed <= 0) {
-            throw new ValidateException("Max multiplex streams must be positive");
-        }
+        Assert.isTrue(parsed > Normal._0, () -> new ValidateException("Max multiplex streams must be positive"));
         return parsed;
     }
 

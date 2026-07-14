@@ -18,14 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines normalized tag names and sanitization rules for observation events.
+ * Implements lightweight in-process metric counters for fabric observations.
  *
  * <p>
- * Tag utilities keep observer metadata stable and safe by redacting sensitive values, normalizing key/value text and
- * avoiding unnecessary allocation for common tags. They must not inspect payload bytes or decide event severity.
+ * Metric objects collect counts, totals and timing values without depending on an external metrics registry. They are
+ * intended for local diagnostics and tests; exporting to a monitoring backend belongs outside this package.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.fabric.observe.tag;
+package org.miaixz.bus.fabric.observe.metrics;

@@ -22,10 +22,12 @@ package org.miaixz.bus.fabric.protocol.http.cache;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.protocol.http.HttpHeaders;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
@@ -62,9 +64,9 @@ final class HttpCacheKey {
      * @return key prefix
      */
     static String baseKey(final HttpRequest request) {
-        if (request.method() == null || request.url() == null) {
-            throw new ValidateException("HTTP request must contain method and URL");
-        }
+        Assert.isTrue(
+                request.method() != null && request.url() != null,
+                () -> new ValidateException("HTTP request must contain method and URL"));
         return request.method().value() + Symbol.AT + request.url().toUri();
     }
 
@@ -76,17 +78,7 @@ final class HttpCacheKey {
      * @return true when the cached response can satisfy the request
      */
     static boolean varyMatches(final HttpResponse cached, final HttpRequest request) {
-        final String vary = cached.headers().get("Vary");
-        if (vary == null || vary.isBlank()) {
-            return true;
-        }
-        for (final String name : vary.split(Symbol.COMMA)) {
-            final String normalized = name.trim().toLowerCase(Locale.ROOT);
-            if (!cached.request().headers().values(normalized).equals(request.headers().values(normalized))) {
-                return false;
-            }
-        }
-        return true;
+        return HttpHeaders.varyMatches(cached.request().headers(), request.headers(), cached.headers());
     }
 
     /**

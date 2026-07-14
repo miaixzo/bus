@@ -23,8 +23,11 @@ import java.io.IOException;
 import java.time.Duration;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 
 /**
  * Immutable retry and redirect policy.
@@ -88,10 +91,13 @@ public final class RetryPolicy {
      * @return true when retry is allowed
      */
     public boolean retry(final Throwable cause, final int attempt) {
-        if (cause == null || attempt < 0) {
-            throw new ValidateException("Retry cause must be non-null and attempt must not be negative");
-        }
-        return retryOnConnectionFailure && attempt < maxFollowUps && connectionFailure(cause);
+        final Throwable current = Assert.notNull(
+                cause,
+                () -> new ValidateException("Retry cause must be non-null and attempt must not be negative"));
+        Assert.isFalse(
+                attempt < Normal._0,
+                () -> new ValidateException("Retry cause must be non-null and attempt must not be negative"));
+        return retryOnConnectionFailure && attempt < maxFollowUps && connectionFailure(current);
     }
 
     /**
@@ -102,11 +108,11 @@ public final class RetryPolicy {
      * @return true when redirect is allowed
      */
     public boolean redirect(final int status, final int followUps) {
-        if (status < 100 || followUps < 0) {
-            throw new ValidateException("Status and follow-up count are invalid");
-        }
+        Assert.isFalse(
+                status < Normal._100 || followUps < Normal._0,
+                () -> new ValidateException("Status and follow-up count are invalid"));
         return followUps < maxFollowUps && switch (status) {
-            case 300, 301, 302, 303, 307, 308 -> true;
+            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> true;
             default -> false;
         };
     }
@@ -118,13 +124,11 @@ public final class RetryPolicy {
      * @return retry delay
      */
     public Duration delay(final int attempt) {
-        if (attempt < 0) {
-            throw new ValidateException("Retry attempt must not be negative");
-        }
-        if (attempt == 0 || baseDelay.isZero()) {
+        Assert.isFalse(attempt < Normal._0, () -> new ValidateException("Retry attempt must not be negative"));
+        if (attempt == Normal._0 || baseDelay.isZero()) {
             return Duration.ZERO;
         }
-        return baseDelay.multipliedBy(1L << Math.min(attempt - 1, 30));
+        return baseDelay.multipliedBy(1L << Math.min(attempt - Normal._1, Normal._30));
     }
 
     /**
@@ -149,7 +153,7 @@ public final class RetryPolicy {
         /**
          * Maximum follow-ups candidate.
          */
-        private int maxFollowUps = 20;
+        private int maxFollowUps = Normal._20;
 
         /**
          * Retry flag candidate.
@@ -175,9 +179,7 @@ public final class RetryPolicy {
          * @return this builder
          */
         public Builder maxFollowUps(final int max) {
-            if (max < 0) {
-                throw new ValidateException("Max follow-ups must not be negative");
-            }
+            Assert.isFalse(max < Normal._0, () -> new ValidateException("Max follow-ups must not be negative"));
             this.maxFollowUps = max;
             return this;
         }
@@ -199,10 +201,12 @@ public final class RetryPolicy {
          * @return retry policy
          */
         public RetryPolicy build() {
-            if (baseDelay == null || baseDelay.isNegative()) {
-                throw new ValidateException("Base delay must be non-null and non-negative");
-            }
-            return new RetryPolicy(maxFollowUps, retryOnConnectionFailure, baseDelay);
+            final Duration currentDelay = Assert
+                    .notNull(baseDelay, () -> new ValidateException("Base delay must be non-null and non-negative"));
+            Assert.isFalse(
+                    currentDelay.isNegative(),
+                    () -> new ValidateException("Base delay must be non-null and non-negative"));
+            return new RetryPolicy(maxFollowUps, retryOnConnectionFailure, currentDelay);
         }
 
     }

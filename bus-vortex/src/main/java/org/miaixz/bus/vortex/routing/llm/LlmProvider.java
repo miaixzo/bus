@@ -50,8 +50,7 @@ public interface LlmProvider {
     /**
      * Sends a streaming chat completion request to the LLM service.
      * <p>
-     * The response is returned as Server-Sent Events (SSE) in the format: {@code data:
-     * {"choices":[{"delta":{"content":"token"}}]}}
+     * The response is returned as Server-Sent Events (SSE), where each data chunk carries a delta content token.
      *
      * @param request The LLM request containing messages, model, and parameters.
      * @return A {@link Flux} emitting SSE-formatted response chunks.

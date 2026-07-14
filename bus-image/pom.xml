@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Image</description>
+    <description>Bus Image - Imaging pipeline for raster conversion, EXIF metadata, DICOM studies and pixel transformations.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

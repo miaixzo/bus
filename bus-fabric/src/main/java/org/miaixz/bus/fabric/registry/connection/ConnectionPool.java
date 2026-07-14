@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
@@ -277,15 +278,17 @@ public final class ConnectionPool implements AutoCloseable {
      * @return leaked lease count
      */
     public int pruneLeaked(final Duration maxAge, final Clock clock) {
-        if (maxAge == null || maxAge.isNegative()) {
-            throw new ValidateException("Leak max age must be non-null and non-negative");
-        }
+        final Duration currentMaxAge = Assert
+                .notNull(maxAge, () -> new ValidateException("Leak max age must be non-null and non-negative"));
+        Assert.isFalse(
+                currentMaxAge.isNegative(),
+                () -> new ValidateException("Leak max age must be non-null and non-negative"));
         require(clock, "Runtime clock");
         final List<ConnectionLease> leaked = new ArrayList<>();
         synchronized (lock) {
             final Instant now = clock.now();
             for (final ConnectionLease lease : leased) {
-                if (Duration.between(lease.acquiredAt(), now).compareTo(maxAge) > 0) {
+                if (Duration.between(lease.acquiredAt(), now).compareTo(currentMaxAge) > 0) {
                     leaked.add(lease);
                 }
             }
@@ -855,10 +858,7 @@ public final class ConnectionPool implements AutoCloseable {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

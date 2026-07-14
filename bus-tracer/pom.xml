@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Tracer</description>
+    <description>Bus Tracer - Request-chain tracing for inbound calls, span linkage, context handoff and diagnostic timelines.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

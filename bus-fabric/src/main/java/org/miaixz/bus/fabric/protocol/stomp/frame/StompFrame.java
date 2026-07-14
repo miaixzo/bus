@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.protocol.stomp.frame;
 
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -40,6 +41,11 @@ import org.miaixz.bus.fabric.Payload;
 public record StompFrame(String command, Headers headers, Payload body, boolean receipt) {
 
     /**
+     * STOMP receipt request header.
+     */
+    private static final String HEADER_RECEIPT = "receipt";
+
+    /**
      * Creates a validated frame.
      *
      * @param command command
@@ -51,7 +57,7 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
         command = validateCommand(command);
         headers = require(headers, "STOMP headers");
         body = require(body, "STOMP body");
-        receipt = headers.contains("receipt");
+        receipt = headers.contains(HEADER_RECEIPT);
     }
 
     /**
@@ -63,7 +69,7 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
      * @return frame
      */
     public static StompFrame of(final String command, final Headers headers, final Payload body) {
-        return new StompFrame(command, headers, body, headers != null && headers.contains("receipt"));
+        return new StompFrame(command, headers, body, headers != null && headers.contains(HEADER_RECEIPT));
     }
 
     /**
@@ -128,10 +134,7 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

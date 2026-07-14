@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 
 import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.Normal;
@@ -151,8 +153,7 @@ public class ExceptionKit {
     }
 
     /**
-     * Unwraps nested exceptions like `InvocationTargetException` and `UndeclaredThrowableException` to get the
-     * underlying business exception.
+     * Unwraps nested reflection and asynchronous wrapper exceptions to get the underlying business exception.
      *
      * @param wrapped The wrapped exception.
      * @return The unwrapped (original) exception.
@@ -164,6 +165,10 @@ public class ExceptionKit {
                 unwrapped = ((InvocationTargetException) unwrapped).getTargetException();
             } else if (unwrapped instanceof UndeclaredThrowableException) {
                 unwrapped = ((UndeclaredThrowableException) unwrapped).getUndeclaredThrowable();
+            } else if (unwrapped instanceof CompletionException && unwrapped.getCause() != null) {
+                unwrapped = unwrapped.getCause();
+            } else if (unwrapped instanceof ExecutionException && unwrapped.getCause() != null) {
+                unwrapped = unwrapped.getCause();
             } else {
                 return unwrapped;
             }

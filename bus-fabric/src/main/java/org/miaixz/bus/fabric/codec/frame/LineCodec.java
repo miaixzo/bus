@@ -19,14 +19,17 @@
 */
 package org.miaixz.bus.fabric.codec.frame;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
  * Delimiter-based line frame codec.
@@ -37,31 +40,21 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public final class LineCodec implements FrameCodec {
 
     /**
-     * Maximum frame payload length.
-     */
-    private static final int MAX_FRAME = 16_777_216;
-
-    /**
-     * Maximum delimiter length.
-     */
-    private static final int MAX_DELIMITER = 1024;
-
-    /**
      * Frame delimiter.
      */
-    private final byte[] delimiter;
+    private final ByteString delimiter;
 
     /**
      * Decoder buffer.
      */
-    private final FrameBuffer buffer = new FrameBuffer();
+    private final Buffer buffer = new Buffer();
 
     /**
      * Creates a line codec.
      *
      * @param delimiter delimiter
      */
-    private LineCodec(final byte[] delimiter) {
+    private LineCodec(final ByteString delimiter) {
         this.delimiter = validateDelimiter(delimiter);
     }
 
@@ -71,7 +64,7 @@ public final class LineCodec implements FrameCodec {
      * @return codec
      */
     public static LineCodec create() {
-        return new LineCodec(new byte[] { (byte) Symbol.C_LF });
+        return new LineCodec(ByteString.of((byte) Symbol.C_LF));
     }
 
     /**
@@ -81,6 +74,16 @@ public final class LineCodec implements FrameCodec {
      * @return codec
      */
     public static LineCodec of(final byte[] delimiter) {
+        return new LineCodec(delimiter == null ? null : ByteString.of(delimiter));
+    }
+
+    /**
+     * Creates a codec with a custom delimiter.
+     *
+     * @param delimiter delimiter
+     * @return codec
+     */
+    public static LineCodec of(final ByteString delimiter) {
         return new LineCodec(delimiter);
     }
 
@@ -91,23 +94,27 @@ public final class LineCodec implements FrameCodec {
      * @return frames
      */
     @Override
-    public List<Frame> decode(final ByteBuffer input) {
+    public List<Frame> decode(final Buffer input) {
         validateInput(input);
-        buffer.append(input.duplicate());
+        buffer.write(input, input.size());
         final ArrayList<Frame> frames = new ArrayList<>();
         while (buffer.size() > 0) {
             final int index = indexOf(buffer, delimiter);
             if (index < 0) {
-                if (buffer.size() > MAX_FRAME) {
+                if (buffer.size() > Normal._16 * Normal.MEBI) {
                     throw new ProtocolException("Line frame exceeds maximum length");
                 }
                 break;
             }
-            if (index > MAX_FRAME) {
+            if (index > Normal._16 * Normal.MEBI) {
                 throw new ProtocolException("Line frame exceeds maximum length");
             }
-            frames.add(Frame.of(buffer.read(index)));
-            buffer.discard(delimiter.length);
+            try {
+                frames.add(Frame.of(buffer.readByteString(index)));
+                buffer.skip(delimiter.size());
+            } catch (final java.io.EOFException e) {
+                throw new InternalException("Unable to read line frame", e);
+            }
         }
         return List.copyOf(frames);
     }
@@ -115,20 +122,16 @@ public final class LineCodec implements FrameCodec {
     /**
      * Encodes a line frame.
      *
-     * @param frame frame
-     * @return encoded bytes
+     * @param frame  frame
+     * @param output encoded byte destination
      */
     @Override
-    public ByteBuffer encode(final Frame frame) {
-        if (frame == null) {
-            throw new ValidateException("Frame must not be null");
-        }
-        final ByteBuffer payload = frame.payload();
-        final ByteBuffer encoded = ByteBuffer.allocate(payload.remaining() + delimiter.length);
-        encoded.put(payload);
-        encoded.put(delimiter);
-        encoded.flip();
-        return encoded;
+    public void encode(final Frame frame, final Buffer output) {
+        final Frame checkedFrame = Assert.notNull(frame, () -> new ValidateException("Frame must not be null"));
+        final Buffer checkedOutput = Assert
+                .notNull(output, () -> new ValidateException("Frame output must not be null"));
+        checkedOutput.write(checkedFrame.payload());
+        checkedOutput.write(delimiter);
     }
 
     /**
@@ -145,11 +148,13 @@ public final class LineCodec implements FrameCodec {
      * @param delimiter delimiter
      * @return delimiter copy
      */
-    private static byte[] validateDelimiter(final byte[] delimiter) {
-        if (delimiter == null || delimiter.length == 0 || delimiter.length > MAX_DELIMITER) {
-            throw new ValidateException("Frame delimiter must contain 1 to 1024 bytes");
-        }
-        return ArrayKit.clone(delimiter);
+    private static ByteString validateDelimiter(final ByteString delimiter) {
+        final ByteString checkedDelimiter = Assert
+                .notNull(delimiter, () -> new ValidateException("Frame delimiter must contain 1 to 1024 bytes"));
+        Assert.isTrue(
+                checkedDelimiter.size() > 0 && checkedDelimiter.size() <= Normal._1024,
+                () -> new ValidateException("Frame delimiter must contain 1 to 1024 bytes"));
+        return ByteString.of(checkedDelimiter.internalArray());
     }
 
     /**
@@ -157,10 +162,10 @@ public final class LineCodec implements FrameCodec {
      *
      * @param input input buffer
      */
-    private static void validateInput(final ByteBuffer input) {
-        if (input == null || !input.hasRemaining()) {
-            throw new ValidateException("Frame input must not be empty");
-        }
+    private static void validateInput(final Buffer input) {
+        Assert.isTrue(
+                Assert.notNull(input, () -> new ValidateException("Frame input must not be empty")).size() > 0,
+                () -> new ValidateException("Frame input must not be empty"));
     }
 
     /**
@@ -170,20 +175,16 @@ public final class LineCodec implements FrameCodec {
      * @param delimiter delimiter
      * @return index or -1
      */
-    private static int indexOf(final FrameBuffer buffer, final byte[] delimiter) {
-        for (int i = 0; i <= buffer.size() - delimiter.length; i++) {
-            boolean matched = true;
-            for (int j = 0; j < delimiter.length; j++) {
-                if (buffer.get(i + j) != delimiter[j]) {
-                    matched = false;
-                    break;
-                }
+    private static int indexOf(final Buffer buffer, final ByteString delimiter) {
+        try {
+            final long index = buffer.indexOf(delimiter);
+            if (index > Integer.MAX_VALUE) {
+                throw new ProtocolException("Line frame delimiter index exceeds integer range");
             }
-            if (matched) {
-                return i;
-            }
+            return (int) index;
+        } catch (final java.io.IOException e) {
+            throw new InternalException("Unable to search line frame delimiter", e);
         }
-        return -1;
     }
 
 }

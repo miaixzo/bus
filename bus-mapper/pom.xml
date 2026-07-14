@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Mapper</description>
+    <description>Bus Mapper - ORM mapper for entity models, SQL synthesis and data-access acceleration.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

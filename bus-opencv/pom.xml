@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus OpenCV</description>
+    <description>Bus OpenCV - Computer vision bindings for native OpenCV interop, matrix operators, codec hooks and camera capture.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.ArrayDeque;
@@ -31,6 +32,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.buffer.NioBuffer;
+import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
+import org.miaixz.bus.core.io.buffer.SlabBufferAllocator;
+import org.miaixz.bus.core.io.buffer.SliceBuffer;
+import org.miaixz.bus.core.io.buffer.WriteBuffer;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -57,7 +67,7 @@ import org.miaixz.bus.fabric.network.udp.UdpSession;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.socket.body.SocketBody;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketFrame;
@@ -163,9 +173,34 @@ public final class SocketSession implements Session {
     private final SocketOptions socketOptions;
 
     /**
-     * Retained read buffer when configured.
+     * Allocator for connection read buffers.
      */
-    private final ByteBuffer retainedReadBuffer;
+    private final NioBufferAllocator readAllocator;
+
+    /**
+     * Retained read buffer lease when configured.
+     */
+    private final NioBuffer retainedReadBuffer;
+
+    /**
+     * Slab allocator for connection write slices.
+     */
+    private final SlabBufferAllocator writeAllocator;
+
+    /**
+     * Core write queue for stream connections.
+     */
+    private final WriteBuffer writeBuffer;
+
+    /**
+     * Tail future used to serialize stream writes.
+     */
+    private final AtomicReference<CompletableFuture<Void>> writeTail;
+
+    /**
+     * Active write future currently bound to the physical write queue.
+     */
+    private final AtomicReference<CompletableFuture<Void>> activeWrite;
 
     /**
      * Last activity time.
@@ -433,9 +468,20 @@ public final class SocketSession implements Session {
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
         this.socketOptions = socketOptions == null ? SocketOptions.defaults() : socketOptions;
-        this.retainedReadBuffer = this.socketOptions.retainReadBuffer()
-                ? ByteBuffer.allocate(this.socketOptions.readBufferSize())
+        this.readAllocator = connection == null ? null
+                : NioBufferAllocator.heap(
+                        this.socketOptions.readBufferSize(),
+                        this.socketOptions.retainReadBuffer() ? 1 : NioBufferAllocator.DEFAULT_MAX_IDLE);
+        this.retainedReadBuffer = this.readAllocator != null && this.socketOptions.retainReadBuffer()
+                ? this.readAllocator.allocate()
                 : null;
+        this.writeAllocator = connection == null ? null
+                : new SlabBufferAllocator(writeSlabSize(this.socketOptions), 1, false);
+        this.writeBuffer = connection == null ? null
+                : new WriteBuffer(writeAllocator.allocate(), this::writeSlice, this.socketOptions.writeChunkSize(),
+                        this.socketOptions.writeChunkCount());
+        this.writeTail = new AtomicReference<>(CompletableFuture.completedFuture(null));
+        this.activeWrite = new AtomicReference<>();
         this.lastActivityNanos = System.nanoTime();
         this.state = new AtomicReference<>(Status.OPENED);
     }
@@ -465,10 +511,8 @@ public final class SocketSession implements Session {
      * @return send call
      */
     public Call<Void> send(final Payload payload) {
-        if (payload == null) {
-            throw new ValidateException("Socket payload must not be null");
-        }
-        return send(SocketFrame.of(ByteBuffer.wrap(payload.bytes(materializeMaxBytes))));
+        require(payload, "Socket payload");
+        return send(SocketFrame.of(ByteString.of(materialize(payload, "SocketSession.send(Payload)"))));
     }
 
     /**
@@ -478,9 +522,7 @@ public final class SocketSession implements Session {
      * @return send call
      */
     public Call<Void> send(final SocketBody body) {
-        if (body == null) {
-            throw new ValidateException("Socket body must not be null");
-        }
+        require(body, "Socket body");
         return send(body.payload());
     }
 
@@ -491,9 +533,7 @@ public final class SocketSession implements Session {
      * @return send call
      */
     public Call<Void> send(final Frame frame) {
-        if (frame == null) {
-            throw new ValidateException("Frame must not be null");
-        }
+        require(frame, "Frame");
         return send(SocketFrame.of(frame.payload()));
     }
 
@@ -505,9 +545,11 @@ public final class SocketSession implements Session {
      */
     private Call<Void> send(final SocketFrame frame) {
         ensureOpen();
-        final Payload payload = Payload.of(bytes(frame.payload()));
+        final Payload payload = Payload.of(frame.payload());
         checkGuard(payload, "socket-write");
-        final ByteBuffer encoded = codec.encode(frame);
+        final Buffer output = new Buffer();
+        codec.encode(frame, output);
+        final ByteBuffer encoded = ByteBuffer.wrap(output.readByteArray()).asReadOnlyBuffer();
         final long byteCount = encoded.remaining();
         Logger.debug(
                 true,
@@ -518,7 +560,7 @@ public final class SocketSession implements Session {
                 address.port(),
                 byteCount);
         final CompletableFuture<Void> future = connection == null ? sendDatagram(encoded).thenAccept(written -> {
-            if (written == null || written < 0) {
+            if (written == null || written < Normal._0) {
                 throw new SocketException("Socket write failed");
             }
         }) : writeConnection(encoded);
@@ -679,51 +721,56 @@ public final class SocketSession implements Session {
      * @param future target future
      */
     private void readUntilFrame(final CompletableFuture<Message> future) {
-        final ByteBuffer buffer = readBuffer();
+        final NioBuffer readLease = readBuffer();
+        final ByteBuffer buffer = readLease.buffer();
         connection.read(buffer).whenComplete((read, cause) -> {
-            if (cause != null) {
-                final SocketException failure = new SocketException("Unable to read socket message", cause);
-                emit(ObservationMarker.SOCKET_FAILED, Payload.empty(), failure);
-                notifyFailure(failure);
-                future.completeExceptionally(failure);
-                close();
-                return;
-            }
-            if (read == null || read < 0) {
-                final SocketException failure = new SocketException("Socket stream closed");
-                emit(ObservationMarker.SOCKET_FAILED, Payload.empty(), failure);
-                notifyFailure(failure);
-                future.completeExceptionally(failure);
-                close();
-                return;
-            }
-            emit(ObservationMarker.SOCKET_READ, read, null);
-            Logger.debug(
-                    false,
-                    LOG_TAG,
-                    "Socket stream read completed: scheme={}, host={}, port={}, bytes={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port(),
-                    read);
-            buffer.position(0);
-            buffer.limit(read);
-            final java.util.List<SocketFrame> frames;
             try {
-                frames = codec.decode(buffer);
-            } catch (final RuntimeException e) {
-                emit(ObservationMarker.SOCKET_FAILED, read, e);
-                notifyFailure(e);
-                future.completeExceptionally(e);
-                close();
-                return;
+                if (cause != null) {
+                    final SocketException failure = new SocketException("Unable to read socket message", cause);
+                    emit(ObservationMarker.SOCKET_FAILED, Payload.empty(), failure);
+                    notifyFailure(failure);
+                    future.completeExceptionally(failure);
+                    close();
+                    return;
+                }
+                if (read == null || read < Normal._0) {
+                    final SocketException failure = new SocketException("Socket stream closed");
+                    emit(ObservationMarker.SOCKET_FAILED, Payload.empty(), failure);
+                    notifyFailure(failure);
+                    future.completeExceptionally(failure);
+                    close();
+                    return;
+                }
+                emit(ObservationMarker.SOCKET_READ, read, null);
+                Logger.debug(
+                        false,
+                        LOG_TAG,
+                        "Socket stream read completed: scheme={}, host={}, port={}, bytes={}",
+                        address.scheme(),
+                        address.host(),
+                        address.port(),
+                        read);
+                buffer.position(0);
+                buffer.limit(read);
+                final java.util.List<SocketFrame> frames;
+                try {
+                    frames = codec.decode(coreBuffer(buffer));
+                } catch (final RuntimeException e) {
+                    emit(ObservationMarker.SOCKET_FAILED, read, e);
+                    notifyFailure(e);
+                    future.completeExceptionally(e);
+                    close();
+                    return;
+                }
+                if (frames.isEmpty()) {
+                    readUntilFrame(future);
+                    return;
+                }
+                enqueuePending(frames, Normal._1);
+                completeFrame(future, frames.get(Normal._0), null);
+            } finally {
+                releaseReadBuffer(readLease);
             }
-            if (frames.isEmpty()) {
-                readUntilFrame(future);
-                return;
-            }
-            enqueuePending(frames, 1);
-            completeFrame(future, frames.get(0), null);
         });
     }
 
@@ -735,19 +782,47 @@ public final class SocketSession implements Session {
      */
     private CompletableFuture<Void> writeConnection(final ByteBuffer encoded) {
         final CompletableFuture<Void> future = new CompletableFuture<>();
-        writeConnection(encoded.asReadOnlyBuffer(), future);
+        CompletableFuture<Void> previous;
+        do {
+            previous = writeTail.get();
+        } while (!writeTail.compareAndSet(previous, future));
+        previous.whenComplete((ignored, cause) -> {
+            if (cause != null) {
+                future.completeExceptionally(unwrap(cause));
+                return;
+            }
+            activeWrite.set(future);
+            try {
+                writeBuffer.transferFrom(encoded.asReadOnlyBuffer(), current -> {
+                    activeWrite.compareAndSet(future, null);
+                    future.complete(null);
+                });
+            } catch (final IOException | RuntimeException e) {
+                activeWrite.compareAndSet(future, null);
+                future.completeExceptionally(e);
+            }
+        });
         return future;
     }
 
     /**
-     * Continues a connection write until all bytes are sent.
+     * Starts a physical write for a queued slice.
      *
-     * @param source source bytes
-     * @param future completion
+     * @param slice write slice
      */
-    private void writeConnection(final ByteBuffer source, final CompletableFuture<Void> future) {
+    private void writeSlice(final SliceBuffer slice) {
+        writeSlice(slice, slice.buffer());
+    }
+
+    /**
+     * Continues a physical slice write until all slice bytes are sent.
+     *
+     * @param slice  write slice
+     * @param source slice source
+     */
+    private void writeSlice(final SliceBuffer slice, final ByteBuffer source) {
         if (!source.hasRemaining()) {
-            future.complete(null);
+            completeSlice(slice);
             return;
         }
         final ByteBuffer chunk = source.asReadOnlyBuffer();
@@ -756,16 +831,61 @@ public final class SocketSession implements Session {
         }
         connection.write(chunk).whenComplete((written, cause) -> {
             if (cause != null) {
-                future.completeExceptionally(new SocketException("Socket write failed", cause));
+                failSlice(slice, new SocketException("Socket write failed", cause));
                 return;
             }
-            if (written == null || written <= 0) {
-                future.completeExceptionally(new SocketException("Socket write made no progress"));
+            if (written == null || written <= Normal._0) {
+                failSlice(slice, new SocketException("Socket write made no progress"));
                 return;
             }
             source.position(source.position() + written);
-            writeConnection(source, future);
+            writeSlice(slice, source);
         });
+    }
+
+    /**
+     * Completes a physical slice write and flushes the next queued slice.
+     *
+     * @param slice completed slice
+     */
+    private void completeSlice(final SliceBuffer slice) {
+        slice.release();
+        writeBuffer.finishWrite();
+        try {
+            writeBuffer.flush();
+        } catch (final RuntimeException e) {
+            failActiveWrite(e);
+        }
+    }
+
+    /**
+     * Fails the active physical write.
+     *
+     * @param slice write slice
+     * @param cause failure
+     */
+    private void failSlice(final SliceBuffer slice, final RuntimeException cause) {
+        try {
+            slice.release();
+        } catch (final RuntimeException ignored) {
+            // Preserve the write failure.
+        } finally {
+            writeBuffer.finishWrite();
+        }
+        failActiveWrite(cause);
+    }
+
+    /**
+     * Fails the active write future.
+     *
+     * @param cause failure
+     */
+    private void failActiveWrite(final Throwable cause) {
+        final Throwable failure = unwrap(cause);
+        final CompletableFuture<Void> future = activeWrite.getAndSet(null);
+        if (future != null) {
+            future.completeExceptionally(failure);
+        }
     }
 
     /**
@@ -818,8 +938,13 @@ public final class SocketSession implements Session {
                 readKcpDatagram(future, message);
                 return;
             }
-            final byte[] payload = message.payload().bytes(materializeMaxBytes);
-            emit(ObservationMarker.SOCKET_READ, payload.length, null);
+            // Datagram payloads are bounded by UDP/KCP packet limits before this materialization point.
+            final ByteString payload = ByteString.of(
+                    Payload.materialize(
+                            message.payload(),
+                            materializeMaxBytes,
+                            "SocketSession.readKcpDatagram(Payload)"));
+            emit(ObservationMarker.SOCKET_READ, payload.size(), null);
             completeDatagram(future, payload, message.tag());
         });
     }
@@ -849,7 +974,7 @@ public final class SocketSession implements Session {
             readDatagram(future);
             return;
         }
-        completeDatagram(future, inbound.payloads().get(0), message.tag());
+        completeDatagram(future, inbound.payloads().get(Normal._0), message.tag());
     }
 
     /**
@@ -859,24 +984,24 @@ public final class SocketSession implements Session {
      * @param payload payload
      * @param tag     message tag
      */
-    private void completeDatagram(final CompletableFuture<Message> future, final byte[] payload, final Object tag) {
+    private void completeDatagram(final CompletableFuture<Message> future, final ByteString payload, final Object tag) {
         final java.util.List<SocketFrame> frames;
         try {
-            frames = codec.decode(ByteBuffer.wrap(payload));
+            frames = codec.decode(new Buffer().write(payload));
         } catch (final RuntimeException e) {
-            emit(ObservationMarker.SOCKET_FAILED, payload.length, e);
+            emit(ObservationMarker.SOCKET_FAILED, payload.size(), e);
             notifyFailure(e);
             future.completeExceptionally(e);
             return;
         }
         if (frames.isEmpty()) {
             final SocketException failure = new SocketException("Socket datagram did not contain a complete frame");
-            emit(ObservationMarker.SOCKET_FAILED, payload.length, failure);
+            emit(ObservationMarker.SOCKET_FAILED, payload.size(), failure);
             notifyFailure(failure);
             future.completeExceptionally(failure);
             return;
         }
-        completeFrame(future, frames.get(0), tag);
+        completeFrame(future, frames.get(Normal._0), tag);
     }
 
     /**
@@ -887,7 +1012,7 @@ public final class SocketSession implements Session {
      * @param tag    message tag
      */
     private void completeFrame(final CompletableFuture<Message> future, final SocketFrame frame, final Object tag) {
-        final Message received = message(Payload.of(bytes(frame.payload())), tag);
+        final Message received = message(Payload.of(frame.payload()), tag);
         try {
             checkGuard(received.payload(), "socket-read");
             handler.message(this, received);
@@ -941,7 +1066,7 @@ public final class SocketSession implements Session {
      * @param cause   failure cause
      */
     private void emit(final ObservationMarker marker, final Payload payload, final Throwable cause) {
-        emit(marker, payload == null ? -1L : payload.length(), cause);
+        emit(marker, payload == null ? Normal.__1 : payload.length(), cause);
     }
 
     /**
@@ -1000,16 +1125,26 @@ public final class SocketSession implements Session {
     }
 
     /**
-     * Returns a configured read buffer.
+     * Returns a configured read buffer lease.
      *
-     * @return read buffer
+     * @return read buffer lease
      */
-    private ByteBuffer readBuffer() {
-        if (retainedReadBuffer == null) {
-            return ByteBuffer.allocate(socketOptions.readBufferSize());
+    private NioBuffer readBuffer() {
+        if (retainedReadBuffer != null) {
+            return retainedReadBuffer.clear();
         }
-        retainedReadBuffer.clear();
-        return retainedReadBuffer;
+        return readAllocator.allocate(socketOptions.readBufferSize());
+    }
+
+    /**
+     * Releases a temporary read buffer lease.
+     *
+     * @param readLease read buffer lease
+     */
+    private void releaseReadBuffer(final NioBuffer readLease) {
+        if (readLease != retainedReadBuffer) {
+            readLease.close();
+        }
     }
 
     /**
@@ -1025,6 +1160,22 @@ public final class SocketSession implements Session {
     private void closeResources(final boolean reusable) {
         clearPendingFrames();
         codec.reset();
+        if (writeBuffer != null) {
+            try {
+                writeBuffer.close();
+            } catch (final RuntimeException ignored) {
+                // Best-effort cleanup keeps the original close path.
+            }
+        }
+        if (writeAllocator != null) {
+            writeAllocator.release();
+        }
+        if (retainedReadBuffer != null) {
+            retainedReadBuffer.close();
+        }
+        if (readAllocator != null) {
+            readAllocator.close();
+        }
         if (owner instanceof SocketLease.Owner lease) {
             if (reusable) {
                 lease.release();
@@ -1122,6 +1273,48 @@ public final class SocketSession implements Session {
     }
 
     /**
+     * Adapts remaining NIO bytes to a core buffer.
+     *
+     * @param source source buffer
+     * @return core buffer
+     */
+    private static Buffer coreBuffer(final ByteBuffer source) {
+        final Buffer target = new Buffer();
+        try {
+            target.write(source.duplicate());
+        } catch (final IOException e) {
+            throw new InternalException("Unable to adapt socket buffer", e);
+        }
+        return target;
+    }
+
+    /**
+     * Materializes a payload through the configured session limit.
+     *
+     * @param payload   payload
+     * @param operation operation name
+     * @return payload bytes
+     */
+    private byte[] materialize(final Payload payload, final String operation) {
+        try {
+            return Payload.materialize(payload, materializeMaxBytes, operation);
+        } catch (final RuntimeException e) {
+            throw new SocketException("Unable to materialize socket payload for " + operation, e);
+        }
+    }
+
+    /**
+     * Computes the slab size for connection write buffering.
+     *
+     * @param options socket options
+     * @return slab size
+     */
+    private static int writeSlabSize(final SocketOptions options) {
+        final long size = (long) options.writeChunkSize() * options.writeChunkCount();
+        return size > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) size;
+    }
+
+    /**
      * Unwraps completion causes.
      *
      * @param cause completion cause
@@ -1140,10 +1333,7 @@ public final class SocketSession implements Session {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -1270,9 +1460,10 @@ public final class SocketSession implements Session {
          * @param timeout timeout
          */
         private static void validateTimeout(final Duration timeout) {
-            if (timeout == null || timeout.isNegative()) {
-                throw new ValidateException("Timeout must be non-null and non-negative");
-            }
+            Assert.notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
+            Assert.isTrue(
+                    !timeout.isNegative(),
+                    () -> new ValidateException("Timeout must be non-null and non-negative"));
         }
 
     }

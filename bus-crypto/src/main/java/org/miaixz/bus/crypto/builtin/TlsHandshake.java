@@ -17,12 +17,12 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.network.tls.handshake;
+package org.miaixz.bus.crypto.builtin;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.network.tls.cert.CertificateChain;
 
 /**
  * Immutable TLS handshake metadata.
@@ -41,9 +41,7 @@ public record TlsHandshake(String protocol, String cipher, CertificateChain peer
     public TlsHandshake {
         protocol = validateToken(protocol, "TLS protocol");
         cipher = validateToken(cipher, "TLS cipher");
-        if (peer == null) {
-            throw new ValidateException("Peer certificate chain must not be null");
-        }
+        peer = Assert.notNull(peer, () -> new ValidateException("Peer certificate chain must not be null"));
     }
 
     /**

@@ -142,7 +142,12 @@ public final class Device {
      * @return device
      */
     public static Device parse(final String text) {
-        for (final Device device : devices()) {
+        for (final Device device : MOBILE_DEVICES) {
+            if (device.matches(text)) {
+                return device;
+            }
+        }
+        for (final Device device : DESKTOP_DEVICES) {
             if (device.matches(text)) {
                 return device;
             }

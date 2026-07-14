@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.cache;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
@@ -40,12 +41,8 @@ public record CacheEntry(Headers metadata, Payload payload) {
      * @param payload  body payload
      */
     public CacheEntry {
-        if (metadata == null) {
-            throw new ValidateException("Cache metadata must not be null");
-        }
-        if (payload == null) {
-            throw new ValidateException("Cache payload must not be null");
-        }
+        Assert.notNull(metadata, () -> new ValidateException("Cache metadata must not be null"));
+        Assert.notNull(payload, () -> new ValidateException("Cache payload must not be null"));
     }
 
     /**

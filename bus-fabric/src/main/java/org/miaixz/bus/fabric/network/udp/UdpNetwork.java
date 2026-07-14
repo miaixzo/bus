@@ -26,9 +26,12 @@ import java.util.EnumSet;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Wiring;
@@ -75,10 +78,7 @@ public final class UdpNetwork implements AutoCloseable {
      * @param listener lifecycle listener
      */
     private UdpNetwork(final AioGroup group, final Listener<Object> listener) {
-        if (group == null) {
-            throw new ValidateException("AIO group must not be null");
-        }
-        this.group = group;
+        this.group = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
         this.channels = new ConcurrentLinkedDeque<>();
         this.closed = new AtomicBoolean();
         this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
@@ -112,14 +112,13 @@ public final class UdpNetwork implements AutoCloseable {
      * @return UDP channel
      */
     public UdpChannel bind(final Address address) {
-        if (address == null) {
-            throw new ValidateException("UDP bind address must not be null");
-        }
-        requireUdp(address);
+        final Address checkedAddress = Assert
+                .notNull(address, () -> new ValidateException("UDP bind address must not be null"));
+        requireUdp(checkedAddress);
         try {
             final DatagramChannel datagram = DatagramChannel.open();
-            datagram.bind(socket(address));
-            final UdpChannel channel = new UdpChannel(address, datagram, group.dispatcher());
+            datagram.bind(socket(checkedAddress));
+            final UdpChannel channel = new UdpChannel(checkedAddress, datagram, group.dispatcher());
             channels.add(channel);
             return channel;
         } catch (final IOException e) {
@@ -134,18 +133,17 @@ public final class UdpNetwork implements AutoCloseable {
      * @return UDP session
      */
     public UdpSession connect(final Address remote) {
-        if (remote == null) {
-            throw new ValidateException("UDP remote address must not be null");
-        }
-        requireUdp(remote);
+        final Address checkedRemote = Assert
+                .notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
+        requireUdp(checkedRemote);
         try {
             final DatagramChannel datagram = DatagramChannel.open();
             datagram.bind(null);
             final InetSocketAddress local = (InetSocketAddress) datagram.getLocalAddress();
-            final Address localAddress = Address.parse("udp://127.0.0.1:" + local.getPort());
+            final Address localAddress = new Address(Transport.UDP.scheme(), Protocol.HOST_IPV4, local.getPort(), null);
             final UdpChannel channel = new UdpChannel(localAddress, datagram, group.dispatcher());
             channels.add(channel);
-            final UdpSession session = new UdpSession(remote, channel, listener, () -> channels.remove(channel));
+            final UdpSession session = new UdpSession(checkedRemote, channel, listener, () -> channels.remove(channel));
             listener.open(session);
             return session;
         } catch (final IOException e) {
@@ -161,10 +159,7 @@ public final class UdpNetwork implements AutoCloseable {
      * @return true when supported
      */
     public boolean supports(final Transport transport) {
-        if (transport == null) {
-            throw new ValidateException("Transport must not be null");
-        }
-        return SUPPORTED.contains(transport);
+        return SUPPORTED.contains(Assert.notNull(transport, () -> new ValidateException("Transport must not be null")));
     }
 
     /**
@@ -209,7 +204,7 @@ public final class UdpNetwork implements AutoCloseable {
      * @return socket address
      */
     private static InetSocketAddress socket(final Address address) {
-        return new InetSocketAddress(address.host(), address.port());
+        return NetKit.createAddress(address.host(), address.port());
     }
 
 }

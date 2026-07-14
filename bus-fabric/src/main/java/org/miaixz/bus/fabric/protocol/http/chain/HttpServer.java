@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.http.chain;
 import java.util.Locale;
 import java.util.function.Function;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -143,10 +144,9 @@ public final class HttpServer implements HttpStage {
      * @return codec
      */
     private static HttpCodec networkCodec(final HttpChain chain) {
-        final Connection connection = chain.connection();
-        if (connection == null) {
-            throw new StatefulException("HTTP chain does not contain a network connection");
-        }
+        final Connection connection = Assert.notNull(
+                chain.connection(),
+                () -> new StatefulException("HTTP chain does not contain a network connection"));
         if (http2(connection.destination())) {
             return new Http2Codec(Http2Connection.create(connection));
         }
@@ -161,10 +161,9 @@ public final class HttpServer implements HttpStage {
      * @return codec
      */
     private static HttpCodec networkCodec(final HttpChain chain, final Dispatcher dispatcher) {
-        final Connection connection = chain.connection();
-        if (connection == null) {
-            throw new StatefulException("HTTP chain does not contain a network connection");
-        }
+        final Connection connection = Assert.notNull(
+                chain.connection(),
+                () -> new StatefulException("HTTP chain does not contain a network connection"));
         if (http2(connection.destination())) {
             return new Http2Codec(Http2Connection.create(connection, dispatcher));
         }
@@ -185,9 +184,12 @@ public final class HttpServer implements HttpStage {
             return true;
         }
         final Object protocol = destination.options().get("protocol");
-        return protocol != null
-                && ("h2".equalsIgnoreCase(protocol.toString()) || "http/2".equalsIgnoreCase(protocol.toString())
-                        || "h2_prior_knowledge".equalsIgnoreCase(protocol.toString()));
+        if (protocol == null) {
+            return false;
+        }
+        final String protocolName = protocol.toString();
+        return Protocol.HTTP_2.toString().equalsIgnoreCase(protocolName) || "http/2".equalsIgnoreCase(protocolName)
+                || Protocol.H2_PRIOR_KNOWLEDGE.toString().equalsIgnoreCase(protocolName);
     }
 
     /**
@@ -197,9 +199,9 @@ public final class HttpServer implements HttpStage {
      * @return normalized name
      */
     private static String normalizeName(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("HTTP server name must be non-blank and single-line");
-        }
+        Assert.isFalse(
+                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("HTTP server name must be non-blank and single-line"));
         return StringKit.trim(value).toLowerCase(Locale.ROOT);
     }
 
@@ -212,10 +214,7 @@ public final class HttpServer implements HttpStage {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

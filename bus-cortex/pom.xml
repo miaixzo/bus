@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Cortex - Unified service registry and configuration center for API, MCP and Prompt entries</description>
+    <description>Bus Cortex - Governance hub for API catalogs, MCP manifests, prompt inventories and application registry records.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

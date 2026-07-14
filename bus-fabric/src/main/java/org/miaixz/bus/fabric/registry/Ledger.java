@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -110,10 +111,8 @@ final class DefaultLedger<T> implements Ledger<T> {
 
     @Override
     public void put(final Binding<T> binding) {
-        if (binding == null) {
-            throw new ValidateException("Binding must not be null");
-        }
-        bindings.put(binding.key(), binding);
+        final Binding<T> checked = require(binding, "Binding");
+        bindings.put(checked.key(), checked);
     }
 
     @Override
@@ -154,6 +153,18 @@ final class DefaultLedger<T> implements Ledger<T> {
             throw new ValidateException("Registry key must be non-blank and single-line");
         }
         return key.trim();
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value value
+     * @param name  name
+     * @param <T>   value type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

@@ -469,6 +469,30 @@ public class PathResolve {
     }
 
     /**
+     * Returns the size of a path, following symbolic links.
+     *
+     * @param path The path.
+     * @return The path size in bytes, or 0 for a null path.
+     * @throws InternalException if an I/O error occurs.
+     */
+    public static long size(final Path path) throws InternalException {
+        return size(path, true);
+    }
+
+    /**
+     * Returns the size of a path.
+     *
+     * @param path          The path.
+     * @param isFollowLinks Whether to follow symbolic links.
+     * @return The path size in bytes, or 0 for a null path.
+     * @throws InternalException if an I/O error occurs.
+     */
+    public static long size(final Path path, final boolean isFollowLinks) throws InternalException {
+        final BasicFileAttributes attributes = getAttributes(path, isFollowLinks);
+        return null == attributes ? 0L : attributes.size();
+    }
+
+    /**
      * Gets a buffered input stream for a path.
      *
      * @param path The path.

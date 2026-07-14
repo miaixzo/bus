@@ -31,12 +31,13 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.crypto.builtin.CertificateChain;
+import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.network.tls.cert.CertificateChain;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
-import org.miaixz.bus.fabric.network.tls.handshake.TlsHandshake;
 
 /**
  * Thin SSLEngine adapter with validation and bus exceptions.
@@ -84,19 +85,10 @@ public final class TlsEngine implements AutoCloseable {
      * @param settings TLS settings
      */
     private TlsEngine(final TlsContext context, final Address address, final TlsSettings settings) {
-        if (context == null) {
-            throw new ValidateException("TLS context must not be null");
-        }
-        if (address == null) {
-            throw new ValidateException("TLS address must not be null");
-        }
-        if (settings == null) {
-            throw new ValidateException("TLS settings must not be null");
-        }
-        this.context = context;
-        this.address = address;
-        this.settings = settings;
-        this.engine = context.engine(address, settings);
+        this.context = Assert.notNull(context, () -> new ValidateException("TLS context must not be null"));
+        this.address = Assert.notNull(address, () -> new ValidateException("TLS address must not be null"));
+        this.settings = Assert.notNull(settings, () -> new ValidateException("TLS settings must not be null"));
+        this.engine = this.context.engine(this.address, this.settings);
         this.task = this::runDelegatedTasks;
         this.closed = new AtomicBoolean();
     }
@@ -130,9 +122,8 @@ public final class TlsEngine implements AutoCloseable {
      * @return engine result
      */
     public SSLEngineResult wrap(final ByteBuffer source, final ByteBuffer target) {
-        if (source == null || target == null) {
-            throw new ValidateException("TLS wrap buffers must not be null");
-        }
+        Assert.notNull(source, () -> new ValidateException("TLS wrap buffers must not be null"));
+        Assert.notNull(target, () -> new ValidateException("TLS wrap buffers must not be null"));
         try {
             final SSLEngineResult result = engine.wrap(source, target);
             if (result.getHandshakeStatus() == SSLEngineResult.HandshakeStatus.NEED_TASK) {
@@ -152,9 +143,8 @@ public final class TlsEngine implements AutoCloseable {
      * @return engine result
      */
     public SSLEngineResult unwrap(final ByteBuffer source, final ByteBuffer target) {
-        if (source == null || target == null) {
-            throw new ValidateException("TLS unwrap buffers must not be null");
-        }
+        Assert.notNull(source, () -> new ValidateException("TLS unwrap buffers must not be null"));
+        Assert.notNull(target, () -> new ValidateException("TLS unwrap buffers must not be null"));
         try {
             final SSLEngineResult result = engine.unwrap(source, target);
             if (result.getHandshakeStatus() == SSLEngineResult.HandshakeStatus.NEED_TASK) {

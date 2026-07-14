@@ -19,21 +19,19 @@
 */
 package org.miaixz.bus.fabric.network.dns;
 
-import java.net.IDN;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
 
 import org.miaixz.bus.core.instance.Instances;
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
  * DNS resolver with observer events and system fallback.
@@ -60,14 +58,9 @@ public final class DnsResolver {
      * @param observer observer
      */
     private DnsResolver(final Resolver resolver, final EventObserver observer) {
-        if (resolver == null) {
-            throw new ValidateException("Resolver must not be null");
-        }
-        if (observer == null) {
-            throw new ValidateException("Observer must not be null");
-        }
-        this.resolver = resolver;
-        this.observer = EventObserver.safe(observer);
+        this.resolver = Assert.notNull(resolver, () -> new ValidateException("Resolver must not be null"));
+        this.observer = EventObserver
+                .safe(Assert.notNull(observer, () -> new ValidateException("Observer must not be null")));
     }
 
     /**
@@ -98,7 +91,7 @@ public final class DnsResolver {
      * @return result
      */
     public DnsResult resolve(final String host) {
-        final String normalized = validateHost(host);
+        final String normalized = NetKit.normalizeHost(host, "DNS host");
         final long started = System.nanoTime();
         emit(ObservationMarker.DNS_START, normalized, null);
         List<InetAddress> addresses;
@@ -127,10 +120,8 @@ public final class DnsResolver {
      * @param observer observer
      */
     public void observer(final EventObserver observer) {
-        if (observer == null) {
-            throw new ValidateException("DNS observer must not be null");
-        }
-        this.observer = EventObserver.safe(observer);
+        this.observer = EventObserver
+                .safe(Assert.notNull(observer, () -> new ValidateException("DNS observer must not be null")));
     }
 
     /**
@@ -152,33 +143,6 @@ public final class DnsResolver {
     private static Resolver systemResolver() {
         return Instances.get(DnsResolver.class.getName() + ".systemResolver", () -> new Resolver() {
         });
-    }
-
-    /**
-     * Validates a host.
-     *
-     * @param host host
-     * @return normalized host
-     */
-    private static String validateHost(final String host) {
-        if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("DNS host must be non-blank and single-line");
-        }
-        String normalized = host.trim().toLowerCase(Locale.ROOT);
-        while (normalized.endsWith(Symbol.DOT)) {
-            normalized = normalized.substring(0, normalized.length() - 1);
-        }
-        if (normalized.isBlank()) {
-            throw new ValidateException("DNS host must be non-blank");
-        }
-        if (normalized.indexOf(Symbol.C_COLON) >= 0) {
-            return normalized;
-        }
-        try {
-            return IDN.toASCII(normalized, IDN.USE_STD3_ASCII_RULES).toLowerCase(Locale.ROOT);
-        } catch (final IllegalArgumentException e) {
-            throw new ValidateException("DNS host must be a valid domain", e);
-        }
     }
 
 }

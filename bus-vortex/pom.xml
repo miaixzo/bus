@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Vortex</description>
+    <description>Bus Vortex - Reactive gateway plane for upstream routing, edge policy evaluation and resilient ingress handling.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

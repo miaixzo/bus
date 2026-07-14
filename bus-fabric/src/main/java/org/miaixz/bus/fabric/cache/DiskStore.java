@@ -21,22 +21,22 @@ package org.miaixz.bus.fabric.cache;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.io.timout.Timeout;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -47,7 +47,6 @@ import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.codec.stream.StreamSink;
 
 /**
  * Disk-backed protocol-neutral cache store using DiskLruCache editor and snapshot storage.
@@ -80,12 +79,7 @@ public final class DiskStore implements CacheStore {
     /**
      * Streaming copy buffer size.
      */
-    private static final int BUFFER_SIZE = 64 * 1024;
-
-    /**
-     * Maximum body size read through a known-length byte array path.
-     */
-    private static final long SMALL_BODY_THRESHOLD = 256L * 1024L;
+    private static final int BUFFER_SIZE = 64 * Normal._1024;
 
     /**
      * Directory.
@@ -123,12 +117,15 @@ public final class DiskStore implements CacheStore {
      * @return store
      */
     public static DiskStore open(final Path directory, final long maxSize) {
-        if (directory == null || maxSize <= 0) {
-            throw new ValidateException("Disk cache directory must be non-null and max size positive");
-        }
-        final DiskStore store = new DiskStore(directory.toAbsolutePath(), maxSize);
+        final Path checkedDirectory = Assert.notNull(
+                directory,
+                () -> new ValidateException("Disk cache directory must be non-null and max size positive"));
+        Assert.isTrue(
+                maxSize > 0,
+                () -> new ValidateException("Disk cache directory must be non-null and max size positive"));
+        final DiskStore store = new DiskStore(checkedDirectory.toAbsolutePath(), maxSize);
         try {
-            Files.createDirectories(store.directory);
+            PathResolve.mkdir(store.directory);
             store.cache.initialize();
             return store;
         } catch (final IOException | RuntimeException e) {
@@ -216,8 +213,30 @@ public final class DiskStore implements CacheStore {
     @Override
     public void put(final String key, final CacheEntry entry) {
         try (CacheWriter writer = writer(key, entry)) {
-            writer.body().write(entry.payload());
+            writePayload(writer, entry.payload());
             writer.commit();
+        } catch (final IOException e) {
+            throw new InternalException("Unable to write disk cache payload", e);
+        }
+    }
+
+    /**
+     * Streams a payload into a cache writer.
+     *
+     * @param writer  writer
+     * @param payload payload
+     * @throws IOException when writing fails
+     */
+    private static void writePayload(final CacheWriter writer, final Payload payload) throws IOException {
+        Assert.notNull(writer, () -> new ValidateException("Cache writer must not be null"));
+        Assert.notNull(payload, () -> new ValidateException("Cache payload must not be null"));
+        final Buffer buffer = new Buffer();
+        try (Source input = payload.source()) {
+            long read = input.read(buffer, BUFFER_SIZE);
+            while (read != -1L) {
+                writer.write(buffer, read);
+                read = input.read(buffer, BUFFER_SIZE);
+            }
         }
     }
 
@@ -232,9 +251,7 @@ public final class DiskStore implements CacheStore {
     public CacheWriter writer(final String key, final CacheEntry entry) {
         ensureOpen();
         final String checked = validateKey(key);
-        if (entry == null) {
-            throw new ValidateException("Cache entry must not be null");
-        }
+        Assert.notNull(entry, () -> new ValidateException("Cache entry must not be null"));
         DiskLruCache.Editor editor = null;
         try {
             editor = cache.edit(name(checked));
@@ -480,18 +497,7 @@ public final class DiskStore implements CacheStore {
      * @return name
      */
     private static String name(final String key) {
-        try {
-            final byte[] digest = MessageDigest.getInstance("MD5")
-                    .digest(validateKey(key).getBytes(StandardCharsets.UTF_8));
-            final StringBuilder builder = new StringBuilder(digest.length * 2);
-            for (final byte value : digest) {
-                builder.append(Character.forDigit((value >>> 4) & 0xf, 16));
-                builder.append(Character.forDigit(value & 0xf, 16));
-            }
-            return builder.toString();
-        } catch (final NoSuchAlgorithmException e) {
-            throw new InternalException("MD5 digest is unavailable", e);
-        }
+        return ByteString.encodeUtf8(validateKey(key)).md5().hex();
     }
 
     /**
@@ -523,17 +529,12 @@ public final class DiskStore implements CacheStore {
     /**
      * Stream sink backed by a buffered sink.
      */
-    private static final class EntrySink implements StreamSink {
+    private static final class EntrySink implements Sink {
 
         /**
          * Sink.
          */
         private final Sink sink;
-
-        /**
-         * Reusable buffer.
-         */
-        private final Buffer buffer;
 
         /**
          * Written byte count.
@@ -552,73 +553,17 @@ public final class DiskStore implements CacheStore {
          */
         private EntrySink(final Sink sink) {
             this.sink = sink;
-            this.buffer = new Buffer();
         }
 
         /**
-         * Writes the source buffer.
-         *
-         * @param source source buffer
-         */
-        @Override
-        public void write(final ByteBuffer source) {
-            if (source == null) {
-                throw new ValidateException("Source buffer must not be null");
-            }
-            ensureOpen();
-            final int count = source.remaining();
-            try {
-                if (source.hasArray()) {
-                    buffer.write(source.array(), source.arrayOffset() + source.position(), count);
-                    source.position(source.limit());
-                    sink.write(buffer, count);
-                    written += count;
-                    return;
-                }
-                final byte[] bytes = new byte[Math.min(Math.max(count, 1), BUFFER_SIZE)];
-                while (source.hasRemaining()) {
-                    final int current = Math.min(source.remaining(), bytes.length);
-                    source.get(bytes, 0, current);
-                    buffer.write(bytes, 0, current);
-                    sink.write(buffer, current);
-                    written += current;
-                }
-            } catch (final IOException e) {
-                throw new InternalException("Unable to write cache body", e);
-            }
-        }
-
-        /**
-         * Writes the payload.
-         *
-         * @param payload payload
-         */
-        @Override
-        public void write(final Payload payload) {
-            if (payload == null) {
-                throw new ValidateException("Payload must not be null");
-            }
-            ensureOpen();
-            try (Source input = IoKit.source(payload.stream())) {
-                long read = input.read(buffer, BUFFER_SIZE);
-                while (read != -1L) {
-                    sink.write(buffer, read);
-                    written += read;
-                    read = input.read(buffer, BUFFER_SIZE);
-                }
-            } catch (final IOException e) {
-                throw new InternalException("Unable to write cache payload", e);
-            }
-        }
-
-        /**
-         * Writes a source buffer directly to the buffered sink.
+         * Writes a source buffer directly to the cache sink.
          *
          * @param source    source buffer
          * @param byteCount byte count
          * @throws IOException when writing fails
          */
-        private void write(final Buffer source, final long byteCount) throws IOException {
+        @Override
+        public void write(final Buffer source, final long byteCount) throws IOException {
             ensureOpen();
             sink.write(source, byteCount);
             written += byteCount;
@@ -629,7 +574,6 @@ public final class DiskStore implements CacheStore {
          *
          * @return written bytes
          */
-        @Override
         public long written() {
             return written;
         }
@@ -638,28 +582,30 @@ public final class DiskStore implements CacheStore {
          * Flushes the sink.
          */
         @Override
-        public void flush() {
+        public void flush() throws IOException {
             ensureOpen();
-            try {
-                sink.flush();
-            } catch (final IOException e) {
-                throw new InternalException("Unable to flush cache body", e);
-            }
+            sink.flush();
+        }
+
+        /**
+         * Returns sink timeout.
+         *
+         * @return timeout
+         */
+        @Override
+        public Timeout timeout() {
+            return sink.timeout();
         }
 
         /**
          * Closes the sink.
          */
         @Override
-        public void close() {
+        public void close() throws IOException {
             if (!closed.compareAndSet(false, true)) {
                 return;
             }
-            try {
-                sink.close();
-            } catch (final IOException e) {
-                throw new InternalException("Unable to close cache body", e);
-            }
+            sink.close();
         }
 
         /**
@@ -710,7 +656,7 @@ public final class DiskStore implements CacheStore {
          * @return stream sink
          */
         @Override
-        public StreamSink body() {
+        public Sink body() {
             if (finished.get()) {
                 throw new StatefulException("Disk cache writer is closed");
             }
@@ -758,7 +704,7 @@ public final class DiskStore implements CacheStore {
             }
             try {
                 body.close();
-            } catch (final RuntimeException ignored) {
+            } catch (final IOException | RuntimeException ignored) {
                 // Best-effort abort keeps the original stream failure.
             }
             abortQuietly(editor);
@@ -815,16 +761,22 @@ public final class DiskStore implements CacheStore {
         }
 
         /**
-         * Opens the source stream once.
+         * Opens the body source once.
          *
-         * @return input stream
+         * @return body source
          */
         @Override
-        public InputStream stream() {
+        public Source source() {
             if (!opened.compareAndSet(false, true)) {
                 throw new StatefulException("Disk cache payload can only be opened once");
             }
-            return source.inputStream();
+            return source;
+        }
+
+        @Override
+        @Deprecated(since = "8.8.3")
+        public InputStream stream() {
+            return Payload.super.stream();
         }
 
         /**
@@ -869,30 +821,8 @@ public final class DiskStore implements CacheStore {
 
         @Override
         public String text(final java.nio.charset.Charset charset, final long maxBytes) {
-            if (charset == null) {
-                throw new ValidateException("Charset must not be null");
-            }
-            return new String(bytes(maxBytes), charset);
-        }
-
-        /**
-         * Reads the known-length body without first buffering the whole source.
-         *
-         * @return bytes
-         * @throws IOException when reading fails
-         */
-        private byte[] readKnownLength() throws IOException {
-            final int size = Math.toIntExact(length);
-            final byte[] bytes = new byte[size];
-            int offset = 0;
-            while (offset < bytes.length) {
-                final int read = source.read(bytes, offset, bytes.length - offset);
-                if (read == -1) {
-                    throw new IOException("Unexpected end of disk cache payload");
-                }
-                offset += read;
-            }
-            return bytes;
+            return new String(bytes(maxBytes),
+                    Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
         }
 
         /**

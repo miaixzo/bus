@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Message;
@@ -192,20 +193,19 @@ public final class Pipeline {
      * @return checkpoints
      */
     private static List<Checkpoint> validateCheckpoints(final List<Checkpoint> checkpoints) {
-        if (checkpoints == null) {
-            throw new ValidateException("Pipeline checkpoints must not be null");
-        }
+        final List<Checkpoint> checked = Assert
+                .notNull(checkpoints, () -> new ValidateException("Pipeline checkpoints must not be null"));
         boolean terminal = false;
-        for (final Checkpoint checkpoint : checkpoints) {
+        for (final Checkpoint checkpoint : checked) {
             validateCheckpoint(checkpoint);
             if (checkpoint.terminal()) {
-                if (terminal) {
-                    throw new ProtocolException("Pipeline must not contain duplicate terminal checkpoints");
-                }
+                Assert.isFalse(
+                        terminal,
+                        () -> new ProtocolException("Pipeline must not contain duplicate terminal checkpoints"));
                 terminal = true;
             }
         }
-        return checkpoints;
+        return checked;
     }
 
     /**
@@ -215,20 +215,19 @@ public final class Pipeline {
      * @return stages
      */
     private static List<Stage> validateStages(final List<Stage> stages) {
-        if (stages == null) {
-            throw new ValidateException("Pipeline stages must not be null");
-        }
+        final List<Stage> checked = Assert
+                .notNull(stages, () -> new ValidateException("Pipeline stages must not be null"));
         boolean terminal = false;
-        for (final Stage stage : stages) {
+        for (final Stage stage : checked) {
             validateStage(stage);
             if (stage.checkpoint().terminal()) {
-                if (terminal) {
-                    throw new ProtocolException("Pipeline must not contain duplicate terminal checkpoints");
-                }
+                Assert.isFalse(
+                        terminal,
+                        () -> new ProtocolException("Pipeline must not contain duplicate terminal checkpoints"));
                 terminal = true;
             }
         }
-        return stages;
+        return checked;
     }
 
     /**
@@ -238,10 +237,7 @@ public final class Pipeline {
      * @return stage
      */
     private static Stage validateStage(final Stage stage) {
-        if (stage == null) {
-            throw new ValidateException("Pipeline stage must not be null");
-        }
-        return stage;
+        return Assert.notNull(stage, () -> new ValidateException("Pipeline stage must not be null"));
     }
 
     /**
@@ -251,10 +247,7 @@ public final class Pipeline {
      * @return checkpoint
      */
     private static Checkpoint validateCheckpoint(final Checkpoint checkpoint) {
-        if (checkpoint == null) {
-            throw new ValidateException("Pipeline checkpoint must not be null");
-        }
-        return checkpoint;
+        return Assert.notNull(checkpoint, () -> new ValidateException("Pipeline checkpoint must not be null"));
     }
 
     /**
@@ -264,10 +257,7 @@ public final class Pipeline {
      * @return processor
      */
     private static Processor validateProcessor(final Processor processor) {
-        if (processor == null) {
-            throw new ValidateException("Pipeline processor must not be null");
-        }
-        return processor;
+        return Assert.notNull(processor, () -> new ValidateException("Pipeline processor must not be null"));
     }
 
     /**
@@ -277,10 +267,7 @@ public final class Pipeline {
      * @return message
      */
     private static Message validateMessage(final Message message) {
-        if (message == null) {
-            throw new ValidateException("Message must not be null");
-        }
-        return message;
+        return Assert.notNull(message, () -> new ValidateException("Message must not be null"));
     }
 
     /**
@@ -388,9 +375,7 @@ public final class Pipeline {
 
         @Override
         public Message proceed(final Message message) {
-            if (proceeded) {
-                throw new ProtocolException("Pipeline chain may proceed only once");
-            }
+            Assert.isFalse(proceeded, () -> new ProtocolException("Pipeline chain may proceed only once"));
             proceeded = true;
             final Message current = validateMessage(message);
             if (terminal) {

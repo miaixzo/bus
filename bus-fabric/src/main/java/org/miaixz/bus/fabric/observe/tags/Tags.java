@@ -17,12 +17,8 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.observe.tag;
+package org.miaixz.bus.fabric.observe.tags;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,8 +26,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -199,14 +197,13 @@ public final class Tags {
      * @return tags
      */
     public static Tags of(final Map<String, String> values) {
-        if (values == null) {
-            throw new ValidateException("Tag values must not be null");
-        }
-        if (values.isEmpty()) {
+        final Map<String, String> checked = Assert
+                .notNull(values, () -> new ValidateException("Tag values must not be null"));
+        if (checked.isEmpty()) {
             return empty();
         }
-        final LinkedHashMap<String, String> copy = new LinkedHashMap<>(values.size());
-        for (final Map.Entry<String, String> entry : values.entrySet()) {
+        final Map<String, String> copy = MapKit.newHashMap(checked.size(), true);
+        for (final Map.Entry<String, String> entry : checked.entrySet()) {
             final String key = normalize(entry.getKey(), "Tag key");
             copy.put(key, sanitizeValue(key, normalize(entry.getValue(), "Tag value")));
         }
@@ -223,7 +220,8 @@ public final class Tags {
     public Tags with(final String key, final String value) {
         final String checkedKey = normalize(key, "Tag key");
         final String checkedValue = sanitizeValue(checkedKey, normalize(value, "Tag value"));
-        final LinkedHashMap<String, String> copy = new LinkedHashMap<>(values);
+        final Map<String, String> copy = MapKit.newHashMap(values.size() + 1, true);
+        copy.putAll(values);
         copy.put(checkedKey, checkedValue);
         return new Tags(copy);
     }
@@ -235,17 +233,16 @@ public final class Tags {
      * @return merged tags
      */
     public Tags merge(final Tags other) {
-        if (other == null) {
-            throw new ValidateException("Other tags must not be null");
-        }
-        if (other.values.isEmpty()) {
+        final Tags checked = Assert.notNull(other, () -> new ValidateException("Other tags must not be null"));
+        if (checked.values.isEmpty()) {
             return this;
         }
         if (values.isEmpty()) {
-            return other;
+            return checked;
         }
-        final LinkedHashMap<String, String> copy = new LinkedHashMap<>(values);
-        copy.putAll(other.values);
+        final Map<String, String> copy = MapKit.newHashMap(values.size() + checked.values.size(), true);
+        copy.putAll(values);
+        copy.putAll(checked.values);
         return new Tags(copy);
     }
 
@@ -321,10 +318,12 @@ public final class Tags {
      * @return token
      */
     private static String validate(final String value, final String name) {
-        if (value == null || StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(name + " must be non-blank and single-line");
-        }
-        return value;
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException(name + " must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(name + " must be non-blank and single-line"));
+        return checked;
     }
 
     /**
@@ -452,18 +451,7 @@ public final class Tags {
      * @return twelve-character hexadecimal fingerprint
      */
     private static String fingerprint(final String value) {
-        try {
-            final byte[] digest = MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8));
-            final StringBuilder builder = new StringBuilder(12);
-            for (int i = 0; i < 6; i++) {
-                final int current = digest[i] & 0xff;
-                builder.append(Character.forDigit(current >>> 4, 16));
-                builder.append(Character.forDigit(current & 0xf, 16));
-            }
-            return builder.toString();
-        } catch (final NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-256 digest is unavailable", e);
-        }
+        return org.miaixz.bus.crypto.Builder.sha256(value).substring(0, 12);
     }
 
     /**

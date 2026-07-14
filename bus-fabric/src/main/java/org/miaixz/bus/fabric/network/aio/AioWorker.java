@@ -21,9 +21,12 @@ package org.miaixz.bus.fabric.network.aio;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -36,6 +39,16 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * @since Java 21+
  */
 public final class AioWorker {
+
+    /**
+     * Maximum time to wait for worker shutdown.
+     */
+    private static final long SHUTDOWN_WAIT_MILLIS = TimeUnit.SECONDS.toMillis(Normal._1);
+
+    /**
+     * Idle park duration for the worker loop.
+     */
+    private static final long IDLE_PARK_NANOS = TimeUnit.MILLISECONDS.toNanos(Normal._1);
 
     /**
      * Worker name.
@@ -73,10 +86,7 @@ public final class AioWorker {
      * @param name worker name
      */
     AioWorker(final String name) {
-        if (name == null || name.isBlank()) {
-            throw new ValidateException("AIO worker name must not be blank");
-        }
-        this.name = name;
+        this.name = Assert.notBlank(name, () -> new ValidateException("AIO worker name must not be blank"));
         this.channels = new ConcurrentLinkedQueue<>();
         this.tasks = new ConcurrentLinkedQueue<>();
         this.running = new AtomicBoolean();
@@ -108,13 +118,12 @@ public final class AioWorker {
      * @param channel channel
      */
     public void register(final AioChannel channel) {
-        if (channel == null) {
-            throw new ValidateException("AIO channel must not be null");
-        }
+        final AioChannel checkedChannel = Assert
+                .notNull(channel, () -> new ValidateException("AIO channel must not be null"));
         if (closed.get()) {
             throw new StatefulException("AIO worker is closed");
         }
-        channels.add(channel);
+        channels.add(checkedChannel);
         wakeup();
     }
 
@@ -124,13 +133,11 @@ public final class AioWorker {
      * @param task task
      */
     public void execute(final Runnable task) {
-        if (task == null) {
-            throw new ValidateException("AIO task must not be null");
-        }
+        final Runnable checkedTask = Assert.notNull(task, () -> new ValidateException("AIO task must not be null"));
         if (closed.get()) {
             throw new StatefulException("AIO worker is closed");
         }
-        tasks.add(task);
+        tasks.add(checkedTask);
         wakeup();
     }
 
@@ -154,7 +161,7 @@ public final class AioWorker {
             final Thread current = thread;
             if (current != null && current != Thread.currentThread()) {
                 try {
-                    current.join(1000L);
+                    current.join(SHUTDOWN_WAIT_MILLIS);
                 } catch (final InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new InternalException("Interrupted while stopping AIO worker", e);
@@ -179,7 +186,7 @@ public final class AioWorker {
     private void loop() {
         while (running.get() || !tasks.isEmpty()) {
             drainTasks();
-            LockSupport.parkNanos(1_000_000L);
+            LockSupport.parkNanos(IDLE_PARK_NANOS);
         }
     }
 

@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.guard;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -71,9 +72,7 @@ public record GuardResult(boolean passed, String reason) {
      * Throws when this result is rejected.
      */
     public void throwIfRejected() {
-        if (!passed) {
-            throw new ValidateException(reason);
-        }
+        Assert.isTrue(passed, () -> new ValidateException(reason));
     }
 
     /**
@@ -83,9 +82,9 @@ public record GuardResult(boolean passed, String reason) {
      * @return validated reason
      */
     private static String validateReason(final String reason) {
-        if (StringKit.isBlank(reason) || StringKit.containsAny(reason, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Guard rejection reason must be non-blank and single-line");
-        }
+        Assert.isTrue(
+                !StringKit.isBlank(reason) && !StringKit.containsAny(reason, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Guard rejection reason must be non-blank and single-line"));
         return reason;
     }
 

@@ -87,7 +87,7 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
      */
     @Override
     public Map<String, String> parameters() {
-        return Collections.unmodifiableMap(new LinkedHashMap<>(parameters));
+        return parameters;
     }
 
     /**

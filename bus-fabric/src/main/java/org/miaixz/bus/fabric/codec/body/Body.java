@@ -22,9 +22,12 @@ package org.miaixz.bus.fabric.codec.body;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 
@@ -69,12 +72,23 @@ public interface Body extends AutoCloseable {
     }
 
     /**
-     * Opens the body stream.
+     * Opens the body source.
+     *
+     * @return source
+     */
+    default Source source() {
+        return payload().source();
+    }
+
+    /**
+     * Opens the compatibility body stream.
      *
      * @return input stream
+     * @deprecated use {@link #source()}
      */
+    @Deprecated(since = "8.8.3")
     default InputStream stream() {
-        return payload().stream();
+        return IoKit.buffer(source()).inputStream();
     }
 
     /**
@@ -103,10 +117,7 @@ public interface Body extends AutoCloseable {
      * @return body text
      */
     default String text(final Charset charset) {
-        if (charset == null) {
-            throw new ValidateException("Charset must not be null");
-        }
-        return new String(bytes(), charset);
+        return new String(bytes(), Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
     }
 
     /**
@@ -117,10 +128,8 @@ public interface Body extends AutoCloseable {
      * @return body text
      */
     default String text(final Charset charset, final long maxBytes) {
-        if (charset == null) {
-            throw new ValidateException("Charset must not be null");
-        }
-        return new String(bytes(maxBytes), charset);
+        return new String(bytes(maxBytes),
+                Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
     }
 
     /**

@@ -33,7 +33,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Health</description>
+    <description>Bus Health - Platform diagnostics surveying JVM internals, operating system telemetry, hardware inventory and container inspection.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 

@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.network.tls.cert;
+package org.miaixz.bus.crypto.builtin;
 
 import java.security.cert.Certificate;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Immutable TLS certificate chain snapshot.
+ * Immutable certificate chain snapshot.
  *
  * @param certificates certificate snapshot
  * @author Kimi Liu

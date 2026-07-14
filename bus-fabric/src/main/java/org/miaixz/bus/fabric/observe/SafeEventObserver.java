@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.observe;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 
@@ -41,19 +42,15 @@ final class SafeEventObserver implements EventObserver {
      * @param delegate delegate observer
      */
     SafeEventObserver(final EventObserver delegate) {
-        if (delegate == null) {
-            throw new ValidateException("Observer must not be null");
-        }
-        this.delegate = delegate;
+        this.delegate = Assert.notNull(delegate, () -> new ValidateException("Observer must not be null"));
     }
 
     @Override
     public void emit(final FabricEvent event) {
-        if (event == null) {
-            throw new ValidateException("Fabric event must not be null");
-        }
+        final FabricEvent checkedEvent = Assert
+                .notNull(event, () -> new ValidateException("Fabric event must not be null"));
         try {
-            delegate.emit(event);
+            delegate.emit(checkedEvent);
         } catch (final RuntimeException ignored) {
             // Observation is intentionally best-effort on request critical paths.
         }

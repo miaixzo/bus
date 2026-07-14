@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.http.cache;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -73,9 +74,7 @@ public record HttpCacheStats(long requestCount, long networkCount, long hitCount
      * @return validated counter value
      */
     private static long nonNegative(final long value, final String name) {
-        if (value < 0) {
-            throw new ValidateException(name + " must be non-negative");
-        }
+        Assert.isTrue(value >= 0, () -> new ValidateException(name + " must be non-negative"));
         return value;
     }
 

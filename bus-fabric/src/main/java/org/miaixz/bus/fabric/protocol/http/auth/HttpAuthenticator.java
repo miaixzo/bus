@@ -20,8 +20,11 @@
 package org.miaixz.bus.fabric.protocol.http.auth;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
@@ -52,10 +55,12 @@ public interface HttpAuthenticator {
     static HttpAuthenticator basic(final HttpAuth auth) {
         final HttpAuth current = require(auth, "HTTP auth");
         return (request, response) -> {
-            if (response.challenges().isEmpty()) {
+            final List<Challenge> challenges = response.challenges();
+            if (challenges.isEmpty()) {
                 return null;
             }
-            return current.authenticate(request, challenge(response.challenges().getFirst(), response.code() == 407));
+            return current
+                    .authenticate(request, challenge(challenges.getFirst(), response.code() == HTTP.HTTP_PROXY_AUTH));
         };
     }
 
@@ -94,10 +99,7 @@ public interface HttpAuthenticator {
      * @return validated value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }
