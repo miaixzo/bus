@@ -27,6 +27,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Set;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
@@ -46,7 +47,18 @@ public final class CachePolicy {
     /**
      * Cacheable status codes.
      */
-    private static final Set<Integer> CACHEABLE = Set.of(200, 203, 204, 300, 301, 308, 404, 405, 410, 414, 501);
+    private static final Set<Integer> CACHEABLE = Set.of(
+            HTTP.HTTP_OK,
+            HTTP.HTTP_NOT_AUTHORITATIVE,
+            HTTP.HTTP_NO_CONTENT,
+            HTTP.HTTP_MULT_CHOICE,
+            HTTP.HTTP_MOVED_PERM,
+            HTTP.HTTP_PERM_REDIRECT,
+            HTTP.HTTP_NOT_FOUND,
+            HTTP.HTTP_BAD_METHOD,
+            HTTP.HTTP_GONE,
+            HTTP.HTTP_REQ_TOO_LONG,
+            HTTP.HTTP_NOT_IMPLEMENTED);
 
     /**
      * Creates a policy.
@@ -82,7 +94,7 @@ public final class CachePolicy {
         if (!CACHEABLE.contains(response.code()) && !explicitlyCacheable(response, responseControl)) {
             return false;
         }
-        if (HttpCacheKey.varyStar(response.headers().get("Vary"))) {
+        if (HttpCacheKey.varyStar(response.headers().get(HTTP.VARY))) {
             return false;
         }
         return !requestControl.noStore() && !responseControl.noStore();
@@ -118,7 +130,7 @@ public final class CachePolicy {
             return false;
         }
         final Instant now = clock.now();
-        final Instant date = headerInstant(response.headers(), "Date");
+        final Instant date = headerInstant(response.headers(), HTTP.DATE);
         final long age = currentAgeSeconds(response.headers(), date, now);
         long lifetime = freshnessLifetime(response, responseControl, date, now);
         if (responseControl.immutable()) {
@@ -142,7 +154,7 @@ public final class CachePolicy {
      */
     private static boolean explicitlyCacheable(final HttpResponse response, final HttpCacheControl control) {
         return control.isPublic() || control.isPrivate() || control.maxAgeSeconds() >= 0
-                || control.sMaxAgeSeconds() >= 0 || control.immutable() || response.headers().get("Expires") != null;
+                || control.sMaxAgeSeconds() >= 0 || control.immutable() || response.headers().get(HTTP.EXPIRES) != null;
     }
 
     /**
@@ -165,7 +177,7 @@ public final class CachePolicy {
         if (control.maxAgeSeconds() >= 0) {
             return control.maxAgeSeconds();
         }
-        final Instant expires = headerInstant(response.headers(), "Expires");
+        final Instant expires = headerInstant(response.headers(), HTTP.EXPIRES);
         if (expires == null) {
             return 0L;
         }
@@ -183,13 +195,13 @@ public final class CachePolicy {
     public HttpRequest conditional(final HttpRequest request, final HttpResponse cached) {
         require(request, "HTTP request");
         require(cached, "Cached response");
-        final String etag = cached.headers().get("ETag");
+        final String etag = cached.headers().get(HTTP.ETAG);
         if (etag != null) {
-            return copy(request, request.headers().with("If-None-Match", etag));
+            return copy(request, request.headers().with(HTTP.IF_NONE_MATCH, etag));
         }
-        final String modified = cached.headers().get("Last-Modified");
+        final String modified = cached.headers().get(HTTP.LAST_MODIFIED);
         if (modified != null) {
-            return copy(request, request.headers().with("If-Modified-Since", modified));
+            return copy(request, request.headers().with(HTTP.IF_MODIFIED_SINCE, modified));
         }
         return request;
     }
@@ -231,7 +243,7 @@ public final class CachePolicy {
      * @return age seconds
      */
     private static long ageSeconds(final Headers headers) {
-        final String value = headers.get("Age");
+        final String value = headers.get(HTTP.AGE);
         if (value == null) {
             return 0L;
         }
@@ -268,10 +280,7 @@ public final class CachePolicy {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

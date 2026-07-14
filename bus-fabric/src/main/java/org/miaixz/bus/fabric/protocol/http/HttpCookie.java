@@ -22,8 +22,10 @@ package org.miaixz.bus.fabric.protocol.http;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.protocol.Cookie;
@@ -53,8 +55,9 @@ public final class HttpCookie {
     public static List<Cookie> parseAll(final UnoUrl url, final Headers headers) {
         final UnoUrl sourceUrl = require(url, "URL");
         final Headers sourceHeaders = require(headers, "Headers");
-        final List<Cookie> cookies = new ArrayList<>();
-        for (final String header : sourceHeaders.values("Set-Cookie")) {
+        final List<String> values = sourceHeaders.values(HTTP.SET_COOKIE);
+        final List<Cookie> cookies = new ArrayList<>(values.size());
+        for (final String header : values) {
             if (malformed(header)) {
                 continue;
             }
@@ -74,7 +77,7 @@ public final class HttpCookie {
     public static Headers attach(final UnoUrl url, final Headers headers, final List<Cookie> cookies) {
         final List<Cookie> matched = match(url, cookies);
         final Headers.Builder builder = copy(require(headers, "Headers"));
-        builder.remove("Cookie");
+        builder.remove(HTTP.COOKIE);
         if (!matched.isEmpty()) {
             final StringBuilder value = new StringBuilder();
             for (int i = 0; i < matched.size(); i++) {
@@ -84,7 +87,7 @@ public final class HttpCookie {
                 final Cookie cookie = matched.get(i);
                 value.append(cookie.name()).append(Symbol.C_EQUAL).append(cookie.value());
             }
-            builder.set("Cookie", value.toString());
+            builder.set(HTTP.COOKIE, value.toString());
         }
         return builder.build();
     }
@@ -99,7 +102,7 @@ public final class HttpCookie {
     public static List<Cookie> match(final UnoUrl url, final List<Cookie> cookies) {
         final UnoUrl target = require(url, "URL");
         final List<Cookie> source = require(cookies, "Cookies");
-        final List<Cookie> matched = new ArrayList<>();
+        final List<Cookie> matched = new ArrayList<>(source.size());
         for (final Cookie cookie : source) {
             require(cookie, "Cookie");
             if (cookie.matches(target)) {
@@ -119,8 +122,9 @@ public final class HttpCookie {
         if (header == null || header.isBlank()) {
             return true;
         }
-        final int separator = header.split(Symbol.SEMICOLON, 2)[0].indexOf(Symbol.C_EQUAL);
-        return separator <= 0;
+        final int boundary = header.indexOf(Symbol.C_SEMICOLON);
+        final int separator = header.indexOf(Symbol.C_EQUAL);
+        return separator <= 0 || (boundary >= 0 && separator > boundary);
     }
 
     /**
@@ -144,10 +148,7 @@ public final class HttpCookie {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

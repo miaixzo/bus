@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
@@ -42,12 +43,13 @@ public record Itinerary(Protocol protocol, Address address) {
      * @param address  itinerary address
      */
     public Itinerary {
-        if (protocol == null || address == null) {
-            if (protocol != null || address != null) {
-                throw new ValidateException("Protocol and address must both be present or both be empty");
-            }
-        } else if (protocol != address.protocol()) {
-            throw new ProtocolException("Protocol does not match address scheme");
+        Assert.isTrue(
+                (protocol == null) == (address == null),
+                () -> new ValidateException("Protocol and address must both be present or both be empty"));
+        if (protocol != null) {
+            Assert.isTrue(
+                    protocol == address.protocol(),
+                    () -> new ProtocolException("Protocol does not match address scheme"));
         }
     }
 

@@ -26,11 +26,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 
 /**
  * HPACK header block codec with static and dynamic table support.
@@ -43,28 +48,31 @@ public final class HpackCodec {
     /**
      * Static table names.
      */
-    private static final String[] STATIC_NAMES = { ":authority", ":method", ":method", ":path", ":path", ":scheme",
-            ":scheme", ":status", ":status", ":status", ":status", ":status", ":status", ":status", "accept-charset",
-            "accept-encoding", "accept-language", "accept-ranges", "accept", "access-control-allow-origin", "age",
-            "allow", "authorization", "cache-control", "content-disposition", "content-encoding", "content-language",
-            "content-length", "content-location", "content-range", "content-type", "cookie", "date", "etag", "expect",
-            "expires", "from", "host", "if-match", "if-modified-since", "if-none-match", "if-range",
-            "if-unmodified-since", "last-modified", "link", "location", "max-forwards", "proxy-authenticate",
-            "proxy-authorization", "range", "referer", "refresh", "retry-after", "server", "set-cookie",
-            "strict-transport-security", "transfer-encoding", "user-agent", "vary", "via", "www-authenticate" };
+    private static final String[] STATIC_NAMES = { HTTP.TARGET_AUTHORITY_UTF8, HTTP.TARGET_METHOD_UTF8,
+            HTTP.TARGET_METHOD_UTF8, HTTP.TARGET_PATH_UTF8, HTTP.TARGET_PATH_UTF8, HTTP.TARGET_SCHEME_UTF8,
+            HTTP.TARGET_SCHEME_UTF8, HTTP.RESPONSE_STATUS_UTF8, HTTP.RESPONSE_STATUS_UTF8, HTTP.RESPONSE_STATUS_UTF8,
+            HTTP.RESPONSE_STATUS_UTF8, HTTP.RESPONSE_STATUS_UTF8, HTTP.RESPONSE_STATUS_UTF8, HTTP.RESPONSE_STATUS_UTF8,
+            "accept-charset", "accept-encoding", "accept-language", "accept-ranges", "accept",
+            "access-control-allow-origin", "age", "allow", "authorization", "cache-control", "content-disposition",
+            "content-encoding", "content-language", "content-length", "content-location", "content-range",
+            "content-type", "cookie", "date", "etag", "expect", "expires", "from", "host", "if-match",
+            "if-modified-since", "if-none-match", "if-range", "if-unmodified-since", "last-modified", "link",
+            "location", "max-forwards", "proxy-authenticate", "proxy-authorization", "range", "referer", "refresh",
+            "retry-after", "server", "set-cookie", "strict-transport-security", "transfer-encoding", "user-agent",
+            "vary", "via", "www-authenticate" };
 
     /**
      * Static table values.
      */
-    private static final String[] STATIC_VALUES = { Normal.EMPTY, "GET", "POST", Symbol.SLASH, "/index.html", "http",
-            "https", "200", "204", "206", "304", "400", "404", "500", Normal.EMPTY, "gzip, deflate", Normal.EMPTY,
+    private static final String[] STATIC_VALUES = { Normal.EMPTY, HTTP.GET, HTTP.POST, Symbol.SLASH, "/index.html",
+            Protocol.HTTP.toString(), Protocol.HTTPS.toString(), "200", "204", "206", "304", "400", "404", "500",
+            Normal.EMPTY, "gzip, deflate", Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
             Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
             Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
             Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
             Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
             Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
-            Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
-            Normal.EMPTY, Normal.EMPTY };
+            Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY };
 
     /**
      * First static name indexes.
@@ -74,37 +82,37 @@ public final class HpackCodec {
     /**
      * Default dynamic table size.
      */
-    private static final int DEFAULT_TABLE_SIZE = 4_096;
+    private static final int DEFAULT_TABLE_SIZE = Normal._4096;
 
     /**
      * Maximum dynamic table size accepted by this implementation.
      */
-    static final int MAX_DYNAMIC_TABLE_SIZE = 65_536;
+    static final int MAX_DYNAMIC_TABLE_SIZE = Normal._64 * Normal._1024;
 
     /**
      * Default maximum compressed header block bytes.
      */
-    static final int DEFAULT_MAX_HEADER_BLOCK_BYTES = 65_536;
+    static final int DEFAULT_MAX_HEADER_BLOCK_BYTES = Normal._64 * Normal._1024;
 
     /**
      * Default maximum decompressed header list size.
      */
-    static final int DEFAULT_MAX_HEADER_LIST_SIZE = 65_536;
+    static final int DEFAULT_MAX_HEADER_LIST_SIZE = Normal._64 * Normal._1024;
 
     /**
      * Default maximum bytes for a single header name or value.
      */
-    static final int DEFAULT_MAX_HEADER_FIELD_BYTES = 16_384;
+    static final int DEFAULT_MAX_HEADER_FIELD_BYTES = Normal._16384;
 
     /**
      * HPACK entry overhead.
      */
-    private static final int ENTRY_OVERHEAD = 32;
+    private static final int ENTRY_OVERHEAD = Normal._32;
 
     /**
      * Maximum integer prefix shift.
      */
-    private static final int MAX_SHIFT = 28;
+    private static final int MAX_SHIFT = Normal._28;
 
     /**
      * Dynamic table.
@@ -159,31 +167,29 @@ public final class HpackCodec {
      * @param headers headers
      * @return encoded buffer
      */
-    public ByteBuffer encode(final List<Http2Header> headers) {
-        if (headers == null) {
-            throw new ValidateException("HTTP/2 headers must not contain null values");
-        }
+    public Buffer encodeBuffer(final List<Http2Header> headers) {
+        final List<Http2Header> checkedHeaders = Assert
+                .notNull(headers, () -> new ValidateException("HTTP/2 headers must not contain null values"));
         int headerListBytes = 0;
-        for (final Http2Header header : headers) {
-            if (header == null) {
-                throw new ValidateException("HTTP/2 headers must not contain null values");
-            }
-            headerListBytes = enforceHeaderBudget(headerListBytes, header);
+        for (final Http2Header header : checkedHeaders) {
+            final Http2Header checkedHeader = Assert
+                    .notNull(header, () -> new ValidateException("HTTP/2 headers must not contain null values"));
+            headerListBytes = enforceHeaderBudget(headerListBytes, checkedHeader);
         }
-        validatePseudoOrder(headers);
-        final ByteWriter output = new ByteWriter(Math.max(32, headers.size() << 4));
-        for (final Http2Header header : headers) {
+        validatePseudoOrder(checkedHeaders);
+        final ByteWriter output = new ByteWriter(Math.max(Normal._32, checkedHeaders.size() << Normal._4));
+        for (final Http2Header header : checkedHeaders) {
             final int exact = exactIndex(header);
-            if (exact > 0) {
-                writeInteger(output, exact, 0x80, 7);
+            if (exact > Normal._0) {
+                writeInteger(output, exact, 0x80, Normal._7);
                 continue;
             }
             final int name = nameIndex(header.name());
-            if (name > 0) {
-                writeInteger(output, name, 0x40, 6);
+            if (name > Normal._0) {
+                writeInteger(output, name, 0x40, Normal._6);
                 writeString(output, header.value());
             } else {
-                writeInteger(output, 0, 0x40, 6);
+                writeInteger(output, Normal._0, 0x40, Normal._6);
                 writeString(output, header.name());
                 writeString(output, header.value());
             }
@@ -193,34 +199,65 @@ public final class HpackCodec {
     }
 
     /**
+     * Encodes headers to a JDK byte buffer compatibility boundary.
+     *
+     * @param headers headers
+     * @return encoded buffer
+     * @deprecated use {@link #encodeBuffer(List)}
+     */
+    @Deprecated(since = "8.8.3")
+    public ByteBuffer encode(final List<Http2Header> headers) {
+        final Buffer output = encodeBuffer(headers);
+        return ByteBuffer.wrap(output.readByteArray()).asReadOnlyBuffer();
+    }
+
+    /**
      * Decodes headers.
      *
      * @param source source
      * @return headers
+     * @deprecated use {@link #decode(Buffer)}
      */
+    @Deprecated(since = "8.8.3")
     public List<Http2Header> decode(final ByteBuffer source) {
-        if (source == null) {
-            throw new ValidateException("HPACK source must not be null");
+        final ByteBuffer checkedSource = Assert
+                .notNull(source, () -> new ValidateException("HPACK source must not be null"));
+        final Buffer input = new Buffer();
+        try {
+            input.write(checkedSource.asReadOnlyBuffer());
+        } catch (final java.io.IOException e) {
+            throw new ProtocolException("Unable to adapt HPACK source", e);
         }
-        final ByteBuffer input = source.asReadOnlyBuffer();
-        if (input.remaining() > maxHeaderBlockBytes) {
+        return decode(input);
+    }
+
+    /**
+     * Decodes headers from a core buffer.
+     *
+     * @param source source
+     * @return headers
+     */
+    public List<Http2Header> decode(final Buffer source) {
+        final Buffer checkedSource = Assert
+                .notNull(source, () -> new ValidateException("HPACK source must not be null"));
+        if (checkedSource.size() > maxHeaderBlockBytes) {
             throw new ProtocolException("HPACK header block exceeds max size");
         }
         final ArrayList<Http2Header> headers = new ArrayList<>();
         int headerListBytes = 0;
-        while (input.hasRemaining()) {
-            final int first = input.get(input.position()) & 0xff;
+        while (checkedSource.size() > Normal._0) {
+            final int first = checkedSource.getByte(Normal._0) & 0xff;
             if ((first & 0x80) != 0) {
-                headerListBytes = addHeader(headers, headerListBytes, indexed(input));
+                headerListBytes = addHeader(headers, headerListBytes, indexed(checkedSource));
             } else if ((first & 0x40) != 0) {
-                final Http2Header header = literal(input, 6);
+                final Http2Header header = literal(checkedSource, Normal._6);
                 headerListBytes = addHeader(headers, headerListBytes, header);
                 insert(header);
             } else if ((first & 0x20) != 0) {
-                final int size = readInteger(input, 5);
+                final int size = readInteger(checkedSource, Normal._5);
                 updateTableSize(size);
             } else {
-                headerListBytes = addHeader(headers, headerListBytes, literal(input, 4));
+                headerListBytes = addHeader(headers, headerListBytes, literal(checkedSource, Normal._4));
             }
         }
         validatePseudoOrder(headers);
@@ -233,7 +270,7 @@ public final class HpackCodec {
      * @param size size
      */
     public void tableSize(final int size) {
-        if (size < 0 || size > maxTableSize) {
+        if (size < Normal._0 || size > maxTableSize) {
             throw new ValidateException("HPACK table size must be between 0 and " + maxTableSize);
         }
         this.tableSize = size;
@@ -255,7 +292,7 @@ public final class HpackCodec {
      * @param size maximum size
      */
     public void maxTableSize(final int size) {
-        if (size < 0 || size > MAX_DYNAMIC_TABLE_SIZE) {
+        if (size < Normal._0 || size > MAX_DYNAMIC_TABLE_SIZE) {
             throw new ValidateException("HPACK maximum table size must be between 0 and " + MAX_DYNAMIC_TABLE_SIZE);
         }
         this.maxTableSize = size;
@@ -280,7 +317,7 @@ public final class HpackCodec {
      * @param size maximum bytes
      */
     public void maxHeaderBlockBytes(final int size) {
-        if (size <= 0) {
+        if (size <= Normal._0) {
             throw new ValidateException("HPACK max header block bytes must be positive");
         }
         this.maxHeaderBlockBytes = size;
@@ -292,7 +329,7 @@ public final class HpackCodec {
      * @param size maximum bytes
      */
     public void maxHeaderListSize(final int size) {
-        if (size < 0) {
+        if (size < Normal._0) {
             throw new ValidateException("HPACK max header list size must be non-negative");
         }
         this.maxHeaderListSize = size;
@@ -313,7 +350,7 @@ public final class HpackCodec {
      * @param size maximum bytes
      */
     public void maxHeaderFieldBytes(final int size) {
-        if (size <= 0) {
+        if (size <= Normal._0) {
             throw new ValidateException("HPACK max header field bytes must be positive");
         }
         this.maxHeaderFieldBytes = size;
@@ -356,8 +393,8 @@ public final class HpackCodec {
      * @param input input
      * @return header
      */
-    private Http2Header indexed(final ByteBuffer input) {
-        return header(readInteger(input, 7));
+    private Http2Header indexed(final Buffer input) {
+        return header(readInteger(input, Normal._7));
     }
 
     /**
@@ -367,9 +404,9 @@ public final class HpackCodec {
      * @param prefixBits prefix bits
      * @return header
      */
-    private Http2Header literal(final ByteBuffer input, final int prefixBits) {
+    private Http2Header literal(final Buffer input, final int prefixBits) {
         final int index = readInteger(input, prefixBits);
-        final String name = index == 0 ? readString(input, maxHeaderFieldBytes) : name(index);
+        final String name = index == Normal._0 ? readString(input, maxHeaderFieldBytes) : name(index);
         final String value = readString(input, maxHeaderFieldBytes);
         return Http2Header.of(name, value);
     }
@@ -429,14 +466,14 @@ public final class HpackCodec {
      * @return header
      */
     private Http2Header header(final int index) {
-        if (index <= 0) {
+        if (index <= Normal._0) {
             throw new ProtocolException("HPACK index must be positive");
         }
         if (index <= STATIC_NAMES.length) {
-            return Http2Header.of(STATIC_NAMES[index - 1], STATIC_VALUES[index - 1]);
+            return Http2Header.of(STATIC_NAMES[index - Normal._1], STATIC_VALUES[index - Normal._1]);
         }
-        final int dynamic = index - STATIC_NAMES.length - 1;
-        if (dynamic < 0 || dynamic >= dynamicTable.size()) {
+        final int dynamic = index - STATIC_NAMES.length - Normal._1;
+        if (dynamic < Normal._0 || dynamic >= dynamicTable.size()) {
             throw new ProtocolException("HPACK index is out of range");
         }
         return dynamicTable.get(dynamic);
@@ -449,14 +486,14 @@ public final class HpackCodec {
      * @return name
      */
     private String name(final int index) {
-        if (index <= 0) {
+        if (index <= Normal._0) {
             throw new ProtocolException("HPACK name index must be positive");
         }
         if (index <= STATIC_NAMES.length) {
-            return STATIC_NAMES[index - 1];
+            return STATIC_NAMES[index - Normal._1];
         }
-        final int dynamic = index - STATIC_NAMES.length - 1;
-        if (dynamic < 0 || dynamic >= dynamicTable.size()) {
+        final int dynamic = index - STATIC_NAMES.length - Normal._1;
+        if (dynamic < Normal._0 || dynamic >= dynamicTable.size()) {
             throw new ProtocolException("HPACK name index is out of range");
         }
         return dynamicTable.get(dynamic).name();
@@ -470,16 +507,16 @@ public final class HpackCodec {
      */
     private int exactIndex(final Http2Header header) {
         final int exact = staticExactIndex(header.name(), header.value());
-        if (exact > 0) {
+        if (exact > Normal._0) {
             return exact;
         }
-        for (int i = 0; i < dynamicTable.size(); i++) {
+        for (int i = Normal._0; i < dynamicTable.size(); i++) {
             final Http2Header current = dynamicTable.get(i);
             if (current.name().equals(header.name()) && current.value().equals(header.value())) {
-                return STATIC_NAMES.length + i + 1;
+                return STATIC_NAMES.length + i + Normal._1;
             }
         }
-        return 0;
+        return Normal._0;
     }
 
     /**
@@ -493,12 +530,12 @@ public final class HpackCodec {
         if (index != null) {
             return index;
         }
-        for (int i = 0; i < dynamicTable.size(); i++) {
+        for (int i = Normal._0; i < dynamicTable.size(); i++) {
             if (dynamicTable.get(i).name().equals(name)) {
-                return STATIC_NAMES.length + i + 1;
+                return STATIC_NAMES.length + i + Normal._1;
             }
         }
-        return 0;
+        return Normal._0;
     }
 
     /**
@@ -510,10 +547,10 @@ public final class HpackCodec {
         final int size = size(header);
         if (size > tableSize) {
             dynamicTable.clear();
-            tableBytes = 0;
+            tableBytes = Normal._0;
             return;
         }
-        dynamicTable.add(0, header);
+        dynamicTable.add(Normal._0, header);
         tableBytes += size;
         evict();
     }
@@ -523,7 +560,7 @@ public final class HpackCodec {
      */
     private void evict() {
         while (tableBytes > tableSize && !dynamicTable.isEmpty()) {
-            final Http2Header removed = dynamicTable.remove(dynamicTable.size() - 1);
+            final Http2Header removed = dynamicTable.remove(dynamicTable.size() - Normal._1);
             tableBytes -= size(removed);
         }
     }
@@ -545,9 +582,9 @@ public final class HpackCodec {
      * @param value  value
      */
     private static void writeString(final ByteWriter output, final String value) {
-        final byte[] bytes = value.getBytes(Charset.UTF_8);
-        writeInteger(output, bytes.length, 0, 7);
-        output.write(bytes);
+        final ByteString bytes = ByteString.encodeString(value, Charset.UTF_8);
+        writeInteger(output, bytes.size(), Normal._0, Normal._7);
+        output.write(bytes.toByteArray());
     }
 
     /**
@@ -556,24 +593,23 @@ public final class HpackCodec {
      * @param input input
      * @return value
      */
-    private static String readString(final ByteBuffer input, final int maxBytes) {
-        if (!input.hasRemaining()) {
+    private static String readString(final Buffer input, final int maxBytes) {
+        if (input.size() == Normal._0) {
             throw new ProtocolException("Truncated HPACK string");
         }
-        final boolean huffman = (input.get(input.position()) & 0x80) != 0;
-        final int length = readInteger(input, 7);
+        final boolean huffman = (input.getByte(Normal._0) & 0x80) != 0;
+        final int length = readInteger(input, Normal._7);
         if (!huffman && length > maxBytes) {
             throw new ProtocolException("HPACK string exceeds max size");
         }
-        if (input.remaining() < length) {
+        if (input.size() < length) {
             throw new ProtocolException("Truncated HPACK string bytes");
         }
-        final byte[] bytes = new byte[length];
-        input.get(bytes);
+        final ByteString bytes = readByteString(input, length);
         if (huffman) {
-            return new String(decodeHuffman(bytes, maxBytes), Charset.UTF_8);
+            return ByteString.of(decodeHuffman(bytes.toByteArray(), maxBytes)).string(Charset.UTF_8);
         }
-        return new String(bytes, Charset.UTF_8);
+        return bytes.string(Charset.UTF_8);
     }
 
     /**
@@ -604,16 +640,16 @@ public final class HpackCodec {
             final int value,
             final int prefixMask,
             final int prefixBits) {
-        final int maxPrefix = (1 << prefixBits) - 1;
+        final int maxPrefix = (Normal._1 << prefixBits) - Normal._1;
         if (value < maxPrefix) {
             output.write(prefixMask | value);
             return;
         }
         output.write(prefixMask | maxPrefix);
         int remaining = value - maxPrefix;
-        while (remaining >= 128) {
+        while (remaining >= Normal._128) {
             output.write((remaining & 0x7f) | 0x80);
-            remaining >>>= 7;
+            remaining >>>= Normal._7;
         }
         output.write(remaining);
     }
@@ -625,29 +661,44 @@ public final class HpackCodec {
      * @param prefixBits prefix bits
      * @return integer
      */
-    private static int readInteger(final ByteBuffer input, final int prefixBits) {
-        if (!input.hasRemaining()) {
+    private static int readInteger(final Buffer input, final int prefixBits) {
+        if (input.size() == Normal._0) {
             throw new ProtocolException("Truncated HPACK integer");
         }
-        final int first = input.get() & 0xff;
-        final int maxPrefix = (1 << prefixBits) - 1;
+        final int first = input.readByte() & 0xff;
+        final int maxPrefix = (Normal._1 << prefixBits) - Normal._1;
         int value = first & maxPrefix;
         if (value < maxPrefix) {
             return value;
         }
-        int shift = 0;
-        while (input.hasRemaining()) {
-            final int next = input.get() & 0xff;
+        int shift = Normal._0;
+        while (input.size() > Normal._0) {
+            final int next = input.readByte() & 0xff;
             value += (next & 0x7f) << shift;
-            if ((next & 0x80) == 0) {
+            if ((next & 0x80) == Normal._0) {
                 return value;
             }
-            shift += 7;
+            shift += Normal._7;
             if (shift > MAX_SHIFT) {
                 throw new ProtocolException("HPACK integer overflow");
             }
         }
         throw new ProtocolException("Truncated HPACK integer continuation");
+    }
+
+    /**
+     * Reads a fixed number of bytes from a core buffer.
+     *
+     * @param input  input
+     * @param length length
+     * @return bytes
+     */
+    private static ByteString readByteString(final Buffer input, final int length) {
+        try {
+            return input.readByteString(length);
+        } catch (final java.io.EOFException e) {
+            throw new ProtocolException("Truncated HPACK bytes", e);
+        }
     }
 
     /**
@@ -674,9 +725,9 @@ public final class HpackCodec {
      * @return name index map
      */
     private static Map<String, Integer> staticNameIndex() {
-        final HashMap<String, Integer> indexes = new HashMap<>(STATIC_NAMES.length << 1);
-        for (int i = 0; i < STATIC_NAMES.length; i++) {
-            indexes.putIfAbsent(STATIC_NAMES[i], i + 1);
+        final HashMap<String, Integer> indexes = new HashMap<>(STATIC_NAMES.length << Normal._1);
+        for (int i = Normal._0; i < STATIC_NAMES.length; i++) {
+            indexes.putIfAbsent(STATIC_NAMES[i], i + Normal._1);
         }
         return Map.copyOf(indexes);
     }
@@ -690,32 +741,32 @@ public final class HpackCodec {
      */
     private static int staticExactIndex(final String name, final String value) {
         return switch (name) {
-            case ":method" -> switch (value) {
-                case "GET" -> 2;
-                case "POST" -> 3;
-                default -> 0;
+            case HTTP.TARGET_METHOD_UTF8 -> switch (value) {
+                case HTTP.GET -> Normal._2;
+                case HTTP.POST -> Normal._3;
+                default -> Normal._0;
             };
-            case ":path" -> switch (value) {
-                case "/" -> 4;
-                case "/index.html" -> 5;
-                default -> 0;
+            case HTTP.TARGET_PATH_UTF8 -> switch (value) {
+                case Symbol.SLASH -> Normal._4;
+                case "/index.html" -> Normal._5;
+                default -> Normal._0;
             };
-            case ":scheme" -> switch (value) {
-                case "http" -> 6;
-                case "https" -> 7;
-                default -> 0;
+            case HTTP.TARGET_SCHEME_UTF8 -> switch (value) {
+                case "http" -> Normal._6;
+                case "https" -> Normal._7;
+                default -> Normal._0;
             };
-            case ":status" -> switch (value) {
-                case "200" -> 8;
-                case "204" -> 9;
-                case "206" -> 10;
-                case "304" -> 11;
-                case "400" -> 12;
-                case "404" -> 13;
-                case "500" -> 14;
-                default -> 0;
+            case HTTP.RESPONSE_STATUS_UTF8 -> switch (value) {
+                case "200" -> Normal._8;
+                case "204" -> Normal._9;
+                case "206" -> Normal._10;
+                case "304" -> Normal._11;
+                case "400" -> Normal._12;
+                case "404" -> Normal._13;
+                case "500" -> Normal._14;
+                default -> Normal._0;
             };
-            case "accept-encoding" -> "gzip, deflate".equals(value) ? 16 : 0;
+            case "accept-encoding" -> "gzip, deflate".equals(value) ? Normal._16 : Normal._0;
             default -> emptyStaticIndex(name, value);
         };
     }
@@ -729,10 +780,10 @@ public final class HpackCodec {
      */
     private static int emptyStaticIndex(final String name, final String value) {
         if (!value.isEmpty()) {
-            return 0;
+            return Normal._0;
         }
         final Integer index = STATIC_NAME_INDEX.get(name);
-        return index != null && STATIC_VALUES[index - 1].isEmpty() ? index : 0;
+        return index != null && STATIC_VALUES[index - Normal._1].isEmpty() ? index : Normal._0;
     }
 
     /**
@@ -742,19 +793,19 @@ public final class HpackCodec {
      * @return byte length
      */
     private static int utf8Length(final String value) {
-        int length = 0;
-        for (int i = 0; i < value.length(); i++) {
+        int length = Normal._0;
+        for (int i = Normal._0; i < value.length(); i++) {
             final char current = value.charAt(i);
             if (current < 0x80) {
                 length++;
             } else if (current < 0x800) {
-                length += 2;
-            } else if (Character.isHighSurrogate(current) && i + 1 < value.length()
-                    && Character.isLowSurrogate(value.charAt(i + 1))) {
-                length += 4;
+                length += Normal._2;
+            } else if (Character.isHighSurrogate(current) && i + Normal._1 < value.length()
+                    && Character.isLowSurrogate(value.charAt(i + Normal._1))) {
+                length += Normal._4;
                 i++;
             } else {
-                length += 3;
+                length += Normal._3;
             }
         }
         return length;
@@ -763,12 +814,12 @@ public final class HpackCodec {
     /**
      * Maximum HPACK Huffman code length.
      */
-    private static final int MAX_HUFFMAN_CODE_BITS = 30;
+    private static final int MAX_HUFFMAN_CODE_BITS = Normal._30;
 
     /**
      * Maximum legal Huffman EOS padding bits.
      */
-    private static final int MAX_HUFFMAN_PADDING_BITS = 7;
+    private static final int MAX_HUFFMAN_PADDING_BITS = Normal._7;
 
     /**
      * HPACK Huffman codes for byte symbols.
@@ -826,33 +877,33 @@ public final class HpackCodec {
     private static byte[] decodeHuffman(final byte[] bytes, final int maxBytes) {
         final ByteArrayOutputStream output = new ByteArrayOutputStream(Math.min(bytes.length, maxBytes));
         HuffmanNode node = HUFFMAN_ROOT;
-        int residualBits = 0;
-        int residualValue = 0;
+        int residualBits = Normal._0;
+        int residualValue = Normal._0;
         for (final byte current : bytes) {
             final int value = current & 0xff;
-            for (int bitIndex = 7; bitIndex >= 0; bitIndex--) {
-                final int bit = (value >>> bitIndex) & 1;
-                node = bit == 0 ? node.zero : node.one;
+            for (int bitIndex = Normal._7; bitIndex >= Normal._0; bitIndex--) {
+                final int bit = (value >>> bitIndex) & Normal._1;
+                node = bit == Normal._0 ? node.zero : node.one;
                 if (node == null) {
                     throw new ProtocolException("Invalid HPACK Huffman code");
                 }
                 residualBits++;
                 residualValue = (residualValue << 1) | bit;
-                if (node.symbol >= 0) {
+                if (node.symbol >= Normal._0) {
                     if (output.size() >= maxBytes) {
                         throw new ProtocolException("HPACK Huffman string exceeds max size");
                     }
                     output.write(node.symbol);
                     node = HUFFMAN_ROOT;
-                    residualBits = 0;
-                    residualValue = 0;
+                    residualBits = Normal._0;
+                    residualValue = Normal._0;
                 } else if (residualBits > MAX_HUFFMAN_CODE_BITS) {
                     throw new ProtocolException("Invalid HPACK Huffman EOS");
                 }
             }
         }
         if (node != HUFFMAN_ROOT) {
-            if (residualBits > MAX_HUFFMAN_PADDING_BITS || residualValue != (1 << residualBits) - 1) {
+            if (residualBits > MAX_HUFFMAN_PADDING_BITS || residualValue != (Normal._1 << residualBits) - Normal._1) {
                 throw new ProtocolException("Invalid HPACK Huffman padding");
             }
         }
@@ -866,15 +917,15 @@ public final class HpackCodec {
      */
     private static HuffmanNode huffmanRoot() {
         final HuffmanNode root = new HuffmanNode();
-        for (int symbol = 0; symbol < HUFFMAN_CODES.length; symbol++) {
+        for (int symbol = Normal._0; symbol < HUFFMAN_CODES.length; symbol++) {
             HuffmanNode node = root;
             final int code = HUFFMAN_CODES[symbol];
             final int length = HUFFMAN_LENGTHS[symbol];
-            for (int bit = length - 1; bit >= 0; bit--) {
-                if (node.symbol >= 0) {
+            for (int bit = length - Normal._1; bit >= Normal._0; bit--) {
+                if (node.symbol >= Normal._0) {
                     throw new IllegalStateException("Invalid HPACK Huffman prefix table");
                 }
-                if (((code >>> bit) & 1) == 0) {
+                if (((code >>> bit) & Normal._1) == Normal._0) {
                     if (node.zero == null) {
                         node.zero = new HuffmanNode();
                     }
@@ -886,7 +937,7 @@ public final class HpackCodec {
                     node = node.one;
                 }
             }
-            if (node.symbol >= 0 || node.zero != null || node.one != null) {
+            if (node.symbol >= Normal._0 || node.zero != null || node.one != null) {
                 throw new IllegalStateException("Invalid HPACK Huffman table");
             }
             node.symbol = symbol;
@@ -912,7 +963,7 @@ public final class HpackCodec {
         /**
          * Decoded symbol, or -1 for an internal node.
          */
-        private int symbol = -1;
+        private int symbol = Normal.__1;
 
     }
 
@@ -946,7 +997,7 @@ public final class HpackCodec {
          * @param value byte value
          */
         private void write(final int value) {
-            ensure(1);
+            ensure(Normal._1);
             bytes[length++] = (byte) value;
         }
 
@@ -957,7 +1008,7 @@ public final class HpackCodec {
          */
         private void write(final byte[] value) {
             ensure(value.length);
-            System.arraycopy(value, 0, bytes, length, value.length);
+            System.arraycopy(value, Normal._0, bytes, length, value.length);
             length += value.length;
         }
 
@@ -966,8 +1017,8 @@ public final class HpackCodec {
          *
          * @return buffer
          */
-        private ByteBuffer buffer() {
-            return ByteBuffer.wrap(bytes, 0, length).slice().asReadOnlyBuffer();
+        private Buffer buffer() {
+            return new Buffer().write(bytes, 0, length);
         }
 
         /**
@@ -980,12 +1031,12 @@ public final class HpackCodec {
             if (required <= bytes.length) {
                 return;
             }
-            int capacity = bytes.length << 1;
+            int capacity = bytes.length << Normal._1;
             while (capacity < required) {
-                capacity <<= 1;
+                capacity <<= Normal._1;
             }
             final byte[] copy = new byte[capacity];
-            System.arraycopy(bytes, 0, copy, 0, length);
+            System.arraycopy(bytes, Normal._0, copy, Normal._0, length);
             bytes = copy;
         }
 

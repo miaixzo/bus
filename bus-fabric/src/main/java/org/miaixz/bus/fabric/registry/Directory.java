@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.fabric.registry;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -114,10 +114,7 @@ public final class Directory implements AutoCloseable {
      * @param <T>    value type
      */
     public <T> void register(final String name, final Ledger<T> ledger) {
-        if (ledger == null) {
-            throw new ValidateException("Registry ledger must not be null");
-        }
-        ledgers.put(validateName(name), ledger);
+        ledgers.put(validateName(name), require(ledger, "Registry ledger"));
     }
 
     /**
@@ -137,7 +134,7 @@ public final class Directory implements AutoCloseable {
      * @return directory snapshot
      */
     public Map<String, Ledger<?>> snapshot() {
-        return Collections.unmodifiableMap(Map.copyOf(ledgers));
+        return Map.copyOf(ledgers);
     }
 
     /**
@@ -218,6 +215,18 @@ public final class Directory implements AutoCloseable {
             throw new ValidateException("Registry name must be non-blank and single-line");
         }
         return name.trim();
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value value
+     * @param name  name
+     * @param <T>   value type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

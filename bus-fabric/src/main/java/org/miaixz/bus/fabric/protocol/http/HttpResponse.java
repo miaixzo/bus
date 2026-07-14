@@ -19,11 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -36,6 +33,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.sink.Sink;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ConvertException;
@@ -43,13 +44,15 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.DataCodec;
 import org.miaixz.bus.fabric.codec.body.ResponseBody;
-import org.miaixz.bus.fabric.network.tls.handshake.TlsHandshake;
 import org.miaixz.bus.fabric.protocol.http.auth.Challenge;
 import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
 import org.miaixz.bus.fabric.protocol.http.cache.HttpCacheControl;
@@ -168,7 +171,7 @@ public final class HttpResponse implements AutoCloseable {
         this.priorResponse = metadataResponse(priorResponse);
         this.sentRequestAtMillis = validateTimestamp(sentRequestAtMillis, "Sent request timestamp");
         this.receivedResponseAtMillis = validateTimestamp(receivedResponseAtMillis, "Received response timestamp");
-        this.successful = code >= 200 && code < 300;
+        this.successful = code >= HTTP.HTTP_OK && code < HTTP.HTTP_MULT_CHOICE;
         this.closed = new AtomicBoolean();
     }
 
@@ -342,7 +345,8 @@ public final class HttpResponse implements AutoCloseable {
      * @return parsed challenges
      */
     public List<Challenge> challenges() {
-        final String header = code == 407 ? "Proxy-Authenticate" : code == 401 ? "WWW-Authenticate" : null;
+        final String header = code == HTTP.HTTP_PROXY_AUTH ? HTTP.PROXY_AUTHENTICATE
+                : code == HTTP.HTTP_UNAUTHORIZED ? HTTP.WWW_AUTHENTICATE : null;
         if (header == null) {
             return List.of();
         }
@@ -369,27 +373,24 @@ public final class HttpResponse implements AutoCloseable {
      * @return peek body
      */
     public HttpBody peekBody(final long maxBytes) {
-        if (maxBytes < 0) {
-            throw new ValidateException("Peek body max bytes must be non-negative");
-        }
-        if (!body.payload().repeatable()) {
-            throw new StatefulException("Streaming HTTP response body cannot be peeked without consuming it");
-        }
-        if (maxBytes > Integer.MAX_VALUE) {
-            throw new ValidateException("Peek body max bytes exceeds JVM byte array limit");
-        }
-        try (InputStream input = body.stream(); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            final byte[] buffer = new byte[8192];
+        Assert.isTrue(maxBytes >= Normal._0, () -> new ValidateException("Peek body max bytes must be non-negative"));
+        Assert.isTrue(
+                body.payload().repeatable(),
+                () -> new StatefulException("Streaming HTTP response body cannot be peeked without consuming it"));
+        Assert.isTrue(
+                maxBytes <= Integer.MAX_VALUE,
+                () -> new ValidateException("Peek body max bytes exceeds JVM byte array limit"));
+        try (Source input = body.source()) {
+            final Buffer output = new Buffer();
             long remaining = maxBytes;
             while (remaining > 0) {
-                final int read = input.read(buffer, 0, (int) Math.min(buffer.length, remaining));
+                final long read = input.read(output, Math.min(Normal._8192, remaining));
                 if (read < 0) {
                     break;
                 }
-                output.write(buffer, 0, read);
                 remaining -= read;
             }
-            return HttpBody.of(Payload.of(output.toByteArray()), body.media());
+            return HttpBody.of(Payload.of(output.readByteArray()), body.media());
         } catch (final IOException e) {
             throw new InternalException("Unable to peek HTTP response body", e);
         }
@@ -507,20 +508,20 @@ public final class HttpResponse implements AutoCloseable {
      * @return target path
      */
     public Path download(final Path target, final BiConsumer<Long, Long> progress) {
-        if (target == null || target.getFileName() == null) {
-            throw new ValidateException("Download target must not be null");
-        }
-        final Path parent = target.toAbsolutePath().getParent();
-        final Path part = target.resolveSibling(target.getFileName() + ".part");
+        final Path checkedTarget = Assert
+                .notNull(target, () -> new ValidateException("Download target must not be null"));
+        Assert.notNull(checkedTarget.getFileName(), () -> new ValidateException("Download target must not be null"));
+        final Path parent = checkedTarget.toAbsolutePath().getParent();
+        final Path part = checkedTarget.resolveSibling(checkedTarget.getFileName() + ".part");
         try {
             if (parent != null) {
                 Files.createDirectories(parent);
             }
-            try (InputStream input = body.stream(); OutputStream output = Files.newOutputStream(part)) {
+            try (Source input = body.source(); Sink output = IoKit.sink(part)) {
                 copyBody(input, output, body.length(), progress);
             }
-            Files.move(part, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-            return target;
+            Files.move(part, checkedTarget, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            return checkedTarget;
         } catch (final IOException | RuntimeException e) {
             try {
                 Files.deleteIfExists(part);
@@ -573,10 +574,9 @@ public final class HttpResponse implements AutoCloseable {
      * @return target path
      */
     public Path toFolder(final Path directory) {
-        if (directory == null) {
-            throw new ValidateException("Download directory must not be null");
-        }
-        return download(directory.resolve(downloadFilename()));
+        final Path checkedDirectory = Assert
+                .notNull(directory, () -> new ValidateException("Download directory must not be null"));
+        return download(checkedDirectory.resolve(downloadFilename()));
     }
 
     /**
@@ -610,7 +610,7 @@ public final class HttpResponse implements AutoCloseable {
     }
 
     /**
-     * Copies response body bytes to an output stream.
+     * Copies response body bytes to a sink.
      *
      * @param input    response input
      * @param output   file output
@@ -618,16 +618,16 @@ public final class HttpResponse implements AutoCloseable {
      * @param progress progress listener
      */
     private static void copyBody(
-            final InputStream input,
-            final OutputStream output,
+            final Source input,
+            final Sink output,
             final long total,
             final BiConsumer<Long, Long> progress) {
-        final byte[] buffer = new byte[8192];
+        final Buffer buffer = new Buffer();
         long written = 0;
         while (true) {
-            final int read;
+            final long read;
             try {
-                read = input.read(buffer);
+                read = input.read(buffer, Normal._8192);
             } catch (final IOException e) {
                 throw new SocketException("Unable to read HTTP response body", e);
             }
@@ -635,7 +635,7 @@ public final class HttpResponse implements AutoCloseable {
                 break;
             }
             try {
-                output.write(buffer, 0, read);
+                output.write(buffer, read);
                 written += read;
                 if (progress != null) {
                     progress.accept(written, total);
@@ -657,7 +657,7 @@ public final class HttpResponse implements AutoCloseable {
      * @return filename
      */
     private String downloadFilename() {
-        final String disposition = headers.get("Content-Disposition");
+        final String disposition = headers.get(HTTP.CONTENT_DISPOSITION);
         final String headerName = filenameFromDisposition(disposition);
         if (headerName != null) {
             return headerName;
@@ -678,10 +678,16 @@ public final class HttpResponse implements AutoCloseable {
         if (value == null) {
             return null;
         }
-        for (final String part : value.split(Symbol.SEMICOLON)) {
-            final String trimmed = part.trim();
+        int start = 0;
+        while (start <= value.length()) {
+            final int end = value.indexOf(Symbol.C_SEMICOLON, start);
+            final String trimmed = value.substring(start, end < 0 ? value.length() : end).trim();
             final int equals = trimmed.indexOf(Symbol.C_EQUAL);
             if (equals <= 0 || !"filename".equalsIgnoreCase(trimmed.substring(0, equals).trim())) {
+                if (end < 0) {
+                    break;
+                }
+                start = end + 1;
                 continue;
             }
             String name = trimmed.substring(equals + 1).trim();
@@ -713,9 +719,9 @@ public final class HttpResponse implements AutoCloseable {
      * @return value
      */
     private static String validatePathText(final String value, final String name) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(name + " must be non-blank and single-line");
-        }
+        Assert.isFalse(
+                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(name + " must be non-blank and single-line"));
         return value;
     }
 
@@ -726,9 +732,9 @@ public final class HttpResponse implements AutoCloseable {
      * @return code
      */
     private static int validateCode(final int code) {
-        if (code < 100 || code > 599) {
-            throw new ValidateException("HTTP status code must be between 100 and 599");
-        }
+        Assert.isTrue(
+                code >= HTTP.HTTP_CONTINUE && code <= 599,
+                () -> new ValidateException("HTTP status code must be between 100 and 599"));
         return code;
     }
 
@@ -739,10 +745,12 @@ public final class HttpResponse implements AutoCloseable {
      * @return message
      */
     private static String validateMessage(final String message) {
-        if (message == null || StringKit.containsAny(message, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("HTTP reason phrase must be non-null and single-line");
-        }
-        return message;
+        final String current = Assert
+                .notNull(message, () -> new ValidateException("HTTP reason phrase must be non-null and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("HTTP reason phrase must be non-null and single-line"));
+        return current;
     }
 
     /**
@@ -753,9 +761,7 @@ public final class HttpResponse implements AutoCloseable {
      * @return timestamp
      */
     private static long validateTimestamp(final long timestamp, final String name) {
-        if (timestamp < 0) {
-            throw new ValidateException(name + " must be non-negative");
-        }
+        Assert.isTrue(timestamp >= Normal._0, () -> new ValidateException(name + " must be non-negative"));
         return timestamp;
     }
 
@@ -850,10 +856,7 @@ public final class HttpResponse implements AutoCloseable {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

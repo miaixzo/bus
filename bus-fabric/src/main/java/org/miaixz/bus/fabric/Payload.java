@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,10 +26,15 @@ import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.sink.Sink;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * Payload abstraction that keeps byte-array payloads repeatable and stream payloads one-shot.
@@ -47,7 +50,7 @@ public interface Payload {
      * @return empty payload
      */
     static Payload empty() {
-        return Instances.get(Payload.class.getName() + ".empty", () -> Payload.of(new byte[0]));
+        return Instances.get(Payload.class.getName() + ".empty", () -> Payload.of(Normal.EMPTY_BYTE_ARRAY));
     }
 
     /**
@@ -60,17 +63,39 @@ public interface Payload {
         if (bytes == null) {
             throw new ValidateException("Payload bytes must not be null");
         }
-        final byte[] snapshot = ArrayKit.clone(bytes);
+        return repeatable(ByteString.of(bytes));
+    }
+
+    /**
+     * Creates a repeatable payload from immutable bytes.
+     *
+     * @param bytes bytes
+     * @return byte-string payload
+     */
+    static Payload of(final ByteString bytes) {
+        if (bytes == null) {
+            throw new ValidateException("Payload bytes must not be null");
+        }
+        return repeatable(ByteString.of(bytes.toByteArray()));
+    }
+
+    /**
+     * Creates a repeatable payload from a trusted byte snapshot.
+     *
+     * @param snapshot byte snapshot
+     * @return repeatable payload
+     */
+    private static Payload repeatable(final ByteString snapshot) {
         return new Payload() {
 
             @Override
             public long length() {
-                return snapshot.length;
+                return snapshot.size();
             }
 
             @Override
-            public InputStream stream() {
-                return new ByteArrayInputStream(snapshot);
+            public Source source() {
+                return new Buffer().write(snapshot);
             }
 
             @Override
@@ -81,10 +106,10 @@ public interface Payload {
             @Override
             public byte[] bytes(final long maxBytes) {
                 validateMaterializeMaxBytes(maxBytes);
-                if (snapshot.length > maxBytes) {
-                    throw materializeExceeded(snapshot.length, maxBytes, "Payload.bytes(long)");
+                if (snapshot.size() > maxBytes) {
+                    throw materializeExceeded(snapshot.size(), maxBytes, "Payload.bytes(long)");
                 }
-                return ArrayKit.clone(snapshot);
+                return snapshot.toByteArray();
             }
 
             @Override
@@ -117,19 +142,35 @@ public interface Payload {
             throw new ValidateException("Payload text must not be null");
         }
         validateCharset(charset);
-        return of(text.getBytes(charset));
+        return of(ByteString.encodeString(text, charset));
     }
 
     /**
-     * Creates a one-shot streaming payload.
+     * Creates a one-shot streaming payload through the JDK stream compatibility boundary.
      *
      * @param input  input stream
      * @param length declared length, or -1 when unknown
      * @return stream payload
+     * @deprecated use {@link #source(Source, long)}
      */
+    @Deprecated(since = "8.8.3")
     static Payload stream(final InputStream input, final long length) {
         if (input == null) {
             throw new ValidateException("Payload stream must not be null");
+        }
+        return source(IoKit.source(input), length);
+    }
+
+    /**
+     * Creates a one-shot source payload.
+     *
+     * @param input  source
+     * @param length declared length, or -1 when unknown
+     * @return source payload
+     */
+    static Payload source(final Source input, final long length) {
+        if (input == null) {
+            throw new ValidateException("Payload source must not be null");
         }
         if (length < -1) {
             throw new ValidateException("Payload length must be -1 or greater");
@@ -143,7 +184,7 @@ public interface Payload {
             }
 
             @Override
-            public InputStream stream() {
+            public Source source() {
                 if (!opened.compareAndSet(false, true)) {
                     throw new StatefulException("Streaming payload can only be opened once");
                 }
@@ -186,11 +227,22 @@ public interface Payload {
     long length();
 
     /**
-     * Opens the payload stream.
+     * Opens the payload source.
+     *
+     * @return payload source
+     */
+    Source source();
+
+    /**
+     * Opens a compatibility stream backed by {@link #source()}.
      *
      * @return payload stream
+     * @deprecated use {@link #source()}
      */
-    InputStream stream();
+    @Deprecated(since = "8.8.3")
+    default InputStream stream() {
+        return new SourceInputStream(source());
+    }
 
     /**
      * Reads all payload bytes.
@@ -262,13 +314,12 @@ public interface Payload {
             throw new InternalException(
                     "Materialize size " + length + " bytes exceeds JVM byte array limit at " + source);
         }
-        final int initial = length >= 0 ? (int) length : 8192;
-        try (InputStream input = payload.stream(); ByteArrayOutputStream output = new ByteArrayOutputStream(initial)) {
-            final byte[] buffer = new byte[8192];
+        try (Source input = payload.source()) {
+            final Buffer buffer = new Buffer();
             long total = 0;
             while (true) {
-                final int read = input.read(buffer);
-                if (read < 0) {
+                final long read = input.read(buffer, Normal._8192);
+                if (read == -1) {
                     break;
                 }
                 total += read;
@@ -279,14 +330,46 @@ public interface Payload {
                     throw new InternalException(
                             "Materialize size " + total + " bytes exceeds JVM byte array limit at " + source);
                 }
-                output.write(buffer, 0, read);
             }
             if (length >= 0 && total > length) {
                 throw new InternalException("Streaming payload exceeded declared length at " + source);
             }
-            return output.toByteArray();
+            return buffer.readByteArray();
         } catch (final IOException e) {
             throw new InternalException("Unable to read payload at " + source, e);
+        }
+    }
+
+    /**
+     * Copies a payload stream to a sink without materializing it.
+     *
+     * @param payload payload
+     * @param sink    sink
+     * @return copied byte count
+     */
+    static long copyTo(final Payload payload, final Sink sink) {
+        if (payload == null) {
+            throw new ValidateException("Payload must not be null");
+        }
+        if (sink == null) {
+            throw new ValidateException("Sink must not be null");
+        }
+        final long length = payload.length();
+        long total = 0L;
+        try (Source input = payload.source()) {
+            final Buffer buffer = new Buffer();
+            long read;
+            while ((read = input.read(buffer, Normal._8192)) != -1) {
+                total += read;
+                if (length >= 0 && total > length) {
+                    throw new InternalException("Streaming payload exceeded declared length at Payload.copyTo");
+                }
+                sink.write(buffer, read);
+            }
+            sink.flush();
+            return total;
+        } catch (final IOException e) {
+            throw new InternalException("Unable to copy payload stream", e);
         }
     }
 
@@ -296,7 +379,9 @@ public interface Payload {
      * @param payload payload
      * @param output  output stream
      * @return copied byte count
+     * @deprecated use {@link #copyTo(Payload, Sink)}
      */
+    @Deprecated(since = "8.8.3")
     static long copyTo(final Payload payload, final OutputStream output) {
         if (payload == null) {
             throw new ValidateException("Payload must not be null");
@@ -304,22 +389,7 @@ public interface Payload {
         if (output == null) {
             throw new ValidateException("Output stream must not be null");
         }
-        final long length = payload.length();
-        final byte[] buffer = new byte[8192];
-        long total = 0L;
-        try (InputStream input = payload.stream()) {
-            int read;
-            while ((read = input.read(buffer)) != -1) {
-                total += read;
-                if (length >= 0 && total > length) {
-                    throw new InternalException("Streaming payload exceeded declared length at Payload.copyTo");
-                }
-                output.write(buffer, 0, read);
-            }
-            return total;
-        } catch (final IOException e) {
-            throw new InternalException("Unable to copy payload stream", e);
-        }
+        return copyTo(payload, IoKit.sink(output));
     }
 
     /**
@@ -368,6 +438,81 @@ public interface Payload {
             return "Payload.materialize";
         }
         return entry;
+    }
+
+    /**
+     * Input stream compatibility wrapper backed by a core source.
+     */
+    final class SourceInputStream extends InputStream {
+
+        /**
+         * Delegate source.
+         */
+        private final Source source;
+
+        /**
+         * Read buffer.
+         */
+        private final Buffer buffer = new Buffer();
+
+        /**
+         * Closed flag.
+         */
+        private boolean closed;
+
+        /**
+         * Creates a source-backed stream.
+         *
+         * @param source delegate source
+         */
+        SourceInputStream(final Source source) {
+            if (source == null) {
+                throw new ValidateException("Payload source must not be null");
+            }
+            this.source = source;
+        }
+
+        @Override
+        public int read() throws IOException {
+            ensureOpen();
+            final long read = source.read(buffer, 1);
+            return read == -1 ? -1 : buffer.readByte() & 0xff;
+        }
+
+        @Override
+        public int read(final byte[] target, final int offset, final int length) throws IOException {
+            ensureOpen();
+            IoKit.checkOffsetAndCount(target.length, offset, length);
+            if (length == 0) {
+                return 0;
+            }
+            final long read = source.read(buffer, length);
+            if (read == -1) {
+                return -1;
+            }
+            return buffer.read(target, offset, (int) read);
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (closed) {
+                return;
+            }
+            closed = true;
+            source.close();
+        }
+
+        /**
+         * Ensures this stream is open.
+         *
+         * @throws IOException when the stream is closed
+         */
+        private void ensureOpen() throws IOException {
+            if (closed) {
+                throw new IOException("Payload stream has been closed");
+            }
+        }
+
     }
 
 }

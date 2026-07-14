@@ -26,10 +26,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.ProgressBody;
@@ -47,7 +49,7 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
     /**
      * Default binary media type.
      */
-    private static final MediaType BINARY = MediaType.parse("application/octet-stream");
+    private static final MediaType BINARY = MediaType.APPLICATION_OCTET_STREAM_TYPE;
 
     /**
      * Payload reference.
@@ -110,8 +112,8 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
      */
     private HttpBody(final Payload payload, final MediaType media, final ProgressBody.Tracker progress,
             final long materializeMaxBytes) {
-        this.payload = require(payload, "Payload");
-        this.media = require(media, "MediaType");
+        this.payload = Assert.notNull(payload, () -> new ValidateException("Payload must not be null"));
+        this.media = Assert.notNull(media, () -> new ValidateException("MediaType must not be null"));
         this.length = validateLength(this.payload.length());
         this.progress = progress;
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
@@ -218,12 +220,14 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
     }
 
     /**
-     * Opens the body stream.
+     * Opens the compatibility body stream.
      *
      * @return input stream
+     * @deprecated use {@link #source()}
      */
+    @Deprecated(since = "8.8.3")
     public InputStream stream() {
-        return payload().stream();
+        return IoKit.buffer(source()).inputStream();
     }
 
     /**
@@ -265,10 +269,8 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
      */
     @Override
     public String text(final Charset charset, final long maxBytes) {
-        if (charset == null) {
-            throw new ValidateException("Charset must not be null");
-        }
-        return new String(bytes(maxBytes), charset);
+        final Charset checkedCharset = Assert.notNull(charset, () -> new ValidateException("Charset must not be null"));
+        return new String(bytes(maxBytes), checkedCharset);
     }
 
     /**
@@ -340,30 +342,13 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
     }
 
     /**
-     * Validates required references.
-     *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
-    }
-
-    /**
      * Validates a payload length.
      *
      * @param length length
      * @return length
      */
     private static long validateLength(final long length) {
-        if (length < -1) {
-            throw new ValidateException("Body length must be -1 or greater");
-        }
+        Assert.isFalse(length < -1, () -> new ValidateException("Body length must be -1 or greater"));
         return length;
     }
 

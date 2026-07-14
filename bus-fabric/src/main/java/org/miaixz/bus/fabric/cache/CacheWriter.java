@@ -22,7 +22,7 @@ package org.miaixz.bus.fabric.cache;
 import java.io.IOException;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.fabric.codec.stream.StreamSink;
+import org.miaixz.bus.core.io.sink.Sink;
 
 /**
  * Streaming cache writer.
@@ -33,11 +33,11 @@ import org.miaixz.bus.fabric.codec.stream.StreamSink;
 public interface CacheWriter extends AutoCloseable {
 
     /**
-     * Returns the writable stream sink.
+     * Returns the writable sink.
      *
-     * @return stream sink
+     * @return sink
      */
-    StreamSink body();
+    Sink body();
 
     /**
      * Writes a bus-core buffer to the cache body.

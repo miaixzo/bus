@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
@@ -51,6 +52,11 @@ public final class SseCall implements Call<SseSession> {
      * Logger tag used by the fabric runtime.
      */
     private static final String LOG_TAG = "Fabric";
+
+    /**
+     * Dispatcher activity name for opening the SSE stream.
+     */
+    private static final String ACTIVITY_OPEN = "sse-open";
 
     /**
      * Source exchange.
@@ -98,10 +104,7 @@ public final class SseCall implements Call<SseSession> {
      * @param dispatcher dispatcher used by enqueue()
      */
     private SseCall(final SseX exchange, final Dispatcher dispatcher) {
-        if (exchange == null) {
-            throw new ValidateException("SSE exchange must not be null");
-        }
-        this.exchange = exchange;
+        this.exchange = require(exchange, "SSE exchange");
         this.dispatcher = dispatcher;
         this.future = new CompletableFuture<>();
         this.state = new AtomicReference<>(Status.QUEUED);
@@ -186,13 +189,11 @@ public final class SseCall implements Call<SseSession> {
      * @return this call
      */
     public Call<SseSession> enqueue(final Dispatcher dispatcher) {
-        if (dispatcher == null) {
-            throw new ValidateException("Dispatcher must not be null");
-        }
+        final Dispatcher currentDispatcher = require(dispatcher, "Dispatcher");
         if (handle.get() != null) {
             return this;
         }
-        final Activity activity = Activity.of("sse-open", () -> {
+        final Activity activity = Activity.of(ACTIVITY_OPEN, () -> {
             try {
                 open();
             } catch (final RuntimeException e) {
@@ -200,7 +201,7 @@ public final class SseCall implements Call<SseSession> {
                 throw e;
             }
         });
-        final DispatchHandle enqueued = dispatcher.enqueue(exchange.dispatchKey(), activity);
+        final DispatchHandle enqueued = currentDispatcher.enqueue(exchange.dispatchKey(), activity);
         if (!handle.compareAndSet(null, enqueued)) {
             enqueued.cancel();
         } else {
@@ -353,9 +354,9 @@ public final class SseCall implements Call<SseSession> {
      * @param timeout timeout
      */
     private static void validateTimeout(final Duration timeout) {
-        if (timeout == null || timeout.isNegative()) {
-            throw new ValidateException("Timeout must be non-null and non-negative");
-        }
+        final Duration checked = Assert
+                .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
+        Assert.isTrue(!checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
     }
 
     /**
@@ -367,10 +368,7 @@ public final class SseCall implements Call<SseSession> {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

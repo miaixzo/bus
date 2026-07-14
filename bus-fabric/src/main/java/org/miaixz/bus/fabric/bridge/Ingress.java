@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.bridge;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -27,6 +26,7 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
@@ -133,11 +133,11 @@ public final class Ingress {
      * @return attributes
      */
     public Map<String, Object> attributes() {
-        final LinkedHashMap<String, Object> copy = new LinkedHashMap<>();
+        final Map<String, Object> copy = MapKit.newHashMap(attributes.size(), true);
         for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
             copy.put(entry.getKey(), entry.getValue() == nullValue() ? null : entry.getValue());
         }
-        return Collections.unmodifiableMap(copy);
+        return MapKit.view(copy);
     }
 
     /**
@@ -147,13 +147,13 @@ public final class Ingress {
      * @return immutable attributes
      */
     private static Map<String, Object> immutableAttributes(final Map<String, Object> source) {
-        final LinkedHashMap<String, Object> copy = new LinkedHashMap<>();
+        final Map<String, Object> copy = MapKit.newHashMap(source == null ? 0 : source.size(), true);
         if (source != null) {
             for (final Map.Entry<String, Object> entry : source.entrySet()) {
                 copy.put(validateKey(entry.getKey()), entry.getValue() == null ? nullValue() : entry.getValue());
             }
         }
-        return Collections.unmodifiableMap(copy);
+        return MapKit.view(copy);
     }
 
     /**

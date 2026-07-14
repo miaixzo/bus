@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.protocol.stomp;
 
 import java.nio.charset.Charset;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
@@ -40,6 +41,11 @@ import org.miaixz.bus.fabric.protocol.stomp.body.StompBody;
  * @since Java 21+
  */
 public record StompMessage(String destination, Headers headers, Payload payload) {
+
+    /**
+     * STOMP content type header.
+     */
+    private static final String CONTENT_TYPE = "content-type";
 
     /**
      * Creates a validated message.
@@ -75,10 +81,7 @@ public record StompMessage(String destination, Headers headers, Payload payload)
      * @return message
      */
     public static StompMessage of(final String destination, final Headers headers, final StompBody body) {
-        if (body == null) {
-            throw new ValidateException("STOMP body must not be null");
-        }
-        return new StompMessage(destination, headers, body.payload());
+        return new StompMessage(destination, headers, require(body, "STOMP body").payload());
     }
 
     /**
@@ -117,7 +120,7 @@ public record StompMessage(String destination, Headers headers, Payload payload)
      * @return body
      */
     public StompBody body() {
-        final String contentType = headers.get("content-type");
+        final String contentType = headers.get(CONTENT_TYPE);
         final MediaType media = contentType == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE
                 : MediaType.parse(contentType);
         return StompBody.of(payload, media);
@@ -141,10 +144,7 @@ public record StompMessage(String destination, Headers headers, Payload payload)
      * @return text
      */
     public String text(final Charset charset, final long maxBytes) {
-        if (charset == null) {
-            throw new ValidateException("Charset must not be null");
-        }
-        return payload.text(charset, maxBytes);
+        return payload.text(require(charset, "Charset"), maxBytes);
     }
 
     /**
@@ -170,10 +170,7 @@ public record StompMessage(String destination, Headers headers, Payload payload)
      * @return value
      */
     static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

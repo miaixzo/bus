@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Callback;
@@ -98,10 +99,7 @@ record SseSnapshot(Context context, URI uri, Address address, Headers headers, T
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

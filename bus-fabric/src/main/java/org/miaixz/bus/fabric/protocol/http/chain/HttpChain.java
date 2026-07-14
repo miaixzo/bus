@@ -22,6 +22,8 @@ package org.miaixz.bus.fabric.protocol.http.chain;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.Connection;
@@ -98,7 +100,7 @@ public final class HttpChain {
      * @return chain
      */
     public static HttpChain create(final List<HttpStage> stages, final Cancellation cancellation) {
-        return new HttpChain(stages, 0, null, null, cancellation);
+        return new HttpChain(stages, Normal._0, null, null, cancellation);
     }
 
     /**
@@ -108,15 +110,14 @@ public final class HttpChain {
      * @return response
      */
     public HttpResponse proceed(final HttpRequest request) {
-        if (request == null) {
-            throw new ValidateException("HTTP request must not be null");
-        }
+        final HttpRequest current = Assert
+                .notNull(request, () -> new ValidateException("HTTP request must not be null"));
         if (index >= stages.size()) {
             throw new StatefulException("HTTP chain is exhausted");
         }
         cancellation.throwIfCancelled();
         final HttpStage stage = stages.get(index);
-        return stage.execute(request, new HttpChain(stages, index + 1, lease, connection, cancellation));
+        return stage.execute(current, new HttpChain(stages, index + 1, lease, connection, cancellation));
     }
 
     /**
@@ -158,13 +159,11 @@ public final class HttpChain {
      * @return contextual chain
      */
     HttpChain withConnection(final ConnectionLease lease, final Connection connection) {
-        if (lease == null) {
-            throw new ValidateException("Connection lease must not be null");
-        }
-        if (connection == null) {
-            throw new ValidateException("Network connection must not be null");
-        }
-        return new HttpChain(stages, index, lease, connection, cancellation);
+        final ConnectionLease currentLease = Assert
+                .notNull(lease, () -> new ValidateException("Connection lease must not be null"));
+        final Connection currentConnection = Assert
+                .notNull(connection, () -> new ValidateException("Network connection must not be null"));
+        return new HttpChain(stages, index, currentLease, currentConnection, cancellation);
     }
 
     /**
@@ -201,13 +200,12 @@ public final class HttpChain {
      * @return stages
      */
     private static List<HttpStage> validateStages(final List<HttpStage> stages) {
-        if (stages == null) {
-            throw new ValidateException("HTTP stages must not be null");
-        }
-        for (final HttpStage stage : stages) {
+        final List<HttpStage> source = Assert
+                .notNull(stages, () -> new ValidateException("HTTP stages must not be null"));
+        for (final HttpStage stage : source) {
             validateStage(stage);
         }
-        return stages;
+        return source;
     }
 
     /**
@@ -216,9 +214,7 @@ public final class HttpChain {
      * @param stage stage
      */
     private static void validateStage(final HttpStage stage) {
-        if (stage == null) {
-            throw new ValidateException("HTTP stage must not be null");
-        }
+        Assert.notNull(stage, () -> new ValidateException("HTTP stage must not be null"));
     }
 
     /**
@@ -229,9 +225,9 @@ public final class HttpChain {
      * @return index
      */
     private static int validateIndex(final int index, final int size) {
-        if (index < 0 || index > size) {
-            throw new ValidateException("HTTP chain index is out of range");
-        }
+        Assert.isTrue(
+                index >= Normal._0 && index <= size,
+                () -> new ValidateException("HTTP chain index is out of range"));
         return index;
     }
 
@@ -244,10 +240,7 @@ public final class HttpChain {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

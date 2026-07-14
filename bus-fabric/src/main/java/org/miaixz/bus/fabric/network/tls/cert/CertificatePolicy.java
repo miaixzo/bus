@@ -19,10 +19,6 @@
 */
 package org.miaixz.bus.fabric.network.tls.cert;
 
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
@@ -35,15 +31,19 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.tls.AnyTrustManager;
+import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.builtin.CertificateChain;
+import org.miaixz.bus.crypto.builtin.CertificateChainCleaner;
+import org.miaixz.bus.crypto.builtin.CertificatePin;
 
 /**
  * TLS certificate validation policy with trust manager, hostname, and pin checks.
@@ -52,16 +52,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @since Java 21+
  */
 public final class CertificatePolicy {
-
-    /**
-     * SHA-256 pin prefix.
-     */
-    private static final String SHA256_PREFIX = "sha256/";
-
-    /**
-     * SHA-1 pin prefix for callers that still need SHA-1 pin strings.
-     */
-    private static final String SHA1_PREFIX = "sha1/";
 
     /**
      * Trust manager.
@@ -86,7 +76,7 @@ public final class CertificatePolicy {
     /**
      * Optional chain cleaner.
      */
-    private final CertificateChainCleanerAdapter chainCleaner;
+    private final CertificateChainCleaner chainCleaner;
 
     /**
      * Creates a certificate policy.
@@ -98,12 +88,8 @@ public final class CertificatePolicy {
      * @param chainCleaner   chain cleaner
      */
     private CertificatePolicy(final X509TrustManager trustManager, final boolean hostnameVerify,
-            final Map<String, Set<String>> pins, final boolean trustAll,
-            final CertificateChainCleanerAdapter chainCleaner) {
-        if (trustManager == null) {
-            throw new ValidateException("Trust manager must not be null");
-        }
-        this.trustManager = trustManager;
+            final Map<String, Set<String>> pins, final boolean trustAll, final CertificateChainCleaner chainCleaner) {
+        this.trustManager = Assert.notNull(trustManager, () -> new ValidateException("Trust manager must not be null"));
         this.hostnameVerify = hostnameVerify;
         this.pins = copyPins(pins);
         this.trustAll = trustAll;
@@ -162,9 +148,7 @@ public final class CertificatePolicy {
      */
     public void check(final String host, final CertificateChain chain) {
         final String normalized = validateHost(host);
-        if (chain == null) {
-            throw new ValidateException("Certificate chain must not be null");
-        }
+        Assert.notNull(chain, () -> new ValidateException("Certificate chain must not be null"));
         final CertificateChain cleaned = clean(normalized, chain.certificates());
         checkPeer(normalized, cleaned);
     }
@@ -177,10 +161,10 @@ public final class CertificatePolicy {
      */
     public void checkPeer(final String host, final CertificateChain chain) {
         final String normalized = validateHost(host);
-        if (chain == null) {
-            throw new ValidateException("Certificate chain must not be null");
-        }
-        final CertificateChain checked = chainCleaner == null ? chain : cleanChain(normalized, chain.certificates());
+        final CertificateChain checkedChain = Assert
+                .notNull(chain, () -> new ValidateException("Certificate chain must not be null"));
+        final CertificateChain checked = chainCleaner == null ? checkedChain
+                : cleanChain(normalized, checkedChain.certificates());
         final Certificate leaf = checked.leaf();
         if (hostnameVerify && leaf instanceof X509Certificate x509 && !verifyHostname(normalized, x509)) {
             throw new ProtocolException("Certificate hostname does not match " + normalized);
@@ -220,7 +204,7 @@ public final class CertificatePolicy {
      *
      * @return chain cleaner or null
      */
-    public CertificateChainCleanerAdapter chainCleaner() {
+    public CertificateChainCleaner chainCleaner() {
         return chainCleaner;
     }
 
@@ -304,14 +288,14 @@ public final class CertificatePolicy {
             String sha256 = null;
             String sha1 = null;
             for (final String hostPin : hostPins) {
-                if (hostPin.startsWith(SHA256_PREFIX)) {
+                if (hostPin.startsWith(CertificatePin.SHA256_PREFIX)) {
                     if (sha256 == null) {
                         sha256 = pin(certificate);
                     }
                     if (hostPin.equals(sha256)) {
                         return;
                     }
-                } else if (hostPin.startsWith(SHA1_PREFIX)) {
+                } else if (hostPin.startsWith(CertificatePin.SHA1_PREFIX)) {
                     if (sha1 == null) {
                         sha1 = sha1Pin(certificate);
                     }
@@ -331,14 +315,7 @@ public final class CertificatePolicy {
      * @return pin
      */
     public static String pin(final Certificate certificate) {
-        if (certificate == null) {
-            throw new ValidateException("Certificate must not be null");
-        }
-        if (!(certificate instanceof X509Certificate)) {
-            throw new ProtocolException("Certificate pinning requires X509 certificates");
-        }
-        final byte[] hash = sha256(certificate.getPublicKey().getEncoded());
-        return SHA256_PREFIX + Base64.encode(hash);
+        return CertificatePin.sha256(certificate);
     }
 
     /**
@@ -348,14 +325,7 @@ public final class CertificatePolicy {
      * @return pin
      */
     public static String sha1Pin(final Certificate certificate) {
-        if (certificate == null) {
-            throw new ValidateException("Certificate must not be null");
-        }
-        if (!(certificate instanceof X509Certificate)) {
-            throw new ProtocolException("Certificate pinning requires X509 certificates");
-        }
-        final byte[] hash = digest("SHA-1", certificate.getPublicKey().getEncoded());
-        return SHA1_PREFIX + Base64.encode(hash);
+        return CertificatePin.sha1(certificate);
     }
 
     /**
@@ -364,19 +334,11 @@ public final class CertificatePolicy {
      * @return trust manager
      */
     private static X509TrustManager defaultTrustManager() {
-        try {
-            final TrustManagerFactory factory = TrustManagerFactory
-                    .getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            factory.init((KeyStore) null);
-            for (final TrustManager manager : factory.getTrustManagers()) {
-                if (manager instanceof X509TrustManager x509) {
-                    return x509;
-                }
-            }
+        final X509TrustManager trustManager = AnyTrustManager.getDefaultTrustManager();
+        if (trustManager == null) {
             throw new ProtocolException("Default X509 trust manager is not available");
-        } catch (final GeneralSecurityException e) {
-            throw new ProtocolException("Default X509 trust manager is not available", e);
         }
+        return trustManager;
     }
 
     /**
@@ -386,10 +348,7 @@ public final class CertificatePolicy {
      * @return normalized host
      */
     private static String validateHost(final String host) {
-        if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Certificate host must be non-blank and single-line");
-        }
-        final String normalized = host.trim().toLowerCase(Locale.ROOT);
+        final String normalized = NetKit.normalizeHost(host);
         if (normalized.indexOf('*') >= 0) {
             throw new ValidateException("Certificate host must not contain wildcards");
         }
@@ -408,7 +367,7 @@ public final class CertificatePolicy {
         }
         final String normalized = host.trim().toLowerCase(Locale.ROOT);
         if (normalized.startsWith("*.")) {
-            final String suffix = normalized.substring(2);
+            final String suffix = NetKit.normalizeHost(normalized.substring(Normal._2));
             if (suffix.isBlank() || suffix.indexOf('*') >= 0 || suffix.indexOf(Symbol.C_DOT) < 0) {
                 throw new ValidateException("Certificate pin wildcard must cover a concrete domain");
             }
@@ -449,48 +408,7 @@ public final class CertificatePolicy {
      * @return pin
      */
     private static String validatePin(final String pin) {
-        if (StringKit.isBlank(pin) || StringKit.containsAny(pin, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Certificate pin must be non-blank and single-line");
-        }
-        if (!pin.startsWith(SHA256_PREFIX) && !pin.startsWith(SHA1_PREFIX)) {
-            throw new ProtocolException("Certificate pin must use sha256/ or sha1/ prefix");
-        }
-        final int prefixLength = pin.startsWith(SHA256_PREFIX) ? SHA256_PREFIX.length() : SHA1_PREFIX.length();
-        try {
-            Base64.decode(pin.substring(prefixLength));
-        } catch (final RuntimeException e) {
-            throw new ProtocolException("Certificate pin must contain base64 hash", e);
-        }
-        return pin;
-    }
-
-    /**
-     * Computes a SHA-256 digest.
-     *
-     * @param value value
-     * @return digest
-     */
-    private static byte[] sha256(final byte[] value) {
-        try {
-            return digest("SHA-256", value);
-        } catch (final ProtocolException e) {
-            throw e;
-        }
-    }
-
-    /**
-     * Computes a digest.
-     *
-     * @param algorithm algorithm
-     * @param value     value
-     * @return digest
-     */
-    private static byte[] digest(final String algorithm, final byte[] value) {
-        try {
-            return MessageDigest.getInstance(algorithm).digest(value);
-        } catch (final NoSuchAlgorithmException e) {
-            throw new ProtocolException(algorithm + " digest is not available", e);
-        }
+        return CertificatePin.validate(pin);
     }
 
     /**
@@ -506,17 +424,17 @@ public final class CertificatePolicy {
             boolean hasDnsName = false;
             if (subjectAltNames != null) {
                 for (final List<?> subjectAltName : subjectAltNames) {
-                    if (subjectAltName.size() < 2 || !(subjectAltName.get(0) instanceof Integer type)
-                            || subjectAltName.get(1) == null) {
+                    if (subjectAltName.size() < Normal._2 || !(subjectAltName.get(Normal._0) instanceof Integer type)
+                            || subjectAltName.get(Normal._1) == null) {
                         continue;
                     }
-                    final String value = subjectAltName.get(1).toString();
-                    if (type == 2) {
+                    final String value = subjectAltName.get(Normal._1).toString();
+                    if (type == Normal._2) {
                         hasDnsName = true;
                         if (matchDns(host, value)) {
                             return true;
                         }
-                    } else if (type == 7 && host.equalsIgnoreCase(value)) {
+                    } else if (type == Normal._7 && host.equalsIgnoreCase(value)) {
                         return true;
                     }
                 }
@@ -561,8 +479,8 @@ public final class CertificatePolicy {
         final String subject = certificate.getSubjectX500Principal().getName();
         for (final String part : subject.split(",")) {
             final String trimmed = part.trim();
-            if (trimmed.regionMatches(true, 0, "CN=", 0, 3)) {
-                return trimmed.substring(3).trim();
+            if (trimmed.regionMatches(true, Normal._0, "CN=", Normal._0, Normal._3)) {
+                return trimmed.substring(Normal._3).trim();
             }
         }
         return null;
@@ -599,7 +517,7 @@ public final class CertificatePolicy {
         /**
          * Chain cleaner.
          */
-        private CertificateChainCleanerAdapter chainCleaner;
+        private CertificateChainCleaner chainCleaner;
 
         /**
          * Creates a builder with defaults.
@@ -637,10 +555,8 @@ public final class CertificatePolicy {
          * @return this builder
          */
         public Builder trustManager(final X509TrustManager trustManager) {
-            if (trustManager == null) {
-                throw new ValidateException("Trust manager must not be null");
-            }
-            this.trustManager = trustManager;
+            this.trustManager = Assert
+                    .notNull(trustManager, () -> new ValidateException("Trust manager must not be null"));
             return this;
         }
 
@@ -672,11 +588,9 @@ public final class CertificatePolicy {
          * @param chainCleaner chain cleaner
          * @return this builder
          */
-        public Builder chainCleaner(final CertificateChainCleanerAdapter chainCleaner) {
-            if (chainCleaner == null) {
-                throw new ValidateException("Certificate chain cleaner must not be null");
-            }
-            this.chainCleaner = chainCleaner;
+        public Builder chainCleaner(final CertificateChainCleaner chainCleaner) {
+            this.chainCleaner = Assert
+                    .notNull(chainCleaner, () -> new ValidateException("Certificate chain cleaner must not be null"));
             return this;
         }
 
@@ -687,7 +601,7 @@ public final class CertificatePolicy {
          * @return this builder
          */
         public Builder trustRoots(final X509Certificate... caCerts) {
-            this.chainCleaner = CertificateChainCleanerAdapter.of(caCerts);
+            this.chainCleaner = CertificateChainCleaner.of(caCerts);
             this.trustManager = new RootTrustManager(caCerts);
             return this;
         }
@@ -719,7 +633,7 @@ public final class CertificatePolicy {
         /**
          * Chain cleaner.
          */
-        private final CertificateChainCleanerAdapter cleaner;
+        private final CertificateChainCleaner cleaner;
 
         /**
          * Creates a trust manager.
@@ -733,7 +647,7 @@ public final class CertificatePolicy {
                         "CA certificates must be non-null, non-empty, and contain no null elements");
             }
             this.acceptedIssuers = caCerts.clone();
-            this.cleaner = CertificateChainCleanerAdapter.of(caCerts);
+            this.cleaner = CertificateChainCleaner.of(caCerts);
         }
 
         /**

@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.protocol.http.body;
 
 import java.nio.charset.Charset;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
@@ -74,11 +75,9 @@ public final class TextBody implements RequestBody {
      */
     public static TextBody of(final String text, final MediaType media) {
         final String validText = validateText(text);
-        if (media == null) {
-            throw new ValidateException("Text media must not be null");
-        }
-        final Charset charset = media.charset(org.miaixz.bus.core.lang.Charset.UTF_8);
-        return new TextBody(validText, media, BodyCodec.create().text(validText, charset));
+        final MediaType validMedia = Assert.notNull(media, () -> new ValidateException("Text media must not be null"));
+        final Charset charset = validMedia.charset(org.miaixz.bus.core.lang.Charset.UTF_8);
+        return new TextBody(validText, validMedia, BodyCodec.create().text(validText, charset));
     }
 
     /**
@@ -95,6 +94,7 @@ public final class TextBody implements RequestBody {
      *
      * @return media type
      */
+    @Override
     public MediaType media() {
         return media;
     }
@@ -104,6 +104,7 @@ public final class TextBody implements RequestBody {
      *
      * @return payload
      */
+    @Override
     public Payload payload() {
         return payload;
     }
@@ -115,10 +116,12 @@ public final class TextBody implements RequestBody {
      * @return validated text
      */
     private static String validateText(final String text) {
-        if (StringKit.isBlank(text) || StringKit.containsAny(text, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Text must be non-blank and single-line");
-        }
-        return text;
+        final String checked = Assert
+                .notBlank(text, () -> new ValidateException("Text must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Text must be non-blank and single-line"));
+        return checked;
     }
 
 }

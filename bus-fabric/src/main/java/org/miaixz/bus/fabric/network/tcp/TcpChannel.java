@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.network.aio.AioChannel;
@@ -51,10 +52,7 @@ final class TcpChannel {
      * @param channel AIO channel
      */
     private TcpChannel(final AioChannel channel) {
-        if (channel == null) {
-            throw new ValidateException("AIO channel must not be null");
-        }
-        this.channel = channel;
+        this.channel = Assert.notNull(channel, () -> new ValidateException("AIO channel must not be null"));
         this.state = new AtomicReference<>(Status.OPENED);
     }
 

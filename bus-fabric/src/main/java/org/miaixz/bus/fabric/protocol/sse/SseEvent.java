@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.protocol.sse;
 
 import java.time.Duration;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -185,9 +186,9 @@ public record SseEvent(String id, String event, String data, Duration retry) {
      * @return retry
      */
     private static Duration validateRetry(final Duration value) {
-        if (value != null && value.isNegative()) {
-            throw new ValidateException("SSE retry must be non-negative");
-        }
+        Assert.isFalse(
+                value != null && value.isNegative(),
+                () -> new ValidateException("SSE retry must be non-negative"));
         return value;
     }
 

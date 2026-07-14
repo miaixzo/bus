@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.observe;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 
@@ -69,10 +70,8 @@ public interface EventObserver {
      * @return combined observer
      */
     default EventObserver and(final EventObserver next) {
-        if (next == null) {
-            throw new ValidateException("Next observer must not be null");
-        }
-        return new ChainedEventObserver(this, next);
+        return new ChainedEventObserver(this,
+                Assert.notNull(next, () -> new ValidateException("Next observer must not be null")));
     }
 
 }

@@ -24,7 +24,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
@@ -47,7 +50,7 @@ import org.miaixz.bus.fabric.network.udp.UdpNetwork;
 import org.miaixz.bus.fabric.network.udp.UdpSession;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec;
 import org.miaixz.bus.fabric.protocol.socket.session.SocketLease;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
@@ -65,6 +68,26 @@ final class SocketRunner {
      * Logger tag used by the fabric runtime.
      */
     private static final String LOG_TAG = "Fabric";
+
+    /**
+     * Socket-scoped TLS context option key.
+     */
+    private static final String SOCKET_TLS_CONTEXT = "socket.tlsContext";
+
+    /**
+     * Shared TLS context option key.
+     */
+    private static final String TLS_CONTEXT = "tlsContext";
+
+    /**
+     * Socket-scoped TLS settings option key.
+     */
+    private static final String SOCKET_TLS_SETTINGS = "socket.tlsSettings";
+
+    /**
+     * Shared TLS settings option key.
+     */
+    private static final String TLS_SETTINGS = "tlsSettings";
 
     /**
      * Execution snapshot.
@@ -335,7 +358,7 @@ final class SocketRunner {
             if (connectTimeout.isZero()) {
                 return future.get();
             }
-            return future.get(connectTimeout.toNanos(), java.util.concurrent.TimeUnit.NANOSECONDS);
+            return future.get(connectTimeout.toNanos(), TimeUnit.NANOSECONDS);
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new InternalException("Interrupted while opening socket", e);
@@ -404,11 +427,11 @@ final class SocketRunner {
      * @return TLS context
      */
     private TlsContext tlsContext() {
-        if (snapshot.context().options().contains("socket.tlsContext")) {
-            return snapshot.context().options().get("socket.tlsContext", TlsContext.class);
+        if (snapshot.context().options().contains(SOCKET_TLS_CONTEXT)) {
+            return snapshot.context().options().get(SOCKET_TLS_CONTEXT, TlsContext.class);
         }
-        if (snapshot.context().options().contains("tlsContext")) {
-            return snapshot.context().options().get("tlsContext", TlsContext.class);
+        if (snapshot.context().options().contains(TLS_CONTEXT)) {
+            return snapshot.context().options().get(TLS_CONTEXT, TlsContext.class);
         }
         return TlsContext.defaults();
     }
@@ -419,11 +442,11 @@ final class SocketRunner {
      * @return TLS settings
      */
     private TlsSettings tlsSettings() {
-        if (snapshot.context().options().contains("socket.tlsSettings")) {
-            return snapshot.context().options().get("socket.tlsSettings", TlsSettings.class);
+        if (snapshot.context().options().contains(SOCKET_TLS_SETTINGS)) {
+            return snapshot.context().options().get(SOCKET_TLS_SETTINGS, TlsSettings.class);
         }
-        if (snapshot.context().options().contains("tlsSettings")) {
-            return snapshot.context().options().get("tlsSettings", TlsSettings.class);
+        if (snapshot.context().options().contains(TLS_SETTINGS)) {
+            return snapshot.context().options().get(TLS_SETTINGS, TlsSettings.class);
         }
         return TlsSettings.defaults();
     }
@@ -452,10 +475,7 @@ final class SocketRunner {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -561,7 +581,7 @@ final class SocketRunner {
                 final Dispatcher dispatcher) {
             AioGroup group = null;
             try {
-                group = AioGroup.create(1, dispatcher);
+                group = AioGroup.create(Normal._1, dispatcher);
                 return new DatagramOwner(group, UdpNetwork.create(group, listener));
             } catch (final RuntimeException e) {
                 if (group != null) {

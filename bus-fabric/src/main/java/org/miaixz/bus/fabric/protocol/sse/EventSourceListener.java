@@ -30,6 +30,13 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 public abstract class EventSourceListener {
 
     /**
+     * Creates an event source listener adapter.
+     */
+    public EventSourceListener() {
+        // Listener adapter.
+    }
+
+    /**
      * Invoked after the SSE response has been accepted.
      *
      * @param eventSource event source

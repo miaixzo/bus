@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -59,6 +61,21 @@ import org.miaixz.bus.fabric.protocol.socket.calls.SocketCall;
  * @since Java 21+
  */
 public final class SocketX {
+
+    /**
+     * Context option key for the default timeout policy.
+     */
+    private static final String TIMEOUT_OPTION = "timeout";
+
+    /**
+     * AIO compatibility scheme accepted by the socket builder.
+     */
+    private static final String AIO_SCHEME = "aio";
+
+    /**
+     * KCP compatibility scheme accepted by the socket builder.
+     */
+    private static final String KCP_SCHEME = "kcp";
 
     /**
      * Immutable execution snapshot.
@@ -240,10 +257,7 @@ public final class SocketX {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -259,9 +273,9 @@ public final class SocketX {
         try {
             final URI parsed = new URI(value.trim());
             final String scheme = parsed.getScheme();
-            if (!"tcp".equalsIgnoreCase(scheme) && !"udp".equalsIgnoreCase(scheme) && !"tls".equalsIgnoreCase(scheme)
-                    && !"kcp".equalsIgnoreCase(scheme) && !"socket".equalsIgnoreCase(scheme)
-                    && !"aio".equalsIgnoreCase(scheme)) {
+            if (!Protocol.TCP.name.equalsIgnoreCase(scheme) && !Protocol.UDP.name.equalsIgnoreCase(scheme)
+                    && !Protocol.TLS.name.equalsIgnoreCase(scheme) && !KCP_SCHEME.equalsIgnoreCase(scheme)
+                    && !Protocol.SOCKET.name.equalsIgnoreCase(scheme) && !AIO_SCHEME.equalsIgnoreCase(scheme)) {
                 throw new ProtocolException("Socket URL must use tcp, tls, udp, kcp, socket, or aio");
             }
             Address.from(parsed);
@@ -283,14 +297,14 @@ public final class SocketX {
         if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
             throw new ValidateException("Socket host must be non-blank and single-line");
         }
-        if (port < 1 || port > 65535) {
+        if (port < Normal._1 || port > Normal._65535) {
             throw new ValidateException("Socket port must be between 1 and 65535");
         }
         final String current = host.trim();
         final String authority = current.indexOf(Symbol.C_COLON) >= 0 && !current.startsWith(Symbol.BRACKET_LEFT)
                 ? Symbol.BRACKET_LEFT + current + Symbol.BRACKET_RIGHT
                 : current;
-        return scheme + "://" + authority + Symbol.C_COLON + port;
+        return scheme + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + authority + Symbol.C_COLON + port;
     }
 
     /**
@@ -300,10 +314,10 @@ public final class SocketX {
      * @return duration
      */
     private static Duration validateDuration(final Duration value) {
-        if (value == null || value.isNegative()) {
-            throw new ValidateException("Timeout must be non-null and non-negative");
-        }
-        return value;
+        final Duration checked = Assert
+                .notNull(value, () -> new ValidateException("Timeout must be non-null and non-negative"));
+        Assert.isTrue(!checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
+        return checked;
     }
 
     /**
@@ -397,7 +411,7 @@ public final class SocketX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get("timeout", Timeout.class);
+            final Timeout configured = context.options().get(TIMEOUT_OPTION, Timeout.class);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.socketOptions = hasSocketOptions(context.options()) ? SocketOptions.from(context.options())
                     : SocketOptions.defaults();
@@ -442,7 +456,7 @@ public final class SocketX {
          * @return this builder
          */
         public Builder tcp(final String host, final int port) {
-            return to(target("tcp", host, port));
+            return to(target(Protocol.TCP.name, host, port));
         }
 
         /**
@@ -453,7 +467,7 @@ public final class SocketX {
          * @return this builder
          */
         public Builder tls(final String host, final int port) {
-            return to(target("tls", host, port));
+            return to(target(Protocol.TLS.name, host, port));
         }
 
         /**
@@ -464,7 +478,7 @@ public final class SocketX {
          * @return this builder
          */
         public Builder udp(final String host, final int port) {
-            return to(target("udp", host, port));
+            return to(target(Protocol.UDP.name, host, port));
         }
 
         /**
@@ -475,7 +489,7 @@ public final class SocketX {
          * @return this builder
          */
         public Builder kcp(final String host, final int port) {
-            return to(target("kcp", host, port));
+            return to(target(KCP_SCHEME, host, port));
         }
 
         /**
@@ -641,6 +655,53 @@ public final class SocketX {
         public Builder frame(final FrameCodec codec) {
             this.frameCodec = require(codec, "Frame codec");
             return this;
+        }
+
+        /**
+         * Uses the default LF-delimited frame codec.
+         *
+         * @return this builder
+         */
+        public Builder lineFrame() {
+            return frame(FrameCodec.line());
+        }
+
+        /**
+         * Uses a delimiter-based frame codec.
+         *
+         * @param delimiter frame delimiter
+         * @return this builder
+         */
+        public Builder delimiterFrame(final byte[] delimiter) {
+            return frame(org.miaixz.bus.fabric.codec.frame.LineCodec.of(delimiter));
+        }
+
+        /**
+         * Uses a fixed-length frame codec.
+         *
+         * @param length frame length
+         * @return this builder
+         */
+        public Builder fixedFrame(final int length) {
+            return frame(FrameCodec.length(length));
+        }
+
+        /**
+         * Uses the default length-field frame codec.
+         *
+         * @return this builder
+         */
+        public Builder lengthFieldFrame() {
+            return frame(FrameCodec.lengthField());
+        }
+
+        /**
+         * Uses an unframed raw byte codec.
+         *
+         * @return this builder
+         */
+        public Builder rawFrame() {
+            return frame(FrameCodec.raw());
         }
 
         /**

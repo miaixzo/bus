@@ -23,9 +23,10 @@ import java.util.concurrent.Callable;
 
 import javax.net.ssl.SSLContext;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.network.tls.TlsClientAuth;
+import org.miaixz.bus.core.net.tls.TlsClientAuth;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.cert.CertificatePolicy;
 
@@ -53,10 +54,7 @@ public interface SslContextFactoryAdapter {
      * @return adapter
      */
     static SslContextFactoryAdapter of(final Callable<SSLContext> factory) {
-        if (factory == null) {
-            throw new ValidateException("SSL context factory must not be null");
-        }
-        return factory::call;
+        return Assert.notNull(factory, () -> new ValidateException("SSL context factory must not be null"))::call;
     }
 
     /**
@@ -66,10 +64,9 @@ public interface SslContextFactoryAdapter {
      * @return adapter
      */
     static SslContextFactoryAdapter of(final SSLContext context) {
-        if (context == null) {
-            throw new ValidateException("SSL context must not be null");
-        }
-        return () -> context;
+        final SSLContext checkedContext = Assert
+                .notNull(context, () -> new ValidateException("SSL context must not be null"));
+        return () -> checkedContext;
     }
 
     /**
@@ -88,11 +85,10 @@ public interface SslContextFactoryAdapter {
      * @return TLS context
      */
     static TlsContext tlsContext(final SslContextFactoryAdapter factory) {
-        if (factory == null) {
-            throw new ValidateException("SSL context factory must not be null");
-        }
         try {
-            return TlsContext.of(factory.create());
+            return TlsContext.of(
+                    Assert.notNull(factory, () -> new ValidateException("SSL context factory must not be null"))
+                            .create());
         } catch (final Exception e) {
             throw new ProtocolException("Unable to create SSL context", e);
         }
@@ -106,13 +102,11 @@ public interface SslContextFactoryAdapter {
      * @return TLS settings
      */
     static TlsSettings tlsSettings(final CertificatePolicy policy, final TlsClientAuth clientAuth) {
-        if (policy == null) {
-            throw new ValidateException("Certificate policy must not be null");
-        }
-        if (clientAuth == null) {
-            throw new ValidateException("Client auth mode must not be null");
-        }
-        return TlsSettings.builder().certificate(policy).clientAuth(clientAuth).build();
+        return TlsSettings.builder()
+                .certificate(Assert.notNull(policy, () -> new ValidateException("Certificate policy must not be null")))
+                .clientAuth(
+                        Assert.notNull(clientAuth, () -> new ValidateException("Client auth mode must not be null")))
+                .build();
     }
 
 }

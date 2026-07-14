@@ -22,6 +22,8 @@ package org.miaixz.bus.fabric.registry.policy;
 import java.time.Duration;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -133,22 +135,22 @@ public final class PoolPolicy {
         /**
          * Maximum idle candidate.
          */
-        private int maxIdle = 5;
+        private int maxIdle = Normal._5;
 
         /**
          * Keep-alive candidate.
          */
-        private Duration keepAlive = Duration.ofMinutes(5);
+        private Duration keepAlive = Duration.ofMinutes(Normal._5);
 
         /**
          * Maximum connections candidate.
          */
-        private int maxConnections = 64;
+        private int maxConnections = Normal._64;
 
         /**
          * Acquire timeout candidate.
          */
-        private Duration acquireTimeout = Duration.ofSeconds(30);
+        private Duration acquireTimeout = Duration.ofSeconds(Normal._30);
 
         /**
          * Creates a builder.
@@ -164,9 +166,7 @@ public final class PoolPolicy {
          * @return this builder
          */
         public Builder maxIdle(final int value) {
-            if (value < 0) {
-                throw new ValidateException("Max idle must not be negative");
-            }
+            Assert.isFalse(value < 0, () -> new ValidateException("Max idle must not be negative"));
             this.maxIdle = value;
             return this;
         }
@@ -189,9 +189,7 @@ public final class PoolPolicy {
          * @return this builder
          */
         public Builder maxConnections(final int value) {
-            if (value < 0) {
-                throw new ValidateException("Max connections must not be negative");
-            }
+            Assert.isFalse(value < 0, () -> new ValidateException("Max connections must not be negative"));
             this.maxConnections = value;
             return this;
         }
@@ -213,12 +211,10 @@ public final class PoolPolicy {
          * @return pool policy
          */
         public PoolPolicy build() {
-            if (maxConnections <= 0) {
-                throw new ValidateException("Max connections must be greater than zero");
-            }
-            if (maxIdle > maxConnections) {
-                throw new ValidateException("Max idle must not exceed max connections");
-            }
+            Assert.isTrue(maxConnections > 0, () -> new ValidateException("Max connections must be greater than zero"));
+            Assert.isFalse(
+                    maxIdle > maxConnections,
+                    () -> new ValidateException("Max idle must not exceed max connections"));
             return new PoolPolicy(maxIdle, keepAlive, maxConnections, acquireTimeout);
         }
 
@@ -230,10 +226,12 @@ public final class PoolPolicy {
          * @return value
          */
         private static Duration validateDuration(final Duration value, final String name) {
-            if (value == null || value.isNegative()) {
-                throw new ValidateException(name + " must be non-null and non-negative");
-            }
-            return value;
+            final Duration current = Assert
+                    .notNull(value, () -> new ValidateException(name + " must be non-null and non-negative"));
+            Assert.isFalse(
+                    current.isNegative(),
+                    () -> new ValidateException(name + " must be non-null and non-negative"));
+            return current;
         }
 
     }

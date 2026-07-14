@@ -21,6 +21,8 @@ package org.miaixz.bus.fabric.registry.route;
 
 import java.net.InetSocketAddress;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
@@ -40,15 +42,9 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
      * Creates a route.
      */
     public Route {
-        if (address == null) {
-            throw new ValidateException("Route address must not be null");
-        }
-        if (proxy == null) {
-            throw new ValidateException("Route proxy must not be null");
-        }
-        if (socket == null) {
-            throw new ValidateException("Route socket must not be null");
-        }
+        address = Assert.notNull(address, () -> new ValidateException("Route address must not be null"));
+        proxy = Assert.notNull(proxy, () -> new ValidateException("Route proxy must not be null"));
+        socket = Assert.notNull(socket, () -> new ValidateException("Route socket must not be null"));
     }
 
     /**
@@ -117,8 +113,9 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
      * @return route identifier
      */
     public String id() {
-        return address.scheme() + "://" + address.host() + ":" + address.port() + " via " + proxy.id() + " @ "
-                + socket.getHostString() + ":" + socket.getPort();
+        return address.scheme() + Symbol.COLON + Symbol.FORWARDSLASH + address.host() + Symbol.COLON + address.port()
+                + Symbol.SPACE + "via" + Symbol.SPACE + proxy.id() + Symbol.SPACE + Symbol.AT + Symbol.SPACE
+                + socket.getHostString() + Symbol.COLON + socket.getPort();
     }
 
     @Override

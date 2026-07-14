@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -99,8 +100,12 @@ public final class SoapBody implements RequestBody {
             final Map<String, Object> params, final Charset charset, final String action) {
         this.namespace = optionalLine(namespace, "SOAP namespace");
         this.method = name(method, "SOAP method");
-        this.headers = Collections.unmodifiableMap(new LinkedHashMap<>(headers));
-        this.params = Collections.unmodifiableMap(new LinkedHashMap<>(params));
+        this.headers = Collections.unmodifiableMap(
+                new LinkedHashMap<>(
+                        Assert.notNull(headers, () -> new ValidateException("SOAP headers must not be null"))));
+        this.params = Collections.unmodifiableMap(
+                new LinkedHashMap<>(
+                        Assert.notNull(params, () -> new ValidateException("SOAP params must not be null"))));
         this.charset = charset == null ? org.miaixz.bus.core.lang.Charset.UTF_8 : charset;
         this.action = optionalLine(action, "SOAPAction");
     }
@@ -158,7 +163,7 @@ public final class SoapBody implements RequestBody {
      * @return HTTP body
      */
     public HttpBody body() {
-        return HttpBody.of(Payload.of(xml(), charset), MediaType.parse("text/xml; charset=" + charset.name()));
+        return HttpBody.of(payload(), media());
     }
 
     /**
@@ -168,7 +173,7 @@ public final class SoapBody implements RequestBody {
      */
     @Override
     public MediaType media() {
-        return body().media();
+        return MediaType.TEXT_XML_TYPE.withCharset(charset);
     }
 
     /**
@@ -178,7 +183,7 @@ public final class SoapBody implements RequestBody {
      */
     @Override
     public Payload payload() {
-        return body().payload();
+        return Payload.of(xml(), charset);
     }
 
     /**
@@ -263,10 +268,12 @@ public final class SoapBody implements RequestBody {
      * @return value
      */
     private static String name(final String value, final String field) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(field + " must be non-blank and single-line");
-        }
-        return value;
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException(field + " must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(field + " must be non-blank and single-line"));
+        return checked;
     }
 
     /**
@@ -280,9 +287,9 @@ public final class SoapBody implements RequestBody {
         if (value == null) {
             return Normal.EMPTY;
         }
-        if (StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(field + " must be single-line");
-        }
+        Assert.isFalse(
+                StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(field + " must be single-line"));
         return value;
     }
 

@@ -22,15 +22,21 @@ package org.miaixz.bus.fabric.protocol.websocket.upgrade;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.util.Random;
 
 import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Headers;
 
@@ -48,9 +54,29 @@ public final class WebSocketUpgrade {
     private static final String GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
     /**
+     * Upgrade protocol token.
+     */
+    private static final String WEBSOCKET_TOKEN = "websocket";
+
+    /**
+     * Connection upgrade token.
+     */
+    private static final String CONNECTION_UPGRADE = "Upgrade";
+
+    /**
+     * RFC 6455 WebSocket version.
+     */
+    private static final String WEBSOCKET_VERSION = "13";
+
+    /**
+     * WebSocket handshake key byte length.
+     */
+    private static final int HANDSHAKE_KEY_BYTES = Normal._16;
+
+    /**
      * Handshake random source.
      */
-    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final Random RANDOM = RandomKit.getSecureRandom();
 
     /**
      * Handshake key.
@@ -71,11 +97,9 @@ public final class WebSocketUpgrade {
      * @return upgrade headers
      */
     public Headers headers(final Headers source) {
-        if (source == null) {
-            throw new ValidateException("WebSocket headers must not be null");
-        }
-        return source.with("Upgrade", "websocket").with("Connection", "Upgrade").with("Sec-WebSocket-Version", "13")
-                .with("Sec-WebSocket-Key", key);
+        final Headers checked = require(source, "WebSocket headers");
+        return checked.with(HTTP.UPGRADE, WEBSOCKET_TOKEN).with(HTTP.CONNECTION, CONNECTION_UPGRADE)
+                .with(HTTP.SEC_WEBSOCKET_VERSION, WEBSOCKET_VERSION).with(HTTP.SEC_WEBSOCKET_KEY, key);
     }
 
     /**
@@ -85,13 +109,11 @@ public final class WebSocketUpgrade {
      * @param headers response headers
      */
     public void validate(final int status, final Headers headers) {
-        if (headers == null) {
-            throw new ValidateException("WebSocket response headers must not be null");
-        }
-        if (status != 101) {
+        final Headers checked = require(headers, "WebSocket response headers");
+        if (status != HTTP.HTTP_SWITCHING_PROTOCOL) {
             throw new ProtocolException("WebSocket upgrade response must be 101");
         }
-        final String header = headers.get("Sec-WebSocket-Accept");
+        final String header = checked.get(HTTP.SEC_WEBSOCKET_ACCEPT);
         if (!accept(key, header)) {
             throw new ProtocolException("Invalid WebSocket accept header");
         }
@@ -116,8 +138,10 @@ public final class WebSocketUpgrade {
     public boolean accept(final String key, final String accept) {
         final String checkedKey = validateHeader(key, "WebSocket key");
         final String checkedAccept = validateHeader(accept, "WebSocket accept");
-        final String expected = Base64.encode(sha1((checkedKey + GUID).getBytes(Charset.ISO_8859_1)));
-        return MessageDigest.isEqual(expected.getBytes(Charset.ISO_8859_1), checkedAccept.getBytes(Charset.ISO_8859_1));
+        final String expected = Base64.encode(Builder.sha1(checkedKey + GUID, Charset.ISO_8859_1));
+        return MessageDigest.isEqual(
+                ByteString.encodeString(expected, Charset.ISO_8859_1).toByteArray(),
+                ByteString.encodeString(checkedAccept, Charset.ISO_8859_1).toByteArray());
     }
 
     /**
@@ -126,23 +150,7 @@ public final class WebSocketUpgrade {
      * @return base64 handshake key
      */
     private static String randomKey() {
-        final byte[] bytes = new byte[16];
-        RANDOM.nextBytes(bytes);
-        return Base64.encode(bytes);
-    }
-
-    /**
-     * Computes SHA-1 digest.
-     *
-     * @param value value
-     * @return digest
-     */
-    private static byte[] sha1(final byte[] value) {
-        try {
-            return MessageDigest.getInstance("SHA-1").digest(value);
-        } catch (final NoSuchAlgorithmException e) {
-            throw new ProtocolException("SHA-1 digest is not available", e);
-        }
+        return Base64.encode(RandomKit.randomBytes(HANDSHAKE_KEY_BYTES, RANDOM));
     }
 
     /**
@@ -152,13 +160,12 @@ public final class WebSocketUpgrade {
      * @return HTTP URI
      */
     public URI httpUri(final URI uri) {
-        if (uri == null) {
-            throw new ValidateException("WebSocket URI must not be null");
-        }
-        final String scheme = "wss".equalsIgnoreCase(uri.getScheme()) ? "https" : "http";
+        final URI checked = require(uri, "WebSocket URI");
+        final String scheme = Protocol.WSS.name.equalsIgnoreCase(checked.getScheme()) ? Protocol.HTTPS.name
+                : Protocol.HTTP.name;
         try {
-            return new URI(scheme, uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), uri.getQuery(),
-                    null);
+            return new URI(scheme, checked.getUserInfo(), checked.getHost(), checked.getPort(), checked.getPath(),
+                    checked.getQuery(), null);
         } catch (final URISyntaxException e) {
             throw new ProtocolException("Unable to create HTTP upgrade URI", e);
         }
@@ -171,14 +178,13 @@ public final class WebSocketUpgrade {
      * @return address
      */
     public Address address(final URI uri) {
-        if (uri == null) {
-            throw new ValidateException("HTTP upgrade URI must not be null");
-        }
-        final String scheme = "https".equalsIgnoreCase(uri.getScheme()) ? "wss" : "ws";
+        final URI checked = require(uri, "HTTP upgrade URI");
+        final String scheme = Protocol.HTTPS.name.equalsIgnoreCase(checked.getScheme()) ? Protocol.WSS.name
+                : Protocol.WS.name;
         try {
             return Address.from(
-                    new URI(scheme, uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), uri.getQuery(),
-                            null));
+                    new URI(scheme, checked.getUserInfo(), checked.getHost(), checked.getPort(), checked.getPath(),
+                            checked.getQuery(), null));
         } catch (final URISyntaxException e) {
             throw new ProtocolException("Unable to create WebSocket address", e);
         }
@@ -196,6 +202,18 @@ public final class WebSocketUpgrade {
             throw new ValidateException(name + " must be non-blank and single-line");
         }
         return value;
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value value
+     * @param name  name
+     * @param <T>   value type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

@@ -30,6 +30,13 @@ import org.miaixz.bus.fabric.Listener;
 public abstract class StompListener implements Listener<StompSession> {
 
     /**
+     * Creates a STOMP listener adapter.
+     */
+    public StompListener() {
+        // Listener adapter.
+    }
+
+    /**
      * Invoked when STOMP CONNECTED is complete.
      *
      * @param session session

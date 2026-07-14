@@ -21,8 +21,10 @@ package org.miaixz.bus.fabric.protocol.http.chain;
 
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
@@ -116,7 +118,8 @@ public final class HttpCoordinator implements HttpStage {
                 Logger.debug(
                         false,
                         LOG_TAG,
-                        "HTTP cache coordinator returning unsatisfiable response: reason=cache-disabled-only-if-cached");
+                        "HTTP cache coordinator returning unsatisfiable response: "
+                                + "reason=cache-disabled-only-if-cached");
                 return unsatisfiable(current);
             }
             return next.proceed(current);
@@ -158,7 +161,8 @@ public final class HttpCoordinator implements HttpStage {
         Logger.debug(
                 false,
                 LOG_TAG,
-                "HTTP cache coordinator proceeding to network: cachedPresent={}, conditional={}, noCache={}, method={}, host={}, port={}",
+                "HTTP cache coordinator proceeding to network: cachedPresent={}, conditional={}, noCache={}, "
+                        + "method={}, host={}, port={}",
                 cached != null,
                 networkRequest != current,
                 current.cacheControl().noCache(),
@@ -173,7 +177,7 @@ public final class HttpCoordinator implements HttpStage {
                 "HTTP cache coordinator network response: code={}, conditional={}",
                 network.code(),
                 networkRequest != current);
-        if (cached != null && network.code() == 304) {
+        if (cached != null && network.code() == HTTP.HTTP_NOT_MODIFIED) {
             final HttpResponse updated = cache.update(cached, network).toBuilder().request(current)
                     .cacheResponse(cached).networkResponse(network).build();
             network.close();
@@ -197,8 +201,8 @@ public final class HttpCoordinator implements HttpStage {
      * @return response
      */
     private static HttpResponse unsatisfiable(final HttpRequest request) {
-        return HttpResponse.builder().request(request).code(504).message("Unsatisfiable Request (only-if-cached)")
-                .body(HttpBody.empty()).build();
+        return HttpResponse.builder().request(request).code(HTTP.HTTP_GATEWAY_TIMEOUT)
+                .message("Unsatisfiable Request (only-if-cached)").body(HttpBody.empty()).build();
     }
 
     /**
@@ -245,9 +249,9 @@ public final class HttpCoordinator implements HttpStage {
      * @return normalized name
      */
     private static String normalizeName(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("HTTP cache name must be non-blank and single-line");
-        }
+        Assert.isFalse(
+                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("HTTP cache name must be non-blank and single-line"));
         return StringKit.trim(value).toLowerCase(Locale.ROOT);
     }
 
@@ -260,10 +264,7 @@ public final class HttpCoordinator implements HttpStage {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

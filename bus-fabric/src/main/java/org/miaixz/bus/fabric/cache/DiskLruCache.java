@@ -31,8 +31,10 @@ import org.miaixz.bus.core.io.sink.FaultHideSink;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.resource.ResourceScope;
@@ -193,7 +195,7 @@ public class DiskLruCache implements Closeable, Flushable {
         @Override
         public void run() {
             synchronized (DiskLruCache.this) {
-                if (!initialized | closed) {
+                if (!initialized || closed) {
                     return; // Nothing to do.
                 }
 
@@ -283,12 +285,8 @@ public class DiskLruCache implements Closeable, Flushable {
      * @return the disk cache.
      */
     public static DiskLruCache create(DiskFile diskFile, File directory, int appVersion, int valueCount, long maxSize) {
-        if (maxSize <= 0) {
-            throw new IllegalArgumentException("maxSize <= 0");
-        }
-        if (valueCount <= 0) {
-            throw new IllegalArgumentException("valueCount <= 0");
-        }
+        Assert.isTrue(maxSize > 0, "maxSize <= 0");
+        Assert.isTrue(valueCount > 0, "valueCount <= 0");
 
         final ResourceScope scope = ResourceScope.create();
         final Dispatcher dispatcher = scope.add(Dispatcher.create());
@@ -685,7 +683,7 @@ public class DiskLruCache implements Closeable, Flushable {
 
         redundantOpCount++;
         entry.currentEditor = null;
-        if (entry.readable | success) {
+        if (entry.readable || success) {
             entry.readable = true;
             Journal.writeClean(journalWriter, entry);
             if (success) {
@@ -1034,7 +1032,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             true,
                             e.getClass().getSimpleName());
                     // Maybe the parent directory doesn't exist? Try creating it first.
-                    file.getParentFile().mkdirs();
+                    FileKit.mkdir(file.getParentFile());
                     return IoKit.sink(file);
                 }
             }
@@ -1053,7 +1051,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             true,
                             e.getClass().getSimpleName());
                     // Maybe the parent directory doesn't exist? Try creating it first.
-                    file.getParentFile().mkdirs();
+                    FileKit.mkdir(file.getParentFile());
                     return IoKit.appendingSink(file);
                 }
             }

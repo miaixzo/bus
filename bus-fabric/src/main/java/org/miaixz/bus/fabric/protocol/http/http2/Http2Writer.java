@@ -33,6 +33,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -40,6 +44,7 @@ import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.network.Connection;
@@ -53,29 +58,24 @@ import org.miaixz.bus.fabric.network.Connection;
 public final class Http2Writer implements AutoCloseable {
 
     /**
-     * Frame header size.
-     */
-    private static final int FRAME_HEADER = 9;
-
-    /**
      * Default maximum frame payload size.
      */
-    private static final int MAX_FRAME_SIZE = 16_384;
+    private static final int MAX_FRAME_SIZE = Normal._16384;
 
     /**
      * Maximum unsigned 31-bit value.
      */
-    private static final long MAX_UNSIGNED_31 = 0x7fffffffL;
+    private static final long MAX_UNSIGNED_31 = Integer.MAX_VALUE;
 
     /**
      * Initial write window defined by HTTP/2 before peer settings change it.
      */
-    private static final long DEFAULT_WINDOW = 65_535L;
+    private static final long DEFAULT_WINDOW = HTTP.DEFAULT_INITIAL_WINDOW_SIZE;
 
     /**
      * Fallback write timeout used until a request-specific timeout is supplied.
      */
-    private static final Duration DEFAULT_WRITE_TIMEOUT = Duration.ofSeconds(5);
+    private static final Duration DEFAULT_WRITE_TIMEOUT = Duration.ofSeconds(Normal._5);
 
     /**
      * HTTP/2 client connection preface bytes.
@@ -140,10 +140,11 @@ public final class Http2Writer implements AutoCloseable {
      * @param timeout write timeout; zero means no explicit timeout
      */
     public synchronized void timeout(final Duration timeout) {
-        if (timeout == null || timeout.isNegative()) {
-            throw new ValidateException("HTTP/2 writer timeout must be non-null and non-negative");
+        final Duration checkedTimeout = require(timeout, "HTTP/2 writer timeout");
+        if (checkedTimeout.isNegative()) {
+            throw new ValidateException("HTTP/2 writer timeout must be non-negative");
         }
-        this.writeTimeout = timeout;
+        this.writeTimeout = checkedTimeout;
     }
 
     /**
@@ -154,7 +155,7 @@ public final class Http2Writer implements AutoCloseable {
         if (!prefaceWritten.compareAndSet(false, true)) {
             throw new StatefulException("HTTP/2 connection preface has already been written");
         }
-        write(ByteBuffer.wrap(CONNECTION_PREFACE));
+        write(new Buffer().write(CONNECTION_PREFACE));
     }
 
     /**
@@ -167,14 +168,12 @@ public final class Http2Writer implements AutoCloseable {
     public synchronized void headers(final int streamId, final Headers headers, final boolean endStream) {
         ensureOpen();
         positiveStream(streamId);
-        if (headers == null) {
-            throw new ValidateException("HTTP/2 headers must not be null");
-        }
-        final ByteBuffer payload = hpack.encode(toHttp2(headers));
+        final Headers checkedHeaders = require(headers, "HTTP/2 headers");
+        final Buffer payload = hpack.encodeBuffer(toHttp2(checkedHeaders));
         writeFrame(
                 Http2Frame.HEADERS,
                 streamId,
-                Http2Frame.END_HEADERS | (endStream ? Http2Frame.END_STREAM : 0),
+                Http2Frame.END_HEADERS | (endStream ? Http2Frame.END_STREAM : Normal._0),
                 payload);
     }
 
@@ -189,14 +188,11 @@ public final class Http2Writer implements AutoCloseable {
         ensureOpen();
         positiveStream(streamId);
         positiveStream(promisedStreamId);
-        if (headers == null) {
-            throw new ValidateException("HTTP/2 push headers must not be null");
-        }
-        final ByteBuffer encoded = hpack.encode(toHttp2(headers));
-        final ByteBuffer payload = ByteBuffer.allocate(Integer.BYTES + encoded.remaining());
-        payload.putInt(promisedStreamId & (int) MAX_UNSIGNED_31);
-        payload.put(encoded.asReadOnlyBuffer());
-        payload.flip();
+        final Headers checkedHeaders = require(headers, "HTTP/2 push headers");
+        final Buffer encoded = hpack.encodeBuffer(toHttp2(checkedHeaders));
+        final Buffer payload = new Buffer();
+        payload.writeInt(promisedStreamId & (int) MAX_UNSIGNED_31);
+        payload.write(encoded, encoded.size());
         writeFrame(Http2Frame.PUSH_PROMISE, streamId, Http2Frame.END_HEADERS, payload);
     }
 
@@ -206,26 +202,43 @@ public final class Http2Writer implements AutoCloseable {
      * @param streamId  stream id
      * @param data      data
      * @param endStream end stream flag
+     * @deprecated use {@link #data(int, Buffer, boolean)}
      */
+    @Deprecated(since = "8.8.3")
     public synchronized void data(final int streamId, final ByteBuffer data, final boolean endStream) {
+        final ByteBuffer checkedData = require(data, "HTTP/2 data");
+        final Buffer buffer = new Buffer();
+        try {
+            buffer.write(checkedData.asReadOnlyBuffer());
+        } catch (final java.io.IOException e) {
+            throw new InternalException("Unable to adapt HTTP/2 data", e);
+        }
+        data(streamId, buffer, endStream);
+    }
+
+    /**
+     * Writes DATA frames.
+     *
+     * @param streamId  stream id
+     * @param data      data
+     * @param endStream end stream flag
+     */
+    public synchronized void data(final int streamId, final Buffer data, final boolean endStream) {
         ensureOpen();
         positiveStream(streamId);
-        if (data == null) {
-            throw new ValidateException("HTTP/2 data must not be null");
-        }
-        final ByteBuffer source = data.asReadOnlyBuffer();
-        consumeWindow(streamId, source.remaining());
-        if (!source.hasRemaining()) {
-            writeFrame(Http2Frame.DATA, streamId, endStream ? Http2Frame.END_STREAM : 0, ByteBuffer.allocate(0));
+        final Buffer checkedData = require(data, "HTTP/2 data");
+        consumeWindow(streamId, toIntSize(checkedData.size()));
+        if (checkedData.size() == Normal._0) {
+            writeFrame(Http2Frame.DATA, streamId, endStream ? Http2Frame.END_STREAM : Normal._0, new Buffer());
             return;
         }
-        while (source.hasRemaining()) {
-            final int count = Math.min(source.remaining(), MAX_FRAME_SIZE);
-            final byte[] bytes = new byte[count];
-            source.get(bytes);
-            final boolean last = !source.hasRemaining();
-            final int flags = last && endStream ? Http2Frame.END_STREAM : 0;
-            writeFrame(Http2Frame.DATA, streamId, flags, ByteBuffer.wrap(bytes));
+        while (checkedData.size() > Normal._0) {
+            final long count = Math.min(checkedData.size(), MAX_FRAME_SIZE);
+            final Buffer payload = new Buffer();
+            payload.write(checkedData, count);
+            final boolean last = checkedData.size() == Normal._0;
+            final int flags = last && endStream ? Http2Frame.END_STREAM : Normal._0;
+            writeFrame(Http2Frame.DATA, streamId, flags, payload);
         }
     }
 
@@ -236,17 +249,14 @@ public final class Http2Writer implements AutoCloseable {
      */
     public synchronized void settings(final Http2Settings settings) {
         ensureOpen();
-        if (settings == null) {
-            throw new ValidateException("HTTP/2 settings must not be null");
-        }
-        final int[] ids = settings.ids();
-        final ByteBuffer payload = ByteBuffer.allocate(ids.length * 6);
+        final Http2Settings checkedSettings = require(settings, "HTTP/2 settings");
+        final int[] ids = checkedSettings.ids();
+        final Buffer payload = new Buffer();
         for (final int id : ids) {
-            payload.putShort((short) id);
-            payload.putInt(settings.get(id));
+            payload.writeShort(id);
+            payload.writeInt(checkedSettings.get(id));
         }
-        payload.flip();
-        writeFrame(Http2Frame.SETTINGS, 0, 0, payload);
+        writeFrame(Http2Frame.SETTINGS, Normal._0, Normal._0, payload);
     }
 
     /**
@@ -254,7 +264,7 @@ public final class Http2Writer implements AutoCloseable {
      */
     public synchronized void settingsAck() {
         ensureOpen();
-        writeFrame(Http2Frame.SETTINGS, 0, Http2Frame.ACK, ByteBuffer.allocate(0));
+        writeFrame(Http2Frame.SETTINGS, Normal._0, Http2Frame.ACK, new Buffer());
     }
 
     /**
@@ -265,9 +275,9 @@ public final class Http2Writer implements AutoCloseable {
      */
     public synchronized void ping(final long payload, final boolean ack) {
         ensureOpen();
-        final ByteBuffer body = ByteBuffer.allocate(Long.BYTES).putLong(payload);
-        body.flip();
-        writeFrame(Http2Frame.PING, 0, ack ? Http2Frame.ACK : 0, body);
+        final Buffer body = new Buffer();
+        body.writeLong(payload);
+        writeFrame(Http2Frame.PING, Normal._0, ack ? Http2Frame.ACK : Normal._0, body);
     }
 
     /**
@@ -277,18 +287,34 @@ public final class Http2Writer implements AutoCloseable {
      * @param errorCode    error code
      * @param debugData    optional debug data
      */
-    public synchronized void goAway(final int lastStreamId, final int errorCode, final ByteBuffer debugData) {
+    public synchronized void goAway(final int lastStreamId, final int errorCode, final ByteString debugData) {
         ensureOpen();
-        if (lastStreamId < 0 || errorCode < 0) {
+        if (lastStreamId < Normal._0 || errorCode < Normal._0) {
             throw new ValidateException("Invalid HTTP/2 GOAWAY metadata");
         }
-        final ByteBuffer debug = debugData == null ? ByteBuffer.allocate(0) : debugData.asReadOnlyBuffer();
-        final ByteBuffer payload = ByteBuffer.allocate(Integer.BYTES + Integer.BYTES + debug.remaining());
-        payload.putInt(lastStreamId & (int) MAX_UNSIGNED_31);
-        payload.putInt(errorCode);
-        payload.put(debug);
-        payload.flip();
-        writeFrame(Http2Frame.GOAWAY, 0, 0, payload);
+        final Buffer payload = new Buffer();
+        payload.writeInt(lastStreamId & (int) MAX_UNSIGNED_31);
+        payload.writeInt(errorCode);
+        if (debugData != null) {
+            payload.write(debugData);
+        }
+        writeFrame(Http2Frame.GOAWAY, Normal._0, Normal._0, payload);
+    }
+
+    /**
+     * Writes a GOAWAY frame through a JDK byte buffer compatibility boundary.
+     *
+     * @param lastStreamId last processed stream id
+     * @param errorCode    error code
+     * @param debugData    optional debug data
+     * @deprecated use {@link #goAway(int, int, ByteString)}
+     */
+    @Deprecated(since = "8.8.3")
+    public synchronized void goAway(final int lastStreamId, final int errorCode, final ByteBuffer debugData) {
+        goAway(
+                lastStreamId,
+                errorCode,
+                debugData == null ? ByteString.EMPTY : ByteString.of(debugData.asReadOnlyBuffer()));
     }
 
     /**
@@ -299,12 +325,12 @@ public final class Http2Writer implements AutoCloseable {
      */
     public synchronized void windowUpdate(final int streamId, final long delta) {
         ensureOpen();
-        if (streamId < 0 || delta <= 0 || delta > MAX_UNSIGNED_31) {
+        if (streamId < Normal._0 || delta <= Normal._0 || delta > MAX_UNSIGNED_31) {
             throw new ValidateException("Invalid HTTP/2 window update");
         }
-        final ByteBuffer payload = ByteBuffer.allocate(Integer.BYTES).putInt((int) delta);
-        payload.flip();
-        writeFrame(Http2Frame.WINDOW_UPDATE, streamId, 0, payload);
+        final Buffer payload = new Buffer();
+        payload.writeInt((int) delta);
+        writeFrame(Http2Frame.WINDOW_UPDATE, streamId, Normal._0, payload);
     }
 
     /**
@@ -316,12 +342,12 @@ public final class Http2Writer implements AutoCloseable {
     public synchronized void rstStream(final int streamId, final int errorCode) {
         ensureOpen();
         positiveStream(streamId);
-        if (errorCode < 0) {
+        if (errorCode < Normal._0) {
             throw new ValidateException("HTTP/2 error code must be non-negative");
         }
-        final ByteBuffer payload = ByteBuffer.allocate(Integer.BYTES).putInt(errorCode);
-        payload.flip();
-        writeFrame(Http2Frame.RST_STREAM, streamId, 0, payload);
+        final Buffer payload = new Buffer();
+        payload.writeInt(errorCode);
+        writeFrame(Http2Frame.RST_STREAM, streamId, Normal._0, payload);
     }
 
     /**
@@ -357,21 +383,21 @@ public final class Http2Writer implements AutoCloseable {
      * @param flags    flags
      * @param payload  payload
      */
-    private void writeFrame(final int type, final int streamId, final int flags, final ByteBuffer payload) {
-        if (payload.remaining() > MAX_FRAME_SIZE) {
+    private void writeFrame(final int type, final int streamId, final int flags, final Buffer payload) {
+        final Buffer body = require(payload, "HTTP/2 frame payload");
+        if (body.size() > MAX_FRAME_SIZE) {
             throw new ProtocolException("HTTP/2 frame payload exceeds max frame size");
         }
-        final ByteBuffer header = ByteBuffer.allocate(FRAME_HEADER);
-        final int length = payload.remaining();
-        header.put((byte) ((length >>> 16) & 0xff));
-        header.put((byte) ((length >>> 8) & 0xff));
-        header.put((byte) (length & 0xff));
-        header.put((byte) type);
-        header.put((byte) flags);
-        header.putInt(streamId & (int) MAX_UNSIGNED_31);
-        header.flip();
+        final int length = toIntSize(body.size());
+        final Buffer header = new Buffer();
+        header.writeByte((length >>> Normal._16) & 0xff);
+        header.writeByte((length >>> Normal._8) & 0xff);
+        header.writeByte(length & 0xff);
+        header.writeByte(type);
+        header.writeByte(flags);
+        header.writeInt(streamId & (int) MAX_UNSIGNED_31);
         write(header);
-        write(payload);
+        write(body);
     }
 
     /**
@@ -381,7 +407,7 @@ public final class Http2Writer implements AutoCloseable {
      * @param length   length
      */
     private void consumeWindow(final int streamId, final int length) {
-        if (length == 0) {
+        if (length == Normal._0) {
             return;
         }
         final AtomicLong streamWindow = streamWindows.computeIfAbsent(streamId, id -> new AtomicLong(DEFAULT_WINDOW));
@@ -433,19 +459,36 @@ public final class Http2Writer implements AutoCloseable {
      *
      * @param source source
      */
-    private void write(final ByteBuffer source) {
-        while (source.hasRemaining()) {
-            final int position = source.position();
-            final int written = await(connection.write(source));
-            if (written < 0) {
+    private void write(final Buffer source) {
+        while (source.size() > Normal._0) {
+            final ByteBuffer view = source.nioBuffer(toIntSize(Math.min(source.size(), Integer.MAX_VALUE)));
+            final int written = await(connection.write(view));
+            if (written < Normal._0) {
                 throw new SocketException("HTTP/2 writer reached EOF");
             }
-            if (written == 0) {
+            if (written == Normal._0) {
                 Thread.yield();
             } else {
-                source.position(position + written);
+                try {
+                    source.skip(written);
+                } catch (final java.io.IOException e) {
+                    throw new InternalException("Unable to consume written HTTP/2 bytes", e);
+                }
             }
         }
+    }
+
+    /**
+     * Converts a buffer size to int.
+     *
+     * @param size size
+     * @return int size
+     */
+    private static int toIntSize(final long size) {
+        if (size > Integer.MAX_VALUE) {
+            throw new ProtocolException("HTTP/2 buffer exceeds integer range");
+        }
+        return (int) size;
     }
 
     /**
@@ -489,7 +532,7 @@ public final class Http2Writer implements AutoCloseable {
      * @param streamId stream id
      */
     private static void positiveStream(final int streamId) {
-        if (streamId <= 0) {
+        if (streamId <= Normal._0) {
             throw new ValidateException("HTTP/2 stream id must be positive");
         }
     }
@@ -517,10 +560,7 @@ public final class Http2Writer implements AutoCloseable {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

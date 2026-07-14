@@ -19,25 +19,29 @@
 */
 package org.miaixz.bus.fabric.protocol.sse;
 
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
 import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
@@ -59,6 +63,26 @@ final class SseRunner {
     private static final String LOG_TAG = "Fabric";
 
     /**
+     * SSE dispatch key prefix.
+     */
+    private static final String DISPATCH_PREFIX = "sse:" + Symbol.FORWARDSLASH;
+
+    /**
+     * Last event identifier request header.
+     */
+    private static final String LAST_EVENT_ID = "Last-Event-ID";
+
+    /**
+     * Dispatcher activity name for stream reads.
+     */
+    private static final String ACTIVITY_READ = "sse-read";
+
+    /**
+     * Dispatcher activity name for reconnect delays.
+     */
+    private static final String ACTIVITY_RETRY = "sse-retry";
+
+    /**
      * Execution snapshot.
      */
     private final SseSnapshot snapshot;
@@ -78,7 +102,7 @@ final class SseRunner {
      * @return opened session
      */
     SseSession open() {
-        InputStream body = null;
+        Source body = null;
         Mediator.HttpStream response = null;
         Logger.info(
                 true,
@@ -93,7 +117,7 @@ final class SseRunner {
             checkGuard();
             response = response();
             validateResponse(response);
-            body = response.stream();
+            body = response.body().source();
             final SseReader reader = new SseReader(body);
             body = null;
             final SseRetry sessionRetry = SseRetry.defaults();
@@ -109,7 +133,7 @@ final class SseRunner {
                 }
             }, snapshot.listener());
             holder.set(session);
-            handle.set(submitRead(reader, sessionRetry, stream, holder, eventId, handle, 0));
+            handle.set(submitRead(reader, sessionRetry, stream, holder, eventId, handle, Normal._0));
             emit(ObservationMarker.SSE_OPEN, null);
             snapshot.listener().open(session);
             snapshot.callback().success(session);
@@ -148,7 +172,7 @@ final class SseRunner {
      * @return dispatch key
      */
     String dispatchKey() {
-        return "sse://" + snapshot.address().host() + ':' + snapshot.address().port();
+        return DISPATCH_PREFIX + snapshot.address().host() + Symbol.C_COLON + snapshot.address().port();
     }
 
     /**
@@ -175,10 +199,10 @@ final class SseRunner {
                 snapshot.address().host(),
                 snapshot.address().port(),
                 eventId != null);
-        final Headers.Builder builder = Headers.builder().add("Accept", "text/event-stream")
-                .add("Cache-Control", "no-cache");
+        final Headers.Builder builder = Headers.builder().add(HTTP.ACCEPT, MediaType.SERVER_SENT_EVENTS)
+                .add(HTTP.CACHE_CONTROL, HTTP.CACHE_DIRECTIVE_NO_CACHE);
         if (eventId != null) {
-            builder.add("Last-Event-ID", eventId);
+            builder.add(LAST_EVENT_ID, eventId);
         }
         for (final Map.Entry<String, List<String>> entry : snapshot.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
@@ -206,12 +230,10 @@ final class SseRunner {
      */
     private static void validateResponse(final Mediator.HttpStream response) {
         final int status = response.status();
-        if (status < 200 || status >= 300) {
+        if (status < HTTP.HTTP_OK || status >= HTTP.HTTP_MULT_CHOICE) {
             throw new ProtocolException("SSE response status must be 2xx");
         }
-        final String contentType = response.headers().get("Content-Type") == null ? Normal.EMPTY
-                : response.headers().get("Content-Type");
-        if (!contentType.toLowerCase(Locale.ROOT).contains("text/event-stream")) {
+        if (!StringKit.containsIgnoreCase(response.headers().get(HTTP.CONTENT_TYPE), MediaType.SERVER_SENT_EVENTS)) {
             throw new ProtocolException("SSE response must be text/event-stream");
         }
     }
@@ -262,7 +284,7 @@ final class SseRunner {
                         "SSE stream ended; reconnect enabled: host={}, port={}",
                         snapshot.address().host(),
                         snapshot.address().port());
-                scheduleReconnect(retry, stream, holder, eventId, handle, 0);
+                scheduleReconnect(retry, stream, holder, eventId, handle, Normal._0);
             } else {
                 Logger.info(
                         false,
@@ -365,7 +387,7 @@ final class SseRunner {
         final DispatchHandle next = snapshot.context().reactor().dispatcher().schedule(
                 dispatchKey(),
                 delay,
-                Activity.of("sse-retry", () -> reconnect(retry, stream, holder, eventId, handle, attempt)));
+                Activity.of(ACTIVITY_RETRY, () -> reconnect(retry, stream, holder, eventId, handle, attempt)));
         handle.set(next);
         if (!session.opened() || stream.isCancelled()) {
             next.cancel();
@@ -453,7 +475,7 @@ final class SseRunner {
             final int attempt) {
         return snapshot.context().reactor().dispatcher().enqueue(
                 dispatchKey(),
-                Activity.of("sse-read", () -> read(reader, retry, stream, holder, eventId, handle, attempt)));
+                Activity.of(ACTIVITY_READ, () -> read(reader, retry, stream, holder, eventId, handle, attempt)));
     }
 
     /**
@@ -470,7 +492,7 @@ final class SseRunner {
         }
         final Mediator.HttpStream response = response(eventId.get());
         validateResponse(response);
-        final SseReader next = new SseReader(response.stream());
+        final SseReader next = new SseReader(response.body().source());
         session.replaceReader(next);
         return next;
     }
@@ -543,7 +565,7 @@ final class SseRunner {
     private void emit(final ObservationMarker marker, final Throwable cause, final Payload payload) {
         final FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, snapshot.address().scheme())
                 .tag(Tags.HOST, snapshot.address().host()).tag(Tags.PORT, Integer.toString(snapshot.address().port()));
-        if (payload != null && payload.length() >= 0) {
+        if (payload != null && payload.length() >= Normal.LONG_ZERO) {
             event.tag(Tags.BYTES, Long.toString(payload.length()));
         }
         if (cause != null) {
@@ -553,11 +575,11 @@ final class SseRunner {
     }
 
     /**
-     * Closes an unclaimed body stream.
+     * Closes an unclaimed body source.
      *
      * @param body response body
      */
-    private static void closeBody(final InputStream body) {
+    private static void closeBody(final Source body) {
         if (body == null) {
             return;
         }
@@ -588,10 +610,7 @@ final class SseRunner {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

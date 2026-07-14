@@ -40,6 +40,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -47,10 +52,12 @@ import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
@@ -71,7 +78,6 @@ import org.miaixz.bus.fabric.network.tls.TlsChannel;
 import org.miaixz.bus.fabric.network.tls.TlsEngine;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
-import org.miaixz.bus.fabric.network.tls.handshake.TlsHandshake;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
@@ -98,7 +104,7 @@ public final class HttpConnect implements HttpStage {
     /**
      * Maximum proxy response header size.
      */
-    private static final int MAX_PROXY_HEADER = 65536;
+    private static final int MAX_PROXY_HEADER = Normal._64 * Normal._1024;
 
     /**
      * SOCKS protocol version supported by this connector.
@@ -472,7 +478,8 @@ public final class HttpConnect implements HttpStage {
         Logger.debug(
                 true,
                 LOG_TAG,
-                "HTTP route open started: targetHost={}, targetPort={}, connectHost={}, connectPort={}, proxyMode={}, tunnel={}, nativeTls={}",
+                "HTTP route open started: targetHost={}, targetPort={}, connectHost={}, connectPort={}, "
+                        + "proxyMode={}, tunnel={}, nativeTls={}",
                 target.host(),
                 target.port(),
                 connectAddress.host(),
@@ -589,11 +596,11 @@ public final class HttpConnect implements HttpStage {
         final String request = connectRequest(target, proxy.authorization());
         writeAll(
                 connection,
-                ByteBuffer.wrap(request.getBytes(org.miaixz.bus.core.lang.Charset.US_ASCII)),
+                ByteString.encodeString(request, org.miaixz.bus.core.lang.Charset.US_ASCII).asByteBuffer(),
                 timeout.write(),
                 scope);
         final String response = readHeader(connection, timeout.read(), scope);
-        if (!response.startsWith("HTTP/1.1 200 ") && !response.startsWith("HTTP/1.0 200 ")
+        if (!response.startsWith(Protocol.HTTP_1_1 + " 200 ") && !response.startsWith(Protocol.HTTP_1_0 + " 200 ")
                 && !response.startsWith("HTTP/2 200 ")) {
             throw new ProtocolException("HTTP CONNECT tunnel failed");
         }
@@ -754,7 +761,7 @@ public final class HttpConnect implements HttpStage {
      * @return TCP address
      */
     private static Address tcpAddress(final Address target) {
-        return new Address("tcp", target.host(), target.port(), target.path());
+        return new Address(Protocol.TCP.toString(), target.host(), target.port(), target.path());
     }
 
     /**
@@ -802,7 +809,7 @@ public final class HttpConnect implements HttpStage {
             return "socks";
         }
         if (proxy.isHttp()) {
-            return "http";
+            return Protocol.HTTP.toString();
         }
         return "custom";
     }
@@ -814,7 +821,7 @@ public final class HttpConnect implements HttpStage {
      */
     private static void validateProxy(final ProxyPlan proxy) {
         proxy.proxy().ifPresent(address -> {
-            if (proxy.isHttp() && !"http".equals(address.scheme())) {
+            if (proxy.isHttp() && !Protocol.HTTP.toString().equals(address.scheme())) {
                 throw new ProtocolException("Unsupported HTTP proxy transport");
             }
             if (proxy.isSocks() && (address.secure() || !Transport.fromScheme(address.scheme()).connectionOriented())) {
@@ -833,12 +840,15 @@ public final class HttpConnect implements HttpStage {
     private static String connectRequest(final Address target, final Headers authorization) {
         final String authority = authority(target);
         final StringBuilder builder = new StringBuilder();
-        builder.append("CONNECT ").append(authority).append(" HTTP/1.1\r\n");
-        builder.append("Host: ").append(authority).append(Symbol.CRLF);
-        builder.append("Proxy-Connection: keep-alive\r\n");
+        builder.append(HTTP.CONNECT).append(Symbol.C_SPACE).append(authority).append(Symbol.C_SPACE)
+                .append(Protocol.HTTP_1_1).append(Symbol.CRLF);
+        builder.append(HTTP.HOST).append(Symbol.COLON).append(Symbol.SPACE).append(authority).append(Symbol.CRLF);
+        builder.append(HTTP.PROXY_CONNECTION).append(Symbol.COLON).append(Symbol.SPACE)
+                .append(HTTP.CONNECTION_KEEP_ALIVE).append(Symbol.CRLF);
         for (final Map.Entry<String, List<String>> entry : authorization.asMap().entrySet()) {
             for (final String value : entry.getValue()) {
-                builder.append(entry.getKey()).append(": ").append(value).append(Symbol.CRLF);
+                builder.append(entry.getKey()).append(Symbol.COLON).append(Symbol.SPACE).append(value)
+                        .append(Symbol.CRLF);
             }
         }
         builder.append(Symbol.CRLF);
@@ -853,7 +863,9 @@ public final class HttpConnect implements HttpStage {
      */
     private static byte[] socksConnectRequest(final Address target) {
         final byte[] ipv4 = ipv4(target.host());
-        final byte[] host = ipv4 == null ? target.host().getBytes(org.miaixz.bus.core.lang.Charset.UTF_8) : ipv4;
+        final byte[] host = ipv4 == null
+                ? ByteString.encodeString(target.host(), org.miaixz.bus.core.lang.Charset.UTF_8).toByteArray()
+                : ipv4;
         if (host.length > 255) {
             throw new ProtocolException("SOCKS target host is too long");
         }
@@ -938,7 +950,7 @@ public final class HttpConnect implements HttpStage {
             final Duration timeout,
             final Cancellation cancellation) {
         final Cancellation scope = require(cancellation, "Cancellation");
-        final ByteBuffer buffer = ByteBuffer.allocate(1);
+        final ByteBuffer buffer = ByteBuffer.allocate(Normal._1);
         final StringBuilder header = new StringBuilder();
         while (header.length() < MAX_PROXY_HEADER) {
             scope.throwIfCancelled();
@@ -957,7 +969,7 @@ public final class HttpConnect implements HttpStage {
             while (buffer.hasRemaining()) {
                 header.append((char) (buffer.get() & 0xff));
             }
-            if (header.indexOf("\r\n\r\n") >= 0) {
+            if (header.indexOf(Symbol.CRLF + Symbol.CRLF) >= Normal._0) {
                 return header.toString();
             }
         }
@@ -1134,9 +1146,9 @@ public final class HttpConnect implements HttpStage {
      * @return normalized name
      */
     private static String normalizeName(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("HTTP connect name must be non-blank and single-line");
-        }
+        Assert.isFalse(
+                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("HTTP connect name must be non-blank and single-line"));
         return StringKit.trim(value).toLowerCase(Locale.ROOT);
     }
 
@@ -1160,10 +1172,7 @@ public final class HttpConnect implements HttpStage {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -1316,14 +1325,15 @@ public final class HttpConnect implements HttpStage {
             return delegate.length();
         }
 
-        /**
-         * Opens a release-aware stream.
-         *
-         * @return input stream
-         */
         @Override
+        public Source source() {
+            return new LeaseSource(delegate.source(), state);
+        }
+
+        @Override
+        @Deprecated(since = "8.8.3")
         public InputStream stream() {
-            return new LeaseInputStream(delegate.stream(), state);
+            return Payload.super.stream();
         }
 
         /**
@@ -1369,10 +1379,8 @@ public final class HttpConnect implements HttpStage {
 
         @Override
         public String text(final Charset charset, final long maxBytes) {
-            if (charset == null) {
-                throw new ValidateException("Charset must not be null");
-            }
-            return new String(bytes(maxBytes), charset);
+            return new String(bytes(maxBytes),
+                    Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
         }
 
         /**
@@ -1407,14 +1415,14 @@ public final class HttpConnect implements HttpStage {
     }
 
     /**
-     * Input stream that tracks EOF and close semantics.
+     * Source that tracks EOF and close semantics.
      */
-    private static final class LeaseInputStream extends InputStream {
+    private static final class LeaseSource implements Source {
 
         /**
-         * Delegate input stream.
+         * Delegate source.
          */
-        private final InputStream delegate;
+        private final Source delegate;
 
         /**
          * Release state.
@@ -1427,52 +1435,21 @@ public final class HttpConnect implements HttpStage {
         private final AtomicBoolean closed;
 
         /**
-         * Creates a lease input stream.
+         * Creates a lease source.
          *
          * @param delegate delegate
          * @param state    release state
          */
-        private LeaseInputStream(final InputStream delegate, final ReleaseState state) {
-            this.delegate = require(delegate, "Input stream");
+        private LeaseSource(final Source delegate, final ReleaseState state) {
+            this.delegate = require(delegate, "Source");
             this.state = require(state, "Release state");
             this.closed = new AtomicBoolean();
         }
 
-        /**
-         * Reads one byte.
-         *
-         * @return byte or EOF
-         * @throws IOException when reading fails
-         */
         @Override
-        public int read() throws IOException {
+        public long read(final Buffer sink, final long byteCount) throws IOException {
             try {
-                final int value = delegate.read();
-                if (value < 0) {
-                    state.complete();
-                    state.release();
-                }
-                return value;
-            } catch (final IOException e) {
-                state.broken();
-                state.release();
-                throw e;
-            }
-        }
-
-        /**
-         * Reads bytes.
-         *
-         * @param bytes  target bytes
-         * @param offset offset
-         * @param length length
-         * @return read count
-         * @throws IOException when reading fails
-         */
-        @Override
-        public int read(final byte[] bytes, final int offset, final int length) throws IOException {
-            try {
-                final int read = delegate.read(bytes, offset, length);
+                final long read = delegate.read(sink, byteCount);
                 if (read < 0) {
                     state.complete();
                     state.release();
@@ -1485,11 +1462,11 @@ public final class HttpConnect implements HttpStage {
             }
         }
 
-        /**
-         * Closes the stream and releases the lease.
-         *
-         * @throws IOException when close fails
-         */
+        @Override
+        public org.miaixz.bus.core.io.timout.Timeout timeout() {
+            return delegate.timeout();
+        }
+
         @Override
         public void close() throws IOException {
             if (!closed.compareAndSet(false, true)) {

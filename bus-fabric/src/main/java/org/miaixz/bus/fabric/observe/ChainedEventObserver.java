@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.observe;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 
@@ -47,25 +48,21 @@ final class ChainedEventObserver implements EventObserver {
      * @param second second observer
      */
     ChainedEventObserver(final EventObserver first, final EventObserver second) {
-        if (first == null || second == null) {
-            throw new ValidateException("Observers must not be null");
-        }
-        this.first = first;
-        this.second = second;
+        this.first = Assert.notNull(first, () -> new ValidateException("Observers must not be null"));
+        this.second = Assert.notNull(second, () -> new ValidateException("Observers must not be null"));
     }
 
     @Override
     public void emit(final FabricEvent event) {
-        if (event == null) {
-            throw new ValidateException("Fabric event must not be null");
-        }
+        final FabricEvent checkedEvent = Assert
+                .notNull(event, () -> new ValidateException("Fabric event must not be null"));
         try {
-            first.emit(event);
+            first.emit(checkedEvent);
         } catch (final RuntimeException e) {
             // Observation is best-effort; continue with the remaining observer.
         }
         try {
-            second.emit(event);
+            second.emit(checkedEvent);
         } catch (final RuntimeException e) {
             // Observation failures must not escape into request processing.
         }

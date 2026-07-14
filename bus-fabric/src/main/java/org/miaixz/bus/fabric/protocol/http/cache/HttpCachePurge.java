@@ -21,7 +21,9 @@ package org.miaixz.bus.fabric.protocol.http.cache;
 
 import java.util.function.Consumer;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.fabric.cache.CacheStore;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
@@ -49,14 +51,17 @@ final class HttpCachePurge {
      * @param removed removed key callback
      */
     static void remove(final CacheStore store, final HttpRequest request, final Consumer<String> removed) {
-        final String prefix = HttpCacheKey.baseKey(request);
-        final String uri = request.url().toUri().toString();
-        final boolean unsafe = request.method() != HTTP.Method.GET && request.method() != HTTP.Method.HEAD;
-        final var keys = store.keys();
+        final CacheStore cacheStore = require(store, "Cache store");
+        final HttpRequest targetRequest = require(request, "HTTP request");
+        final Consumer<String> removeListener = require(removed, "Removed key callback");
+        final String prefix = HttpCacheKey.baseKey(targetRequest);
+        final String uri = targetRequest.url().toUri().toString();
+        final boolean unsafe = targetRequest.method() != HTTP.Method.GET && targetRequest.method() != HTTP.Method.HEAD;
+        final var keys = cacheStore.keys();
         while (keys.hasNext()) {
             final String key = keys.next();
             if (key.startsWith(prefix) || (unsafe && sameUri(key, uri))) {
-                removeKey(store, key, removed);
+                removeKey(cacheStore, key, removeListener);
             }
         }
     }
@@ -69,8 +74,11 @@ final class HttpCachePurge {
      * @param removed removed key callback
      */
     static void removeKey(final CacheStore store, final String key, final Consumer<String> removed) {
-        store.remove(key);
-        removed.accept(key);
+        final CacheStore cacheStore = require(store, "Cache store");
+        final String cacheKey = require(key, "Cache key");
+        final Consumer<String> removeListener = require(removed, "Removed key callback");
+        cacheStore.remove(cacheKey);
+        removeListener.accept(cacheKey);
     }
 
     /**
@@ -84,6 +92,18 @@ final class HttpCachePurge {
         final int method = key.indexOf(Symbol.C_AT);
         final int vary = key.indexOf(Symbol.C_HASH, method + 1);
         return method >= 0 && vary > method && uri.equals(key.substring(method + 1, vary));
+    }
+
+    /**
+     * Validates required value.
+     *
+     * @param value value
+     * @param name  name
+     * @param <T>   value type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

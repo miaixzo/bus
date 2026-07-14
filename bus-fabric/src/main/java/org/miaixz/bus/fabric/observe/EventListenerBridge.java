@@ -21,8 +21,11 @@ package org.miaixz.bus.fabric.observe;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 
 /**
@@ -32,6 +35,48 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
  * @since Java 21+
  */
 public final class EventListenerBridge implements EventObserver {
+
+    /**
+     * Callback names mapped to current observation markers.
+     */
+    private static final Map<String, List<ObservationMarker>> CALLBACK_MARKERS = Map.ofEntries(
+            Map.entry("callstart", List.of(ObservationMarker.CALL_START)),
+            Map.entry("callend", List.of(ObservationMarker.CALL_SUCCESS)),
+            Map.entry(
+                    "callfailed",
+                    List.of(
+                            ObservationMarker.CALL_FAILED,
+                            ObservationMarker.CALL_CANCELLED,
+                            ObservationMarker.HTTP_FAILED)),
+            Map.entry("dnsstart", List.of(ObservationMarker.DNS_START)),
+            Map.entry("dnsend", List.of(ObservationMarker.DNS_SUCCESS)),
+            Map.entry("dnsfailed", List.of(ObservationMarker.DNS_FAILED)),
+            Map.entry("connectstart", List.of(ObservationMarker.CONNECT_START)),
+            Map.entry("connectend", List.of(ObservationMarker.CONNECT_SUCCESS)),
+            Map.entry("connectfailed", List.of(ObservationMarker.CONNECT_FAILED)),
+            Map.entry("secureconnectstart", List.of(ObservationMarker.TLS_START)),
+            Map.entry("secureconnectend", List.of(ObservationMarker.TLS_HANDSHAKE)),
+            Map.entry("secureconnectfailed", List.of(ObservationMarker.TLS_FAILED)),
+            Map.entry("requestheadersstart", List.of(ObservationMarker.HTTP_REQUEST)),
+            Map.entry("requestheadersend", List.of(ObservationMarker.HTTP_REQUEST_HEADERS)),
+            Map.entry("requestbodystart", List.of(ObservationMarker.HTTP_REQUEST_BODY)),
+            Map.entry("requestbodyend", List.of(ObservationMarker.HTTP_REQUEST_BODY)),
+            Map.entry("responseheadersstart", List.of(ObservationMarker.HTTP_RESPONSE)),
+            Map.entry("responseheadersend", List.of(ObservationMarker.HTTP_RESPONSE_HEADERS)),
+            Map.entry("responsebodystart", List.of(ObservationMarker.HTTP_RESPONSE_BODY)),
+            Map.entry("responsebodyend", List.of(ObservationMarker.HTTP_RESPONSE_BODY)),
+            Map.entry("cachehit", List.of(ObservationMarker.CACHE_HIT)),
+            Map.entry("cachemiss", List.of(ObservationMarker.CACHE_MISS)),
+            Map.entry("cacheconditionalhit", List.of(ObservationMarker.CACHE_CONDITIONAL_HIT)),
+            Map.entry("connectionacquired", List.of(ObservationMarker.POOL_ACQUIRE)),
+            Map.entry("connectionreleased", List.of(ObservationMarker.POOL_RELEASE)),
+            Map.entry(
+                    "close",
+                    List.of(
+                            ObservationMarker.WEBSOCKET_CLOSED,
+                            ObservationMarker.SSE_CLOSED,
+                            ObservationMarker.STOMP_CLOSED,
+                            ObservationMarker.SOCKET_CLOSED)));
 
     /**
      * Listener receiving named callbacks with current event payloads.
@@ -44,10 +89,7 @@ public final class EventListenerBridge implements EventObserver {
      * @param listener listener
      */
     private EventListenerBridge(final Listener listener) {
-        if (listener == null) {
-            throw new ValidateException("Event listener must not be null");
-        }
-        this.listener = listener;
+        this.listener = Assert.notNull(listener, () -> new ValidateException("Event listener must not be null"));
     }
 
     /**
@@ -67,41 +109,15 @@ public final class EventListenerBridge implements EventObserver {
      * @return current markers
      */
     public static List<ObservationMarker> markers(final String callbackName) {
-        if (callbackName == null || callbackName.isBlank()) {
+        if (StringKit.isBlank(callbackName)) {
             throw new ValidateException("Event callback must be non-blank");
         }
-        return switch (callbackName.trim().toLowerCase(Locale.ROOT)) {
-            case "callstart" -> List.of(ObservationMarker.CALL_START);
-            case "callend" -> List.of(ObservationMarker.CALL_SUCCESS);
-            case "callfailed" -> List
-                    .of(ObservationMarker.CALL_FAILED, ObservationMarker.CALL_CANCELLED, ObservationMarker.HTTP_FAILED);
-            case "dnsstart" -> List.of(ObservationMarker.DNS_START);
-            case "dnsend" -> List.of(ObservationMarker.DNS_SUCCESS);
-            case "dnsfailed" -> List.of(ObservationMarker.DNS_FAILED);
-            case "connectstart" -> List.of(ObservationMarker.CONNECT_START);
-            case "connectend" -> List.of(ObservationMarker.CONNECT_SUCCESS);
-            case "connectfailed" -> List.of(ObservationMarker.CONNECT_FAILED);
-            case "secureconnectstart" -> List.of(ObservationMarker.TLS_START);
-            case "secureconnectend" -> List.of(ObservationMarker.TLS_HANDSHAKE);
-            case "secureconnectfailed" -> List.of(ObservationMarker.TLS_FAILED);
-            case "requestheadersstart" -> List.of(ObservationMarker.HTTP_REQUEST);
-            case "requestheadersend" -> List.of(ObservationMarker.HTTP_REQUEST_HEADERS);
-            case "requestbodystart", "requestbodyend" -> List.of(ObservationMarker.HTTP_REQUEST_BODY);
-            case "responseheadersstart" -> List.of(ObservationMarker.HTTP_RESPONSE);
-            case "responseheadersend" -> List.of(ObservationMarker.HTTP_RESPONSE_HEADERS);
-            case "responsebodystart", "responsebodyend" -> List.of(ObservationMarker.HTTP_RESPONSE_BODY);
-            case "cachehit" -> List.of(ObservationMarker.CACHE_HIT);
-            case "cachemiss" -> List.of(ObservationMarker.CACHE_MISS);
-            case "cacheconditionalhit" -> List.of(ObservationMarker.CACHE_CONDITIONAL_HIT);
-            case "connectionacquired" -> List.of(ObservationMarker.POOL_ACQUIRE);
-            case "connectionreleased" -> List.of(ObservationMarker.POOL_RELEASE);
-            case "close" -> List.of(
-                    ObservationMarker.WEBSOCKET_CLOSED,
-                    ObservationMarker.SSE_CLOSED,
-                    ObservationMarker.STOMP_CLOSED,
-                    ObservationMarker.SOCKET_CLOSED);
-            default -> throw new ValidateException("Unknown event callback: " + callbackName);
-        };
+        final String normalizedCallback = StringKit.trim(callbackName).toLowerCase(Locale.ROOT);
+        final List<ObservationMarker> markers = CALLBACK_MARKERS.get(normalizedCallback);
+        if (markers == null) {
+            throw new ValidateException("Unknown event callback: " + callbackName);
+        }
+        return markers;
     }
 
     @Override

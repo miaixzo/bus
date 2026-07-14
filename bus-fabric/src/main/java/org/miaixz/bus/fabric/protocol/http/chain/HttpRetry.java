@@ -21,6 +21,8 @@ package org.miaixz.bus.fabric.protocol.http.chain;
 
 import java.net.URI;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -101,8 +103,8 @@ public final class HttpRetry implements HttpStage {
     public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
         HttpRequest current = require(request, "HTTP request");
         final HttpChain next = require(chain, "HTTP chain");
-        int attempt = 0;
-        int followUps = 0;
+        int attempt = Normal._0;
+        int followUps = Normal._0;
         HttpResponse prior = null;
         while (true) {
             try {
@@ -120,7 +122,8 @@ public final class HttpRetry implements HttpStage {
                 Logger.debug(
                         false,
                         LOG_TAG,
-                        "HTTP retry attempt response: method={}, host={}, port={}, path={}, code={}, attempt={}, followUps={}",
+                        "HTTP retry attempt response: method={}, host={}, port={}, path={}, code={}, attempt={}, "
+                                + "followUps={}",
                         current.method().value(),
                         current.url().host(),
                         current.url().port(),
@@ -145,18 +148,19 @@ public final class HttpRetry implements HttpStage {
                 Logger.debug(
                         false,
                         LOG_TAG,
-                        "HTTP follow-up scheduled: code={}, fromHost={}, toHost={}, sameOrigin={}, method={}, followUps={}",
+                        "HTTP follow-up scheduled: code={}, fromHost={}, toHost={}, sameOrigin={}, method={}, "
+                                + "followUps={}",
                         response.code(),
                         current.url().host(),
                         followUp.url().host(),
                         sameOrigin(current.url(), followUp.url()),
                         followUp.method().value(),
-                        followUps + 1);
+                        followUps + Normal._1);
                 prior = response.toBuilder().body(HttpBody.empty()).priorResponse(prior).build();
                 response.close();
                 current = followUp;
                 followUps++;
-                attempt = 0;
+                attempt = Normal._0;
             } catch (final RuntimeException e) {
                 if (!recover(e, attempt)) {
                     Logger.debug(
@@ -171,7 +175,7 @@ public final class HttpRetry implements HttpStage {
                         false,
                         LOG_TAG,
                         "HTTP retry scheduled: attempt={}, exception={}",
-                        attempt + 1,
+                        attempt + Normal._1,
                         e.getClass().getSimpleName());
                 attempt++;
             }
@@ -187,8 +191,9 @@ public final class HttpRetry implements HttpStage {
     public HttpRequest followUp(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
         return switch (current.code()) {
-            case 300, 301, 302, 303, 307, 308 -> redirect(current);
-            case 401, 407 -> authenticator.authenticate(current.request(), current);
+            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> redirect(
+                    current);
+            case HTTP.HTTP_UNAUTHORIZED, HTTP.HTTP_PROXY_AUTH -> authenticator.authenticate(current.request(), current);
             default -> null;
         };
     }
@@ -221,24 +226,24 @@ public final class HttpRetry implements HttpStage {
      * @return request or null
      */
     private HttpRequest redirect(final HttpResponse response) {
-        final String location = response.headers().get("Location");
+        final String location = response.headers().get(HTTP.LOCATION);
         if (location == null) {
             return null;
         }
-        if (StringKit.isBlank(location) || StringKit.containsAny(location, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ProtocolException("Invalid redirect location");
-        }
+        Assert.isFalse(
+                StringKit.isBlank(location) || StringKit.containsAny(location, Symbol.C_CR, Symbol.C_LF),
+                () -> new ProtocolException("Invalid redirect location"));
         final URI uri = response.request().url().toUri().resolve(location);
         final UnoUrl url = UnoUrl.parse(uri.toString());
         final HttpRequest request = response.request();
         final HTTP.Method method = redirectMethod(response.code(), request.method());
         final boolean preserveBody = preserveBody(response.code(), request.method());
-        if (preserveBody && request.body().length() > 0 && !request.body().repeatable()) {
+        if (preserveBody && request.body().length() > Normal._0 && !request.body().repeatable()) {
             return null;
         }
         final HttpRequest.Builder builder = request.toBuilder().method(method).url(url)
                 .headers(redirectHeaders(request.headers(), request.url(), url));
-        if (preserveBody && method.supportsBody() && request.body().length() > 0) {
+        if (preserveBody && method.supportsBody() && request.body().length() > Normal._0) {
             builder.body(request.body());
         } else {
             builder.body(HttpBody.empty());
@@ -265,8 +270,9 @@ public final class HttpRetry implements HttpStage {
      */
     private boolean followUpAllowed(final int code, final int followUps) {
         return switch (code) {
-            case 300, 301, 302, 303, 307, 308 -> policy.redirect(code, followUps);
-            case 401, 407 -> followUps < 20;
+            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> policy
+                    .redirect(code, followUps);
+            case HTTP.HTTP_UNAUTHORIZED, HTTP.HTTP_PROXY_AUTH -> followUps < Normal._20;
             default -> false;
         };
     }
@@ -279,7 +285,8 @@ public final class HttpRetry implements HttpStage {
      * @return redirect method
      */
     private static HTTP.Method redirectMethod(final int code, final HTTP.Method method) {
-        if (code == 307 || code == 308 || method == HTTP.Method.GET || method == HTTP.Method.HEAD) {
+        if (code == HTTP.HTTP_TEMP_REDIRECT || code == HTTP.HTTP_PERM_REDIRECT || method == HTTP.Method.GET
+                || method == HTTP.Method.HEAD) {
             return method;
         }
         return HTTP.Method.GET;
@@ -293,7 +300,7 @@ public final class HttpRetry implements HttpStage {
      * @return true when body is preserved
      */
     private static boolean preserveBody(final int code, final HTTP.Method method) {
-        return (code == 307 || code == 308) && method.supportsBody();
+        return (code == HTTP.HTTP_TEMP_REDIRECT || code == HTTP.HTTP_PERM_REDIRECT) && method.supportsBody();
     }
 
     /**
@@ -305,7 +312,7 @@ public final class HttpRetry implements HttpStage {
      * @return headers
      */
     private static Headers redirectHeaders(final Headers headers, final UnoUrl from, final UnoUrl to) {
-        Headers current = headers.without("Content-Length").without("Content-Type");
+        Headers current = headers.without(HTTP.CONTENT_LENGTH).without(HTTP.CONTENT_TYPE);
         if (!sameOrigin(from, to)) {
             current = current.without(HTTP.AUTHORIZATION).without(HTTP.PROXY_AUTHORIZATION).without(HTTP.COOKIE);
         }
@@ -334,10 +341,7 @@ public final class HttpRetry implements HttpStage {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

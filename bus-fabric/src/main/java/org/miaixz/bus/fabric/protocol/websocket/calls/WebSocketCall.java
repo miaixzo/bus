@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
@@ -51,6 +52,11 @@ public final class WebSocketCall implements Call<WebSocketSession> {
      * Logger tag used by the fabric runtime.
      */
     private static final String LOG_TAG = "Fabric";
+
+    /**
+     * Dispatcher activity name for opening the WebSocket session.
+     */
+    private static final String ACTIVITY_OPEN = "websocket-open";
 
     /**
      * Source exchange.
@@ -98,10 +104,7 @@ public final class WebSocketCall implements Call<WebSocketSession> {
      * @param dispatcher dispatcher used by enqueue()
      */
     private WebSocketCall(final WebSocketX exchange, final Dispatcher dispatcher) {
-        if (exchange == null) {
-            throw new ValidateException("WebSocket exchange must not be null");
-        }
-        this.exchange = exchange;
+        this.exchange = require(exchange, "WebSocket exchange");
         this.dispatcher = dispatcher;
         this.future = new CompletableFuture<>();
         this.state = new AtomicReference<>(Status.QUEUED);
@@ -172,7 +175,7 @@ public final class WebSocketCall implements Call<WebSocketSession> {
     }
 
     /**
-     * Enqueues this call to its configured dispatcher.
+     * Enqueues this call to the configured dispatcher.
      *
      * @return this call
      */
@@ -188,13 +191,11 @@ public final class WebSocketCall implements Call<WebSocketSession> {
      * @return this call
      */
     public Call<WebSocketSession> enqueue(final Dispatcher dispatcher) {
-        if (dispatcher == null) {
-            throw new ValidateException("Dispatcher must not be null");
-        }
+        final Dispatcher currentDispatcher = require(dispatcher, "Dispatcher");
         if (handle.get() != null) {
             return this;
         }
-        final Activity activity = Activity.of("websocket-open", () -> {
+        final Activity activity = Activity.of(ACTIVITY_OPEN, () -> {
             try {
                 open();
             } catch (final RuntimeException e) {
@@ -202,7 +203,7 @@ public final class WebSocketCall implements Call<WebSocketSession> {
                 throw e;
             }
         });
-        final DispatchHandle enqueued = dispatcher.enqueue(exchange.dispatchKey(), activity);
+        final DispatchHandle enqueued = currentDispatcher.enqueue(exchange.dispatchKey(), activity);
         if (!handle.compareAndSet(null, enqueued)) {
             enqueued.cancel();
         } else {
@@ -235,6 +236,11 @@ public final class WebSocketCall implements Call<WebSocketSession> {
         return awaitFuture(future, timeout);
     }
 
+    /**
+     * Cancels this call.
+     *
+     * @return true when this invocation changed the state
+     */
     @Override
     public boolean cancel() {
         while (true) {
@@ -258,12 +264,22 @@ public final class WebSocketCall implements Call<WebSocketSession> {
         }
     }
 
+    /**
+     * Returns whether this call is cancelled.
+     *
+     * @return true when cancelled
+     */
     @Override
     public boolean cancelled() {
         final DispatchHandle current = handle.get();
         return state.get() == Status.CANCELLED || future.isCancelled() || current != null && current.cancelled();
     }
 
+    /**
+     * Returns whether this call is complete.
+     *
+     * @return true when complete
+     */
     @Override
     public boolean done() {
         return future.isDone();
@@ -340,9 +356,9 @@ public final class WebSocketCall implements Call<WebSocketSession> {
      * @param timeout timeout
      */
     private static void validateTimeout(final Duration timeout) {
-        if (timeout == null || timeout.isNegative()) {
-            throw new ValidateException("Timeout must be non-null and non-negative");
-        }
+        final Duration checked = Assert
+                .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
+        Assert.isFalse(checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
     }
 
     /**
@@ -354,10 +370,7 @@ public final class WebSocketCall implements Call<WebSocketSession> {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

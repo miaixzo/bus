@@ -19,15 +19,16 @@
 */
 package org.miaixz.bus.fabric.guard.route;
 
-import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.SetKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.guard.GuardResult;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
@@ -45,6 +46,11 @@ public final class RouteGuard {
      * Rule name.
      */
     private static final String NAME = "route";
+
+    /**
+     * Asynchronous socket scheme.
+     */
+    private static final String AIO_SCHEME = "aio";
 
     /**
      * Allowed normalized schemes.
@@ -67,11 +73,10 @@ public final class RouteGuard {
      * @return route guard
      */
     public static RouteGuard schemes(final Set<String> schemes) {
-        if (schemes == null || schemes.isEmpty()) {
-            throw new ValidateException("Schemes must not be empty");
-        }
-        final LinkedHashSet<String> normalized = new LinkedHashSet<>();
-        for (final String scheme : schemes) {
+        final Set<String> checkedSchemes = Assert
+                .notEmpty(schemes, () -> new ValidateException("Schemes must not be empty"));
+        final Set<String> normalized = SetKit.of(true);
+        for (final String scheme : checkedSchemes) {
             normalized.add(validateScheme(scheme, true));
         }
         return new RouteGuard(Set.copyOf(normalized));
@@ -84,10 +89,8 @@ public final class RouteGuard {
      * @return guard result
      */
     public GuardResult check(final Address address) {
-        if (address == null) {
-            throw new ValidateException("Address must not be null");
-        }
-        final String scheme = validateScheme(address.scheme(), false);
+        final Address checkedAddress = Assert.notNull(address, () -> new ValidateException("Address must not be null"));
+        final String scheme = validateScheme(checkedAddress.scheme(), false);
         return schemes.contains(scheme) ? GuardResult.pass() : GuardResult.reject("route scheme rejected: " + scheme);
     }
 
@@ -98,15 +101,14 @@ public final class RouteGuard {
      * @return guard result
      */
     public GuardResult check(final Route route) {
-        if (route == null) {
-            throw new ValidateException("Route must not be null");
-        }
-        final GuardResult addressResult = check(route.address());
+        final Route checkedRoute = Assert.notNull(route, () -> new ValidateException("Route must not be null"));
+        final Address address = checkedRoute.address();
+        final GuardResult addressResult = check(address);
         if (!addressResult.passed()) {
             return addressResult;
         }
-        return compatible(route.address(), route.proxy()) ? GuardResult.pass()
-                : GuardResult.reject("route proxy incompatible with scheme: " + route.address().scheme());
+        return compatible(address, checkedRoute.proxy()) ? GuardResult.pass()
+                : GuardResult.reject("route proxy incompatible with scheme: " + address.scheme());
     }
 
     /**
@@ -126,23 +128,22 @@ public final class RouteGuard {
      * @return true when compatible
      */
     private static boolean compatible(final Address address, final ProxyPlan proxy) {
-        if (proxy == null) {
-            throw new ProtocolException("Route proxy must not be null");
-        }
-        final Optional<Address> proxyAddress = proxy.proxy();
+        final ProxyPlan checkedProxy = Assert
+                .notNull(proxy, () -> new ProtocolException("Route proxy must not be null"));
+        final Optional<Address> proxyAddress = checkedProxy.proxy();
         if (proxyAddress.isEmpty()) {
             return true;
         }
         final String proxyScheme = validateScheme(proxyAddress.get().scheme(), false);
-        final boolean httpProxy = "http".equals(proxyScheme);
+        final boolean httpProxy = Protocol.HTTP.name.equals(proxyScheme);
         if (address.secure() && httpProxy) {
-            return proxy.requiresTunnel(address);
+            return checkedProxy.requiresTunnel(address);
         }
         if (!address.secure() && httpProxy) {
             return true;
         }
-        return "tcp".equals(proxyScheme) || "socket".equals(proxyScheme) || "aio".equals(proxyScheme)
-                || "tls".equals(proxyScheme);
+        return Protocol.TCP.name.equals(proxyScheme) || Protocol.SOCKET.name.equals(proxyScheme)
+                || AIO_SCHEME.equals(proxyScheme) || Protocol.TLS.name.equals(proxyScheme);
     }
 
     /**
@@ -153,32 +154,13 @@ public final class RouteGuard {
      * @return normalized scheme
      */
     private static String validateScheme(final String value, final boolean validateFail) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF) || !legalScheme(value)) {
+        if (!UrlKit.isScheme(value)) {
             if (validateFail) {
                 throw new ValidateException("Scheme must be non-blank and single-line");
             }
             throw new ProtocolException("Invalid route scheme");
         }
         return value.toLowerCase(Locale.ROOT);
-    }
-
-    /**
-     * Returns whether a value is a legal URI scheme token.
-     *
-     * @param value value
-     * @return true when legal
-     */
-    private static boolean legalScheme(final String value) {
-        if (!Character.isLetter(value.charAt(0))) {
-            return false;
-        }
-        for (int i = 1; i < value.length(); i++) {
-            final char ch = value.charAt(i);
-            if (!Character.isLetterOrDigit(ch) && ch != Symbol.C_PLUS && ch != Symbol.C_MINUS && ch != Symbol.C_DOT) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

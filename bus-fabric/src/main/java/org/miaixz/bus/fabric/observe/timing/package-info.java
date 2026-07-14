@@ -18,14 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines normalized tag names and sanitization rules for observation events.
+ * Contains timing helpers built on the fabric runtime clock.
  *
  * <p>
- * Tag utilities keep observer metadata stable and safe by redacting sensitive values, normalizing key/value text and
- * avoiding unnecessary allocation for common tags. They must not inspect payload bytes or decide event severity.
+ * Stopwatches measure elapsed time for protocol and runtime events using the configured clock source. They do not
+ * schedule work or emit events by themselves; callers decide how timing data is attached to observations.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.fabric.observe.tag;
+package org.miaixz.bus.fabric.observe.timing;

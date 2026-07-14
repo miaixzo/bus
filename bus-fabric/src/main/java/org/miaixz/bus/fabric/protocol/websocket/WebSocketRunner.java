@@ -20,12 +20,17 @@
 package org.miaixz.bus.fabric.protocol.websocket;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.sink.Sink;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.io.timout.Timeout;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
@@ -34,7 +39,7 @@ import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketWriter;
@@ -97,8 +102,8 @@ final class WebSocketRunner {
             lease = upgraded.lease();
             upgraded = null;
             final WebSocketSession session = new WebSocketSession(snapshot.address(),
-                    new WebSocketWriter(new ConnectionOutputStream(connection), true),
-                    new WebSocketReader(new ConnectionInputStream(connection), false, snapshot.address()), lease,
+                    new WebSocketWriter(new ConnectionSink(connection), true),
+                    new WebSocketReader(new ConnectionSource(connection), false, snapshot.address()), lease,
                     snapshot.handler(), snapshot.context().reactor().dispatcher(), dispatchKey(),
                     snapshot.timeout().ping(), snapshot.guard(), snapshot.observer(), snapshot.listener(),
                     snapshot.context().options().materializeMaxBytes());
@@ -139,7 +144,8 @@ final class WebSocketRunner {
      * @return dispatch key
      */
     String dispatchKey() {
-        return snapshot.address().scheme() + "://" + snapshot.address().host() + ':' + snapshot.address().port();
+        return snapshot.address().scheme() + Symbol.COLON + Symbol.FORWARDSLASH + snapshot.address().host()
+                + Symbol.C_COLON + snapshot.address().port();
     }
 
     /**
@@ -246,16 +252,13 @@ final class WebSocketRunner {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
-     * Input stream backed by a fabric network connection.
+     * Source backed by a fabric network connection.
      */
-    private static final class ConnectionInputStream extends InputStream {
+    private static final class ConnectionSource implements Source {
 
         /**
          * Connection.
@@ -263,49 +266,61 @@ final class WebSocketRunner {
         private final Connection connection;
 
         /**
-         * One-byte buffer.
+         * Reusable network read buffer.
          */
-        private final byte[] one;
+        private final ByteBuffer input;
 
         /**
-         * Creates a stream.
+         * Creates a source.
          *
          * @param connection network connection
          */
-        private ConnectionInputStream(final Connection connection) {
+        private ConnectionSource(final Connection connection) {
             this.connection = require(connection, "Network connection");
-            this.one = new byte[1];
+            this.input = ByteBuffer.allocate(Normal._8192);
         }
 
         @Override
-        public int read() throws IOException {
-            final int read = read(one, 0, 1);
-            return read < 0 ? -1 : one[0] & 0xFF;
-        }
-
-        @Override
-        public int read(final byte[] bytes, final int offset, final int length) throws IOException {
-            if (bytes == null) {
-                throw new ValidateException("WebSocket read buffer must not be null");
+        public long read(final Buffer sink, final long byteCount) throws IOException {
+            final Buffer currentSink = require(sink, "WebSocket read sink");
+            if (byteCount == Normal.LONG_ZERO) {
+                return Normal.LONG_ZERO;
             }
-            if (length == 0) {
-                return 0;
+            if (byteCount < Normal.LONG_ZERO) {
+                throw new ValidateException("WebSocket read byte count must not be negative");
             }
-            final ByteBuffer target = ByteBuffer.wrap(bytes, offset, length);
+            final ByteBuffer target = input;
+            target.clear();
+            target.limit((int) Math.min(byteCount, Normal._8192));
             int read = await(connection.read(target), "Unable to read WebSocket frame");
-            while (read == 0) {
+            while (read == Normal._0) {
                 Thread.yield();
                 read = await(connection.read(target), "Unable to read WebSocket frame");
             }
+            if (read < Normal._0) {
+                return Normal.__1;
+            }
+            target.flip();
+            currentSink.write(target);
             return read;
+        }
+
+        @Override
+        public Timeout timeout() {
+            return Timeout.NONE;
+        }
+
+        @Override
+        public void close() {
+            // The connection lease owns the network lifetime.
         }
 
     }
 
     /**
-     * Output stream backed by a fabric network connection.
+     * Sink backed by a fabric network connection.
      */
-    private static final class ConnectionOutputStream extends OutputStream {
+    private static final class ConnectionSink implements Sink {
 
         /**
          * Connection.
@@ -313,37 +328,49 @@ final class WebSocketRunner {
         private final Connection connection;
 
         /**
-         * Creates a stream.
+         * Creates a sink.
          *
          * @param connection network connection
          */
-        private ConnectionOutputStream(final Connection connection) {
+        private ConnectionSink(final Connection connection) {
             this.connection = require(connection, "Network connection");
         }
 
         @Override
-        public void write(final int value) throws IOException {
-            write(new byte[] { (byte) value }, 0, 1);
+        public void write(final Buffer source, final long byteCount) throws IOException {
+            final Buffer currentSource = require(source, "WebSocket write source");
+            if (byteCount < Normal.LONG_ZERO || byteCount > currentSource.size()) {
+                throw new ValidateException("WebSocket write byte count is outside source bounds");
+            }
+            long remaining = byteCount;
+            while (remaining > Normal.LONG_ZERO) {
+                final ByteBuffer view = currentSource.nioBuffer((int) Math.min(remaining, Normal._8192));
+                final int written = await(connection.write(view), "Unable to write WebSocket frame");
+                if (written < Normal._0) {
+                    throw new SocketException("WebSocket write reached EOF");
+                }
+                if (written == Normal._0) {
+                    Thread.yield();
+                } else {
+                    currentSource.skip(written);
+                    remaining -= written;
+                }
+            }
         }
 
         @Override
-        public void write(final byte[] bytes, final int offset, final int length) throws IOException {
-            if (bytes == null) {
-                throw new ValidateException("WebSocket write buffer must not be null");
-            }
-            final ByteBuffer source = ByteBuffer.wrap(bytes, offset, length);
-            while (source.hasRemaining()) {
-                final int position = source.position();
-                final int written = await(connection.write(source), "Unable to write WebSocket frame");
-                if (written < 0) {
-                    throw new SocketException("WebSocket write reached EOF");
-                }
-                if (written == 0) {
-                    Thread.yield();
-                } else {
-                    source.position(position + written);
-                }
-            }
+        public void flush() {
+            // Connection writes are flushed by the underlying network channel.
+        }
+
+        @Override
+        public Timeout timeout() {
+            return Timeout.NONE;
+        }
+
+        @Override
+        public void close() {
+            // The connection lease owns the network lifetime.
         }
 
     }

@@ -21,9 +21,11 @@ package org.miaixz.bus.fabric.bridge.servlet;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.UnoUrl;
@@ -68,7 +70,7 @@ public final class ServletBridge implements Translator<HttpRequest> {
      * @return true when supported
      */
     public boolean supports(final Ingress ingress) {
-        require(ingress, "Ingress");
+        Assert.notNull(ingress, () -> new ValidateException("Ingress must not be null"));
         final Object servlet = ingress.attributes().get("servlet");
         final Object type = ingress.attributes().get("type");
         return Boolean.TRUE.equals(servlet) || "servlet".equals(type) || !ingress.method().isBlank();
@@ -82,16 +84,16 @@ public final class ServletBridge implements Translator<HttpRequest> {
      */
     @Override
     public HttpRequest translate(final Ingress ingress) {
-        require(ingress, "Ingress");
+        Assert.notNull(ingress, () -> new ValidateException("Ingress must not be null"));
         final Headers headers = ingress.headers();
-        final String method = ingress.method().isBlank() ? "GET" : ingress.method();
+        final String method = ingress.method().isBlank() ? HTTP.GET : ingress.method();
         final String path = ingress.path();
-        final String host = headers.get("Host") == null ? "localhost" : headers.get("Host");
-        final MediaType media = headers.get("Content-Type") == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE
-                : MediaType.parse(headers.get("Content-Type"));
+        final String host = headers.get(HTTP.HOST) == null ? Protocol.HOST_LOCAL : headers.get(HTTP.HOST);
+        final MediaType media = headers.get(HTTP.CONTENT_TYPE) == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE
+                : MediaType.parse(headers.get(HTTP.CONTENT_TYPE));
         final Payload payload = ingress.payload();
-        return HttpRequest.builder().method(method(method)).url(UnoUrl.parse("http://" + host + path)).headers(headers)
-                .body(HttpBody.of(payload, media)).tag(ingress).build();
+        return HttpRequest.builder().method(method(method)).url(UnoUrl.parse(Protocol.HTTP_PREFIX + host + path))
+                .headers(headers).body(HttpBody.of(payload, media)).tag(ingress).build();
     }
 
     /**
@@ -116,21 +118,6 @@ public final class ServletBridge implements Translator<HttpRequest> {
         } catch (final IllegalArgumentException e) {
             throw new ValidateException("Unsupported HTTP method: " + value, e);
         }
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
 }

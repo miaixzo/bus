@@ -22,6 +22,8 @@ package org.miaixz.bus.fabric.observe.window;
 import java.time.Duration;
 import java.time.Instant;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -35,7 +37,7 @@ public final class RollingWindow {
     /**
      * Nanoseconds per second.
      */
-    private static final double NANOS_PER_SECOND = 1_000_000_000D;
+    private static final double NANOS_PER_SECOND = Normal.GIGA;
 
     /**
      * Window duration in nanoseconds.
@@ -77,9 +79,9 @@ public final class RollingWindow {
     public static RollingWindow of(final Duration window, final Duration bucket) {
         final long windowNanos = validateDuration(window, "Window");
         final long bucketNanos = validateDuration(bucket, "Bucket");
-        if (bucketNanos > windowNanos || windowNanos % bucketNanos != 0) {
-            throw new ValidateException("Bucket must divide window and be no larger than window");
-        }
+        Assert.isTrue(
+                bucketNanos <= windowNanos && windowNanos % bucketNanos == 0,
+                () -> new ValidateException("Bucket must divide window and be no larger than window"));
         return new RollingWindow(windowNanos, bucketNanos);
     }
 
@@ -90,9 +92,7 @@ public final class RollingWindow {
      * @param time  sample time
      */
     public synchronized void add(final long value, final Instant time) {
-        if (value < 0) {
-            throw new ValidateException("Window value must be non-negative");
-        }
+        Assert.isTrue(value >= 0, () -> new ValidateException("Window value must be non-negative"));
         final long key = bucketKey(time);
         final Bucket bucket = buckets[index(key)];
         if (bucket.key != key) {
@@ -192,12 +192,10 @@ public final class RollingWindow {
      * @return bucket key
      */
     private long bucketKey(final Instant time) {
-        if (time == null) {
-            throw new ValidateException("Window time must not be null");
-        }
+        final Instant checked = Assert.notNull(time, () -> new ValidateException("Window time must not be null"));
         final long nanos;
         try {
-            nanos = Math.addExact(Math.multiplyExact(time.getEpochSecond(), 1_000_000_000L), time.getNano());
+            nanos = Math.addExact(Math.multiplyExact(checked.getEpochSecond(), Normal.GIGA), checked.getNano());
         } catch (final ArithmeticException e) {
             throw new ValidateException("Window time is out of range", e);
         }
@@ -212,11 +210,13 @@ public final class RollingWindow {
      * @return nanoseconds
      */
     private static long validateDuration(final Duration duration, final String name) {
-        if (duration == null || duration.compareTo(Duration.ZERO) <= 0) {
-            throw new ValidateException(name + " duration must be positive");
-        }
+        final Duration checked = Assert
+                .notNull(duration, () -> new ValidateException(name + " duration must be positive"));
+        Assert.isTrue(
+                checked.compareTo(Duration.ZERO) > 0,
+                () -> new ValidateException(name + " duration must be positive"));
         try {
-            return duration.toNanos();
+            return checked.toNanos();
         } catch (final ArithmeticException e) {
             throw new ValidateException(name + " duration is out of range", e);
         }

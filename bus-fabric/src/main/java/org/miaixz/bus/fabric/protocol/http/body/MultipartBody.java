@@ -19,21 +19,24 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.SequenceInputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.io.timout.Timeout;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
@@ -53,6 +56,11 @@ public final class MultipartBody implements RequestBody {
      * CRLF bytes.
      */
     private static final byte[] CRLF = { Symbol.C_CR, Symbol.C_LF };
+
+    /**
+     * Multipart boundary media parameter.
+     */
+    private static final String BOUNDARY_PARAMETER = "boundary";
 
     /**
      * Multipart boundary.
@@ -84,10 +92,11 @@ public final class MultipartBody implements RequestBody {
      */
     private MultipartBody(final String boundary, final List<Part> parts, final MediaType media, final Payload payload) {
         this.boundary = validateBoundary(boundary);
-        this.parts = List.copyOf(parts);
-        if (media == null || payload == null) {
-            throw new ValidateException("Multipart media and payload must not be null");
-        }
+        this.parts = List
+                .copyOf(Assert.notNull(parts, () -> new ValidateException("Multipart parts must not be null")));
+        Assert.isFalse(
+                media == null || payload == null,
+                () -> new ValidateException("Multipart media and payload must not be null"));
         this.media = media;
         this.payload = payload;
     }
@@ -178,11 +187,10 @@ public final class MultipartBody implements RequestBody {
         private Part(final String name, final String filename, final Headers headers, final Payload payload) {
             this.name = validatePartName(name, "Part name");
             this.filename = filename == null ? null : validatePartName(filename, "Part filename");
-            if (headers == null) {
-                throw new ValidateException("Part headers must not be null");
-            }
+            final Headers validHeaders = Assert
+                    .notNull(headers, () -> new ValidateException("Part headers must not be null"));
             validatePartPayload(payload);
-            this.headers = headers;
+            this.headers = validHeaders;
             this.payload = payload;
         }
 
@@ -209,17 +217,15 @@ public final class MultipartBody implements RequestBody {
          */
         public static Part file(final String name, final Path path, final MediaType media) {
             final String validName = validatePartName(name, "Part name");
-            if (path == null) {
-                throw new ValidateException("Part file path must not be null");
-            }
-            if (media == null) {
-                throw new ValidateException("Part file media must not be null");
-            }
-            final Path filenamePath = path.getFileName();
+            final Path checkedPath = Assert
+                    .notNull(path, () -> new ValidateException("Part file path must not be null"));
+            final MediaType checkedMedia = Assert
+                    .notNull(media, () -> new ValidateException("Part file media must not be null"));
+            final Path filenamePath = checkedPath.getFileName();
             if (filenamePath == null) {
                 throw new ValidateException("Part file name must not be null");
             }
-            return file(validName, filenamePath.toString(), path, media);
+            return file(validName, filenamePath.toString(), checkedPath, checkedMedia);
         }
 
         /**
@@ -232,13 +238,11 @@ public final class MultipartBody implements RequestBody {
          * @return part
          */
         public static Part file(final String name, final String filename, final Path path, final MediaType media) {
-            if (path == null) {
-                throw new ValidateException("Part file path must not be null");
-            }
-            if (media == null) {
-                throw new ValidateException("Part file media must not be null");
-            }
-            final FileBody body = FileBody.of(path, media);
+            final Path checkedPath = Assert
+                    .notNull(path, () -> new ValidateException("Part file path must not be null"));
+            final MediaType checkedMedia = Assert
+                    .notNull(media, () -> new ValidateException("Part file media must not be null"));
+            final FileBody body = FileBody.of(checkedPath, checkedMedia);
             return file(name, filename, body.payload(), body.media());
         }
 
@@ -258,12 +262,11 @@ public final class MultipartBody implements RequestBody {
                 final MediaType media) {
             final String validName = validatePartName(name, "Part name");
             final String validFilename = validatePartName(filename, "Part filename");
-            if (media == null) {
-                throw new ValidateException("Part file media must not be null");
-            }
+            final MediaType validMedia = Assert
+                    .notNull(media, () -> new ValidateException("Part file media must not be null"));
             validatePartPayload(payload);
-            return new Part(validName, validFilename, partHeaders(validName, validFilename, media, payload.length()),
-                    payload);
+            return new Part(validName, validFilename,
+                    partHeaders(validName, validFilename, validMedia, payload.length()), payload);
         }
 
         /**
@@ -337,10 +340,7 @@ public final class MultipartBody implements RequestBody {
          * @return this builder
          */
         public Builder part(final Part part) {
-            if (part == null) {
-                throw new ValidateException("Multipart part must not be null");
-            }
-            parts.add(part);
+            parts.add(Assert.notNull(part, () -> new ValidateException("Multipart part must not be null")));
             return this;
         }
 
@@ -363,7 +363,8 @@ public final class MultipartBody implements RequestBody {
         public MultipartBody build() {
             final String current = validateBoundary(boundary == null ? ID.fastSimpleUUID() : boundary);
             final List<Part> snapshot = List.copyOf(parts);
-            final MediaType media = MediaType.parse("multipart/form-data; boundary=" + current);
+            final MediaType media = new MediaType(MediaType.MULTIPART_FORM_DATA_TYPE.type(),
+                    MediaType.MULTIPART_FORM_DATA_TYPE.subtype(), Map.of(BOUNDARY_PARAMETER, current));
             return new MultipartBody(current, snapshot, media, new MultipartPayload(current, snapshot));
         }
 
@@ -391,10 +392,16 @@ public final class MultipartBody implements RequestBody {
          * @param parts    parts
          */
         private MultipartPayload(final String boundary, final List<Part> parts) {
-            this.boundary = boundary;
-            this.parts = parts;
+            this.boundary = validateBoundary(boundary);
+            this.parts = List
+                    .copyOf(Assert.notNull(parts, () -> new ValidateException("Multipart parts must not be null")));
         }
 
+        /**
+         * Returns encoded multipart byte length.
+         *
+         * @return encoded byte length, or -1 when any part has unknown length
+         */
         @Override
         public long length() {
             long length = closingBytes(boundary).length;
@@ -410,34 +417,67 @@ public final class MultipartBody implements RequestBody {
             return length;
         }
 
+        /**
+         * Opens a lazy multipart source.
+         *
+         * @return multipart source
+         */
         @Override
-        public InputStream stream() {
-            return new SequenceInputStream(new PartStreams(boundary, parts));
+        public Source source() {
+            return new MultipartSource(boundary, parts);
         }
 
+        /**
+         * Returns multipart bytes.
+         *
+         * @return multipart bytes
+         */
         @Override
         public byte[] bytes() {
             return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Returns multipart bytes with an explicit materialize threshold.
+         *
+         * @param maxBytes maximum bytes to materialize
+         * @return multipart bytes
+         */
         @Override
         public byte[] bytes(final long maxBytes) {
             return Payload.materialize(this, maxBytes, "MultipartBody.MultipartPayload.bytes(long)");
         }
 
+        /**
+         * Reads multipart text using the supplied charset.
+         *
+         * @param charset charset
+         * @return multipart text
+         */
         @Override
         public String text(final Charset charset) {
             return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Reads multipart text using the supplied charset and threshold.
+         *
+         * @param charset  charset
+         * @param maxBytes maximum bytes to materialize
+         * @return multipart text
+         */
         @Override
         public String text(final Charset charset, final long maxBytes) {
-            if (charset == null) {
-                throw new ValidateException("Charset must not be null");
-            }
-            return new String(bytes(maxBytes), charset);
+            final Charset checkedCharset = Assert
+                    .notNull(charset, () -> new ValidateException("Charset must not be null"));
+            return new String(bytes(maxBytes), checkedCharset);
         }
 
+        /**
+         * Returns whether all parts are repeatable.
+         *
+         * @return true when all parts are repeatable
+         */
         @Override
         public boolean repeatable() {
             for (final Part part : parts) {
@@ -451,9 +491,9 @@ public final class MultipartBody implements RequestBody {
     }
 
     /**
-     * Lazy multipart stream enumeration.
+     * Lazy multipart source.
      */
-    private static final class PartStreams implements Enumeration<InputStream> {
+    private static final class MultipartSource implements Source {
 
         /**
          * Boundary.
@@ -471,6 +511,11 @@ public final class MultipartBody implements RequestBody {
         private int index;
 
         /**
+         * Current part source.
+         */
+        private Source current;
+
+        /**
          * Phase inside the current part.
          */
         private int phase;
@@ -481,42 +526,112 @@ public final class MultipartBody implements RequestBody {
         private boolean closing;
 
         /**
-         * Creates a lazy stream enumeration.
+         * Closed flag.
+         */
+        private boolean closed;
+
+        /**
+         * Creates a lazy multipart source.
          *
          * @param boundary boundary
          * @param parts    parts
          */
-        private PartStreams(final String boundary, final List<Part> parts) {
+        private MultipartSource(final String boundary, final List<Part> parts) {
             this.boundary = boundary;
             this.parts = parts;
         }
 
+        /**
+         * Reads bytes into the supplied sink.
+         *
+         * @param sink      target buffer
+         * @param byteCount maximum bytes to read
+         * @return byte count, or -1 when complete
+         * @throws IOException if the source cannot be read
+         */
         @Override
-        public boolean hasMoreElements() {
-            return index < parts.size() || !closing;
+        public long read(final Buffer sink, final long byteCount) throws IOException {
+            if (closed) {
+                throw new IOException("Multipart source is closed");
+            }
+            if (byteCount == 0) {
+                return 0;
+            }
+            while (true) {
+                if (current == null) {
+                    current = nextSource();
+                    if (current == null) {
+                        return -1;
+                    }
+                }
+                final long read = current.read(sink, byteCount);
+                if (read != -1) {
+                    return read;
+                }
+                current.close();
+                current = null;
+            }
         }
 
+        /**
+         * Returns the active source timeout.
+         *
+         * @return timeout
+         */
         @Override
-        public InputStream nextElement() {
+        public Timeout timeout() {
+            return current == null ? Timeout.NONE : current.timeout();
+        }
+
+        /**
+         * Closes the active source.
+         *
+         * @throws IOException if the active source cannot close
+         */
+        @Override
+        public void close() throws IOException {
+            closed = true;
+            if (current != null) {
+                current.close();
+                current = null;
+            }
+        }
+
+        /**
+         * Returns the next source segment.
+         *
+         * @return next segment, or null when complete
+         */
+        private Source nextSource() {
             if (index < parts.size()) {
                 final Part part = parts.get(index);
                 if (phase == 0) {
                     phase = 1;
-                    return new ByteArrayInputStream(headerBytes(boundary, part));
+                    return source(headerBytes(boundary, part));
                 }
                 if (phase == 1) {
                     phase = 2;
-                    return part.payload().stream();
+                    return part.payload().source();
                 }
                 phase = 0;
                 index++;
-                return new ByteArrayInputStream(CRLF);
+                return source(CRLF);
             }
             if (!closing) {
                 closing = true;
-                return new ByteArrayInputStream(closingBytes(boundary));
+                return source(closingBytes(boundary));
             }
-            throw new NoSuchElementException("Multipart stream is exhausted");
+            return null;
+        }
+
+        /**
+         * Creates a buffer source from bytes.
+         *
+         * @param bytes bytes
+         * @return source
+         */
+        private static Source source(final byte[] bytes) {
+            return new Buffer().write(bytes);
         }
 
     }
@@ -536,7 +651,7 @@ public final class MultipartBody implements RequestBody {
             }
         }
         builder.append(Symbol.CRLF);
-        return builder.toString().getBytes(org.miaixz.bus.core.lang.Charset.UTF_8);
+        return ByteString.encodeString(builder.toString(), org.miaixz.bus.core.lang.Charset.UTF_8).toByteArray();
     }
 
     /**
@@ -553,15 +668,13 @@ public final class MultipartBody implements RequestBody {
             final String filename,
             final MediaType media,
             final long length) {
-        if (length < -1) {
-            throw new ProtocolException("Part content length must be -1 or greater");
-        }
-        final Headers.Builder builder = Headers.builder().add("Content-Disposition", disposition(name, filename));
+        Assert.isFalse(length < Normal.__1, () -> new ProtocolException("Part content length must be -1 or greater"));
+        final Headers.Builder builder = Headers.builder().add(HTTP.CONTENT_DISPOSITION, disposition(name, filename));
         if (media != null) {
-            builder.add("Content-Type", media.value());
+            builder.add(HTTP.CONTENT_TYPE, media.value());
         }
         if (length >= 0) {
-            builder.add("Content-Length", Long.toString(length));
+            builder.add(HTTP.CONTENT_LENGTH, Long.toString(length));
         }
         return builder.build();
     }
@@ -602,10 +715,12 @@ public final class MultipartBody implements RequestBody {
      * @return validated value
      */
     private static String validatePartName(final String value, final String name) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(name + " must be non-blank and single-line");
-        }
-        return value;
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException(name + " must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(name + " must be non-blank and single-line"));
+        return checked;
     }
 
     /**
@@ -614,9 +729,7 @@ public final class MultipartBody implements RequestBody {
      * @param payload payload
      */
     private static void validatePartPayload(final Payload payload) {
-        if (payload == null) {
-            throw new ValidateException("Part payload must not be null");
-        }
+        Assert.notNull(payload, () -> new ValidateException("Part payload must not be null"));
     }
 
     /**
@@ -626,7 +739,8 @@ public final class MultipartBody implements RequestBody {
      * @return closing bytes
      */
     private static byte[] closingBytes(final String boundary) {
-        return ("--" + boundary + "--\r\n").getBytes(org.miaixz.bus.core.lang.Charset.UTF_8);
+        return ByteString.encodeString("--" + boundary + "--" + Symbol.CRLF, org.miaixz.bus.core.lang.Charset.UTF_8)
+                .toByteArray();
     }
 
     /**
@@ -636,13 +750,14 @@ public final class MultipartBody implements RequestBody {
      * @return boundary
      */
     private static String validateBoundary(final String boundary) {
-        if (StringKit.isBlank(boundary) || StringKit.containsAny(boundary, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Multipart boundary must be non-blank and single-line");
-        }
-        if (boundary.length() > 70) {
-            throw new ProtocolException("Multipart boundary is too long");
-        }
-        return boundary;
+        final String checked = Assert.notBlank(
+                boundary,
+                () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
+        Assert.isFalse(checked.length() > Normal._70, () -> new ProtocolException("Multipart boundary is too long"));
+        return checked;
     }
 
 }

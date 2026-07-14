@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.guard.frame;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.codec.frame.Frame;
@@ -31,11 +33,6 @@ import org.miaixz.bus.fabric.guard.GuardResult;
  * @since Java 21+
  */
 public final class LimitGuard {
-
-    /**
-     * Protocol maximum frame queue bytes.
-     */
-    private static final long MAX_BYTES = 16_777_216L;
 
     /**
      * Rule name.
@@ -73,13 +70,11 @@ public final class LimitGuard {
      * @return guard result
      */
     public GuardResult check(final Frame frame) {
-        if (frame == null) {
-            throw new ValidateException("Frame must not be null");
-        }
-        final int length = frame.length();
-        if (length < 0 || length > MAX_BYTES) {
-            throw new ProtocolException("Frame length must be between 0 and 16777216");
-        }
+        final Frame checkedFrame = Assert.notNull(frame, () -> new ValidateException("Frame must not be null"));
+        final int length = checkedFrame.length();
+        Assert.isTrue(
+                length >= Normal._0 && length <= Normal._16 * Normal.MEBI,
+                () -> new ProtocolException("Frame length must be between 0 and 16777216"));
         return length > maxBytes ? GuardResult.reject("frame length " + length + " exceeds max " + maxBytes)
                 : GuardResult.pass();
     }
@@ -91,9 +86,7 @@ public final class LimitGuard {
      * @return guard result
      */
     public GuardResult checkQueue(final long queuedBytes) {
-        if (queuedBytes < 0) {
-            throw new ValidateException("Queued bytes must be non-negative");
-        }
+        Assert.isTrue(queuedBytes >= Normal._0, () -> new ValidateException("Queued bytes must be non-negative"));
         return queuedBytes > maxBytes ? GuardResult.reject("frame queue " + queuedBytes + " exceeds max " + maxBytes)
                 : GuardResult.pass();
     }
@@ -123,9 +116,9 @@ public final class LimitGuard {
      * @return maximum bytes
      */
     private static long validateMaxBytes(final long maxBytes) {
-        if (maxBytes <= 0 || maxBytes > MAX_BYTES) {
-            throw new ValidateException("Frame limit must be between 1 and 16777216");
-        }
+        Assert.isTrue(
+                maxBytes > Normal._0 && maxBytes <= Normal._16 * Normal.MEBI,
+                () -> new ValidateException("Frame limit must be between 1 and 16777216"));
         return maxBytes;
     }
 

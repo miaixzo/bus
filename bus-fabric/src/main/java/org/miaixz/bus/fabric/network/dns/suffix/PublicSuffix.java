@@ -23,19 +23,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.net.IDN;
-import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.GzipSource;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.NetKit;
 
 /**
  * Public suffix list backed domain boundary checks.
@@ -51,12 +51,6 @@ public final class PublicSuffix {
     private static final String PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";
 
     /**
-     * IPv4 literal pattern.
-     */
-    private static final Pattern IPV4 = Pattern
-            .compile("(?:(?:25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})\\.){3}(?:25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})");
-
-    /**
      * Wildcard label marker.
      */
     private static final byte[] WILDCARD_LABEL = new byte[] { Symbol.C_STAR };
@@ -64,7 +58,7 @@ public final class PublicSuffix {
     /**
      * Empty rule value.
      */
-    private static final String[] EMPTY_RULE = new String[0];
+    private static final String[] EMPTY_RULE = Normal.EMPTY_STRING_ARRAY;
 
     /**
      * Fallback wildcard rule.
@@ -79,7 +73,7 @@ public final class PublicSuffix {
     /**
      * Coordinates concurrent first readers.
      */
-    private final CountDownLatch readCompleteLatch = new CountDownLatch(1);
+    private final CountDownLatch readCompleteLatch = new CountDownLatch(Normal._1);
 
     /**
      * Public suffix rules encoded as UTF-8 bytes.
@@ -155,15 +149,15 @@ public final class PublicSuffix {
         final String unicodeDomain = IDN.toUnicode(domain);
         final String[] domainLabels = unicodeDomain.split("\\.");
         final String[] rule = findMatchingRule(domainLabels);
-        if (domainLabels.length == rule.length && rule[0].charAt(0) != Symbol.C_NOT) {
+        if (domainLabels.length == rule.length && rule[Normal._0].charAt(Normal._0) != Symbol.C_NOT) {
             return null;
         }
 
         final int firstLabelOffset;
-        if (rule[0].charAt(0) == Symbol.C_NOT) {
+        if (rule[Normal._0].charAt(Normal._0) == Symbol.C_NOT) {
             firstLabelOffset = domainLabels.length - rule.length;
         } else {
-            firstLabelOffset = domainLabels.length - (rule.length + 1);
+            firstLabelOffset = domainLabels.length - (rule.length + Normal._1);
         }
 
         final StringBuilder effectiveTldPlusOne = new StringBuilder();
@@ -171,7 +165,7 @@ public final class PublicSuffix {
         for (int i = firstLabelOffset; i < punycodeLabels.length; i++) {
             effectiveTldPlusOne.append(punycodeLabels[i]).append(Symbol.C_DOT);
         }
-        effectiveTldPlusOne.deleteCharAt(effectiveTldPlusOne.length() - 1);
+        effectiveTldPlusOne.deleteCharAt(effectiveTldPlusOne.length() - Normal._1);
         return effectiveTldPlusOne.toString();
     }
 
@@ -200,12 +194,12 @@ public final class PublicSuffix {
         }
 
         final byte[][] domainLabelsUtf8Bytes = new byte[domainLabels.length][];
-        for (int i = 0; i < domainLabels.length; i++) {
-            domainLabelsUtf8Bytes[i] = domainLabels[i].getBytes(Charset.UTF_8);
+        for (int i = Normal._0; i < domainLabels.length; i++) {
+            domainLabelsUtf8Bytes[i] = ByteString.encodeString(domainLabels[i], Charset.UTF_8).toByteArray();
         }
 
         String exactMatch = null;
-        for (int i = 0; i < domainLabelsUtf8Bytes.length; i++) {
+        for (int i = Normal._0; i < domainLabelsUtf8Bytes.length; i++) {
             final String rule = binarySearchBytes(publicSuffixListBytes, domainLabelsUtf8Bytes, i);
             if (rule != null) {
                 exactMatch = rule;
@@ -214,9 +208,9 @@ public final class PublicSuffix {
         }
 
         String wildcardMatch = null;
-        if (domainLabelsUtf8Bytes.length > 1) {
+        if (domainLabelsUtf8Bytes.length > Normal._1) {
             final byte[][] labelsWithWildcard = domainLabelsUtf8Bytes.clone();
-            for (int labelIndex = 0; labelIndex < labelsWithWildcard.length - 1; labelIndex++) {
+            for (int labelIndex = Normal._0; labelIndex < labelsWithWildcard.length - Normal._1; labelIndex++) {
                 labelsWithWildcard[labelIndex] = WILDCARD_LABEL;
                 final String rule = binarySearchBytes(publicSuffixListBytes, labelsWithWildcard, labelIndex);
                 if (rule != null) {
@@ -228,7 +222,7 @@ public final class PublicSuffix {
 
         String exception = null;
         if (wildcardMatch != null) {
-            for (int labelIndex = 0; labelIndex < domainLabelsUtf8Bytes.length - 1; labelIndex++) {
+            for (int labelIndex = Normal._0; labelIndex < domainLabelsUtf8Bytes.length - Normal._1; labelIndex++) {
                 final String rule = binarySearchBytes(
                         publicSuffixExceptionListBytes,
                         domainLabelsUtf8Bytes,
@@ -313,27 +307,11 @@ public final class PublicSuffix {
      * @return normalized punycode domain
      */
     private static String normalize(final String domain) {
-        if (StringKit.isBlank(domain) || StringKit.containsAny(domain, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Public suffix domain must be non-blank and single-line");
+        String normalized = domain;
+        while (normalized != null && normalized.startsWith(Symbol.DOT)) {
+            normalized = normalized.substring(Normal._1);
         }
-        String normalized = domain.trim().toLowerCase(Locale.ROOT);
-        while (normalized.startsWith(Symbol.DOT)) {
-            normalized = normalized.substring(1);
-        }
-        while (normalized.endsWith(Symbol.DOT)) {
-            normalized = normalized.substring(0, normalized.length() - 1);
-        }
-        if (normalized.isBlank()) {
-            throw new ValidateException("Public suffix domain must be non-blank");
-        }
-        if (isAddressLiteral(normalized)) {
-            return normalized;
-        }
-        try {
-            return IDN.toASCII(normalized, IDN.USE_STD3_ASCII_RULES).toLowerCase(Locale.ROOT);
-        } catch (final IllegalArgumentException e) {
-            throw new ValidateException("Public suffix domain must be a valid domain", e);
-        }
+        return NetKit.normalizeHost(normalized, "Public suffix domain");
     }
 
     /**
@@ -343,7 +321,7 @@ public final class PublicSuffix {
      * @return true when address literal
      */
     private static boolean isAddressLiteral(final String domain) {
-        return domain.indexOf(Symbol.C_COLON) >= 0 || IPV4.matcher(domain).matches();
+        return domain.indexOf(Symbol.C_COLON) >= Normal._0 || Pattern.IPV4_PATTERN.matcher(domain).matches();
     }
 
     /**
@@ -355,17 +333,17 @@ public final class PublicSuffix {
      * @return matching rule, or null
      */
     private static String binarySearchBytes(final byte[] bytesToSearch, final byte[][] labels, final int labelIndex) {
-        int low = 0;
+        int low = Normal._0;
         int high = bytesToSearch.length;
         String match = null;
         while (low < high) {
-            int mid = (low + high) / 2;
-            while (mid > -1 && bytesToSearch[mid] != Symbol.C_LF) {
+            int mid = (low + high) / Normal._2;
+            while (mid > Normal.__1 && bytesToSearch[mid] != Symbol.C_LF) {
                 mid--;
             }
             mid++;
 
-            int end = 1;
+            int end = Normal._1;
             while (bytesToSearch[mid + end] != Symbol.C_LF) {
                 end++;
             }
@@ -373,8 +351,8 @@ public final class PublicSuffix {
 
             int compareResult;
             int currentLabelIndex = labelIndex;
-            int currentLabelByteIndex = 0;
-            int publicSuffixByteIndex = 0;
+            int currentLabelByteIndex = Normal._0;
+            int publicSuffixByteIndex = Normal._0;
             boolean expectDot = false;
             while (true) {
                 final int byte0;
@@ -387,7 +365,7 @@ public final class PublicSuffix {
 
                 final int byte1 = bytesToSearch[mid + publicSuffixByteIndex] & 0xff;
                 compareResult = byte0 - byte1;
-                if (compareResult != 0) {
+                if (compareResult != Normal._0) {
                     break;
                 }
 
@@ -398,30 +376,30 @@ public final class PublicSuffix {
                 }
 
                 if (labels[currentLabelIndex].length == currentLabelByteIndex) {
-                    if (currentLabelIndex == labels.length - 1) {
+                    if (currentLabelIndex == labels.length - Normal._1) {
                         break;
                     }
                     currentLabelIndex++;
-                    currentLabelByteIndex = -1;
+                    currentLabelByteIndex = Normal.__1;
                     expectDot = true;
                 }
             }
 
-            if (compareResult < 0) {
-                high = mid - 1;
-            } else if (compareResult > 0) {
-                low = mid + end + 1;
+            if (compareResult < Normal._0) {
+                high = mid - Normal._1;
+            } else if (compareResult > Normal._0) {
+                low = mid + end + Normal._1;
             } else {
                 final int publicSuffixBytesLeft = publicSuffixLength - publicSuffixByteIndex;
                 int labelBytesLeft = labels[currentLabelIndex].length - currentLabelByteIndex;
-                for (int i = currentLabelIndex + 1; i < labels.length; i++) {
+                for (int i = currentLabelIndex + Normal._1; i < labels.length; i++) {
                     labelBytesLeft += labels[i].length;
                 }
 
                 if (labelBytesLeft < publicSuffixBytesLeft) {
-                    high = mid - 1;
+                    high = mid - Normal._1;
                 } else if (labelBytesLeft > publicSuffixBytesLeft) {
-                    low = mid + end + 1;
+                    low = mid + end + Normal._1;
                 } else {
                     match = new String(bytesToSearch, mid, publicSuffixLength, Charset.UTF_8);
                     break;

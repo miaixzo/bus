@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.codec;
 
+import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.fabric.Payload;
 
@@ -29,7 +30,7 @@ import org.miaixz.bus.fabric.Payload;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface DataDecoder<T> {
+public interface DataDecoder<T> extends Decoder<Payload, T> {
 
     /**
      * Decodes a payload into a value.

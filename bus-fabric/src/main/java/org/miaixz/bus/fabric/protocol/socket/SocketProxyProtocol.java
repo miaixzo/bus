@@ -20,10 +20,14 @@
 package org.miaixz.bus.fabric.protocol.socket;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
@@ -44,7 +48,12 @@ public final class SocketProxyProtocol {
     /**
      * ASCII prefix that identifies a PROXY protocol v1 header in the first packet.
      */
-    private static final byte[] PREFIX = "PROXY ".getBytes(StandardCharsets.US_ASCII);
+    private static final ByteString PREFIX = ByteString.encodeString("PROXY" + Symbol.SPACE, Charset.US_ASCII);
+
+    /**
+     * ASCII line terminator used by PROXY protocol v1.
+     */
+    private static final ByteString LINE_END = ByteString.encodeString(Symbol.CR + Symbol.LF, Charset.US_ASCII);
 
     /**
      * Hidden constructor for first-packet parsing helpers.
@@ -59,29 +68,30 @@ public final class SocketProxyProtocol {
      * @param packet first packet
      * @return parse result
      */
-    public static Result parse(final ByteBuffer packet) {
-        if (packet == null) {
-            throw new ValidateException("PROXY packet must not be null");
+    public static Result parse(final ByteString packet) {
+        final ByteString current = Assert.notNull(packet, () -> new ValidateException("PROXY packet must not be null"));
+        if (!current.startsWith(PREFIX)) {
+            return new Result(null, current);
         }
-        final ByteBuffer view = packet.asReadOnlyBuffer();
-        if (!startsWithProxy(view)) {
-            return new Result(null, view.slice().asReadOnlyBuffer());
-        }
-        int lineEnd = -1;
-        for (int i = view.position(); i < view.limit() - 1; i++) {
-            if (view.get(i) == '\r' && view.get(i + 1) == '\n') {
-                lineEnd = i;
-                break;
-            }
-        }
-        if (lineEnd < 0) {
+        final int lineEnd = current.indexOf(LINE_END);
+        if (lineEnd < Normal._0) {
             throw new ProtocolException("Incomplete PROXY protocol header");
         }
-        final byte[] lineBytes = new byte[lineEnd - view.position()];
-        view.get(lineBytes);
-        view.position(view.position() + 2);
-        return new Result(ProxyHeader.parse(new String(lineBytes, StandardCharsets.US_ASCII)),
-                view.slice().asReadOnlyBuffer());
+        final ByteString line = current.substring(Normal._0, lineEnd);
+        return new Result(ProxyHeader.parse(line.string(Charset.US_ASCII)),
+                current.substring(lineEnd + LINE_END.size()));
+    }
+
+    /**
+     * Parses a first packet through the JDK ByteBuffer compatibility boundary.
+     *
+     * @param packet first packet
+     * @return parse result
+     * @deprecated use {@link #parse(ByteString)}
+     */
+    @Deprecated(since = "8.8.3")
+    public static Result parse(final ByteBuffer packet) {
+        return parse(snapshot(packet));
     }
 
     /**
@@ -91,15 +101,27 @@ public final class SocketProxyProtocol {
      * @param attributes session attributes
      * @return parse result
      */
-    public static Result parseAndInject(final ByteBuffer packet, final Map<String, Object> attributes) {
-        if (attributes == null) {
-            throw new ValidateException("Session attributes must not be null");
-        }
+    public static Result parseAndInject(final ByteString packet, final Map<String, Object> attributes) {
+        final Map<String, Object> checkedAttributes = Assert
+                .notNull(attributes, () -> new ValidateException("Session attributes must not be null"));
         final Result result = parse(packet);
         if (result.header() != null) {
-            attributes.put(ATTRIBUTE_PROXY_HEADER, result.header());
+            checkedAttributes.put(ATTRIBUTE_PROXY_HEADER, result.header());
         }
         return result;
+    }
+
+    /**
+     * Parses a first packet through the JDK ByteBuffer compatibility boundary and injects parsed PROXY metadata.
+     *
+     * @param packet     first packet
+     * @param attributes session attributes
+     * @return parse result
+     * @deprecated use {@link #parseAndInject(ByteString, Map)}
+     */
+    @Deprecated(since = "8.8.3")
+    public static Result parseAndInject(final ByteBuffer packet, final Map<String, Object> attributes) {
+        return parseAndInject(snapshot(packet), attributes);
     }
 
     /**
@@ -110,50 +132,55 @@ public final class SocketProxyProtocol {
      * @return immutable attributes
      */
     public static Map<String, Object> attributes(final Result result, final Map<String, Object> base) {
-        if (result == null) {
-            throw new ValidateException("PROXY parse result must not be null");
-        }
+        final Result checkedResult = Assert
+                .notNull(result, () -> new ValidateException("PROXY parse result must not be null"));
         final LinkedHashMap<String, Object> attributes = new LinkedHashMap<>(base == null ? Map.of() : base);
-        if (result.header() != null) {
-            attributes.put(ATTRIBUTE_PROXY_HEADER, result.header());
+        if (checkedResult.header() != null) {
+            attributes.put(ATTRIBUTE_PROXY_HEADER, checkedResult.header());
         }
         return Map.copyOf(attributes);
     }
 
     /**
-     * Checks the first bytes without changing the buffer position.
+     * Creates an immutable byte snapshot from a JDK buffer boundary.
      *
      * @param packet packet view
-     * @return {@code true} when the packet begins with a PROXY v1 header
+     * @return byte snapshot
      */
-    private static boolean startsWithProxy(final ByteBuffer packet) {
-        if (packet.remaining() < PREFIX.length) {
-            return false;
-        }
-        for (int i = 0; i < PREFIX.length; i++) {
-            if (packet.get(packet.position() + i) != PREFIX[i]) {
-                return false;
-            }
-        }
-        return true;
+    private static ByteString snapshot(final ByteBuffer packet) {
+        final ByteBuffer view = Assert.notNull(packet, () -> new ValidateException("PROXY packet must not be null"))
+                .asReadOnlyBuffer();
+        final byte[] bytes = new byte[view.remaining()];
+        view.get(bytes);
+        return ByteString.of(bytes);
     }
 
     /**
      * Parsed first packet.
      *
-     * @param header  parsed proxy header, or null when absent
-     * @param payload remaining payload
+     * @param header       parsed proxy header, or null when absent
+     * @param payloadBytes remaining payload bytes
      */
-    public record Result(ProxyHeader header, ByteBuffer payload) {
+    public record Result(ProxyHeader header, ByteString payloadBytes) {
 
         /**
          * Creates an immutable parse result and protects the remaining payload from mutation.
          */
         public Result {
-            if (payload == null) {
-                throw new ValidateException("PROXY payload must not be null");
-            }
-            payload = payload.asReadOnlyBuffer();
+            payloadBytes = ByteString.of(
+                    Assert.notNull(payloadBytes, () -> new ValidateException("PROXY payload must not be null"))
+                            .toByteArray());
+        }
+
+        /**
+         * Returns the remaining payload through a JDK ByteBuffer compatibility view.
+         *
+         * @return remaining payload
+         * @deprecated use {@link #payloadBytes()}
+         */
+        @Deprecated(since = "8.8.3")
+        public ByteBuffer payload() {
+            return payloadBytes.asByteBuffer();
         }
 
     }

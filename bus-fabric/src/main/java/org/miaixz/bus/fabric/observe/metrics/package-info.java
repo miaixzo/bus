@@ -18,14 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Contains timing helpers built on the fabric runtime clock.
+ * Implements lightweight in-process metric counters for fabric observations.
  *
  * <p>
- * Stopwatches measure elapsed time for protocol and runtime events using the configured clock source. They do not
- * schedule work or emit events by themselves; callers decide how timing data is attached to observations.
+ * Metric objects collect counts, totals and timing values without depending on an external metrics registry. They are
+ * intended for local diagnostics and tests; exporting to a monitoring backend belongs outside this package.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.fabric.observe.watch;
+package org.miaixz.bus.fabric.observe.metrics;

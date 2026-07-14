@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -44,7 +45,7 @@ public final class Options {
     /**
      * Default maximum bytes allowed when materializing a payload.
      */
-    public static final long DEFAULT_MATERIALIZE_MAX_BYTES = 64L * 1024L * 1024L;
+    public static final long DEFAULT_MATERIALIZE_MAX_BYTES = Normal._64 * Normal.MEBI;
 
     /**
      * Immutable backing values.

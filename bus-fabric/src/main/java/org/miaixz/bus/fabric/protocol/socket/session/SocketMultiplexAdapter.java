@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -103,9 +104,9 @@ public final class SocketMultiplexAdapter implements Handler {
         require(session, "Session");
         require(message, "Message");
         final String channel = channel(message);
-        final Handler handler = handlers.get(channel);
-        if (handler != null) {
-            handler.message(session, message);
+        final Handler currentHandler = handlers.get(channel);
+        if (currentHandler != null) {
+            currentHandler.message(session, message);
             return;
         }
         if (fallback != null) {
@@ -169,7 +170,7 @@ public final class SocketMultiplexAdapter implements Handler {
     public String channel(final Message message) {
         final Message current = require(message, "Message");
         final String header = current.headers().get(channelHeader);
-        if (header != null && !header.isBlank()) {
+        if (StringKit.isNotBlank(header)) {
             return validateToken(header, "Channel id");
         }
         final Object tag = current.tag();
@@ -188,10 +189,7 @@ public final class SocketMultiplexAdapter implements Handler {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

@@ -22,11 +22,13 @@ package org.miaixz.bus.fabric.guard.tls;
 import java.util.Locale;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.guard.GuardResult;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
@@ -67,11 +69,9 @@ public final class TlsGuard {
      * @return guard result
      */
     public GuardResult check(final Address address) {
-        if (address == null) {
-            throw new ValidateException("Address must not be null");
-        }
-        final String scheme = scheme(address);
-        if (address.secure()) {
+        final Address checkedAddress = Assert.notNull(address, () -> new ValidateException("Address must not be null"));
+        final String scheme = scheme(checkedAddress);
+        if (checkedAddress.secure()) {
             return GuardResult.pass();
         }
         return GuardResult.reject("tls required for scheme: " + scheme);
@@ -84,18 +84,17 @@ public final class TlsGuard {
      * @return guard result
      */
     public GuardResult check(final TlsSettings settings) {
-        if (settings == null) {
-            throw new ValidateException("TLS settings must not be null");
-        }
-        for (final String version : settings.versions()) {
+        final TlsSettings checkedSettings = Assert
+                .notNull(settings, () -> new ValidateException("TLS settings must not be null"));
+        for (final String version : checkedSettings.versions()) {
             if (Protocol.TLSv1.name.equals(version) || Protocol.TLSv1_1.name.equals(version)) {
                 return GuardResult.reject("weak tls version: " + version);
             }
         }
-        if (!settings.verifyHostname()) {
+        if (!checkedSettings.verifyHostname()) {
             return GuardResult.reject("hostname verification required");
         }
-        for (final String cipher : settings.ciphers()) {
+        for (final String cipher : checkedSettings.ciphers()) {
             if (weakCipher(cipher)) {
                 return GuardResult.reject("weak tls cipher: " + cipher);
             }
@@ -120,9 +119,7 @@ public final class TlsGuard {
      */
     private static String scheme(final Address address) {
         final String scheme = address.scheme();
-        if (StringKit.isBlank(scheme) || StringKit.containsAny(scheme, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ProtocolException("Invalid TLS address scheme");
-        }
+        Assert.isTrue(UrlKit.isScheme(scheme), () -> new ProtocolException("Invalid TLS address scheme"));
         return scheme.toLowerCase(Locale.ROOT);
     }
 
@@ -133,9 +130,9 @@ public final class TlsGuard {
      * @return true when weak
      */
     private static boolean weakCipher(final String cipher) {
-        if (StringKit.isBlank(cipher) || StringKit.containsAny(cipher, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ProtocolException("Invalid TLS cipher suite");
-        }
+        Assert.isTrue(
+                !StringKit.isBlank(cipher) && !StringKit.containsAny(cipher, Symbol.C_CR, Symbol.C_LF),
+                () -> new ProtocolException("Invalid TLS cipher suite"));
         final String upper = cipher.toUpperCase(Locale.ROOT);
         return upper.contains("_NULL_") || upper.contains("_ANON_") || upper.contains("_EXPORT_")
                 || upper.contains("_RC4_") || upper.contains("_MD5") || upper.contains("_DES_");

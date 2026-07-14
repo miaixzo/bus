@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.runtime;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -201,10 +202,12 @@ public final class Activity implements Runnable {
      * @return normalized name
      */
     private static String validateName(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Activity name must be non-blank and single-line");
-        }
-        return value.trim();
+        final String current = Assert
+                .notBlank(value, () -> new ValidateException("Activity name must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Activity name must be non-blank and single-line"));
+        return current.trim();
     }
 
     /**
@@ -216,10 +219,7 @@ public final class Activity implements Runnable {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

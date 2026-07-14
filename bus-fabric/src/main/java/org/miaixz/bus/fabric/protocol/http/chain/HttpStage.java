@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.protocol.http.chain;
 
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -70,9 +71,9 @@ public interface HttpStage {
      * @return normalized name
      */
     private static String normalizeName(final String name) {
-        if (StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("HTTP stage name must be non-blank and single-line");
-        }
+        Assert.isFalse(
+                StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("HTTP stage name must be non-blank and single-line"));
         return StringKit.trim(name).toLowerCase(Locale.ROOT);
     }
 

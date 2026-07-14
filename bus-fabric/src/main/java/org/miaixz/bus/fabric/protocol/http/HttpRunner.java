@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Message;
@@ -30,7 +31,7 @@ import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.CookieJar;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
 import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
@@ -398,10 +399,7 @@ final class HttpRunner {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

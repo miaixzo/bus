@@ -20,12 +20,17 @@
 package org.miaixz.bus.fabric.codec.body;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 
+import org.miaixz.bus.core.io.TransferObserver;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.io.timout.Timeout;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Options;
@@ -68,10 +73,7 @@ public interface ProgressBody extends Body {
      */
     @Override
     default String text(final Charset charset) {
-        if (charset == null) {
-            throw new ValidateException("Charset must not be null");
-        }
-        return new String(bytes(), charset);
+        return new String(bytes(), Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
     }
 
     /**
@@ -83,10 +85,8 @@ public interface ProgressBody extends Body {
      */
     @Override
     default String text(final Charset charset, final long maxBytes) {
-        if (charset == null) {
-            throw new ValidateException("Charset must not be null");
-        }
-        return new String(bytes(maxBytes), charset);
+        return new String(bytes(maxBytes),
+                Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
     }
 
     /**
@@ -132,12 +132,12 @@ public interface ProgressBody extends Body {
     /**
      * Shared progress tracker used by concrete body implementations.
      */
-    final class Tracker {
+    final class Tracker implements TransferObserver {
 
         /**
          * Default progress callback step.
          */
-        private static final long DEFAULT_STEP_BYTES = 8192L;
+        private static final long DEFAULT_STEP_BYTES = Normal._8192;
 
         /**
          * Original payload.
@@ -255,9 +255,7 @@ public interface ProgressBody extends Body {
          * @param bytes step bytes
          */
         static void validateStepBytes(final long bytes) {
-            if (bytes <= 0) {
-                throw new ValidateException("Progress step bytes must be positive");
-            }
+            Assert.isTrue(bytes > 0, () -> new ValidateException("Progress step bytes must be positive"));
         }
 
         /**
@@ -267,12 +265,42 @@ public interface ProgressBody extends Body {
          * @param total total length
          */
         static void validateStepRate(final double rate, final long total) {
-            if (!Double.isFinite(rate) || rate <= 0 || rate > 1) {
-                throw new ValidateException("Progress step rate must be greater than 0 and at most 1");
+            Assert.isTrue(
+                    Double.isFinite(rate) && rate > 0 && rate <= 1,
+                    () -> new ValidateException("Progress step rate must be greater than 0 and at most 1"));
+            Assert.isTrue(
+                    total >= 0,
+                    () -> new ValidateException("Progress step rate requires a known payload length"));
+        }
+
+        /**
+         * Starts observing a core transfer.
+         */
+        @Override
+        public void start() {
+            // Progress bodies emit callbacks only when byte thresholds are crossed.
+        }
+
+        /**
+         * Observes a cumulative core transfer progress update.
+         *
+         * @param total       total byte count
+         * @param transferred transferred byte count
+         */
+        @Override
+        public void progress(final long total, final long transferred) {
+            final long previous = this.transferred.get();
+            if (transferred > previous) {
+                progress(transferred - previous);
             }
-            if (total < 0) {
-                throw new ValidateException("Progress step rate requires a known payload length");
-            }
+        }
+
+        /**
+         * Finishes observing a core transfer.
+         */
+        @Override
+        public void finish() {
+            // Existing payload progress semantics emit the final callback from progress(long).
         }
 
         /**
@@ -338,10 +366,7 @@ public interface ProgressBody extends Body {
          * @return value
          */
         private static <T> T require(final T value, final String name) {
-            if (value == null) {
-                throw new ValidateException(name + " must not be null");
-            }
-            return value;
+            return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
         }
 
         /**
@@ -355,8 +380,8 @@ public interface ProgressBody extends Body {
             }
 
             @Override
-            public InputStream stream() {
-                return new ProgressInputStream(original.stream());
+            public Source source() {
+                return new ProgressSource(original.source());
             }
 
             @Override
@@ -376,10 +401,8 @@ public interface ProgressBody extends Body {
 
             @Override
             public String text(final Charset charset, final long maxBytes) {
-                if (charset == null) {
-                    throw new ValidateException("Charset must not be null");
-                }
-                return new String(bytes(maxBytes), charset);
+                return new String(bytes(maxBytes),
+                        Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
             }
 
             @Override
@@ -390,40 +413,36 @@ public interface ProgressBody extends Body {
         }
 
         /**
-         * Progress-aware input stream.
+         * Progress-aware source.
          */
-        private final class ProgressInputStream extends InputStream {
+        private final class ProgressSource implements Source {
 
             /**
-             * Delegate stream.
+             * Delegate source.
              */
-            private final InputStream input;
+            private final Source input;
 
             /**
-             * Creates a progress stream.
+             * Creates a progress source.
              *
-             * @param input delegate stream
+             * @param input delegate source
              */
-            private ProgressInputStream(final InputStream input) {
+            private ProgressSource(final Source input) {
                 this.input = input;
             }
 
             @Override
-            public int read() throws IOException {
-                final int value = input.read();
-                if (value != -1) {
-                    progress(1);
-                }
-                return value;
-            }
-
-            @Override
-            public int read(final byte[] buffer, final int offset, final int length) throws IOException {
-                final int read = input.read(buffer, offset, length);
+            public long read(final Buffer sink, final long byteCount) throws IOException {
+                final long read = input.read(sink, byteCount);
                 if (read > 0) {
                     progress(read);
                 }
                 return read;
+            }
+
+            @Override
+            public Timeout timeout() {
+                return input.timeout();
             }
 
             @Override

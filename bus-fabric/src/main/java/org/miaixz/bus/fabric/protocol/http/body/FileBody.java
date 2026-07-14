@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.protocol.http.body;
 
 import java.nio.file.Path;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.IllegalPathException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
@@ -79,15 +80,12 @@ public final class FileBody implements RequestBody {
      * @return file body
      */
     public static FileBody of(final Path path, final MediaType media) {
-        if (path == null) {
-            throw new ValidateException("File path must not be null");
-        }
-        if (media == null) {
-            throw new ValidateException("File media must not be null");
-        }
+        final Path checkedPath = Assert.notNull(path, () -> new ValidateException("File path must not be null"));
+        final MediaType checkedMedia = Assert
+                .notNull(media, () -> new ValidateException("File media must not be null"));
         try {
-            final Payload payload = BodyCodec.create().file(path, media);
-            return new FileBody(path, media, payload.length(), payload);
+            final Payload payload = BodyCodec.create().file(checkedPath, checkedMedia);
+            return new FileBody(checkedPath, checkedMedia, payload.length(), payload);
         } catch (final IllegalPathException e) {
             throw new ValidateException("File path must point to a regular file", e);
         }

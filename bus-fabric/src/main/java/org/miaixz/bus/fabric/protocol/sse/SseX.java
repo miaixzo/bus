@@ -28,6 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -56,6 +57,11 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
  * @since Java 21+
  */
 public final class SseX {
+
+    /**
+     * Runtime option key for default timeout.
+     */
+    private static final String TIMEOUT_OPTION = "timeout";
 
     /**
      * Immutable execution snapshot.
@@ -222,10 +228,7 @@ public final class SseX {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -241,7 +244,7 @@ public final class SseX {
         try {
             final URI parsed = new URI(value.trim());
             final String scheme = parsed.getScheme();
-            if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
+            if (!Protocol.HTTP.name.equalsIgnoreCase(scheme) && !Protocol.HTTPS.name.equalsIgnoreCase(scheme)) {
                 throw new ProtocolException("SSE URL must use http or https");
             }
             Address.from(parsed);
@@ -259,10 +262,10 @@ public final class SseX {
      * @return duration
      */
     private static Duration validateDuration(final Duration duration, final String name) {
-        if (duration == null || duration.isNegative()) {
-            throw new ValidateException(name + " must be non-null and non-negative");
-        }
-        return duration;
+        final Duration checked = Assert
+                .notNull(duration, () -> new ValidateException(name + " must be non-null and non-negative"));
+        Assert.isFalse(checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
+        return checked;
     }
 
     /**
@@ -369,7 +372,7 @@ public final class SseX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get("timeout", Timeout.class);
+            final Timeout configured = context.options().get(TIMEOUT_OPTION, Timeout.class);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.retry = SseRetry.defaults();
             this.autoReconnect = true;
@@ -617,9 +620,7 @@ public final class SseX {
          * @return exchange
          */
         public SseX build() {
-            if (uri == null) {
-                throw new ValidateException("SSE target must be set");
-            }
+            Assert.notNull(uri, () -> new ValidateException("SSE target must be set"));
             return new SseX(this);
         }
 

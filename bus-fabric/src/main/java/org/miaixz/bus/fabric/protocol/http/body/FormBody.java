@@ -19,12 +19,15 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -47,7 +50,7 @@ public final class FormBody implements RequestBody {
     /**
      * Default form media type.
      */
-    private static final MediaType FORM_MEDIA = MediaType.parse("application/x-www-form-urlencoded");
+    private static final MediaType FORM_MEDIA = MediaType.APPLICATION_FORM_URLENCODED_TYPE;
 
     /**
      * Form media type.
@@ -66,14 +69,8 @@ public final class FormBody implements RequestBody {
      * @param payload payload
      */
     private FormBody(final MediaType media, final Payload payload) {
-        if (media == null) {
-            throw new ValidateException("Form media must not be null");
-        }
-        if (payload == null) {
-            throw new ValidateException("Form payload must not be null");
-        }
-        this.media = media;
-        this.payload = payload;
+        this.media = Assert.notNull(media, () -> new ValidateException("Form media must not be null"));
+        this.payload = Assert.notNull(payload, () -> new ValidateException("Form payload must not be null"));
     }
 
     /**
@@ -110,7 +107,7 @@ public final class FormBody implements RequestBody {
      * @return encoded bytes
      */
     private static byte[] encodeEntries(final List<Entry> entries) {
-        return encodeText(entries).getBytes(org.miaixz.bus.core.lang.Charset.UTF_8);
+        return ByteString.encodeString(encodeText(entries), org.miaixz.bus.core.lang.Charset.UTF_8).toByteArray();
     }
 
     /**
@@ -154,10 +151,12 @@ public final class FormBody implements RequestBody {
      * @return validated value
      */
     private static String validateField(final String value, final String name) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(name + " must be non-blank and single-line");
-        }
-        return value;
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException(name + " must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(name + " must be non-blank and single-line"));
+        return checked;
     }
 
     /**
@@ -168,10 +167,10 @@ public final class FormBody implements RequestBody {
     private static void validatePercentEncoding(final String value) {
         for (int i = 0; i < value.length(); i++) {
             if (value.charAt(i) == Symbol.C_PERCENT) {
-                if (i + 2 >= value.length() || !CharKit.isHexChar(value.charAt(i + 1))
-                        || !CharKit.isHexChar(value.charAt(i + 2))) {
-                    throw new ProtocolException("Invalid percent-encoded form field");
-                }
+                Assert.isFalse(
+                        i + 2 >= value.length() || !CharKit.isHexChar(value.charAt(i + 1))
+                                || !CharKit.isHexChar(value.charAt(i + 2)),
+                        () -> new ProtocolException("Invalid percent-encoded form field"));
                 i += 2;
             }
         }
@@ -204,7 +203,8 @@ public final class FormBody implements RequestBody {
          * @param entries entries
          */
         private FormPayload(final List<Entry> entries) {
-            this.entries = List.copyOf(entries);
+            this.entries = List
+                    .copyOf(Assert.notNull(entries, () -> new ValidateException("Form entries must not be null")));
         }
 
         /**
@@ -218,13 +218,24 @@ public final class FormBody implements RequestBody {
         }
 
         /**
-         * Opens an encoded stream.
+         * Opens an encoded source.
+         *
+         * @return payload source
+         */
+        @Override
+        public Source source() {
+            return new Buffer().write(bytes());
+        }
+
+        /**
+         * Opens a legacy input stream view.
          *
          * @return payload stream
          */
         @Override
+        @Deprecated(since = "8.8.3")
         public InputStream stream() {
-            return new ByteArrayInputStream(bytes());
+            return Payload.super.stream();
         }
 
         /**
@@ -264,12 +275,18 @@ public final class FormBody implements RequestBody {
             return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Reads encoded text using the supplied charset and threshold.
+         *
+         * @param charset  charset
+         * @param maxBytes maximum bytes to materialize
+         * @return encoded text
+         */
         @Override
         public String text(final Charset charset, final long maxBytes) {
-            if (charset == null) {
-                throw new ValidateException("Charset must not be null");
-            }
-            return new String(bytes(maxBytes), charset);
+            final Charset checkedCharset = Assert
+                    .notNull(charset, () -> new ValidateException("Charset must not be null"));
+            return new String(bytes(maxBytes), checkedCharset);
         }
 
         /**

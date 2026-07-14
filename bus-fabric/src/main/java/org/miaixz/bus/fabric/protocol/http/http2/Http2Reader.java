@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.http.http2;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -28,6 +27,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -49,27 +52,27 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Frame header size.
      */
-    private static final int FRAME_HEADER = 9;
+    private static final int FRAME_HEADER = Normal._9;
 
     /**
      * Default maximum frame payload size.
      */
-    private static final int MAX_FRAME_SIZE = 16_384;
+    private static final int MAX_FRAME_SIZE = Normal._16384;
 
     /**
      * Maximum accumulated HPACK header block size.
      */
-    private static final int MAX_HEADER_BLOCK_SIZE = 65_536;
+    private static final int MAX_HEADER_BLOCK_SIZE = Normal._64 * Normal._1024;
 
     /**
      * Maximum stream identifier.
      */
-    private static final int MAX_STREAM_ID = 0x7fffffff;
+    private static final int MAX_STREAM_ID = Integer.MAX_VALUE;
 
     /**
      * SETTINGS ACK flag.
      */
-    private static final int SETTINGS_ACK = 0x1;
+    private static final int SETTINGS_ACK = Http2Frame.ACK;
 
     /**
      * HTTP/2 client connection preface bytes.
@@ -126,31 +129,31 @@ public final class Http2Reader implements AutoCloseable {
      */
     public Http2Frame nextFrame() {
         ensureOpen();
-        final ByteBuffer header = readFully(FRAME_HEADER);
-        final int length = ((header.get() & 0xff) << 16) | ((header.get() & 0xff) << 8) | (header.get() & 0xff);
-        final int type = header.get() & 0xff;
-        final int flags = header.get() & 0xff;
-        final int streamId = header.getInt() & MAX_STREAM_ID;
+        final Buffer header = readFully(FRAME_HEADER);
+        final int length = readMedium(header);
+        final int type = header.readByte() & 0xff;
+        final int flags = header.readByte() & 0xff;
+        final int streamId = header.readInt() & MAX_STREAM_ID;
         validateFrame(type, streamId, flags, length);
-        ByteBuffer payload = readFully(length);
+        ByteString payload = readFully(length).readByteString();
         Http2Priority priority = null;
         Http2AlternateService alternateService = null;
         final List<Http2Header> headers = switch (type) {
             case Http2Frame.HEADERS -> {
                 priority = decodeHeaderPriority(streamId, flags, payload);
                 payload = headerBlock(streamId, flags, headerFragment(flags, payload));
-                yield hpack.decode(payload.asReadOnlyBuffer());
+                yield hpack.decode(new Buffer().write(payload));
             }
             case Http2Frame.PUSH_PROMISE -> {
                 payload = headerBlock(streamId, flags, payload);
-                yield hpack.decode(pushHeaderBlock(payload));
+                yield hpack.decode(new Buffer().write(pushHeaderBlock(payload)));
             }
             case Http2Frame.PRIORITY -> {
-                priority = Http2Priority.decode(payload.asReadOnlyBuffer(), streamId);
+                priority = Http2Priority.decode(payload, streamId);
                 yield List.of();
             }
             case Http2Frame.ALTSVC -> {
-                alternateService = Http2AlternateService.decode(payload.asReadOnlyBuffer(), streamId);
+                alternateService = Http2AlternateService.decode(payload, streamId);
                 yield List.of();
             }
             default -> List.of();
@@ -189,9 +192,9 @@ public final class Http2Reader implements AutoCloseable {
         if (prefaceRead.get()) {
             throw new StatefulException("HTTP/2 connection preface has already been read");
         }
-        final ByteBuffer actual = readFully(CONNECTION_PREFACE.length);
+        final Buffer actual = readFully(CONNECTION_PREFACE.length);
         for (final byte expected : CONNECTION_PREFACE) {
-            if (!actual.hasRemaining() || actual.get() != expected) {
+            if (actual.size() == Normal._0 || actual.readByte() != expected) {
                 throw new ProtocolException("Invalid HTTP/2 connection preface");
             }
         }
@@ -224,26 +227,33 @@ public final class Http2Reader implements AutoCloseable {
     }
 
     /**
-     * Reads an exact byte count.
+     * Reads an exact byte count into a core buffer.
      *
      * @param length length
      * @return buffer
      */
-    private ByteBuffer readFully(final int length) {
-        final ByteBuffer buffer = ByteBuffer.allocate(length);
-        while (buffer.hasRemaining()) {
-            final int position = buffer.position();
-            final int read = await(connection.read(buffer));
-            if (read < 0) {
+    private Buffer readFully(final int length) {
+        final Buffer buffer = new Buffer();
+        while (buffer.size() < length) {
+            final int remaining = (int) Math.min(length - buffer.size(), MAX_FRAME_SIZE);
+            final ByteBuffer chunk = ByteBuffer.allocate(remaining);
+            final int position = chunk.position();
+            final int read = await(connection.read(chunk));
+            if (read < Normal._0) {
                 throw new SocketException("HTTP/2 reader reached EOF");
             }
-            if (read == 0) {
+            if (read == Normal._0) {
                 Thread.yield();
             } else {
-                buffer.position(position + read);
+                chunk.position(position + read);
+                chunk.flip();
+                try {
+                    buffer.write(chunk);
+                } catch (final java.io.IOException e) {
+                    throw new InternalException("Unable to buffer HTTP/2 reader bytes", e);
+                }
             }
         }
-        buffer.flip();
         return buffer;
     }
 
@@ -256,67 +266,68 @@ public final class Http2Reader implements AutoCloseable {
      * @param length   length
      */
     private static void validateFrame(final int type, final int streamId, final int flags, final int length) {
-        if (streamId < 0 || streamId > MAX_STREAM_ID || flags < 0 || flags > 0xff || length < 0
+        if (streamId < Normal._0 || streamId > MAX_STREAM_ID || flags < Normal._0 || flags > 0xff || length < Normal._0
                 || length > MAX_FRAME_SIZE) {
             throw new ProtocolException("Invalid HTTP/2 frame metadata");
         }
         if (type == Http2Frame.SETTINGS) {
-            if (streamId != 0 || (flags & ~SETTINGS_ACK) != 0 || ((flags & SETTINGS_ACK) != 0 && length != 0)
-                    || length % 6 != 0) {
+            if (streamId != Normal._0 || (flags & ~SETTINGS_ACK) != Normal._0
+                    || ((flags & SETTINGS_ACK) != Normal._0 && length != Normal._0)
+                    || length % Normal._6 != Normal._0) {
                 throw new ProtocolException("Invalid HTTP/2 SETTINGS frame");
             }
             return;
         }
         if (type == Http2Frame.PING) {
-            if (streamId != 0 || (flags & ~Http2Frame.ACK) != 0 || length != Long.BYTES) {
+            if (streamId != Normal._0 || (flags & ~Http2Frame.ACK) != Normal._0 || length != Normal._8) {
                 throw new ProtocolException("Invalid HTTP/2 PING frame");
             }
             return;
         }
         if (type == Http2Frame.GOAWAY) {
-            if (streamId != 0 || flags != 0 || length < Integer.BYTES * 2) {
+            if (streamId != Normal._0 || flags != Normal._0 || length < Normal._4 * Normal._2) {
                 throw new ProtocolException("Invalid HTTP/2 GOAWAY frame");
             }
             return;
         }
         if (type == Http2Frame.WINDOW_UPDATE) {
-            if (flags != 0 || length != Integer.BYTES) {
+            if (flags != Normal._0 || length != Normal._4) {
                 throw new ProtocolException("Invalid HTTP/2 WINDOW_UPDATE frame");
             }
             return;
         }
         if (type == Http2Frame.ALTSVC) {
-            if (flags != 0 || length < Short.BYTES) {
+            if (flags != Normal._0 || length < Normal._2) {
                 throw new ProtocolException("Invalid HTTP/2 ALTSVC frame");
             }
             return;
         }
-        if (streamId <= 0) {
+        if (streamId <= Normal._0) {
             throw new ProtocolException("Invalid HTTP/2 stream frame id");
         }
         switch (type) {
             case Http2Frame.DATA -> validateFlags(flags, Http2Frame.END_STREAM);
             case Http2Frame.HEADERS -> {
                 validateFlags(flags, Http2Frame.END_STREAM | Http2Frame.END_HEADERS | Http2Frame.PRIORITY_FLAG);
-                if ((flags & Http2Frame.PRIORITY_FLAG) != 0 && length < Http2Priority.LENGTH) {
+                if ((flags & Http2Frame.PRIORITY_FLAG) != Normal._0 && length < Http2Priority.LENGTH) {
                     throw new ProtocolException("Invalid HTTP/2 HEADERS priority payload");
                 }
             }
             case Http2Frame.PRIORITY -> {
-                validateFlags(flags, 0);
+                validateFlags(flags, Normal._0);
                 if (length != Http2Priority.LENGTH) {
                     throw new ProtocolException("Invalid HTTP/2 PRIORITY length");
                 }
             }
             case Http2Frame.PUSH_PROMISE -> {
                 validateFlags(flags, Http2Frame.END_HEADERS);
-                if (length < Integer.BYTES) {
+                if (length < Normal._4) {
                     throw new ProtocolException("Invalid HTTP/2 PUSH_PROMISE frame");
                 }
             }
             case Http2Frame.RST_STREAM -> {
-                validateFlags(flags, 0);
-                if (length != Integer.BYTES) {
+                validateFlags(flags, Normal._0);
+                if (length != Normal._4) {
                     throw new ProtocolException("Invalid HTTP/2 RST_STREAM length");
                 }
             }
@@ -332,11 +343,11 @@ public final class Http2Reader implements AutoCloseable {
      * @param payload  original HEADERS payload
      * @return priority or null
      */
-    private static Http2Priority decodeHeaderPriority(final int streamId, final int flags, final ByteBuffer payload) {
-        if ((flags & Http2Frame.PRIORITY_FLAG) == 0) {
+    private static Http2Priority decodeHeaderPriority(final int streamId, final int flags, final ByteString payload) {
+        if ((flags & Http2Frame.PRIORITY_FLAG) == Normal._0) {
             return null;
         }
-        return Http2Priority.decode(payload.asReadOnlyBuffer(), streamId);
+        return Http2Priority.decode(payload, streamId);
     }
 
     /**
@@ -346,12 +357,11 @@ public final class Http2Reader implements AutoCloseable {
      * @param payload original HEADERS payload
      * @return header fragment
      */
-    private static ByteBuffer headerFragment(final int flags, final ByteBuffer payload) {
-        final ByteBuffer fragment = payload.asReadOnlyBuffer();
-        if ((flags & Http2Frame.PRIORITY_FLAG) != 0) {
-            fragment.position(fragment.position() + Http2Priority.LENGTH);
+    private static ByteString headerFragment(final int flags, final ByteString payload) {
+        if ((flags & Http2Frame.PRIORITY_FLAG) != Normal._0) {
+            return payload.substring(Http2Priority.LENGTH);
         }
-        return fragment.slice().asReadOnlyBuffer();
+        return payload;
     }
 
     /**
@@ -362,31 +372,26 @@ public final class Http2Reader implements AutoCloseable {
      * @param first    first header block fragment
      * @return complete header block payload
      */
-    private ByteBuffer headerBlock(final int streamId, final int flags, final ByteBuffer first) {
-        if ((flags & Http2Frame.END_HEADERS) != 0) {
-            if (first.remaining() > MAX_HEADER_BLOCK_SIZE) {
+    private ByteString headerBlock(final int streamId, final int flags, final ByteString first) {
+        if ((flags & Http2Frame.END_HEADERS) != Normal._0) {
+            if (first.size() > MAX_HEADER_BLOCK_SIZE) {
                 throw new ProtocolException("HTTP/2 header block exceeds max size");
             }
-            return first.asReadOnlyBuffer();
+            return first;
         }
-        final ArrayList<ByteBuffer> fragments = new ArrayList<>();
-        int total = appendHeaderFragment(fragments, first.asReadOnlyBuffer(), 0);
+        final Buffer fragments = new Buffer();
+        int total = appendHeaderFragment(fragments, first, Normal._0);
         int currentFlags = flags;
-        while ((currentFlags & Http2Frame.END_HEADERS) == 0) {
-            final ByteBuffer header = readFully(FRAME_HEADER);
-            final int length = ((header.get() & 0xff) << 16) | ((header.get() & 0xff) << 8) | (header.get() & 0xff);
-            final int type = header.get() & 0xff;
-            currentFlags = header.get() & 0xff;
-            final int continuationStreamId = header.getInt() & MAX_STREAM_ID;
+        while ((currentFlags & Http2Frame.END_HEADERS) == Normal._0) {
+            final Buffer header = readFully(FRAME_HEADER);
+            final int length = readMedium(header);
+            final int type = header.readByte() & 0xff;
+            currentFlags = header.readByte() & 0xff;
+            final int continuationStreamId = header.readInt() & MAX_STREAM_ID;
             validateContinuation(streamId, type, continuationStreamId, currentFlags, length);
-            total = appendHeaderFragment(fragments, readFully(length), total);
+            total = appendHeaderFragment(fragments, readFully(length).readByteString(), total);
         }
-        final ByteBuffer block = ByteBuffer.allocate(total);
-        for (final ByteBuffer fragment : fragments) {
-            block.put(fragment.asReadOnlyBuffer());
-        }
-        block.flip();
-        return block.asReadOnlyBuffer();
+        return fragments.readByteString();
     }
 
     /**
@@ -397,15 +402,12 @@ public final class Http2Reader implements AutoCloseable {
      * @param total     current total
      * @return updated total
      */
-    private static int appendHeaderFragment(
-            final List<ByteBuffer> fragments,
-            final ByteBuffer fragment,
-            final int total) {
-        final int next = total + fragment.remaining();
+    private static int appendHeaderFragment(final Buffer fragments, final ByteString fragment, final int total) {
+        final int next = total + fragment.size();
         if (next < total || next > MAX_HEADER_BLOCK_SIZE) {
             throw new ProtocolException("HTTP/2 header block exceeds max size");
         }
-        fragments.add(fragment.asReadOnlyBuffer());
+        fragments.write(fragment);
         return next;
     }
 
@@ -424,8 +426,8 @@ public final class Http2Reader implements AutoCloseable {
             final int streamId,
             final int flags,
             final int length) {
-        if (type != Http2Frame.CONTINUATION || streamId != expectedStreamId || streamId <= 0 || length < 0
-                || length > MAX_FRAME_SIZE) {
+        if (type != Http2Frame.CONTINUATION || streamId != expectedStreamId || streamId <= Normal._0
+                || length < Normal._0 || length > MAX_FRAME_SIZE) {
             throw new ProtocolException("Invalid HTTP/2 CONTINUATION frame");
         }
         validateFlags(flags, Http2Frame.END_HEADERS);
@@ -437,10 +439,19 @@ public final class Http2Reader implements AutoCloseable {
      * @param payload payload
      * @return header block
      */
-    private static ByteBuffer pushHeaderBlock(final ByteBuffer payload) {
-        final ByteBuffer block = payload.asReadOnlyBuffer();
-        block.getInt();
-        return block.slice().asReadOnlyBuffer();
+    private static ByteString pushHeaderBlock(final ByteString payload) {
+        return payload.substring(Normal._4);
+    }
+
+    /**
+     * Reads a 24-bit unsigned integer.
+     *
+     * @param buffer buffer
+     * @return value
+     */
+    private static int readMedium(final Buffer buffer) {
+        return ((buffer.readByte() & 0xff) << Normal._16) | ((buffer.readByte() & 0xff) << Normal._8)
+                | (buffer.readByte() & 0xff);
     }
 
     /**
@@ -450,7 +461,7 @@ public final class Http2Reader implements AutoCloseable {
      * @param allowed allowed mask
      */
     private static void validateFlags(final int flags, final int allowed) {
-        if ((flags & ~allowed) != 0) {
+        if ((flags & ~allowed) != Normal._0) {
             throw new ProtocolException("Unsupported HTTP/2 frame flags");
         }
     }
@@ -463,7 +474,7 @@ public final class Http2Reader implements AutoCloseable {
      */
     private static int await(final CompletableFuture<Integer> future) {
         try {
-            return future.get(5, TimeUnit.SECONDS);
+            return future.get(Normal._5, TimeUnit.SECONDS);
         } catch (final java.util.concurrent.TimeoutException e) {
             throw new TimeoutException("HTTP/2 reader timed out", e);
         } catch (final InterruptedException e) {
@@ -510,10 +521,7 @@ public final class Http2Reader implements AutoCloseable {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

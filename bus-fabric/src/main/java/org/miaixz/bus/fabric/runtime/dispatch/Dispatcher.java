@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -51,7 +53,7 @@ public interface Dispatcher extends AutoCloseable {
      */
     static Dispatcher create() {
         return new DefaultDispatcher(new DispatchQueue(DispatchLimit.defaults()), DispatchWorker.create(),
-                ThreadKit.newScheduledExecutor(1));
+                ThreadKit.newScheduledExecutor(Normal._1));
     }
 
     /**
@@ -235,9 +237,7 @@ final class DefaultDispatcher implements Dispatcher {
     public DispatchHandle schedule(final String key, final Duration delay, final Activity activity) {
         final Duration currentDelay = require(delay, "Dispatch delay");
         final Activity currentActivity = require(activity, "Dispatch activity");
-        if (currentDelay.isNegative()) {
-            throw new ValidateException("Dispatch delay must not be negative");
-        }
+        Assert.isFalse(currentDelay.isNegative(), () -> new ValidateException("Dispatch delay must not be negative"));
         ensureOpen();
         final DispatchHandle handle = DispatchHandle.of(key, currentActivity.name(), currentActivity);
         if (currentDelay.isZero()) {
@@ -422,7 +422,7 @@ final class DefaultDispatcher implements Dispatcher {
      */
     private boolean cancelDelayed(final DispatchHandle handle) {
         synchronized (delayed) {
-            for (int i = 0; i < delayed.size(); i++) {
+            for (int i = Normal._0; i < delayed.size(); i++) {
                 final DelayedDispatch task = delayed.get(i);
                 if (task.handle == handle) {
                     delayed.remove(i);
@@ -475,7 +475,7 @@ final class DefaultDispatcher implements Dispatcher {
         }
         scheduler.shutdownNow();
         try {
-            if (!scheduler.awaitTermination(5L, TimeUnit.SECONDS)) {
+            if (!scheduler.awaitTermination(Normal._5, TimeUnit.SECONDS)) {
                 throw new StatefulException("Dispatch scheduler did not stop in time");
             }
         } catch (final InterruptedException e) {
@@ -597,10 +597,7 @@ final class DefaultDispatcher implements Dispatcher {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

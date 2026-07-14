@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp.broker;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -35,6 +37,16 @@ import org.miaixz.bus.fabric.protocol.stomp.StompMessage;
 public record StompTopic(String id, String destination) {
 
     /**
+     * STOMP multi-level destination wildcard suffix.
+     */
+    private static final String MULTI_LEVEL_WILDCARD = Symbol.SLASH + Symbol.STAR + Symbol.STAR;
+
+    /**
+     * STOMP single-level destination wildcard suffix.
+     */
+    private static final String SINGLE_LEVEL_WILDCARD = Symbol.SLASH + Symbol.STAR;
+
+    /**
      * Creates a validated topic.
      *
      * @param id          id
@@ -42,7 +54,7 @@ public record StompTopic(String id, String destination) {
      */
     public StompTopic {
         destination = validate(destination, "STOMP destination");
-        id = id == null || id.isBlank() ? destination : validate(id, "STOMP subscription id");
+        id = StringKit.isBlank(id) ? destination : validate(id, "STOMP subscription id");
     }
 
     /**
@@ -83,19 +95,17 @@ public record StompTopic(String id, String destination) {
      * @return true when matched
      */
     public boolean matches(final StompMessage message) {
-        if (message == null) {
-            throw new ValidateException("STOMP message must not be null");
-        }
+        Assert.notNull(message, () -> new ValidateException("STOMP message must not be null"));
         final String value = message.destination();
         if (destination.equals(value)) {
             return true;
         }
-        if (destination.endsWith("/**")) {
-            return value.startsWith(destination.substring(0, destination.length() - 2));
+        if (destination.endsWith(MULTI_LEVEL_WILDCARD)) {
+            return value.startsWith(destination.substring(Normal._0, destination.length() - Normal._2));
         }
-        if (destination.endsWith("/*")) {
-            final String prefix = destination.substring(0, destination.length() - 1);
-            return value.startsWith(prefix) && value.indexOf(Symbol.C_SLASH, prefix.length()) < 0;
+        if (destination.endsWith(SINGLE_LEVEL_WILDCARD)) {
+            final String prefix = destination.substring(Normal._0, destination.length() - Normal._1);
+            return value.startsWith(prefix) && value.indexOf(Symbol.C_SLASH, prefix.length()) < Normal._0;
         }
         return false;
     }

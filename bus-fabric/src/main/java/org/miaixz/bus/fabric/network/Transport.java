@@ -22,10 +22,10 @@ package org.miaixz.bus.fabric.network;
 import java.util.Locale;
 import java.util.Map;
 
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 
 /**
  * Transport families used by fabric network implementations.
@@ -38,17 +38,17 @@ public enum Transport {
     /**
      * TCP transport.
      */
-    TCP("tcp", true, false, Protocol.TCP),
+    TCP(Protocol.TCP.name, true, false, Protocol.TCP),
 
     /**
      * UDP transport.
      */
-    UDP("udp", false, false, Protocol.UDP),
+    UDP(Protocol.UDP.name, false, false, Protocol.UDP),
 
     /**
      * TLS transport over a connection-oriented channel.
      */
-    TLS("tls", true, true, Protocol.TLS),
+    TLS(Protocol.TLS.name, true, true, Protocol.TLS),
 
     /**
      * KCP transport over UDP.
@@ -59,16 +59,16 @@ public enum Transport {
      * Scheme lookup table.
      */
     private static final Map<String, Transport> BY_SCHEME = Map.ofEntries(
-            Map.entry("tcp", TCP),
-            Map.entry("socket", TCP),
+            Map.entry(TCP.scheme, TCP),
+            Map.entry(Protocol.SOCKET.name, TCP),
             Map.entry("aio", TCP),
-            Map.entry("http", TCP),
-            Map.entry("ws", TCP),
-            Map.entry("udp", UDP),
-            Map.entry("kcp", KCP),
-            Map.entry("tls", TLS),
-            Map.entry("https", TLS),
-            Map.entry("wss", TLS));
+            Map.entry(Protocol.HTTP.name, TCP),
+            Map.entry(Protocol.WS.name, TCP),
+            Map.entry(UDP.scheme, UDP),
+            Map.entry(KCP.scheme, KCP),
+            Map.entry(TLS.scheme, TLS),
+            Map.entry(Protocol.HTTPS.name, TLS),
+            Map.entry(Protocol.WSS.name, TLS));
 
     /**
      * Default scheme.
@@ -102,10 +102,7 @@ public enum Transport {
         this.scheme = normalize(scheme);
         this.connectionOriented = connectionOriented;
         this.secure = secure;
-        if (protocol == null) {
-            throw new ValidateException("Transport protocol must not be null");
-        }
-        this.protocol = protocol;
+        this.protocol = Assert.notNull(protocol, () -> new ValidateException("Transport protocol must not be null"));
     }
 
     /**
@@ -166,11 +163,12 @@ public enum Transport {
      * @return normalized scheme
      */
     private static String normalize(final String scheme) {
-        if (StringKit.isBlank(scheme) || StringKit.containsAny(scheme, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Network transport scheme must be non-blank and single-line");
-        }
+        final String normalized = scheme == null ? null : scheme.trim();
+        Assert.isTrue(
+                UrlKit.isScheme(normalized),
+                () -> new ValidateException("Network transport scheme must be non-blank and single-line"));
         // Single-line normalization keeps the lookup table deterministic.
-        return scheme.trim().toLowerCase(Locale.ROOT);
+        return normalized.toLowerCase(Locale.ROOT);
     }
 
 }

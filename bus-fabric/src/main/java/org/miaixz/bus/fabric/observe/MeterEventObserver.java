@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.nimble.FabricMeter;
-import org.miaixz.bus.fabric.observe.tag.Tags;
-import org.miaixz.bus.fabric.observe.watch.StopWatch;
+import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
+import org.miaixz.bus.fabric.observe.tags.Tags;
+import org.miaixz.bus.fabric.observe.timing.StopWatch;
 import org.miaixz.bus.fabric.observe.window.RollingWindow;
 
 /**
@@ -76,9 +76,9 @@ public final class MeterEventObserver implements EventObserver {
     private final Clock clock;
 
     /**
-     * Active watches keyed by marker family and event tags.
+     * Active stopwatches keyed by marker family and event tags.
      */
-    private final ConcurrentHashMap<String, StopWatch> watches;
+    private final ConcurrentHashMap<String, StopWatch> stopwatches;
 
     /**
      * Creates an observer.
@@ -87,10 +87,10 @@ public final class MeterEventObserver implements EventObserver {
      * @param window rolling window
      */
     private MeterEventObserver(final Clock clock, final RollingWindow window) {
-        this.clock = require(clock, "Clock");
-        this.window = require(window, "Rolling window");
+        this.clock = Assert.notNull(clock, "Clock must not be null");
+        this.window = Assert.notNull(window, "Rolling window must not be null");
         this.meter = new FabricMeter();
-        this.watches = new ConcurrentHashMap<>();
+        this.stopwatches = new ConcurrentHashMap<>();
     }
 
     /**
@@ -120,7 +120,7 @@ public final class MeterEventObserver implements EventObserver {
      */
     @Override
     public void emit(final FabricEvent event) {
-        final FabricEvent current = require(event, "Event");
+        final FabricEvent current = Assert.notNull(event, "Event must not be null");
         final ObservationMarker marker = current.marker();
         meter.increment(marker.code());
         if (marker.failure() || current.cause() != null) {
@@ -128,7 +128,7 @@ public final class MeterEventObserver implements EventObserver {
             meter.increment(marker.code() + "." + FAILURE);
         }
         window.add(1, current.time());
-        watch(current);
+        measure(current);
     }
 
     /**
@@ -150,34 +150,34 @@ public final class MeterEventObserver implements EventObserver {
     }
 
     /**
-     * Starts or stops a watch for the event family and tag set.
+     * Starts or stops timing for the event family and tag set.
      *
      * @param event event
      */
-    private void watch(final FabricEvent event) {
-        final String key = watchKey(event);
+    private void measure(final FabricEvent event) {
+        final String key = timingKey(event);
         if (event.marker().terminal()) {
-            final StopWatch watch = watches.remove(key);
-            if (watch != null) {
-                meter.timing(event.marker().code() + DURATION, watch.stop());
+            final StopWatch stopwatch = stopwatches.remove(key);
+            if (stopwatch != null) {
+                meter.timing(event.marker().code() + DURATION, stopwatch.stop());
             }
             return;
         }
-        watches.putIfAbsent(key, StopWatch.start(clock));
+        stopwatches.putIfAbsent(key, StopWatch.start(clock));
     }
 
     /**
-     * Creates a stable stopwatch key from marker family and event tags.
+     * Creates a stable timing key from marker family and event tags.
      *
      * @param event event
      * @return key
      */
-    private static String watchKey(final FabricEvent event) {
+    private static String timingKey(final FabricEvent event) {
         final String code = event.marker().code();
         final int dot = code.indexOf('.');
         final String family = dot < 0 ? code : code.substring(0, dot);
         final StringJoiner joiner = new StringJoiner("&", family + "|", "");
-        event.tags().asMap().entrySet().stream().filter(entry -> stableWatchTag(entry.getKey()))
+        event.tags().asMap().entrySet().stream().filter(entry -> stableTimingTag(entry.getKey()))
                 .sorted(Map.Entry.comparingByKey())
                 .forEach(entry -> joiner.add(entry.getKey() + "=" + entry.getValue()));
         return joiner.toString();
@@ -189,23 +189,8 @@ public final class MeterEventObserver implements EventObserver {
      * @param key tag key
      * @return true when stable
      */
-    private static boolean stableWatchTag(final String key) {
+    private static boolean stableTimingTag(final String key) {
         return !Tags.PHASE.equals(key) && !Tags.RESULT.equals(key) && !Tags.EXCEPTION.equals(key);
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
 }

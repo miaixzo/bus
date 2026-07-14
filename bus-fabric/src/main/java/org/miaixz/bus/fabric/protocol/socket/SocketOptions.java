@@ -26,6 +26,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Options;
 
@@ -97,17 +99,17 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     /**
      * Default per-session read buffer size used when no option map value is supplied.
      */
-    private static final int DEFAULT_READ_BUFFER_SIZE = 8192;
+    private static final int DEFAULT_READ_BUFFER_SIZE = Normal._8192;
 
     /**
      * Default maximum bytes submitted in one low-level socket write.
      */
-    private static final int DEFAULT_WRITE_CHUNK_SIZE = 8192;
+    private static final int DEFAULT_WRITE_CHUNK_SIZE = Normal._8192;
 
     /**
      * Default retained write-chunk count used by socket write buffering.
      */
-    private static final int DEFAULT_WRITE_CHUNK_COUNT = 16;
+    private static final int DEFAULT_WRITE_CHUNK_COUNT = Normal._16;
 
     /**
      * Default TCP server backlog for socket listeners.
@@ -136,7 +138,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     public static SocketOptions defaults() {
         return Instances.get(
                 SocketOptions.class.getName() + ".defaults",
-                () -> builder().threadNum(Math.max(1, Runtime.getRuntime().availableProcessors())).build());
+                () -> builder().threadNum(Math.max(Normal._1, Runtime.getRuntime().availableProcessors())).build());
     }
 
     /**
@@ -156,16 +158,15 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
      */
     @SuppressWarnings("unchecked")
     public static SocketOptions from(final Options options) {
-        if (options == null) {
-            throw new ValidateException("Options must not be null");
-        }
+        final Options checkedOptions = Assert.notNull(options, () -> new ValidateException("Options must not be null"));
         final Builder builder = builder();
-        builder.readBufferSize(number(options, READ_BUFFER_SIZE, DEFAULT_READ_BUFFER_SIZE));
-        builder.writeChunkSize(number(options, WRITE_CHUNK_SIZE, DEFAULT_WRITE_CHUNK_SIZE));
-        builder.writeChunkCount(number(options, WRITE_CHUNK_COUNT, DEFAULT_WRITE_CHUNK_COUNT));
-        builder.backlog(number(options, BACKLOG, DEFAULT_BACKLOG));
-        builder.threadNum(number(options, THREAD_NUM, Math.max(1, Runtime.getRuntime().availableProcessors())));
-        final Object rawSocketOptions = options.get(SOCKET_OPTIONS);
+        builder.readBufferSize(number(checkedOptions, READ_BUFFER_SIZE, DEFAULT_READ_BUFFER_SIZE));
+        builder.writeChunkSize(number(checkedOptions, WRITE_CHUNK_SIZE, DEFAULT_WRITE_CHUNK_SIZE));
+        builder.writeChunkCount(number(checkedOptions, WRITE_CHUNK_COUNT, DEFAULT_WRITE_CHUNK_COUNT));
+        builder.backlog(number(checkedOptions, BACKLOG, DEFAULT_BACKLOG));
+        builder.threadNum(
+                number(checkedOptions, THREAD_NUM, Math.max(Normal._1, Runtime.getRuntime().availableProcessors())));
+        final Object rawSocketOptions = checkedOptions.get(SOCKET_OPTIONS);
         if (rawSocketOptions instanceof Map<?, ?> map) {
             for (final Map.Entry<?, ?> entry : map.entrySet()) {
                 if (!(entry.getKey() instanceof SocketOption<?> option)) {
@@ -176,9 +177,9 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         } else if (rawSocketOptions != null) {
             throw new ValidateException("Socket options value must be a map");
         }
-        builder.retainReadBuffer(bool(options, RETAIN_READ_BUFFER, false));
-        builder.connectTimeout(duration(options, CONNECT_TIMEOUT, java.time.Duration.ofSeconds(10)));
-        builder.idleTimeout(duration(options, IDLE_TIMEOUT, java.time.Duration.ZERO));
+        builder.retainReadBuffer(bool(checkedOptions, RETAIN_READ_BUFFER, false));
+        builder.connectTimeout(duration(checkedOptions, CONNECT_TIMEOUT, Duration.ofSeconds(Normal._10)));
+        builder.idleTimeout(duration(checkedOptions, IDLE_TIMEOUT, Duration.ZERO));
         return builder.build();
     }
 
@@ -222,7 +223,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Mutable AIO worker count candidate.
          */
-        private int threadNum = Math.max(1, Runtime.getRuntime().availableProcessors());
+        private int threadNum = Math.max(Normal._1, Runtime.getRuntime().availableProcessors());
 
         /**
          * Mutable JDK socket options collected before the immutable snapshot is built.
@@ -237,7 +238,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Mutable connection timeout candidate.
          */
-        private Duration connectTimeout = Duration.ofSeconds(10);
+        private Duration connectTimeout = Duration.ofSeconds(Normal._10);
 
         /**
          * Mutable idle timeout candidate.
@@ -315,10 +316,11 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
          * @return this builder
          */
         public <T> Builder socketOption(final SocketOption<T> option, final T value) {
-            if (option == null || value == null) {
-                throw new ValidateException("Socket option and value must not be null");
-            }
-            socketOptions.put(option, value);
+            final SocketOption<T> checkedOption = Assert
+                    .notNull(option, () -> new ValidateException("Socket option must not be null"));
+            final T checkedValue = Assert
+                    .notNull(value, () -> new ValidateException("Socket option value must not be null"));
+            socketOptions.put(checkedOption, checkedValue);
             return this;
         }
 
@@ -329,10 +331,9 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
          * @return this builder
          */
         public Builder socketOptions(final Map<SocketOption<?>, ?> values) {
-            if (values == null) {
-                throw new ValidateException("Socket options must not be null");
-            }
-            values.forEach((option, value) -> {
+            final Map<SocketOption<?>, ?> checkedValues = Assert
+                    .notNull(values, () -> new ValidateException("Socket options must not be null"));
+            checkedValues.forEach((option, value) -> {
                 if (option == null || value == null) {
                     throw new ValidateException("Socket option and value must not be null");
                 }
@@ -394,7 +395,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
      * @return validated value
      */
     private static int positive(final int value, final String name) {
-        if (value <= 0) {
+        if (value <= Normal._0) {
             throw new ValidateException(name + " must be positive");
         }
         return value;
@@ -408,10 +409,11 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
      * @return validated timeout
      */
     private static Duration timeout(final Duration value, final String name) {
-        if (value == null || value.isNegative()) {
-            throw new ValidateException(name + " must be non-null and non-negative");
+        final Duration checkedValue = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (checkedValue.isNegative()) {
+            throw new ValidateException(name + " must be non-negative");
         }
-        return value;
+        return checkedValue;
     }
 
     /**

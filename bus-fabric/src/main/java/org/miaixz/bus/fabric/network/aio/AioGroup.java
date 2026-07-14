@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ThreadKit;
@@ -42,7 +44,7 @@ public final class AioGroup {
     /**
      * Maximum read worker count.
      */
-    private static final int MAX_READ_WORKERS = 256;
+    private static final int MAX_READ_WORKERS = Normal._256;
 
     /**
      * JDK channel group.
@@ -101,11 +103,12 @@ public final class AioGroup {
      */
     private AioGroup(final AsynchronousChannelGroup channelGroup, final AioWorker[] readWorkers, final AioWorker write,
             final AioWorker common, final Dispatcher dispatcher, final boolean ownsDispatcher) {
-        this.channelGroup = channelGroup;
-        this.readWorkers = readWorkers;
-        this.write = write;
-        this.common = common;
-        this.dispatcher = require(dispatcher, "Dispatcher");
+        this.channelGroup = Assert
+                .notNull(channelGroup, () -> new ValidateException("AIO channel group must not be null"));
+        this.readWorkers = Assert.notNull(readWorkers, () -> new ValidateException("Read workers must not be null"));
+        this.write = Assert.notNull(write, () -> new ValidateException("Write worker must not be null"));
+        this.common = Assert.notNull(common, () -> new ValidateException("Common worker must not be null"));
+        this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null"));
         this.ownsDispatcher = ownsDispatcher;
         this.nextRead = new AtomicInteger();
         this.started = new AtomicBoolean();
@@ -142,18 +145,23 @@ public final class AioGroup {
      * @return group
      */
     private static AioGroup create(final int readWorkers, final Dispatcher dispatcher, final boolean ownsDispatcher) {
-        if (readWorkers <= 0 || readWorkers > MAX_READ_WORKERS) {
-            throw new ValidateException("AIO read worker count out of range");
-        }
+        final int checkedReadWorkers = Assert.checkBetween(
+                readWorkers,
+                Normal._1,
+                MAX_READ_WORKERS,
+                () -> new ValidateException("AIO read worker count out of range"));
+        final Dispatcher checkedDispatcher = Assert
+                .notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null"));
         try {
-            final AsynchronousChannelGroup channelGroup = AsynchronousChannelGroup
-                    .withFixedThreadPool(readWorkers, task -> ThreadKit.newThread(task, "fabric-aio-channel", true));
-            final AioWorker[] reads = new AioWorker[readWorkers];
-            for (int i = 0; i < readWorkers; i++) {
+            final AsynchronousChannelGroup channelGroup = AsynchronousChannelGroup.withFixedThreadPool(
+                    checkedReadWorkers,
+                    task -> ThreadKit.newThread(task, "fabric-aio-channel", true));
+            final AioWorker[] reads = new AioWorker[checkedReadWorkers];
+            for (int i = Normal._0; i < checkedReadWorkers; i++) {
                 reads[i] = new AioWorker("fabric-aio-read-" + i);
             }
             return new AioGroup(channelGroup, reads, new AioWorker("fabric-aio-write"),
-                    new AioWorker("fabric-aio-common"), require(dispatcher, "Dispatcher"), ownsDispatcher);
+                    new AioWorker("fabric-aio-common"), checkedDispatcher, ownsDispatcher);
         } catch (final IOException | RuntimeException e) {
             throw new InternalException("Unable to create AIO group", e);
         }
@@ -246,11 +254,14 @@ public final class AioGroup {
      * @return true when terminated
      */
     public boolean awaitTermination(final Duration timeout) {
-        if (timeout == null || timeout.isNegative()) {
-            throw new ValidateException("Termination timeout must be non-null and non-negative");
-        }
+        final Duration checkedTimeout = Assert
+                .notNull(timeout, () -> new ValidateException("Termination timeout must be non-null and non-negative"));
+        Assert.isTrue(
+                !checkedTimeout.isNegative(),
+                () -> new ValidateException("Termination timeout must be non-null and non-negative"));
         try {
-            final boolean groupTerminated = channelGroup.awaitTermination(timeout.toNanos(), TimeUnit.NANOSECONDS);
+            final boolean groupTerminated = channelGroup
+                    .awaitTermination(checkedTimeout.toNanos(), TimeUnit.NANOSECONDS);
             return groupTerminated && stopped();
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -270,21 +281,6 @@ public final class AioGroup {
             }
         }
         return !write.running() && !common.running();
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
 }

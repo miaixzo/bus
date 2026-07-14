@@ -19,18 +19,17 @@
 */
 package org.miaixz.bus.fabric.network.tls.context;
 
-import java.util.List;
-
-import javax.net.ssl.SNIHostName;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLParameters;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.tls.SSLContextBuilder;
+import org.miaixz.bus.core.net.tls.TlsParameters;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.network.tls.TlsClientAuth;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 
 /**
@@ -52,10 +51,7 @@ public final class TlsContext {
      * @param context SSL context
      */
     private TlsContext(final SSLContext context) {
-        if (context == null) {
-            throw new ValidateException("SSL context must not be null");
-        }
-        this.context = context;
+        this.context = Assert.notNull(context, () -> new ValidateException("SSL context must not be null"));
     }
 
     /**
@@ -85,27 +81,22 @@ public final class TlsContext {
      * @return SSL engine
      */
     public SSLEngine engine(final Address address, final TlsSettings settings) {
-        if (address == null) {
-            throw new ValidateException("TLS address must not be null");
-        }
-        if (settings == null) {
-            throw new ValidateException("TLS settings must not be null");
-        }
-        final SSLEngine engine = context.createSSLEngine(address.host(), address.port());
+        final Address checkedAddress = Assert
+                .notNull(address, () -> new ValidateException("TLS address must not be null"));
+        final TlsSettings checkedSettings = Assert
+                .notNull(settings, () -> new ValidateException("TLS settings must not be null"));
+        final SSLEngine engine = context.createSSLEngine(checkedAddress.host(), checkedAddress.port());
         try {
             engine.setUseClientMode(true);
-            engine.setEnabledProtocols(settings.versions().toArray(String[]::new));
-            engine.setEnabledCipherSuites(settings.ciphers().toArray(String[]::new));
-            final SSLParameters parameters = engine.getSSLParameters();
-            if (settings.supportsTlsExtensions()) {
-                parameters.setApplicationProtocols(settings.applicationProtocols().toArray(String[]::new));
-                serverNames(address.host()).ifPresent(names -> parameters.setServerNames(List.copyOf(names)));
-            }
-            if (settings.verifyHostname()) {
-                parameters.setEndpointIdentificationAlgorithm("HTTPS");
-            }
-            engine.setSSLParameters(parameters);
-            applyClientAuth(engine, settings.clientAuthMode());
+            TlsParameters.applyClient(
+                    engine,
+                    checkedAddress.host(),
+                    checkedSettings.versions().toArray(String[]::new),
+                    checkedSettings.ciphers().toArray(String[]::new),
+                    checkedSettings.applicationProtocols().toArray(String[]::new),
+                    checkedSettings.supportsTlsExtensions(),
+                    checkedSettings.verifyHostname());
+            checkedSettings.clientAuthMode().apply(engine);
             return engine;
         } catch (final IllegalArgumentException e) {
             throw new ProtocolException("Unsupported TLS engine configuration", e);
@@ -128,40 +119,9 @@ public final class TlsContext {
      */
     private static TlsContext createDefault() {
         try {
-            return new TlsContext(SSLContext.getDefault());
-        } catch (final java.security.NoSuchAlgorithmException e) {
+            return new TlsContext(SSLContextBuilder.getDefault());
+        } catch (final InternalException e) {
             throw new ProtocolException("Default TLS context is not available", e);
-        }
-    }
-
-    /**
-     * Applies client auth mode to an engine.
-     *
-     * @param engine engine
-     * @param mode   client auth mode
-     */
-    private static void applyClientAuth(final SSLEngine engine, final TlsClientAuth mode) {
-        if (mode == TlsClientAuth.REQUIRE) {
-            engine.setNeedClientAuth(true);
-        } else if (mode == TlsClientAuth.OPTIONAL) {
-            engine.setWantClientAuth(true);
-        } else {
-            engine.setNeedClientAuth(false);
-            engine.setWantClientAuth(false);
-        }
-    }
-
-    /**
-     * Creates SNI server names when the host is a valid DNS name.
-     *
-     * @param host host
-     * @return server names
-     */
-    private static java.util.Optional<List<SNIHostName>> serverNames(final String host) {
-        try {
-            return java.util.Optional.of(List.of(new SNIHostName(host)));
-        } catch (final IllegalArgumentException e) {
-            return java.util.Optional.empty();
         }
     }
 

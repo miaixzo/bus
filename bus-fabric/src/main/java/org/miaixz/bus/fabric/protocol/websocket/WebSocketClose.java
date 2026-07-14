@@ -19,8 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket;
 
-import java.nio.charset.StandardCharsets;
-
+import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -38,6 +37,46 @@ import org.miaixz.bus.core.xyz.StringKit;
 public record WebSocketClose(int code, String reason, boolean normal) {
 
     /**
+     * Normal close status code.
+     */
+    private static final int NORMAL_CLOSE_CODE = 1000;
+
+    /**
+     * First protocol-defined close status code after normal close.
+     */
+    private static final int MIN_PROTOCOL_CLOSE_CODE = 1001;
+
+    /**
+     * Last protocol-defined close status code accepted by this implementation.
+     */
+    private static final int MAX_PROTOCOL_CLOSE_CODE = 1014;
+
+    /**
+     * Reserved no-status close code.
+     */
+    private static final int RESERVED_NO_STATUS_CODE = 1005;
+
+    /**
+     * Reserved abnormal close code.
+     */
+    private static final int RESERVED_ABNORMAL_CODE = 1006;
+
+    /**
+     * First application-defined close status code.
+     */
+    private static final int MIN_APPLICATION_CLOSE_CODE = 3000;
+
+    /**
+     * Last application-defined close status code.
+     */
+    private static final int MAX_APPLICATION_CLOSE_CODE = 4999;
+
+    /**
+     * Maximum close reason payload bytes after the two-byte close code.
+     */
+    private static final int MAX_REASON_BYTES = 123;
+
+    /**
      * Creates a close description.
      *
      * @param code   close code
@@ -46,7 +85,7 @@ public record WebSocketClose(int code, String reason, boolean normal) {
      */
     public WebSocketClose {
         reason = validate(code, reason);
-        normal = code == 1000;
+        normal = code == NORMAL_CLOSE_CODE;
     }
 
     /**
@@ -57,7 +96,7 @@ public record WebSocketClose(int code, String reason, boolean normal) {
      * @return close description
      */
     public static WebSocketClose of(final int code, final String reason) {
-        return new WebSocketClose(code, reason, code == 1000);
+        return new WebSocketClose(code, reason, code == NORMAL_CLOSE_CODE);
     }
 
     /**
@@ -75,7 +114,7 @@ public record WebSocketClose(int code, String reason, boolean normal) {
         if (StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
             throw new ValidateException("WebSocket close reason must be single-line");
         }
-        if (value.getBytes(StandardCharsets.UTF_8).length > 123) {
+        if (ByteString.encodeUtf8(value).size() > MAX_REASON_BYTES) {
             throw new ValidateException("WebSocket close reason is too large");
         }
         return value;
@@ -88,8 +127,10 @@ public record WebSocketClose(int code, String reason, boolean normal) {
      * @return true when valid
      */
     private static boolean validCode(final int code) {
-        return code == 1000 || code >= 1001 && code <= 1014 && code != 1005 && code != 1006
-                || code >= 3000 && code <= 4999;
+        return code == NORMAL_CLOSE_CODE
+                || code >= MIN_PROTOCOL_CLOSE_CODE && code <= MAX_PROTOCOL_CLOSE_CODE && code != RESERVED_NO_STATUS_CODE
+                        && code != RESERVED_ABNORMAL_CODE
+                || code >= MIN_APPLICATION_CLOSE_CODE && code <= MAX_APPLICATION_CLOSE_CODE;
     }
 
 }

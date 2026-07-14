@@ -25,10 +25,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
@@ -107,21 +109,12 @@ public final class UdpSession {
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
             final Runnable onClose) {
-        if (remote == null) {
-            throw new ValidateException("UDP remote address must not be null");
-        }
-        if (channel == null) {
-            throw new ValidateException("UDP channel must not be null");
-        }
-        if (onClose == null) {
-            throw new ValidateException("UDP close hook must not be null");
-        }
-        this.remote = remote;
-        this.channel = channel;
+        this.remote = Assert.notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
+        this.channel = Assert.notNull(channel, () -> new ValidateException("UDP channel must not be null"));
         this.state = new AtomicReference<>(Status.OPENED);
         this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
         this.sends = new ConcurrentLinkedQueue<>();
-        this.onClose = onClose;
+        this.onClose = Assert.notNull(onClose, () -> new ValidateException("UDP close hook must not be null"));
     }
 
     /**
@@ -140,11 +133,10 @@ public final class UdpSession {
      * @return sent byte count future
      */
     public CompletableFuture<Integer> send(final Payload payload) {
-        if (payload == null) {
-            throw new ValidateException("UDP payload must not be null");
-        }
+        final Payload checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("UDP payload must not be null"));
         ensureOpened();
-        final byte[] bytes = payload.bytes(UdpChannel.MAX_DATAGRAM + 1L);
+        final byte[] bytes = checkedPayload.bytes(UdpChannel.MAX_DATAGRAM + 1L);
         if (bytes.length > UdpChannel.MAX_DATAGRAM) {
             return CompletableFuture.failedFuture(new ProtocolException("UDP payload exceeds maximum datagram size"));
         }
@@ -228,7 +220,7 @@ public final class UdpSession {
      * @return socket address
      */
     static InetSocketAddress socket(final Address address) {
-        return new InetSocketAddress(address.host(), address.port());
+        return NetKit.createAddress(address.host(), address.port());
     }
 
     /**

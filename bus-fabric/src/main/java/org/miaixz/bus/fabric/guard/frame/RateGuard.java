@@ -21,6 +21,8 @@ package org.miaixz.bus.fabric.guard.frame;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Message;
@@ -34,11 +36,6 @@ import org.miaixz.bus.fabric.guard.GuardRule;
  * @since Java 21+
  */
 public final class RateGuard implements GuardRule {
-
-    /**
-     * Nanoseconds per second.
-     */
-    private static final long NANOS_PER_SECOND = 1_000_000_000L;
 
     /**
      * Rule name.
@@ -88,9 +85,7 @@ public final class RateGuard implements GuardRule {
      * @return guard result
      */
     public GuardResult acquire(final long bytes) {
-        if (bytes < 0) {
-            throw new ValidateException("Requested bytes must be non-negative");
-        }
+        Assert.isTrue(bytes >= Normal._0, () -> new ValidateException("Requested bytes must be non-negative"));
         refill(Clock.system());
         while (true) {
             final long current = available.get();
@@ -111,11 +106,9 @@ public final class RateGuard implements GuardRule {
      */
     @Override
     public GuardResult check(final Message message) {
-        if (message == null) {
-            throw new ValidateException("Message must not be null");
-        }
-        final long length = message.payload().length();
-        return acquire(Math.max(0L, length));
+        final Message checkedMessage = Assert.notNull(message, () -> new ValidateException("Message must not be null"));
+        final long length = checkedMessage.payload().length();
+        return acquire(Math.max(Normal._0, length));
     }
 
     /**
@@ -124,18 +117,16 @@ public final class RateGuard implements GuardRule {
      * @param clock runtime clock
      */
     public void refill(final Clock clock) {
-        if (clock == null) {
-            throw new ValidateException("Runtime clock must not be null");
-        }
-        final long now = clock.nanos();
+        final Clock checkedClock = Assert.notNull(clock, () -> new ValidateException("Runtime clock must not be null"));
+        final long now = checkedClock.nanos();
         while (true) {
             final long previous = lastRefillNanos.get();
             final long elapsed = now - previous;
-            if (elapsed < NANOS_PER_SECOND) {
+            if (elapsed < Normal.GIGA) {
                 return;
             }
-            final long seconds = elapsed / NANOS_PER_SECOND;
-            final long next = previous + seconds * NANOS_PER_SECOND;
+            final long seconds = elapsed / Normal.GIGA;
+            final long next = previous + seconds * Normal.GIGA;
             if (lastRefillNanos.compareAndSet(previous, next)) {
                 addTokens(safeMultiply(seconds, bytesPerSecond));
                 return;
@@ -168,7 +159,7 @@ public final class RateGuard implements GuardRule {
      * @param tokens tokens to add
      */
     private void addTokens(final long tokens) {
-        if (tokens <= 0) {
+        if (tokens <= Normal._0) {
             return;
         }
         while (true) {
@@ -201,9 +192,7 @@ public final class RateGuard implements GuardRule {
      * @return bytes per second
      */
     private static long validateBytesPerSecond(final long bytesPerSecond) {
-        if (bytesPerSecond <= 0) {
-            throw new ValidateException("Frame rate must be greater than zero");
-        }
+        Assert.isTrue(bytesPerSecond > Normal._0, () -> new ValidateException("Frame rate must be greater than zero"));
         return bytesPerSecond;
     }
 

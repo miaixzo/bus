@@ -19,22 +19,24 @@
 */
 package org.miaixz.bus.fabric.protocol;
 
-import java.net.IDN;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.network.dns.suffix.PublicSuffix;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
  * Immutable protocol cookie with HTTP-style host, domain, path, secure, and expiry matching.
@@ -53,12 +55,6 @@ public final class Cookie {
      * RFC 1123 date formatter used by cookie headers.
      */
     private static final DateTimeFormatter EXPIRES_FORMAT = DateTimeFormatter.RFC_1123_DATE_TIME;
-
-    /**
-     * IPv4 literal pattern.
-     */
-    private static final Pattern IPV4 = Pattern
-            .compile("(?:(?:25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})\\.){3}(?:25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})");
 
     /**
      * Cookie name.
@@ -132,13 +128,10 @@ public final class Cookie {
      * @return parsed cookie
      */
     public static Cookie parse(final String header, final UnoUrl url) {
-        if (StringKit.isBlank(header)) {
-            throw new ValidateException("Cookie header must be non-blank");
-        }
-        if (url == null) {
-            throw new ValidateException("URL must not be null");
-        }
-        final String[] parts = header.split(Symbol.SEMICOLON);
+        final String checkedHeader = Assert
+                .notBlank(header, () -> new ValidateException("Cookie header must be non-blank"));
+        final UnoUrl checkedUrl = Assert.notNull(url, () -> new ValidateException("URL must not be null"));
+        final String[] parts = checkedHeader.split(Symbol.SEMICOLON);
         final int separator = parts[0].indexOf(Symbol.C_EQUAL);
         if (separator <= 0) {
             throw new ProtocolException("Invalid cookie header");
@@ -171,14 +164,14 @@ public final class Cookie {
                 }
             }
         }
-        final String sourceHost = validateHost(url.address().host());
+        final String sourceHost = validateHost(checkedUrl.address().host());
         if (domain != null) {
             if (!domainMatches(sourceHost, domain)) {
                 throw new ProtocolException("Cookie domain does not match URL host");
             }
             builder.domain(domain);
         }
-        builder.path(path == null ? defaultPath(url.path()) : path);
+        builder.path(path == null ? defaultPath(checkedUrl.path()) : path);
         if (expires != null) {
             builder.expires(expires);
         }
@@ -302,16 +295,14 @@ public final class Cookie {
      * @return true when matched
      */
     public boolean matches(final UnoUrl url) {
-        if (url == null) {
-            throw new ValidateException("URL must not be null");
-        }
+        final UnoUrl checkedUrl = Assert.notNull(url, () -> new ValidateException("URL must not be null"));
         if (expires != null && !Instant.now().isBefore(expires)) {
             return false;
         }
-        if (secure && !url.address().secure()) {
+        if (secure && !checkedUrl.address().secure()) {
             return false;
         }
-        final String urlHost = validateHost(url.address().host());
+        final String urlHost = validateHost(checkedUrl.address().host());
         if (domain == null) {
             if (host != null && !host.equals(urlHost)) {
                 return false;
@@ -319,7 +310,7 @@ public final class Cookie {
         } else if (!urlHost.equals(domain) && !urlHost.endsWith(Symbol.C_DOT + domain)) {
             return false;
         }
-        final String urlPath = url.path();
+        final String urlPath = checkedUrl.path();
         return Symbol.SLASH.equals(path) || urlPath.equals(path)
                 || urlPath.startsWith(path.endsWith(Symbol.SLASH) ? path : path + Symbol.SLASH);
     }
@@ -337,7 +328,8 @@ public final class Cookie {
         }
         builder.append("; Path=").append(path);
         if (expires != null) {
-            builder.append("; Expires=").append(EXPIRES_FORMAT.format(expires.atZone(ZoneOffset.UTC)));
+            builder.append("; ").append(HTTP.EXPIRES).append(Symbol.C_EQUAL)
+                    .append(EXPIRES_FORMAT.format(expires.atZone(ZoneOffset.UTC)));
         }
         if (secure) {
             builder.append("; Secure");
@@ -361,7 +353,8 @@ public final class Cookie {
         }
         builder.append("; Path=").append(path);
         if (expires != null) {
-            builder.append("; Expires=").append(EXPIRES_FORMAT.format(expires.atZone(ZoneOffset.UTC)));
+            builder.append("; ").append(HTTP.EXPIRES).append(Symbol.C_EQUAL)
+                    .append(EXPIRES_FORMAT.format(expires.atZone(ZoneOffset.UTC)));
         }
         if (secure) {
             builder.append("; Secure");
@@ -422,10 +415,12 @@ public final class Cookie {
      * @return normalized path
      */
     private static String normalizePath(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Cookie path must be non-blank and single-line");
-        }
-        return value.startsWith(Symbol.SLASH) ? value : Symbol.SLASH + value;
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException("Cookie path must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Cookie path must be non-blank and single-line"));
+        return checked.startsWith(Symbol.SLASH) ? checked : Symbol.SLASH + checked;
     }
 
     /**
@@ -435,25 +430,20 @@ public final class Cookie {
      * @return normalized domain
      */
     private static String validateDomain(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Cookie domain must be non-blank and single-line");
-        }
-        String normalized = value.startsWith(Symbol.DOT) ? value.substring(1) : value;
-        if (normalized.endsWith(Symbol.DOT)) {
-            normalized = normalized.substring(0, normalized.length() - 1);
-        }
-        normalized = normalized.toLowerCase(Locale.ROOT);
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException("Cookie domain must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Cookie domain must be non-blank and single-line"));
+        final String source = checked.startsWith(Symbol.DOT) ? checked.substring(1) : checked;
+        final String normalized = NetKit.normalizeHost(source, "Cookie domain");
         if (StringKit.isBlank(normalized)) {
             throw new ValidateException("Cookie domain must be non-blank");
         }
         if (isAddressLiteral(normalized)) {
             return normalized;
         }
-        try {
-            return IDN.toASCII(normalized, IDN.USE_STD3_ASCII_RULES).toLowerCase(Locale.ROOT);
-        } catch (final IllegalArgumentException e) {
-            throw new ValidateException("Cookie domain must be a valid domain", e);
-        }
+        return normalized.toLowerCase(Locale.ROOT);
     }
 
     /**
@@ -487,7 +477,7 @@ public final class Cookie {
      * @return true when address literal
      */
     private static boolean isAddressLiteral(final String value) {
-        return value.indexOf(Symbol.C_COLON) >= 0 || IPV4.matcher(value).matches();
+        return value.indexOf(Symbol.C_COLON) >= 0 || Pattern.IPV4_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -509,11 +499,13 @@ public final class Cookie {
      * @return validated token
      */
     private static String validateToken(final String value, final String name) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)
-                || value.indexOf(Symbol.C_SEMICOLON) >= 0) {
-            throw new ValidateException(name + " must be non-blank, single-line, and semicolon-free");
-        }
-        return value;
+        final String checked = Assert.notBlank(
+                value,
+                () -> new ValidateException(name + " must be non-blank, single-line, and semicolon-free"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF) || checked.indexOf(Symbol.C_SEMICOLON) >= 0,
+                () -> new ValidateException(name + " must be non-blank, single-line, and semicolon-free"));
+        return checked;
     }
 
     /**
@@ -600,10 +592,7 @@ public final class Cookie {
          * @return this builder
          */
         public Builder expires(final Instant expires) {
-            if (expires == null) {
-                throw new ValidateException("Cookie expires must not be null");
-            }
-            this.expires = expires;
+            this.expires = Assert.notNull(expires, () -> new ValidateException("Cookie expires must not be null"));
             return this;
         }
 

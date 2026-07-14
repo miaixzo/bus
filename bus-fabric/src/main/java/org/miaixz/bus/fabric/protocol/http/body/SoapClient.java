@@ -38,6 +38,7 @@ import jakarta.xml.soap.SOAPHeader;
 import jakarta.xml.soap.SOAPHeaderElement;
 import jakarta.xml.soap.SOAPMessage;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -187,9 +188,9 @@ public final class SoapClient {
      * @return this client
      */
     public SoapClient protocol(final Protocol protocol) {
-        if (protocol != Protocol.SOAP_1_1 && protocol != Protocol.SOAP_1_2) {
-            throw new ValidateException("SOAP protocol must be SOAP_1_1 or SOAP_1_2");
-        }
+        Assert.isTrue(
+                protocol == Protocol.SOAP_1_1 || protocol == Protocol.SOAP_1_2,
+                () -> new ValidateException("SOAP protocol must be SOAP_1_1 or SOAP_1_2"));
         this.protocol = protocol;
         reset();
         return this;
@@ -400,7 +401,7 @@ public final class SoapClient {
      * @return body
      */
     public HttpBody body() {
-        return HttpBody.of(Payload.of(xml(), charset), MediaType.parse(contentType()));
+        return HttpBody.of(Payload.of(xml(), charset), media());
     }
 
     /**
@@ -413,7 +414,7 @@ public final class SoapClient {
         headers.build().asMap().forEach((name, values) -> values.forEach(value -> builder.add(name, value)));
         builder.set(HTTP.CONTENT_TYPE, contentType());
         if (StringKit.isNotBlank(action)) {
-            builder.set("SOAPAction", action);
+            builder.set(HTTP.SOAPACTION, action);
         }
         return builder.build();
     }
@@ -551,8 +552,9 @@ public final class SoapClient {
      * @return MIME headers
      */
     private static MimeHeaders mimeHeaders(final Headers headers) {
+        final Headers checkedHeaders = require(headers, "Headers");
         final MimeHeaders mimeHeaders = new MimeHeaders();
-        headers.asMap().forEach((name, values) -> {
+        checkedHeaders.asMap().forEach((name, values) -> {
             for (final String value : values) {
                 mimeHeaders.addHeader(name, value);
             }
@@ -566,8 +568,18 @@ public final class SoapClient {
      * @return content type
      */
     private String contentType() {
-        final String media = protocol == Protocol.SOAP_1_1 ? "text/xml" : "application/soap+xml";
-        return media + "; charset=" + charset.name();
+        return media().value();
+    }
+
+    /**
+     * Returns request media.
+     *
+     * @return request media
+     */
+    private MediaType media() {
+        final MediaType base = protocol == Protocol.SOAP_1_1 ? MediaType.TEXT_XML_TYPE
+                : MediaType.APPLICATION_SOAP_XML_TYPE;
+        return base.withCharset(charset);
     }
 
     /**
@@ -595,10 +607,12 @@ public final class SoapClient {
      * @return value
      */
     private static String name(final String value, final String field) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(field + " must be non-blank and single-line");
-        }
-        return value;
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException(field + " must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(field + " must be non-blank and single-line"));
+        return checked;
     }
 
     /**
@@ -612,9 +626,9 @@ public final class SoapClient {
         if (value == null) {
             return Normal.EMPTY;
         }
-        if (StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(field + " must be single-line");
-        }
+        Assert.isFalse(
+                StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(field + " must be single-line"));
         return value;
     }
 
@@ -627,10 +641,7 @@ public final class SoapClient {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

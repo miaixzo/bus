@@ -23,7 +23,9 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.function.Function;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.NetKit;
 
 /**
  * Adapter that exposes host lookup callbacks as current DNS resolver contracts.
@@ -44,7 +46,7 @@ public final class DnsResolverAdapter implements Resolver {
      * @param lookup lookup function
      */
     private DnsResolverAdapter(final Function<String, List<InetAddress>> lookup) {
-        this.lookup = require(lookup, "DNS lookup");
+        this.lookup = Assert.notNull(lookup, () -> new ValidateException("DNS lookup must not be null"));
     }
 
     /**
@@ -69,26 +71,10 @@ public final class DnsResolverAdapter implements Resolver {
 
     @Override
     public List<InetAddress> resolve(final String host) {
-        final List<InetAddress> addresses = lookup.apply(host);
-        if (addresses == null) {
-            throw new ValidateException("DNS lookup must not return null");
-        }
+        final String normalized = NetKit.normalizeHost(host, "DNS host");
+        final List<InetAddress> addresses = Assert
+                .notNull(lookup.apply(normalized), () -> new ValidateException("DNS lookup must not return null"));
         return List.copyOf(addresses);
-    }
-
-    /**
-     * Validates dependencies supplied to resolver adapters before they become part of the shared DNS path.
-     *
-     * @param value dependency value
-     * @param name  dependency name used in validation messages
-     * @param <T>   dependency type
-     * @return validated dependency
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
 }

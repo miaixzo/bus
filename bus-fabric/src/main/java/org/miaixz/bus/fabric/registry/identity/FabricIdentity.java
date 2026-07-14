@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.registry.identity;
 
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -97,10 +98,13 @@ public record FabricIdentity(String value) {
      * @return normalized value
      */
     private static String validate(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Fabric identity must be non-blank and single-line");
-        }
-        return value.trim();
+        final String current = Assert
+                .notBlank(value, () -> new ValidateException("Fabric identity must be non-blank and single-line"))
+                .toString();
+        Assert.isFalse(
+                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Fabric identity must be non-blank and single-line"));
+        return current.trim();
     }
 
 }

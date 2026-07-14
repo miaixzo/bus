@@ -20,8 +20,13 @@
 package org.miaixz.bus.fabric.protocol.websocket;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -32,16 +37,21 @@ import org.miaixz.bus.fabric.protocol.websocket.body.WebSocketBody;
  *
  * @param text        text-message flag
  * @param textValue   text value for text messages
- * @param binaryValue binary payload snapshot
+ * @param binaryValue immutable binary payload snapshot
  * @author Kimi Liu
  * @since Java 21+
  */
-public record WebSocketMessage(boolean text, String textValue, ByteBuffer binaryValue) {
+public record WebSocketMessage(boolean text, String textValue, ByteString binaryValue) {
 
     /**
-     * Maximum in-memory payload.
+     * Maximum materialized WebSocket message payload bytes.
      */
-    private static final int MAX_PAYLOAD = 16 * 1024 * 1024;
+    private static final long MAX_MESSAGE_BYTES = Normal._16 * Normal.MEBI;
+
+    /**
+     * First printable non-control character.
+     */
+    private static final char MIN_TEXT_CODE_POINT = 0x20;
 
     /**
      * Creates a message snapshot.
@@ -51,7 +61,7 @@ public record WebSocketMessage(boolean text, String textValue, ByteBuffer binary
      * @param binaryValue binary payload
      */
     public WebSocketMessage {
-        binaryValue = snapshot(binaryValue == null ? ByteBuffer.allocate(0) : binaryValue);
+        binaryValue = snapshot(binaryValue == null ? ByteString.EMPTY : binaryValue);
     }
 
     /**
@@ -62,7 +72,30 @@ public record WebSocketMessage(boolean text, String textValue, ByteBuffer binary
      */
     public static WebSocketMessage text(final String value) {
         validateText(value);
-        return new WebSocketMessage(true, value, ByteBuffer.allocate(0));
+        return new WebSocketMessage(true, value, ByteString.EMPTY);
+    }
+
+    /**
+     * Creates a text message.
+     *
+     * @param value text bytes
+     * @return text message
+     */
+    public static WebSocketMessage text(final ByteString value) {
+        return text(decodeUtf8(require(value, "WebSocket text value")));
+    }
+
+    /**
+     * Creates a binary message.
+     *
+     * @param value binary value
+     * @return binary message
+     * @deprecated use {@link #binary(ByteString)}
+     */
+    @Deprecated(since = "8.8.3")
+    public static WebSocketMessage binary(final ByteBuffer value) {
+        final ByteBuffer checked = require(value, "WebSocket binary value");
+        return new WebSocketMessage(false, null, ByteString.of(checked.duplicate()));
     }
 
     /**
@@ -71,11 +104,8 @@ public record WebSocketMessage(boolean text, String textValue, ByteBuffer binary
      * @param value binary value
      * @return binary message
      */
-    public static WebSocketMessage binary(final ByteBuffer value) {
-        if (value == null) {
-            throw new ValidateException("WebSocket binary value must not be null");
-        }
-        return new WebSocketMessage(false, null, value);
+    public static WebSocketMessage binary(final ByteString value) {
+        return new WebSocketMessage(false, null, require(value, "WebSocket binary value"));
     }
 
     /**
@@ -85,20 +115,19 @@ public record WebSocketMessage(boolean text, String textValue, ByteBuffer binary
      * @return message
      */
     public static WebSocketMessage of(final WebSocketBody body) {
-        if (body == null) {
-            throw new ValidateException("WebSocket body must not be null");
-        }
-        return body.textMessage() ? text(body.textValue()) : binary(body.binaryValue());
+        final WebSocketBody checked = require(body, "WebSocket body");
+        return checked.textMessage() ? text(checked.textValue()) : binary(checked.binaryBytes());
     }
 
     /**
-     * Returns a read-only binary payload view.
+     * Returns a read-only binary payload buffer view.
      *
-     * @return read-only binary payload
+     * @return read-only binary payload buffer
+     * @deprecated use {@link #binaryValue()}
      */
-    @Override
-    public ByteBuffer binaryValue() {
-        return binaryValue.asReadOnlyBuffer();
+    @Deprecated(since = "8.8.3")
+    public ByteBuffer binaryBuffer() {
+        return binaryValue.asByteBuffer();
     }
 
     /**
@@ -116,14 +145,11 @@ public record WebSocketMessage(boolean text, String textValue, ByteBuffer binary
      * @param value binary value
      * @return read-only payload
      */
-    private static ByteBuffer snapshot(final ByteBuffer value) {
-        if (value.remaining() > MAX_PAYLOAD) {
+    private static ByteString snapshot(final ByteString value) {
+        if (value.size() > MAX_MESSAGE_BYTES) {
             throw new ProtocolException("WebSocket message payload is too large");
         }
-        final ByteBuffer duplicate = value.duplicate();
-        final ByteBuffer copy = ByteBuffer.allocate(duplicate.remaining());
-        copy.put(duplicate).flip();
-        return copy.asReadOnlyBuffer();
+        return ByteString.of(value.toByteArray());
     }
 
     /**
@@ -132,16 +158,41 @@ public record WebSocketMessage(boolean text, String textValue, ByteBuffer binary
      * @param value text value
      */
     private static void validateText(final String value) {
-        if (value == null) {
-            throw new ValidateException("WebSocket text value must not be null");
-        }
-        for (int i = 0; i < value.length(); i++) {
-            final char current = value.charAt(i);
-            if (current < 0x20 && current != Symbol.C_CR && current != Symbol.C_LF) {
+        final String checked = require(value, "WebSocket text value");
+        for (int i = Normal._0; i < checked.length(); i++) {
+            final char current = checked.charAt(i);
+            if (current < MIN_TEXT_CODE_POINT && current != Symbol.C_CR && current != Symbol.C_LF) {
                 throw new ValidateException("WebSocket text contains an invalid control character");
             }
         }
-        value.getBytes(StandardCharsets.UTF_8);
+        ByteString.encodeUtf8(checked);
+    }
+
+    /**
+     * Decodes text bytes as strict UTF-8.
+     *
+     * @param value text bytes
+     * @return decoded text
+     */
+    private static String decodeUtf8(final ByteString value) {
+        try {
+            return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(value.asByteBuffer()).toString();
+        } catch (final CharacterCodingException e) {
+            throw new ValidateException("WebSocket text must be valid UTF-8", e);
+        }
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value value
+     * @param name  field name
+     * @param <T>   value type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

@@ -20,6 +20,9 @@
 package org.miaixz.bus.fabric.runtime.dispatch;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -36,12 +39,10 @@ public record DispatchLimit(int max, int perKey) {
      * Creates a dispatch limit.
      */
     public DispatchLimit {
-        if (max <= 0) {
-            throw new ValidateException("Dispatch max must be greater than zero");
-        }
-        if (perKey <= 0 || perKey > max) {
-            throw new ValidateException("Dispatch per-key limit must be between one and max");
-        }
+        Assert.isTrue(max > Normal._0, () -> new ValidateException("Dispatch max must be greater than zero"));
+        Assert.isTrue(
+                perKey > Normal._0 && perKey <= max,
+                () -> new ValidateException("Dispatch per-key limit must be between one and max"));
     }
 
     /**
@@ -50,7 +51,9 @@ public record DispatchLimit(int max, int perKey) {
      * @return default limits
      */
     public static DispatchLimit defaults() {
-        return Instances.get(DispatchLimit.class.getName() + ".defaults", () -> new DispatchLimit(64, 5));
+        return Instances.get(
+                DispatchLimit.class.getName() + Symbol.DOT + "defaults",
+                () -> new DispatchLimit(Normal._64, Normal._5));
     }
 
     /**
@@ -92,9 +95,9 @@ public record DispatchLimit(int max, int perKey) {
      * @return true when promotion is allowed
      */
     public boolean canPromote(final int runningTotal, final int runningForKey) {
-        if (runningTotal < 0 || runningForKey < 0) {
-            throw new ValidateException("Running counts must not be negative");
-        }
+        Assert.isFalse(
+                runningTotal < Normal._0 || runningForKey < Normal._0,
+                () -> new ValidateException("Running counts must not be negative"));
         return runningTotal < max && runningForKey < perKey;
     }
 

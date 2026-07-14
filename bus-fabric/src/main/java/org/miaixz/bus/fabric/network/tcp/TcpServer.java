@@ -33,6 +33,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -66,7 +68,7 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Default listen backlog.
      */
-    private static final int BACKLOG = 1000;
+    private static final int BACKLOG = (int) Normal.KILO;
 
     /**
      * Listen address.
@@ -190,18 +192,12 @@ public final class TcpServer implements AutoCloseable {
      */
     private TcpServer(final Address address, final Listener<Object> listener, final Dispatcher dispatcher,
             final boolean ownsDispatcher, final SocketOptions options) {
-        if (address == null) {
-            throw new ValidateException("Server address must not be null");
-        }
-        if (dispatcher == null) {
-            throw new ValidateException("TCP dispatcher must not be null");
-        }
-        this.address = address;
+        this.address = Assert.notNull(address, () -> new ValidateException("Server address must not be null"));
         this.sessions = new ConcurrentLinkedQueue<>();
         this.running = new AtomicBoolean();
         this.closed = new AtomicBoolean();
         this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
-        this.dispatcher = dispatcher;
+        this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("TCP dispatcher must not be null"));
         this.ownsDispatcher = ownsDispatcher;
         this.backlog = (options == null ? SocketOptions.defaults() : options).backlog();
     }
@@ -261,10 +257,7 @@ public final class TcpServer implements AutoCloseable {
      * @param handler handler
      */
     public void accept(final Handler handler) {
-        if (handler == null) {
-            throw new ValidateException("TCP handler must not be null");
-        }
-        this.handler = handler;
+        this.handler = Assert.notNull(handler, () -> new ValidateException("TCP handler must not be null"));
     }
 
     /**
@@ -456,12 +449,11 @@ public final class TcpServer implements AutoCloseable {
          */
         @Override
         public Call<Void> send(final Payload payload) {
-            if (payload == null) {
-                throw new ValidateException("Payload must not be null");
-            }
+            final Payload checkedPayload = Assert
+                    .notNull(payload, () -> new ValidateException("Payload must not be null"));
             final CompletableFuture<Void> future = dispatcher.run("tcp:session:send", () -> {
                 try {
-                    socket.write(java.nio.ByteBuffer.wrap(payload.bytes()));
+                    socket.write(java.nio.ByteBuffer.wrap(checkedPayload.bytes()));
                 } catch (final IOException e) {
                     throw new SocketException("Unable to send session payload", e);
                 }
@@ -531,7 +523,7 @@ public final class TcpServer implements AutoCloseable {
          * @param future future
          */
         private FutureCall(final CompletableFuture<T> future) {
-            this.future = future;
+            this.future = Assert.notNull(future, () -> new ValidateException("TCP call future must not be null"));
         }
 
         /**
@@ -642,9 +634,11 @@ public final class TcpServer implements AutoCloseable {
          * @param timeout timeout
          */
         private static void validateTimeout(final Duration timeout) {
-            if (timeout == null || timeout.isNegative()) {
-                throw new ValidateException("Timeout must be non-null and non-negative");
-            }
+            final Duration checkedTimeout = Assert
+                    .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
+            Assert.isFalse(
+                    checkedTimeout.isNegative(),
+                    () -> new ValidateException("Timeout must be non-null and non-negative"));
         }
 
     }

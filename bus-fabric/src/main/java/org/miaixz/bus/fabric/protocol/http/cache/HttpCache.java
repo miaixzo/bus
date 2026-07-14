@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
@@ -40,7 +42,7 @@ import org.miaixz.bus.fabric.cache.DiskStore;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tag.Tags;
+import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
@@ -327,7 +329,8 @@ public final class HttpCache implements AutoCloseable {
             Logger.info(
                     false,
                     LOG_TAG,
-                    "HTTP cache skipped: reason=not-cacheable, method={}, scheme={}, host={}, port={}, path={}, code={}",
+                    "HTTP cache skipped: reason=not-cacheable, method={}, scheme={}, host={}, port={}, path={}, "
+                            + "code={}",
                     request.method().value(),
                     request.url().scheme(),
                     request.url().host(),
@@ -336,7 +339,7 @@ public final class HttpCache implements AutoCloseable {
                     response.code());
             return;
         }
-        final String key = HttpCacheKey.key(request, response.headers().get("Vary"));
+        final String key = HttpCacheKey.key(request, response.headers().get(HTTP.VARY));
         store.put(key, HttpCacheCodec.toEntry(request, response));
         recordWriteSuccess();
         emit("write", key);
@@ -358,7 +361,8 @@ public final class HttpCache implements AutoCloseable {
             Logger.info(
                     false,
                     LOG_TAG,
-                    "HTTP cache write skipped: reason=not-cacheable, method={}, scheme={}, host={}, port={}, path={}, code={}",
+                    "HTTP cache write skipped: reason=not-cacheable, method={}, scheme={}, host={}, port={}, path={}, "
+                            + "code={}",
                     request.method().value(),
                     request.url().scheme(),
                     request.url().host(),
@@ -367,7 +371,7 @@ public final class HttpCache implements AutoCloseable {
                     response.code());
             return response;
         }
-        final String key = HttpCacheKey.key(request, response.headers().get("Vary"));
+        final String key = HttpCacheKey.key(request, response.headers().get(HTTP.VARY));
         if (response.body().payload().repeatable()) {
             store.put(key, HttpCacheCodec.toEntry(request, response));
             recordWriteSuccess();
@@ -540,7 +544,7 @@ public final class HttpCache implements AutoCloseable {
     public HttpResponse update(final HttpResponse cached, final HttpResponse network) {
         require(cached, "Cached response");
         require(network, "Network response");
-        if (network.code() != 304) {
+        if (network.code() != HTTP.HTTP_NOT_MODIFIED) {
             cached.close();
             emit("update", Integer.toString(network.code()));
             Logger.info(false, LOG_TAG, "HTTP cache update bypassed: code={}", network.code());
@@ -551,7 +555,7 @@ public final class HttpCache implements AutoCloseable {
                 .body(HttpCacheCodec.copyBody(cached)).protocol(network.protocol()).handshake(network.handshake())
                 .networkResponse(network).cacheResponse(cached).sentRequestAtMillis(network.sentRequestAtMillis())
                 .receivedResponseAtMillis(network.receivedResponseAtMillis()).build();
-        emit("update", "304");
+        emit("update", Integer.toString(HTTP.HTTP_NOT_MODIFIED));
         Logger.info(false, LOG_TAG, "HTTP cache conditional hit: code={}", network.code());
         return merged;
     }
@@ -598,8 +602,7 @@ public final class HttpCache implements AutoCloseable {
      */
     private void emit(final String action, final String key) {
         observer.emit(
-                FabricEvent.builder(cacheMarker(action)).tag(Tags.CACHE, action)
-                        .tag(Tags.KEY, Integer.toHexString(key.hashCode())).build());
+                FabricEvent.builder(cacheMarker(action)).tag(Tags.CACHE, action).tag(Tags.KEY, keyHash(key)).build());
     }
 
     /**
@@ -680,10 +683,7 @@ public final class HttpCache implements AutoCloseable {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

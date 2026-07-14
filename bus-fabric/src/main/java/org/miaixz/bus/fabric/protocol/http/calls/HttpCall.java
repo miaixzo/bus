@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -450,9 +451,9 @@ public final class HttpCall implements Call<HttpResponse> {
      * @param timeout timeout
      */
     private static void validateTimeout(final Duration timeout) {
-        if (timeout == null || timeout.isNegative()) {
-            throw new ValidateException("Timeout must be non-null and non-negative");
-        }
+        final Duration checked = Assert
+                .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
+        Assert.isFalse(checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
     }
 
     /**
@@ -464,10 +465,7 @@ public final class HttpCall implements Call<HttpResponse> {
      * @return value
      */
     private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }
