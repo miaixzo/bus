@@ -141,7 +141,8 @@ public class SlugQualifierStrategy extends QualifierStrategy {
         }
         return Mono.fromCallable(() -> {
             String key = assets.getMethod() + value(context, Args.TIMESTAMP);
-            Map<String, Object> paramsForSign = new TreeMap<>(copyWithoutIgnoreCase(context.getParameters(), Args.SIGN));
+            Map<String, Object> paramsForSign = new TreeMap<>(
+                    copyWithoutIgnoreCase(context.getParameters(), Args.SIGN));
             String sortedAndEncodedParams = paramsForSign.entrySet().stream()
                     .map(entry -> Map.entry(entry.getKey(), normalize(entry.getValue())))
                     .filter(entry -> StringKit.isNotEmpty(entry.getValue())).sorted(Map.Entry.comparingByKey())

@@ -196,8 +196,8 @@ public class VortexConfiguration {
             }
         }
 
-        RouterFunction<ServerResponse> routerFunction = RouterFunctions.route(RequestPredicates.path(routePath),
-                vortexHandler::handle);
+        RouterFunction<ServerResponse> routerFunction = RouterFunctions
+                .route(RequestPredicates.path(routePath), vortexHandler::handle);
 
         ServerCodecConfigurer configurer = ServerCodecConfigurer.create();
         configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128));
@@ -626,9 +626,7 @@ public class VortexConfiguration {
      * @return A new instance of SlugQualifierStrategy.
      */
     @Bean
-    public SlugQualifierStrategy slugQualifierStrategy(
-            SlugRouteMatcher matcher,
-            AuthorizeProvider authorizeProvider) {
+    public SlugQualifierStrategy slugQualifierStrategy(SlugRouteMatcher matcher, AuthorizeProvider authorizeProvider) {
         return new SlugQualifierStrategy(matcher, authorizeProvider);
     }
 

@@ -92,7 +92,8 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
     @Override
     public Mono<ServerResponse> execute(Context context, ServerRequest request) {
         URI target = target(context, request);
-        WebClient.RequestBodySpec bodySpec = Egress.request(HttpMethod.valueOf(context.getHttpMethod().value()), target);
+        WebClient.RequestBodySpec bodySpec = Egress
+                .request(HttpMethod.valueOf(context.getHttpMethod().value()), target);
         bodySpec.headers(headers -> {
             headers.addAll(request.headers().asHttpHeaders());
             context.getHeaders().forEach((name, value) -> {
@@ -123,20 +124,21 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
                 request.path(),
                 target);
 
-        return bodySpec.exchangeToMono(clientResponse -> clientResponse.toEntity(byte[].class).flatMap(responseEntity -> {
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
-            responseBuilder.headers(headers -> {
-                headers.addAll(responseEntity.getHeaders());
-                headers.remove(HttpHeaders.HOST);
-                headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                headers.remove(HttpHeaders.CONTENT_LENGTH);
-            });
-            byte[] body = responseEntity.getBody();
-            if (body == null || body.length == 0 || context.getHttpMethod() == HTTP.Method.HEAD) {
-                return responseBuilder.build();
-            }
-            return responseBuilder.bodyValue(body);
-        }));
+        return bodySpec
+                .exchangeToMono(clientResponse -> clientResponse.toEntity(byte[].class).flatMap(responseEntity -> {
+                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+                    responseBuilder.headers(headers -> {
+                        headers.addAll(responseEntity.getHeaders());
+                        headers.remove(HttpHeaders.HOST);
+                        headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                        headers.remove(HttpHeaders.CONTENT_LENGTH);
+                    });
+                    byte[] body = responseEntity.getBody();
+                    if (body == null || body.length == 0 || context.getHttpMethod() == HTTP.Method.HEAD) {
+                        return responseBuilder.build();
+                    }
+                    return responseBuilder.bodyValue(body);
+                }));
     }
 
     /**

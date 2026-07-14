@@ -153,13 +153,7 @@ public class SlugRouteMatcher {
         } catch (IllegalArgumentException e) {
             Logger.warn(false, "Vortex", e, "HTTP method mapping failed: method={}", method);
         }
-        return Keying.RegistrySpec.route(
-                namespace,
-                Type.API,
-                appId,
-                this.slugMethod,
-                Args.DEFAULT_VERSION,
-                verb);
+        return Keying.RegistrySpec.route(namespace, Type.API, appId, this.slugMethod, Args.DEFAULT_VERSION, verb);
     }
 
     /**

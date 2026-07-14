@@ -110,14 +110,14 @@ public class StrategyFactory {
             if (routeSummary.length() > 0) {
                 routeSummary.append(Symbol.COMMA).append(Symbol.SPACE);
             }
-            routeSummary.append(spec.route()).append(Symbol.EQUAL)
-                    .append(this.chains.get(spec.route()).size());
+            routeSummary.append(spec.route()).append(Symbol.EQUAL).append(this.chains.get(spec.route()).size());
         }
         for (Map.Entry<Integer, List<Strategy>> entry : this.dynamicChains.entrySet()) {
             if (routeSummary.length() > 0) {
                 routeSummary.append(Symbol.COMMA).append(Symbol.SPACE);
             }
-            routeSummary.append("protocol-").append(entry.getKey()).append(Symbol.EQUAL).append(entry.getValue().size());
+            routeSummary.append("protocol-").append(entry.getKey()).append(Symbol.EQUAL)
+                    .append(entry.getValue().size());
         }
         Logger.info(false, "Vortex", "Strategy chain initialization completed: routes={}", routeSummary);
     }
