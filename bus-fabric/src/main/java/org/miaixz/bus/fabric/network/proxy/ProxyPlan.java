@@ -51,11 +51,6 @@ public final class ProxyPlan {
     private static final String DIRECT_ID = "direct";
 
     /**
-     * Empty authorization diagnostic value.
-     */
-    private static final String NO_AUTHORIZATION = "none";
-
-    /**
      * Proxy type.
      */
     private final Type type;
@@ -255,7 +250,7 @@ public final class ProxyPlan {
      */
     private String redactedAuthorization() {
         if (authorization.size() == Normal._0) {
-            return NO_AUTHORIZATION;
+            return Normal.NONE;
         }
         final StringBuilder builder = new StringBuilder();
         authorization.asMap().forEach((name, values) -> values.forEach(value -> {

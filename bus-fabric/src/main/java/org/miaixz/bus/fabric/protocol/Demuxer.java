@@ -17,12 +17,15 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.protocol.socket.session;
+package org.miaixz.bus.fabric.protocol;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.function.Function;
 
+import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -33,17 +36,17 @@ import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Session;
 
 /**
- * Logical-channel router backed by the current socket handler contract.
+ * Demultiplexes protocol messages to channel-specific handlers.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class SocketMultiplexAdapter implements Handler {
+public final class Demuxer implements Handler {
 
     /**
-     * Default channel header name.
+     * Default message channel header.
      */
-    public static final String CHANNEL_HEADER = "X-Fabric-Channel";
+    private static final String DEFAULT_CHANNEL_HEADER = "X-Fabric-Channel";
 
     /**
      * Channel handlers.
@@ -56,26 +59,36 @@ public final class SocketMultiplexAdapter implements Handler {
     private final Handler fallback;
 
     /**
-     * Channel header name.
+     * Header used for channel lookup.
      */
     private final String channelHeader;
 
     /**
-     * Creates an adapter.
-     *
-     * @param handlers      handlers
-     * @param fallback      fallback
-     * @param channelHeader channel header
+     * Optional custom resolver.
      */
-    private SocketMultiplexAdapter(final Map<String, Handler> handlers, final Handler fallback,
-            final String channelHeader) {
+    private final Function<Message, String> resolver;
+
+    /**
+     * Creates a demuxer.
+     *
+     * @param handlers      channel handlers
+     * @param fallback      fallback handler
+     * @param channelHeader channel header
+     * @param resolver      custom resolver
+     */
+    private Demuxer(
+            final Map<String, Handler> handlers,
+            final Handler fallback,
+            final String channelHeader,
+            final Function<Message, String> resolver) {
         this.handlers = Collections.unmodifiableMap(new LinkedHashMap<>(require(handlers, "Handlers")));
         this.fallback = fallback;
         this.channelHeader = validateToken(channelHeader, "Channel header");
+        this.resolver = resolver;
     }
 
     /**
-     * Creates a builder.
+     * Creates a demuxer builder.
      *
      * @return builder
      */
@@ -83,63 +96,32 @@ public final class SocketMultiplexAdapter implements Handler {
         return new Builder();
     }
 
-    /**
-     * Routes one message to a channel handler.
-     *
-     * @param session session
-     * @param message message
-     */
     @Override
     public void message(final Session session, final Message message) {
-        route(session, message);
-    }
-
-    /**
-     * Routes one message to a channel handler.
-     *
-     * @param session session
-     * @param message message
-     */
-    public void route(final Session session, final Message message) {
-        require(session, "Session");
-        require(message, "Message");
         final String channel = channel(message);
-        final Handler currentHandler = handlers.get(channel);
-        if (currentHandler != null) {
-            currentHandler.message(session, message);
+        final Handler target = handlers.get(channel);
+        if (target != null) {
+            target.message(session, message);
             return;
         }
         if (fallback != null) {
             fallback.message(session, message);
             return;
         }
-        throw new ProtocolException("No socket multiplex handler for channel: " + channel);
+        throw new ProtocolException("No message handler for channel: " + channel);
     }
 
-    /**
-     * Forwards failures to all registered handlers and fallback.
-     *
-     * @param session session
-     * @param cause   failure cause
-     */
     @Override
     public void failure(final Session session, final Throwable cause) {
-        handlers.values().forEach(handler -> handler.failure(session, cause));
-        if (fallback != null) {
-            fallback.failure(session, cause);
+        for (final Handler handler : targets()) {
+            handler.failure(session, cause);
         }
     }
 
-    /**
-     * Forwards close notifications to all registered handlers and fallback.
-     *
-     * @param session session
-     */
     @Override
     public void closed(final Session session) {
-        handlers.values().forEach(handler -> handler.closed(session));
-        if (fallback != null) {
-            fallback.closed(session);
+        for (final Handler handler : targets()) {
+            handler.closed(session);
         }
     }
 
@@ -162,22 +144,39 @@ public final class SocketMultiplexAdapter implements Handler {
     }
 
     /**
-     * Resolves a channel id from a message.
+     * Resolves the channel for a message.
      *
      * @param message message
-     * @return channel id
+     * @return channel
      */
     public String channel(final Message message) {
         final Message current = require(message, "Message");
+        final String resolved = resolver == null ? null : resolver.apply(current);
+        if (StringKit.isNotBlank(resolved)) {
+            return validateToken(resolved, "Message channel");
+        }
         final String header = current.headers().get(channelHeader);
         if (StringKit.isNotBlank(header)) {
-            return validateToken(header, "Channel id");
+            return validateToken(header, "Message channel");
         }
         final Object tag = current.tag();
-        if (tag != null) {
-            return validateToken(tag.toString(), "Channel id");
+        if (tag != null && StringKit.isNotBlank(tag.toString())) {
+            return validateToken(tag.toString(), "Message channel");
         }
-        throw new ProtocolException("Socket multiplex channel id is missing");
+        throw new ProtocolException("Message channel is missing");
+    }
+
+    /**
+     * Returns all unique notification targets.
+     *
+     * @return targets
+     */
+    private Iterable<Handler> targets() {
+        final LinkedHashSet<Handler> result = new LinkedHashSet<>(handlers.values());
+        if (fallback != null) {
+            result.add(fallback);
+        }
+        return result;
     }
 
     /**
@@ -193,21 +192,32 @@ public final class SocketMultiplexAdapter implements Handler {
     }
 
     /**
-     * Validates a single-line token.
+     * Validates a channel token.
      *
      * @param value value
      * @param name  field name
-     * @return value
+     * @return token
      */
     private static String validateToken(final String value, final String name) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+        final String current = value == null ? null : StringKit.trim(value);
+        if (StringKit.isBlank(current) || StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF)) {
             throw new ValidateException(name + " must be non-blank and single-line");
         }
-        return value;
+        return current;
+    }
+
+
+    /**
+     * Returns the shared no-op message handler.
+     *
+     * @return no-op handler
+     */
+    public static Handler noop() {
+        return Instances.get(Demuxer.class.getName() + ".noop", NoopHandler::new);
     }
 
     /**
-     * Builder for socket multiplex adapters.
+     * Builder for demuxers.
      *
      * @author Kimi Liu
      * @since Java 21+
@@ -227,7 +237,12 @@ public final class SocketMultiplexAdapter implements Handler {
         /**
          * Channel header name.
          */
-        private String channelHeader = CHANNEL_HEADER;
+        private String channelHeader = DEFAULT_CHANNEL_HEADER;
+
+        /**
+         * Custom channel resolver.
+         */
+        private Function<Message, String> resolver;
 
         /**
          * Creates a builder.
@@ -271,12 +286,41 @@ public final class SocketMultiplexAdapter implements Handler {
         }
 
         /**
-         * Builds an adapter.
+         * Sets a custom channel resolver.
          *
-         * @return adapter
+         * @param resolver resolver
+         * @return this builder
          */
-        public SocketMultiplexAdapter build() {
-            return new SocketMultiplexAdapter(handlers, fallback, channelHeader);
+        public Builder resolver(final Function<Message, String> resolver) {
+            this.resolver = require(resolver, "Message channel resolver");
+            return this;
+        }
+
+        /**
+         * Builds a demuxer.
+         *
+         * @return demuxer
+         */
+        public Demuxer build() {
+            Assert.isTrue(
+                    !handlers.isEmpty() || fallback != null,
+                    () -> new ValidateException("Demuxer must declare a channel handler or fallback"));
+            return new Demuxer(handlers, fallback, channelHeader, resolver);
+        }
+
+    }
+
+    /**
+     * No-op handler.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static final class NoopHandler implements Handler {
+
+        @Override
+        public void message(final Session session, final Message message) {
+            // No-op handler intentionally ignores protocol messages.
         }
 
     }

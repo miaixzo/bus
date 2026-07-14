@@ -19,9 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http.http2;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -168,17 +165,6 @@ public final class Http2Stream implements AutoCloseable {
     void priority(final Http2Priority priority) {
         ensureOpen();
         this.priority = require(priority, "HTTP/2 priority");
-    }
-
-    /**
-     * Receives body data.
-     *
-     * @param data data
-     * @deprecated use {@link #receiveData(ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public void receiveData(final ByteBuffer data) {
-        receiveData(ByteString.of(require(data, "HTTP/2 data").asReadOnlyBuffer()));
     }
 
     /**
@@ -380,12 +366,6 @@ public final class Http2Stream implements AutoCloseable {
         }
 
         @Override
-        @Deprecated(since = "8.8.3")
-        public InputStream stream() {
-            return Payload.super.stream();
-        }
-
-        @Override
         public synchronized long read(final Buffer target, final long byteCount) {
             final Buffer checkedTarget = require(target, "HTTP/2 body target");
             if (byteCount < Normal._0) {
@@ -463,17 +443,6 @@ public final class Http2Stream implements AutoCloseable {
             return true;
         }
 
-        @Deprecated(since = "8.8.3")
-        public synchronized void write(final ByteBuffer source) {
-            final ByteBuffer checkedSource = require(source, "HTTP/2 body source");
-            ensureOpen();
-            try {
-                buffer.write(checkedSource);
-            } catch (final IOException e) {
-                throw new InternalException("Unable to write HTTP/2 body", e);
-            }
-        }
-
         /**
          * Writes buffered bytes.
          *
@@ -533,19 +502,6 @@ public final class Http2Stream implements AutoCloseable {
             final Buffer copy = new Buffer();
             buffer.copyTo(copy, Normal._0, buffer.size());
             return copy.readByteArray();
-        }
-
-        /**
-         * Copies buffered bytes into a NIO target without consuming the body buffer.
-         *
-         * @param offset offset
-         * @param target target buffer
-         * @param length byte count
-         */
-        private void copyTo(final int offset, final ByteBuffer target, final int length) {
-            final Buffer copy = new Buffer();
-            buffer.copyTo(copy, offset, length);
-            copy.readTo(target, length);
         }
 
         /**

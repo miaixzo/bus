@@ -29,7 +29,12 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
- * HTTP chain stage contract.
+ * Internal HTTP chain stage contract.
+ *
+ * <p>
+ * This contract is used by the built-in HTTP runtime stages. User code should configure protocol behavior through the
+ * public builder hooks instead of installing HTTP stages directly.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+

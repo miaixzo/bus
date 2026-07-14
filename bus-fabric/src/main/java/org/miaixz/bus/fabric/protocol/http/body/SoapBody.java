@@ -158,12 +158,12 @@ public final class SoapBody implements RequestBody {
     }
 
     /**
-     * Returns the HTTP body.
+     * Returns the payload body.
      *
-     * @return HTTP body
+     * @return payload body
      */
-    public HttpBody body() {
-        return HttpBody.of(payload(), media());
+    public PayloadBody body() {
+        return PayloadBody.of(payload(), media());
     }
 
     /**

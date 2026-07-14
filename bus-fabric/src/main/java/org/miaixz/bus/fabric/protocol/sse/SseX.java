@@ -38,6 +38,7 @@ import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Message;
@@ -85,8 +86,10 @@ public final class SseX {
                 .safe(Wiring.compose(current.listener(), builder.listener), currentObserver);
         this.snapshot = new SseSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.retry, builder.lastEventId, builder.autoReconnect, builder.responseHandler,
-                builder.guard, currentObserver, builder.callback == null ? Wiring.callback() : builder.callback,
-                builder.handler == null ? noopHandler() : builder.handler, currentListener);
+                builder.guard, builder.filter, currentObserver,
+                builder.callback == null ? Wiring.callback() : builder.callback,
+                builder.handler == null ? noopHandler() : builder.handler,
+                currentListener);
         this.runner = new SseRunner(snapshot);
     }
 
@@ -335,6 +338,11 @@ public final class SseX {
         private GuardRule guard;
 
         /**
+         * Message filter.
+         */
+        private Filter filter;
+
+        /**
          * Observer.
          */
         private EventObserver observer;
@@ -578,6 +586,17 @@ public final class SseX {
          */
         public Builder guard(final GuardRule guard) {
             this.guard = guard;
+            return this;
+        }
+
+        /**
+         * Sets message filter.
+         *
+         * @param filter filter
+         * @return this builder
+         */
+        public Builder filter(final Filter filter) {
+            this.filter = filter;
             return this;
         }
 

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket.frame;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
@@ -133,18 +132,6 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
     /**
      * Creates a binary frame.
      *
-     * @param payload payload
-     * @return binary frame
-     * @deprecated use {@link #binary(ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static WebSocketFrame binary(final ByteBuffer payload) {
-        return of(BINARY, true, ByteString.of(require(payload, "WebSocket payload").duplicate()));
-    }
-
-    /**
-     * Creates a binary frame.
-     *
      * @param payload payload bytes
      * @return binary frame
      */
@@ -180,17 +167,6 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
      */
     private static WebSocketFrame of(final int opcode, final boolean fin, final ByteString payload) {
         return new WebSocketFrame(opcode, fin, payload, opcode >= CLOSE);
-    }
-
-    /**
-     * Returns a read-only payload buffer view.
-     *
-     * @return read-only payload buffer
-     * @deprecated use {@link #payload()}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer byteBuffer() {
-        return payload.asByteBuffer();
     }
 
     /**

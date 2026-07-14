@@ -2188,7 +2188,7 @@
             "org.miaixz.bus.core.net.HTTP$Method",
             "org.miaixz.bus.fabric.UnoUrl",
             "org.miaixz.bus.fabric.Headers",
-            "org.miaixz.bus.fabric.protocol.http.body.HttpBody",
+            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody",
             "java.util.Map",
             "org.miaixz.bus.fabric.network.proxy.ProxyPlan",
             "org.miaixz.bus.fabric.Timeout"
@@ -2269,7 +2269,7 @@
           "name": "validateBodyPolicy",
           "parameterTypes": [
             "org.miaixz.bus.core.net.HTTP$Method",
-            "org.miaixz.bus.fabric.protocol.http.body.HttpBody"
+            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody"
           ]
         }
       ],
@@ -2544,7 +2544,7 @@
         {
           "name": "body",
           "parameterTypes": [
-            "org.miaixz.bus.fabric.protocol.http.body.HttpBody"
+            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody"
           ]
         },
         {
@@ -2558,7 +2558,7 @@
         {
           "name": "buildHeaders",
           "parameterTypes": [
-            "org.miaixz.bus.fabric.protocol.http.body.HttpBody"
+            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody"
           ]
         },
         {

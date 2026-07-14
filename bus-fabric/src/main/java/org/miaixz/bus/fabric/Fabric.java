@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.protocol.http.HttpX;
+import org.miaixz.bus.fabric.protocol.http.SoapX;
 import org.miaixz.bus.fabric.protocol.socket.SocketX;
 import org.miaixz.bus.fabric.protocol.sse.SseX;
 import org.miaixz.bus.fabric.protocol.stomp.StompX;
@@ -97,6 +98,48 @@ public final class Fabric {
      */
     public static HttpX.Builder http(final Context context) {
         return HttpX.builder(require(context, "Context"));
+    }
+
+    /**
+     * Creates a SOAP exchange using a default context.
+     *
+     * @param url target URL
+     * @return SOAP exchange
+     */
+    public static SoapX soap(final String url) {
+        return soap(defaultContext(), url);
+    }
+
+    /**
+     * Creates a SOAP exchange using the supplied context.
+     *
+     * @param context shared context
+     * @param url     target URL
+     * @return SOAP exchange
+     */
+    public static SoapX soap(final Context context, final String url) {
+        return SoapX.of(require(context, "Context"), url);
+    }
+
+    /**
+     * Creates a SOAP exchange using a default context.
+     *
+     * @param url target URL
+     * @return SOAP exchange
+     */
+    public static SoapX soap(final UnoUrl url) {
+        return soap(defaultContext(), url);
+    }
+
+    /**
+     * Creates a SOAP exchange using the supplied context.
+     *
+     * @param context shared context
+     * @param url     target URL
+     * @return SOAP exchange
+     */
+    public static SoapX soap(final Context context, final UnoUrl url) {
+        return SoapX.of(require(context, "Context"), require(url, "URL"));
     }
 
     /**

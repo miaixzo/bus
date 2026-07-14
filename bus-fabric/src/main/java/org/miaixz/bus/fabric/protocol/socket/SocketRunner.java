@@ -53,6 +53,7 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec;
 import org.miaixz.bus.fabric.protocol.socket.session.SocketLease;
+import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.logger.Logger;
 
@@ -383,15 +384,17 @@ final class SocketRunner {
                 snapshot.address().scheme(),
                 snapshot.address().host(),
                 snapshot.address().port());
-        snapshot.guard()
-                .check(
+        final Message opening = FilterChain
+                .apply(
                         Message.of(
                                 snapshot.address().protocol(),
                                 snapshot.address(),
                                 snapshot.headers(),
                                 Payload.empty(),
-                                null))
-                .throwIfRejected();
+                                null),
+                        snapshot.context().filter(),
+                        snapshot.filter());
+        snapshot.guard().check(opening).throwIfRejected();
         Logger.debug(
                 false,
                 LOG_TAG,
@@ -413,6 +416,10 @@ final class SocketRunner {
         attributes.put(SocketSession.ATTRIBUTE_SOCKET_OPTIONS, snapshot.socketOptions());
         if (snapshot.guard() != null) {
             attributes.put(SocketSession.ATTRIBUTE_GUARD, snapshot.guard());
+        }
+        final Object filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
+        if (filter != null) {
+            attributes.put(SocketSession.ATTRIBUTE_FILTER, filter);
         }
         if (snapshot.proxyHeader() != null) {
             attributes.put(SocketSession.ATTRIBUTE_PROXY_HEADER, snapshot.proxyHeader());

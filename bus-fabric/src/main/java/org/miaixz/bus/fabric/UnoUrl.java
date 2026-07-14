@@ -651,20 +651,6 @@ public final class UnoUrl {
     }
 
     /**
-     * Creates a mutable query copy.
-     *
-     * @param source source query
-     * @return mutable query
-     */
-    private static LinkedHashMap<String, List<String>> mutableQuery(final Map<String, List<String>> source) {
-        final LinkedHashMap<String, List<String>> copy = new LinkedHashMap<>();
-        for (final Map.Entry<String, List<String>> entry : source.entrySet()) {
-            copy.put(entry.getKey(), new ArrayList<>(entry.getValue()));
-        }
-        return copy;
-    }
-
-    /**
      * Encodes the query map.
      *
      * @param values query values

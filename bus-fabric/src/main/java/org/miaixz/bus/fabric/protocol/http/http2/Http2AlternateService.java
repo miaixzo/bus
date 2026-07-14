@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http.http2;
 
-import java.nio.ByteBuffer;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
@@ -131,24 +129,6 @@ public record Http2AlternateService(String origin, String value) {
     }
 
     /**
-     * Decodes an ALTSVC frame payload from a JDK byte buffer compatibility boundary.
-     *
-     * @param payload  payload
-     * @param streamId frame stream id
-     * @return alternate service
-     * @deprecated use {@link #decode(ByteString, int)}
-     */
-    @Deprecated(since = "8.8.3")
-    static Http2AlternateService decode(final ByteBuffer payload, final int streamId) {
-        final ByteBuffer checkedPayload = Assert
-                .notNull(payload, () -> new ProtocolException("Invalid HTTP/2 ALTSVC payload"));
-        if (checkedPayload.remaining() < ORIGIN_LENGTH_BYTES) {
-            throw new ProtocolException("Invalid HTTP/2 ALTSVC payload");
-        }
-        return decode(ByteString.of(checkedPayload.asReadOnlyBuffer()), streamId);
-    }
-
-    /**
      * Encodes this value as immutable ALTSVC payload bytes.
      *
      * @return payload
@@ -161,17 +141,6 @@ public record Http2AlternateService(String origin, String value) {
         payload.write(originBytes);
         payload.write(valueBytes);
         return payload.readByteString();
-    }
-
-    /**
-     * Encodes this value to a JDK byte buffer compatibility boundary.
-     *
-     * @return payload
-     * @deprecated use {@link #encodeBytes()}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer encode() {
-        return encodeBytes().asByteBuffer();
     }
 
     /**

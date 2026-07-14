@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http.http2;
 
-import java.nio.ByteBuffer;
 import java.util.List;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -240,22 +239,6 @@ public final class Http2Frame {
     }
 
     /**
-     * Creates a DATA frame from a JDK byte buffer compatibility boundary.
-     *
-     * @param streamId  stream id
-     * @param payload   payload
-     * @param endStream end stream flag
-     * @return frame
-     * @deprecated use {@link #data(int, ByteString, boolean)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static Http2Frame data(final int streamId, final ByteBuffer payload, final boolean endStream) {
-        final ByteBuffer checkedPayload = Assert
-                .notNull(payload, () -> new ValidateException("HTTP/2 DATA payload must not be null"));
-        return data(streamId, ByteString.of(checkedPayload.asReadOnlyBuffer()), endStream);
-    }
-
-    /**
      * Creates a HEADERS frame.
      *
      * @param streamId  stream id
@@ -404,23 +387,6 @@ public final class Http2Frame {
     }
 
     /**
-     * Creates a GOAWAY frame from a JDK byte buffer compatibility boundary.
-     *
-     * @param lastStreamId last peer-initiated stream id that may have been processed
-     * @param errorCode    error code
-     * @param debugData    optional debug data
-     * @return frame
-     * @deprecated use {@link #goAway(int, int, ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static Http2Frame goAway(final int lastStreamId, final int errorCode, final ByteBuffer debugData) {
-        return goAway(
-                lastStreamId,
-                errorCode,
-                debugData == null ? ByteString.EMPTY : ByteString.of(debugData.asReadOnlyBuffer()));
-    }
-
-    /**
      * Creates a WINDOW_UPDATE frame.
      *
      * @param streamId stream id
@@ -512,34 +478,6 @@ public final class Http2Frame {
             final int type,
             final int streamId,
             final int flags,
-            final ByteBuffer payload,
-            final List<Http2Header> headers) {
-        return decoded(
-                type,
-                streamId,
-                flags,
-                payload == null ? ByteString.EMPTY : ByteString.of(payload.asReadOnlyBuffer()),
-                headers,
-                null,
-                null);
-    }
-
-    /**
-     * Creates a decoded frame with pre-parsed extension metadata.
-     *
-     * @param type             type
-     * @param streamId         stream id
-     * @param flags            flags
-     * @param payload          payload
-     * @param headers          headers
-     * @param priority         priority metadata
-     * @param alternateService alternate service metadata
-     * @return frame
-     */
-    static Http2Frame decoded(
-            final int type,
-            final int streamId,
-            final int flags,
             final ByteString payload,
             final List<Http2Header> headers,
             final Http2Priority priority,
@@ -551,36 +489,6 @@ public final class Http2Frame {
         return new Http2Frame(type, streamId, flags, payload, headers, decodedSettings(type, flags, payload),
                 decodedWindowDelta(type, payload), decodedErrorCode(type, payload),
                 decodedPromisedStreamId(type, payload), decodedPriority, decodedAlternateService);
-    }
-
-    /**
-     * Creates a decoded frame with pre-parsed extension metadata from a JDK byte buffer compatibility boundary.
-     *
-     * @param type             type
-     * @param streamId         stream id
-     * @param flags            flags
-     * @param payload          payload
-     * @param headers          headers
-     * @param priority         priority metadata
-     * @param alternateService alternate service metadata
-     * @return frame
-     */
-    static Http2Frame decoded(
-            final int type,
-            final int streamId,
-            final int flags,
-            final ByteBuffer payload,
-            final List<Http2Header> headers,
-            final Http2Priority priority,
-            final Http2AlternateService alternateService) {
-        return decoded(
-                type,
-                streamId,
-                flags,
-                payload == null ? ByteString.EMPTY : ByteString.of(payload.asReadOnlyBuffer()),
-                headers,
-                priority,
-                alternateService);
     }
 
     /**
@@ -626,17 +534,6 @@ public final class Http2Frame {
      */
     public boolean endStream() {
         return endStream;
-    }
-
-    /**
-     * Returns payload snapshot.
-     *
-     * @return payload
-     * @deprecated use {@link #payloadBytes()}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer payload() {
-        return payload.asByteBuffer();
     }
 
     /**
@@ -706,17 +603,6 @@ public final class Http2Frame {
             return Normal._0;
         }
         return new Buffer().write(payload).readInt() & Integer.MAX_VALUE;
-    }
-
-    /**
-     * Returns GOAWAY debug data.
-     *
-     * @return debug data
-     * @deprecated use {@link #debugDataBytes()}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer debugData() {
-        return debugDataBytes().asByteBuffer();
     }
 
     /**

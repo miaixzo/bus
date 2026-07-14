@@ -18,12 +18,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Implements the ordered HTTP execution chain.
+ * Implements the internal ordered HTTP execution chain.
  *
  * <p>
  * Chain stages bridge requests, apply cache policy, acquire connections, retry recoverable failures and coordinate the
- * final server exchange. Each stage receives an immutable message view and must pass control through the chain instead
- * of performing unrelated protocol work.
+ * final server exchange. This package is a runtime implementation detail; user extensions must use the public
+ * {@code filter(...)}, {@code guard(...)}, and {@code observe(...)} entry points on protocol builders.
  * </p>
  *
  * @author Kimi Liu

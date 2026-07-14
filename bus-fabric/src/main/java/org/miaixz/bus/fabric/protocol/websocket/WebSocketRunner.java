@@ -45,6 +45,7 @@ import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketWriter;
 import org.miaixz.bus.fabric.protocol.websocket.upgrade.WebSocketUpgrade;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
+import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -90,12 +91,12 @@ final class WebSocketRunner {
                 snapshot.address().host(),
                 snapshot.address().port());
         try {
-            checkGuard();
+            final Message opening = prepareOpen();
             final WebSocketUpgrade upgrade = new WebSocketUpgrade();
             upgraded = Mediator.upgradeHttp1(
                     snapshot.context(),
                     upgrade.httpUri(snapshot.uri()),
-                    upgrade.headers(snapshot.headers()),
+                    upgrade.headers(opening.headers()),
                     snapshot.timeout());
             upgrade.validate(upgraded.status(), upgraded.headers());
             final Connection connection = upgraded.connection();
@@ -105,8 +106,9 @@ final class WebSocketRunner {
                     new WebSocketWriter(new ConnectionSink(connection), true),
                     new WebSocketReader(new ConnectionSource(connection), false, snapshot.address()), lease,
                     snapshot.handler(), snapshot.context().reactor().dispatcher(), dispatchKey(),
-                    snapshot.timeout().ping(), snapshot.guard(), snapshot.observer(), snapshot.listener(),
-                    snapshot.context().options().materializeMaxBytes());
+                    snapshot.timeout().ping(), snapshot.guard(),
+                    FilterChain.compose(snapshot.context().filter(), snapshot.filter()), snapshot.observer(),
+                    snapshot.listener(), snapshot.context().options().materializeMaxBytes());
             lease = null;
             emit(ObservationMarker.WEBSOCKET_OPEN, null);
             snapshot.listener().open(session);
@@ -151,9 +153,11 @@ final class WebSocketRunner {
     /**
      * Checks the optional guard.
      */
-    private void checkGuard() {
+    private Message prepareOpen() {
+        Message opening = Message.of(Protocol.WS, snapshot.address(), snapshot.headers(), Payload.empty(), null);
+        opening = FilterChain.apply(opening, snapshot.context().filter(), snapshot.filter());
         if (snapshot.guard() == null) {
-            return;
+            return opening;
         }
         Logger.debug(
                 true,
@@ -161,14 +165,14 @@ final class WebSocketRunner {
                 "WebSocket guard check started: host={}, port={}",
                 snapshot.address().host(),
                 snapshot.address().port());
-        snapshot.guard().check(Message.of(Protocol.WS, snapshot.address(), snapshot.headers(), Payload.empty(), null))
-                .throwIfRejected();
+        snapshot.guard().check(opening).throwIfRejected();
         Logger.debug(
                 false,
                 LOG_TAG,
                 "WebSocket guard check accepted: host={}, port={}",
                 snapshot.address().host(),
                 snapshot.address().port());
+        return opening;
     }
 
     /**

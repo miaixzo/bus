@@ -32,7 +32,7 @@ import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.bridge.Ingress;
 import org.miaixz.bus.fabric.bridge.Translator;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Servlet-style bridge translator that maps external ingresses to HTTP request snapshots without executing HTTP chains.
@@ -93,7 +93,7 @@ public final class ServletBridge implements Translator<HttpRequest> {
                 : MediaType.parse(headers.get(HTTP.CONTENT_TYPE));
         final Payload payload = ingress.payload();
         return HttpRequest.builder().method(method(method)).url(UnoUrl.parse(Protocol.HTTP_PREFIX + host + path))
-                .headers(headers).body(HttpBody.of(payload, media)).tag(ingress).build();
+                .headers(headers).body(PayloadBody.of(payload, media)).tag(ingress).build();
     }
 
     /**

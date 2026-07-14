@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.cache.CacheEntry;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Encodes and decodes HTTP cache metadata.
@@ -170,7 +170,7 @@ final class HttpCacheCodec {
         return HttpResponse.builder().request(request).code(readCode(metadata))
                 .message(requiredMetadata(metadata, META_MESSAGE))
                 .headers(readHeaders(metadata, META_RESPONSE_HEADER_NAME, META_RESPONSE_HEADER_VALUE))
-                .body(HttpBody.of(entry.payload(), MediaType.parse(requiredMetadata(metadata, META_MEDIA))))
+                .body(PayloadBody.of(entry.payload(), MediaType.parse(requiredMetadata(metadata, META_MEDIA))))
                 .protocol(readProtocol(metadata)).sentRequestAtMillis(readLong(metadata, META_SENT_AT))
                 .receivedResponseAtMillis(readLong(metadata, META_RECEIVED_AT)).build();
     }
@@ -194,7 +194,7 @@ final class HttpCacheCodec {
      * @param body     body
      * @return copy
      */
-    static HttpResponse copyResponse(final HttpRequest request, final HttpResponse response, final HttpBody body) {
+    static HttpResponse copyResponse(final HttpRequest request, final HttpResponse response, final PayloadBody body) {
         return response.toBuilder().request(request).body(body).build();
     }
 
@@ -204,7 +204,7 @@ final class HttpCacheCodec {
      * @param response response
      * @return body
      */
-    static HttpBody copyBody(final HttpResponse response) {
+    static PayloadBody copyBody(final HttpResponse response) {
         return response.body();
     }
 

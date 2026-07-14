@@ -21,9 +21,10 @@
  * Implements the current HTTP request/response exchange model.
  *
  * <p>
- * {@code HttpX} is the builder and immutable exchange entry, {@code HttpRunner} executes snapshots, and request,
- * response and cookie types carry HTTP semantics. This package owns HTTP method, header, redirect and response body
- * behavior while delegating connection acquisition, TLS and proxy routing to network and registry packages.
+ * {@code HttpX} is the builder and immutable exchange entry, {@code SoapX} provides the SOAP-over-HTTP entry,
+ * {@code HttpRunner} executes snapshots, and request, response and cookie types carry HTTP semantics. This package owns
+ * HTTP method, header, redirect and response body behavior while delegating connection acquisition, TLS and proxy
+ * routing to network and registry packages.
  * </p>
  *
  * @author Kimi Liu

@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.http.http2;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -196,39 +195,6 @@ public final class HpackCodec {
             insert(header);
         }
         return output.buffer();
-    }
-
-    /**
-     * Encodes headers to a JDK byte buffer compatibility boundary.
-     *
-     * @param headers headers
-     * @return encoded buffer
-     * @deprecated use {@link #encodeBuffer(List)}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer encode(final List<Http2Header> headers) {
-        final Buffer output = encodeBuffer(headers);
-        return ByteBuffer.wrap(output.readByteArray()).asReadOnlyBuffer();
-    }
-
-    /**
-     * Decodes headers.
-     *
-     * @param source source
-     * @return headers
-     * @deprecated use {@link #decode(Buffer)}
-     */
-    @Deprecated(since = "8.8.3")
-    public List<Http2Header> decode(final ByteBuffer source) {
-        final ByteBuffer checkedSource = Assert
-                .notNull(source, () -> new ValidateException("HPACK source must not be null"));
-        final Buffer input = new Buffer();
-        try {
-            input.write(checkedSource.asReadOnlyBuffer());
-        } catch (final java.io.IOException e) {
-            throw new ProtocolException("Unable to adapt HPACK source", e);
-        }
-        return decode(input);
     }
 
     /**

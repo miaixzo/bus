@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.http.body;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
@@ -31,7 +30,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.ProgressBody;
@@ -39,12 +37,12 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
 import org.miaixz.bus.fabric.codec.body.ResponseBody;
 
 /**
- * Immutable HTTP body that combines a payload with media metadata.
+ * Immutable payload-backed body that combines HTTP media metadata, length, and progress tracking.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
+public final class PayloadBody implements RequestBody, ResponseBody, ProgressBody {
 
     /**
      * Default binary media type.
@@ -82,35 +80,35 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
     private final AtomicBoolean closed;
 
     /**
-     * Creates an HTTP body.
+     * Creates a payload body.
      *
      * @param payload payload
      * @param media   media
      */
-    private HttpBody(final Payload payload, final MediaType media) {
+    private PayloadBody(final Payload payload, final MediaType media) {
         this(payload, media, null, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
-     * Creates an HTTP body.
+     * Creates a payload body.
      *
      * @param payload  payload
      * @param media    media
      * @param progress optional progress tracker
      */
-    private HttpBody(final Payload payload, final MediaType media, final ProgressBody.Tracker progress) {
+    private PayloadBody(final Payload payload, final MediaType media, final ProgressBody.Tracker progress) {
         this(payload, media, progress, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
-     * Creates an HTTP body.
+     * Creates a payload body.
      *
      * @param payload             payload
      * @param media               media
      * @param progress            optional progress tracker
      * @param materializeMaxBytes materialize byte threshold
      */
-    private HttpBody(final Payload payload, final MediaType media, final ProgressBody.Tracker progress,
+    private PayloadBody(final Payload payload, final MediaType media, final ProgressBody.Tracker progress,
             final long materializeMaxBytes) {
         this.payload = Assert.notNull(payload, () -> new ValidateException("Payload must not be null"));
         this.media = Assert.notNull(media, () -> new ValidateException("MediaType must not be null"));
@@ -126,51 +124,51 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
      *
      * @return empty body
      */
-    public static HttpBody empty() {
-        return Instances.get(HttpBody.class.getName() + ".empty", () -> new HttpBody(Payload.empty(), BINARY));
+    public static PayloadBody empty() {
+        return Instances.get(PayloadBody.class.getName() + ".empty", () -> new PayloadBody(Payload.empty(), BINARY));
     }
 
     /**
-     * Creates an HTTP body.
+     * Creates a payload body.
      *
      * @param payload payload
      * @param media   media
-     * @return HTTP body
+     * @return payload body
      */
-    public static HttpBody of(final Payload payload, final MediaType media) {
-        return new HttpBody(payload, media);
+    public static PayloadBody of(final Payload payload, final MediaType media) {
+        return new PayloadBody(payload, media);
     }
 
     /**
-     * Creates an HTTP body with an explicit materialize threshold.
+     * Creates a payload body with an explicit materialize threshold.
      *
      * @param payload             payload
      * @param media               media
      * @param materializeMaxBytes materialize byte threshold
-     * @return HTTP body
+     * @return payload body
      */
-    public static HttpBody of(final Payload payload, final MediaType media, final long materializeMaxBytes) {
-        return new HttpBody(payload, media, null, materializeMaxBytes);
+    public static PayloadBody of(final Payload payload, final MediaType media, final long materializeMaxBytes) {
+        return new PayloadBody(payload, media, null, materializeMaxBytes);
     }
 
     /**
-     * Returns a progress-aware copy of this HTTP body.
+     * Returns a progress-aware copy of this payload body.
      *
      * @param listener listener
-     * @return progress-aware HTTP body
+     * @return progress-aware payload body
      */
-    public HttpBody progress(final BiConsumer<Long, Long> listener) {
-        return new HttpBody(payload, media, ProgressBody.Tracker.of(payload, listener), materializeMaxBytes);
+    public PayloadBody progress(final BiConsumer<Long, Long> listener) {
+        return new PayloadBody(payload, media, ProgressBody.Tracker.of(payload, listener), materializeMaxBytes);
     }
 
     /**
      * Returns a copy with a replacement materialize threshold.
      *
      * @param bytes materialize byte threshold
-     * @return copied HTTP body
+     * @return copied payload body
      */
-    public HttpBody materializeMaxBytes(final long bytes) {
-        return new HttpBody(payload, media, progress, bytes);
+    public PayloadBody materializeMaxBytes(final long bytes) {
+        return new PayloadBody(payload, media, progress, bytes);
     }
 
     /**
@@ -220,23 +218,12 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
     }
 
     /**
-     * Opens the compatibility body stream.
-     *
-     * @return input stream
-     * @deprecated use {@link #source()}
-     */
-    @Deprecated(since = "8.8.3")
-    public InputStream stream() {
-        return IoKit.buffer(source()).inputStream();
-    }
-
-    /**
      * Reads all body bytes.
      *
      * @return bytes
      */
     public byte[] bytes() {
-        return Payload.materialize(payload(), materializeMaxBytes, "HttpBody.bytes()");
+        return Payload.materialize(payload(), materializeMaxBytes, "PayloadBody.bytes()");
     }
 
     /**
@@ -247,7 +234,7 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
      */
     @Override
     public byte[] bytes(final long maxBytes) {
-        return Payload.materialize(payload(), maxBytes, "HttpBody.bytes(long)");
+        return Payload.materialize(payload(), maxBytes, "PayloadBody.bytes(long)");
     }
 
     /**
@@ -282,9 +269,9 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
             try {
                 closeable.close();
             } catch (final IOException e) {
-                throw new SocketException("Unable to close HTTP body", e);
+                throw new SocketException("Unable to close payload body", e);
             } catch (final Exception e) {
-                throw new InternalException("Unable to close HTTP body", e);
+                throw new InternalException("Unable to close payload body", e);
             }
         }
     }
@@ -316,7 +303,7 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
      * @return this body
      */
     @Override
-    public HttpBody stepBytes(final long bytes) {
+    public PayloadBody stepBytes(final long bytes) {
         if (progress == null) {
             ProgressBody.super.stepBytes(bytes);
         } else {
@@ -332,7 +319,7 @@ public final class HttpBody implements RequestBody, ResponseBody, ProgressBody {
      * @return this body
      */
     @Override
-    public HttpBody stepRate(final double rate) {
+    public PayloadBody stepRate(final double rate) {
         if (progress == null) {
             ProgressBody.super.stepRate(rate);
         } else {

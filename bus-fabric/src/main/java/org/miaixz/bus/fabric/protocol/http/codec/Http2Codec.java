@@ -47,7 +47,7 @@ import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.http2.Http2Connection;
 import org.miaixz.bus.fabric.protocol.http.http2.Http2Frame;
 import org.miaixz.bus.fabric.protocol.http.http2.Http2Header;
@@ -169,7 +169,7 @@ public final class Http2Codec implements HttpCodec {
                 throw new InternalException("HTTP/2 stream source is not payload-backed");
             }
             return HttpResponse.builder().request(current).code(code).message(Normal.EMPTY).headers(headers)
-                    .body(HttpBody.of(payload, media(headers))).protocol(Protocol.HTTP_2).trailers(Headers.empty())
+                    .body(PayloadBody.of(payload, media(headers))).protocol(Protocol.HTTP_2).trailers(Headers.empty())
                     .build();
         } finally {
             if (end) {

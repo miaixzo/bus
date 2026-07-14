@@ -49,6 +49,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Call;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
@@ -68,10 +69,12 @@ import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.observe.tags.Tags;
+import org.miaixz.bus.fabric.protocol.Demuxer;
 import org.miaixz.bus.fabric.protocol.socket.body.SocketBody;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketFrame;
 import org.miaixz.bus.fabric.protocol.socket.session.SocketLease;
+import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -101,6 +104,11 @@ public final class SocketSession implements Session {
      * Session attribute key for socket guard.
      */
     public static final String ATTRIBUTE_GUARD = "guard";
+
+    /**
+     * Session attribute key for socket filter.
+     */
+    public static final String ATTRIBUTE_FILTER = "filter";
 
     /**
      * Session attribute key for socket options.
@@ -457,7 +465,7 @@ public final class SocketSession implements Session {
         this.datagram = datagram;
         this.kcp = kcp;
         this.codec = require(codec, "Socket codec");
-        this.handler = handler == null ? new NoopHandler() : handler;
+        this.handler = handler == null ? Demuxer.noop() : handler;
         this.pendingFrames = new ArrayDeque<>();
         this.attributes = new LinkedHashMap<>(attributes == null ? Map.of() : attributes);
         this.owner = owner;
@@ -545,10 +553,12 @@ public final class SocketSession implements Session {
      */
     private Call<Void> send(final SocketFrame frame) {
         ensureOpen();
-        final Payload payload = Payload.of(frame.payload());
-        checkGuard(payload, "socket-write");
+        final Message outgoing = filter(Payload.of(frame.payload()), "socket-write");
+        checkGuard(outgoing);
+        final Payload payload = outgoing.payload();
+        final SocketFrame filteredFrame = SocketFrame.of(ByteString.of(materialize(payload, "SocketSession.send")));
         final Buffer output = new Buffer();
-        codec.encode(frame, output);
+        codec.encode(filteredFrame, output);
         final ByteBuffer encoded = ByteBuffer.wrap(output.readByteArray()).asReadOnlyBuffer();
         final long byteCount = encoded.remaining();
         Logger.debug(
@@ -1012,9 +1022,9 @@ public final class SocketSession implements Session {
      * @param tag    message tag
      */
     private void completeFrame(final CompletableFuture<Message> future, final SocketFrame frame, final Object tag) {
-        final Message received = message(Payload.of(frame.payload()), tag);
+        final Message received = filter(Payload.of(frame.payload()), tag == null ? "socket-read" : tag);
         try {
-            checkGuard(received.payload(), "socket-read");
+            checkGuard(received);
             handler.message(this, received);
             touch();
             future.complete(received);
@@ -1051,11 +1061,24 @@ public final class SocketSession implements Session {
      * @param payload payload
      * @param tag     direction tag
      */
-    private void checkGuard(final Payload payload, final String tag) {
+    private void checkGuard(final Message message) {
         final Object value = attributes.get(ATTRIBUTE_GUARD);
         if (value instanceof GuardRule current) {
-            current.check(message(payload, tag)).throwIfRejected();
+            current.check(message).throwIfRejected();
         }
+    }
+
+    /**
+     * Applies the optional session filter to a socket payload.
+     *
+     * @param payload payload
+     * @param tag     direction tag
+     * @return filtered message
+     */
+    private Message filter(final Payload payload, final Object tag) {
+        final Message message = message(payload, tag);
+        final Object value = attributes.get(ATTRIBUTE_FILTER);
+        return value instanceof Filter current ? FilterChain.apply(message, current) : message;
     }
 
     /**
@@ -1334,18 +1357,6 @@ public final class SocketSession implements Session {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * No-op handler.
-     */
-    private static final class NoopHandler implements Handler {
-
-        @Override
-        public void message(final Session session, final Message message) {
-            // No-op handler intentionally ignores socket messages.
-        }
-
     }
 
     /**

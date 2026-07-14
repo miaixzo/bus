@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket.body;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
@@ -159,18 +158,6 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     }
 
     /**
-     * Creates a binary body.
-     *
-     * @param buffer binary buffer
-     * @return WebSocket body
-     * @deprecated use {@link #binary(ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static WebSocketBody binary(final ByteBuffer buffer) {
-        return binary(snapshot(buffer));
-    }
-
-    /**
      * Creates a binary body with media metadata.
      *
      * @param payload payload
@@ -219,17 +206,6 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      */
     public String textValue() {
         return text;
-    }
-
-    /**
-     * Returns a read-only binary buffer.
-     *
-     * @return binary buffer
-     * @deprecated use {@link #binaryBytes()}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer binaryValue() {
-        return binaryBytes().asByteBuffer();
     }
 
     /**
@@ -289,23 +265,6 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
             progress.stepRate(rate);
         }
         return this;
-    }
-
-    /**
-     * Copies a binary buffer.
-     *
-     * @param buffer buffer
-     * @return bytes
-     */
-    private static byte[] snapshot(final ByteBuffer buffer) {
-        final ByteBuffer checked = require(buffer, "WebSocket binary value");
-        if (checked.remaining() > MAX_BODY_BYTES) {
-            throw new ProtocolException("WebSocket body payload is too large");
-        }
-        final ByteBuffer duplicate = checked.duplicate();
-        final byte[] bytes = new byte[duplicate.remaining()];
-        duplicate.get(bytes);
-        return bytes;
     }
 
     /**

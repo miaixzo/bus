@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.http.cache;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -117,12 +116,6 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
         }
         current = delegate.source();
         return new CacheWritingSource(current, writer, this::commit, this::abort);
-    }
-
-    @Override
-    @Deprecated(since = "8.8.3")
-    public InputStream stream() {
-        return Payload.super.stream();
     }
 
     /**

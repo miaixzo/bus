@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket;
 
-import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -42,6 +41,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Call;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
@@ -62,6 +62,7 @@ import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketWriter;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.logger.Logger;
@@ -245,6 +246,11 @@ public final class WebSocketSession implements Session {
     private final GuardRule guard;
 
     /**
+     * Optional message filter.
+     */
+    private final Filter filter;
+
+    /**
      * Event observer.
      */
     private final EventObserver observer;
@@ -265,7 +271,7 @@ public final class WebSocketSession implements Session {
      * @param address session address
      */
     WebSocketSession(final Address address) {
-        this(address, null, null, null, null, null, null, Duration.ZERO, null, EventObserver.noop(), Wiring.noop(),
+        this(address, null, null, null, null, null, null, Duration.ZERO, null, null, EventObserver.noop(), Wiring.noop(),
                 Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
@@ -280,7 +286,7 @@ public final class WebSocketSession implements Session {
      */
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
             final ConnectionLease lease, final Handler handler) {
-        this(address, writer, reader, lease, handler, null, null, Duration.ZERO, null, EventObserver.noop(),
+        this(address, writer, reader, lease, handler, null, null, Duration.ZERO, null, null, EventObserver.noop(),
                 Wiring.noop(), Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
@@ -297,7 +303,7 @@ public final class WebSocketSession implements Session {
      */
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey) {
-        this(address, writer, reader, lease, handler, dispatcher, dispatchKey, Duration.ZERO, null,
+        this(address, writer, reader, lease, handler, dispatcher, dispatchKey, Duration.ZERO, null, null,
                 EventObserver.noop(), Wiring.noop(), Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
@@ -320,7 +326,7 @@ public final class WebSocketSession implements Session {
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
             final Duration ping, final GuardRule guard, final EventObserver observer,
             final Listener<? super WebSocketSession> listener) {
-        this(address, writer, reader, lease, handler, dispatcher, dispatchKey, ping, guard, observer, listener,
+        this(address, writer, reader, lease, handler, dispatcher, dispatchKey, ping, guard, null, observer, listener,
                 Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
@@ -336,13 +342,14 @@ public final class WebSocketSession implements Session {
      * @param dispatchKey         dispatch key
      * @param ping                ping interval
      * @param guard               optional guard
+     * @param filter              optional filter
      * @param observer            observer
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      */
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
-            final Duration ping, final GuardRule guard, final EventObserver observer,
+            final Duration ping, final GuardRule guard, final Filter filter, final EventObserver observer,
             final Listener<? super WebSocketSession> listener, final long materializeMaxBytes) {
         this.address = require(address, "WebSocket address");
         Assert.isFalse(reader != null && handler == null, () -> new ValidateException("Handler must not be null"));
@@ -364,6 +371,7 @@ public final class WebSocketSession implements Session {
         this.dispatcher = dispatcher;
         this.dispatchKey = dispatchKey;
         this.guard = guard;
+        this.filter = filter;
         this.observer = EventObserver.safe(observer);
         this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, this.observer);
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
@@ -450,13 +458,17 @@ public final class WebSocketSession implements Session {
         if (writer == null) {
             throw new StatefulException("WebSocket session has no transport");
         }
-        checkGuard(checkedPayload, TAG_WRITE);
-        final long length = checkedPayload.length();
+        final Message outgoing = filter(checkedPayload, TAG_WRITE);
+        checkGuard(outgoing);
+        final Payload outgoingPayload = outgoing.payload();
+        final long length = outgoingPayload.length();
         if (length >= Normal.LONG_ZERO) {
             checkQueueLimit(length);
-            return writeNative(() -> writeBinary(checkedPayload, length), checkedPayload);
+            return writeNative(() -> writeBinary(outgoingPayload, length), outgoingPayload);
         }
-        return send(ByteString.of(materialize(checkedPayload, MATERIALIZE_SEND_PAYLOAD)));
+        final ByteString bytes = ByteString.of(materialize(outgoingPayload, MATERIALIZE_SEND_PAYLOAD));
+        checkQueueLimit(bytes.size());
+        return writeNative(() -> writer.write(WebSocketFrame.binary(bytes)), Payload.of(bytes));
     }
 
     /**
@@ -475,9 +487,11 @@ public final class WebSocketSession implements Session {
         if (checkedBody.binaryMessage()) {
             return send(payload);
         }
-        checkGuard(payload, TAG_WRITE);
-        checkQueueLimit(payload.length());
-        return writeNative(() -> writer.write(WebSocketFrame.text(checkedBody.textValue())), payload);
+        final Message outgoing = filter(payload, TAG_WRITE);
+        checkGuard(outgoing);
+        final ByteString text = ByteString.of(materialize(outgoing.payload(), "WebSocketSession.send(WebSocketBody)"));
+        checkQueueLimit(text.size());
+        return writeNative(() -> writer.write(WebSocketFrame.text(text)), Payload.of(text));
     }
 
     /**
@@ -490,26 +504,14 @@ public final class WebSocketSession implements Session {
         final ByteString value = validateSendText(text);
         ensureOpened();
         final Payload payload = Payload.of(value);
-        checkGuard(payload, TAG_WRITE);
+        final Message outgoing = filter(payload, TAG_WRITE);
+        checkGuard(outgoing);
+        final ByteString filtered = ByteString.of(materialize(outgoing.payload(), "WebSocketSession.send(String)"));
         if (writer != null) {
-            checkQueueLimit(payload.length());
-            return writeNative(() -> writer.write(WebSocketFrame.text(value)), payload);
+            checkQueueLimit(filtered.size());
+            return writeNative(() -> writer.write(WebSocketFrame.text(filtered)), Payload.of(filtered));
         }
         throw new StatefulException("WebSocket session has no transport");
-    }
-
-    /**
-     * Sends a binary message through the JDK byte buffer compatibility boundary.
-     *
-     * @param bytes binary bytes
-     * @return send call
-     * @deprecated use {@link #send(ByteString)}
-     */
-    @Override
-    @Deprecated(since = "8.8.3")
-    public Call<Void> send(final ByteBuffer bytes) {
-        final ByteBuffer checkedBytes = require(bytes, "WebSocket binary payload");
-        return send(ByteString.of(checkedBytes.duplicate()));
     }
 
     /**
@@ -522,25 +524,14 @@ public final class WebSocketSession implements Session {
         final ByteString checkedBytes = require(bytes, "WebSocket binary payload");
         ensureOpened();
         final Payload payload = Payload.of(checkedBytes);
-        checkGuard(payload, TAG_WRITE);
+        final Message outgoing = filter(payload, TAG_WRITE);
+        checkGuard(outgoing);
+        final ByteString filtered = ByteString.of(materialize(outgoing.payload(), "WebSocketSession.send(ByteString)"));
         if (writer != null) {
-            checkQueueLimit(payload.length());
-            return writeNative(() -> writer.write(WebSocketFrame.binary(checkedBytes)), payload);
+            checkQueueLimit(filtered.size());
+            return writeNative(() -> writer.write(WebSocketFrame.binary(filtered)), Payload.of(filtered));
         }
         throw new StatefulException("WebSocket session has no transport");
-    }
-
-    /**
-     * Sends a ping through the JDK byte buffer compatibility boundary.
-     *
-     * @param payload ping payload
-     * @return send call
-     * @deprecated use {@link #ping(ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public Call<Void> ping(final ByteBuffer payload) {
-        final ByteBuffer checkedPayload = require(payload, "WebSocket ping payload");
-        return ping(ByteString.of(checkedPayload.duplicate()));
     }
 
     /**
@@ -555,11 +546,16 @@ public final class WebSocketSession implements Session {
             throw new ValidateException("WebSocket ping payload is too large");
         }
         ensureOpened();
-        final Payload body = Payload.of(checkedPayload);
-        checkGuard(body, TAG_PING);
+        final Message outgoing = filter(Payload.of(checkedPayload), TAG_PING);
+        final ByteString filtered = ByteString.of(materialize(outgoing.payload(), "WebSocketSession.ping"));
+        if (filtered.size() > MAX_CONTROL_PAYLOAD_BYTES) {
+            throw new ValidateException("WebSocket ping payload is too large");
+        }
+        final Payload body = Payload.of(filtered);
+        checkGuard(outgoing.withPayload(body));
         if (writer != null) {
             sentPingCount.incrementAndGet();
-            return writeNative(() -> writer.ping(checkedPayload), body);
+            return writeNative(() -> writer.ping(filtered), body);
         }
         throw new StatefulException("WebSocket session has no transport");
     }
@@ -755,10 +751,22 @@ public final class WebSocketSession implements Session {
      * @param payload payload
      * @param tag     direction tag
      */
-    private void checkGuard(final Payload payload, final String tag) {
+    private void checkGuard(final Message message) {
         if (guard != null) {
-            guard.check(Message.of(address.protocol(), address, Headers.empty(), payload, tag)).throwIfRejected();
+            guard.check(message).throwIfRejected();
         }
+    }
+
+    /**
+     * Applies the optional message filter.
+     *
+     * @param payload payload
+     * @param tag     direction tag
+     * @return filtered message
+     */
+    private Message filter(final Payload payload, final String tag) {
+        final Message message = Message.of(address.protocol(), address, Headers.empty(), payload, tag);
+        return filter == null ? message : FilterChain.apply(message, filter);
     }
 
     /**
@@ -890,8 +898,9 @@ public final class WebSocketSession implements Session {
                     @Override
                     public void message(final Session session, final org.miaixz.bus.fabric.Message message) {
                         delivered.set(true);
-                        checkGuard(message.payload(), TAG_READ);
-                        emit(ObservationMarker.WEBSOCKET_MESSAGE, message.payload(), null);
+                        final Message received = filter(message.payload(), TAG_READ);
+                        checkGuard(received);
+                        emit(ObservationMarker.WEBSOCKET_MESSAGE, received.payload(), null);
                         Logger.debug(
                                 false,
                                 LOG_TAG,
@@ -899,8 +908,8 @@ public final class WebSocketSession implements Session {
                                 address.scheme(),
                                 address.host(),
                                 address.port(),
-                                message.payload().length());
-                        handler.message(session, message);
+                                received.payload().length());
+                        handler.message(session, received);
                     }
 
                     @Override

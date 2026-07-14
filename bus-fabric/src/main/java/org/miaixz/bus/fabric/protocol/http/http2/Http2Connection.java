@@ -633,22 +633,6 @@ public final class Http2Connection implements AutoCloseable {
     }
 
     /**
-     * Sends a GOAWAY frame and rejects new streams locally through a JDK byte buffer compatibility boundary.
-     *
-     * @param lastStreamId last processed stream id
-     * @param errorCode    error code
-     * @param debugData    optional debug data
-     * @deprecated use {@link #goAway(int, int, ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public void goAway(final int lastStreamId, final int errorCode, final ByteBuffer debugData) {
-        goAway(
-                lastStreamId,
-                errorCode,
-                debugData == null ? ByteString.EMPTY : ByteString.of(debugData.asReadOnlyBuffer()));
-    }
-
-    /**
      * Creates a pushed stream and records it in the stream registry.
      *
      * @param streamId  pushed stream id
@@ -759,25 +743,6 @@ public final class Http2Connection implements AutoCloseable {
             }
             return cancel;
         });
-    }
-
-    /**
-     * Dispatches pushed data through a JDK byte buffer compatibility boundary.
-     *
-     * @param streamId  pushed stream id
-     * @param data      data
-     * @param endStream true when ended
-     * @return future whose value is true when canceled
-     * @deprecated use {@link #pushDataLater(int, ByteString, boolean)}
-     */
-    @Deprecated(since = "8.8.3")
-    public CompletableFuture<Boolean> pushDataLater(
-            final int streamId,
-            final ByteBuffer data,
-            final boolean endStream) {
-        final ByteBuffer checkedData = Assert
-                .notNull(data, () -> new ValidateException("HTTP/2 push data must not be null"));
-        return pushDataLater(streamId, ByteString.of(checkedData.asReadOnlyBuffer()), endStream);
     }
 
     /**

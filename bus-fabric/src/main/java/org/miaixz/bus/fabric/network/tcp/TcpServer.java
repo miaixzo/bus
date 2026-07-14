@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -64,11 +63,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  * @since Java 21+
  */
 public final class TcpServer implements AutoCloseable {
-
-    /**
-     * Default listen backlog.
-     */
-    private static final int BACKLOG = (int) Normal.KILO;
 
     /**
      * Listen address.

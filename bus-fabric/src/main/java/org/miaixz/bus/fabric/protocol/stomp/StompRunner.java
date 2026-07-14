@@ -45,6 +45,7 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompCodec;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompFrame;
+import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -134,14 +135,14 @@ final class StompRunner {
                     && !Protocol.WSS.name.equals(snapshot.uri().getScheme())) {
                 throw new ProtocolException("STOMP open requires ws or wss target");
             }
-            checkGuard();
+            final Message opening = prepareOpen();
             final StompCodec inbound = new StompCodec();
             final CompletableFuture<StompFrame> connected = new CompletableFuture<>();
             final AtomicReference<StompSession> session = new AtomicReference<>();
             socket = Mediator.openWebSocket(
-                    snapshot.context(),
+                    snapshot.context().withFilter(null),
                     snapshot.uri(),
-                    snapshot.headers(),
+                    opening.headers(),
                     snapshot.timeout(),
                     (ignored, message) -> {
                         try {
@@ -167,7 +168,7 @@ final class StompRunner {
             final Session openedSocket = socket;
             final StompCodec outbound = new StompCodec();
             final Buffer output = new Buffer();
-            outbound.encode(connectFrame(), output);
+            outbound.encode(prepareConnectFrame(), output);
             awaitSend(openedSocket.send(Payload.of(output.readByteString())));
             awaitConnected(connected);
             Logger.info(
@@ -180,7 +181,8 @@ final class StompRunner {
             final StompSession opened = new StompSession(
                     buffer -> openedSocket.send(Payload.of(buffer.readByteString())), openedSocket::close,
                     openedSocket::cancel, snapshot.handler(), snapshot.address(), snapshot.guard(), snapshot.observer(),
-                    snapshot.listener(), snapshot.context().options().materializeMaxBytes());
+                    FilterChain.compose(snapshot.context().filter(), snapshot.filter()), snapshot.listener(),
+                    snapshot.context().options().materializeMaxBytes());
             session.set(opened);
             emit(ObservationMarker.STOMP_OPEN, null);
             snapshot.listener().open(opened);
@@ -287,7 +289,35 @@ final class StompRunner {
     /**
      * Checks the optional guard.
      */
-    private void checkGuard() {
+    private Message prepareOpen() {
+        final Message opening = FilterChain.apply(
+                Message.of(
+                        snapshot.address().protocol(),
+                        snapshot.address(),
+                        snapshot.headers(),
+                        Payload.empty(),
+                        snapshot.destination()),
+                snapshot.context().filter(),
+                snapshot.filter());
+        checkGuard(opening);
+        return opening;
+    }
+
+    /**
+     * Creates the filtered CONNECT frame.
+     *
+     * @return filtered CONNECT frame
+     */
+    private StompFrame prepareConnectFrame() {
+        return filter(connectFrame(), snapshot.destination());
+    }
+
+    /**
+     * Checks the optional guard.
+     *
+     * @param message message
+     */
+    private void checkGuard(final Message message) {
         if (snapshot.guard() == null) {
             return;
         }
@@ -298,15 +328,7 @@ final class StompRunner {
                 snapshot.address().host(),
                 snapshot.address().port(),
                 snapshot.destination() != null);
-        snapshot.guard()
-                .check(
-                        Message.of(
-                                Protocol.WS,
-                                snapshot.address(),
-                                snapshot.headers(),
-                                Payload.empty(),
-                                snapshot.destination()))
-                .throwIfRejected();
+        snapshot.guard().check(message).throwIfRejected();
         Logger.debug(
                 false,
                 LOG_TAG,
@@ -314,6 +336,22 @@ final class StompRunner {
                 snapshot.address().host(),
                 snapshot.address().port(),
                 snapshot.destination() != null);
+    }
+
+    /**
+     * Applies configured STOMP filters to a frame.
+     *
+     * @param frame frame
+     * @param tag   tag
+     * @return filtered frame
+     */
+    private StompFrame filter(final StompFrame frame, final Object tag) {
+        final Message filtered = FilterChain.apply(
+                Message.of(Protocol.STOMP, snapshot.address(), frame.headers(), frame.body(), tag),
+                snapshot.context().filter(),
+                snapshot.filter());
+        checkGuard(filtered);
+        return StompFrame.of(frame.command(), filtered.headers(), filtered.payload());
     }
 
     /**

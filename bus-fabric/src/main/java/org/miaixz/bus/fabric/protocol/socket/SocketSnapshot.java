@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
@@ -47,6 +48,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param frameCodec    codec used to delimit socket messages
  * @param handler       inbound message handler for the created session
  * @param guard         optional policy guard for socket messages
+ * @param filter        optional message filter for socket open, inbound, and outbound messages
  * @param observer      observer receiving socket lifecycle and traffic events
  * @param proxyHeader   PROXY protocol metadata to send or inject, or {@code null}
  * @param socketOptions channel and session tuning options
@@ -57,9 +59,9 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @since Java 21+
  */
 record SocketSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout,
-        FrameCodec frameCodec, Handler handler, GuardRule guard, EventObserver observer, ProxyHeader proxyHeader,
-        SocketOptions socketOptions, Callback<SocketSession> callback, Listener<? super SocketSession> listener,
-        boolean pooled) {
+        FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter, EventObserver observer,
+        ProxyHeader proxyHeader, SocketOptions socketOptions, Callback<SocketSession> callback,
+        Listener<? super SocketSession> listener, boolean pooled) {
 
     /**
      * Creates a validated snapshot.

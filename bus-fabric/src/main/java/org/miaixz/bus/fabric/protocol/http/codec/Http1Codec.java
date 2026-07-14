@@ -57,7 +57,7 @@ import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.protocol.http.HttpHeaders;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * HTTP/1.1 codec bound to a selected network connection.
@@ -221,11 +221,11 @@ public final class Http1Codec implements HttpCodec {
             headers = readHeaders();
         }
         final HttpResponse headerOnly = HttpResponse.builder().request(current).code(code).message(reason(line))
-                .headers(headers).body(HttpBody.empty()).protocol(Protocol.HTTP_1_1).trailers(this::trailers).build();
+                .headers(headers).body(PayloadBody.empty()).protocol(Protocol.HTTP_1_1).trailers(this::trailers).build();
         final Source source = openResponseBody(headerOnly);
         final Payload payload = payload(source);
-        final HttpBody body = payload.length() == Normal._0 ? HttpBody.empty()
-                : HttpBody.of(payload, media(headerOnly.headers()));
+        final PayloadBody body = payload.length() == Normal._0 ? PayloadBody.empty()
+                : PayloadBody.of(payload, media(headerOnly.headers()));
         state.set(Status.OPENED);
         return HttpResponse.builder().request(current).code(code).message(reason(line)).headers(headers).body(body)
                 .protocol(Protocol.HTTP_1_1).trailers(this::trailers).build();
@@ -915,12 +915,6 @@ public final class Http1Codec implements HttpCodec {
         }
 
         @Override
-        @Deprecated(since = "8.8.3")
-        public InputStream stream() {
-            return Payload.super.stream();
-        }
-
-        @Override
         public long read(final Buffer sink, final long byteCount) {
             require(sink, "Target buffer");
             if (byteCount < Normal._0) {
@@ -1055,12 +1049,6 @@ public final class Http1Codec implements HttpCodec {
         public Source source() {
             open();
             return this;
-        }
-
-        @Override
-        @Deprecated(since = "8.8.3")
-        public InputStream stream() {
-            return Payload.super.stream();
         }
 
         @Override

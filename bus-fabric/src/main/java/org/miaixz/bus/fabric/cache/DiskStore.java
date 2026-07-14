@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.cache;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -771,12 +770,6 @@ public final class DiskStore implements CacheStore {
                 throw new StatefulException("Disk cache payload can only be opened once");
             }
             return source;
-        }
-
-        @Override
-        @Deprecated(since = "8.8.3")
-        public InputStream stream() {
-            return Payload.super.stream();
         }
 
         /**

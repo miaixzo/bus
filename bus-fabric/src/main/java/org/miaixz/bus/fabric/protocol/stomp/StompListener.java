@@ -22,7 +22,12 @@ package org.miaixz.bus.fabric.protocol.stomp;
 import org.miaixz.bus.fabric.Listener;
 
 /**
- * Old-style STOMP lifecycle listener adapter.
+ * STOMP lifecycle listener adapter.
+ * <p>
+ * This adapter exposes STOMP-specific lifecycle callbacks while bridging them to the shared fabric listener contract.
+ * Subclasses override {@link #connected(StompSession)}, {@link #disconnected(StompSession)} or
+ * {@link #error(StompSession, Throwable)} to handle session events.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -30,14 +35,14 @@ import org.miaixz.bus.fabric.Listener;
 public abstract class StompListener implements Listener<StompSession> {
 
     /**
-     * Creates a STOMP listener adapter.
+     * Creates a STOMP lifecycle listener adapter.
      */
     public StompListener() {
         // Listener adapter.
     }
 
     /**
-     * Invoked when STOMP CONNECTED is complete.
+     * Handles a successfully established STOMP session.
      *
      * @param session session
      */
@@ -46,7 +51,7 @@ public abstract class StompListener implements Listener<StompSession> {
     }
 
     /**
-     * Invoked when the STOMP session closes normally.
+     * Handles a closed STOMP session.
      *
      * @param session session
      */
@@ -55,7 +60,7 @@ public abstract class StompListener implements Listener<StompSession> {
     }
 
     /**
-     * Invoked when the STOMP session fails.
+     * Handles a STOMP session failure.
      *
      * @param session session, when available
      * @param cause   failure cause

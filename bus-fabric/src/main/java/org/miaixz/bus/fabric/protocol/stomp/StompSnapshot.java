@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Timeout;
@@ -46,6 +47,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param login       login header for the opening CONNECT frame, or {@code null}
  * @param passcode    passcode header for the opening CONNECT frame, or {@code null}
  * @param guard       optional policy guard for STOMP messages
+ * @param filter      optional message filter for STOMP frames and messages
  * @param observer    observer receiving STOMP lifecycle events
  * @param callback    callback receiving the opened STOMP session or failure
  * @param handler     inbound message handler
@@ -54,8 +56,9 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @since Java 21+
  */
 record StompSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout, String destination,
-        String login, String passcode, GuardRule guard, EventObserver observer, Callback<StompSession> callback,
-        Consumer<StompMessage> handler, Listener<? super StompSession> listener) {
+        String login, String passcode, GuardRule guard, Filter filter, EventObserver observer,
+        Callback<StompSession> callback, Consumer<StompMessage> handler,
+        Listener<? super StompSession> listener) {
 
     /**
      * Creates a validated snapshot.

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.socket.frame;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -58,21 +57,6 @@ public record SocketFrame(ByteString payload, int length) {
     }
 
     /**
-     * Creates a frame from remaining bytes.
-     *
-     * @param payload payload
-     * @return frame
-     * @deprecated use {@link #of(ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static SocketFrame of(final ByteBuffer payload) {
-        return of(
-                ByteString.of(
-                        Assert.notNull(payload, () -> new ValidateException("Socket frame payload must not be null"))
-                                .duplicate()));
-    }
-
-    /**
      * Creates a frame from immutable bytes.
      *
      * @param payload payload bytes
@@ -103,17 +87,6 @@ public record SocketFrame(ByteString payload, int length) {
             }
             throw new ConvertException("Unable to encode socket frame text", e);
         }
-    }
-
-    /**
-     * Returns a read-only byte buffer view of the payload.
-     *
-     * @return payload buffer
-     * @deprecated use {@link #payload()}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer byteBuffer() {
-        return payload.asByteBuffer();
     }
 
     /**

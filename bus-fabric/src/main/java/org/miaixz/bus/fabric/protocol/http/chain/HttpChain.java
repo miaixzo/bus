@@ -33,7 +33,12 @@ import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
- * Immutable HTTP stage chain with an index cursor.
+ * Internal immutable HTTP stage chain with an index cursor.
+ *
+ * <p>
+ * Protocol users extend HTTP behavior through builder {@code filter(...)}, {@code guard(...)}, and
+ * {@code observe(...)} hooks. This chain coordinates built-in runtime stages only.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+

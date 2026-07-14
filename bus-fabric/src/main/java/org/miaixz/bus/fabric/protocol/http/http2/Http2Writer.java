@@ -202,26 +202,6 @@ public final class Http2Writer implements AutoCloseable {
      * @param streamId  stream id
      * @param data      data
      * @param endStream end stream flag
-     * @deprecated use {@link #data(int, Buffer, boolean)}
-     */
-    @Deprecated(since = "8.8.3")
-    public synchronized void data(final int streamId, final ByteBuffer data, final boolean endStream) {
-        final ByteBuffer checkedData = require(data, "HTTP/2 data");
-        final Buffer buffer = new Buffer();
-        try {
-            buffer.write(checkedData.asReadOnlyBuffer());
-        } catch (final java.io.IOException e) {
-            throw new InternalException("Unable to adapt HTTP/2 data", e);
-        }
-        data(streamId, buffer, endStream);
-    }
-
-    /**
-     * Writes DATA frames.
-     *
-     * @param streamId  stream id
-     * @param data      data
-     * @param endStream end stream flag
      */
     public synchronized void data(final int streamId, final Buffer data, final boolean endStream) {
         ensureOpen();
@@ -299,22 +279,6 @@ public final class Http2Writer implements AutoCloseable {
             payload.write(debugData);
         }
         writeFrame(Http2Frame.GOAWAY, Normal._0, Normal._0, payload);
-    }
-
-    /**
-     * Writes a GOAWAY frame through a JDK byte buffer compatibility boundary.
-     *
-     * @param lastStreamId last processed stream id
-     * @param errorCode    error code
-     * @param debugData    optional debug data
-     * @deprecated use {@link #goAway(int, int, ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public synchronized void goAway(final int lastStreamId, final int errorCode, final ByteBuffer debugData) {
-        goAway(
-                lastStreamId,
-                errorCode,
-                debugData == null ? ByteString.EMPTY : ByteString.of(debugData.asReadOnlyBuffer()));
     }
 
     /**

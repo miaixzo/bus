@@ -40,8 +40,10 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Call;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Message;
@@ -59,6 +61,7 @@ import org.miaixz.bus.fabric.protocol.stomp.broker.StompReceipt;
 import org.miaixz.bus.fabric.protocol.stomp.broker.StompTopic;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompCodec;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompFrame;
+import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -225,6 +228,11 @@ public final class StompSession {
     private final GuardRule guard;
 
     /**
+     * Optional message filter.
+     */
+    private final Filter filter;
+
+    /**
      * Event observer.
      */
     private final EventObserver observer;
@@ -259,7 +267,7 @@ public final class StompSession {
      */
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler) {
-        this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), Wiring.noop(),
+        this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), null, Wiring.noop(),
                 Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
@@ -278,7 +286,7 @@ public final class StompSession {
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
             final EventObserver observer, final Listener<? super StompSession> listener) {
-        this(sender, closeHook, cancelHook, handler, address, guard, observer, listener,
+        this(sender, closeHook, cancelHook, handler, address, guard, observer, null, listener,
                 Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
@@ -292,12 +300,13 @@ public final class StompSession {
      * @param address             session address
      * @param guard               optional guard
      * @param observer            observer
+     * @param filter              optional filter
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      */
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
-            final EventObserver observer, final Listener<? super StompSession> listener,
+            final EventObserver observer, final Filter filter, final Listener<? super StompSession> listener,
             final long materializeMaxBytes) {
         this.sender = require(sender, "STOMP sender");
         this.closeHook = closeHook == null ? () -> {
@@ -311,6 +320,7 @@ public final class StompSession {
         } : handler;
         this.address = address;
         this.guard = guard;
+        this.filter = filter;
         this.observer = EventObserver.safe(observer);
         this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, this.observer);
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
@@ -778,10 +788,11 @@ public final class StompSession {
         if (!COMMAND_MESSAGE.equals(frame.command())) {
             return;
         }
-        final String destination = frame.headers().get(HEADER_DESTINATION);
-        final StompMessage message = StompMessage.of(destination, frame.headers(), frame.body());
-        checkGuard(frame, TAG_READ);
-        emit(ObservationMarker.STOMP_MESSAGE, frame.body(), null);
+        final StompFrame received = filter(frame, TAG_READ);
+        final String destination = received.headers().get(HEADER_DESTINATION);
+        final StompMessage message = StompMessage.of(destination, received.headers(), received.body());
+        checkGuard(received, TAG_READ);
+        emit(ObservationMarker.STOMP_MESSAGE, received.body(), null);
         Logger.debug(
                 false,
                 LOG_TAG,
@@ -790,15 +801,15 @@ public final class StompSession {
                 host(),
                 port(),
                 destination,
-                frame.body().length());
-        accept(handler, message, frame.body());
+                received.body().length());
+        accept(handler, message, received.body());
         final List<Subscription> snapshot;
         synchronized (topics) {
             snapshot = new ArrayList<>(topics.values());
         }
         for (final Subscription subscription : snapshot) {
             if (subscription.topic.matches(message)) {
-                accept(subscription.handler, message, frame.body());
+                accept(subscription.handler, message, received.body());
             }
         }
     }
@@ -976,11 +987,12 @@ public final class StompSession {
      * @return send call
      */
     private Call<Void> write(final StompFrame frame) {
-        checkGuard(frame, TAG_WRITE);
+        final StompFrame outgoing = filter(frame, TAG_WRITE);
+        checkGuard(outgoing, TAG_WRITE);
         final Buffer output = new Buffer();
-        codec.encode(frame, output);
+        codec.encode(outgoing, output);
         final Call<Void> call = sender.apply(output);
-        final ObservedCall observed = new ObservedCall(call, frame.body());
+        final ObservedCall observed = new ObservedCall(call, outgoing.body());
         observed.observeIfDone();
         Logger.debug(
                 false,
@@ -989,9 +1001,25 @@ public final class StompSession {
                 scheme(),
                 host(),
                 port(),
-                frame.command(),
-                frame.body().length());
+                outgoing.command(),
+                outgoing.body().length());
         return observed;
+    }
+
+    /**
+     * Applies the optional message filter to a STOMP frame.
+     *
+     * @param frame frame
+     * @param tag   direction tag
+     * @return filtered frame
+     */
+    private StompFrame filter(final StompFrame frame, final String tag) {
+        if (filter == null || address == null) {
+            return frame;
+        }
+        final Message filtered = FilterChain
+                .apply(Message.of(Protocol.STOMP, address, frame.headers(), frame.body(), tag), filter);
+        return StompFrame.of(frame.command(), filtered.headers(), filtered.payload());
     }
 
     /**
@@ -1011,7 +1039,7 @@ public final class StompSession {
                     port(),
                     frame.command(),
                     tag);
-            guard.check(Message.of(address.protocol(), address, frame.headers(), frame.body(), tag)).throwIfRejected();
+            guard.check(Message.of(Protocol.STOMP, address, frame.headers(), frame.body(), tag)).throwIfRejected();
             Logger.debug(
                     false,
                     LOG_TAG,

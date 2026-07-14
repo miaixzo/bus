@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.http.chain;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
@@ -80,7 +79,7 @@ import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.registry.connection.ConnectionPool;
 import org.miaixz.bus.fabric.registry.route.Route;
@@ -677,7 +676,7 @@ public final class HttpConnect implements HttpStage {
     private HttpResponse track(final ConnectionLease lease, final HttpResponse response) {
         final HttpResponse source = require(response, "HTTP response");
         final ReleaseState state = new ReleaseState(lease);
-        final HttpBody body = HttpBody.of(new LeasePayload(source.body().payload(), state), source.body().media());
+        final PayloadBody body = PayloadBody.of(new LeasePayload(source.body().payload(), state), source.body().media());
         final HttpResponse.Builder builder = source.toBuilder().body(body);
         if (source.handshake() == null && lease.connection() instanceof TlsRoutedConnection tls) {
             builder.handshake(tls.handshake());
@@ -1328,12 +1327,6 @@ public final class HttpConnect implements HttpStage {
         @Override
         public Source source() {
             return new LeaseSource(delegate.source(), state);
-        }
-
-        @Override
-        @Deprecated(since = "8.8.3")
-        public InputStream stream() {
-            return Payload.super.stream();
         }
 
         /**

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -225,17 +224,6 @@ public final class FormBody implements RequestBody {
         @Override
         public Source source() {
             return new Buffer().write(bytes());
-        }
-
-        /**
-         * Opens a legacy input stream view.
-         *
-         * @return payload stream
-         */
-        @Override
-        @Deprecated(since = "8.8.3")
-        public InputStream stream() {
-            return Payload.super.stream();
         }
 
         /**

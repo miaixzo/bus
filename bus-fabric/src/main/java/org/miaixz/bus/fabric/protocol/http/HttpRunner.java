@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
@@ -34,7 +35,7 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.CookieJar;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.cache.HttpCache;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpBridge;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpChain;
@@ -42,6 +43,7 @@ import org.miaixz.bus.fabric.protocol.http.chain.HttpConnect;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpCoordinator;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpRetry;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpServer;
+import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
@@ -173,6 +175,28 @@ final class HttpRunner {
                 request.headers(),
                 request.body().payload(),
                 request.tag());
+        final Filter filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
+        if (filter != null) {
+            Logger.debug(
+                    true,
+                    LOG_TAG,
+                    "HTTP filter started: method={}, scheme={}, host={}, port={}, path={}",
+                    request.method().value(),
+                    request.url().scheme(),
+                    request.url().host(),
+                    request.url().port(),
+                    request.url().path());
+            message = FilterChain.apply(message, filter);
+            Logger.debug(
+                    false,
+                    LOG_TAG,
+                    "HTTP filter completed: method={}, scheme={}, host={}, port={}, path={}",
+                    request.method().value(),
+                    request.url().scheme(),
+                    request.url().host(),
+                    request.url().port(),
+                    request.url().path());
+        }
         if (snapshot.guard() != null) {
             Logger.debug(
                     true,
@@ -194,30 +218,10 @@ final class HttpRunner {
                     request.url().port(),
                     request.url().path());
         }
-        if (snapshot.filter() != null) {
-            Logger.debug(
-                    true,
-                    LOG_TAG,
-                    "HTTP filter started: method={}, scheme={}, host={}, port={}, path={}",
-                    request.method().value(),
-                    request.url().scheme(),
-                    request.url().host(),
-                    request.url().port(),
-                    request.url().path());
-            message = require(snapshot.filter().apply(message, current -> current), "Filtered message");
-            Logger.debug(
-                    false,
-                    LOG_TAG,
-                    "HTTP filter completed: method={}, scheme={}, host={}, port={}, path={}",
-                    request.method().value(),
-                    request.url().scheme(),
-                    request.url().host(),
-                    request.url().port(),
-                    request.url().path());
-        } else {
+        if (filter == null) {
             return request;
         }
-        final HttpBody body = HttpBody
+        final PayloadBody body = PayloadBody
                 .of(message.payload(), request.body().media(), snapshot.context().options().materializeMaxBytes());
         return request.toBuilder().headers(message.headers()).body(body).tag(message.tag()).build();
     }
@@ -266,7 +270,7 @@ final class HttpRunner {
      */
     private HttpResponse materializeLimited(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
-        final HttpBody body = current.body().materializeMaxBytes(snapshot.context().options().materializeMaxBytes());
+        final PayloadBody body = current.body().materializeMaxBytes(snapshot.context().options().materializeMaxBytes());
         return current.toBuilder().body(body).build();
     }
 

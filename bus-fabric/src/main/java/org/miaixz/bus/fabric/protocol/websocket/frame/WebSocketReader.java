@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.websocket.frame;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -33,7 +32,6 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
@@ -186,18 +184,6 @@ public final class WebSocketReader implements AutoCloseable {
     }
 
     /**
-     * Creates a compatibility reader.
-     *
-     * @param source       source stream
-     * @param expectMasked expected mask flag
-     * @deprecated use {@link #WebSocketReader(Source, boolean)}
-     */
-    @Deprecated(since = "8.8.3")
-    public WebSocketReader(final InputStream source, final boolean expectMasked) {
-        this(IoKit.source(require(source, "WebSocket source")), expectMasked, Address.parse(DEFAULT_ADDRESS));
-    }
-
-    /**
      * Creates a reader.
      *
      * @param source       source
@@ -209,19 +195,6 @@ public final class WebSocketReader implements AutoCloseable {
         this.input = new Buffer();
         this.expectMasked = expectMasked;
         this.address = require(address, "WebSocket address");
-    }
-
-    /**
-     * Creates a compatibility reader.
-     *
-     * @param source       source stream
-     * @param expectMasked expected mask flag
-     * @param address      message address
-     * @deprecated use {@link #WebSocketReader(Source, boolean, Address)}
-     */
-    @Deprecated(since = "8.8.3")
-    public WebSocketReader(final InputStream source, final boolean expectMasked, final Address address) {
-        this(IoKit.source(require(source, "WebSocket source")), expectMasked, address);
     }
 
     /**

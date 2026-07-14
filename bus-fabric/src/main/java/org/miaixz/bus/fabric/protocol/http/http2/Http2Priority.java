@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http.http2;
 
-import java.nio.ByteBuffer;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
@@ -129,24 +127,6 @@ public record Http2Priority(int dependencyStreamId, int weight, boolean exclusiv
     }
 
     /**
-     * Decodes priority metadata from a JDK byte buffer compatibility boundary.
-     *
-     * @param payload  priority payload
-     * @param streamId owning stream id
-     * @return priority
-     * @deprecated use {@link #decode(ByteString, int)}
-     */
-    @Deprecated(since = "8.8.3")
-    static Http2Priority decode(final ByteBuffer payload, final int streamId) {
-        final ByteBuffer checkedPayload = Assert
-                .notNull(payload, () -> new ProtocolException("Invalid HTTP/2 PRIORITY payload"));
-        if (checkedPayload.remaining() < LENGTH) {
-            throw new ProtocolException("Invalid HTTP/2 PRIORITY payload");
-        }
-        return decode(ByteString.of(checkedPayload.asReadOnlyBuffer()), streamId);
-    }
-
-    /**
      * Encodes priority metadata as immutable payload bytes.
      *
      * @return payload
@@ -156,17 +136,6 @@ public record Http2Priority(int dependencyStreamId, int weight, boolean exclusiv
         payload.writeInt(exclusive ? dependencyStreamId | EXCLUSIVE_MASK : dependencyStreamId);
         payload.writeByte(weight - Normal._1);
         return payload.readByteString();
-    }
-
-    /**
-     * Encodes priority metadata to a JDK byte buffer compatibility boundary.
-     *
-     * @return payload
-     * @deprecated use {@link #encodeBytes()}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer encode() {
-        return encodeBytes().asByteBuffer();
     }
 
 }

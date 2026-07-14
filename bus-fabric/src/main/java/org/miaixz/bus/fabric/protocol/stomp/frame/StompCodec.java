@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.stomp.frame;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,20 +97,6 @@ public final class StompCodec {
     }
 
     /**
-     * Encodes a frame to a JDK byte buffer compatibility boundary.
-     *
-     * @param frame frame
-     * @return encoded buffer
-     * @deprecated use {@link #encode(StompFrame, Buffer)}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer encode(final StompFrame frame) {
-        final Buffer output = new Buffer();
-        encode(frame, output);
-        return ByteBuffer.wrap(output.readByteArray()).asReadOnlyBuffer();
-    }
-
-    /**
      * Decodes zero or more complete frames.
      *
      * @param input input bytes
@@ -136,25 +121,6 @@ public final class StompCodec {
             discard(offset);
         }
         return List.copyOf(frames);
-    }
-
-    /**
-     * Decodes frames from a JDK byte buffer compatibility boundary.
-     *
-     * @param input input bytes
-     * @return decoded frames
-     * @deprecated use {@link #decode(Buffer)}
-     */
-    @Deprecated(since = "8.8.3")
-    public List<StompFrame> decode(final ByteBuffer input) {
-        final ByteBuffer checkedInput = require(input, "STOMP input");
-        final Buffer next = new Buffer();
-        try {
-            next.write(checkedInput.duplicate());
-        } catch (final IOException e) {
-            throw new ProtocolException("Unable to append STOMP input", e);
-        }
-        return decode(next);
     }
 
     /**

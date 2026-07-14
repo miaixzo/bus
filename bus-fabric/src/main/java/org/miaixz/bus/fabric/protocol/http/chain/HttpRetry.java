@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.registry.policy.RetryPolicy;
 import org.miaixz.bus.logger.Logger;
 
@@ -156,7 +156,7 @@ public final class HttpRetry implements HttpStage {
                         sameOrigin(current.url(), followUp.url()),
                         followUp.method().value(),
                         followUps + Normal._1);
-                prior = response.toBuilder().body(HttpBody.empty()).priorResponse(prior).build();
+                prior = response.toBuilder().body(PayloadBody.empty()).priorResponse(prior).build();
                 response.close();
                 current = followUp;
                 followUps++;
@@ -246,7 +246,7 @@ public final class HttpRetry implements HttpStage {
         if (preserveBody && method.supportsBody() && request.body().length() > Normal._0) {
             builder.body(request.body());
         } else {
-            builder.body(HttpBody.empty());
+            builder.body(PayloadBody.empty());
         }
         Logger.debug(
                 false,

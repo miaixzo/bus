@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpCookie;
 import org.miaixz.bus.fabric.protocol.http.HttpHeaders;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -188,7 +188,7 @@ public final class HttpBridge implements HttpStage {
         }
         Logger.debug(true, LOG_TAG, "HTTP bridge gzip decode started: code={}", source.code());
         final Headers headers = source.headers().without(HTTP.CONTENT_ENCODING).without(HTTP.CONTENT_LENGTH);
-        final HttpBody body = HttpBody
+        final PayloadBody body = PayloadBody
                 .of(Payload.source(new GzipSource(source.body().source()), Normal.__1), source.body().media());
         final HttpResponse decoded = HttpResponse.builder().request(source.request()).code(source.code())
                 .message(source.message()).headers(headers).body(body).build();
@@ -213,7 +213,7 @@ public final class HttpBridge implements HttpStage {
      * @param body    body
      * @return headers
      */
-    private static Headers bodyHeaders(final Headers headers, final HttpBody body) {
+    private static Headers bodyHeaders(final Headers headers, final PayloadBody body) {
         final long length = body.length();
         if (length == Normal._0) {
             return headers;

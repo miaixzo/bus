@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.sse.event;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.protocol.sse.SseEvent;
 
@@ -154,17 +152,6 @@ public final class SseReader implements AutoCloseable {
         this.state = new AtomicReference<>(Status.OPENED);
         this.line = new byte[Normal._128];
         this.inputBuffer = new byte[Normal._8192];
-    }
-
-    /**
-     * Creates a compatibility reader over a UTF-8 SSE byte stream.
-     *
-     * @param input input stream
-     * @deprecated use {@link #SseReader(Source)}
-     */
-    @Deprecated(since = "8.8.3")
-    public SseReader(final InputStream input) {
-        this(input == null ? null : IoKit.source(input));
     }
 
     /**

@@ -19,10 +19,7 @@
 */
 package org.miaixz.bus.fabric;
 
-import java.nio.ByteBuffer;
 import java.util.Map;
-
-import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Long-lived fabric session contract for opened protocol connections.
@@ -60,24 +57,6 @@ public interface Session {
      * @return send call
      */
     Call<Void> send(Payload payload);
-
-    /**
-     * Sends a binary payload through the JDK byte buffer compatibility boundary.
-     *
-     * @param bytes binary payload
-     * @return send call
-     * @deprecated use {@link #send(Payload)} with {@link Payload#of(org.miaixz.bus.core.io.ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    default Call<Void> send(final ByteBuffer bytes) {
-        if (bytes == null) {
-            throw new ValidateException("Session binary payload must not be null");
-        }
-        final ByteBuffer duplicate = bytes.duplicate();
-        final byte[] snapshot = new byte[duplicate.remaining()];
-        duplicate.get(snapshot);
-        return send(Payload.of(snapshot));
-    }
 
     /**
      * Closes the session normally.

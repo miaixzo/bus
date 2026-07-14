@@ -26,8 +26,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -38,6 +38,7 @@ import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
@@ -49,6 +50,7 @@ import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
+import org.miaixz.bus.fabric.protocol.Demuxer;
 import org.miaixz.bus.fabric.protocol.websocket.calls.WebSocketCall;
 
 /**
@@ -90,9 +92,8 @@ public final class WebSocketX {
         final Listener<? super WebSocketSession> currentListener = Wiring
                 .safe(Wiring.compose(current.listener(), builder.listener), currentObserver);
         this.snapshot = new WebSocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, builder.guard, currentObserver,
-                builder.callback == null ? Wiring.callback() : builder.callback,
-                builder.handler == null ? noopHandler() : builder.handler, currentListener);
+                builder.timeout, builder.guard, builder.filter, currentObserver,
+                builder.callback == null ? Wiring.callback() : builder.callback, builder.handler(), currentListener);
         this.runner = new WebSocketRunner(snapshot);
     }
 
@@ -216,21 +217,6 @@ public final class WebSocketX {
     }
 
     /**
-     * Returns the shared no-op WebSocket handler.
-     *
-     * @return no-op handler
-     */
-    private static Handler noopHandler() {
-        return Instances.get(WebSocketX.class.getName() + ".noopHandler", () -> new Handler() {
-
-            @Override
-            public void message(final Session session, final Message message) {
-                // No-op handler intentionally ignores incoming messages.
-            }
-        });
-    }
-
-    /**
      * Validates a required value.
      *
      * @param value value
@@ -313,6 +299,11 @@ public final class WebSocketX {
         private GuardRule guard;
 
         /**
+         * Message filter.
+         */
+        private Filter filter;
+
+        /**
          * Observer.
          */
         private EventObserver observer;
@@ -326,6 +317,11 @@ public final class WebSocketX {
          * Handler.
          */
         private Handler handler;
+
+        /**
+         * Optional demuxer builder.
+         */
+        private Demuxer.Builder demuxer;
 
         /**
          * Session lifecycle listener.
@@ -354,7 +350,7 @@ public final class WebSocketX {
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.observer = EventObserver.noop();
             this.callback = Wiring.callback();
-            this.handler = noopHandler();
+            this.handler = Demuxer.noop();
             this.listener = Wiring.noop();
             this.openHandler = session -> {
             };
@@ -456,6 +452,17 @@ public final class WebSocketX {
         }
 
         /**
+         * Sets message filter.
+         *
+         * @param filter filter
+         * @return this builder
+         */
+        public Builder filter(final Filter filter) {
+            this.filter = filter;
+            return this;
+        }
+
+        /**
          * Sets observer.
          *
          * @param observer observer
@@ -484,7 +491,53 @@ public final class WebSocketX {
          * @return this builder
          */
         public Builder onMessage(final Handler handler) {
-            this.handler = handler == null ? noopHandler() : handler;
+            this.handler = handler == null ? Demuxer.noop() : handler;
+            this.demuxer = null;
+            return this;
+        }
+
+        /**
+         * Registers a channel message handler.
+         *
+         * @param channel channel id
+         * @param handler handler
+         * @return this builder
+         */
+        public Builder channel(final String channel, final Handler handler) {
+            demuxer().channel(channel, handler);
+            return this;
+        }
+
+        /**
+         * Sets fallback message handler for unmatched channels.
+         *
+         * @param handler fallback handler
+         * @return this builder
+         */
+        public Builder fallback(final Handler handler) {
+            demuxer().fallback(handler);
+            return this;
+        }
+
+        /**
+         * Sets the header used for channel lookup.
+         *
+         * @param name header name
+         * @return this builder
+         */
+        public Builder channelHeader(final String name) {
+            demuxer().header(name);
+            return this;
+        }
+
+        /**
+         * Sets a custom message channel resolver.
+         *
+         * @param resolver resolver
+         * @return this builder
+         */
+        public Builder resolver(final Function<Message, String> resolver) {
+            demuxer().resolver(resolver);
             return this;
         }
 
@@ -495,8 +548,9 @@ public final class WebSocketX {
          * @return this builder
          */
         public Builder onText(final Consumer<String> handler) {
+            this.demuxer = null;
             if (handler == null) {
-                this.handler = noopHandler();
+                this.handler = Demuxer.noop();
             } else {
                 this.handler = (session, message) -> handler.accept(message.payload().text(StandardCharsets.UTF_8));
             }
@@ -612,6 +666,30 @@ public final class WebSocketX {
                 }
             };
             return this;
+        }
+
+        /**
+         * Returns the configured handler.
+         *
+         * @return handler
+         */
+        private Handler handler() {
+            if (demuxer != null) {
+                return demuxer.build();
+            }
+            return handler == null ? Demuxer.noop() : handler;
+        }
+
+        /**
+         * Returns the demuxer builder.
+         *
+         * @return demuxer builder
+         */
+        private Demuxer.Builder demuxer() {
+            if (demuxer == null) {
+                demuxer = Demuxer.builder();
+            }
+            return demuxer;
         }
 
     }

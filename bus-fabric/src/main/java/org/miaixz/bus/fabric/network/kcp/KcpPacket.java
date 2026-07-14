@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.network.kcp;
 
-import java.nio.ByteBuffer;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
@@ -287,28 +285,6 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
         buffer.writeLong(timestamp);
         buffer.write(payloadBytes);
         return buffer.readByteArray();
-    }
-
-    /**
-     * Returns a payload snapshot.
-     *
-     * @return payload
-     * @deprecated use {@link #payloadBytes()}
-     */
-    @Deprecated(since = "8.8.3")
-    public byte[] payload() {
-        return payloadBytes.toByteArray();
-    }
-
-    /**
-     * Returns a read-only payload buffer.
-     *
-     * @return buffer
-     * @deprecated use {@link #payloadBytes()}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer buffer() {
-        return payloadBytes.asByteBuffer();
     }
 
     /**

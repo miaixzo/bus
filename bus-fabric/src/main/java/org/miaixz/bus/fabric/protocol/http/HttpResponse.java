@@ -54,7 +54,7 @@ import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.DataCodec;
 import org.miaixz.bus.fabric.codec.body.ResponseBody;
 import org.miaixz.bus.fabric.protocol.http.auth.Challenge;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.cache.HttpCacheControl;
 
 /**
@@ -88,7 +88,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Response body.
      */
-    private final HttpBody body;
+    private final PayloadBody body;
 
     /**
      * Effective HTTP protocol.
@@ -155,7 +155,7 @@ public final class HttpResponse implements AutoCloseable {
      * @param body    body
      */
     private HttpResponse(final HttpRequest request, final int code, final String message, final Headers headers,
-            final HttpBody body, final Protocol protocol, final TlsHandshake handshake,
+            final PayloadBody body, final Protocol protocol, final TlsHandshake handshake,
             final Supplier<Headers> trailers, final HttpResponse networkResponse, final HttpResponse cacheResponse,
             final HttpResponse priorResponse, final long sentRequestAtMillis, final long receivedResponseAtMillis) {
         this.request = require(request, "HTTP request");
@@ -249,7 +249,7 @@ public final class HttpResponse implements AutoCloseable {
      *
      * @return body
      */
-    public HttpBody body() {
+    public PayloadBody body() {
         return body;
     }
 
@@ -372,7 +372,7 @@ public final class HttpResponse implements AutoCloseable {
      * @param maxBytes maximum bytes to read
      * @return peek body
      */
-    public HttpBody peekBody(final long maxBytes) {
+    public PayloadBody peekBody(final long maxBytes) {
         Assert.isTrue(maxBytes >= Normal._0, () -> new ValidateException("Peek body max bytes must be non-negative"));
         Assert.isTrue(
                 body.payload().repeatable(),
@@ -390,7 +390,7 @@ public final class HttpResponse implements AutoCloseable {
                 }
                 remaining -= read;
             }
-            return HttpBody.of(Payload.of(output.readByteArray()), body.media());
+            return PayloadBody.of(Payload.of(output.readByteArray()), body.media());
         } catch (final IOException e) {
             throw new InternalException("Unable to peek HTTP response body", e);
         }
@@ -775,7 +775,7 @@ public final class HttpResponse implements AutoCloseable {
         if (response == null) {
             return null;
         }
-        return new HttpResponse(response.request, response.code, response.message, response.headers, HttpBody.empty(),
+        return new HttpResponse(response.request, response.code, response.message, response.headers, PayloadBody.empty(),
                 response.protocol, response.handshake, response.trailers, null, null, null,
                 response.sentRequestAtMillis, response.receivedResponseAtMillis);
     }
@@ -890,7 +890,7 @@ public final class HttpResponse implements AutoCloseable {
         /**
          * Body candidate.
          */
-        private HttpBody body = HttpBody.empty();
+        private PayloadBody body = PayloadBody.empty();
 
         /**
          * Protocol candidate.
@@ -989,7 +989,7 @@ public final class HttpResponse implements AutoCloseable {
          * @param body body
          * @return this builder
          */
-        public Builder body(final HttpBody body) {
+        public Builder body(final PayloadBody body) {
             this.body = require(body, "Body");
             return this;
         }
@@ -1002,7 +1002,7 @@ public final class HttpResponse implements AutoCloseable {
          */
         public Builder body(final ResponseBody body) {
             final ResponseBody current = require(body, "Response body");
-            return body(HttpBody.of(current.payload(), current.media()));
+            return body(PayloadBody.of(current.payload(), current.media()));
         }
 
         /**

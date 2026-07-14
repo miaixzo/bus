@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.http;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -64,9 +63,10 @@ import org.miaixz.bus.fabric.protocol.Itinerary;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
 import org.miaixz.bus.fabric.protocol.http.body.FileBody;
 import org.miaixz.bus.fabric.protocol.http.body.FormBody;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.body.MultipartBody;
 import org.miaixz.bus.fabric.protocol.http.body.SoapBody;
+import org.miaixz.bus.fabric.protocol.http.body.TextBody;
 import org.miaixz.bus.fabric.protocol.http.calls.HttpCall;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
@@ -962,20 +962,6 @@ public final class HttpX {
         }
 
         /**
-         * Appends a file part from a stream through the JDK stream compatibility boundary.
-         *
-         * @param name     file part name
-         * @param filename filename
-         * @param input    file input
-         * @return this builder
-         * @deprecated use {@link #file(String, String, Source, long)}
-         */
-        @Deprecated(since = "8.8.3")
-        public Builder file(final String name, final String filename, final InputStream input) {
-            return file(name, filename, org.miaixz.bus.core.xyz.IoKit.source(require(input, "File input")), -1);
-        }
-
-        /**
          * Appends a file part from text using UTF-8.
          *
          * @param name     file part name
@@ -1033,10 +1019,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder body(final String value) {
-            ensureBodyMode(BodyMode.BODY);
-            this.body = Payload.of(value == null ? "" : value, org.miaixz.bus.core.lang.Charset.UTF_8);
-            this.media = MediaType.TEXT_PLAIN_TYPE.withCharset(org.miaixz.bus.core.lang.Charset.UTF_8);
-            return this;
+            return body(TextBody.of(value));
         }
 
         /**
@@ -1047,7 +1030,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder body(final String value, final MediaType media) {
-            return body(value).media(media);
+            return body(TextBody.of(value, media));
         }
 
         /**
@@ -1101,33 +1084,6 @@ public final class HttpX {
         }
 
         /**
-         * Sets a streaming body through the JDK stream compatibility boundary.
-         *
-         * @param input  body stream
-         * @param length declared length, or -1 when unknown
-         * @return this builder
-         * @deprecated use {@link #body(Source, long)}
-         */
-        @Deprecated(since = "8.8.3")
-        public Builder body(final InputStream input, final long length) {
-            return body(org.miaixz.bus.core.xyz.IoKit.source(require(input, "Body stream")), length);
-        }
-
-        /**
-         * Sets a streaming body with explicit media through the JDK stream compatibility boundary.
-         *
-         * @param input  body stream
-         * @param length declared length, or -1 when unknown
-         * @param media  media
-         * @return this builder
-         * @deprecated use {@link #body(Source, long, MediaType)}
-         */
-        @Deprecated(since = "8.8.3")
-        public Builder body(final InputStream input, final long length, final MediaType media) {
-            return body(input, length).media(media);
-        }
-
-        /**
          * Sets a file as the complete request body.
          *
          * @param path file path
@@ -1176,7 +1132,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder text(final String value) {
-            return body(value);
+            return body(TextBody.of(value));
         }
 
         /**
@@ -1186,8 +1142,8 @@ public final class HttpX {
          * @return this builder
          */
         public Builder json(final String value) {
-            return body(value)
-                    .media(MediaType.APPLICATION_JSON_TYPE.withCharset(org.miaixz.bus.core.lang.Charset.UTF_8));
+            return body(TextBody.of(value,
+                    MediaType.APPLICATION_JSON_TYPE.withCharset(org.miaixz.bus.core.lang.Charset.UTF_8)));
         }
 
         /**
@@ -1230,13 +1186,13 @@ public final class HttpX {
         }
 
         /**
-         * Sets a prepared HTTP body.
+         * Sets a prepared payload body.
          *
-         * @param body HTTP body
+         * @param body payload body
          * @return this builder
          */
-        public Builder body(final HttpBody body) {
-            final HttpBody current = require(body, "HTTP body");
+        public Builder body(final PayloadBody body) {
+            final PayloadBody current = require(body, "Payload body");
             ensureBodyMode(BodyMode.BODY);
             this.body = current.payload();
             this.media = current.media();
@@ -1251,7 +1207,7 @@ public final class HttpX {
          */
         public Builder body(final RequestBody body) {
             final RequestBody current = require(body, "Request body");
-            return body(HttpBody.of(current.payload(), current.media()));
+            return body(PayloadBody.of(current.payload(), current.media()));
         }
 
         /**
@@ -1264,8 +1220,8 @@ public final class HttpX {
             if (value instanceof RequestBody requestBody) {
                 return body(requestBody);
             }
-            if (value instanceof HttpBody httpBody) {
-                return body(httpBody);
+            if (value instanceof PayloadBody payloadBody) {
+                return body(payloadBody);
             }
             if (value instanceof Payload payload) {
                 return body(payload);
@@ -1510,10 +1466,10 @@ public final class HttpX {
          */
         public HttpX build() {
             final UnoUrl target = buildUrl();
-            final HttpBody httpBody = buildBody();
-            final Headers requestHeaders = buildHeaders(httpBody);
+            final PayloadBody payloadBody = buildBody();
+            final Headers requestHeaders = buildHeaders(payloadBody);
             final HttpRequest request = HttpRequest.builder().method(method).url(target).headers(requestHeaders)
-                    .body(httpBody).tag(tag).proxy(proxy).timeout(timeout).build();
+                    .body(payloadBody).tag(tag).proxy(proxy).timeout(timeout).build();
             final Protocol protocol = request.url().address().protocol();
             if (protocol != Protocol.HTTP && protocol != Protocol.HTTPS) {
                 throw new ProtocolException("HTTP exchange requires http or https URL");
@@ -1581,7 +1537,7 @@ public final class HttpX {
          * @param body body
          * @return headers
          */
-        private Headers buildHeaders(final HttpBody body) {
+        private Headers buildHeaders(final PayloadBody body) {
             final Headers current = headers.build();
             final Headers.Builder builder = Headers.builder();
             current.asMap().forEach((name, values) -> values.forEach(value -> builder.add(name, value)));
@@ -1597,9 +1553,9 @@ public final class HttpX {
         /**
          * Builds request body.
          *
-         * @return HTTP body
+         * @return payload body
          */
-        private HttpBody buildBody() {
+        private PayloadBody buildBody() {
             Payload payload = body;
             MediaType selectedMedia = media;
             if (bodyMode == BodyMode.FORM && form != null) {
@@ -1618,8 +1574,9 @@ public final class HttpX {
             if (codec != null && bodyMode == BodyMode.NONE) {
                 selectedMedia = codec.media();
             }
-            final HttpBody httpBody = HttpBody.of(payload, selectedMedia, context.options().materializeMaxBytes());
-            return progress == null ? httpBody : httpBody.progress(progress);
+            final PayloadBody payloadBody = PayloadBody.of(payload, selectedMedia,
+                    context.options().materializeMaxBytes());
+            return progress == null ? payloadBody : payloadBody.progress(progress);
         }
 
         /**

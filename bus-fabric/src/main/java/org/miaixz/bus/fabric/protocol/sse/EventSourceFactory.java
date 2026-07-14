@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * EventSource factory backed by {@link SseX}.
@@ -140,7 +140,7 @@ public final class EventSourceFactory implements EventSource.Factory {
          * @return response
          */
         HttpResponse toResponse(final HttpRequest request) {
-            return HttpResponse.builder().request(request).code(status).headers(headers).body(HttpBody.empty()).build();
+            return HttpResponse.builder().request(request).code(status).headers(headers).body(PayloadBody.empty()).build();
         }
 
     }

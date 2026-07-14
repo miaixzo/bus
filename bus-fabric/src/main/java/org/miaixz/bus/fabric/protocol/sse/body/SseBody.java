@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.sse.body;
 
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
@@ -29,14 +28,14 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.ProgressBody;
 import org.miaixz.bus.fabric.codec.body.ResponseBody;
 import org.miaixz.bus.fabric.protocol.sse.SseEvent;
+import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
 
 /**
- * SSE response body representing a text/event-stream payload.
+ * SSE response body representing a {@code text/event-stream} payload.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -114,6 +113,16 @@ public final class SseBody implements ResponseBody, ProgressBody {
     }
 
     /**
+     * Creates an SSE body from a response body.
+     *
+     * @param body response body
+     * @return SSE body
+     */
+    public static SseBody of(final ResponseBody body) {
+        return of(require(body, "SSE response body").payload());
+    }
+
+    /**
      * Creates an SSE body from a source.
      *
      * @param source source
@@ -122,31 +131,6 @@ public final class SseBody implements ResponseBody, ProgressBody {
      */
     public static SseBody source(final Source source, final long length) {
         return of(Payload.source(source, length));
-    }
-
-    /**
-     * Creates an SSE body from a stream through the JDK stream compatibility boundary.
-     *
-     * @param stream stream
-     * @return SSE body
-     * @deprecated use {@link #source(Source, long)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static SseBody stream(final InputStream stream) {
-        return stream(stream, Normal.__1);
-    }
-
-    /**
-     * Creates an SSE body from a stream through the JDK stream compatibility boundary.
-     *
-     * @param stream stream
-     * @param length declared length, or -1
-     * @return SSE body
-     * @deprecated use {@link #source(Source, long)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static SseBody stream(final InputStream stream, final long length) {
-        return source(IoKit.source(stream), length);
     }
 
     /**
@@ -187,10 +171,18 @@ public final class SseBody implements ResponseBody, ProgressBody {
         if (event.retry() != null) {
             builder.append(RETRY_PREFIX).append(event.retry().toMillis()).append(Symbol.LF);
         }
-        final String data = event.data() == null ? Normal.EMPTY : event.data();
-        appendData(builder, data);
+        appendData(builder, event.data() == null ? Normal.EMPTY : event.data());
         builder.append(Symbol.LF);
         return builder.toString();
+    }
+
+    /**
+     * Opens this SSE body as an event stream reader.
+     *
+     * @return SSE reader
+     */
+    public SseReader reader() {
+        return new SseReader(source());
     }
 
     /**

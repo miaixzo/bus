@@ -45,7 +45,7 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -395,7 +395,7 @@ public final class HttpCache implements AutoCloseable {
                     response.code());
             return response;
         }
-        final HttpBody body = HttpBody.of(new HttpCacheWriter(response.body().payload(), writer, () -> {
+        final PayloadBody body = PayloadBody.of(new HttpCacheWriter(response.body().payload(), writer, () -> {
             recordWriteSuccess();
             emit("write", key);
             Logger.info(

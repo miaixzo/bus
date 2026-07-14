@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.codec.frame;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -55,21 +54,6 @@ public record Frame(ByteString payload, int length) {
     }
 
     /**
-     * Creates a frame from the remaining bytes of a buffer.
-     *
-     * @param payload payload buffer
-     * @return frame
-     * @deprecated use {@link #of(ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static Frame of(final ByteBuffer payload) {
-        return of(
-                ByteString.of(
-                        Assert.notNull(payload, () -> new ValidateException("Frame payload must not be null"))
-                                .duplicate()));
-    }
-
-    /**
      * Creates a frame from immutable bytes.
      *
      * @param payload payload bytes
@@ -98,17 +82,6 @@ public record Frame(ByteString payload, int length) {
             }
             throw new ConvertException("Unable to encode frame text", e);
         }
-    }
-
-    /**
-     * Returns a read-only byte buffer view of the payload.
-     *
-     * @return payload buffer
-     * @deprecated use {@link #payload()}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer byteBuffer() {
-        return payload.asByteBuffer();
     }
 
     /**

@@ -20,8 +20,6 @@
 package org.miaixz.bus.fabric.protocol.websocket.frame;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -36,7 +34,6 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * Synchronous single-path WebSocket frame writer.
@@ -177,18 +174,6 @@ public final class WebSocketWriter implements AutoCloseable {
     }
 
     /**
-     * Creates a compatibility writer.
-     *
-     * @param output output stream
-     * @param mask   mask flag
-     * @deprecated use {@link #WebSocketWriter(Sink, boolean)}
-     */
-    @Deprecated(since = "8.8.3")
-    public WebSocketWriter(final OutputStream output, final boolean mask) {
-        this(IoKit.sink(require(output, "WebSocket output")), mask, new SecureRandom());
-    }
-
-    /**
      * Creates a writer with an explicit random source.
      *
      * @param output output sink
@@ -270,17 +255,6 @@ public final class WebSocketWriter implements AutoCloseable {
     }
 
     /**
-     * Writes ping through a JDK byte buffer compatibility boundary.
-     *
-     * @param payload payload
-     * @deprecated use {@link #ping(ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public void ping(final ByteBuffer payload) {
-        ping(ByteString.of(require(payload, "WebSocket ping payload").duplicate()));
-    }
-
-    /**
      * Writes pong.
      *
      * @param payload payload
@@ -291,17 +265,6 @@ public final class WebSocketWriter implements AutoCloseable {
             throw new ProtocolException("WebSocket pong payload is too large");
         }
         write(new WebSocketFrame(PONG, true, checkedPayload, true));
-    }
-
-    /**
-     * Writes pong through a JDK byte buffer compatibility boundary.
-     *
-     * @param payload payload
-     * @deprecated use {@link #pong(ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public void pong(final ByteBuffer payload) {
-        pong(ByteString.of(require(payload, "WebSocket pong payload").duplicate()));
     }
 
     /**

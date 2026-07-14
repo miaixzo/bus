@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 
 import org.miaixz.bus.core.io.source.AssignSource;
@@ -29,7 +28,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
@@ -256,17 +254,6 @@ public final class Mediator {
          */
         public Source source() {
             return new OwnedSource(body.source(), this);
-        }
-
-        /**
-         * Opens the response body stream and closes the owner with the stream.
-         *
-         * @return body stream
-         * @deprecated use {@link #source()}
-         */
-        @Deprecated(since = "8.8.3")
-        public InputStream stream() {
-            return IoKit.buffer(source()).inputStream();
         }
 
         @Override

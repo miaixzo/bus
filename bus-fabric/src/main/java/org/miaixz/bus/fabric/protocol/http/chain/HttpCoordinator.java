@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.cache.HttpCache;
 import org.miaixz.bus.logger.Logger;
 
@@ -202,7 +202,7 @@ public final class HttpCoordinator implements HttpStage {
      */
     private static HttpResponse unsatisfiable(final HttpRequest request) {
         return HttpResponse.builder().request(request).code(HTTP.HTTP_GATEWAY_TIMEOUT)
-                .message("Unsatisfiable Request (only-if-cached)").body(HttpBody.empty()).build();
+                .message("Unsatisfiable Request (only-if-cached)").body(PayloadBody.empty()).build();
     }
 
     /**
