@@ -17,9 +17,8 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.network.tls.cert;
+package org.miaixz.bus.crypto.builtin;
 
-import java.security.GeneralSecurityException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayDeque;
@@ -28,10 +27,13 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.Keeper;
 
 /**
  * Certificate chain cleaner backed by a trusted root index.
@@ -39,28 +41,26 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class CertificateChainCleanerAdapter {
+public final class CertificateChainCleaner {
 
     /**
      * Maximum signer depth accepted while building a chain.
      */
-    private static final int MAX_SIGNERS = 9;
+    private static final int MAX_SIGNERS = Normal._9;
 
     /**
      * Trust root index.
      */
-    private final TrustRootIndexAdapter trustRootIndex;
+    private final TrustRootIndex trustRootIndex;
 
     /**
      * Creates a chain cleaner.
      *
      * @param trustRootIndex trust root index
      */
-    private CertificateChainCleanerAdapter(final TrustRootIndexAdapter trustRootIndex) {
-        if (trustRootIndex == null) {
-            throw new ValidateException("Trust root index must not be null");
-        }
-        this.trustRootIndex = trustRootIndex;
+    private CertificateChainCleaner(final TrustRootIndex trustRootIndex) {
+        this.trustRootIndex = Assert
+                .notNull(trustRootIndex, () -> new ValidateException("Trust root index must not be null"));
     }
 
     /**
@@ -69,8 +69,8 @@ public final class CertificateChainCleanerAdapter {
      * @param trustRootIndex trust root index
      * @return cleaner
      */
-    public static CertificateChainCleanerAdapter of(final TrustRootIndexAdapter trustRootIndex) {
-        return new CertificateChainCleanerAdapter(trustRootIndex);
+    public static CertificateChainCleaner of(final TrustRootIndex trustRootIndex) {
+        return new CertificateChainCleaner(trustRootIndex);
     }
 
     /**
@@ -79,8 +79,8 @@ public final class CertificateChainCleanerAdapter {
      * @param caCerts CA certificates
      * @return cleaner
      */
-    public static CertificateChainCleanerAdapter of(final X509Certificate... caCerts) {
-        return new CertificateChainCleanerAdapter(TrustRootIndexAdapter.of(caCerts));
+    public static CertificateChainCleaner of(final X509Certificate... caCerts) {
+        return new CertificateChainCleaner(TrustRootIndex.of(caCerts));
     }
 
     /**
@@ -99,14 +99,14 @@ public final class CertificateChainCleanerAdapter {
         final ArrayList<Certificate> result = new ArrayList<>();
         result.add(x509(queue.removeFirst()));
         boolean foundTrustedCertificate = false;
-        followIssuerChain: for (int c = 0; c < MAX_SIGNERS; c++) {
+        followIssuerChain: for (int c = Normal._0; c < MAX_SIGNERS; c++) {
             final X509Certificate toVerify = x509(result.getLast());
             final X509Certificate trustedCert = trustRootIndex.findByIssuerAndSignature(toVerify);
             if (trustedCert != null) {
-                if (result.size() > 1 || !toVerify.equals(trustedCert)) {
+                if (result.size() > Normal._1 || !toVerify.equals(trustedCert)) {
                     result.add(trustedCert);
                 }
-                if (verifySignature(trustedCert, trustedCert)) {
+                if (Keeper.isSignedBy(trustedCert, trustedCert)) {
                     return CertificateChain.of(result);
                 }
                 foundTrustedCertificate = true;
@@ -114,7 +114,7 @@ public final class CertificateChainCleanerAdapter {
             }
             for (final Iterator<Certificate> iterator = queue.iterator(); iterator.hasNext();) {
                 final X509Certificate signingCert = x509(iterator.next());
-                if (verifySignature(toVerify, signingCert)) {
+                if (Keeper.isSignedBy(toVerify, signingCert)) {
                     iterator.remove();
                     result.add(signingCert);
                     continue followIssuerChain;
@@ -126,25 +126,6 @@ public final class CertificateChainCleanerAdapter {
             throw new ProtocolException("Failed to find a trusted cert that signed " + toVerify);
         }
         throw new ProtocolException("Certificate chain too long: " + result);
-    }
-
-    /**
-     * Returns whether signingCert signed toVerify.
-     *
-     * @param toVerify    certificate to verify
-     * @param signingCert signing certificate
-     * @return true when signature is valid
-     */
-    private static boolean verifySignature(final X509Certificate toVerify, final X509Certificate signingCert) {
-        if (!toVerify.getIssuerX500Principal().equals(signingCert.getSubjectX500Principal())) {
-            return false;
-        }
-        try {
-            toVerify.verify(signingCert.getPublicKey());
-            return true;
-        } catch (final GeneralSecurityException e) {
-            return false;
-        }
     }
 
     /**
