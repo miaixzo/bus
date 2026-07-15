@@ -637,41 +637,81 @@ public final class SocketLease {
             this.closed = new AtomicBoolean();
         }
 
+        /**
+         * Returns the delegated connection destination.
+         *
+         * @return destination
+         */
         @Override
         public Destination destination() {
             return delegate.destination();
         }
 
+        /**
+         * Returns the delegated connection conduit.
+         *
+         * @return conduit
+         */
         @Override
         public Conduit conduit() {
             return delegate.conduit();
         }
 
+        /**
+         * Returns the delegated connection state.
+         *
+         * @return state
+         */
         @Override
         public Status state() {
             return delegate.state();
         }
 
+        /**
+         * Reads through the delegated connection.
+         *
+         * @param buffer destination buffer
+         * @return read future
+         */
         @Override
         public CompletableFuture<Integer> read(final ByteBuffer buffer) {
             return delegate.read(buffer);
         }
 
+        /**
+         * Writes through the delegated connection.
+         *
+         * @param buffer source buffer
+         * @return write future
+         */
         @Override
         public CompletableFuture<Integer> write(final ByteBuffer buffer) {
             return delegate.write(buffer);
         }
 
+        /**
+         * Returns whether this owned connection remains healthy.
+         *
+         * @return true when healthy
+         */
         @Override
         public boolean healthy() {
             return !closed.get() && delegate.healthy();
         }
 
+        /**
+         * Returns whether the delegated connection is idle.
+         *
+         * @return true when idle
+         */
         @Override
         public boolean idle() {
             return delegate.idle();
         }
 
+        /**
+         * Closes the delegated connection and its owning AIO network once.
+         */
         @Override
         public void close() {
             if (closed.compareAndSet(false, true)) {

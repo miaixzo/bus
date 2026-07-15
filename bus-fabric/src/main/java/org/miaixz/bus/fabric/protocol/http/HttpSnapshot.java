@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @since Java 21+
  */
 record HttpSnapshot(Context context, HttpRequest request, Callback<HttpResponse> callback, EventObserver observer,
-        Filter filter, GuardRule guard) {
+                    Filter filter, GuardRule guard) {
 
     /**
      * Creates a validated snapshot.

@@ -48,8 +48,9 @@ import org.miaixz.bus.fabric.Options;
  * @since Java 21+
  */
 public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChunkCount, int backlog, int threadNum,
-        Map<SocketOption<?>, Object> socketOptions, boolean retainReadBuffer, Duration connectTimeout,
-        Duration idleTimeout) {
+                            Map<SocketOption<?>, Object> socketOptions, boolean retainReadBuffer,
+                            Duration connectTimeout,
+                            Duration idleTimeout) {
 
     /**
      * Option key for per-session read buffer size.

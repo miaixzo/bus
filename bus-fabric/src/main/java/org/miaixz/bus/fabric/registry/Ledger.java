@@ -109,34 +109,67 @@ final class DefaultLedger<T> implements Ledger<T> {
      */
     private final ConcurrentHashMap<String, Binding<T>> bindings = new ConcurrentHashMap<>();
 
+    /**
+     * Stores or replaces a binding by key.
+     *
+     * @param binding binding
+     */
     @Override
     public void put(final Binding<T> binding) {
         final Binding<T> checked = require(binding, "Binding");
         bindings.put(checked.key(), checked);
     }
 
+    /**
+     * Returns the bound value for a key.
+     *
+     * @param key binding key
+     * @return value, or null when absent
+     */
     @Override
     public T get(final String key) {
         final Binding<T> binding = binding(key);
         return binding == null ? null : binding.value();
     }
 
+    /**
+     * Returns the full binding for a key.
+     *
+     * @param key binding key
+     * @return binding, or null when absent
+     */
     @Override
     public Binding<T> binding(final String key) {
         return bindings.get(validateKey(key));
     }
 
+    /**
+     * Removes a binding by key and returns its value.
+     *
+     * @param key binding key
+     * @return removed value, or null when absent
+     */
     @Override
     public T remove(final String key) {
         final Binding<T> removed = bindings.remove(validateKey(key));
         return removed == null ? null : removed.value();
     }
 
+    /**
+     * Returns an immutable snapshot of all bindings.
+     *
+     * @return binding snapshot
+     */
     @Override
     public Map<String, Binding<T>> snapshot() {
         return Collections.unmodifiableMap(new LinkedHashMap<>(bindings));
     }
 
+    /**
+     * Returns the number of stored bindings.
+     *
+     * @return binding count
+     */
     @Override
     public int size() {
         return bindings.size();

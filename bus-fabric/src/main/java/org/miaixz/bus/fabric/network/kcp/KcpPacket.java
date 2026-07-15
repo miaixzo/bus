@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @since Java 21+
  */
 public record KcpPacket(Type type, long sequence, long acknowledgement, int window, long timestamp,
-        ByteString payloadBytes) {
+                        ByteString payloadBytes) {
 
     /**
      * Packet wire version.

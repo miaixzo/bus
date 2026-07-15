@@ -98,8 +98,8 @@ public final class TlsSettings {
      * @param tlsExtensions        TLS extensions flag
      */
     private TlsSettings(final List<String> versions, final List<String> ciphers, final TlsClientAuth clientAuth,
-            final boolean verifyHostname, final CertificatePolicy certificate, final List<String> applicationProtocols,
-            final boolean tlsExtensions) {
+                        final boolean verifyHostname, final CertificatePolicy certificate, final List<String> applicationProtocols,
+                        final boolean tlsExtensions) {
         this.versions = validateVersions(versions);
         this.ciphers = validateCiphers(ciphers, true);
         this.clientAuth = Assert.notNull(clientAuth, () -> new ValidateException("Client auth mode must not be null"));

@@ -38,11 +38,6 @@ import org.miaixz.bus.logger.Logger;
 public final class ResourceScope implements AutoCloseable {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Registered resources.
      */
     private final ConcurrentLinkedDeque<AutoCloseable> resources;
@@ -140,7 +135,7 @@ public final class ResourceScope implements AutoCloseable {
      */
     public void leak(final Object owner) {
         final Object current = Assert.notNull(owner, () -> new ValidateException("Leak owner must not be null"));
-        Logger.debug(false, LOG_TAG, "Resource scope leak detected: owner={}, resources={}", current, size());
+        Logger.debug(false, "Fabric", "Resource scope leak detected: owner={}, resources={}", current, size());
         close();
     }
 

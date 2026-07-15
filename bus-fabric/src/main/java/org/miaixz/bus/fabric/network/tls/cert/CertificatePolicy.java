@@ -88,7 +88,7 @@ public final class CertificatePolicy {
      * @param chainCleaner   chain cleaner
      */
     private CertificatePolicy(final X509TrustManager trustManager, final boolean hostnameVerify,
-            final Map<String, Set<String>> pins, final boolean trustAll, final CertificateChainCleaner chainCleaner) {
+                              final Map<String, Set<String>> pins, final boolean trustAll, final CertificateChainCleaner chainCleaner) {
         this.trustManager = Assert.notNull(trustManager, () -> new ValidateException("Trust manager must not be null"));
         this.hostnameVerify = hostnameVerify;
         this.pins = copyPins(pins);

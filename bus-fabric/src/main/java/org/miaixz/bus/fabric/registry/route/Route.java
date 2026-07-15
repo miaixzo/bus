@@ -118,6 +118,11 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
                 + socket.getHostString() + Symbol.COLON + socket.getPort();
     }
 
+    /**
+     * Returns diagnostic route text.
+     *
+     * @return route text
+     */
     @Override
     public String toString() {
         return "Route[id=" + id() + ", secure=" + secure() + ", tunnel=" + requiresTunnel() + "]";

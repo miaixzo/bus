@@ -120,7 +120,7 @@ public final class UnoUrl {
      * @param encoded         cached encoded URL
      */
     private UnoUrl(final Address address, final String path, final List<QueryParameter> queryParameters,
-            final String username, final String password, final String fragment, final String encoded) {
+                   final String username, final String password, final String fragment, final String encoded) {
         if (address == null) {
             throw new ValidateException("Address must not be null");
         }
@@ -533,6 +533,11 @@ public final class UnoUrl {
         return toUri();
     }
 
+    /**
+     * Returns the canonical encoded URL text.
+     *
+     * @return encoded URL
+     */
     @Override
     public String toString() {
         return encoded();
@@ -541,9 +546,12 @@ public final class UnoUrl {
     /**
      * Builds the encoded URL.
      *
-     * @param address address
-     * @param path    path
-     * @param query   query
+     * @param address  address
+     * @param path     path
+     * @param query    query parameters
+     * @param username decoded username
+     * @param password decoded password
+     * @param fragment decoded fragment
      * @return encoded URL
      */
     private static String buildEncoded(
@@ -651,9 +659,9 @@ public final class UnoUrl {
     }
 
     /**
-     * Encodes the query map.
+     * Encodes query parameters.
      *
-     * @param values query values
+     * @param values query parameters
      * @return query string
      */
     private static String encodeQuery(final List<QueryParameter> values) {
@@ -734,7 +742,7 @@ public final class UnoUrl {
      * Parses a raw query string.
      *
      * @param rawQuery raw query
-     * @return decoded query map
+     * @return decoded query parameters
      */
     private static List<QueryParameter> parseQueryParameters(final String rawQuery) {
         final ArrayList<QueryParameter> values = new ArrayList<>();
@@ -824,12 +832,12 @@ public final class UnoUrl {
      */
     private static String[] parseUserInfo(final String rawUserInfo) {
         if (rawUserInfo == null) {
-            return new String[] { Normal.EMPTY, Normal.EMPTY };
+            return new String[]{Normal.EMPTY, Normal.EMPTY};
         }
         final int separator = rawUserInfo.indexOf(Symbol.C_COLON);
         final String rawUsername = separator >= 0 ? rawUserInfo.substring(0, separator) : rawUserInfo;
         final String rawPassword = separator >= 0 ? rawUserInfo.substring(separator + 1) : Normal.EMPTY;
-        return new String[] { decode(rawUsername), decode(rawPassword) };
+        return new String[]{decode(rawUsername), decode(rawPassword)};
     }
 
     /**

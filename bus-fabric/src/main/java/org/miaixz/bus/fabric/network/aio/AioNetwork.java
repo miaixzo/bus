@@ -104,7 +104,7 @@ public final class AioNetwork implements AutoCloseable {
      * @param listener lifecycle listener
      */
     private AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
-            final Listener<Object> listener) {
+                       final Listener<Object> listener) {
         this(group, provider, resolver, listener, SocketOptions.defaults());
     }
 
@@ -118,7 +118,7 @@ public final class AioNetwork implements AutoCloseable {
      * @param socketOptions socket options
      */
     private AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
-            final Listener<Object> listener, final SocketOptions socketOptions) {
+                       final Listener<Object> listener, final SocketOptions socketOptions) {
         this.group = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
         this.provider = Assert.notNull(provider, () -> new ValidateException("AIO provider must not be null"));
         this.resolver = Assert.notNull(resolver, () -> new ValidateException("DNS resolver must not be null"));

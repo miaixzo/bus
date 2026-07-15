@@ -63,6 +63,13 @@ public final class JavaAuthenticatorBridge implements HttpAuthenticator {
         return new JavaAuthenticatorBridge(authenticator);
     }
 
+    /**
+     * Uses the wrapped JDK authenticator to answer an HTTP authentication challenge.
+     *
+     * @param request  challenged request
+     * @param response challenged response
+     * @return authenticated request, or null when no credentials are available
+     */
     @Override
     public HttpRequest authenticate(final HttpRequest request, final HttpResponse response) {
         final HttpRequest current = require(request, "HTTP request");

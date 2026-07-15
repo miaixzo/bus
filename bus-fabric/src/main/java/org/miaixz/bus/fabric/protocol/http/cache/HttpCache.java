@@ -57,11 +57,6 @@ import org.miaixz.bus.logger.Logger;
 public final class HttpCache implements AutoCloseable {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Cache store.
      */
     private final CacheStore store;
@@ -137,7 +132,7 @@ public final class HttpCache implements AutoCloseable {
         final HttpCache cache = new HttpCache(store, policy, observer);
         Logger.info(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP cache created: store={}, policy={}",
                 store == null ? "null" : store.getClass().getName(),
                 policy == null ? "null" : policy.getClass().getName());
@@ -149,11 +144,11 @@ public final class HttpCache implements AutoCloseable {
      */
     public void initialize() {
         ensureOpen();
-        Logger.info(true, LOG_TAG, "HTTP cache initialization started: store={}", store.getClass().getName());
+        Logger.info(true, "Fabric", "HTTP cache initialization started: store={}", store.getClass().getName());
         if (store instanceof DiskStore disk) {
             disk.initialize();
         }
-        Logger.info(false, LOG_TAG, "HTTP cache initialization completed: store={}", store.getClass().getName());
+        Logger.info(false, "Fabric", "HTTP cache initialization completed: store={}", store.getClass().getName());
     }
 
     /**
@@ -287,7 +282,7 @@ public final class HttpCache implements AutoCloseable {
                 emit("hit", key);
                 Logger.info(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP cache hit: key={}, method={}, scheme={}, host={}, port={}, path={}",
                         keyHash(key),
                         request.method().value(),
@@ -304,7 +299,7 @@ public final class HttpCache implements AutoCloseable {
         emit("miss", prefix);
         Logger.info(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP cache miss: key={}, method={}, scheme={}, host={}, port={}, path={}",
                 keyHash(prefix),
                 request.method().value(),
@@ -328,7 +323,7 @@ public final class HttpCache implements AutoCloseable {
             HttpCachePurge.remove(store, request, removed -> emit("remove", removed));
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP cache skipped: reason=not-cacheable, method={}, scheme={}, host={}, port={}, path={}, "
                             + "code={}",
                     request.method().value(),
@@ -343,7 +338,7 @@ public final class HttpCache implements AutoCloseable {
         store.put(key, HttpCacheCodec.toEntry(request, response));
         recordWriteSuccess();
         emit("write", key);
-        Logger.info(false, LOG_TAG, "HTTP cache stored: key={}, code={}", keyHash(key), response.code());
+        Logger.info(false, "Fabric", "HTTP cache stored: key={}, code={}", keyHash(key), response.code());
     }
 
     /**
@@ -360,7 +355,7 @@ public final class HttpCache implements AutoCloseable {
             HttpCachePurge.remove(store, request, removed -> emit("remove", removed));
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP cache write skipped: reason=not-cacheable, method={}, scheme={}, host={}, port={}, path={}, "
                             + "code={}",
                     request.method().value(),
@@ -378,7 +373,7 @@ public final class HttpCache implements AutoCloseable {
             emit("write", key);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP cache stored: key={}, code={}, repeatable={}",
                     keyHash(key),
                     response.code(),
@@ -389,7 +384,7 @@ public final class HttpCache implements AutoCloseable {
         if (writer == null) {
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP cache writer unavailable: key={}, code={}",
                     keyHash(key),
                     response.code());
@@ -400,7 +395,7 @@ public final class HttpCache implements AutoCloseable {
             emit("write", key);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP cache streamed body stored: key={}, code={}",
                     keyHash(key),
                     response.code());
@@ -409,7 +404,7 @@ public final class HttpCache implements AutoCloseable {
             emit("abort", key);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP cache streamed body aborted: key={}, code={}",
                     keyHash(key),
                     response.code());
@@ -475,7 +470,7 @@ public final class HttpCache implements AutoCloseable {
         HttpCachePurge.remove(store, request, key -> emit("remove", key));
         Logger.info(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP cache removal requested: method={}, scheme={}, host={}, port={}, path={}",
                 request.method().value(),
                 request.url().scheme(),
@@ -489,10 +484,10 @@ public final class HttpCache implements AutoCloseable {
      */
     public void evictAll() {
         ensureOpen();
-        Logger.info(true, LOG_TAG, "HTTP cache eviction started: store={}", store.getClass().getName());
+        Logger.info(true, "Fabric", "HTTP cache eviction started: store={}", store.getClass().getName());
         if (store instanceof DiskStore disk) {
             disk.evictAll();
-            Logger.info(false, LOG_TAG, "HTTP cache eviction completed: store={}", store.getClass().getName());
+            Logger.info(false, "Fabric", "HTTP cache eviction completed: store={}", store.getClass().getName());
             return;
         }
         final List<String> keys = new ArrayList<>();
@@ -500,7 +495,7 @@ public final class HttpCache implements AutoCloseable {
         keys.forEach(store::remove);
         Logger.info(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP cache eviction completed: store={}, entries={}",
                 store.getClass().getName(),
                 keys.size());
@@ -511,11 +506,11 @@ public final class HttpCache implements AutoCloseable {
      */
     public void flush() {
         ensureOpen();
-        Logger.info(true, LOG_TAG, "HTTP cache flush started: store={}", store.getClass().getName());
+        Logger.info(true, "Fabric", "HTTP cache flush started: store={}", store.getClass().getName());
         if (store instanceof DiskStore disk) {
             disk.flush();
         }
-        Logger.info(false, LOG_TAG, "HTTP cache flush completed: store={}", store.getClass().getName());
+        Logger.info(false, "Fabric", "HTTP cache flush completed: store={}", store.getClass().getName());
     }
 
     /**
@@ -523,15 +518,15 @@ public final class HttpCache implements AutoCloseable {
      */
     public void delete() {
         ensureOpen();
-        Logger.info(true, LOG_TAG, "HTTP cache delete started: store={}", store.getClass().getName());
+        Logger.info(true, "Fabric", "HTTP cache delete started: store={}", store.getClass().getName());
         if (store instanceof DiskStore disk) {
             disk.delete();
             state.set(Status.CLOSED);
-            Logger.info(false, LOG_TAG, "HTTP cache delete completed: store={}", store.getClass().getName());
+            Logger.info(false, "Fabric", "HTTP cache delete completed: store={}", store.getClass().getName());
             return;
         }
         evictAll();
-        Logger.info(false, LOG_TAG, "HTTP cache delete completed: store={}", store.getClass().getName());
+        Logger.info(false, "Fabric", "HTTP cache delete completed: store={}", store.getClass().getName());
     }
 
     /**
@@ -547,7 +542,7 @@ public final class HttpCache implements AutoCloseable {
         if (network.code() != HTTP.HTTP_NOT_MODIFIED) {
             cached.close();
             emit("update", Integer.toString(network.code()));
-            Logger.info(false, LOG_TAG, "HTTP cache update bypassed: code={}", network.code());
+            Logger.info(false, "Fabric", "HTTP cache update bypassed: code={}", network.code());
             return network;
         }
         final Headers headers = HttpCacheCodec.mergeHeaders(cached.headers(), network.headers());
@@ -556,7 +551,7 @@ public final class HttpCache implements AutoCloseable {
                 .networkResponse(network).cacheResponse(cached).sentRequestAtMillis(network.sentRequestAtMillis())
                 .receivedResponseAtMillis(network.receivedResponseAtMillis()).build();
         emit("update", Integer.toString(HTTP.HTTP_NOT_MODIFIED));
-        Logger.info(false, LOG_TAG, "HTTP cache conditional hit: code={}", network.code());
+        Logger.info(false, "Fabric", "HTTP cache conditional hit: code={}", network.code());
         return merged;
     }
 
@@ -583,7 +578,7 @@ public final class HttpCache implements AutoCloseable {
         if (failure != null) {
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     failure,
                     "HTTP cache close failed: store={}, exception={}",
                     store.getClass().getName(),
@@ -591,7 +586,7 @@ public final class HttpCache implements AutoCloseable {
             throw failure instanceof InternalException internal ? internal
                     : new InternalException("Unable to close cache", failure);
         }
-        Logger.info(false, LOG_TAG, "HTTP cache closed: store={}", store.getClass().getName());
+        Logger.info(false, "Fabric", "HTTP cache closed: store={}", store.getClass().getName());
     }
 
     /**

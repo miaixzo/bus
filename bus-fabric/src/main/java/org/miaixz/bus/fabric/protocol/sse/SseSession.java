@@ -44,11 +44,6 @@ import org.miaixz.bus.logger.Logger;
 public final class SseSession {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Session address.
      */
     private final Address address;
@@ -93,7 +88,7 @@ public final class SseSession {
      * @param cancelHook cancellation hook
      */
     SseSession(final Address address, final SseRetry retry, final SseReader reader,
-            final CompletableFuture<Void> stream, final Runnable cancelHook) {
+               final CompletableFuture<Void> stream, final Runnable cancelHook) {
         this(address, retry, reader, stream, cancelHook, Wiring.noop());
     }
 
@@ -108,8 +103,8 @@ public final class SseSession {
      * @param listener   lifecycle listener
      */
     SseSession(final Address address, final SseRetry retry, final SseReader reader,
-            final CompletableFuture<Void> stream, final Runnable cancelHook,
-            final Listener<? super SseSession> listener) {
+               final CompletableFuture<Void> stream, final Runnable cancelHook,
+               final Listener<? super SseSession> listener) {
         this.address = require(address, "SSE address");
         this.retry = require(retry, "SSE retry");
         this.reader = new AtomicReference<>(require(reader, "SSE reader"));
@@ -125,7 +120,7 @@ public final class SseSession {
                     this.listener.close(this);
                     Logger.info(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             "SSE session stream closed: scheme={}, host={}, port={}",
                             address.scheme(),
                             address.host(),
@@ -137,7 +132,7 @@ public final class SseSession {
                     this.listener.failure(this, cause);
                     Logger.warn(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             cause,
                             "SSE session stream failed: scheme={}, host={}, port={}, exception={}",
                             address.scheme(),
@@ -186,7 +181,7 @@ public final class SseSession {
                 || state.compareAndSet(Status.CLOSING, Status.CLOSED)) {
             Logger.info(
                     true,
-                    LOG_TAG,
+                    "Fabric",
                     "SSE session close started: scheme={}, host={}, port={}",
                     address.scheme(),
                     address.host(),
@@ -197,7 +192,7 @@ public final class SseSession {
             listener.close(this);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "SSE session closed: scheme={}, host={}, port={}",
                     address.scheme(),
                     address.host(),
@@ -221,7 +216,7 @@ public final class SseSession {
             if (state.compareAndSet(current, Status.CANCELLED)) {
                 Logger.info(
                         true,
-                        LOG_TAG,
+                        "Fabric",
                         "SSE session cancel started: scheme={}, host={}, port={}",
                         address.scheme(),
                         address.host(),
@@ -232,7 +227,7 @@ public final class SseSession {
                 listener.failure(this, new StatefulException("SSE session was cancelled"));
                 Logger.info(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "SSE session cancelled: scheme={}, host={}, port={}",
                         address.scheme(),
                         address.host(),

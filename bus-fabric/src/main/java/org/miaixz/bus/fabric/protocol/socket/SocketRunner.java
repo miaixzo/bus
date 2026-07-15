@@ -66,11 +66,6 @@ import org.miaixz.bus.logger.Logger;
 final class SocketRunner {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Socket-scoped TLS context option key.
      */
     private static final String SOCKET_TLS_CONTEXT = "socket.tlsContext";
@@ -89,6 +84,11 @@ final class SocketRunner {
      * Shared TLS settings option key.
      */
     private static final String TLS_SETTINGS = "tlsSettings";
+
+    /**
+     * Socket open filter tag.
+     */
+    private static final String TAG_SOCKET_OPEN = "socket-open";
 
     /**
      * Execution snapshot.
@@ -112,20 +112,21 @@ final class SocketRunner {
     SocketSession open() {
         Logger.info(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "Socket open started: scheme={}, host={}, port={}, pooled={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
                 snapshot.address().port(),
                 snapshot.pooled());
         try {
-            checkGuard();
+            final Message opening = prepareOpen();
+            checkGuard(opening);
             final Transport transport = Transport.fromScheme(snapshot.address().scheme());
             final SocketSession session = switch (transport) {
-                case TCP -> openTcp();
-                case TLS -> openTls();
-                case UDP -> openUdp();
-                case KCP -> openKcp();
+                case TCP -> openTcp(opening);
+                case TLS -> openTls(opening);
+                case UDP -> openUdp(opening);
+                case KCP -> openKcp(opening);
                 default -> throw new ProtocolException("Socket exchange does not support transport: " + transport);
             };
             emit(ObservationMarker.SOCKET_OPEN, null);
@@ -133,7 +134,7 @@ final class SocketRunner {
             snapshot.callback().success(session);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "Socket open completed: scheme={}, host={}, port={}, transport={}, pooled={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
@@ -146,7 +147,7 @@ final class SocketRunner {
             snapshot.callback().failure(e);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "Socket open failed: scheme={}, host={}, port={}, pooled={}, exception={}",
                     snapshot.address().scheme(),
@@ -161,15 +162,16 @@ final class SocketRunner {
     /**
      * Opens a TCP session.
      *
+     * @param opening filtered opening message
      * @return session
      */
-    private SocketSession openTcp() {
+    private SocketSession openTcp(final Message opening) {
         if (snapshot.pooled()) {
-            return openPooledTcp();
+            return openPooledTcp(opening);
         }
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "Socket TCP connect started: host={}, port={}",
                 snapshot.address().host(),
                 snapshot.address().port());
@@ -184,12 +186,12 @@ final class SocketRunner {
             final Connection connection = await(network.connect(snapshot.address(), snapshot.timeout()));
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "Socket TCP connect completed: host={}, port={}",
                     snapshot.address().host(),
                     snapshot.address().port());
             return new SocketSession(snapshot.address(), connection, SocketCodec.of(snapshot.frameCodec()),
-                    snapshot.handler(), attributes(), network, snapshot.listener(),
+                    snapshot.handler(), attributes(opening), network, snapshot.listener(),
                     snapshot.context().options().materializeMaxBytes(), snapshot.socketOptions());
         } catch (final RuntimeException e) {
             if (aio != null) {
@@ -202,12 +204,13 @@ final class SocketRunner {
     /**
      * Opens a TLS-over-TCP session.
      *
+     * @param opening filtered opening message
      * @return session
      */
-    private SocketSession openTls() {
+    private SocketSession openTls(final Message opening) {
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "Socket TLS connect started: host={}, port={}",
                 snapshot.address().host(),
                 snapshot.address().port());
@@ -229,12 +232,12 @@ final class SocketRunner {
                 await(tls.handshake());
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "Socket TLS handshake completed: host={}, port={}",
                         snapshot.address().host(),
                         snapshot.address().port());
                 return new SocketSession(snapshot.address(), new TlsSocketConnection(raw, tls),
-                        SocketCodec.of(snapshot.frameCodec()), snapshot.handler(), attributes(), network,
+                        SocketCodec.of(snapshot.frameCodec()), snapshot.handler(), attributes(opening), network,
                         snapshot.listener(), snapshot.context().options().materializeMaxBytes(),
                         snapshot.socketOptions());
             } catch (final RuntimeException e) {
@@ -252,12 +255,13 @@ final class SocketRunner {
     /**
      * Opens a pooled TCP session.
      *
+     * @param opening filtered opening message
      * @return session
      */
-    private SocketSession openPooledTcp() {
+    private SocketSession openPooledTcp(final Message opening) {
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "Socket pooled TCP lease started: host={}, port={}",
                 snapshot.address().host(),
                 snapshot.address().port());
@@ -272,12 +276,12 @@ final class SocketRunner {
                 snapshot.context().reactor().dispatcher(),
                 snapshot.frameCodec(),
                 snapshot.handler(),
-                attributes(),
+                attributes(opening),
                 snapshot.listener(),
                 snapshot.context().options().materializeMaxBytes()).session();
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "Socket pooled TCP lease completed: host={}, port={}",
                 snapshot.address().host(),
                 snapshot.address().port());
@@ -287,12 +291,13 @@ final class SocketRunner {
     /**
      * Opens a UDP session.
      *
+     * @param opening filtered opening message
      * @return session
      */
-    private SocketSession openUdp() {
+    private SocketSession openUdp(final Message opening) {
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "Socket UDP connect started: host={}, port={}",
                 snapshot.address().host(),
                 snapshot.address().port());
@@ -302,12 +307,12 @@ final class SocketRunner {
             final UdpSession session = owner.udp().connect(snapshot.address());
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "Socket UDP connect completed: host={}, port={}",
                     snapshot.address().host(),
                     snapshot.address().port());
             return new SocketSession(snapshot.address(), session, null, SocketCodec.of(snapshot.frameCodec()),
-                    snapshot.handler(), attributes(), owner, snapshot.listener(),
+                    snapshot.handler(), attributes(opening), owner, snapshot.listener(),
                     snapshot.context().options().materializeMaxBytes(), snapshot.socketOptions());
         } catch (final RuntimeException e) {
             owner.close();
@@ -318,12 +323,13 @@ final class SocketRunner {
     /**
      * Opens a KCP-over-UDP session.
      *
+     * @param opening filtered opening message
      * @return session
      */
-    private SocketSession openKcp() {
+    private SocketSession openKcp(final Message opening) {
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "Socket KCP open started: host={}, port={}",
                 snapshot.address().host(),
                 snapshot.address().port());
@@ -334,12 +340,12 @@ final class SocketRunner {
             final UdpSession session = kcp.open(snapshot.address());
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "Socket KCP open completed: host={}, port={}",
                     snapshot.address().host(),
                     snapshot.address().port());
             return new SocketSession(snapshot.address(), session, kcp, SocketCodec.of(snapshot.frameCodec()),
-                    snapshot.handler(), attributes(), owner, snapshot.listener(),
+                    snapshot.handler(), attributes(opening), owner, snapshot.listener(),
                     snapshot.context().options().materializeMaxBytes(), snapshot.socketOptions());
         } catch (final RuntimeException e) {
             owner.close();
@@ -371,33 +377,42 @@ final class SocketRunner {
     }
 
     /**
-     * Checks optional guard.
+     * Prepares the socket opening message.
+     *
+     * @return filtered opening message
      */
-    private void checkGuard() {
+    private Message prepareOpen() {
+        return FilterChain.apply(
+                Message.of(
+                        snapshot.address().protocol(),
+                        snapshot.address(),
+                        snapshot.headers(),
+                        Payload.empty(),
+                        TAG_SOCKET_OPEN),
+                snapshot.context().filter(),
+                snapshot.filter());
+    }
+
+    /**
+     * Checks optional guard.
+     *
+     * @param opening filtered opening message
+     */
+    private void checkGuard(final Message opening) {
         if (snapshot.guard() == null) {
             return;
         }
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "Socket guard check started: scheme={}, host={}, port={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
                 snapshot.address().port());
-        final Message opening = FilterChain
-                .apply(
-                        Message.of(
-                                snapshot.address().protocol(),
-                                snapshot.address(),
-                                snapshot.headers(),
-                                Payload.empty(),
-                                null),
-                        snapshot.context().filter(),
-                        snapshot.filter());
         snapshot.guard().check(opening).throwIfRejected();
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "Socket guard check accepted: scheme={}, host={}, port={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
@@ -407,11 +422,12 @@ final class SocketRunner {
     /**
      * Creates session attributes.
      *
+     * @param opening filtered opening message
      * @return attributes
      */
-    private Map<String, Object> attributes() {
+    private Map<String, Object> attributes(final Message opening) {
         final LinkedHashMap<String, Object> attributes = new LinkedHashMap<>();
-        attributes.put(SocketSession.ATTRIBUTE_HEADERS, snapshot.headers().asMap());
+        attributes.put(SocketSession.ATTRIBUTE_HEADERS, require(opening, "Opening message").headers().asMap());
         attributes.put(SocketSession.ATTRIBUTE_OBSERVER, snapshot.observer());
         attributes.put(SocketSession.ATTRIBUTE_SOCKET_OPTIONS, snapshot.socketOptions());
         if (snapshot.guard() != null) {
@@ -511,41 +527,81 @@ final class SocketRunner {
             this.tls = require(tls, "TLS channel");
         }
 
+        /**
+         * Returns the raw connection destination.
+         *
+         * @return destination
+         */
         @Override
         public Destination destination() {
             return raw.destination();
         }
 
+        /**
+         * Returns the raw connection conduit.
+         *
+         * @return conduit
+         */
         @Override
         public org.miaixz.bus.fabric.network.Conduit conduit() {
             return raw.conduit();
         }
 
+        /**
+         * Returns the raw connection lifecycle state.
+         *
+         * @return state
+         */
         @Override
         public org.miaixz.bus.fabric.Status state() {
             return raw.state();
         }
 
+        /**
+         * Reads decrypted bytes through the TLS channel.
+         *
+         * @param buffer destination buffer
+         * @return read future
+         */
         @Override
         public CompletableFuture<Integer> read(final java.nio.ByteBuffer buffer) {
             return tls.read(buffer);
         }
 
+        /**
+         * Writes plaintext bytes through the TLS channel.
+         *
+         * @param buffer source buffer
+         * @return write future
+         */
         @Override
         public CompletableFuture<Integer> write(final java.nio.ByteBuffer buffer) {
             return tls.write(buffer);
         }
 
+        /**
+         * Returns whether TLS and the raw connection are healthy.
+         *
+         * @return true when healthy
+         */
         @Override
         public boolean healthy() {
             return tls.opened() && raw.healthy();
         }
 
+        /**
+         * Returns whether the raw connection is idle.
+         *
+         * @return true when idle
+         */
         @Override
         public boolean idle() {
             return raw.idle();
         }
 
+        /**
+         * Closes the TLS channel and then the raw connection.
+         */
         @Override
         public void close() {
             RuntimeException failure = null;
@@ -598,6 +654,9 @@ final class SocketRunner {
             }
         }
 
+        /**
+         * Closes the owned UDP network and AIO group.
+         */
         @Override
         public void close() {
             RuntimeException failure = null;

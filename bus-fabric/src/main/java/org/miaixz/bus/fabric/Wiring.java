@@ -237,11 +237,21 @@ public final class Wiring {
      */
     private static final class NoopCallback<T> implements Callback<T> {
 
+        /**
+         * Ignores a successful callback value.
+         *
+         * @param value successful value
+         */
         @Override
         public void success(final T value) {
             // No-op callback intentionally ignores successful values.
         }
 
+        /**
+         * Ignores a callback failure cause.
+         *
+         * @param cause failure cause
+         */
         @Override
         public void failure(final Throwable cause) {
             // No-op callback intentionally ignores failure causes.
@@ -278,22 +288,38 @@ public final class Wiring {
          * @param failure failure function
          */
         private FunctionalListener(final Consumer<? super T> open, final Consumer<? super T> close,
-                final BiConsumer<? super T, ? super Throwable> failure) {
+                                   final BiConsumer<? super T, ? super Throwable> failure) {
             this.open = open;
             this.close = close;
             this.failure = failure;
         }
 
+        /**
+         * Forwards an open event to the configured open function.
+         *
+         * @param source lifecycle source
+         */
         @Override
         public void open(final T source) {
             open.accept(source);
         }
 
+        /**
+         * Forwards a close event to the configured close function.
+         *
+         * @param source lifecycle source
+         */
         @Override
         public void close(final T source) {
             close.accept(source);
         }
 
+        /**
+         * Forwards a failure event to the configured failure function.
+         *
+         * @param source lifecycle source
+         * @param cause  failure cause
+         */
         @Override
         public void failure(final T source, final Throwable cause) {
             failure.accept(source, cause);
@@ -321,16 +347,32 @@ public final class Wiring {
             this.listener = listener;
         }
 
+        /**
+         * Forwards an open event to the wrapped listener.
+         *
+         * @param source lifecycle source
+         */
         @Override
         public void open(final T source) {
             listener.open(source);
         }
 
+        /**
+         * Forwards a close event to the wrapped listener.
+         *
+         * @param source lifecycle source
+         */
         @Override
         public void close(final T source) {
             listener.close(source);
         }
 
+        /**
+         * Forwards a failure event to the wrapped listener.
+         *
+         * @param source lifecycle source
+         * @param cause  failure cause
+         */
         @Override
         public void failure(final T source, final Throwable cause) {
             listener.failure(source, cause);
@@ -358,16 +400,32 @@ public final class Wiring {
             this.listeners = List.copyOf(listeners);
         }
 
+        /**
+         * Invokes composed listeners for an open event in declaration order.
+         *
+         * @param source lifecycle source
+         */
         @Override
         public void open(final T source) {
             each(listeners, listener -> listener.open(source));
         }
 
+        /**
+         * Invokes composed listeners for a close event in declaration order.
+         *
+         * @param source lifecycle source
+         */
         @Override
         public void close(final T source) {
             each(listeners, listener -> listener.close(source));
         }
 
+        /**
+         * Invokes composed listeners for a failure event in declaration order.
+         *
+         * @param source lifecycle source
+         * @param cause  failure cause
+         */
         @Override
         public void failure(final T source, final Throwable cause) {
             each(listeners, listener -> listener.failure(source, cause));
@@ -402,16 +460,32 @@ public final class Wiring {
             this.listener = listener;
         }
 
+        /**
+         * Dispatches an open event through the configured executor.
+         *
+         * @param source lifecycle source
+         */
         @Override
         public void open(final T source) {
             executor.execute(() -> listener.open(source));
         }
 
+        /**
+         * Dispatches a close event through the configured executor.
+         *
+         * @param source lifecycle source
+         */
         @Override
         public void close(final T source) {
             executor.execute(() -> listener.close(source));
         }
 
+        /**
+         * Dispatches a failure event through the configured executor.
+         *
+         * @param source lifecycle source
+         * @param cause  failure cause
+         */
         @Override
         public void failure(final T source, final Throwable cause) {
             executor.execute(() -> listener.failure(source, cause));
@@ -446,16 +520,32 @@ public final class Wiring {
             this.listener = listener;
         }
 
+        /**
+         * Invokes the wrapped open callback and reports listener failures.
+         *
+         * @param source lifecycle source
+         */
         @Override
         public void open(final T source) {
             invoke(observer, "open", source, null, () -> listener.open(source));
         }
 
+        /**
+         * Invokes the wrapped close callback and reports listener failures.
+         *
+         * @param source lifecycle source
+         */
         @Override
         public void close(final T source) {
             invoke(observer, "close", source, null, () -> listener.close(source));
         }
 
+        /**
+         * Invokes the wrapped failure callback and reports listener failures.
+         *
+         * @param source lifecycle source
+         * @param cause  lifecycle failure cause
+         */
         @Override
         public void failure(final T source, final Throwable cause) {
             invoke(observer, "failure", source, cause, () -> listener.failure(source, cause));
@@ -490,11 +580,21 @@ public final class Wiring {
             this.callback = callback;
         }
 
+        /**
+         * Invokes the wrapped success callback and reports callback failures.
+         *
+         * @param value successful value
+         */
         @Override
         public void success(final T value) {
             invoke(observer, "callback.success", value, null, () -> callback.success(value));
         }
 
+        /**
+         * Invokes the wrapped failure callback and reports callback failures.
+         *
+         * @param cause callback failure cause
+         */
         @Override
         public void failure(final Throwable cause) {
             invoke(observer, "callback.failure", cause, cause, () -> callback.failure(cause));

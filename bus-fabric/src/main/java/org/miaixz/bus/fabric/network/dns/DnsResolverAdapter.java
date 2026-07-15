@@ -69,6 +69,12 @@ public final class DnsResolverAdapter implements Resolver {
         return DnsResolver.of(resolver(lookup));
     }
 
+    /**
+     * Resolves a normalized host through the wrapped lookup function.
+     *
+     * @param host host name
+     * @return immutable resolved address list
+     */
     @Override
     public List<InetAddress> resolve(final String host) {
         final String normalized = NetKit.normalizeHost(host, "DNS host");

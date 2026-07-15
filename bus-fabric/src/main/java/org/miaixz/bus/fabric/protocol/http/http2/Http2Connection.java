@@ -281,7 +281,7 @@ public final class Http2Connection implements AutoCloseable {
      * @param ownsDispatcher true when close should stop dispatcher
      */
     private Http2Connection(final Connection connection, final PushObserver pushObserver, final Dispatcher dispatcher,
-            final boolean ownsDispatcher) {
+                            final boolean ownsDispatcher) {
         this.connection = require(connection, "Network connection");
         this.hpackWriter = new HpackCodec();
         this.hpackReader = new HpackCodec();

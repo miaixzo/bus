@@ -56,9 +56,9 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @since Java 21+
  */
 record StompSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout, String destination,
-        String login, String passcode, GuardRule guard, Filter filter, EventObserver observer,
-        Callback<StompSession> callback, Consumer<StompMessage> handler,
-        Listener<? super StompSession> listener) {
+                     String login, String passcode, GuardRule guard, Filter filter, EventObserver observer,
+                     Callback<StompSession> callback, Consumer<StompMessage> handler,
+                     Listener<? super StompSession> listener) {
 
     /**
      * Creates a validated snapshot.

@@ -129,7 +129,7 @@ public record WebSocketClose(int code, String reason, boolean normal) {
     private static boolean validCode(final int code) {
         return code == NORMAL_CLOSE_CODE
                 || code >= MIN_PROTOCOL_CLOSE_CODE && code <= MAX_PROTOCOL_CLOSE_CODE && code != RESERVED_NO_STATUS_CODE
-                        && code != RESERVED_ABNORMAL_CODE
+                && code != RESERVED_ABNORMAL_CODE
                 || code >= MIN_APPLICATION_CLOSE_CODE && code <= MAX_APPLICATION_CLOSE_CODE;
     }
 

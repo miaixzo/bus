@@ -53,7 +53,7 @@ public final class PublicSuffix {
     /**
      * Wildcard label marker.
      */
-    private static final byte[] WILDCARD_LABEL = new byte[] { Symbol.C_STAR };
+    private static final byte[] WILDCARD_LABEL = new byte[]{Symbol.C_STAR};
 
     /**
      * Empty rule value.
@@ -63,7 +63,7 @@ public final class PublicSuffix {
     /**
      * Fallback wildcard rule.
      */
-    private static final String[] PREVAILING_RULE = new String[] { Symbol.STAR };
+    private static final String[] PREVAILING_RULE = new String[]{Symbol.STAR};
 
     /**
      * True after the first load attempt.

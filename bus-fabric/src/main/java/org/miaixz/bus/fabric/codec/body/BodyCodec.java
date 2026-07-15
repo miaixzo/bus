@@ -216,6 +216,13 @@ public final class BodyCodec {
             return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Reads file text with an explicit materialize threshold.
+         *
+         * @param charset  charset
+         * @param maxBytes maximum bytes to materialize
+         * @return file text
+         */
         @Override
         public String text(final Charset charset, final long maxBytes) {
             return new String(bytes(maxBytes), validateCharset(charset));

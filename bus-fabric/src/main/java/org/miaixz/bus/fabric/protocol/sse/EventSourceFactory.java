@@ -140,7 +140,8 @@ public final class EventSourceFactory implements EventSource.Factory {
          * @return response
          */
         HttpResponse toResponse(final HttpRequest request) {
-            return HttpResponse.builder().request(request).code(status).headers(headers).body(PayloadBody.empty()).build();
+            return HttpResponse.builder().request(request).code(status).headers(headers).body(PayloadBody.empty())
+                    .build();
         }
 
     }
@@ -198,7 +199,7 @@ public final class EventSourceFactory implements EventSource.Factory {
          * @param listener listener
          */
         private DefaultEventSource(final Context context, final HttpRequest request,
-                final EventSourceListener listener) {
+                                   final EventSourceListener listener) {
             this.context = require(context, "Context");
             this.request = require(request, "Request");
             this.listener = require(listener, "Listener");
@@ -222,6 +223,11 @@ public final class EventSourceFactory implements EventSource.Factory {
                     .onEvent(event -> listener.onEvent(this, event.id(), event.event(), event.data()))
                     .listener(new Listener<>() {
 
+                        /**
+                         * Notifies the event source listener when the SSE session closes.
+                         *
+                         * @param source SSE session
+                         */
                         @Override
                         public void close(final SseSession source) {
                             if (terminal.compareAndSet(false, true)) {
@@ -229,6 +235,12 @@ public final class EventSourceFactory implements EventSource.Factory {
                             }
                         }
 
+                        /**
+                         * Notifies the event source listener when the SSE session fails.
+                         *
+                         * @param source SSE session
+                         * @param cause  failure cause
+                         */
                         @Override
                         public void failure(final SseSession source, final Throwable cause) {
                             if (!cancelled.get() && terminal.compareAndSet(false, true)) {
@@ -237,12 +249,22 @@ public final class EventSourceFactory implements EventSource.Factory {
                         }
                     }).callback(new Callback<>() {
 
+                        /**
+                         * Stores the opened SSE session and emits the open callback.
+                         *
+                         * @param value opened session
+                         */
                         @Override
                         public void success(final SseSession value) {
                             session.set(value);
                             listener.onOpen(DefaultEventSource.this, response());
                         }
 
+                        /**
+                         * Notifies the event source listener when opening fails.
+                         *
+                         * @param cause failure cause
+                         */
                         @Override
                         public void failure(final Throwable cause) {
                             if (!cancelled.get() && terminal.compareAndSet(false, true)) {
@@ -254,11 +276,19 @@ public final class EventSourceFactory implements EventSource.Factory {
             call.set(current);
         }
 
+        /**
+         * Returns the original event source request.
+         *
+         * @return request
+         */
         @Override
         public HttpRequest request() {
             return request;
         }
 
+        /**
+         * Cancels the event source, active session, and pending open call.
+         */
         @Override
         public void cancel() {
             cancelled.set(true);

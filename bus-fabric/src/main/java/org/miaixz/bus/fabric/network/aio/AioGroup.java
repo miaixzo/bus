@@ -102,7 +102,7 @@ public final class AioGroup {
      * @param ownsDispatcher true when shutdown closes dispatcher
      */
     private AioGroup(final AsynchronousChannelGroup channelGroup, final AioWorker[] readWorkers, final AioWorker write,
-            final AioWorker common, final Dispatcher dispatcher, final boolean ownsDispatcher) {
+                     final AioWorker common, final Dispatcher dispatcher, final boolean ownsDispatcher) {
         this.channelGroup = Assert
                 .notNull(channelGroup, () -> new ValidateException("AIO channel group must not be null"));
         this.readWorkers = Assert.notNull(readWorkers, () -> new ValidateException("Read workers must not be null"));

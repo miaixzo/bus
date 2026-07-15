@@ -49,11 +49,6 @@ import org.miaixz.bus.logger.Logger;
 public final class WebSocketCall implements Call<WebSocketSession> {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Dispatcher activity name for opening the WebSocket session.
      */
     private static final String ACTIVITY_OPEN = "websocket-open";
@@ -142,20 +137,20 @@ public final class WebSocketCall implements Call<WebSocketSession> {
         if (!state.compareAndSet(Status.QUEUED, Status.RUNNING)) {
             throw new StatefulException("WebSocket call can only be opened once");
         }
-        Logger.info(true, LOG_TAG, "WebSocket call started: key={}", exchange.dispatchKey());
+        Logger.info(true, "Fabric", "WebSocket call started: key={}", exchange.dispatchKey());
         try {
             final WebSocketSession opened = exchange.open();
             session.set(opened);
             state.set(Status.DONE);
             future.complete(opened);
-            Logger.info(false, LOG_TAG, "WebSocket call completed: key={}", exchange.dispatchKey());
+            Logger.info(false, "Fabric", "WebSocket call completed: key={}", exchange.dispatchKey());
             return opened;
         } catch (final RuntimeException e) {
             state.set(Status.FAILED);
             future.completeExceptionally(e);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "WebSocket call failed: key={}, exception={}",
                     exchange.dispatchKey(),
@@ -207,7 +202,7 @@ public final class WebSocketCall implements Call<WebSocketSession> {
         if (!handle.compareAndSet(null, enqueued)) {
             enqueued.cancel();
         } else {
-            Logger.info(false, LOG_TAG, "WebSocket call enqueued: key={}", exchange.dispatchKey());
+            Logger.info(false, "Fabric", "WebSocket call enqueued: key={}", exchange.dispatchKey());
         }
         return this;
     }
@@ -258,7 +253,7 @@ public final class WebSocketCall implements Call<WebSocketSession> {
                     currentSession.cancel();
                 }
                 future.cancel(false);
-                Logger.info(false, LOG_TAG, "WebSocket call cancelled: key={}", exchange.dispatchKey());
+                Logger.info(false, "Fabric", "WebSocket call cancelled: key={}", exchange.dispatchKey());
                 return true;
             }
         }

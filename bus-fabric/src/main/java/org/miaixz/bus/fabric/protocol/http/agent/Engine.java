@@ -156,16 +156,32 @@ public final class Engine {
         return Normal.UNKNOWN.equals(name);
     }
 
+    /**
+     * Compares rendering engine classifiers by name.
+     *
+     * @param object object to compare
+     * @return true when names match
+     */
     @Override
     public boolean equals(final Object object) {
         return object instanceof Engine other && Objects.equals(name, other.name);
     }
 
+    /**
+     * Returns a hash code based on the rendering engine name.
+     *
+     * @return hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name);
     }
 
+    /**
+     * Returns the rendering engine name.
+     *
+     * @return rendering engine name
+     */
     @Override
     public String toString() {
         return name;

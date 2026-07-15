@@ -57,11 +57,6 @@ import org.miaixz.bus.logger.Logger;
 final class StompRunner {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * STOMP CONNECT command.
      */
     private static final String COMMAND_CONNECT = "CONNECT";
@@ -102,6 +97,26 @@ final class StompRunner {
     private static final String VERSION_1_2 = "1.2";
 
     /**
+     * STOMP open filter tag.
+     */
+    private static final String TAG_STOMP_OPEN = "stomp-open";
+
+    /**
+     * STOMP CONNECT frame filter tag.
+     */
+    private static final String TAG_STOMP_CONNECT = "stomp-connect";
+
+    /**
+     * STOMP CONNECTED frame filter tag.
+     */
+    private static final String TAG_STOMP_CONNECTED = "stomp-connected";
+
+    /**
+     * STOMP ERROR frame filter tag.
+     */
+    private static final String TAG_STOMP_ERROR = "stomp-error";
+
+    /**
      * Execution snapshot.
      */
     private final StompSnapshot snapshot;
@@ -124,7 +139,7 @@ final class StompRunner {
         Session socket = null;
         Logger.info(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "STOMP open started: scheme={}, host={}, port={}, destinationPresent={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
@@ -150,10 +165,12 @@ final class StompRunner {
                             input.write(message.payload().bytes(snapshot.context().options().materializeMaxBytes()));
                             for (final StompFrame frame : inbound.decode(input)) {
                                 if (COMMAND_CONNECTED.equals(frame.command())) {
-                                    connected.complete(frame);
+                                    final StompFrame filtered = filter(frame, TAG_STOMP_CONNECTED);
+                                    connected.complete(filtered);
                                 } else if (COMMAND_ERROR.equals(frame.command())) {
+                                    final StompFrame filtered = filter(frame, TAG_STOMP_ERROR);
                                     connected.completeExceptionally(
-                                            new ProtocolException(frame.body().text(Charset.UTF_8)));
+                                            new ProtocolException(filtered.body().text(Charset.UTF_8)));
                                 } else {
                                     final StompSession opened = session.get();
                                     if (opened != null) {
@@ -173,7 +190,7 @@ final class StompRunner {
             awaitConnected(connected);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "STOMP CONNECT accepted: scheme={}, host={}, port={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
@@ -189,7 +206,7 @@ final class StompRunner {
             snapshot.callback().success(opened);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "STOMP open completed: scheme={}, host={}, port={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
@@ -203,7 +220,7 @@ final class StompRunner {
             snapshot.callback().failure(e);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "STOMP open failed: scheme={}, host={}, port={}, exception={}",
                     snapshot.address().scheme(),
@@ -296,7 +313,7 @@ final class StompRunner {
                         snapshot.address(),
                         snapshot.headers(),
                         Payload.empty(),
-                        snapshot.destination()),
+                        TAG_STOMP_OPEN),
                 snapshot.context().filter(),
                 snapshot.filter());
         checkGuard(opening);
@@ -309,7 +326,7 @@ final class StompRunner {
      * @return filtered CONNECT frame
      */
     private StompFrame prepareConnectFrame() {
-        return filter(connectFrame(), snapshot.destination());
+        return filter(connectFrame(), TAG_STOMP_CONNECT);
     }
 
     /**
@@ -323,7 +340,7 @@ final class StompRunner {
         }
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "STOMP guard check started: host={}, port={}, destinationPresent={}",
                 snapshot.address().host(),
                 snapshot.address().port(),
@@ -331,7 +348,7 @@ final class StompRunner {
         snapshot.guard().check(message).throwIfRejected();
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "STOMP guard check accepted: host={}, port={}, destinationPresent={}",
                 snapshot.address().host(),
                 snapshot.address().port(),

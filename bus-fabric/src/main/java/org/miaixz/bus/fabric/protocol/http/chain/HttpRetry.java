@@ -46,11 +46,6 @@ import org.miaixz.bus.logger.Logger;
 public final class HttpRetry implements HttpStage {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Stage name.
      */
     private final String name;
@@ -110,7 +105,7 @@ public final class HttpRetry implements HttpStage {
             try {
                 Logger.debug(
                         true,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP retry attempt started: method={}, host={}, port={}, path={}, attempt={}, followUps={}",
                         current.method().value(),
                         current.url().host(),
@@ -121,7 +116,7 @@ public final class HttpRetry implements HttpStage {
                 final HttpResponse response = next.proceed(current);
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP retry attempt response: method={}, host={}, port={}, path={}, code={}, attempt={}, "
                                 + "followUps={}",
                         current.method().value(),
@@ -135,7 +130,7 @@ public final class HttpRetry implements HttpStage {
                 if (followUp == null) {
                     Logger.debug(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             "HTTP retry completed without follow-up: code={}, attempts={}",
                             response.code(),
                             attempt);
@@ -147,7 +142,7 @@ public final class HttpRetry implements HttpStage {
                 }
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP follow-up scheduled: code={}, fromHost={}, toHost={}, sameOrigin={}, method={}, "
                                 + "followUps={}",
                         response.code(),
@@ -165,7 +160,7 @@ public final class HttpRetry implements HttpStage {
                 if (!recover(e, attempt)) {
                     Logger.debug(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             "HTTP retry declined: attempt={}, exception={}",
                             attempt,
                             e.getClass().getSimpleName());
@@ -173,7 +168,7 @@ public final class HttpRetry implements HttpStage {
                 }
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP retry scheduled: attempt={}, exception={}",
                         attempt + Normal._1,
                         e.getClass().getSimpleName());
@@ -191,7 +186,8 @@ public final class HttpRetry implements HttpStage {
     public HttpRequest followUp(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
         return switch (current.code()) {
-            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> redirect(
+            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER,
+                 HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> redirect(
                     current);
             case HTTP.HTTP_UNAUTHORIZED, HTTP.HTTP_PROXY_AUTH -> authenticator.authenticate(current.request(), current);
             default -> null;
@@ -250,7 +246,7 @@ public final class HttpRetry implements HttpStage {
         }
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP redirect built: code={}, fromHost={}, toHost={}, sameOrigin={}, method={}, preserveBody={}",
                 response.code(),
                 request.url().host(),
@@ -270,7 +266,8 @@ public final class HttpRetry implements HttpStage {
      */
     private boolean followUpAllowed(final int code, final int followUps) {
         return switch (code) {
-            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> policy
+            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER,
+                 HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> policy
                     .redirect(code, followUps);
             case HTTP.HTTP_UNAUTHORIZED, HTTP.HTTP_PROXY_AUTH -> followUps < Normal._20;
             default -> false;

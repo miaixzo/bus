@@ -50,6 +50,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.UnoUrl;
@@ -107,6 +108,11 @@ public final class SoapX {
      * SOAPAction.
      */
     private String action;
+
+    /**
+     * SOAP-scoped message filter.
+     */
+    private Filter filter;
 
     /**
      * Message factory.
@@ -228,6 +234,17 @@ public final class SoapX {
      */
     public SoapX header(final String name, final String value) {
         headers.add(name(name, "HTTP header"), optionalLine(value, "HTTP header value"));
+        return this;
+    }
+
+    /**
+     * Sets SOAP-scoped message filter.
+     *
+     * @param filter filter
+     * @return this exchange
+     */
+    public SoapX filter(final Filter filter) {
+        this.filter = filter;
         return this;
     }
 
@@ -613,7 +630,8 @@ public final class SoapX {
      * @return HTTP exchange
      */
     private HttpX exchange() {
-        return HttpX.builder(context).post(url.encoded()).headers(headers()).body(body()).build();
+        return HttpX.builder(context).post(url.encoded()).headers(headers()).body(body()).tag("soap-request")
+                .filter(filter).build();
     }
 
     /**

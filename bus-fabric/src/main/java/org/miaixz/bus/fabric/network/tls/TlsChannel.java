@@ -122,7 +122,7 @@ public final class TlsChannel implements AutoCloseable {
      * @param ownsDispatcher true when close should stop dispatcher
      */
     private TlsChannel(final Conduit conduit, final TlsEngine engine, final Listener<Object> listener,
-            final Dispatcher dispatcher, final boolean ownsDispatcher) {
+                       final Dispatcher dispatcher, final boolean ownsDispatcher) {
         this.conduit = Assert.notNull(conduit, () -> new ValidateException("Network conduit must not be null"));
         this.engine = Assert.notNull(engine, () -> new ValidateException("TLS engine must not be null"));
         this.packetBuffers = NioBufferAllocator

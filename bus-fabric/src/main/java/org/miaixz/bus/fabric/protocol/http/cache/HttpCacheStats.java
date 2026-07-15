@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @since Java 21+
  */
 public record HttpCacheStats(long requestCount, long networkCount, long hitCount, long writeSuccessCount,
-        long writeAbortCount) {
+                             long writeAbortCount) {
 
     /**
      * Creates a validated stats snapshot.

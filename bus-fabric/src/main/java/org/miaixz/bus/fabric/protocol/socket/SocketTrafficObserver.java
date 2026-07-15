@@ -87,6 +87,11 @@ public final class SocketTrafficObserver implements EventObserver {
         return new SocketTrafficObserver(delegate);
     }
 
+    /**
+     * Records socket traffic counters and forwards the event downstream.
+     *
+     * @param event fabric event
+     */
     @Override
     public void emit(final FabricEvent event) {
         if (event == null) {

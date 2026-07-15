@@ -238,6 +238,11 @@ public final class ProxyPlan {
         return Objects.hash(type, proxy, authorization.asMap());
     }
 
+    /**
+     * Returns a diagnostic representation with sanitized credentials.
+     *
+     * @return redacted proxy plan text
+     */
     @Override
     public String toString() {
         return "ProxyPlan[type=" + type + ", id=" + id() + ", authorization=" + redactedAuthorization() + "]";

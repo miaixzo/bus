@@ -59,9 +59,9 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @since Java 21+
  */
 record SocketSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout,
-        FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter, EventObserver observer,
-        ProxyHeader proxyHeader, SocketOptions socketOptions, Callback<SocketSession> callback,
-        Listener<? super SocketSession> listener, boolean pooled) {
+                      FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter, EventObserver observer,
+                      ProxyHeader proxyHeader, SocketOptions socketOptions, Callback<SocketSession> callback,
+                      Listener<? super SocketSession> listener, boolean pooled) {
 
     /**
      * Creates a validated snapshot.

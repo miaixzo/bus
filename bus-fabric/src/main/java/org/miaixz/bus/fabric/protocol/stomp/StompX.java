@@ -676,11 +676,21 @@ public final class StompX {
         private Builder composeCallback() {
             this.callback = new Callback<>() {
 
+                /**
+                 * Forwards a successful open session to the configured open handler.
+                 *
+                 * @param value opened STOMP session
+                 */
                 @Override
                 public void success(final StompSession value) {
                     openHandler.accept(value);
                 }
 
+                /**
+                 * Forwards an open failure to the configured error handler.
+                 *
+                 * @param cause failure cause
+                 */
                 @Override
                 public void failure(final Throwable cause) {
                     errorHandler.accept(cause);

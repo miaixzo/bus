@@ -95,7 +95,8 @@ public final class TextBody implements RequestBody {
      */
     public static TextBody of(final String text, final MediaType media) {
         final String value = text == null ? "" : text;
-        final MediaType checkedMedia = Assert.notNull(media, () -> new ValidateException("Text media must not be null"));
+        final MediaType checkedMedia = Assert
+                .notNull(media, () -> new ValidateException("Text media must not be null"));
         final Charset charset = checkedMedia.charset(org.miaixz.bus.core.lang.Charset.UTF_8);
         return new TextBody(value, checkedMedia, Payload.of(value, charset));
     }

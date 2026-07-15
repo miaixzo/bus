@@ -109,7 +109,7 @@ public final class Cookie {
      * @param httpOnly HTTP-only flag
      */
     private Cookie(final String name, final String value, final String domain, final String host, final String path,
-            final Instant expires, final boolean secure, final boolean httpOnly) {
+                   final Instant expires, final boolean secure, final boolean httpOnly) {
         this.name = validateToken(name, "Cookie name");
         this.value = validateToken(value, "Cookie value");
         this.domain = domain == null ? null : validateCookieDomain(domain);

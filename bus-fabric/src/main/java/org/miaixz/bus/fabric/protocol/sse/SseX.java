@@ -88,8 +88,7 @@ public final class SseX {
                 builder.timeout, builder.retry, builder.lastEventId, builder.autoReconnect, builder.responseHandler,
                 builder.guard, builder.filter, currentObserver,
                 builder.callback == null ? Wiring.callback() : builder.callback,
-                builder.handler == null ? noopHandler() : builder.handler,
-                currentListener);
+                builder.handler == null ? noopHandler() : builder.handler, currentListener);
         this.runner = new SseRunner(snapshot);
     }
 
@@ -696,11 +695,21 @@ public final class SseX {
         private Builder composeCallback() {
             this.callback = new Callback<>() {
 
+                /**
+                 * Forwards a successful open session to the configured open handler.
+                 *
+                 * @param value opened SSE session
+                 */
                 @Override
                 public void success(final SseSession value) {
                     openHandler.accept(value);
                 }
 
+                /**
+                 * Forwards an open failure to the configured error handler.
+                 *
+                 * @param cause failure cause
+                 */
                 @Override
                 public void failure(final Throwable cause) {
                     errorHandler.accept(cause);

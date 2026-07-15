@@ -36,8 +36,8 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Internal immutable HTTP stage chain with an index cursor.
  *
  * <p>
- * Protocol users extend HTTP behavior through builder {@code filter(...)}, {@code guard(...)}, and
- * {@code observe(...)} hooks. This chain coordinates built-in runtime stages only.
+ * Protocol users extend HTTP behavior through builder {@code filter(...)}, {@code guard(...)}, and {@code observe(...)}
+ * hooks. This chain coordinates built-in runtime stages only.
  * </p>
  *
  * @author Kimi Liu
@@ -79,7 +79,7 @@ public final class HttpChain {
      * @param connection network connection
      */
     private HttpChain(final List<HttpStage> stages, final int index, final ConnectionLease lease,
-            final Connection connection, final Cancellation cancellation) {
+                      final Connection connection, final Cancellation cancellation) {
         this.stages = List.copyOf(validateStages(stages));
         this.index = validateIndex(index, this.stages.size());
         this.lease = lease;

@@ -105,7 +105,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      * @param progress optional progress tracker
      */
     private WebSocketBody(final Kind kind, final String text, final Payload payload, final MediaType media,
-            final ProgressBody.Tracker progress) {
+                          final ProgressBody.Tracker progress) {
         this.kind = require(kind, "WebSocket body kind");
         this.text = text;
         this.payload = require(payload, "WebSocket payload");
@@ -227,26 +227,52 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
         return new WebSocketBody(kind, text, payload, media, ProgressBody.Tracker.of(payload, listener));
     }
 
+    /**
+     * Returns the current payload, wrapped with progress tracking when enabled.
+     *
+     * @return current payload
+     */
     @Override
     public Payload payload() {
         return progress == null ? payload : progress.payload();
     }
 
+    /**
+     * Returns the WebSocket body media type.
+     *
+     * @return media type
+     */
     @Override
     public MediaType media() {
         return media;
     }
 
+    /**
+     * Returns transferred byte count reported by the progress tracker.
+     *
+     * @return transferred bytes
+     */
     @Override
     public long transferred() {
         return progress == null ? Normal.LONG_ZERO : progress.transferred();
     }
 
+    /**
+     * Returns the declared payload length.
+     *
+     * @return total bytes, or -1 when unknown
+     */
     @Override
     public long total() {
         return payload.length();
     }
 
+    /**
+     * Advances progress notification by a byte step.
+     *
+     * @param bytes step bytes
+     * @return this body
+     */
     @Override
     public WebSocketBody stepBytes(final long bytes) {
         if (progress == null) {
@@ -257,6 +283,12 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
         return this;
     }
 
+    /**
+     * Advances progress notification by a total-size rate.
+     *
+     * @param rate progress rate
+     * @return this body
+     */
     @Override
     public WebSocketBody stepRate(final double rate) {
         if (progress == null) {

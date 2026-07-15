@@ -122,7 +122,7 @@ public final class AioChannel implements AutoCloseable {
      * @param ownsDispatcher true when close should stop dispatcher
      */
     private AioChannel(final AsynchronousSocketChannel channel, final Dispatcher dispatcher,
-            final boolean ownsDispatcher, final SocketOptions options) {
+                       final boolean ownsDispatcher, final SocketOptions options) {
         this.channel = Assert.notNull(channel, () -> new ValidateException("AIO channel must not be null"));
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("AIO dispatcher must not be null"));
         this.ownsDispatcher = ownsDispatcher;
@@ -300,7 +300,7 @@ public final class AioChannel implements AutoCloseable {
     /**
      * Applies configured JDK socket options.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void applySocketOptions() {
         for (final java.util.Map.Entry<SocketOption<?>, Object> entry : options.socketOptions().entrySet()) {
             try {

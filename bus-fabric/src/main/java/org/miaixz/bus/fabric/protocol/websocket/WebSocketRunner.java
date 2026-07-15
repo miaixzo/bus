@@ -57,9 +57,9 @@ import org.miaixz.bus.logger.Logger;
 final class WebSocketRunner {
 
     /**
-     * Logger tag used by the fabric runtime.
+     * WebSocket open filter tag.
      */
-    private static final String LOG_TAG = "Fabric";
+    private static final String TAG_WEBSOCKET_OPEN = "websocket-open";
 
     /**
      * Execution snapshot.
@@ -85,7 +85,7 @@ final class WebSocketRunner {
         Mediator.HttpUpgrade upgraded = null;
         Logger.info(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "WebSocket open started: scheme={}, host={}, port={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
@@ -115,7 +115,7 @@ final class WebSocketRunner {
             snapshot.callback().success(session);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "WebSocket open completed: scheme={}, host={}, port={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
@@ -129,7 +129,7 @@ final class WebSocketRunner {
             snapshot.callback().failure(failure);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     failure,
                     "WebSocket open failed: scheme={}, host={}, port={}, exception={}",
                     snapshot.address().scheme(),
@@ -154,21 +154,22 @@ final class WebSocketRunner {
      * Checks the optional guard.
      */
     private Message prepareOpen() {
-        Message opening = Message.of(Protocol.WS, snapshot.address(), snapshot.headers(), Payload.empty(), null);
+        Message opening = Message
+                .of(Protocol.WS, snapshot.address(), snapshot.headers(), Payload.empty(), TAG_WEBSOCKET_OPEN);
         opening = FilterChain.apply(opening, snapshot.context().filter(), snapshot.filter());
         if (snapshot.guard() == null) {
             return opening;
         }
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "WebSocket guard check started: host={}, port={}",
                 snapshot.address().host(),
                 snapshot.address().port());
         snapshot.guard().check(opening).throwIfRejected();
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "WebSocket guard check accepted: host={}, port={}",
                 snapshot.address().host(),
                 snapshot.address().port());
@@ -284,6 +285,14 @@ final class WebSocketRunner {
             this.input = ByteBuffer.allocate(Normal._8192);
         }
 
+        /**
+         * Reads bytes from the network connection into a buffer.
+         *
+         * @param sink      destination buffer
+         * @param byteCount maximum bytes to read
+         * @return bytes read, or -1 at end of stream
+         * @throws IOException when the read fails
+         */
         @Override
         public long read(final Buffer sink, final long byteCount) throws IOException {
             final Buffer currentSink = require(sink, "WebSocket read sink");
@@ -309,11 +318,19 @@ final class WebSocketRunner {
             return read;
         }
 
+        /**
+         * Returns the source timeout policy.
+         *
+         * @return timeout
+         */
         @Override
         public Timeout timeout() {
             return Timeout.NONE;
         }
 
+        /**
+         * Leaves network lifetime to the owning connection lease.
+         */
         @Override
         public void close() {
             // The connection lease owns the network lifetime.
@@ -340,6 +357,13 @@ final class WebSocketRunner {
             this.connection = require(connection, "Network connection");
         }
 
+        /**
+         * Writes bytes from a buffer to the network connection.
+         *
+         * @param source    source buffer
+         * @param byteCount bytes to write
+         * @throws IOException when the write fails
+         */
         @Override
         public void write(final Buffer source, final long byteCount) throws IOException {
             final Buffer currentSource = require(source, "WebSocket write source");
@@ -362,16 +386,27 @@ final class WebSocketRunner {
             }
         }
 
+        /**
+         * Leaves flushing to the underlying network connection.
+         */
         @Override
         public void flush() {
             // Connection writes are flushed by the underlying network channel.
         }
 
+        /**
+         * Returns the sink timeout policy.
+         *
+         * @return timeout
+         */
         @Override
         public Timeout timeout() {
             return Timeout.NONE;
         }
 
+        /**
+         * Leaves network lifetime to the owning connection lease.
+         */
         @Override
         public void close() {
             // The connection lease owns the network lifetime.

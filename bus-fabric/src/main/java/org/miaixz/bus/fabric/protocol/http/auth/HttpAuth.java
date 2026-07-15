@@ -138,6 +138,11 @@ public final class HttpAuth {
         return scheme + Symbol.SPACE + Tags.redact(token);
     }
 
+    /**
+     * Returns the redacted authorization header value.
+     *
+     * @return redacted header value
+     */
     @Override
     public String toString() {
         return redactedValue();

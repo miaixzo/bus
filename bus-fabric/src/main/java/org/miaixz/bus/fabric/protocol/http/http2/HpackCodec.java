@@ -47,7 +47,7 @@ public final class HpackCodec {
     /**
      * Static table names.
      */
-    private static final String[] STATIC_NAMES = { HTTP.TARGET_AUTHORITY_UTF8, HTTP.TARGET_METHOD_UTF8,
+    private static final String[] STATIC_NAMES = {HTTP.TARGET_AUTHORITY_UTF8, HTTP.TARGET_METHOD_UTF8,
             HTTP.TARGET_METHOD_UTF8, HTTP.TARGET_PATH_UTF8, HTTP.TARGET_PATH_UTF8, HTTP.TARGET_SCHEME_UTF8,
             HTTP.TARGET_SCHEME_UTF8, HTTP.RESPONSE_STATUS_UTF8, HTTP.RESPONSE_STATUS_UTF8, HTTP.RESPONSE_STATUS_UTF8,
             HTTP.RESPONSE_STATUS_UTF8, HTTP.RESPONSE_STATUS_UTF8, HTTP.RESPONSE_STATUS_UTF8, HTTP.RESPONSE_STATUS_UTF8,
@@ -58,12 +58,12 @@ public final class HpackCodec {
             "if-modified-since", "if-none-match", "if-range", "if-unmodified-since", "last-modified", "link",
             "location", "max-forwards", "proxy-authenticate", "proxy-authorization", "range", "referer", "refresh",
             "retry-after", "server", "set-cookie", "strict-transport-security", "transfer-encoding", "user-agent",
-            "vary", "via", "www-authenticate" };
+            "vary", "via", "www-authenticate"};
 
     /**
      * Static table values.
      */
-    private static final String[] STATIC_VALUES = { Normal.EMPTY, HTTP.GET, HTTP.POST, Symbol.SLASH, "/index.html",
+    private static final String[] STATIC_VALUES = {Normal.EMPTY, HTTP.GET, HTTP.POST, Symbol.SLASH, "/index.html",
             Protocol.HTTP.toString(), Protocol.HTTPS.toString(), "200", "204", "206", "304", "400", "404", "500",
             Normal.EMPTY, "gzip, deflate", Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
             Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
@@ -71,7 +71,7 @@ public final class HpackCodec {
             Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
             Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
             Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY,
-            Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY };
+            Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY};
 
     /**
      * First static name indexes.
@@ -790,7 +790,7 @@ public final class HpackCodec {
     /**
      * HPACK Huffman codes for byte symbols.
      */
-    private static final int[] HUFFMAN_CODES = { 0x1ff8, 0x7fffd8, 0xfffffe2, 0xfffffe3, 0xfffffe4, 0xfffffe5,
+    private static final int[] HUFFMAN_CODES = {0x1ff8, 0x7fffd8, 0xfffffe2, 0xfffffe3, 0xfffffe4, 0xfffffe5,
             0xfffffe6, 0xfffffe7, 0xfffffe8, 0xffffea, 0x3ffffffc, 0xfffffe9, 0xfffffea, 0x3ffffffd, 0xfffffeb,
             0xfffffec, 0xfffffed, 0xfffffee, 0xfffffef, 0xffffff0, 0xffffff1, 0xffffff2, 0x3ffffffe, 0xffffff3,
             0xffffff4, 0xffffff5, 0xffffff6, 0xffffff7, 0xffffff8, 0xffffff9, 0xffffffa, 0xffffffb, 0x14, 0x3f8, 0x3f9,
@@ -812,12 +812,12 @@ public final class HpackCodec {
             0xfffff3, 0xfffed, 0x1fffe6, 0x3fffe9, 0x1fffe7, 0x1fffe8, 0x7ffff3, 0x3fffea, 0x3fffeb, 0x1ffffee,
             0x1ffffef, 0xfffff4, 0xfffff5, 0x3ffffea, 0x7ffff4, 0x3ffffeb, 0x7ffffe6, 0x3ffffec, 0x3ffffed, 0x7ffffe7,
             0x7ffffe8, 0x7ffffe9, 0x7ffffea, 0x7ffffeb, 0xffffffe, 0x7ffffec, 0x7ffffed, 0x7ffffee, 0x7ffffef,
-            0x7fffff0, 0x3ffffee };
+            0x7fffff0, 0x3ffffee};
 
     /**
      * HPACK Huffman code lengths for byte symbols.
      */
-    private static final byte[] HUFFMAN_LENGTHS = { 13, 23, 28, 28, 28, 28, 28, 28, 28, 24, 30, 28, 28, 30, 28, 28, 28,
+    private static final byte[] HUFFMAN_LENGTHS = {13, 23, 28, 28, 28, 28, 28, 28, 28, 24, 30, 28, 28, 30, 28, 28, 28,
             28, 28, 28, 28, 28, 30, 28, 28, 28, 28, 28, 28, 28, 28, 28, 6, 10, 10, 12, 13, 6, 8, 11, 10, 10, 8, 11, 8,
             6, 6, 6, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 7, 8, 15, 6, 12, 10, 13, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
             7, 7, 7, 7, 7, 7, 7, 7, 8, 7, 8, 13, 19, 13, 14, 6, 15, 5, 6, 5, 6, 5, 6, 6, 6, 5, 7, 7, 6, 6, 6, 5, 6, 7,
@@ -826,7 +826,7 @@ public final class HpackCodec {
             22, 24, 21, 22, 23, 23, 21, 21, 22, 21, 23, 22, 23, 23, 20, 22, 22, 22, 23, 22, 22, 23, 26, 26, 20, 19, 22,
             23, 22, 25, 26, 26, 26, 27, 27, 26, 24, 25, 19, 21, 26, 27, 27, 26, 27, 24, 21, 21, 26, 26, 28, 27, 27, 27,
             20, 24, 20, 21, 22, 21, 21, 23, 22, 22, 25, 25, 24, 24, 26, 23, 26, 27, 26, 26, 27, 27, 27, 27, 27, 28, 27,
-            27, 27, 27, 27, 26 };
+            27, 27, 27, 27, 26};
 
     /**
      * Huffman decoding root.

@@ -74,7 +74,7 @@ public final class Ingress {
      * @param attributes attributes
      */
     private Ingress(final String path, final String method, final Headers headers, final Payload payload,
-            final Map<String, Object> attributes) {
+                    final Map<String, Object> attributes) {
         this.path = normalizePath(path);
         this.method = normalizeOptionalMethod(method);
         this.headers = headers == null ? Headers.empty() : headers;

@@ -158,7 +158,7 @@ public final class TcpServer implements AutoCloseable {
      * @param options    socket options
      */
     public TcpServer(final Address address, final Listener<Object> listener, final Dispatcher dispatcher,
-            final SocketOptions options) {
+                     final SocketOptions options) {
         this(address, listener, dispatcher, false, options);
     }
 
@@ -171,7 +171,7 @@ public final class TcpServer implements AutoCloseable {
      * @param ownsDispatcher true when close should stop dispatcher
      */
     private TcpServer(final Address address, final Listener<Object> listener, final Dispatcher dispatcher,
-            final boolean ownsDispatcher) {
+                      final boolean ownsDispatcher) {
         this(address, listener, dispatcher, ownsDispatcher, SocketOptions.defaults());
     }
 
@@ -185,7 +185,7 @@ public final class TcpServer implements AutoCloseable {
      * @param options        socket options
      */
     private TcpServer(final Address address, final Listener<Object> listener, final Dispatcher dispatcher,
-            final boolean ownsDispatcher, final SocketOptions options) {
+                      final boolean ownsDispatcher, final SocketOptions options) {
         this.address = Assert.notNull(address, () -> new ValidateException("Server address must not be null"));
         this.sessions = new ConcurrentLinkedQueue<>();
         this.running = new AtomicBoolean();
@@ -398,7 +398,7 @@ public final class TcpServer implements AutoCloseable {
          * @param dispatcher runtime dispatcher
          */
         private TcpSession(final Address address, final SocketChannel socket, final Listener<Object> listener,
-                final Dispatcher dispatcher) {
+                           final Dispatcher dispatcher) {
             this.address = address;
             this.socket = socket;
             this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);

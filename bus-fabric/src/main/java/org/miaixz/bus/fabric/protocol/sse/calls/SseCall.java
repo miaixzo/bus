@@ -49,11 +49,6 @@ import org.miaixz.bus.logger.Logger;
 public final class SseCall implements Call<SseSession> {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Dispatcher activity name for opening the SSE stream.
      */
     private static final String ACTIVITY_OPEN = "sse-open";
@@ -142,20 +137,20 @@ public final class SseCall implements Call<SseSession> {
         if (!state.compareAndSet(Status.QUEUED, Status.RUNNING)) {
             throw new StatefulException("SSE call can only be opened once");
         }
-        Logger.info(true, LOG_TAG, "SSE call started: key={}", exchange.dispatchKey());
+        Logger.info(true, "Fabric", "SSE call started: key={}", exchange.dispatchKey());
         try {
             final SseSession opened = exchange.open();
             session.set(opened);
             state.set(Status.DONE);
             future.complete(opened);
-            Logger.info(false, LOG_TAG, "SSE call completed: key={}", exchange.dispatchKey());
+            Logger.info(false, "Fabric", "SSE call completed: key={}", exchange.dispatchKey());
             return opened;
         } catch (final RuntimeException e) {
             state.set(Status.FAILED);
             future.completeExceptionally(e);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "SSE call failed: key={}, exception={}",
                     exchange.dispatchKey(),
@@ -205,7 +200,7 @@ public final class SseCall implements Call<SseSession> {
         if (!handle.compareAndSet(null, enqueued)) {
             enqueued.cancel();
         } else {
-            Logger.info(false, LOG_TAG, "SSE call enqueued: key={}", exchange.dispatchKey());
+            Logger.info(false, "Fabric", "SSE call enqueued: key={}", exchange.dispatchKey());
         }
         return this;
     }
@@ -256,7 +251,7 @@ public final class SseCall implements Call<SseSession> {
                     currentSession.cancel();
                 }
                 future.cancel(false);
-                Logger.info(false, LOG_TAG, "SSE call cancelled: key={}", exchange.dispatchKey());
+                Logger.info(false, "Fabric", "SSE call cancelled: key={}", exchange.dispatchKey());
                 return true;
             }
         }

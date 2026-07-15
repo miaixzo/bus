@@ -63,8 +63,8 @@ import org.miaixz.bus.fabric.protocol.Itinerary;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
 import org.miaixz.bus.fabric.protocol.http.body.FileBody;
 import org.miaixz.bus.fabric.protocol.http.body.FormBody;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.body.MultipartBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.body.SoapBody;
 import org.miaixz.bus.fabric.protocol.http.body.TextBody;
 import org.miaixz.bus.fabric.protocol.http.calls.HttpCall;
@@ -99,7 +99,7 @@ public final class HttpX {
      * @param guard    guard
      */
     private HttpX(final Context context, final HttpRequest request, final Callback<HttpResponse> callback,
-            final EventObserver observer, final Filter filter, final GuardRule guard) {
+                  final EventObserver observer, final Filter filter, final GuardRule guard) {
         this.snapshot = new HttpSnapshot(context, request, callback, observer, filter, guard);
         this.runner = new HttpRunner(snapshot);
     }
@@ -1142,8 +1142,10 @@ public final class HttpX {
          * @return this builder
          */
         public Builder json(final String value) {
-            return body(TextBody.of(value,
-                    MediaType.APPLICATION_JSON_TYPE.withCharset(org.miaixz.bus.core.lang.Charset.UTF_8)));
+            return body(
+                    TextBody.of(
+                            value,
+                            MediaType.APPLICATION_JSON_TYPE.withCharset(org.miaixz.bus.core.lang.Charset.UTF_8)));
         }
 
         /**
@@ -1574,8 +1576,8 @@ public final class HttpX {
             if (codec != null && bodyMode == BodyMode.NONE) {
                 selectedMedia = codec.media();
             }
-            final PayloadBody payloadBody = PayloadBody.of(payload, selectedMedia,
-                    context.options().materializeMaxBytes());
+            final PayloadBody payloadBody = PayloadBody
+                    .of(payload, selectedMedia, context.options().materializeMaxBytes());
             return progress == null ? payloadBody : payloadBody.progress(progress);
         }
 

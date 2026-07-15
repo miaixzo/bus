@@ -48,11 +48,6 @@ import org.miaixz.bus.logger.Logger;
 public final class HttpBridge implements HttpStage {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Product token used in the default User-Agent.
      */
     private static final String PRODUCT = "bus-fabric";
@@ -122,7 +117,7 @@ public final class HttpBridge implements HttpStage {
     public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP bridge stage started: method={}, host={}, port={}, path={}",
                 request.method().value(),
                 request.url().host(),
@@ -133,7 +128,7 @@ public final class HttpBridge implements HttpStage {
         save(response);
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP bridge stage completed: method={}, host={}, port={}, path={}, code={}",
                 prepared.method().value(),
                 prepared.url().host(),
@@ -161,7 +156,7 @@ public final class HttpBridge implements HttpStage {
         }
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP bridge headers prepared: host={}, port={}, bodyLength={}, repeatable={}, "
                         + "cookiesEnabled={}, headerNames={}",
                 source.url().host(),
@@ -183,16 +178,16 @@ public final class HttpBridge implements HttpStage {
     public HttpResponse receive(final HttpResponse response) {
         final HttpResponse source = require(response, "HTTP response");
         if (!gzip(source.headers())) {
-            Logger.debug(false, LOG_TAG, "HTTP bridge response decode skipped: code={}, gzip={}", source.code(), false);
+            Logger.debug(false, "Fabric", "HTTP bridge response decode skipped: code={}, gzip={}", source.code(), false);
             return source;
         }
-        Logger.debug(true, LOG_TAG, "HTTP bridge gzip decode started: code={}", source.code());
+        Logger.debug(true, "Fabric", "HTTP bridge gzip decode started: code={}", source.code());
         final Headers headers = source.headers().without(HTTP.CONTENT_ENCODING).without(HTTP.CONTENT_LENGTH);
         final PayloadBody body = PayloadBody
                 .of(Payload.source(new GzipSource(source.body().source()), Normal.__1), source.body().media());
         final HttpResponse decoded = HttpResponse.builder().request(source.request()).code(source.code())
                 .message(source.message()).headers(headers).body(body).build();
-        Logger.debug(false, LOG_TAG, "HTTP bridge gzip decode completed: code={}", source.code());
+        Logger.debug(false, "Fabric", "HTTP bridge gzip decode completed: code={}", source.code());
         return decoded;
     }
 
@@ -288,7 +283,7 @@ public final class HttpBridge implements HttpStage {
             cookies.save(response.request().url(), response.headers());
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP bridge cookies saved: host={}, port={}, code={}",
                     response.request().url().host(),
                     response.request().url().port(),

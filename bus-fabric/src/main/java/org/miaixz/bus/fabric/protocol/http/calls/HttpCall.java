@@ -53,11 +53,6 @@ import org.miaixz.bus.logger.Logger;
 public final class HttpCall implements Call<HttpResponse> {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Source exchange.
      */
     private final HttpX exchange;
@@ -199,7 +194,7 @@ public final class HttpCall implements Call<HttpResponse> {
         } else {
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP call enqueued: method={}, scheme={}, host={}, port={}, path={}",
                     request.method().value(),
                     request.url().scheme(),
@@ -257,7 +252,7 @@ public final class HttpCall implements Call<HttpResponse> {
                     future.cancel(false);
                     Logger.info(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             "HTTP call cancelled: method={}, scheme={}, host={}, port={}, path={}",
                             request.method().value(),
                             request.url().scheme(),
@@ -312,7 +307,7 @@ public final class HttpCall implements Call<HttpResponse> {
         }
         Logger.info(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP call started: method={}, scheme={}, host={}, port={}, path={}",
                 request.method().value(),
                 request.url().scheme(),
@@ -355,7 +350,7 @@ public final class HttpCall implements Call<HttpResponse> {
             future.complete(response);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP call completed: method={}, scheme={}, host={}, port={}, path={}, code={}",
                     request.method().value(),
                     request.url().scheme(),
@@ -383,7 +378,7 @@ public final class HttpCall implements Call<HttpResponse> {
         future.completeExceptionally(cause);
         Logger.error(
                 false,
-                LOG_TAG,
+                "Fabric",
                 cause,
                 "HTTP call failed: method={}, scheme={}, host={}, port={}, path={}, exception={}",
                 request.method().value(),

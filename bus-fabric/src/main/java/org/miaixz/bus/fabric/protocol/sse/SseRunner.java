@@ -58,11 +58,6 @@ import org.miaixz.bus.logger.Logger;
 final class SseRunner {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * SSE dispatch key prefix.
      */
     private static final String DISPATCH_PREFIX = "sse:" + Symbol.FORWARDSLASH;
@@ -71,6 +66,21 @@ final class SseRunner {
      * Last event identifier request header.
      */
     private static final String LAST_EVENT_ID = "Last-Event-ID";
+
+    /**
+     * SSE open filter tag.
+     */
+    private static final String TAG_SSE_OPEN = "sse-open";
+
+    /**
+     * SSE opening response filter tag.
+     */
+    private static final String TAG_SSE_RESPONSE = "sse-response";
+
+    /**
+     * SSE event filter tag.
+     */
+    private static final String TAG_SSE_EVENT = "sse-event";
 
     /**
      * Dispatcher activity name for stream reads.
@@ -106,7 +116,7 @@ final class SseRunner {
         Mediator.HttpStream response = null;
         Logger.info(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "SSE open started: scheme={}, host={}, port={}, autoReconnect={}, lastEventIdPresent={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
@@ -136,7 +146,7 @@ final class SseRunner {
             snapshot.callback().success(session);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "SSE open completed: scheme={}, host={}, port={}, autoReconnect={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
@@ -152,7 +162,7 @@ final class SseRunner {
             snapshot.callback().failure(e);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "SSE open failed: scheme={}, host={}, port={}, exception={}",
                     snapshot.address().scheme(),
@@ -190,7 +200,7 @@ final class SseRunner {
     private Mediator.HttpStream response(final String eventId) {
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "SSE HTTP stream request started: scheme={}, host={}, port={}, lastEventIdPresent={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
@@ -206,16 +216,20 @@ final class SseRunner {
                 builder.add(entry.getKey(), value);
             }
         }
-        final Message opening = filter(Message.of(Protocol.HTTP, snapshot.address(), builder.build(), Payload.empty(),
-                eventId));
+        final Message opening = filter(
+                Message.of(Protocol.HTTP, snapshot.address(), builder.build(), Payload.empty(), TAG_SSE_OPEN));
         checkGuard(opening);
-        final Mediator.HttpStream response = Mediator
-                .openHttpStream(snapshot.context().withFilter(null), snapshot.uri(), opening.headers(),
-                        snapshot.timeout());
-        snapshot.responseHandler().accept(response.status(), response.headers());
+        final Mediator.HttpStream response = Mediator.openHttpStream(
+                snapshot.context().withFilter(null),
+                snapshot.uri(),
+                opening.headers(),
+                snapshot.timeout());
+        final Message accepted = filter(
+                Message.of(Protocol.HTTP, snapshot.address(), response.headers(), Payload.empty(), TAG_SSE_RESPONSE));
+        snapshot.responseHandler().accept(response.status(), accepted.headers());
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "SSE HTTP stream response accepted: scheme={}, host={}, port={}, status={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
@@ -266,12 +280,24 @@ final class SseRunner {
         try {
             reader.readEvents(new SseReader.Events() {
 
+                /**
+                 * Dispatches one parsed SSE event.
+                 *
+                 * @param id    event id
+                 * @param event event type
+                 * @param data  event data
+                 */
                 @Override
                 public void event(final String id, final String event, final String data) {
                     final SseEvent current = SseEvent.of(id, event, data, null);
                     dispatch(current, eventId);
                 }
 
+                /**
+                 * Updates the reconnect retry delay announced by the stream.
+                 *
+                 * @param retryDelay retry delay
+                 */
                 @Override
                 public void retry(final java.time.Duration retryDelay) {
                     retry.update(retryDelay);
@@ -281,7 +307,7 @@ final class SseRunner {
             if (snapshot.autoReconnect()) {
                 Logger.info(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "SSE stream ended; reconnect enabled: host={}, port={}",
                         snapshot.address().host(),
                         snapshot.address().port());
@@ -289,7 +315,7 @@ final class SseRunner {
             } else {
                 Logger.info(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "SSE stream ended: host={}, port={}",
                         snapshot.address().host(),
                         snapshot.address().port());
@@ -299,7 +325,7 @@ final class SseRunner {
             emit(ObservationMarker.SSE_FAILED, e);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "SSE read failed: host={}, port={}, attempt={}, exception={}",
                     snapshot.address().host(),
@@ -331,8 +357,8 @@ final class SseRunner {
             eventId.set(event.id());
         }
         final Payload payload = Payload.of(event.data(), StandardCharsets.UTF_8);
-        final Message received = filter(Message.of(Protocol.HTTP, snapshot.address(), Headers.empty(), payload,
-                event.id()));
+        final Message received = filter(
+                Message.of(Protocol.HTTP, snapshot.address(), Headers.empty(), payload, TAG_SSE_EVENT));
         checkGuard(received);
         final Payload filteredPayload = received.payload();
         final SseEvent filteredEvent = SseEvent.of(
@@ -343,7 +369,7 @@ final class SseRunner {
         emit(ObservationMarker.SSE_EVENT, null, filteredPayload);
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "SSE event dispatched: host={}, port={}, idPresent={}, eventType={}, bytes={}",
                 snapshot.address().host(),
                 snapshot.address().port(),
@@ -387,7 +413,7 @@ final class SseRunner {
         final java.time.Duration delay = retry.nextDelay(attempt);
         Logger.info(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "SSE reconnect scheduled: host={}, port={}, attempt={}, delay={}",
                 snapshot.address().host(),
                 snapshot.address().port(),
@@ -424,7 +450,7 @@ final class SseRunner {
         try {
             Logger.info(
                     true,
-                    LOG_TAG,
+                    "Fabric",
                     "SSE reconnect started: host={}, port={}, attempt={}",
                     snapshot.address().host(),
                     snapshot.address().port(),
@@ -437,7 +463,7 @@ final class SseRunner {
             handle.set(submitRead(next, retry, stream, holder, eventId, handle, attempt));
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "SSE reconnect completed: host={}, port={}, attempt={}",
                     snapshot.address().host(),
                     snapshot.address().port(),
@@ -447,7 +473,7 @@ final class SseRunner {
             snapshot.callback().failure(e);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "SSE reconnect failed: host={}, port={}, attempt={}, exception={}",
                     snapshot.address().host(),
@@ -538,7 +564,7 @@ final class SseRunner {
         }
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "SSE guard check started: host={}, port={}, tag={}",
                 snapshot.address().host(),
                 snapshot.address().port(),
@@ -546,7 +572,7 @@ final class SseRunner {
         snapshot.guard().check(message).throwIfRejected();
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "SSE guard check accepted: host={}, port={}, tag={}",
                 snapshot.address().host(),
                 snapshot.address().port(),

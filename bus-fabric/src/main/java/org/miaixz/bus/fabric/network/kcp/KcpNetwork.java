@@ -183,7 +183,7 @@ public final class KcpNetwork implements AutoCloseable {
      * @param retransmitDelay   retransmission delay
      */
     private KcpNetwork(final UdpNetwork udp, final Clock clock, final int sendWindowSize, final int receiveWindowSize,
-            final Duration retransmitDelay) {
+                       final Duration retransmitDelay) {
         this.udp = Assert.notNull(udp, () -> new ValidateException("UDP network must not be null"));
         this.sequence = new AtomicLong();
         this.clock = Assert.notNull(clock, () -> new ValidateException("KCP clock must not be null"));
@@ -583,7 +583,8 @@ public final class KcpNetwork implements AutoCloseable {
      * @param congestionWindow  current congestion window
      */
     public record Stats(int pending, int buffered, long acknowledged, long retransmissions, long duplicates, long drops,
-            long received, long delivered, long lastRttMillis, long smoothedRttMillis, int congestionWindow) {
+                        long received, long delivered, long lastRttMillis, long smoothedRttMillis,
+                        int congestionWindow) {
 
     }
 

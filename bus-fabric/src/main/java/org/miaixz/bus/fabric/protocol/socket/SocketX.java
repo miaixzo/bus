@@ -45,15 +45,14 @@ import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
 import org.miaixz.bus.fabric.observe.EventObserver;
-import org.miaixz.bus.fabric.protocol.Itinerary;
 import org.miaixz.bus.fabric.protocol.Demuxer;
+import org.miaixz.bus.fabric.protocol.Itinerary;
 import org.miaixz.bus.fabric.protocol.socket.calls.SocketCall;
 
 /**
@@ -949,11 +948,21 @@ public final class SocketX {
         private Builder composeCallback() {
             this.callback = new Callback<>() {
 
+                /**
+                 * Forwards a successful open session to the configured open handler.
+                 *
+                 * @param value opened socket session
+                 */
                 @Override
                 public void success(final SocketSession value) {
                     openHandler.accept(value);
                 }
 
+                /**
+                 * Forwards an open failure to the configured error handler.
+                 *
+                 * @param cause failure cause
+                 */
                 @Override
                 public void failure(final Throwable cause) {
                     errorHandler.accept(cause);

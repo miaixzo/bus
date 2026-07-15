@@ -76,11 +76,6 @@ import org.miaixz.bus.logger.Logger;
 public final class WebSocketSession implements Session {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Time to wait for peer close after sending a close frame.
      */
     public static final Duration CANCEL_AFTER_CLOSE = Duration.ofSeconds(Normal._60);
@@ -271,8 +266,8 @@ public final class WebSocketSession implements Session {
      * @param address session address
      */
     WebSocketSession(final Address address) {
-        this(address, null, null, null, null, null, null, Duration.ZERO, null, null, EventObserver.noop(), Wiring.noop(),
-                Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(address, null, null, null, null, null, null, Duration.ZERO, null, null, EventObserver.noop(),
+                Wiring.noop(), Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -285,7 +280,7 @@ public final class WebSocketSession implements Session {
      * @param handler native handler
      */
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
-            final ConnectionLease lease, final Handler handler) {
+                     final ConnectionLease lease, final Handler handler) {
         this(address, writer, reader, lease, handler, null, null, Duration.ZERO, null, null, EventObserver.noop(),
                 Wiring.noop(), Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
@@ -302,7 +297,7 @@ public final class WebSocketSession implements Session {
      * @param dispatchKey dispatch key
      */
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
-            final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey) {
+                     final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey) {
         this(address, writer, reader, lease, handler, dispatcher, dispatchKey, Duration.ZERO, null, null,
                 EventObserver.noop(), Wiring.noop(), Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
@@ -323,9 +318,9 @@ public final class WebSocketSession implements Session {
      * @param listener    lifecycle listener
      */
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
-            final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
-            final Duration ping, final GuardRule guard, final EventObserver observer,
-            final Listener<? super WebSocketSession> listener) {
+                     final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
+                     final Duration ping, final GuardRule guard, final EventObserver observer,
+                     final Listener<? super WebSocketSession> listener) {
         this(address, writer, reader, lease, handler, dispatcher, dispatchKey, ping, guard, null, observer, listener,
                 Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
@@ -348,9 +343,9 @@ public final class WebSocketSession implements Session {
      * @param materializeMaxBytes materialize byte threshold
      */
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
-            final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
-            final Duration ping, final GuardRule guard, final Filter filter, final EventObserver observer,
-            final Listener<? super WebSocketSession> listener, final long materializeMaxBytes) {
+                     final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
+                     final Duration ping, final GuardRule guard, final Filter filter, final EventObserver observer,
+                     final Listener<? super WebSocketSession> listener, final long materializeMaxBytes) {
         this.address = require(address, "WebSocket address");
         Assert.isFalse(reader != null && handler == null, () -> new ValidateException("Handler must not be null"));
         Assert.isFalse(
@@ -582,7 +577,7 @@ public final class WebSocketSession implements Session {
         if (beginClosing()) {
             Logger.info(
                     true,
-                    LOG_TAG,
+                    "Fabric",
                     "WebSocket session close started: scheme={}, host={}, port={}, code={}",
                     address.scheme(),
                     address.host(),
@@ -613,7 +608,7 @@ public final class WebSocketSession implements Session {
             if (failure != null) {
                 Logger.warn(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         failure,
                         "WebSocket session close failed: scheme={}, host={}, port={}, code={}, exception={}",
                         address.scheme(),
@@ -625,7 +620,7 @@ public final class WebSocketSession implements Session {
             }
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "WebSocket session close requested: scheme={}, host={}, port={}, code={}",
                     address.scheme(),
                     address.host(),
@@ -651,7 +646,7 @@ public final class WebSocketSession implements Session {
             if (state.compareAndSet(current, Status.CANCELLED)) {
                 Logger.info(
                         true,
-                        LOG_TAG,
+                        "Fabric",
                         "WebSocket session cancel started: scheme={}, host={}, port={}",
                         address.scheme(),
                         address.host(),
@@ -662,7 +657,7 @@ public final class WebSocketSession implements Session {
                 listener.failure(this, new StatefulException("WebSocket session was cancelled"));
                 Logger.info(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "WebSocket session cancelled: scheme={}, host={}, port={}",
                         address.scheme(),
                         address.host(),
@@ -707,7 +702,7 @@ public final class WebSocketSession implements Session {
             emit(ObservationMarker.WEBSOCKET_MESSAGE, payload, null);
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "WebSocket message sent: scheme={}, host={}, port={}, bytes={}",
                     address.scheme(),
                     address.host(),
@@ -718,7 +713,7 @@ public final class WebSocketSession implements Session {
             emit(ObservationMarker.WEBSOCKET_FAILED, payload, e);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "WebSocket message send failed: scheme={}, host={}, port={}, bytes={}, exception={}",
                     address.scheme(),
@@ -895,6 +890,12 @@ public final class WebSocketSession implements Session {
             try {
                 reader.readLoop(WebSocketSession.this, new Handler() {
 
+                    /**
+                     * Filters and forwards an inbound WebSocket message.
+                     *
+                     * @param session session
+                     * @param message message
+                     */
                     @Override
                     public void message(final Session session, final org.miaixz.bus.fabric.Message message) {
                         delivered.set(true);
@@ -903,7 +904,7 @@ public final class WebSocketSession implements Session {
                         emit(ObservationMarker.WEBSOCKET_MESSAGE, received.payload(), null);
                         Logger.debug(
                                 false,
-                                LOG_TAG,
+                                "Fabric",
                                 "WebSocket message received: scheme={}, host={}, port={}, bytes={}",
                                 address.scheme(),
                                 address.host(),
@@ -912,23 +913,40 @@ public final class WebSocketSession implements Session {
                         handler.message(session, received);
                     }
 
+                    /**
+                     * Forwards the reader close callback to the user handler.
+                     *
+                     * @param session session
+                     */
                     @Override
                     public void closed(final Session session) {
                         handler.closed(session);
                     }
 
+                    /**
+                     * Forwards the reader failure callback to the user handler.
+                     *
+                     * @param session session
+                     * @param cause   failure cause
+                     */
                     @Override
                     public void failure(final Session session, final Throwable cause) {
                         handler.failure(session, cause);
                     }
                 }, new WebSocketReader.Control() {
 
+                    /**
+                     * Handles a ping control frame and writes the matching pong when open.
+                     *
+                     * @param session session
+                     * @param payload ping payload
+                     */
                     @Override
                     public void ping(final Session session, final ByteString payload) {
                         receivedPingCount.incrementAndGet();
                         Logger.debug(
                                 false,
-                                LOG_TAG,
+                                "Fabric",
                                 "WebSocket ping received: scheme={}, host={}, port={}, bytes={}",
                                 address.scheme(),
                                 address.host(),
@@ -939,13 +957,19 @@ public final class WebSocketSession implements Session {
                         }
                     }
 
+                    /**
+                     * Handles a pong control frame and clears pending ping state.
+                     *
+                     * @param session session
+                     * @param payload pong payload
+                     */
                     @Override
                     public void pong(final Session session, final ByteString payload) {
                         receivedPongCount.incrementAndGet();
                         awaitingPong.set(false);
                         Logger.debug(
                                 false,
-                                LOG_TAG,
+                                "Fabric",
                                 "WebSocket pong received: scheme={}, host={}, port={}, bytes={}",
                                 address.scheme(),
                                 address.host(),
@@ -953,6 +977,12 @@ public final class WebSocketSession implements Session {
                                 payload.size());
                     }
 
+                    /**
+                     * Handles a peer close control frame.
+                     *
+                     * @param session session
+                     * @param close   close frame
+                     */
                     @Override
                     public void close(final Session session, final WebSocketClose close) {
                         closeFromPeer(close);
@@ -1017,7 +1047,7 @@ public final class WebSocketSession implements Session {
                 emit(ObservationMarker.WEBSOCKET_FAILED, Payload.empty(), timeout);
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "WebSocket scheduled ping timed out: scheme={}, host={}, port={}",
                         address.scheme(),
                         address.host(),
@@ -1028,7 +1058,7 @@ public final class WebSocketSession implements Session {
             }
             Logger.debug(
                     true,
-                    LOG_TAG,
+                    "Fabric",
                     "WebSocket scheduled ping started: scheme={}, host={}, port={}",
                     address.scheme(),
                     address.host(),
@@ -1114,7 +1144,7 @@ public final class WebSocketSession implements Session {
     private void closeFromPeer(final WebSocketClose close) {
         Logger.info(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "WebSocket peer close received: scheme={}, host={}, port={}, code={}",
                 address.scheme(),
                 address.host(),
@@ -1143,7 +1173,7 @@ public final class WebSocketSession implements Session {
             listener.close(this);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "WebSocket session closed: scheme={}, host={}, port={}",
                     address.scheme(),
                     address.host(),
@@ -1261,6 +1291,11 @@ public final class WebSocketSession implements Session {
             }
         }
 
+        /**
+         * Cancels the source future and the exposed send future.
+         *
+         * @return true when either future is cancelled
+         */
         @Override
         public boolean cancel() {
             final boolean cancelled = source.cancel(false);
@@ -1268,11 +1303,21 @@ public final class WebSocketSession implements Session {
             return cancelled || future.isCancelled();
         }
 
+        /**
+         * Returns whether the send call has been cancelled.
+         *
+         * @return true when cancelled
+         */
         @Override
         public boolean cancelled() {
             return future.isCancelled() || source.isCancelled();
         }
 
+        /**
+         * Returns whether the send call is complete.
+         *
+         * @return true when complete
+         */
         @Override
         public boolean done() {
             return future.isDone();

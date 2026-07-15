@@ -102,7 +102,7 @@ public final class HttpRequest {
      * @param timeout timeout
      */
     private HttpRequest(final HTTP.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
-            final Map<Class<?>, Object> tags, final ProxyPlan proxy, final Timeout timeout) {
+                        final Map<Class<?>, Object> tags, final ProxyPlan proxy, final Timeout timeout) {
         this.method = require(method, "HTTP method");
         this.url = require(url, "URL");
         this.headers = require(headers, "Headers");

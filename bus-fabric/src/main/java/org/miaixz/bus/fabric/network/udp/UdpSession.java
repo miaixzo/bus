@@ -108,7 +108,7 @@ public final class UdpSession {
      * @param onClose  close cleanup hook
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
-            final Runnable onClose) {
+               final Runnable onClose) {
         this.remote = Assert.notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
         this.channel = Assert.notNull(channel, () -> new ValidateException("UDP channel must not be null"));
         this.state = new AtomicReference<>(Status.OPENED);

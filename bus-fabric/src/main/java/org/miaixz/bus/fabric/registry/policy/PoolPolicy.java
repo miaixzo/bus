@@ -63,7 +63,7 @@ public final class PoolPolicy {
      * @param acquireTimeout acquire timeout
      */
     private PoolPolicy(final int maxIdle, final Duration keepAlive, final int maxConnections,
-            final Duration acquireTimeout) {
+                       final Duration acquireTimeout) {
         this.maxIdle = maxIdle;
         this.keepAlive = keepAlive;
         this.maxConnections = maxConnections;

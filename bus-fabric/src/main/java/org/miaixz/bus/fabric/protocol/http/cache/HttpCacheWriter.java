@@ -85,7 +85,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      * @param abortCallback  abort callback
      */
     HttpCacheWriter(final Payload delegate, final CacheWriter writer, final Runnable commitCallback,
-            final Runnable abortCallback) {
+                    final Runnable abortCallback) {
         this.delegate = Assert.notNull(delegate, () -> new ValidateException("Payload must not be null"));
         this.writer = Assert.notNull(writer, () -> new ValidateException("Cache writer must not be null"));
         this.commitCallback = Assert
@@ -254,7 +254,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
          * @param abort  abort callback
          */
         private CacheWritingSource(final Source source, final CacheWriter writer, final Runnable commit,
-                final Runnable abort) {
+                                   final Runnable abort) {
             this.source = source;
             this.writer = writer;
             this.commit = commit;
@@ -292,6 +292,11 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
             }
         }
 
+        /**
+         * Returns the delegate source timeout.
+         *
+         * @return source timeout
+         */
         @Override
         public Timeout timeout() {
             return source.timeout();

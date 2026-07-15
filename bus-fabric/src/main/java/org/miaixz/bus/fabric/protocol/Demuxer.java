@@ -76,11 +76,8 @@ public final class Demuxer implements Handler {
      * @param channelHeader channel header
      * @param resolver      custom resolver
      */
-    private Demuxer(
-            final Map<String, Handler> handlers,
-            final Handler fallback,
-            final String channelHeader,
-            final Function<Message, String> resolver) {
+    private Demuxer(final Map<String, Handler> handlers, final Handler fallback, final String channelHeader,
+                    final Function<Message, String> resolver) {
         this.handlers = Collections.unmodifiableMap(new LinkedHashMap<>(require(handlers, "Handlers")));
         this.fallback = fallback;
         this.channelHeader = validateToken(channelHeader, "Channel header");
@@ -96,6 +93,12 @@ public final class Demuxer implements Handler {
         return new Builder();
     }
 
+    /**
+     * Routes a received message to the matching channel handler.
+     *
+     * @param session session
+     * @param message message
+     */
     @Override
     public void message(final Session session, final Message message) {
         final String channel = channel(message);
@@ -111,6 +114,12 @@ public final class Demuxer implements Handler {
         throw new ProtocolException("No message handler for channel: " + channel);
     }
 
+    /**
+     * Forwards a session failure to all configured targets.
+     *
+     * @param session session
+     * @param cause   failure cause
+     */
     @Override
     public void failure(final Session session, final Throwable cause) {
         for (final Handler handler : targets()) {
@@ -118,6 +127,11 @@ public final class Demuxer implements Handler {
         }
     }
 
+    /**
+     * Forwards a session close event to all configured targets.
+     *
+     * @param session session
+     */
     @Override
     public void closed(final Session session) {
         for (final Handler handler : targets()) {
@@ -205,7 +219,6 @@ public final class Demuxer implements Handler {
         }
         return current;
     }
-
 
     /**
      * Returns the shared no-op message handler.
@@ -318,6 +331,12 @@ public final class Demuxer implements Handler {
      */
     private static final class NoopHandler implements Handler {
 
+        /**
+         * Ignores fallback protocol messages.
+         *
+         * @param session session
+         * @param message message
+         */
         @Override
         public void message(final Session session, final Message message) {
             // No-op handler intentionally ignores protocol messages.

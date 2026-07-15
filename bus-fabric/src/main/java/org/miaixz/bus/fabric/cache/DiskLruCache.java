@@ -192,6 +192,9 @@ public class DiskLruCache implements Closeable, Flushable {
      */
     private final Runnable cleanupRunnable = new Runnable() {
 
+        /**
+         * Runs deferred cache trimming and journal rebuild work.
+         */
         @Override
         public void run() {
             synchronized (DiskLruCache.this) {
@@ -260,7 +263,7 @@ public class DiskLruCache implements Closeable, Flushable {
      * @param cleanupCloseable cleanup owner, or {@code null}
      */
     DiskLruCache(DiskFile diskFile, File directory, int appVersion, int valueCount, long maxSize, Executor executor,
-            AutoCloseable cleanupCloseable) {
+                 AutoCloseable cleanupCloseable) {
         this.diskFile = diskFile;
         this.directory = directory;
         this.appVersion = appVersion;
@@ -458,7 +461,7 @@ public class DiskLruCache implements Closeable, Flushable {
      */
     private void processJournal() throws IOException {
         diskFile.delete(journalFileTmp);
-        for (Iterator<Entry> i = lruEntries.values().iterator(); i.hasNext();) {
+        for (Iterator<Entry> i = lruEntries.values().iterator(); i.hasNext(); ) {
             Entry entry = i.next();
             if (entry.currentEditor == null) {
                 for (int t = 0; t < valueCount; t++) {
@@ -1013,11 +1016,25 @@ public class DiskLruCache implements Closeable, Flushable {
          */
         DiskFile SYSTEM = Instances.get(DiskFile.class.getName() + ".system", () -> new DiskFile() {
 
+            /**
+             * Opens a source for a file.
+             *
+             * @param file source file
+             * @return file source
+             * @throws FileNotFoundException when the file cannot be opened
+             */
             @Override
             public Source source(File file) throws FileNotFoundException {
                 return IoKit.source(file);
             }
 
+            /**
+             * Opens a replacing sink for a file, creating the parent directory when needed.
+             *
+             * @param file target file
+             * @return file sink
+             * @throws FileNotFoundException when the file cannot be opened
+             */
             @Override
             public Sink sink(File file) throws FileNotFoundException {
                 try {
@@ -1037,6 +1054,13 @@ public class DiskLruCache implements Closeable, Flushable {
                 }
             }
 
+            /**
+             * Opens an appending sink for a file, creating the parent directory when needed.
+             *
+             * @param file target file
+             * @return appending file sink
+             * @throws FileNotFoundException when the file cannot be opened
+             */
             @Override
             public Sink appendingSink(File file) throws FileNotFoundException {
                 try {
@@ -1056,6 +1080,12 @@ public class DiskLruCache implements Closeable, Flushable {
                 }
             }
 
+            /**
+             * Deletes a file and treats existing undeleted files as failures.
+             *
+             * @param file file to delete
+             * @throws IOException when deletion fails
+             */
             @Override
             public void delete(File file) throws IOException {
                 // If delete() fails, make sure it's because the file didn't exist!
@@ -1064,16 +1094,35 @@ public class DiskLruCache implements Closeable, Flushable {
                 }
             }
 
+            /**
+             * Returns whether a file exists.
+             *
+             * @param file file
+             * @return true when the file exists
+             */
             @Override
             public boolean exists(File file) {
                 return file.exists();
             }
 
+            /**
+             * Returns the file length.
+             *
+             * @param file file
+             * @return file length
+             */
             @Override
             public long size(File file) {
                 return file.length();
             }
 
+            /**
+             * Renames one file to another after removing the target.
+             *
+             * @param from source file
+             * @param to   target file
+             * @throws IOException when the rename fails
+             */
             @Override
             public void rename(File from, File to) throws IOException {
                 delete(to);
@@ -1082,6 +1131,12 @@ public class DiskLruCache implements Closeable, Flushable {
                 }
             }
 
+            /**
+             * Deletes all files below a directory.
+             *
+             * @param directory directory to clear
+             * @throws IOException when the directory cannot be read or a child cannot be deleted
+             */
             @Override
             public void deleteContents(File directory) throws IOException {
                 File[] files = directory.listFiles();

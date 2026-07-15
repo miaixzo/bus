@@ -268,16 +268,32 @@ public final class Device {
         return Normal.UNKNOWN.equals(name);
     }
 
+    /**
+     * Compares device classifiers by name.
+     *
+     * @param object object to compare
+     * @return true when names match
+     */
     @Override
     public boolean equals(final Object object) {
         return object instanceof Device other && Objects.equals(name, other.name);
     }
 
+    /**
+     * Returns a hash code based on the device name.
+     *
+     * @return hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name);
     }
 
+    /**
+     * Returns the device name.
+     *
+     * @return device name
+     */
     @Override
     public String toString() {
         return name;

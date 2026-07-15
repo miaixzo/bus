@@ -359,12 +359,24 @@ public final class Http2Stream implements AutoCloseable {
             return buffer.size();
         }
 
+        /**
+         * Opens a bounded source view over the buffered HTTP/2 body.
+         *
+         * @return body source view
+         */
         @Override
         public synchronized Source source() {
             ensureOpen();
             return new BufferSourceView(bufferSize());
         }
 
+        /**
+         * Reads from the buffered body and reports consumed flow-control bytes.
+         *
+         * @param target    destination buffer
+         * @param byteCount maximum bytes to read
+         * @return bytes read, or -1 at end of buffer
+         */
         @Override
         public synchronized long read(final Buffer target, final long byteCount) {
             final Buffer checkedTarget = require(target, "HTTP/2 body target");
@@ -406,6 +418,12 @@ public final class Http2Stream implements AutoCloseable {
             return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Materializes buffered bytes and marks the buffer as consumed.
+         *
+         * @param maxBytes maximum bytes to materialize
+         * @return materialized bytes
+         */
         @Override
         public synchronized byte[] bytes(final long maxBytes) {
             ensureOpen();
@@ -428,6 +446,13 @@ public final class Http2Stream implements AutoCloseable {
             return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Materializes and decodes the buffered body with an explicit threshold.
+         *
+         * @param charset  charset
+         * @param maxBytes maximum bytes to materialize
+         * @return decoded text
+         */
         @Override
         public String text(final Charset charset, final long maxBytes) {
             return new String(bytes(maxBytes), require(charset, "Charset"));
@@ -555,6 +580,13 @@ public final class Http2Stream implements AutoCloseable {
                 this.limit = limit;
             }
 
+            /**
+             * Reads from this bounded buffer view and reports consumed bytes.
+             *
+             * @param target    destination buffer
+             * @param byteCount maximum bytes to read
+             * @return bytes read, or -1 at end of view
+             */
             @Override
             public long read(final Buffer target, final long byteCount) {
                 final Buffer checkedTarget = require(target, "HTTP/2 body target");
@@ -576,11 +608,19 @@ public final class Http2Stream implements AutoCloseable {
                 }
             }
 
+            /**
+             * Returns the source view timeout policy.
+             *
+             * @return timeout
+             */
             @Override
             public Timeout timeout() {
                 return Timeout.NONE;
             }
 
+            /**
+             * Leaves buffer lifecycle to the owning stream body.
+             */
             @Override
             public void close() {
                 // The backing stream body owns the buffer lifecycle.

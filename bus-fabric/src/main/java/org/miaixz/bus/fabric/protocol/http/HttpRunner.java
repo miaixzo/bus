@@ -56,9 +56,24 @@ import org.miaixz.bus.logger.Logger;
 final class HttpRunner {
 
     /**
-     * Logger tag used by the fabric runtime.
+     * Default HTTP request filter tag.
      */
-    private static final String LOG_TAG = "Fabric";
+    private static final String TAG_HTTP_REQUEST = "http-request";
+
+    /**
+     * Default HTTP response filter tag.
+     */
+    private static final String TAG_HTTP_RESPONSE = "http-response";
+
+    /**
+     * SOAP request filter tag.
+     */
+    private static final String TAG_SOAP_REQUEST = "soap-request";
+
+    /**
+     * SOAP response filter tag.
+     */
+    private static final String TAG_SOAP_RESPONSE = "soap-response";
 
     /**
      * Execution snapshot.
@@ -91,7 +106,7 @@ final class HttpRunner {
         emit(ObservationMarker.CALL_START, null, null);
         Logger.info(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP exchange started: method={}, scheme={}, host={}, port={}, path={}",
                 snapshot.request().method().value(),
                 snapshot.request().url().scheme(),
@@ -110,7 +125,7 @@ final class HttpRunner {
             emit(ObservationMarker.CALL_SUCCESS, response, null);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP exchange completed: method={}, scheme={}, host={}, port={}, path={}, code={}",
                     current.method().value(),
                     current.url().scheme(),
@@ -125,7 +140,7 @@ final class HttpRunner {
             snapshot.callback().failure(e);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "HTTP exchange cancelled: method={}, scheme={}, host={}, port={}, path={}",
                     snapshot.request().method().value(),
@@ -140,7 +155,7 @@ final class HttpRunner {
             snapshot.callback().failure(e);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "HTTP exchange failed: method={}, scheme={}, host={}, port={}, path={}, exception={}",
                     snapshot.request().method().value(),
@@ -174,12 +189,12 @@ final class HttpRunner {
                 request.url().address(),
                 request.headers(),
                 request.body().payload(),
-                request.tag());
+                request.tag() == null ? TAG_HTTP_REQUEST : request.tag());
         final Filter filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
         if (filter != null) {
             Logger.debug(
                     true,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP filter started: method={}, scheme={}, host={}, port={}, path={}",
                     request.method().value(),
                     request.url().scheme(),
@@ -189,7 +204,7 @@ final class HttpRunner {
             message = FilterChain.apply(message, filter);
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP filter completed: method={}, scheme={}, host={}, port={}, path={}",
                     request.method().value(),
                     request.url().scheme(),
@@ -200,7 +215,7 @@ final class HttpRunner {
         if (snapshot.guard() != null) {
             Logger.debug(
                     true,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP guard check started: method={}, scheme={}, host={}, port={}, path={}",
                     request.method().value(),
                     request.url().scheme(),
@@ -210,7 +225,7 @@ final class HttpRunner {
             snapshot.guard().check(message).throwIfRejected();
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP guard check accepted: method={}, scheme={}, host={}, port={}, path={}",
                     request.method().value(),
                     request.url().scheme(),
@@ -241,7 +256,7 @@ final class HttpRunner {
         final TlsSettings currentTlsSettings = tlsSettings();
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP chain prepared: cacheEnabled={}, cookieJarEnabled={}, authenticator={}, tlsContext={}, tlsSettings={}",
                 cache != null,
                 currentCookieJar != null,
@@ -259,7 +274,7 @@ final class HttpRunner {
                                 snapshot.context().reactor().dispatcher()),
                         new HttpServer(snapshot.context().reactor().dispatcher())),
                 cancellation).proceed(current);
-        return materializeLimited(response);
+        return filterResponse(materializeLimited(response));
     }
 
     /**
@@ -272,6 +287,41 @@ final class HttpRunner {
         final HttpResponse current = require(response, "HTTP response");
         final PayloadBody body = current.body().materializeMaxBytes(snapshot.context().options().materializeMaxBytes());
         return current.toBuilder().body(body).build();
+    }
+
+    /**
+     * Applies configured response filters without materializing the response body.
+     *
+     * @param response response
+     * @return filtered response
+     */
+    private HttpResponse filterResponse(final HttpResponse response) {
+        final HttpResponse current = require(response, "HTTP response");
+        final Filter filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
+        if (filter == null) {
+            return current;
+        }
+        final Message filtered = FilterChain.apply(
+                Message.of(
+                        current.protocol(),
+                        current.request().url().address(),
+                        current.headers(),
+                        current.body().payload(),
+                        responseTag(current.request())),
+                filter);
+        final PayloadBody body = PayloadBody
+                .of(filtered.payload(), current.body().media(), snapshot.context().options().materializeMaxBytes());
+        return current.toBuilder().headers(filtered.headers()).body(body).build();
+    }
+
+    /**
+     * Returns the response filter tag for a request.
+     *
+     * @param request request
+     * @return response filter tag
+     */
+    private static String responseTag(final HttpRequest request) {
+        return TAG_SOAP_REQUEST.equals(request.tag()) ? TAG_SOAP_RESPONSE : TAG_HTTP_RESPONSE;
     }
 
     /**

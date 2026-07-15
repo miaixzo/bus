@@ -812,6 +812,13 @@ public final class DiskStore implements CacheStore {
             return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Reads body text with an explicit materialize threshold.
+         *
+         * @param charset  charset
+         * @param maxBytes maximum bytes to materialize
+         * @return text
+         */
         @Override
         public String text(final java.nio.charset.Charset charset, final long maxBytes) {
             return new String(bytes(maxBytes),

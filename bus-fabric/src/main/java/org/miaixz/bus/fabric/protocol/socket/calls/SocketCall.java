@@ -49,11 +49,6 @@ import org.miaixz.bus.logger.Logger;
 public final class SocketCall implements Call<SocketSession> {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Dispatcher activity name for asynchronous socket opens.
      */
     private static final String ACTIVITY_SOCKET_OPEN = "socket-open";
@@ -142,20 +137,20 @@ public final class SocketCall implements Call<SocketSession> {
         if (!state.compareAndSet(Status.QUEUED, Status.RUNNING)) {
             throw new StatefulException("Socket call can only be opened once");
         }
-        Logger.info(true, LOG_TAG, "Socket call started: key={}", exchange.dispatchKey());
+        Logger.info(true, "Fabric", "Socket call started: key={}", exchange.dispatchKey());
         try {
             final SocketSession opened = exchange.open();
             session.set(opened);
             state.set(Status.DONE);
             future.complete(opened);
-            Logger.info(false, LOG_TAG, "Socket call completed: key={}", exchange.dispatchKey());
+            Logger.info(false, "Fabric", "Socket call completed: key={}", exchange.dispatchKey());
             return opened;
         } catch (final RuntimeException e) {
             state.set(Status.FAILED);
             future.completeExceptionally(e);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "Socket call failed: key={}, exception={}",
                     exchange.dispatchKey(),
@@ -207,7 +202,7 @@ public final class SocketCall implements Call<SocketSession> {
         if (!handle.compareAndSet(null, enqueued)) {
             enqueued.cancel();
         } else {
-            Logger.info(false, LOG_TAG, "Socket call enqueued: key={}", exchange.dispatchKey());
+            Logger.info(false, "Fabric", "Socket call enqueued: key={}", exchange.dispatchKey());
         }
         return this;
     }
@@ -256,7 +251,7 @@ public final class SocketCall implements Call<SocketSession> {
                     currentSession.cancel();
                 }
                 future.cancel(false);
-                Logger.info(false, LOG_TAG, "Socket call cancelled: key={}", exchange.dispatchKey());
+                Logger.info(false, "Fabric", "Socket call cancelled: key={}", exchange.dispatchKey());
                 return true;
             }
         }

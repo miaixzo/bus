@@ -53,8 +53,8 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @since Java 21+
  */
 record WebSocketSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout, GuardRule guard,
-        Filter filter, EventObserver observer, Callback<WebSocketSession> callback, Handler handler,
-        Listener<? super WebSocketSession> listener) {
+                         Filter filter, EventObserver observer, Callback<WebSocketSession> callback, Handler handler,
+                         Listener<? super WebSocketSession> listener) {
 
     /**
      * Creates a validated snapshot.

@@ -256,6 +256,9 @@ public final class Mediator {
             return new OwnedSource(body.source(), this);
         }
 
+        /**
+         * Closes the stream owner.
+         */
         @Override
         public void close() {
             try {
@@ -294,6 +297,9 @@ public final class Mediator {
             lease = require(lease, "Connection lease");
         }
 
+        /**
+         * Releases the upgraded connection lease.
+         */
         @Override
         public void close() {
             lease.close();
@@ -322,6 +328,11 @@ public final class Mediator {
             this.owner = require(owner, "Stream owner");
         }
 
+        /**
+         * Closes the body source and then closes its protocol owner.
+         *
+         * @throws IOException when the source close fails
+         */
         @Override
         public void close() throws IOException {
             IOException failure = null;

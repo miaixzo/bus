@@ -59,9 +59,10 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
  * @since Java 21+
  */
 record SseSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout, SseRetry retry,
-        String lastEventId, boolean autoReconnect, BiConsumer<Integer, Headers> responseHandler, GuardRule guard,
-        Filter filter, EventObserver observer, Callback<SseSession> callback, Consumer<SseEvent> handler,
-        Listener<? super SseSession> listener) {
+                   String lastEventId, boolean autoReconnect, BiConsumer<Integer, Headers> responseHandler,
+                   GuardRule guard,
+                   Filter filter, EventObserver observer, Callback<SseSession> callback, Consumer<SseEvent> handler,
+                   Listener<? super SseSession> listener) {
 
     /**
      * Creates a validated snapshot.

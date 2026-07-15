@@ -69,16 +69,32 @@ public abstract class StompListener implements Listener<StompSession> {
         // Default listener intentionally performs no action.
     }
 
+    /**
+     * Bridges the shared open callback to the STOMP connected callback.
+     *
+     * @param source STOMP session
+     */
     @Override
     public final void open(final StompSession source) {
         connected(source);
     }
 
+    /**
+     * Bridges the shared close callback to the STOMP disconnected callback.
+     *
+     * @param source STOMP session
+     */
     @Override
     public final void close(final StompSession source) {
         disconnected(source);
     }
 
+    /**
+     * Bridges the shared failure callback to the STOMP error callback.
+     *
+     * @param source STOMP session
+     * @param cause  failure cause
+     */
     @Override
     public final void failure(final StompSession source, final Throwable cause) {
         error(source, cause);

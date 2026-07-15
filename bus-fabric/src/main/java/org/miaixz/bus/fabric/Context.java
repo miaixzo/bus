@@ -74,7 +74,7 @@ public final class Context {
      * @param filter    shared message filter
      */
     private Context(final Reactor reactor, final Options options, final Directory directory, final DnsResolver resolver,
-            final Listener<Object> listener, final Filter filter) {
+                    final Listener<Object> listener, final Filter filter) {
         this.reactor = require(reactor, "Reactor");
         this.options = require(options, "Options");
         this.directory = require(directory, "Directory");
@@ -251,7 +251,7 @@ public final class Context {
          * @param filter    default filter
          */
         private Builder(final Reactor reactor, final Options options, final Directory directory,
-                final DnsResolver resolver, final Listener<Object> listener, final Filter filter) {
+                        final DnsResolver resolver, final Listener<Object> listener, final Filter filter) {
             this.reactor = require(reactor, "Reactor");
             this.options = require(options, "Options");
             this.directory = require(directory, "Directory");

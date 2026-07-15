@@ -86,11 +86,6 @@ import org.miaixz.bus.logger.Logger;
 public final class SocketSession implements Session {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Session attribute key for original request headers.
      */
     public static final String ATTRIBUTE_HEADERS = "headers";
@@ -259,7 +254,7 @@ public final class SocketSession implements Session {
      * @param owner      owner
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
-            final Map<String, Object> attributes, final AutoCloseable owner) {
+                  final Map<String, Object> attributes, final AutoCloseable owner) {
         this(address, connection, codec, handler, attributes, owner, Wiring.noop());
     }
 
@@ -275,8 +270,8 @@ public final class SocketSession implements Session {
      * @param listener   lifecycle listener
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
-            final Map<String, Object> attributes, final AutoCloseable owner,
-            final Listener<? super SocketSession> listener) {
+                  final Map<String, Object> attributes, final AutoCloseable owner,
+                  final Listener<? super SocketSession> listener) {
         this(address, connection, codec, handler, attributes, owner, listener, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
@@ -293,8 +288,8 @@ public final class SocketSession implements Session {
      * @param materializeMaxBytes materialize byte threshold
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
-            final Map<String, Object> attributes, final AutoCloseable owner,
-            final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
+                  final Map<String, Object> attributes, final AutoCloseable owner,
+                  final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
         this(address, connection, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 SocketOptions.defaults());
     }
@@ -313,9 +308,9 @@ public final class SocketSession implements Session {
      * @param socketOptions       socket options
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
-            final Map<String, Object> attributes, final AutoCloseable owner,
-            final Listener<? super SocketSession> listener, final long materializeMaxBytes,
-            final SocketOptions socketOptions) {
+                  final Map<String, Object> attributes, final AutoCloseable owner,
+                  final Listener<? super SocketSession> listener, final long materializeMaxBytes,
+                  final SocketOptions socketOptions) {
         this(address, connection, null, null, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 socketOptions);
     }
@@ -332,7 +327,7 @@ public final class SocketSession implements Session {
      * @param owner      owner
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
-            final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner) {
+                  final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner) {
         this(address, datagram, kcp, codec, handler, attributes, owner, Wiring.noop());
     }
 
@@ -349,8 +344,8 @@ public final class SocketSession implements Session {
      * @param listener   lifecycle listener
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
-            final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
-            final Listener<? super SocketSession> listener) {
+                  final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
+                  final Listener<? super SocketSession> listener) {
         this(address, datagram, kcp, codec, handler, attributes, owner, listener,
                 Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
@@ -369,8 +364,8 @@ public final class SocketSession implements Session {
      * @param materializeMaxBytes materialize byte threshold
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
-            final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
-            final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
+                  final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
+                  final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
         this(address, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 SocketOptions.defaults());
     }
@@ -390,9 +385,9 @@ public final class SocketSession implements Session {
      * @param socketOptions       socket options
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
-            final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
-            final Listener<? super SocketSession> listener, final long materializeMaxBytes,
-            final SocketOptions socketOptions) {
+                  final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
+                  final Listener<? super SocketSession> listener, final long materializeMaxBytes,
+                  final SocketOptions socketOptions) {
         this(address, null, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 socketOptions);
     }
@@ -411,8 +406,8 @@ public final class SocketSession implements Session {
      * @param listener   lifecycle listener
      */
     private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
-            final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
-            final AutoCloseable owner, final Listener<? super SocketSession> listener) {
+                          final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
+                          final AutoCloseable owner, final Listener<? super SocketSession> listener) {
         this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener,
                 Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
@@ -432,8 +427,8 @@ public final class SocketSession implements Session {
      * @param materializeMaxBytes materialize byte threshold
      */
     private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
-            final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
-            final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
+                          final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
+                          final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
         this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 SocketOptions.defaults());
     }
@@ -454,9 +449,9 @@ public final class SocketSession implements Session {
      * @param socketOptions       socket options
      */
     private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
-            final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
-            final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
-            final SocketOptions socketOptions) {
+                          final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
+                          final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
+                          final SocketOptions socketOptions) {
         this.address = require(address, "Socket address");
         if (connection == null && datagram == null) {
             throw new ValidateException("Socket transport must not be null");
@@ -478,8 +473,8 @@ public final class SocketSession implements Session {
         this.socketOptions = socketOptions == null ? SocketOptions.defaults() : socketOptions;
         this.readAllocator = connection == null ? null
                 : NioBufferAllocator.heap(
-                        this.socketOptions.readBufferSize(),
-                        this.socketOptions.retainReadBuffer() ? 1 : NioBufferAllocator.DEFAULT_MAX_IDLE);
+                this.socketOptions.readBufferSize(),
+                this.socketOptions.retainReadBuffer() ? 1 : NioBufferAllocator.DEFAULT_MAX_IDLE);
         this.retainedReadBuffer = this.readAllocator != null && this.socketOptions.retainReadBuffer()
                 ? this.readAllocator.allocate()
                 : null;
@@ -487,7 +482,7 @@ public final class SocketSession implements Session {
                 : new SlabBufferAllocator(writeSlabSize(this.socketOptions), 1, false);
         this.writeBuffer = connection == null ? null
                 : new WriteBuffer(writeAllocator.allocate(), this::writeSlice, this.socketOptions.writeChunkSize(),
-                        this.socketOptions.writeChunkCount());
+                this.socketOptions.writeChunkCount());
         this.writeTail = new AtomicReference<>(CompletableFuture.completedFuture(null));
         this.activeWrite = new AtomicReference<>();
         this.lastActivityNanos = System.nanoTime();
@@ -563,7 +558,7 @@ public final class SocketSession implements Session {
         final long byteCount = encoded.remaining();
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "Socket send scheduled: scheme={}, host={}, port={}, bytes={}",
                 address.scheme(),
                 address.host(),
@@ -583,7 +578,7 @@ public final class SocketSession implements Session {
             if (failure != null) {
                 Logger.warn(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         failure,
                         "Socket send failed: scheme={}, host={}, port={}, bytes={}, exception={}",
                         address.scheme(),
@@ -595,7 +590,7 @@ public final class SocketSession implements Session {
             } else {
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "Socket send completed: scheme={}, host={}, port={}, bytes={}",
                         address.scheme(),
                         address.host(),
@@ -615,7 +610,7 @@ public final class SocketSession implements Session {
         ensureOpen();
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "Socket receive requested: scheme={}, host={}, port={}",
                 address.scheme(),
                 address.host(),
@@ -641,7 +636,7 @@ public final class SocketSession implements Session {
                 || state.compareAndSet(Status.CLOSING, Status.CLOSED)) {
             Logger.info(
                     true,
-                    LOG_TAG,
+                    "Fabric",
                     "Socket session close started: scheme={}, host={}, port={}",
                     address.scheme(),
                     address.host(),
@@ -652,7 +647,7 @@ public final class SocketSession implements Session {
             listener.close(this);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "Socket session closed: scheme={}, host={}, port={}",
                     address.scheme(),
                     address.host(),
@@ -677,7 +672,7 @@ public final class SocketSession implements Session {
                 final StatefulException cancelled = new StatefulException("Socket session was cancelled");
                 Logger.info(
                         true,
-                        LOG_TAG,
+                        "Fabric",
                         "Socket session cancel started: scheme={}, host={}, port={}",
                         address.scheme(),
                         address.host(),
@@ -687,7 +682,7 @@ public final class SocketSession implements Session {
                 notifyFailure(cancelled);
                 Logger.info(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "Socket session cancelled: scheme={}, host={}, port={}",
                         address.scheme(),
                         address.host(),
@@ -754,7 +749,7 @@ public final class SocketSession implements Session {
                 emit(ObservationMarker.SOCKET_READ, read, null);
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "Socket stream read completed: scheme={}, host={}, port={}, bytes={}",
                         address.scheme(),
                         address.host(),
@@ -1030,7 +1025,7 @@ public final class SocketSession implements Session {
             future.complete(received);
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "Socket receive completed: scheme={}, host={}, port={}, bytes={}",
                     address.scheme(),
                     address.host(),
@@ -1136,7 +1131,7 @@ public final class SocketSession implements Session {
                 && System.nanoTime() - lastActivityNanos > socketOptions.idleTimeout().toNanos()) {
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "Socket idle timeout reached: scheme={}, host={}, port={}, idleTimeout={}",
                     address.scheme(),
                     address.host(),
@@ -1236,7 +1231,7 @@ public final class SocketSession implements Session {
         if (failure != null) {
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     failure,
                     "Socket resource close failed: scheme={}, host={}, port={}, reusable={}, exception={}",
                     address.scheme(),
@@ -1264,7 +1259,7 @@ public final class SocketSession implements Session {
             }
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "Socket pending frames queued: scheme={}, host={}, port={}, queued={}",
                     address.scheme(),
                     address.host(),
@@ -1450,16 +1445,31 @@ public final class SocketSession implements Session {
             }
         }
 
+        /**
+         * Cancels the asynchronous socket send future.
+         *
+         * @return true when cancelled
+         */
         @Override
         public boolean cancel() {
             return future.cancel(false);
         }
 
+        /**
+         * Returns whether the socket send future is cancelled.
+         *
+         * @return true when cancelled
+         */
         @Override
         public boolean cancelled() {
             return future.isCancelled();
         }
 
+        /**
+         * Returns whether the socket send future is complete.
+         *
+         * @return true when complete
+         */
         @Override
         public boolean done() {
             return future.isDone();

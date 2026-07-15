@@ -52,6 +52,11 @@ final class ChainedEventObserver implements EventObserver {
         this.second = Assert.notNull(second, () -> new ValidateException("Observers must not be null"));
     }
 
+    /**
+     * Emits an event to both observers using best-effort delivery.
+     *
+     * @param event fabric event
+     */
     @Override
     public void emit(final FabricEvent event) {
         final FabricEvent checkedEvent = Assert

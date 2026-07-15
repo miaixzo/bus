@@ -96,11 +96,6 @@ import org.miaixz.bus.logger.Logger;
 public final class HttpConnect implements HttpStage {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Maximum proxy response header size.
      */
     private static final int MAX_PROXY_HEADER = Normal._64 * Normal._1024;
@@ -219,7 +214,7 @@ public final class HttpConnect implements HttpStage {
      * @param listener    lifecycle listener
      */
     public HttpConnect(final ConnectionPool pool, final TlsContext tlsContext, final TlsSettings tlsSettings,
-            final Listener<Object> listener) {
+                       final Listener<Object> listener) {
         this(pool, tlsContext, tlsSettings, listener, DnsResolver.system(), Dispatcher.create());
     }
 
@@ -233,7 +228,7 @@ public final class HttpConnect implements HttpStage {
      * @param resolver    DNS resolver
      */
     public HttpConnect(final ConnectionPool pool, final TlsContext tlsContext, final TlsSettings tlsSettings,
-            final Listener<Object> listener, final DnsResolver resolver) {
+                       final Listener<Object> listener, final DnsResolver resolver) {
         this(pool, tlsContext, tlsSettings, listener, resolver, Dispatcher.create());
     }
 
@@ -249,7 +244,7 @@ public final class HttpConnect implements HttpStage {
      * @param dispatcher  runtime dispatcher
      */
     public HttpConnect(final ConnectionPool pool, final TlsContext tlsContext, final TlsSettings tlsSettings,
-            final Listener<Object> listener, final DnsResolver resolver, final Dispatcher dispatcher) {
+                       final Listener<Object> listener, final DnsResolver resolver, final Dispatcher dispatcher) {
         this(pool, new SocketConnector(listener, resolver, dispatcher), tlsContext, tlsSettings, listener, resolver,
                 dispatcher);
     }
@@ -263,7 +258,7 @@ public final class HttpConnect implements HttpStage {
      * @param tlsSettings TLS settings
      */
     HttpConnect(final ConnectionPool pool, final Connector connector, final TlsContext tlsContext,
-            final TlsSettings tlsSettings) {
+                final TlsSettings tlsSettings) {
         this(pool, connector, tlsContext, tlsSettings, Wiring.noop(), DnsResolver.system(), Dispatcher.create());
     }
 
@@ -277,7 +272,7 @@ public final class HttpConnect implements HttpStage {
      * @param listener    lifecycle listener
      */
     HttpConnect(final ConnectionPool pool, final Connector connector, final TlsContext tlsContext,
-            final TlsSettings tlsSettings, final Listener<Object> listener) {
+                final TlsSettings tlsSettings, final Listener<Object> listener) {
         this(pool, connector, tlsContext, tlsSettings, listener, DnsResolver.system(), Dispatcher.create());
     }
 
@@ -292,7 +287,7 @@ public final class HttpConnect implements HttpStage {
      * @param resolver    DNS resolver
      */
     HttpConnect(final ConnectionPool pool, final Connector connector, final TlsContext tlsContext,
-            final TlsSettings tlsSettings, final Listener<Object> listener, final DnsResolver resolver) {
+                final TlsSettings tlsSettings, final Listener<Object> listener, final DnsResolver resolver) {
         this(pool, connector, tlsContext, tlsSettings, listener, resolver, Dispatcher.create());
     }
 
@@ -308,8 +303,8 @@ public final class HttpConnect implements HttpStage {
      * @param dispatcher  runtime dispatcher
      */
     HttpConnect(final ConnectionPool pool, final Connector connector, final TlsContext tlsContext,
-            final TlsSettings tlsSettings, final Listener<Object> listener, final DnsResolver resolver,
-            final Dispatcher dispatcher) {
+                final TlsSettings tlsSettings, final Listener<Object> listener, final DnsResolver resolver,
+                final Dispatcher dispatcher) {
         this.name = normalizeName("http-connect");
         this.pool = require(pool, "Connection pool");
         this.connector = require(connector, "Network connector");
@@ -335,7 +330,7 @@ public final class HttpConnect implements HttpStage {
         cancellation.throwIfCancelled();
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP connect stage started: method={}, host={}, port={}, secure={}",
                 current.method().value(),
                 current.url().host(),
@@ -347,7 +342,7 @@ public final class HttpConnect implements HttpStage {
             final HttpResponse response = next.withConnection(lease, lease.connection()).proceed(current);
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP connect stage response received: host={}, port={}, code={}",
                     current.url().host(),
                     current.url().port(),
@@ -356,7 +351,7 @@ public final class HttpConnect implements HttpStage {
         } catch (final RuntimeException e) {
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP connect stage failed: host={}, port={}, exception={}",
                     current.url().host(),
                     current.url().port(),
@@ -393,7 +388,7 @@ public final class HttpConnect implements HttpStage {
         final Destination destination = destination(target, proxy);
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP connection lease acquisition started: host={}, port={}, secure={}, proxyMode={}, tunnel={}",
                 target.host(),
                 target.port(),
@@ -406,7 +401,7 @@ public final class HttpConnect implements HttpStage {
         scope.throwIfCancelled();
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP connection lease acquired: host={}, port={}, healthy={}, proxyMode={}",
                 target.host(),
                 target.port(),
@@ -476,7 +471,7 @@ public final class HttpConnect implements HttpStage {
         final Address connectAddress = connectAddress(target, proxy, connector.supports(Transport.TLS));
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP route open started: targetHost={}, targetPort={}, connectHost={}, connectPort={}, "
                         + "proxyMode={}, tunnel={}, nativeTls={}",
                 target.host(),
@@ -501,7 +496,7 @@ public final class HttpConnect implements HttpStage {
                 final Connection secured = tlsConnection(destination, raw, target, scope);
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP route open completed with TLS wrapper: host={}, port={}",
                         target.host(),
                         target.port());
@@ -509,7 +504,7 @@ public final class HttpConnect implements HttpStage {
             }
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP route open completed: host={}, port={}, secure={}",
                     target.host(),
                     target.port(),
@@ -518,7 +513,7 @@ public final class HttpConnect implements HttpStage {
         } catch (final RuntimeException e) {
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP route open failed: host={}, port={}, exception={}",
                     target.host(),
                     target.port(),
@@ -551,7 +546,7 @@ public final class HttpConnect implements HttpStage {
         final TlsChannel tlsChannel = TlsChannel.wrap(raw.conduit(), engine, listener, dispatcher);
         final Runnable unregisterTls = scope.onCancel(tlsChannel::close);
         try {
-            Logger.debug(true, LOG_TAG, "HTTP TLS handshake started: host={}, port={}", target.host(), target.port());
+            Logger.debug(true, "Fabric", "HTTP TLS handshake started: host={}, port={}", target.host(), target.port());
             final TlsHandshake handshake = await(
                     tlsChannel.handshake(),
                     Duration.ZERO,
@@ -559,7 +554,7 @@ public final class HttpConnect implements HttpStage {
                     scope);
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP TLS handshake completed: host={}, port={}",
                     target.host(),
                     target.port());
@@ -588,7 +583,7 @@ public final class HttpConnect implements HttpStage {
         scope.throwIfCancelled();
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP CONNECT tunnel started: targetHost={}, targetPort={}",
                 target.host(),
                 target.port());
@@ -605,7 +600,7 @@ public final class HttpConnect implements HttpStage {
         }
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP CONNECT tunnel completed: targetHost={}, targetPort={}",
                 target.host(),
                 target.port());
@@ -628,11 +623,11 @@ public final class HttpConnect implements HttpStage {
         scope.throwIfCancelled();
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "SOCKS handshake started: targetHost={}, targetPort={}",
                 target.host(),
                 target.port());
-        writeAll(connection, ByteBuffer.wrap(new byte[] { SOCKS5, 0x01, SOCKS_NO_AUTH }), timeout.write(), scope);
+        writeAll(connection, ByteBuffer.wrap(new byte[]{SOCKS5, 0x01, SOCKS_NO_AUTH}), timeout.write(), scope);
         final byte[] selection = readExact(connection, 2, timeout.read(), "SOCKS method selection timed out", scope);
         if (selection[0] != SOCKS5 || selection[1] != SOCKS_NO_AUTH) {
             throw new ProtocolException("SOCKS proxy requires an unsupported authentication method");
@@ -659,7 +654,7 @@ public final class HttpConnect implements HttpStage {
         readExact(connection, addressLength + 2, timeout.read(), "SOCKS bind address timed out", scope);
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "SOCKS handshake completed: targetHost={}, targetPort={}, addressType={}",
                 target.host(),
                 target.port(),
@@ -676,7 +671,8 @@ public final class HttpConnect implements HttpStage {
     private HttpResponse track(final ConnectionLease lease, final HttpResponse response) {
         final HttpResponse source = require(response, "HTTP response");
         final ReleaseState state = new ReleaseState(lease);
-        final PayloadBody body = PayloadBody.of(new LeasePayload(source.body().payload(), state), source.body().media());
+        final PayloadBody body = PayloadBody
+                .of(new LeasePayload(source.body().payload(), state), source.body().media());
         final HttpResponse.Builder builder = source.toBuilder().body(body);
         if (source.handshake() == null && lease.connection() instanceof TlsRoutedConnection tls) {
             builder.handshake(tls.handshake());
@@ -686,7 +682,7 @@ public final class HttpConnect implements HttpStage {
         RELEASES.put(tracked, state);
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP response lease tracking installed: code={}, repeatable={}, healthy={}",
                 source.code(),
                 source.body().payload().repeatable(),
@@ -705,7 +701,7 @@ public final class HttpConnect implements HttpStage {
             if (response.body().payload().repeatable() && lease.connection().healthy()) {
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP untracked lease released: code={}, repeatable={}, healthy={}",
                         response.code(),
                         true,
@@ -714,7 +710,7 @@ public final class HttpConnect implements HttpStage {
             } else {
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP untracked lease closed: code={}, repeatable={}, healthy={}",
                         response.code(),
                         response.body().payload().repeatable(),
@@ -1260,7 +1256,7 @@ public final class HttpConnect implements HttpStage {
                 if (complete.get() && !broken.get() && lease.connection().healthy()) {
                     Logger.debug(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             "HTTP tracked lease released: complete={}, broken={}, healthy={}",
                             complete.get(),
                             broken.get(),
@@ -1269,7 +1265,7 @@ public final class HttpConnect implements HttpStage {
                 } else {
                     Logger.debug(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             "HTTP tracked lease closed: complete={}, broken={}, healthy={}",
                             complete.get(),
                             broken.get(),
@@ -1324,6 +1320,11 @@ public final class HttpConnect implements HttpStage {
             return delegate.length();
         }
 
+        /**
+         * Opens a lease-aware source for the delegated payload.
+         *
+         * @return lease-aware source
+         */
         @Override
         public Source source() {
             return new LeaseSource(delegate.source(), state);
@@ -1370,6 +1371,13 @@ public final class HttpConnect implements HttpStage {
             return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Reads payload text with an explicit materialize threshold and releases the lease.
+         *
+         * @param charset  charset
+         * @param maxBytes maximum bytes to materialize
+         * @return text
+         */
         @Override
         public String text(final Charset charset, final long maxBytes) {
             return new String(bytes(maxBytes),
@@ -1439,6 +1447,14 @@ public final class HttpConnect implements HttpStage {
             this.closed = new AtomicBoolean();
         }
 
+        /**
+         * Reads from the delegated source and releases the connection at end of stream.
+         *
+         * @param sink      destination buffer
+         * @param byteCount maximum bytes to read
+         * @return bytes read, or -1 at end of stream
+         * @throws IOException when the delegate read fails
+         */
         @Override
         public long read(final Buffer sink, final long byteCount) throws IOException {
             try {
@@ -1455,11 +1471,21 @@ public final class HttpConnect implements HttpStage {
             }
         }
 
+        /**
+         * Returns the delegate timeout.
+         *
+         * @return timeout
+         */
         @Override
         public org.miaixz.bus.core.io.timout.Timeout timeout() {
             return delegate.timeout();
         }
 
+        /**
+         * Closes the delegated source and releases or marks the connection as broken.
+         *
+         * @throws IOException when the delegate close fails
+         */
         @Override
         public void close() throws IOException {
             if (!closed.compareAndSet(false, true)) {
@@ -1614,7 +1640,7 @@ public final class HttpConnect implements HttpStage {
          * @param handshake   TLS handshake metadata
          */
         private TlsRoutedConnection(final Destination destination, final Connection raw, final TlsChannel tls,
-                final TlsHandshake handshake) {
+                                    final TlsHandshake handshake) {
             super(destination, raw);
             this.raw = require(raw, "Raw connection");
             this.tls = require(tls, "TLS channel");
@@ -1725,7 +1751,7 @@ public final class HttpConnect implements HttpStage {
          * @param dispatcher runtime dispatcher
          */
         private SocketConnector(final Listener<Object> listener, final DnsResolver resolver,
-                final Dispatcher dispatcher) {
+                                final Dispatcher dispatcher) {
             this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
             this.resolver = require(resolver, "DNS resolver");
             this.dispatcher = require(dispatcher, "Dispatcher");
@@ -1863,7 +1889,7 @@ public final class HttpConnect implements HttpStage {
          * @param dispatcher runtime dispatcher
          */
         private SocketConnection(final Address address, final SocketChannel socket, final Listener<Object> listener,
-                final Dispatcher dispatcher) {
+                                 final Dispatcher dispatcher) {
             this.destination = Destination.of(address.protocol(), address, Options.empty());
             this.socket = require(socket, "Socket channel");
             this.conduit = new SocketConduit(socket, dispatcher);

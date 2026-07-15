@@ -55,7 +55,7 @@ public final class MultipartBody implements RequestBody {
     /**
      * CRLF bytes.
      */
-    private static final byte[] CRLF = { Symbol.C_CR, Symbol.C_LF };
+    private static final byte[] CRLF = {Symbol.C_CR, Symbol.C_LF};
 
     /**
      * Multipart boundary media parameter.

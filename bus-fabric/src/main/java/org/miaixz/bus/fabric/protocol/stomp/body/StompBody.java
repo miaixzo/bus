@@ -152,26 +152,52 @@ public final class StompBody implements MessageBody, ProgressBody {
         return new StompBody(payload, media, ProgressBody.Tracker.of(payload, listener));
     }
 
+    /**
+     * Returns the current payload, wrapped with progress tracking when enabled.
+     *
+     * @return current payload
+     */
     @Override
     public Payload payload() {
         return progress == null ? payload : progress.payload();
     }
 
+    /**
+     * Returns the STOMP body media type.
+     *
+     * @return media type
+     */
     @Override
     public MediaType media() {
         return media;
     }
 
+    /**
+     * Returns transferred byte count reported by the progress tracker.
+     *
+     * @return transferred bytes
+     */
     @Override
     public long transferred() {
         return progress == null ? Normal.LONG_ZERO : progress.transferred();
     }
 
+    /**
+     * Returns the declared payload length.
+     *
+     * @return total bytes, or -1 when unknown
+     */
     @Override
     public long total() {
         return payload.length();
     }
 
+    /**
+     * Advances progress notification by a byte step.
+     *
+     * @param bytes step bytes
+     * @return this body
+     */
     @Override
     public StompBody stepBytes(final long bytes) {
         if (progress == null) {
@@ -182,6 +208,12 @@ public final class StompBody implements MessageBody, ProgressBody {
         return this;
     }
 
+    /**
+     * Advances progress notification by a total-size rate.
+     *
+     * @param rate progress rate
+     * @return this body
+     */
     @Override
     public StompBody stepRate(final double rate) {
         if (progress == null) {

@@ -72,7 +72,12 @@ public final class FilterChain implements Filter.Chain {
      * @return filtered message
      */
     public static Message apply(final Message message, final Filter... filters) {
-        return new FilterChain(compact(filters), Normal._0, current -> current).proceed(message);
+        final Message current = require(message);
+        final List<Filter> chain = active(filters);
+        if (chain == null) {
+            return current;
+        }
+        return new FilterChain(chain, Normal._0, value -> value).proceed(current);
     }
 
     /**
@@ -82,8 +87,8 @@ public final class FilterChain implements Filter.Chain {
      * @return composed filter, or {@code null} when no filter is supplied
      */
     public static Filter compose(final Filter... filters) {
-        final List<Filter> chain = compact(filters);
-        if (chain.isEmpty()) {
+        final List<Filter> chain = active(filters);
+        if (chain == null) {
             return null;
         }
         if (chain.size() == Normal._1) {
@@ -108,18 +113,21 @@ public final class FilterChain implements Filter.Chain {
     }
 
     /**
-     * Removes empty filter slots.
+     * Collects effective filter slots.
      *
      * @param filters filters
-     * @return filter list
+     * @return effective filter list, or null when no filter is supplied
      */
-    private static List<Filter> compact(final Filter... filters) {
-        final ArrayList<Filter> values = new ArrayList<>();
+    private static List<Filter> active(final Filter... filters) {
         if (filters == null) {
-            return values;
+            return null;
         }
+        ArrayList<Filter> values = null;
         for (final Filter filter : filters) {
             if (filter != null) {
+                if (values == null) {
+                    values = new ArrayList<>();
+                }
                 values.add(filter);
             }
         }

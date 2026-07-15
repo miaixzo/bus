@@ -221,7 +221,8 @@ public final class Http1Codec implements HttpCodec {
             headers = readHeaders();
         }
         final HttpResponse headerOnly = HttpResponse.builder().request(current).code(code).message(reason(line))
-                .headers(headers).body(PayloadBody.empty()).protocol(Protocol.HTTP_1_1).trailers(this::trailers).build();
+                .headers(headers).body(PayloadBody.empty()).protocol(Protocol.HTTP_1_1).trailers(this::trailers)
+                .build();
         final Source source = openResponseBody(headerOnly);
         final Payload payload = payload(source);
         final PayloadBody body = payload.length() == Normal._0 ? PayloadBody.empty()
@@ -909,11 +910,23 @@ public final class Http1Codec implements HttpCodec {
             return 0;
         }
 
+        /**
+         * Returns this empty body as its own source.
+         *
+         * @return empty source
+         */
         @Override
         public Source source() {
             return this;
         }
 
+        /**
+         * Reads from the empty source.
+         *
+         * @param sink      destination buffer
+         * @param byteCount maximum bytes to read
+         * @return zero for zero-length reads, otherwise -1
+         */
         @Override
         public long read(final Buffer sink, final long byteCount) {
             require(sink, "Target buffer");
@@ -943,6 +956,12 @@ public final class Http1Codec implements HttpCodec {
             return Normal.EMPTY_BYTE_ARRAY;
         }
 
+        /**
+         * Returns empty bytes after validating the materialize threshold.
+         *
+         * @param maxBytes maximum bytes to materialize
+         * @return empty bytes
+         */
         @Override
         public byte[] bytes(final long maxBytes) {
             Payload.validateMaterializeMaxBytes(maxBytes);
@@ -961,6 +980,13 @@ public final class Http1Codec implements HttpCodec {
             return Normal.EMPTY;
         }
 
+        /**
+         * Returns empty text after validating charset and materialize threshold.
+         *
+         * @param charset  charset
+         * @param maxBytes maximum bytes to materialize
+         * @return empty text
+         */
         @Override
         public String text(final Charset charset, final long maxBytes) {
             require(charset, "Charset");
@@ -1027,7 +1053,7 @@ public final class Http1Codec implements HttpCodec {
          * @param codec  codec
          */
         private NetworkSource(final InputStream input, final long length, final MediaType media,
-                final Http1Codec codec) {
+                              final Http1Codec codec) {
             this.input = require(input, "Input stream");
             this.length = length;
             require(media, "MediaType");
@@ -1045,12 +1071,24 @@ public final class Http1Codec implements HttpCodec {
             return length;
         }
 
+        /**
+         * Opens this one-shot network body as a source.
+         *
+         * @return network source
+         */
         @Override
         public Source source() {
             open();
             return this;
         }
 
+        /**
+         * Reads bytes from the HTTP response body stream.
+         *
+         * @param sink      destination buffer
+         * @param byteCount maximum bytes to read
+         * @return bytes read, or -1 at end of stream
+         */
         @Override
         public long read(final Buffer sink, final long byteCount) {
             require(sink, "Target buffer");
@@ -1106,6 +1144,12 @@ public final class Http1Codec implements HttpCodec {
             return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Materializes the network body using an explicit threshold.
+         *
+         * @param maxBytes maximum bytes to materialize
+         * @return materialized bytes
+         */
         @Override
         public byte[] bytes(final long maxBytes) {
             return Payload.materialize(this, maxBytes, "Http1Codec.NetworkSource.bytes(long)");
@@ -1122,6 +1166,13 @@ public final class Http1Codec implements HttpCodec {
             return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Materializes and decodes the network body using an explicit threshold.
+         *
+         * @param charset  charset
+         * @param maxBytes maximum bytes to materialize
+         * @return decoded text
+         */
         @Override
         public String text(final Charset charset, final long maxBytes) {
             require(charset, "Charset");
@@ -1191,7 +1242,7 @@ public final class Http1Codec implements HttpCodec {
          * @param codec   codec
          */
         private FixedInputStream(final NetworkReader reader, final Duration timeout, final long length,
-                final Http1Codec codec) {
+                                 final Http1Codec codec) {
             this.reader = require(reader, "Network reader");
             this.timeout = require(timeout, "Timeout");
             this.remaining = length;

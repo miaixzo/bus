@@ -42,11 +42,6 @@ import org.miaixz.bus.logger.Logger;
 public final class HttpCoordinator implements HttpStage {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Stage name.
      */
     private final String name;
@@ -108,7 +103,7 @@ public final class HttpCoordinator implements HttpStage {
         if (cache == null) {
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP cache coordinator disabled: method={}, host={}, port={}, path={}",
                     current.method().value(),
                     current.url().host(),
@@ -117,7 +112,7 @@ public final class HttpCoordinator implements HttpStage {
             if (current.cacheControl().onlyIfCached()) {
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP cache coordinator returning unsatisfiable response: "
                                 + "reason=cache-disabled-only-if-cached");
                 return unsatisfiable(current);
@@ -127,7 +122,7 @@ public final class HttpCoordinator implements HttpStage {
         cache.recordRequest();
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP cache coordinator lookup started: method={}, host={}, port={}, path={}",
                 current.method().value(),
                 current.url().host(),
@@ -138,7 +133,7 @@ public final class HttpCoordinator implements HttpStage {
             cache.recordHit();
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP cache coordinator fresh hit: code={}, method={}, host={}, port={}",
                     cached.code(),
                     current.method().value(),
@@ -152,7 +147,7 @@ public final class HttpCoordinator implements HttpStage {
             }
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP cache coordinator returning unsatisfiable response: reason=only-if-cached-miss");
             return unsatisfiable(current);
         }
@@ -160,7 +155,7 @@ public final class HttpCoordinator implements HttpStage {
                 : cache.conditional(current, cached);
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP cache coordinator proceeding to network: cachedPresent={}, conditional={}, noCache={}, "
                         + "method={}, host={}, port={}",
                 cached != null,
@@ -173,7 +168,7 @@ public final class HttpCoordinator implements HttpStage {
         final HttpResponse network = next.proceed(networkRequest);
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP cache coordinator network response: code={}, conditional={}",
                 network.code(),
                 networkRequest != current);
@@ -181,14 +176,14 @@ public final class HttpCoordinator implements HttpStage {
             final HttpResponse updated = cache.update(cached, network).toBuilder().request(current)
                     .cacheResponse(cached).networkResponse(network).build();
             network.close();
-            Logger.debug(false, LOG_TAG, "HTTP cache coordinator merged conditional response: code={}", updated.code());
+            Logger.debug(false, "Fabric", "HTTP cache coordinator merged conditional response: code={}", updated.code());
             return write(current, updated);
         }
         if (cached != null) {
             final HttpResponse response = network.toBuilder().request(current).cacheResponse(cached)
                     .networkResponse(network).build();
             cached.close();
-            Logger.debug(false, LOG_TAG, "HTTP cache coordinator replaced stale response: code={}", response.code());
+            Logger.debug(false, "Fabric", "HTTP cache coordinator replaced stale response: code={}", response.code());
             return write(current, response);
         }
         return write(current, network.toBuilder().request(current).networkResponse(network).build());
@@ -227,7 +222,7 @@ public final class HttpCoordinator implements HttpStage {
             cache.remove(request);
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP cache coordinator write skipped: code={}, cacheable={}",
                     response.code(),
                     false);
@@ -235,7 +230,7 @@ public final class HttpCoordinator implements HttpStage {
         }
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP cache coordinator write delegated: code={}, cacheable={}",
                 response.code(),
                 true);

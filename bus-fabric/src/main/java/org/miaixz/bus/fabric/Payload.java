@@ -85,21 +85,42 @@ public interface Payload {
     private static Payload repeatable(final ByteString snapshot) {
         return new Payload() {
 
+            /**
+             * Returns the repeatable snapshot length.
+             *
+             * @return snapshot length
+             */
             @Override
             public long length() {
                 return snapshot.size();
             }
 
+            /**
+             * Opens a new source over the repeatable snapshot.
+             *
+             * @return repeatable snapshot source
+             */
             @Override
             public Source source() {
                 return new Buffer().write(snapshot);
             }
 
+            /**
+             * Returns the repeatable snapshot bytes using the default threshold.
+             *
+             * @return snapshot bytes
+             */
             @Override
             public byte[] bytes() {
                 return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
+            /**
+             * Returns the repeatable snapshot bytes using an explicit threshold.
+             *
+             * @param maxBytes maximum bytes to materialize
+             * @return snapshot bytes
+             */
             @Override
             public byte[] bytes(final long maxBytes) {
                 validateMaterializeMaxBytes(maxBytes);
@@ -109,17 +130,35 @@ public interface Payload {
                 return snapshot.toByteArray();
             }
 
+            /**
+             * Decodes the repeatable snapshot using the default threshold.
+             *
+             * @param charset charset
+             * @return decoded text
+             */
             @Override
             public String text(final Charset charset) {
                 return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
+            /**
+             * Decodes the repeatable snapshot using an explicit threshold.
+             *
+             * @param charset  charset
+             * @param maxBytes maximum bytes to materialize
+             * @return decoded text
+             */
             @Override
             public String text(final Charset charset, final long maxBytes) {
                 validateCharset(charset);
                 return new String(bytes(maxBytes), charset);
             }
 
+            /**
+             * Returns true because byte snapshots can be read repeatedly.
+             *
+             * @return true
+             */
             @Override
             public boolean repeatable() {
                 return true;
@@ -159,11 +198,21 @@ public interface Payload {
         final AtomicBoolean opened = new AtomicBoolean();
         return new Payload() {
 
+            /**
+             * Returns the declared one-shot stream length.
+             *
+             * @return declared length, or -1 when unknown
+             */
             @Override
             public long length() {
                 return length;
             }
 
+            /**
+             * Opens the one-shot source exactly once.
+             *
+             * @return one-shot source
+             */
             @Override
             public Source source() {
                 if (!opened.compareAndSet(false, true)) {
@@ -172,27 +221,56 @@ public interface Payload {
                 return input;
             }
 
+            /**
+             * Materializes this one-shot stream using the default threshold.
+             *
+             * @return materialized bytes
+             */
             @Override
             public byte[] bytes() {
                 return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
+            /**
+             * Materializes this one-shot stream using an explicit threshold.
+             *
+             * @param maxBytes maximum bytes to materialize
+             * @return materialized bytes
+             */
             @Override
             public byte[] bytes(final long maxBytes) {
                 return materialize(this, maxBytes, "Payload.bytes(long)");
             }
 
+            /**
+             * Decodes this one-shot stream using the default threshold.
+             *
+             * @param charset charset
+             * @return decoded text
+             */
             @Override
             public String text(final Charset charset) {
                 return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
+            /**
+             * Decodes this one-shot stream using an explicit threshold.
+             *
+             * @param charset  charset
+             * @param maxBytes maximum bytes to materialize
+             * @return decoded text
+             */
             @Override
             public String text(final Charset charset, final long maxBytes) {
                 validateCharset(charset);
                 return new String(bytes(maxBytes), charset);
             }
 
+            /**
+             * Returns false because the source can be opened only once.
+             *
+             * @return false
+             */
             @Override
             public boolean repeatable() {
                 return false;
