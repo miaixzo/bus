@@ -128,7 +128,7 @@ public class VortexProperties {
         /**
          * Registry method used to resolve public slug forwarding assets.
          */
-        private String slugMethod = "vortex.slug.get";
+        private String slugMethod = Args.VORTEX_SLUG_GET;
 
     }
 
