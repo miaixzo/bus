@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.network.tcp.TcpServer;
 import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
 
@@ -97,14 +96,14 @@ public interface AioProvider {
     }
 
     /**
-     * Opens a server with no-op lifecycle listener.
+     * Opens a server with the default lifecycle listener.
      *
      * @param address address
      * @param group   group
      * @return TCP server
      */
     default TcpServer openServer(final Address address, final AioGroup group) {
-        return openServer(address, group, Wiring.noop());
+        return openServer(address, group, null);
     }
 
 }

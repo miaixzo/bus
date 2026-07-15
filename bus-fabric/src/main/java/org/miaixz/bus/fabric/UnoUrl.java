@@ -33,6 +33,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.PORT;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -185,13 +187,16 @@ public final class UnoUrl {
      */
     public static int defaultPort(final String scheme) {
         if (scheme == null) {
-            return -1;
+            return Normal.__1;
         }
-        return switch (scheme.toLowerCase(Locale.ROOT)) {
-            case "http", "ws" -> 80;
-            case "https", "wss" -> 443;
-            default -> -1;
-        };
+        final String normalized = scheme.toLowerCase(Locale.ROOT);
+        if (Protocol.HTTP.name.equals(normalized) || Protocol.WS.name.equals(normalized)) {
+            return PORT._80.getPort();
+        }
+        if (Protocol.HTTPS.name.equals(normalized) || Protocol.WSS.name.equals(normalized)) {
+            return PORT._443.getPort();
+        }
+        return Normal.__1;
     }
 
     /**
@@ -533,6 +538,11 @@ public final class UnoUrl {
         return toUri();
     }
 
+    /**
+     * Returns the canonical encoded URL text.
+     *
+     * @return encoded URL
+     */
     @Override
     public String toString() {
         return encoded();
@@ -541,9 +551,12 @@ public final class UnoUrl {
     /**
      * Builds the encoded URL.
      *
-     * @param address address
-     * @param path    path
-     * @param query   query
+     * @param address  address
+     * @param path     path
+     * @param query    query parameters
+     * @param username decoded username
+     * @param password decoded password
+     * @param fragment decoded fragment
      * @return encoded URL
      */
     private static String buildEncoded(
@@ -651,23 +664,9 @@ public final class UnoUrl {
     }
 
     /**
-     * Creates a mutable query copy.
+     * Encodes query parameters.
      *
-     * @param source source query
-     * @return mutable query
-     */
-    private static LinkedHashMap<String, List<String>> mutableQuery(final Map<String, List<String>> source) {
-        final LinkedHashMap<String, List<String>> copy = new LinkedHashMap<>();
-        for (final Map.Entry<String, List<String>> entry : source.entrySet()) {
-            copy.put(entry.getKey(), new ArrayList<>(entry.getValue()));
-        }
-        return copy;
-    }
-
-    /**
-     * Encodes the query map.
-     *
-     * @param values query values
+     * @param values query parameters
      * @return query string
      */
     private static String encodeQuery(final List<QueryParameter> values) {
@@ -748,7 +747,7 @@ public final class UnoUrl {
      * Parses a raw query string.
      *
      * @param rawQuery raw query
-     * @return decoded query map
+     * @return decoded query parameters
      */
     private static List<QueryParameter> parseQueryParameters(final String rawQuery) {
         final ArrayList<QueryParameter> values = new ArrayList<>();
@@ -853,7 +852,8 @@ public final class UnoUrl {
      * @return {@code true} for HTTP, HTTPS, WebSocket, and secure WebSocket schemes
      */
     private static boolean commonScheme(final String scheme) {
-        return "http".equals(scheme) || "https".equals(scheme) || "ws".equals(scheme) || "wss".equals(scheme);
+        return Protocol.HTTP.name.equals(scheme) || Protocol.HTTPS.name.equals(scheme)
+                || Protocol.WS.name.equals(scheme) || Protocol.WSS.name.equals(scheme);
     }
 
     /**
@@ -873,7 +873,7 @@ public final class UnoUrl {
                 return -1;
             }
             port = port * 10 + current - Symbol.C_ZERO;
-            if (port > 65535) {
+            if (port > Normal._65535) {
                 return -1;
             }
         }
@@ -1112,7 +1112,7 @@ public final class UnoUrl {
          * @return this builder
          */
         public Builder port(final int port) {
-            if (port != -1 && (port < 1 || port > 65535)) {
+            if (port != Normal.__1 && (port < Normal._1 || port > Normal._65535)) {
                 throw new ValidateException("Port must be -1 or between 1 and 65535");
             }
             this.port = port;

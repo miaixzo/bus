@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.unix.shared.hardware;
 
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -29,7 +28,6 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * BsdNetworkIF applicable to FreeBSD and OpenBSD.
@@ -103,19 +101,7 @@ public final class BsdNetworkIF extends AbstractNetworkIF {
      * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
-        List<NetworkIF> ifList = new ArrayList<>();
-        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            try {
-                ifList.add(new BsdNetworkIF(ni));
-            } catch (InstantiationException e) {
-                Logger.debug(
-                        false,
-                        "Health",
-                        "Network Interface Instantiation failed: {}",
-                        e.getClass().getSimpleName());
-            }
-        }
-        return ifList;
+        return getNetworks(includeLocalInterfaces, BsdNetworkIF::new);
     }
 
     /**

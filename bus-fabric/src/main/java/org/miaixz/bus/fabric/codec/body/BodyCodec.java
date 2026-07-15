@@ -20,13 +20,11 @@
 package org.miaixz.bus.fabric.codec.body;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.io.file.PathResolve;
-import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ConvertException;
@@ -35,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 
 /**
@@ -70,18 +68,6 @@ public final class BodyCodec {
      */
     public Source source(final Payload payload) {
         return validatePayload(payload).source();
-    }
-
-    /**
-     * Adapts an output stream into a stream sink.
-     *
-     * @param output output stream
-     * @return sink
-     * @deprecated use {@link org.miaixz.bus.core.xyz.IoKit#sink(OutputStream)}
-     */
-    @Deprecated(since = "8.8.3")
-    public Sink sink(final OutputStream output) {
-        return IoKit.sink(Assert.notNull(output, () -> new ValidateException("Output stream must not be null")));
     }
 
     /**
@@ -205,7 +191,7 @@ public final class BodyCodec {
          */
         @Override
         public byte[] bytes() {
-            return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**
@@ -227,9 +213,16 @@ public final class BodyCodec {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
+        /**
+         * Reads file text with an explicit materialize threshold.
+         *
+         * @param charset  charset
+         * @param maxBytes maximum bytes to materialize
+         * @return file text
+         */
         @Override
         public String text(final Charset charset, final long maxBytes) {
             return new String(bytes(maxBytes), validateCharset(charset));

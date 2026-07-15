@@ -23,6 +23,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.guard.GuardResult;
 import org.miaixz.bus.fabric.guard.GuardRule;
@@ -34,11 +35,6 @@ import org.miaixz.bus.fabric.guard.GuardRule;
  * @since Java 21+
  */
 public final class LimitGuard implements GuardRule {
-
-    /**
-     * Rule name.
-     */
-    private static final String NAME = "body-limit";
 
     /**
      * Maximum allowed bytes.
@@ -95,7 +91,7 @@ public final class LimitGuard implements GuardRule {
      */
     @Override
     public String name() {
-        return NAME;
+        return Builder.LIMIT_GUARD_NAME;
     }
 
     /**

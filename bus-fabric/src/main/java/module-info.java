@@ -29,7 +29,6 @@ module bus.fabric {
     requires bus.crypto;
     requires bus.logger;
 
-    requires static jakarta.servlet;
     requires static jakarta.xml.soap;
 
     exports org.miaixz.bus.fabric;
@@ -91,7 +90,6 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.protocol.websocket.upgrade;
     exports org.miaixz.bus.fabric.registry;
     exports org.miaixz.bus.fabric.registry.connection;
-    exports org.miaixz.bus.fabric.registry.identity;
     exports org.miaixz.bus.fabric.registry.policy;
     exports org.miaixz.bus.fabric.registry.route;
     exports org.miaixz.bus.fabric.runtime;

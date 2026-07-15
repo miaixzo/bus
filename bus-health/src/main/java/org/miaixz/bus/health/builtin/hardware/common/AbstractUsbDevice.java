@@ -19,9 +19,11 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -199,6 +201,71 @@ public abstract class AbstractUsbDevice implements UsbDevice {
             deviceList.add(device);
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
+    }
+
+    /**
+     * Recursively builds a USB device and its children from attribute maps keyed by device identifier.
+     *
+     * @param id           the identifier of the device to build
+     * @param vid          the inherited vendor ID
+     * @param pid          the inherited product ID
+     * @param nameMap      id to product name
+     * @param vendorMap    id to vendor name
+     * @param vendorIdMap  id to vendor ID
+     * @param productIdMap id to product ID
+     * @param serialMap    id to serial number
+     * @param hubMap       parent id to child ids
+     * @param factory      platform-specific device factory
+     * @return the assembled USB device
+     */
+    protected static UsbDevice buildDeviceTree(
+            String id,
+            String vid,
+            String pid,
+            Map<String, String> nameMap,
+            Map<String, String> vendorMap,
+            Map<String, String> vendorIdMap,
+            Map<String, String> productIdMap,
+            Map<String, String> serialMap,
+            Map<String, List<String>> hubMap,
+            UsbDeviceFactory factory) {
+        String vendorId = vendorIdMap.getOrDefault(id, vid);
+        String productId = productIdMap.getOrDefault(id, pid);
+        List<UsbDevice> connectedDevices = new ArrayList<>();
+        for (String childId : hubMap.getOrDefault(id, Collections.emptyList())) {
+            connectedDevices.add(buildDeviceTree(childId, vendorId, productId, nameMap, vendorMap, vendorIdMap,
+                    productIdMap, serialMap, hubMap, factory));
+        }
+        Collections.sort(connectedDevices);
+        return factory.create(nameMap.getOrDefault(id, vendorId + Symbol.COLON + productId),
+                vendorMap.getOrDefault(id, Normal.EMPTY), vendorId, productId,
+                serialMap.getOrDefault(id, Normal.EMPTY), id, connectedDevices);
+    }
+
+    /**
+     * Creates a platform-specific USB device from resolved fields.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    @FunctionalInterface
+    public interface UsbDeviceFactory {
+
+        /**
+         * Creates a USB device.
+         *
+         * @param name             the device name
+         * @param vendor           the vendor name
+         * @param vendorId         the vendor ID
+         * @param productId        the product ID
+         * @param serialNumber     the serial number
+         * @param uniqueDeviceId   the unique device ID
+         * @param connectedDevices the connected child devices
+         * @return the created USB device
+         */
+        UsbDevice create(String name, String vendor, String vendorId, String productId, String serialNumber,
+                String uniqueDeviceId, List<UsbDevice> connectedDevices);
+
     }
 
     /**

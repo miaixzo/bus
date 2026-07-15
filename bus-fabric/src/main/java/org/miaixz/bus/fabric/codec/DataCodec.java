@@ -51,16 +51,33 @@ public interface DataCodec<T> {
         Assert.notNull(media, () -> new ValidateException("Data codec media type must not be null"));
         return new DataCodec<>() {
 
+            /**
+             * Encodes a value with the supplied encoder.
+             *
+             * @param value value
+             * @return payload
+             */
             @Override
             public Payload encode(final T value) {
                 return encoder.encode(value);
             }
 
+            /**
+             * Decodes a payload with the supplied decoder.
+             *
+             * @param payload payload
+             * @return decoded value
+             */
             @Override
             public T decode(final Payload payload) {
                 return decoder.decode(payload);
             }
 
+            /**
+             * Returns the codec media type.
+             *
+             * @return media type
+             */
             @Override
             public MediaType media() {
                 return media;

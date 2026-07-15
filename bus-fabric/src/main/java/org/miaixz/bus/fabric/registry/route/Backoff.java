@@ -70,6 +70,11 @@ public record Backoff(Route route, Instant failedAt, int failures, Instant backo
         return route.id();
     }
 
+    /**
+     * Returns diagnostic backoff state text.
+     *
+     * @return backoff state text
+     */
     @Override
     public String toString() {
         return "Backoff[routeId=" + routeId() + ", failedAt=" + failedAt + ", failures=" + failures + ", backoffUntil="

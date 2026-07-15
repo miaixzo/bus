@@ -50,8 +50,7 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
     /**
      * The iostat value.
      */
-    private final Supplier<List<String>> iostat = Memoizer
-            .memoize(OpenBsdHWDiskStore::querySystatIostat, Memoizer.defaultExpiration());
+    private final Supplier<List<String>> iostat;
 
     /**
      * The currentQueueLength value.
@@ -100,9 +99,11 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
      * @param model  the model
      * @param serial the serial
      * @param size   the size
+     * @param iostat the iostat supplier
      */
-    private OpenBsdHWDiskStore(String name, String model, String serial, long size) {
+    private OpenBsdHWDiskStore(String name, String model, String serial, long size, Supplier<List<String>> iostat) {
         super(name, model, serial, size);
+        this.iostat = iostat;
     }
 
     /**
@@ -113,6 +114,8 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
     public static List<HWDiskStore> getDisks() {
         List<HWDiskStore> diskList = new ArrayList<>();
         List<String> dmesg = null; // Lazily fetch in loop if needed
+        Supplier<List<String>> iostat = Memoizer.memoize(OpenBsdHWDiskStore::querySystatIostat,
+                Memoizer.defaultExpiration());
 
         // Get list of disks from sysctl
         // hw.disknames=sd0:2cf69345d371cd82,cd0:,sd1:
@@ -161,7 +164,7 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
                     }
                 }
             }
-            store = new OpenBsdHWDiskStore(diskName, model, diskdata.get(1), size);
+            store = new OpenBsdHWDiskStore(diskName, model, diskdata.get(1), size, iostat);
             store.partitionList = diskdata.get(3);
             store.updateAttributes();
 

@@ -59,6 +59,11 @@ public final class Context {
     private final Listener<Object> listener;
 
     /**
+     * Shared protocol-neutral message filter.
+     */
+    private final Filter filter;
+
+    /**
      * Creates a validated context instance.
      *
      * @param reactor   reactor
@@ -66,15 +71,17 @@ public final class Context {
      * @param directory directory
      * @param resolver  DNS resolver
      * @param listener  lifecycle listener
+     * @param filter    shared message filter
      */
     private Context(final Reactor reactor, final Options options, final Directory directory, final DnsResolver resolver,
-            final Listener<Object> listener) {
+            final Listener<Object> listener, final Filter filter) {
         this.reactor = require(reactor, "Reactor");
         this.options = require(options, "Options");
         this.directory = require(directory, "Directory");
         this.resolver = require(resolver, "DNS resolver");
         this.resolver.observer(this.reactor.observer());
-        this.listener = Wiring.safe(require(listener, "Lifecycle listener"), reactor.observer());
+        this.listener = listener;
+        this.filter = filter;
     }
 
     /**
@@ -103,7 +110,7 @@ public final class Context {
     public static Builder builder() {
         final Directory directory = Directory.create();
         final Reactor reactor = Reactor.builder().directory(directory).build();
-        return new Builder(reactor, Options.empty(), directory, DnsResolver.system(), Wiring.noop());
+        return new Builder(reactor, Options.empty(), directory, DnsResolver.system(), null, null);
     }
 
     /**
@@ -152,13 +159,32 @@ public final class Context {
     }
 
     /**
+     * Returns the shared protocol-neutral filter.
+     *
+     * @return shared filter, or null when disabled
+     */
+    public Filter filter() {
+        return filter;
+    }
+
+    /**
      * Creates a context with replacement options.
      *
      * @param options replacement options
      * @return copied context
      */
     public Context withOptions(final Options options) {
-        return new Context(reactor, require(options, "Options"), directory, resolver, listener);
+        return new Context(reactor, require(options, "Options"), directory, resolver, listener, filter);
+    }
+
+    /**
+     * Creates a context with a replacement shared filter.
+     *
+     * @param filter replacement filter
+     * @return copied context
+     */
+    public Context withFilter(final Filter filter) {
+        return new Context(reactor, options, directory, resolver, listener, filter);
     }
 
     /**
@@ -210,6 +236,11 @@ public final class Context {
         private Listener<Object> listener;
 
         /**
+         * Shared filter candidate.
+         */
+        private Filter filter;
+
+        /**
          * Creates a builder with explicit defaults.
          *
          * @param reactor   default reactor
@@ -217,14 +248,16 @@ public final class Context {
          * @param directory default directory
          * @param resolver  default DNS resolver
          * @param listener  default listener
+         * @param filter    default filter
          */
         private Builder(final Reactor reactor, final Options options, final Directory directory,
-                final DnsResolver resolver, final Listener<Object> listener) {
+                final DnsResolver resolver, final Listener<Object> listener, final Filter filter) {
             this.reactor = require(reactor, "Reactor");
             this.options = require(options, "Options");
             this.directory = require(directory, "Directory");
             this.resolver = require(resolver, "DNS resolver");
-            this.listener = require(listener, "Lifecycle listener");
+            this.listener = listener;
+            this.filter = filter;
         }
 
         /**
@@ -278,7 +311,18 @@ public final class Context {
          * @return this builder
          */
         public Builder listener(final Listener<Object> listener) {
-            this.listener = require(listener, "Lifecycle listener");
+            this.listener = listener;
+            return this;
+        }
+
+        /**
+         * Sets the shared protocol-neutral filter.
+         *
+         * @param filter filter
+         * @return this builder
+         */
+        public Builder filter(final Filter filter) {
+            this.filter = filter;
             return this;
         }
 
@@ -288,7 +332,7 @@ public final class Context {
          * @return context
          */
         public Context build() {
-            return new Context(reactor, options, directory, resolver, listener);
+            return new Context(reactor, options, directory, resolver, listener, filter);
         }
 
     }

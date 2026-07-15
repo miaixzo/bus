@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 
 /**
@@ -51,7 +51,7 @@ public interface ProgressBody extends Body {
      */
     @Override
     default byte[] bytes() {
-        return Payload.materialize(payload(), Options.DEFAULT_MATERIALIZE_MAX_BYTES, "ProgressBody.bytes()");
+        return Payload.materialize(payload(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES, "ProgressBody.bytes()");
     }
 
     /**
@@ -135,11 +135,6 @@ public interface ProgressBody extends Body {
     final class Tracker implements TransferObserver {
 
         /**
-         * Default progress callback step.
-         */
-        private static final long DEFAULT_STEP_BYTES = Normal._8192;
-
-        /**
          * Original payload.
          */
         private final Payload original;
@@ -162,12 +157,12 @@ public interface ProgressBody extends Body {
         /**
          * Callback step in bytes.
          */
-        private final AtomicLong stepBytes = new AtomicLong(DEFAULT_STEP_BYTES);
+        private final AtomicLong stepBytes = new AtomicLong(Normal._8192);
 
         /**
          * Next byte threshold for callback.
          */
-        private final AtomicLong nextStep = new AtomicLong(DEFAULT_STEP_BYTES);
+        private final AtomicLong nextStep = new AtomicLong(Normal._8192);
 
         /**
          * Whether final callback has been fired.
@@ -374,37 +369,76 @@ public interface ProgressBody extends Body {
          */
         private final class ProgressPayload implements Payload {
 
+            /**
+             * Returns the wrapped payload length.
+             *
+             * @return wrapped payload length
+             */
             @Override
             public long length() {
                 return original.length();
             }
 
+            /**
+             * Opens a progress-reporting source over the wrapped payload.
+             *
+             * @return progress-reporting source
+             */
             @Override
             public Source source() {
                 return new ProgressSource(original.source());
             }
 
+            /**
+             * Materializes the payload using the default threshold.
+             *
+             * @return materialized bytes
+             */
             @Override
             public byte[] bytes() {
-                return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
+            /**
+             * Materializes the payload using an explicit threshold.
+             *
+             * @param maxBytes maximum bytes to materialize
+             * @return materialized bytes
+             */
             @Override
             public byte[] bytes(final long maxBytes) {
                 return Payload.materialize(this, maxBytes, "ProgressBody.ProgressPayload.bytes(long)");
             }
 
+            /**
+             * Reads payload text using the default threshold.
+             *
+             * @param charset charset
+             * @return text
+             */
             @Override
             public String text(final Charset charset) {
-                return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
+            /**
+             * Reads payload text using an explicit threshold.
+             *
+             * @param charset  charset
+             * @param maxBytes maximum bytes to materialize
+             * @return text
+             */
             @Override
             public String text(final Charset charset, final long maxBytes) {
                 return new String(bytes(maxBytes),
                         Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
             }
 
+            /**
+             * Returns whether the wrapped payload is repeatable.
+             *
+             * @return true when repeatable
+             */
             @Override
             public boolean repeatable() {
                 return original.repeatable();
@@ -431,6 +465,14 @@ public interface ProgressBody extends Body {
                 this.input = input;
             }
 
+            /**
+             * Reads bytes from the delegate and reports progress for positive byte counts.
+             *
+             * @param sink      destination buffer
+             * @param byteCount maximum bytes to read
+             * @return bytes read, or -1 at end of stream
+             * @throws IOException when the delegate read fails
+             */
             @Override
             public long read(final Buffer sink, final long byteCount) throws IOException {
                 final long read = input.read(sink, byteCount);
@@ -440,11 +482,21 @@ public interface ProgressBody extends Body {
                 return read;
             }
 
+            /**
+             * Returns the delegate timeout.
+             *
+             * @return timeout
+             */
             @Override
             public Timeout timeout() {
                 return input.timeout();
             }
 
+            /**
+             * Closes the delegate source.
+             *
+             * @throws IOException when the delegate close fails
+             */
             @Override
             public void close() throws IOException {
                 input.close();

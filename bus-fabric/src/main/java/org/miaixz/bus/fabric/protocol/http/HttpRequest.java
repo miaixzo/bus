@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Timeout;
@@ -38,7 +39,8 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.protocol.http.agent.UserAgent;
 import org.miaixz.bus.fabric.protocol.http.body.FileBody;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
+import org.miaixz.bus.fabric.protocol.http.body.TextBody;
 import org.miaixz.bus.fabric.protocol.http.cache.HttpCacheControl;
 
 /**
@@ -65,9 +67,9 @@ public final class HttpRequest {
     private final Headers headers;
 
     /**
-     * HTTP body.
+     * Payload body.
      */
-    private final HttpBody body;
+    private final PayloadBody body;
 
     /**
      * Request tags keyed by type.
@@ -100,7 +102,7 @@ public final class HttpRequest {
      * @param proxy   proxy plan
      * @param timeout timeout
      */
-    private HttpRequest(final HTTP.Method method, final UnoUrl url, final Headers headers, final HttpBody body,
+    private HttpRequest(final HTTP.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
             final Map<Class<?>, Object> tags, final ProxyPlan proxy, final Timeout timeout) {
         this.method = require(method, "HTTP method");
         this.url = require(url, "URL");
@@ -183,7 +185,7 @@ public final class HttpRequest {
      *
      * @return body
      */
-    public HttpBody body() {
+    public PayloadBody body() {
         return body;
     }
 
@@ -228,7 +230,7 @@ public final class HttpRequest {
      * @return true when URL scheme is https
      */
     public boolean isHttps() {
-        return "https".equals(url.scheme());
+        return Protocol.HTTPS.name.equals(url.scheme());
     }
 
     /**
@@ -255,7 +257,7 @@ public final class HttpRequest {
      * @param method method
      * @param body   body
      */
-    private static void validateBodyPolicy(final HTTP.Method method, final HttpBody body) {
+    private static void validateBodyPolicy(final HTTP.Method method, final PayloadBody body) {
         Assert.isFalse(
                 !method.supportsBody() && body.length() > 0,
                 () -> new ValidateException("HTTP method does not support a body"));
@@ -319,7 +321,7 @@ public final class HttpRequest {
         /**
          * Candidate body.
          */
-        private HttpBody body = HttpBody.empty();
+        private PayloadBody body = PayloadBody.empty();
 
         /**
          * Candidate tags keyed by type.
@@ -393,7 +395,7 @@ public final class HttpRequest {
          * @param body body
          * @return this builder
          */
-        public Builder body(final HttpBody body) {
+        public Builder body(final PayloadBody body) {
             this.body = require(body, "Body");
             return this;
         }
@@ -406,7 +408,28 @@ public final class HttpRequest {
          */
         public Builder body(final RequestBody body) {
             final RequestBody current = require(body, "Request body");
-            return body(HttpBody.of(current.payload(), current.media()));
+            return body(PayloadBody.of(current.payload(), current.media()));
+        }
+
+        /**
+         * Sets a UTF-8 text body.
+         *
+         * @param value body text
+         * @return this builder
+         */
+        public Builder text(final String value) {
+            return body(TextBody.of(value));
+        }
+
+        /**
+         * Sets a text body with explicit media.
+         *
+         * @param value body text
+         * @param media media
+         * @return this builder
+         */
+        public Builder text(final String value, final MediaType media) {
+            return body(TextBody.of(value, media));
         }
 
         /**

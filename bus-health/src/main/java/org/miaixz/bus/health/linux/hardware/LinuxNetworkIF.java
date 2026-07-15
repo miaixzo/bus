@@ -21,7 +21,6 @@ package org.miaixz.bus.health.linux.hardware;
 
 import java.io.File;
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +37,6 @@ import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 import org.miaixz.bus.health.linux.SysPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * LinuxNetworks class.
@@ -149,12 +147,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
                     try {
                         String devVendor = device.getPropertyValue("ID_VENDOR_FROM_DATABASE");
                         String devModel = device.getPropertyValue("ID_MODEL_FROM_DATABASE");
-                        if (!StringKit.isBlank(devModel)) {
-                            if (!StringKit.isBlank(devVendor)) {
-                                return devVendor + Symbol.SPACE + devModel;
-                            }
-                            return devModel;
-                        }
+                        return formatModel(devVendor, devModel, name);
                     } finally {
                         device.unref();
                     }
@@ -174,15 +167,25 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
      */
     private static String queryIfModelFromSysfs(String name) {
         Map<String, String> uevent = Builder.getKeyValueMapFromFile(SysPath.NET + name + "/uevent", Symbol.EQUAL);
-        String devVendor = uevent.get("ID_VENDOR_FROM_DATABASE");
-        String devModel = uevent.get("ID_MODEL_FROM_DATABASE");
-        if (!StringKit.isBlank(devModel)) {
-            if (!StringKit.isBlank(devVendor)) {
-                return devVendor + Symbol.SPACE + devModel;
+        return formatModel(uevent.get("ID_VENDOR_FROM_DATABASE"), uevent.get("ID_MODEL_FROM_DATABASE"), name);
+    }
+
+    /**
+     * Formats a vendor and model pair into a display string.
+     *
+     * @param vendor   the vendor name
+     * @param model    the model name
+     * @param fallback the fallback value
+     * @return the formatted model string
+     */
+    private static String formatModel(String vendor, String model, String fallback) {
+        if (!StringKit.isBlank(model)) {
+            if (!StringKit.isBlank(vendor)) {
+                return vendor + Symbol.SPACE + model;
             }
-            return devModel;
+            return model;
         }
-        return name;
+        return fallback;
     }
 
     /**
@@ -192,19 +195,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
      * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
-        List<NetworkIF> ifList = new ArrayList<>();
-        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            try {
-                ifList.add(new LinuxNetworkIF(ni));
-            } catch (InstantiationException e) {
-                Logger.debug(
-                        false,
-                        "Health",
-                        "Network Interface Instantiation failed: {}",
-                        e.getClass().getSimpleName());
-            }
-        }
-        return ifList;
+        return getNetworks(includeLocalInterfaces, LinuxNetworkIF::new);
     }
 
     /**

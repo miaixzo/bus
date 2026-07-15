@@ -25,27 +25,27 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
-import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.sse.body.SseBody;
 import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
 import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
 import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.logger.Logger;
 
@@ -56,31 +56,6 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 final class SseRunner {
-
-    /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
-     * SSE dispatch key prefix.
-     */
-    private static final String DISPATCH_PREFIX = "sse:" + Symbol.FORWARDSLASH;
-
-    /**
-     * Last event identifier request header.
-     */
-    private static final String LAST_EVENT_ID = "Last-Event-ID";
-
-    /**
-     * Dispatcher activity name for stream reads.
-     */
-    private static final String ACTIVITY_READ = "sse-read";
-
-    /**
-     * Dispatcher activity name for reconnect delays.
-     */
-    private static final String ACTIVITY_RETRY = "sse-retry";
 
     /**
      * Execution snapshot.
@@ -102,11 +77,11 @@ final class SseRunner {
      * @return opened session
      */
     SseSession open() {
-        Source body = null;
+        SseReader reader = null;
         Mediator.HttpStream response = null;
         Logger.info(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "SSE open started: scheme={}, host={}, port={}, autoReconnect={}, lastEventIdPresent={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
@@ -114,12 +89,9 @@ final class SseRunner {
                 snapshot.autoReconnect(),
                 snapshot.lastEventId() != null);
         try {
-            checkGuard();
             response = response();
             validateResponse(response);
-            body = response.body().source();
-            final SseReader reader = new SseReader(body);
-            body = null;
+            reader = SseBody.source(response.source(), response.body().length()).reader();
             final SseRetry sessionRetry = SseRetry.defaults();
             sessionRetry.update(snapshot.retry().current());
             final CompletableFuture<Void> stream = new CompletableFuture<>();
@@ -134,12 +106,9 @@ final class SseRunner {
             }, snapshot.listener());
             holder.set(session);
             handle.set(submitRead(reader, sessionRetry, stream, holder, eventId, handle, Normal._0));
-            emit(ObservationMarker.SSE_OPEN, null);
-            snapshot.listener().open(session);
-            snapshot.callback().success(session);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "SSE open completed: scheme={}, host={}, port={}, autoReconnect={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
@@ -147,15 +116,13 @@ final class SseRunner {
                     snapshot.autoReconnect());
             return session;
         } catch (final RuntimeException e) {
-            closeBody(body);
-            if (body == null) {
+            closeReader(reader);
+            if (reader == null) {
                 closeResponse(response);
             }
-            emit(ObservationMarker.SSE_FAILED, e);
-            snapshot.callback().failure(e);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "SSE open failed: scheme={}, host={}, port={}, exception={}",
                     snapshot.address().scheme(),
@@ -172,7 +139,8 @@ final class SseRunner {
      * @return dispatch key
      */
     String dispatchKey() {
-        return DISPATCH_PREFIX + snapshot.address().host() + Symbol.C_COLON + snapshot.address().port();
+        return Builder.SSE_RUNNER_DISPATCH_PREFIX + snapshot.address().host() + Symbol.C_COLON
+                + snapshot.address().port();
     }
 
     /**
@@ -193,7 +161,7 @@ final class SseRunner {
     private Mediator.HttpStream response(final String eventId) {
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "SSE HTTP stream request started: scheme={}, host={}, port={}, lastEventIdPresent={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
@@ -202,19 +170,32 @@ final class SseRunner {
         final Headers.Builder builder = Headers.builder().add(HTTP.ACCEPT, MediaType.SERVER_SENT_EVENTS)
                 .add(HTTP.CACHE_CONTROL, HTTP.CACHE_DIRECTIVE_NO_CACHE);
         if (eventId != null) {
-            builder.add(LAST_EVENT_ID, eventId);
+            builder.add(Builder.SSE_RUNNER_LAST_EVENT_ID, eventId);
         }
         for (final Map.Entry<String, List<String>> entry : snapshot.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
                 builder.add(entry.getKey(), value);
             }
         }
-        final Mediator.HttpStream response = Mediator
-                .openHttpStream(snapshot.context(), snapshot.uri(), builder.build(), snapshot.timeout());
-        snapshot.responseHandler().accept(response.status(), response.headers());
+        final Message opening = filter(
+                Message.of(Protocol.HTTP, snapshot.address(), builder.build(), Payload.empty(), Builder.SSE_TAG_OPEN));
+        checkGuard(opening);
+        final Mediator.HttpStream response = Mediator.openHttpStream(
+                snapshot.context().withFilter(null),
+                snapshot.uri(),
+                opening.headers(),
+                snapshot.timeout());
+        final Message accepted = filter(
+                Message.of(
+                        Protocol.HTTP,
+                        snapshot.address(),
+                        response.headers(),
+                        Payload.empty(),
+                        Builder.SSE_TAG_RESPONSE));
+        snapshot.responseHandler().accept(response.status(), accepted.headers());
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "SSE HTTP stream response accepted: scheme={}, host={}, port={}, status={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
@@ -265,12 +246,24 @@ final class SseRunner {
         try {
             reader.readEvents(new SseReader.Events() {
 
+                /**
+                 * Dispatches one parsed SSE event.
+                 *
+                 * @param id    event id
+                 * @param event event type
+                 * @param data  event data
+                 */
                 @Override
                 public void event(final String id, final String event, final String data) {
                     final SseEvent current = SseEvent.of(id, event, data, null);
                     dispatch(current, eventId);
                 }
 
+                /**
+                 * Updates the reconnect retry delay announced by the stream.
+                 *
+                 * @param retryDelay retry delay
+                 */
                 @Override
                 public void retry(final java.time.Duration retryDelay) {
                     retry.update(retryDelay);
@@ -280,7 +273,7 @@ final class SseRunner {
             if (snapshot.autoReconnect()) {
                 Logger.info(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "SSE stream ended; reconnect enabled: host={}, port={}",
                         snapshot.address().host(),
                         snapshot.address().port());
@@ -288,17 +281,16 @@ final class SseRunner {
             } else {
                 Logger.info(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "SSE stream ended: host={}, port={}",
                         snapshot.address().host(),
                         snapshot.address().port());
                 stream.complete(null);
             }
         } catch (final RuntimeException e) {
-            emit(ObservationMarker.SSE_FAILED, e);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "SSE read failed: host={}, port={}, attempt={}, exception={}",
                     snapshot.address().host(),
@@ -306,7 +298,6 @@ final class SseRunner {
                     attempt,
                     e.getClass().getSimpleName());
             if (session == null || session.opened()) {
-                snapshot.callback().failure(e);
                 closeReader(reader);
                 if (snapshot.autoReconnect()) {
                     scheduleReconnect(retry, stream, holder, eventId, handle, attempt + 1);
@@ -330,26 +321,36 @@ final class SseRunner {
             eventId.set(event.id());
         }
         final Payload payload = Payload.of(event.data(), StandardCharsets.UTF_8);
-        checkGuard(payload, event.id());
-        emit(ObservationMarker.SSE_EVENT, null, payload);
+        final Message received = filter(
+                Message.of(Protocol.HTTP, snapshot.address(), Headers.empty(), payload, Builder.SSE_TAG_EVENT));
+        checkGuard(received);
+        final Payload filteredPayload = received.payload();
+        final SseEvent filteredEvent = SseEvent.of(
+                event.id(),
+                event.event(),
+                filteredPayload.text(StandardCharsets.UTF_8, snapshot.context().options().materializeMaxBytes()),
+                event.retry());
+        emit(ObservationMarker.SSE_EVENT, null, filteredPayload);
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "SSE event dispatched: host={}, port={}, idPresent={}, eventType={}, bytes={}",
                 snapshot.address().host(),
                 snapshot.address().port(),
                 event.id() != null,
                 event.event(),
-                payload.length());
+                filteredPayload.length());
         try {
-            snapshot.handler().accept(event);
+            snapshot.handler().accept(filteredEvent);
         } catch (final RuntimeException e) {
-            emit(ObservationMarker.SSE_FAILED, e, payload);
-            try {
-                snapshot.callback().failure(e);
-            } catch (final RuntimeException ignored) {
-                // Event handler isolation must not turn listener failures into reconnect loops.
-            }
+            Logger.warn(
+                    false,
+                    "Fabric",
+                    e,
+                    "SSE event handler failed: host={}, port={}, exception={}",
+                    snapshot.address().host(),
+                    snapshot.address().port(),
+                    e.getClass().getSimpleName());
         }
     }
 
@@ -378,7 +379,7 @@ final class SseRunner {
         final java.time.Duration delay = retry.nextDelay(attempt);
         Logger.info(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "SSE reconnect scheduled: host={}, port={}, attempt={}, delay={}",
                 snapshot.address().host(),
                 snapshot.address().port(),
@@ -387,7 +388,9 @@ final class SseRunner {
         final DispatchHandle next = snapshot.context().reactor().dispatcher().schedule(
                 dispatchKey(),
                 delay,
-                Activity.of(ACTIVITY_RETRY, () -> reconnect(retry, stream, holder, eventId, handle, attempt)));
+                Activity.of(
+                        Builder.SSE_ACTIVITY_RETRY,
+                        () -> reconnect(retry, stream, holder, eventId, handle, attempt)));
         handle.set(next);
         if (!session.opened() || stream.isCancelled()) {
             next.cancel();
@@ -415,7 +418,7 @@ final class SseRunner {
         try {
             Logger.info(
                     true,
-                    LOG_TAG,
+                    "Fabric",
                     "SSE reconnect started: host={}, port={}, attempt={}",
                     snapshot.address().host(),
                     snapshot.address().port(),
@@ -428,17 +431,15 @@ final class SseRunner {
             handle.set(submitRead(next, retry, stream, holder, eventId, handle, attempt));
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "SSE reconnect completed: host={}, port={}, attempt={}",
                     snapshot.address().host(),
                     snapshot.address().port(),
                     attempt);
         } catch (final RuntimeException e) {
-            emit(ObservationMarker.SSE_FAILED, e);
-            snapshot.callback().failure(e);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "SSE reconnect failed: host={}, port={}, attempt={}, exception={}",
                     snapshot.address().host(),
@@ -475,7 +476,9 @@ final class SseRunner {
             final int attempt) {
         return snapshot.context().reactor().dispatcher().enqueue(
                 dispatchKey(),
-                Activity.of(ACTIVITY_READ, () -> read(reader, retry, stream, holder, eventId, handle, attempt)));
+                Activity.of(
+                        Builder.SSE_ACTIVITY_READ,
+                        () -> read(reader, retry, stream, holder, eventId, handle, attempt)));
     }
 
     /**
@@ -490,11 +493,21 @@ final class SseRunner {
         if (session == null || !session.opened()) {
             return null;
         }
-        final Mediator.HttpStream response = response(eventId.get());
-        validateResponse(response);
-        final SseReader next = new SseReader(response.body().source());
-        session.replaceReader(next);
-        return next;
+        SseReader next = null;
+        Mediator.HttpStream response = null;
+        try {
+            response = response(eventId.get());
+            validateResponse(response);
+            next = SseBody.source(response.source(), response.body().length()).reader();
+            session.replaceReader(next);
+            return next;
+        } catch (final RuntimeException e) {
+            closeReader(next);
+            if (next == null) {
+                closeResponse(response);
+            }
+            throw e;
+        }
     }
 
     /**
@@ -513,36 +526,35 @@ final class SseRunner {
     /**
      * Checks the optional guard.
      */
-    private void checkGuard() {
-        checkGuard(Payload.empty(), null);
-    }
-
-    /**
-     * Checks the optional guard.
-     *
-     * @param payload payload
-     * @param tag     runtime tag
-     */
-    private void checkGuard(final Payload payload, final Object tag) {
+    private void checkGuard(final Message message) {
         if (snapshot.guard() == null) {
             return;
         }
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "SSE guard check started: host={}, port={}, tag={}",
                 snapshot.address().host(),
                 snapshot.address().port(),
-                tag);
-        snapshot.guard().check(Message.of(Protocol.HTTP, snapshot.address(), snapshot.headers(), payload, tag))
-                .throwIfRejected();
+                message.tag());
+        snapshot.guard().check(message).throwIfRejected();
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "SSE guard check accepted: host={}, port={}, tag={}",
                 snapshot.address().host(),
                 snapshot.address().port(),
-                tag);
+                message.tag());
+    }
+
+    /**
+     * Applies configured stream filters.
+     *
+     * @param message message
+     * @return filtered message
+     */
+    private Message filter(final Message message) {
+        return FilterChain.apply(message, snapshot.context().filter(), snapshot.filter());
     }
 
     /**
@@ -563,31 +575,16 @@ final class SseRunner {
      * @param payload event payload
      */
     private void emit(final ObservationMarker marker, final Throwable cause, final Payload payload) {
-        final FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, snapshot.address().scheme())
-                .tag(Tags.HOST, snapshot.address().host()).tag(Tags.PORT, Integer.toString(snapshot.address().port()));
+        final FabricEvent.Builder event = FabricEvent.builder(marker)
+                .tag(Builder.TAG_PROTOCOL, snapshot.address().scheme()).tag(Builder.HOST, snapshot.address().host())
+                .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
         if (payload != null && payload.length() >= Normal.LONG_ZERO) {
-            event.tag(Tags.BYTES, Long.toString(payload.length()));
+            event.tag(Builder.TAG_BYTES, Long.toString(payload.length()));
         }
         if (cause != null) {
             event.cause(cause);
         }
         snapshot.observer().emit(event.build());
-    }
-
-    /**
-     * Closes an unclaimed body source.
-     *
-     * @param body response body
-     */
-    private static void closeBody(final Source body) {
-        if (body == null) {
-            return;
-        }
-        try {
-            body.close();
-        } catch (final java.io.IOException e) {
-            throw new SocketException("Unable to close SSE stream", e);
-        }
     }
 
     /**

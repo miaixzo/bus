@@ -20,7 +20,7 @@
 package org.miaixz.bus.fabric;
 
 /**
- * Message filter contract for linear guard, bridge, and protocol chains.
+ * Protocol-neutral message filter applied by HTTP, socket, WebSocket, SSE, and STOMP exchanges.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -28,7 +28,7 @@ package org.miaixz.bus.fabric;
 public interface Filter {
 
     /**
-     * Applies this filter to a message and chain.
+     * Applies this filter to a message and downstream chain.
      *
      * @param message message
      * @param chain   downstream chain

@@ -21,8 +21,9 @@
  * Groups runtime services used by protocol calls after builders create immutable exchanges.
  *
  * <p>
- * Runtime services provide activity labels, dispatcher access, resource scopes and context-level collaborators. They
- * coordinate execution and cleanup but deliberately avoid protocol parsing, route selection and payload encoding.
+ * Runtime services provide activity labels, dispatcher access, resource scopes, filter chain execution and
+ * context-level collaborators. They coordinate execution and cleanup but deliberately avoid protocol parsing, route
+ * selection and payload encoding.
  * </p>
  *
  * @author Kimi Liu

@@ -21,16 +21,15 @@ package org.miaixz.bus.fabric.network.aio;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Single-threaded AIO worker with lock-free registration and task queues.
@@ -39,16 +38,6 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * @since Java 21+
  */
 public final class AioWorker {
-
-    /**
-     * Maximum time to wait for worker shutdown.
-     */
-    private static final long SHUTDOWN_WAIT_MILLIS = TimeUnit.SECONDS.toMillis(Normal._1);
-
-    /**
-     * Idle park duration for the worker loop.
-     */
-    private static final long IDLE_PARK_NANOS = TimeUnit.MILLISECONDS.toNanos(Normal._1);
 
     /**
      * Worker name.
@@ -161,7 +150,7 @@ public final class AioWorker {
             final Thread current = thread;
             if (current != null && current != Thread.currentThread()) {
                 try {
-                    current.join(SHUTDOWN_WAIT_MILLIS);
+                    current.join(Builder.AIO_WORKER_SHUTDOWN_WAIT_MILLIS);
                 } catch (final InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new InternalException("Interrupted while stopping AIO worker", e);
@@ -186,7 +175,7 @@ public final class AioWorker {
     private void loop() {
         while (running.get() || !tasks.isEmpty()) {
             drainTasks();
-            LockSupport.parkNanos(IDLE_PARK_NANOS);
+            LockSupport.parkNanos(Builder.AIO_WORKER_IDLE_PARK_NANOS);
         }
     }
 

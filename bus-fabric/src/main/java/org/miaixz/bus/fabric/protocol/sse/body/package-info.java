@@ -18,11 +18,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Represents streaming SSE response bodies.
+ * Defines SSE protocol response body objects.
  *
  * <p>
- * SSE body objects expose the underlying response payload with progress and materialization controls for callers that
- * need access to the stream. Event parsing and reconnect policy are handled by the SSE event and runner packages.
+ * SSE body objects bind {@code text/event-stream} media metadata to a payload and expose reader creation for event
+ * stream parsing.
  * </p>
  *
  * @author Kimi Liu

@@ -28,7 +28,6 @@ import java.nio.channels.DatagramChannel;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.io.buffer.NioBuffer;
 import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
@@ -40,8 +39,11 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Lifecycle;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
 /**
  * UDP datagram channel backed by a JDK datagram channel.
@@ -49,17 +51,7 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class UdpChannel implements AutoCloseable {
-
-    /**
-     * Maximum IPv4 UDP payload size without IP and UDP headers.
-     */
-    static final int MAX_DATAGRAM = Normal._65535 - Normal._28;
-
-    /**
-     * Maximum pending sends.
-     */
-    private static final int MAX_PENDING_SENDS = Normal._1024;
+public final class UdpChannel implements Lifecycle, AutoCloseable {
 
     /**
      * Local address.
@@ -82,9 +74,9 @@ public final class UdpChannel implements AutoCloseable {
     private final NioBufferAllocator buffers;
 
     /**
-     * Lifecycle state.
+     * Lifecycle scope.
      */
-    private final AtomicReference<Status> state;
+    private final LifecycleScope scope;
 
     /**
      * Pending send count.
@@ -102,9 +94,10 @@ public final class UdpChannel implements AutoCloseable {
         this.local = Assert.notNull(local, () -> new ValidateException("UDP local address must not be null"));
         this.channel = Assert.notNull(channel, () -> new ValidateException("UDP datagram channel must not be null"));
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("UDP dispatcher must not be null"));
-        this.buffers = NioBufferAllocator.heap(MAX_DATAGRAM, Normal._4);
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.buffers = NioBufferAllocator.heap((Normal._65535 - Normal._28), Normal._4);
+        this.scope = LifecycleScope.resource(this, "udp-channel", null, EventObserver.noop());
         this.pendingSends = new AtomicInteger();
+        this.scope.open(this);
     }
 
     /**
@@ -120,11 +113,11 @@ public final class UdpChannel implements AutoCloseable {
         final SocketAddress checkedRemote = Assert
                 .notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
         ensureOpened();
-        if (checkedSource.remaining() > MAX_DATAGRAM) {
+        if (checkedSource.remaining() > (Normal._65535 - Normal._28)) {
             return CompletableFuture.failedFuture(new ProtocolException("UDP datagram exceeds maximum payload"));
         }
         final int pending = pendingSends.incrementAndGet();
-        if (pending > MAX_PENDING_SENDS) {
+        if (pending > Normal._1024) {
             pendingSends.decrementAndGet();
             return CompletableFuture.failedFuture(new StatefulException("UDP send queue is full"));
         }
@@ -187,8 +180,19 @@ public final class UdpChannel implements AutoCloseable {
      *
      * @return true when opened
      */
+    @Override
     public boolean opened() {
-        return state.get() == Status.OPENED && channel.isOpen();
+        return Lifecycle.super.opened() && channel.isOpen();
+    }
+
+    /**
+     * Returns lifecycle state.
+     *
+     * @return state
+     */
+    @Override
+    public Status state() {
+        return scope.state();
     }
 
     /**
@@ -205,14 +209,20 @@ public final class UdpChannel implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (state.getAndSet(Status.CLOSED) != Status.CLOSED) {
-            try {
-                channel.close();
-            } catch (final IOException e) {
-                throw new SocketException("Unable to close UDP channel", e);
-            } finally {
-                buffers.close();
-            }
+        if (scope.state().terminal()) {
+            return;
+        }
+        RuntimeException failure = null;
+        try {
+            channel.close();
+        } catch (final IOException e) {
+            failure = new SocketException("Unable to close UDP channel", e);
+        } finally {
+            buffers.close();
+            scope.close(this);
+        }
+        if (failure != null) {
+            throw failure;
         }
     }
 

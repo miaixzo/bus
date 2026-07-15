@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.registry.policy.RetryPolicy;
 import org.miaixz.bus.logger.Logger;
 
@@ -44,11 +44,6 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 public final class HttpRetry implements HttpStage {
-
-    /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
 
     /**
      * Stage name.
@@ -110,7 +105,7 @@ public final class HttpRetry implements HttpStage {
             try {
                 Logger.debug(
                         true,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP retry attempt started: method={}, host={}, port={}, path={}, attempt={}, followUps={}",
                         current.method().value(),
                         current.url().host(),
@@ -121,7 +116,7 @@ public final class HttpRetry implements HttpStage {
                 final HttpResponse response = next.proceed(current);
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP retry attempt response: method={}, host={}, port={}, path={}, code={}, attempt={}, "
                                 + "followUps={}",
                         current.method().value(),
@@ -135,7 +130,7 @@ public final class HttpRetry implements HttpStage {
                 if (followUp == null) {
                     Logger.debug(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             "HTTP retry completed without follow-up: code={}, attempts={}",
                             response.code(),
                             attempt);
@@ -147,7 +142,7 @@ public final class HttpRetry implements HttpStage {
                 }
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP follow-up scheduled: code={}, fromHost={}, toHost={}, sameOrigin={}, method={}, "
                                 + "followUps={}",
                         response.code(),
@@ -156,7 +151,7 @@ public final class HttpRetry implements HttpStage {
                         sameOrigin(current.url(), followUp.url()),
                         followUp.method().value(),
                         followUps + Normal._1);
-                prior = response.toBuilder().body(HttpBody.empty()).priorResponse(prior).build();
+                prior = response.toBuilder().body(PayloadBody.empty()).priorResponse(prior).build();
                 response.close();
                 current = followUp;
                 followUps++;
@@ -165,7 +160,7 @@ public final class HttpRetry implements HttpStage {
                 if (!recover(e, attempt)) {
                     Logger.debug(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             "HTTP retry declined: attempt={}, exception={}",
                             attempt,
                             e.getClass().getSimpleName());
@@ -173,7 +168,7 @@ public final class HttpRetry implements HttpStage {
                 }
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "HTTP retry scheduled: attempt={}, exception={}",
                         attempt + Normal._1,
                         e.getClass().getSimpleName());
@@ -246,11 +241,11 @@ public final class HttpRetry implements HttpStage {
         if (preserveBody && method.supportsBody() && request.body().length() > Normal._0) {
             builder.body(request.body());
         } else {
-            builder.body(HttpBody.empty());
+            builder.body(PayloadBody.empty());
         }
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "HTTP redirect built: code={}, fromHost={}, toHost={}, sameOrigin={}, method={}, preserveBody={}",
                 response.code(),
                 request.url().host(),

@@ -381,7 +381,7 @@ public final class Callout {
          *
          * @return {@code true} when the response is in the 2xx range
          */
-        public boolean isSuccessful() {
+        public boolean successful() {
             return statusCode >= 200 && statusCode < 300;
         }
 

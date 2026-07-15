@@ -120,6 +120,11 @@ public final class EventListenerBridge implements EventObserver {
         return markers;
     }
 
+    /**
+     * Dispatches an observation event to the matching listener callbacks.
+     *
+     * @param event fabric event
+     */
     @Override
     public void emit(final FabricEvent event) {
         if (event == null) {

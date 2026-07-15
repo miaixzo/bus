@@ -246,19 +246,19 @@ public class GoogleDriveProvider extends AbstractProvider {
             }
             String fileId = (String) metadata.get("id");
             String url = context.getEndpoint() + "/files/" + fileId + "?alt=media";
-            HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()));
+            Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()));
             if (response.code() == 401) {
                 response.close();
                 refreshAccessToken();
                 return streamKey(bucket, objectKey);
             }
-            if (!response.isSuccessful()) {
+            if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
                 return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(toBlob(bucket, objectKey, metadata, response.stream())).build();
+                    .data(toBlob(bucket, objectKey, metadata, stream(response))).build();
         } catch (Exception e) {
             Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
             Logger.error(
@@ -296,8 +296,8 @@ public class GoogleDriveProvider extends AbstractProvider {
 
             String url = context.getEndpoint() + "/files/" + fileId + "?alt=media";
 
-            try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return download(bucket, fileName);
@@ -305,7 +305,7 @@ public class GoogleDriveProvider extends AbstractProvider {
                     throw new IOException("Unexpected code " + response);
                 }
 
-                byte[] content = response.body().bytes();
+                byte[] content = response.bytes();
 
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .data(content).build();
@@ -357,8 +357,8 @@ public class GoogleDriveProvider extends AbstractProvider {
 
             String url = context.getEndpoint() + "/files/" + fileId + "?alt=media";
 
-            try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return download(bucket, fileName, file);
@@ -366,7 +366,7 @@ public class GoogleDriveProvider extends AbstractProvider {
                     throw new IOException("Unexpected code " + response);
                 }
 
-                try (InputStream inputStream = response.body().byteStream();
+                try (InputStream inputStream = stream(response);
                         OutputStream outputStream = new FileOutputStream(file)) {
                     inputStream.transferTo(outputStream);
                 }
@@ -404,8 +404,8 @@ public class GoogleDriveProvider extends AbstractProvider {
             String url = context.getEndpoint() + "/files?q=" + URLEncoder.encode(query, Charset.UTF_8)
                     + "&fields=files(id,name,size,mimeType,modifiedTime)&pageSize=100";
 
-            try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return list();
@@ -413,7 +413,7 @@ public class GoogleDriveProvider extends AbstractProvider {
                     throw new IOException("Unexpected code " + response);
                 }
 
-                Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+                Map<String, Object> jsonMap = JsonKit.toMap(response.text());
                 List<Map<String, Object>> files = (List<Map<String, Object>>) jsonMap.get("files");
                 List<Blob> blobs = new ArrayList<>();
 
@@ -494,12 +494,12 @@ public class GoogleDriveProvider extends AbstractProvider {
             String url = context.getEndpoint() + "/files/" + fileId;
             String requestBody = String.format("{\"name\":\"%s\"}", newName);
 
-            try (HttpResult response = patch(
+            try (Response response = patch(
                     url,
                     requestBody,
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return rename(bucket, path, oldName, newName);
@@ -571,13 +571,13 @@ public class GoogleDriveProvider extends AbstractProvider {
             String url = UPLOAD_API_BASE + "/files?uploadType=resumable";
 
             String uploadUrl;
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     metadata,
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()),
                     header("X-Upload-Content-Length", String.valueOf(content.length)))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return upload(bucket, path, fileName, content);
@@ -585,20 +585,20 @@ public class GoogleDriveProvider extends AbstractProvider {
                     throw new IOException("Failed to create upload session: " + response.code());
                 }
 
-                uploadUrl = response.header(HTTP.LOCATION);
+                uploadUrl = header(response, HTTP.LOCATION);
             }
 
             // Upload file content
-            try (HttpResult response = put(
+            try (Response response = put(
                     uploadUrl,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(HTTP.CONTENT_LENGTH, String.valueOf(content.length)))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Upload failed: " + response.code());
                 }
 
-                Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+                Map<String, Object> jsonMap = JsonKit.toMap(response.text());
                 String fileId = (String) jsonMap.get("id");
 
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
@@ -715,8 +715,8 @@ public class GoogleDriveProvider extends AbstractProvider {
 
             String url = context.getEndpoint() + "/files/" + fileId;
 
-            try (HttpResult response = delete(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = delete(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return remove(bucket, path, fileName);
@@ -789,12 +789,12 @@ public class GoogleDriveProvider extends AbstractProvider {
                     URLEncoder.encode("https://www.googleapis.com/auth/drive", Charset.UTF_8));
         }
 
-        try (HttpResult response = post(TOKEN_ENDPOINT, requestBody, MediaType.APPLICATION_FORM_URLENCODED)) {
-            if (!response.isSuccessful()) {
+        try (Response response = post(TOKEN_ENDPOINT, requestBody, MediaType.APPLICATION_FORM_URLENCODED)) {
+            if (!response.successful()) {
                 throw new IOException("Failed to refresh access token: " + response.code());
             }
 
-            Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+            Map<String, Object> jsonMap = JsonKit.toMap(response.text());
             this.accessToken = (String) jsonMap.get("access_token");
             int expiresIn = ((Number) jsonMap.get("expires_in")).intValue();
             this.tokenExpireTime = System.currentTimeMillis() + (expiresIn - 300) * 1000L;
@@ -836,8 +836,8 @@ public class GoogleDriveProvider extends AbstractProvider {
         String url = context.getEndpoint() + "/files?q=" + URLEncoder.encode(query, Charset.UTF_8)
                 + "&fields=files(id,name)";
 
-        try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-            if (!response.isSuccessful()) {
+        try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+            if (!response.successful()) {
                 if (response.code() == 401) {
                     refreshAccessToken();
                     return findFileByName(fileName, parentId);
@@ -845,7 +845,7 @@ public class GoogleDriveProvider extends AbstractProvider {
                 throw new IOException("Failed to search file: " + response.code());
             }
 
-            Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+            Map<String, Object> jsonMap = JsonKit.toMap(response.text());
             List<Map<String, Object>> files = (List<Map<String, Object>>) jsonMap.get("files");
 
             if (files != null && !files.isEmpty()) {
@@ -884,7 +884,7 @@ public class GoogleDriveProvider extends AbstractProvider {
     private Map<String, Object> getFileMetadata(String fileId, boolean retry) throws IOException {
         String fields = "id,name,size,mimeType,modifiedTime,md5Checksum,sha256Checksum";
         String url = context.getEndpoint() + "/files/" + fileId + "?fields=" + fields;
-        try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+        try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
             if (response.code() == 401 && retry) {
                 refreshAccessToken();
                 return getFileMetadata(fileId, false);
@@ -892,10 +892,10 @@ public class GoogleDriveProvider extends AbstractProvider {
             if (response.code() == 404) {
                 return null;
             }
-            if (!response.isSuccessful()) {
+            if (!response.successful()) {
                 throw new IOException("Metadata failed: " + response.code());
             }
-            return JsonKit.toMap(response.body().string());
+            return JsonKit.toMap(response.text());
         }
     }
 

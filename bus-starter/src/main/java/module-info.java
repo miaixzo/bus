@@ -37,8 +37,8 @@ module bus.starter {
     requires bus.cortex;
     requires bus.crypto;
     requires bus.extra;
-    requires bus.health;
     requires bus.fabric;
+    requires bus.health;
     requires bus.image;
     requires bus.limiter;
     requires bus.logger;
@@ -113,6 +113,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.cortex;
     exports org.miaixz.bus.starter.dubbo;
     exports org.miaixz.bus.starter.elastic;
+    exports org.miaixz.bus.starter.fabric;
     exports org.miaixz.bus.starter.vortex;
     exports org.miaixz.bus.starter.health;
     exports org.miaixz.bus.starter.i18n;
@@ -127,7 +128,6 @@ module bus.starter {
     exports org.miaixz.bus.starter.office;
     exports org.miaixz.bus.starter.pay;
     exports org.miaixz.bus.starter.sensitive;
-    exports org.miaixz.bus.starter.socket;
     exports org.miaixz.bus.starter.storage;
     exports org.miaixz.bus.starter.tempus;
     exports org.miaixz.bus.starter.tracer;

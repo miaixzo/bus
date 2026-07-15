@@ -87,16 +87,31 @@ public interface Clock {
             // No initialization required.
         }
 
+        /**
+         * Returns the current system instant.
+         *
+         * @return current system instant
+         */
         @Override
         public Instant now() {
             return Instant.now();
         }
 
+        /**
+         * Returns the current system epoch milliseconds.
+         *
+         * @return current system epoch milliseconds
+         */
         @Override
         public long millis() {
             return System.currentTimeMillis();
         }
 
+        /**
+         * Returns the current monotonic system nanoseconds.
+         *
+         * @return current monotonic nanoseconds
+         */
         @Override
         public long nanos() {
             return System.nanoTime();
@@ -122,16 +137,31 @@ public interface Clock {
             }
         }
 
+        /**
+         * Returns the fixed instant.
+         *
+         * @return fixed instant
+         */
         @Override
         public Instant now() {
             return instant;
         }
 
+        /**
+         * Returns the fixed instant as epoch milliseconds.
+         *
+         * @return fixed epoch milliseconds
+         */
         @Override
         public long millis() {
             return instant.toEpochMilli();
         }
 
+        /**
+         * Returns the fixed instant as epoch-derived nanoseconds.
+         *
+         * @return fixed epoch-derived nanoseconds
+         */
         @Override
         public long nanos() {
             return instant.toEpochMilli() * 1_000_000L;

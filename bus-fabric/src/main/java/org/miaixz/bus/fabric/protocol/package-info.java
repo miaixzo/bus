@@ -21,9 +21,9 @@
  * Defines shared protocol concepts that sit above raw network connections.
  *
  * <p>
- * Protocol-neutral types model cookies, route itineraries, checkpoints, mediators and pipeline stages that can be
- * reused by HTTP and long-lived protocols. They coordinate messages and metadata but must not depend on a concrete
- * transport implementation or expose protocol-specific builders.
+ * Protocol-neutral types model cookies, route itineraries, demuxers and mediators that can be reused by HTTP and
+ * long-lived protocols. They coordinate messages and metadata but must not depend on a concrete transport
+ * implementation or expose protocol-specific builders.
  * </p>
  *
  * @author Kimi Liu

@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Client operating-system classifier parsed from a User-Agent value.
@@ -34,12 +35,6 @@ import org.miaixz.bus.core.lang.Normal;
  * @since Java 21+
  */
 public final class ClientOs {
-
-    /**
-     * Unknown client operating system.
-     */
-    public static final ClientOs UNKNOWN = Instances
-            .get(ClientOs.class.getName() + ".unknown", () -> new ClientOs(Normal.UNKNOWN, null));
 
     /**
      * Known client operating systems ordered from most-specific to generic.
@@ -129,7 +124,7 @@ public final class ClientOs {
                 return system;
             }
         }
-        return UNKNOWN;
+        return Builder.HTTP_AGENT_CLIENT_OS_UNKNOWN;
     }
 
     /**
@@ -210,16 +205,32 @@ public final class ClientOs {
         return Normal.UNKNOWN.equals(name);
     }
 
+    /**
+     * Compares client OS classifiers by name.
+     *
+     * @param object object to compare
+     * @return true when names match
+     */
     @Override
     public boolean equals(final Object object) {
         return object instanceof ClientOs other && Objects.equals(name, other.name);
     }
 
+    /**
+     * Returns a hash code based on the client OS name.
+     *
+     * @return hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name);
     }
 
+    /**
+     * Returns the client OS name.
+     *
+     * @return client OS name
+     */
     @Override
     public String toString() {
         return name;

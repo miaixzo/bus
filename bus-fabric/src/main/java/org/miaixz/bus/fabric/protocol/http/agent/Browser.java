@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Browser classifier parsed from a User-Agent value.
@@ -36,26 +37,16 @@ import org.miaixz.bus.core.lang.Normal;
 public final class Browser {
 
     /**
-     * Unknown browser.
-     */
-    public static final Browser UNKNOWN = Instances
-            .get(Browser.class.getName() + ".unknown", () -> new Browser(Normal.UNKNOWN, null, null));
-
-    /**
-     * Default browser version pattern suffix.
-     */
-    public static final String OTHER_VERSION = "[\\/ ]([\\d\\w\\.\\-]+)";
-
-    /**
      * Known browsers ordered from most-specific to generic.
      */
     private static final List<Browser> BROWSERS = Instances.get(
             Browser.class.getName() + ".browsers",
             () -> new CopyOnWriteArrayList<>(List.of(
                     new Browser("wxwork", "wxwork", "wxwork\\/([\\d\\w\\.\\-]+)"),
-                    new Browser("WindowsWechat", "WindowsWechat", "MicroMessenger" + OTHER_VERSION),
-                    new Browser("MicroMessenger", "MicroMessenger", OTHER_VERSION),
-                    new Browser("miniProgram", "miniProgram", OTHER_VERSION),
+                    new Browser("WindowsWechat", "WindowsWechat",
+                            "MicroMessenger" + Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
+                    new Browser("MicroMessenger", "MicroMessenger", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
+                    new Browser("miniProgram", "miniProgram", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
                     new Browser("QQBrowser", "QQBrowser", "QQBrowser\\/([\\d\\w\\.\\-]+)"),
                     new Browser("DingTalk-win", "dingtalk-win", "DingTalk\\(([\\d\\w\\.\\-]+)\\)"),
                     new Browser("DingTalk", "DingTalk", "AliApp\\(DingTalk\\/([\\d\\w\\.\\-]+)\\)"),
@@ -63,27 +54,27 @@ public final class Browser {
                     new Browser("Taobao", "taobao", "AliApp\\(TB\\/([\\d\\w\\.\\-]+)\\)"),
                     new Browser("UCBrowser", "UC?Browser", "UC?Browser\\/([\\d\\w\\.\\-]+)"),
                     new Browser("MiuiBrowser", "MiuiBrowser|mibrowser", "MiuiBrowser\\/([\\d\\w\\.\\-]+)"),
-                    new Browser("Quark", "Quark", OTHER_VERSION),
+                    new Browser("Quark", "Quark", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
                     new Browser("Lenovo", "SLBrowser", "SLBrowser/([\\d\\w\\.\\-]+)"),
                     new Browser("MSEdge", "Edge|Edg", "(?:edge|Edg|EdgA)\\/([\\d\\w\\.\\-]+)"),
                     new Browser("Chrome", "chrome|(iphone.*crios.*safari)", "(?:Chrome|CriOS)\\/([\\d\\w\\.\\-]+)"),
-                    new Browser("Firefox", "firefox", OTHER_VERSION),
-                    new Browser("IEMobile", "iemobile", OTHER_VERSION),
+                    new Browser("Firefox", "firefox", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
+                    new Browser("IEMobile", "iemobile", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
                     new Browser("Android Browser", "android", "version\\/([\\d\\w\\.\\-]+)"),
                     new Browser("Safari", "safari", "version\\/([\\d\\w\\.\\-]+)"),
-                    new Browser("Opera", "opera", OTHER_VERSION),
-                    new Browser("Konqueror", "konqueror", OTHER_VERSION),
+                    new Browser("Opera", "opera", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
+                    new Browser("Konqueror", "konqueror", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
                     new Browser("PS3", "playstation 3", "([\\d\\w\\.\\-]+)\\)\\s*$"),
                     new Browser("PSP", "playstation portable", "([\\d\\w\\.\\-]+)\\)?\\s*$"),
                     new Browser("Lotus", "lotus.notes", "Lotus-Notes\\/([\\w.]+)"),
-                    new Browser("Thunderbird", "thunderbird", OTHER_VERSION),
-                    new Browser("Netscape", "netscape", OTHER_VERSION),
-                    new Browser("Seamonkey", "seamonkey", OTHER_VERSION),
-                    new Browser("Outlook", "microsoft.outlook", OTHER_VERSION),
-                    new Browser("Evolution", "evolution", OTHER_VERSION),
+                    new Browser("Thunderbird", "thunderbird", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
+                    new Browser("Netscape", "netscape", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
+                    new Browser("Seamonkey", "seamonkey", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
+                    new Browser("Outlook", "microsoft.outlook", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
+                    new Browser("Evolution", "evolution", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
                     new Browser("MSIE", "msie", "msie ([\\d\\w\\.\\-]+)"),
                     new Browser("MSIE11", "rv:11", "rv:([\\d\\w\\.\\-]+)"),
-                    new Browser("Gabble", "Gabble", OTHER_VERSION),
+                    new Browser("Gabble", "Gabble", Builder.HTTP_AGENT_BROWSER_OTHER_VERSION),
                     new Browser("Yammer Desktop", "AdobeAir", "([\\d\\w\\.\\-]+)\\/Yammer"),
                     new Browser("Yammer Mobile", "Yammer[\\s]+([\\d\\w\\.\\-]+)", "Yammer[\\s]+([\\d\\w\\.\\-]+)"),
                     new Browser("Apache HTTP Client", "Apache\\\\-HttpClient",
@@ -116,7 +107,8 @@ public final class Browser {
     public Browser(final String name, final String rule, final String versionRegex) {
         this.name = AgentRules.name(name);
         this.rule = AgentRules.compile(rule);
-        final String regex = OTHER_VERSION.equals(versionRegex) ? name + versionRegex : versionRegex;
+        final String regex = Builder.HTTP_AGENT_BROWSER_OTHER_VERSION.equals(versionRegex) ? name + versionRegex
+                : versionRegex;
         this.versionRule = AgentRules.compile(regex);
     }
 
@@ -132,7 +124,7 @@ public final class Browser {
                 return browser;
             }
         }
-        return UNKNOWN;
+        return Builder.HTTP_AGENT_BROWSER_UNKNOWN;
     }
 
     /**
@@ -204,16 +196,32 @@ public final class Browser {
         return Normal.UNKNOWN.equals(name);
     }
 
+    /**
+     * Compares browser classifiers by name.
+     *
+     * @param object object to compare
+     * @return true when names match
+     */
     @Override
     public boolean equals(final Object object) {
         return object instanceof Browser other && Objects.equals(name, other.name);
     }
 
+    /**
+     * Returns a hash code based on the browser name.
+     *
+     * @return hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name);
     }
 
+    /**
+     * Returns the browser name.
+     *
+     * @return browser name
+     */
     @Override
     public String toString() {
         return name;

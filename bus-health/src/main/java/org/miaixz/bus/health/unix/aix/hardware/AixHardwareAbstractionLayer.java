@@ -127,7 +127,7 @@ public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstracti
      * @return the get displays result
      */
     @Override
-    public List<Display> getDisplays() {
+    protected List<Display> createDisplays() {
         return UnixDisplay.getDisplays();
     }
 
@@ -145,12 +145,11 @@ public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstracti
     /**
      * Returns the usb devices.
      *
-     * @param tree the tree
      * @return the get usb devices result
      */
     @Override
-    public List<UsbDevice> getUsbDevices(boolean tree) {
-        return AixUsbDevice.getUsbDevices(tree, lscfg);
+    protected List<UsbDevice> createUsbDevices() {
+        return AixUsbDevice.getUsbDevices(true, lscfg);
     }
 
     /**
@@ -159,7 +158,7 @@ public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstracti
      * @return the get sound cards result
      */
     @Override
-    public List<SoundCard> getSoundCards() {
+    protected List<SoundCard> createSoundCards() {
         return AixSoundCard.getSoundCards(lscfg);
     }
 
@@ -169,7 +168,7 @@ public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstracti
      * @return the get graphics cards result
      */
     @Override
-    public List<GraphicsCard> getGraphicsCards() {
+    protected List<GraphicsCard> createGraphicsCards() {
         return AixGraphicsCard.getGraphicsCards(lscfg);
     }
 

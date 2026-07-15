@@ -21,9 +21,12 @@
  * Implements WebSocket exchanges, sessions and listener lifecycle.
  *
  * <p>
- * {@code WebSocketX} performs the HTTP upgrade and opens a {@code WebSocketSession}. Sessions own frame read/write,
- * ping/pong, close handshake, outbound queue limits and handler notification. HTTP upgrade construction and frame
- * encoding live in child packages.
+ * {@code WebSocketX} performs client HTTP upgrades, {@code WebSocketServer} accepts server upgrades, and
+ * {@code WebSocketSession} is the shared client/server session that owns frame read/write, ping/pong, close handshake,
+ * outbound queue limits and handler notification. {@code WebSocketRole} centralizes mask expectations so the same frame
+ * reader and writer implementations work for both endpoint roles. Client and server sessions attach to network IO
+ * through {@code Connection.source()} and {@code Connection.sink()}, so WebSocket frame codecs consume bus-core source
+ * and sink views instead of protocol-owned channel adapters.
  * </p>
  *
  * @author Kimi Liu

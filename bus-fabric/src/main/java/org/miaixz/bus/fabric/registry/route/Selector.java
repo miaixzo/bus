@@ -30,11 +30,11 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
  * Route candidate selector that defers failed routes behind fresh candidates.
@@ -43,16 +43,6 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
  * @since Java 21+
  */
 public final class Selector {
-
-    /**
-     * Base route backoff.
-     */
-    private static final Duration BASE_BACKOFF = Duration.ofSeconds(Normal._1);
-
-    /**
-     * Maximum route backoff.
-     */
-    private static final Duration MAX_BACKOFF = Duration.ofMinutes(Normal._5);
 
     /**
      * Ready route candidates.
@@ -260,8 +250,9 @@ public final class Selector {
      */
     private void emit(final ObservationMarker marker, final Route route, final int attempts, final Duration delay) {
         observer.emit(
-                FabricEvent.builder(marker).tag(Tags.KEY, route.id()).tag(Tags.ATTEMPT, Integer.toString(attempts))
-                        .tag(Tags.DELAY, delay.toString()).build());
+                FabricEvent.builder(marker).tag(Builder.TAG_KEY, route.id())
+                        .tag(Builder.TAG_ATTEMPT, Integer.toString(attempts)).tag(Builder.TAG_DELAY, delay.toString())
+                        .build());
     }
 
     /**
@@ -284,8 +275,8 @@ public final class Selector {
      */
     private static Duration backoff(final int failures) {
         final int shift = Math.min(Normal._8, Math.max(Normal._0, failures - Normal._1));
-        final Duration backoff = BASE_BACKOFF.multipliedBy(1L << shift);
-        return backoff.compareTo(MAX_BACKOFF) > 0 ? MAX_BACKOFF : backoff;
+        final Duration backoff = Builder.DURATION_1_SECOND.multipliedBy(1L << shift);
+        return backoff.compareTo(Builder.SELECTOR_MAX_BACKOFF) > 0 ? Builder.SELECTOR_MAX_BACKOFF : backoff;
     }
 
 }

@@ -48,6 +48,11 @@ final class NoopEventObserver implements EventObserver {
         return Instances.get(NoopEventObserver.class.getName(), NoopEventObserver::new);
     }
 
+    /**
+     * Validates and ignores the event.
+     *
+     * @param event fabric event
+     */
     @Override
     public void emit(final FabricEvent event) {
         Assert.notNull(event, () -> new ValidateException("Fabric event must not be null"));

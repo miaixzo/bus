@@ -26,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -36,7 +35,9 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
 /**
  * Dispatcher contract for asynchronous activities.
@@ -163,9 +164,9 @@ final class DefaultDispatcher implements Dispatcher {
     private final ScheduledExecutorService scheduler;
 
     /**
-     * Lifecycle state.
+     * Dispatcher lifecycle scope.
      */
-    private final AtomicReference<Status> state;
+    private final LifecycleScope scope;
 
     /**
      * Idle callbacks awaiting an empty queue.
@@ -189,17 +190,42 @@ final class DefaultDispatcher implements Dispatcher {
         this.queue = require(queue, "Dispatch queue");
         this.worker = require(worker, "Dispatch worker");
         this.scheduler = require(scheduler, "Dispatch scheduler");
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.scope = LifecycleScope.resource(this, "dispatcher", null, EventObserver.noop());
+        this.scope.open(this);
         this.idleCallbacks = new ArrayList<>();
         this.delayed = new ArrayList<>();
     }
 
+    /**
+     * Returns the dispatcher lifecycle state.
+     *
+     * @return lifecycle state
+     */
+    public Status state() {
+        return scope.state();
+    }
+
+    /**
+     * Enqueues a runnable activity and returns its completion future.
+     *
+     * @param key      dispatch key
+     * @param runnable runnable task
+     * @return completion future
+     */
     @Override
     public CompletableFuture<Void> run(final String key, final Runnable runnable) {
         require(runnable, "Runnable");
         return enqueue(key, Activity.of(key, runnable)).future();
     }
 
+    /**
+     * Enqueues a supplier activity and returns a typed completion future.
+     *
+     * @param key      dispatch key
+     * @param supplier supplier task
+     * @param <T>      result type
+     * @return typed completion future
+     */
     @Override
     public <T> CompletableFuture<T> supply(final String key, final Supplier<T> supplier) {
         require(supplier, "Supplier");
@@ -227,12 +253,27 @@ final class DefaultDispatcher implements Dispatcher {
         return result;
     }
 
+    /**
+     * Enqueues an activity for dispatch respecting queue limits.
+     *
+     * @param key      dispatch key
+     * @param activity activity
+     * @return dispatch handle
+     */
     @Override
     public DispatchHandle enqueue(final String key, final Activity activity) {
         final Activity current = require(activity, "Dispatch activity");
         return enqueue(DispatchHandle.of(key, current.name(), current));
     }
 
+    /**
+     * Schedules an activity after a non-negative delay.
+     *
+     * @param key      dispatch key
+     * @param delay    delay duration
+     * @param activity activity
+     * @return dispatch handle
+     */
     @Override
     public DispatchHandle schedule(final String key, final Duration delay, final Activity activity) {
         final Duration currentDelay = require(delay, "Dispatch delay");
@@ -262,6 +303,12 @@ final class DefaultDispatcher implements Dispatcher {
         return handle;
     }
 
+    /**
+     * Cancels a known dispatch handle.
+     *
+     * @param handle dispatch handle
+     * @return true when the handle was cancelled
+     */
     @Override
     public boolean cancel(final DispatchHandle handle) {
         final boolean cancelled = cancelKnown(require(handle, "Dispatch handle"));
@@ -272,6 +319,12 @@ final class DefaultDispatcher implements Dispatcher {
         return cancelled;
     }
 
+    /**
+     * Cancels all dispatch handles matching a tag.
+     *
+     * @param tag dispatch tag
+     * @return true when at least one handle was cancelled
+     */
     @Override
     public boolean cancel(final Object tag) {
         require(tag, "Tag");
@@ -288,16 +341,31 @@ final class DefaultDispatcher implements Dispatcher {
         return cancelled;
     }
 
+    /**
+     * Returns queued activities.
+     *
+     * @return queued activities
+     */
     @Override
     public List<Activity> queued() {
         return activities(queue.queued());
     }
 
+    /**
+     * Returns running activities.
+     *
+     * @return running activities
+     */
     @Override
     public List<Activity> running() {
         return activities(queue.running());
     }
 
+    /**
+     * Runs a callback once the dispatcher becomes idle.
+     *
+     * @param callback idle callback
+     */
     @Override
     public void idle(final Runnable callback) {
         require(callback, "Idle callback");
@@ -316,10 +384,12 @@ final class DefaultDispatcher implements Dispatcher {
         }
     }
 
+    /**
+     * Closes this dispatcher and cancels queued, running, and delayed work.
+     */
     @Override
     public void close() {
-        if (!state.compareAndSet(Status.OPENED, Status.CLOSING)
-                && !state.compareAndSet(Status.RUNNING, Status.CLOSING)) {
+        if (!scope.closing()) {
             return;
         }
         RuntimeException failure = null;
@@ -346,7 +416,7 @@ final class DefaultDispatcher implements Dispatcher {
                 failure = e;
             }
         }
-        state.set(Status.CLOSED);
+        scope.close(this);
         drainIdleCallbacks();
         if (failure != null) {
             throw new InternalException("Unable to close dispatcher", failure);
@@ -583,7 +653,7 @@ final class DefaultDispatcher implements Dispatcher {
      * Ensures this dispatcher is open.
      */
     private void ensureOpen() {
-        if (state.get() != Status.OPENED) {
+        if (scope.state() != Status.OPENED) {
             throw new StatefulException("Dispatcher is closed");
         }
     }

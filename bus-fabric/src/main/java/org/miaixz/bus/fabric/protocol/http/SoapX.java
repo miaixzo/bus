@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.protocol.http.body;
+package org.miaixz.bus.fabric.protocol.http;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,12 +48,14 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.HttpX;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * SOAP message builder and HTTP sender backed by {@link HttpX}.
@@ -61,22 +63,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpX;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class SoapClient {
-
-    /**
-     * Default method prefix.
-     */
-    private static final String METHOD_PREFIX = "m";
-
-    /**
-     * Default SOAP header prefix.
-     */
-    private static final String HEADER_PREFIX = "h";
-
-    /**
-     * Default SOAP header namespace for local-name header convenience methods.
-     */
-    private static final String HEADER_NAMESPACE = "urn:bus:fabric:soap:header";
+public final class SoapX {
 
     /**
      * Runtime context.
@@ -109,6 +96,11 @@ public final class SoapClient {
     private String action;
 
     /**
+     * SOAP-scoped message filter.
+     */
+    private Filter filter;
+
+    /**
      * Message factory.
      */
     private MessageFactory factory;
@@ -124,12 +116,12 @@ public final class SoapClient {
     private SOAPBodyElement methodElement;
 
     /**
-     * Creates a SOAP client.
+     * Creates a SOAP exchange.
      *
      * @param context context
      * @param url     target URL
      */
-    private SoapClient(final Context context, final UnoUrl url) {
+    private SoapX(final Context context, final UnoUrl url) {
         this.context = require(context, "Context");
         this.url = require(url, "URL");
         this.protocol = Protocol.SOAP_1_2;
@@ -139,44 +131,44 @@ public final class SoapClient {
     }
 
     /**
-     * Creates a SOAP client with a default context.
+     * Creates a SOAP exchange with a default context.
      *
      * @param url target URL
-     * @return client
+     * @return SOAP exchange
      */
-    public static SoapClient of(final String url) {
+    public static SoapX of(final String url) {
         return of(Context.create(), UnoUrl.parse(url));
     }
 
     /**
-     * Creates a SOAP client.
+     * Creates a SOAP exchange.
      *
      * @param context context
      * @param url     target URL
-     * @return client
+     * @return SOAP exchange
      */
-    public static SoapClient of(final Context context, final String url) {
+    public static SoapX of(final Context context, final String url) {
         return of(context, UnoUrl.parse(url));
     }
 
     /**
-     * Creates a SOAP client.
+     * Creates a SOAP exchange.
      *
      * @param context context
      * @param url     target URL
-     * @return client
+     * @return SOAP exchange
      */
-    public static SoapClient of(final Context context, final UnoUrl url) {
-        return new SoapClient(context, url);
+    public static SoapX of(final Context context, final UnoUrl url) {
+        return new SoapX(context, url);
     }
 
     /**
      * Sets target URL.
      *
      * @param url target URL
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient url(final String url) {
+    public SoapX url(final String url) {
         this.url = UnoUrl.parse(url);
         return this;
     }
@@ -185,9 +177,9 @@ public final class SoapClient {
      * Sets SOAP protocol.
      *
      * @param protocol SOAP protocol
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient protocol(final Protocol protocol) {
+    public SoapX protocol(final Protocol protocol) {
         Assert.isTrue(
                 protocol == Protocol.SOAP_1_1 || protocol == Protocol.SOAP_1_2,
                 () -> new ValidateException("SOAP protocol must be SOAP_1_1 or SOAP_1_2"));
@@ -200,9 +192,9 @@ public final class SoapClient {
      * Sets charset.
      *
      * @param charset charset
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient charset(final Charset charset) {
+    public SoapX charset(final Charset charset) {
         this.charset = charset == null ? org.miaixz.bus.core.lang.Charset.UTF_8 : charset;
         applyMessageProperties();
         return this;
@@ -212,9 +204,9 @@ public final class SoapClient {
      * Sets SOAPAction.
      *
      * @param action action
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient action(final String action) {
+    public SoapX action(final String action) {
         this.action = optionalLine(action, "SOAPAction");
         return this;
     }
@@ -224,19 +216,30 @@ public final class SoapClient {
      *
      * @param name  name
      * @param value value
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient header(final String name, final String value) {
+    public SoapX header(final String name, final String value) {
         headers.add(name(name, "HTTP header"), optionalLine(value, "HTTP header value"));
+        return this;
+    }
+
+    /**
+     * Sets SOAP-scoped message filter.
+     *
+     * @param filter filter
+     * @return this exchange
+     */
+    public SoapX filter(final Filter filter) {
+        this.filter = filter;
         return this;
     }
 
     /**
      * Resets the SOAP message.
      *
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient reset() {
+    public SoapX reset() {
         this.factory = factory(protocol);
         try {
             this.message = factory.createMessage();
@@ -283,9 +286,9 @@ public final class SoapClient {
      * Sets SOAP body method.
      *
      * @param localName local name
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient method(final String localName) {
+    public SoapX method(final String localName) {
         return method(new QName(name(localName, "SOAP method")));
     }
 
@@ -294,12 +297,12 @@ public final class SoapClient {
      *
      * @param namespace namespace
      * @param localName local name
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient method(final String namespace, final String localName) {
+    public SoapX method(final String namespace, final String localName) {
         final String checkedNamespace = optionalLine(namespace, "SOAP namespace");
         final QName qName = checkedNamespace.isBlank() ? new QName(name(localName, "SOAP method"))
-                : new QName(checkedNamespace, name(localName, "SOAP method"), METHOD_PREFIX);
+                : new QName(checkedNamespace, name(localName, "SOAP method"), Builder.SOAP_METHOD_PREFIX);
         return method(qName);
     }
 
@@ -307,9 +310,9 @@ public final class SoapClient {
      * Sets SOAP body method.
      *
      * @param name method name
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient method(final QName name) {
+    public SoapX method(final QName name) {
         try {
             this.methodElement = message.getSOAPBody().addBodyElement(require(name, "SOAP method"));
             if (action == null || action.isBlank()) {
@@ -326,9 +329,9 @@ public final class SoapClient {
      *
      * @param name  name
      * @param value value
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient param(final String name, final Object value) {
+    public SoapX param(final String name, final Object value) {
         return param(name, value, true);
     }
 
@@ -336,9 +339,9 @@ public final class SoapClient {
      * Adds method parameters.
      *
      * @param params params
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient params(final Map<String, ?> params) {
+    public SoapX params(final Map<String, ?> params) {
         if (params != null) {
             params.forEach(this::param);
         }
@@ -351,9 +354,9 @@ public final class SoapClient {
      * @param name            name
      * @param value           value
      * @param useMethodPrefix whether nested elements use method prefix
-     * @return this client
+     * @return this exchange
      */
-    public SoapClient param(final String name, final Object value, final boolean useMethodPrefix) {
+    public SoapX param(final String name, final Object value, final boolean useMethodPrefix) {
         if (methodElement == null) {
             throw new StatefulException("SOAP method must be set before parameters");
         }
@@ -396,12 +399,12 @@ public final class SoapClient {
     }
 
     /**
-     * Returns the HTTP body for the current SOAP message.
+     * Returns the payload body for the current SOAP message.
      *
      * @return body
      */
-    public HttpBody body() {
-        return HttpBody.of(Payload.of(xml(), charset), media());
+    public PayloadBody body() {
+        return PayloadBody.of(Payload.of(xml(), charset), media());
     }
 
     /**
@@ -420,30 +423,48 @@ public final class SoapClient {
     }
 
     /**
-     * Sends the SOAP request and returns response text.
+     * Creates a call for the current SOAP exchange.
      *
-     * @return response text
+     * @return response call
      */
-    public String send() {
-        return sendForResponse().text();
+    public Call<HttpResponse> call() {
+        return exchange().call();
     }
 
     /**
-     * Sends the SOAP request and returns the HTTP response.
+     * Executes the current SOAP exchange.
      *
      * @return HTTP response
      */
-    public HttpResponse sendForResponse() {
-        return HttpX.builder(context).post(url.encoded()).headers(headers()).body(body()).execute();
+    public HttpResponse execute() {
+        return exchange().execute();
     }
 
     /**
-     * Sends the SOAP request and parses the response message.
+     * Executes the current SOAP exchange and returns response text.
+     *
+     * @return response text
+     */
+    public String executeText() {
+        return execute().text();
+    }
+
+    /**
+     * Enqueues the current SOAP exchange.
+     *
+     * @return response call
+     */
+    public Call<HttpResponse> enqueue() {
+        return call().enqueue();
+    }
+
+    /**
+     * Executes the current SOAP exchange and parses the response message.
      *
      * @return SOAP message
      */
-    public SOAPMessage sendForMessage() {
-        final HttpResponse response = sendForResponse();
+    public SOAPMessage executeMessage() {
+        final HttpResponse response = execute();
         try {
             final MimeHeaders mimeHeaders = mimeHeaders(response.headers());
             return factory.createMessage(mimeHeaders, new ByteArrayInputStream(response.bytes()));
@@ -452,6 +473,33 @@ public final class SoapClient {
         } finally {
             response.close();
         }
+    }
+
+    /**
+     * Sends the SOAP request and returns response text.
+     *
+     * @return response text
+     */
+    public String send() {
+        return executeText();
+    }
+
+    /**
+     * Sends the SOAP request and returns the HTTP response.
+     *
+     * @return HTTP response
+     */
+    public HttpResponse sendForResponse() {
+        return execute();
+    }
+
+    /**
+     * Sends the SOAP request and parses the response message.
+     *
+     * @return SOAP message
+     */
+    public SOAPMessage sendForMessage() {
+        return executeMessage();
     }
 
     /**
@@ -510,9 +558,10 @@ public final class SoapClient {
         final String checked = name(localName, "SOAP header");
         if (methodElement != null && StringKit.isNotBlank(methodElement.getNamespaceURI())) {
             return new QName(methodElement.getNamespaceURI(), checked,
-                    StringKit.isBlank(methodElement.getPrefix()) ? METHOD_PREFIX : methodElement.getPrefix());
+                    StringKit.isBlank(methodElement.getPrefix()) ? Builder.SOAP_METHOD_PREFIX
+                            : methodElement.getPrefix());
         }
-        return new QName(HEADER_NAMESPACE, checked, HEADER_PREFIX);
+        return new QName(Builder.SOAP_X_HEADER_NAMESPACE, checked, Builder.SOAP_X_HEADER_PREFIX);
     }
 
     /**
@@ -563,6 +612,16 @@ public final class SoapClient {
     }
 
     /**
+     * Builds the backing HTTP exchange.
+     *
+     * @return HTTP exchange
+     */
+    private HttpX exchange() {
+        return HttpX.builder(context).post(url.encoded()).headers(headers()).body(body()).tag("soap-request")
+                .filter(filter).build();
+    }
+
+    /**
      * Returns request content type.
      *
      * @return content type
@@ -593,10 +652,10 @@ public final class SoapClient {
         if (StringKit.isBlank(namespace)) {
             return name.getLocalPart();
         }
-        if (namespace.endsWith("#") || namespace.endsWith("/") || namespace.endsWith(":")) {
+        if (namespace.endsWith(Symbol.HASH) || namespace.endsWith(Symbol.SLASH) || namespace.endsWith(Symbol.COLON)) {
             return namespace + name.getLocalPart();
         }
-        return namespace + "#" + name.getLocalPart();
+        return namespace + Symbol.HASH + name.getLocalPart();
     }
 
     /**

@@ -34,7 +34,6 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.network.Transport;
 import org.miaixz.bus.fabric.network.aio.AioGroup;
 
@@ -81,7 +80,7 @@ public final class UdpNetwork implements AutoCloseable {
         this.group = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
         this.channels = new ConcurrentLinkedDeque<>();
         this.closed = new AtomicBoolean();
-        this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+        this.listener = listener;
     }
 
     /**
@@ -91,7 +90,7 @@ public final class UdpNetwork implements AutoCloseable {
      * @return UDP network
      */
     public static UdpNetwork create(final AioGroup group) {
-        return new UdpNetwork(group, Wiring.noop());
+        return new UdpNetwork(group, null);
     }
 
     /**
@@ -102,7 +101,7 @@ public final class UdpNetwork implements AutoCloseable {
      * @return UDP network
      */
     public static UdpNetwork create(final AioGroup group, final Listener<Object> listener) {
-        return new UdpNetwork(group, listener == null ? Wiring.noop() : listener);
+        return new UdpNetwork(group, listener);
     }
 
     /**
@@ -143,11 +142,11 @@ public final class UdpNetwork implements AutoCloseable {
             final Address localAddress = new Address(Transport.UDP.scheme(), Protocol.HOST_IPV4, local.getPort(), null);
             final UdpChannel channel = new UdpChannel(localAddress, datagram, group.dispatcher());
             channels.add(channel);
-            final UdpSession session = new UdpSession(checkedRemote, channel, listener, () -> channels.remove(channel));
-            listener.open(session);
-            return session;
+            return new UdpSession(checkedRemote, channel, listener, () -> channels.remove(channel));
         } catch (final IOException e) {
-            listener.failure(this, e);
+            if (listener != null) {
+                listener.failure(this, e);
+            }
             throw new SocketException("Unable to create UDP session", e);
         }
     }

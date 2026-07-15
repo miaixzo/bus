@@ -102,7 +102,7 @@ public class HttpProber implements Prober {
                     response.errorMessage());
             return Status.fail("HTTP check failed: " + response.errorMessage(), name()).detail("url", url);
         }
-        if (response.isSuccessful()) {
+        if (response.successful()) {
             Logger.debug(
                     false,
                     "Cortex",

@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.http.cache;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -30,7 +29,7 @@ import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.cache.CacheWriter;
 
@@ -119,12 +118,6 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
         return new CacheWritingSource(current, writer, this::commit, this::abort);
     }
 
-    @Override
-    @Deprecated(since = "8.8.3")
-    public InputStream stream() {
-        return Payload.super.stream();
-    }
-
     /**
      * Reads all body bytes while writing cache.
      *
@@ -132,7 +125,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      */
     @Override
     public byte[] bytes() {
-        return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -154,7 +147,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      */
     @Override
     public String text(final Charset charset) {
-        return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -299,6 +292,11 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
             }
         }
 
+        /**
+         * Returns the delegate source timeout.
+         *
+         * @return source timeout
+         */
         @Override
         public Timeout timeout() {
             return source.timeout();

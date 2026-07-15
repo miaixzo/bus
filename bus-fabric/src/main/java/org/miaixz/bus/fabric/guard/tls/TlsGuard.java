@@ -30,6 +30,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.guard.GuardResult;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 
@@ -40,11 +41,6 @@ import org.miaixz.bus.fabric.network.tls.TlsSettings;
  * @since Java 21+
  */
 public final class TlsGuard {
-
-    /**
-     * Rule name.
-     */
-    private static final String NAME = "tls";
 
     /**
      * Creates a TLS guard.
@@ -108,7 +104,7 @@ public final class TlsGuard {
      * @return rule name
      */
     public String name() {
-        return NAME;
+        return Builder.TLS_GUARD_NAME;
     }
 
     /**

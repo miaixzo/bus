@@ -37,11 +37,6 @@ import org.miaixz.bus.logger.Logger;
 public final class Cancellation {
 
     /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
      * Registered cleanup callbacks.
      */
     private final ConcurrentLinkedDeque<Runnable> callbacks;
@@ -184,7 +179,7 @@ public final class Cancellation {
         try {
             callback.run();
         } catch (final RuntimeException e) {
-            Logger.warn(false, LOG_TAG, e, "Cancellation cleanup failed: exception={}", e.getClass().getSimpleName());
+            Logger.warn(false, "Fabric", e, "Cancellation cleanup failed: exception={}", e.getClass().getSimpleName());
         }
     }
 
@@ -199,7 +194,7 @@ public final class Cancellation {
         } catch (final Exception e) {
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "Cancellation resource cleanup failed: resource={}, exception={}",
                     resource.getClass().getName(),

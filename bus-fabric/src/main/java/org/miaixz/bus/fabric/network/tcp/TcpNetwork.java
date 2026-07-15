@@ -30,7 +30,6 @@ import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Connector;
 import org.miaixz.bus.fabric.network.Transport;
@@ -73,7 +72,7 @@ public final class TcpNetwork implements Connector {
     private TcpNetwork(final AioNetwork aio, final Listener<Object> listener) {
         this.aio = Assert.notNull(aio, () -> new ValidateException("AIO network must not be null"));
         this.closed = new AtomicBoolean();
-        this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+        this.listener = listener;
     }
 
     /**
@@ -83,7 +82,7 @@ public final class TcpNetwork implements Connector {
      * @return TCP network
      */
     public static TcpNetwork create(final AioNetwork aio) {
-        return new TcpNetwork(aio, Wiring.noop());
+        return new TcpNetwork(aio, null);
     }
 
     /**
@@ -94,7 +93,7 @@ public final class TcpNetwork implements Connector {
      * @return TCP network
      */
     public static TcpNetwork create(final AioNetwork aio, final Listener<Object> listener) {
-        return new TcpNetwork(aio, listener == null ? Wiring.noop() : listener);
+        return new TcpNetwork(aio, listener);
     }
 
     /**

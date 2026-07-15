@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -61,6 +62,29 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
      * The sensors value.
      */
     private final Supplier<Sensors> sensors = Memoizer.memoize(this::createSensors);
+
+    /**
+     * The display list supplier.
+     */
+    private final Supplier<List<Display>> displays = Memoizer.memoize(this::createDisplays, Memoizer.slowExpiration());
+
+    /**
+     * The sound card list supplier.
+     */
+    private final Supplier<List<SoundCard>> soundCards = Memoizer.memoize(this::createSoundCards,
+            Memoizer.slowExpiration());
+
+    /**
+     * The graphics card list supplier.
+     */
+    private final Supplier<List<GraphicsCard>> graphicsCards = Memoizer.memoize(this::createGraphicsCards,
+            Memoizer.slowExpiration());
+
+    /**
+     * The USB device tree supplier.
+     */
+    private final Supplier<List<UsbDevice>> usbDevicesTree = Memoizer.memoize(this::createUsbDevices,
+            Memoizer.slowExpiration());
 
     /**
      * Returns the computer system.
@@ -129,6 +153,83 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
      * @return platform-specific {@link Sensors} object
      */
     protected abstract Sensors createSensors();
+
+    /**
+     * Returns the displays.
+     *
+     * @return the display list
+     */
+    @Override
+    public List<Display> getDisplays() {
+        return displays.get();
+    }
+
+    /**
+     * Instantiates the platform-specific display list.
+     *
+     * @return platform-specific display list
+     */
+    protected abstract List<Display> createDisplays();
+
+    /**
+     * Returns the sound cards.
+     *
+     * @return the sound card list
+     */
+    @Override
+    public List<SoundCard> getSoundCards() {
+        return soundCards.get();
+    }
+
+    /**
+     * Instantiates the platform-specific sound card list.
+     *
+     * @return platform-specific sound card list
+     */
+    protected abstract List<SoundCard> createSoundCards();
+
+    /**
+     * Returns the graphics cards.
+     *
+     * @return the graphics card list
+     */
+    @Override
+    public List<GraphicsCard> getGraphicsCards() {
+        return graphicsCards.get();
+    }
+
+    /**
+     * Instantiates the platform-specific graphics card list.
+     *
+     * @return platform-specific graphics card list
+     */
+    protected abstract List<GraphicsCard> createGraphicsCards();
+
+    /**
+     * Returns the USB devices.
+     *
+     * @param tree Whether to preserve the USB device tree.
+     * @return the USB device list
+     */
+    @Override
+    public List<UsbDevice> getUsbDevices(boolean tree) {
+        List<UsbDevice> devices = usbDevicesTree.get();
+        if (tree) {
+            return devices;
+        }
+        List<UsbDevice> deviceList = new ArrayList<>();
+        for (UsbDevice device : devices) {
+            AbstractUsbDevice.addDevicesToList(deviceList, device.getConnectedDevices());
+        }
+        return deviceList;
+    }
+
+    /**
+     * Instantiates the platform-specific USB device tree.
+     *
+     * @return platform-specific USB device tree
+     */
+    protected abstract List<UsbDevice> createUsbDevices();
 
     /**
      * Returns the network i fs.

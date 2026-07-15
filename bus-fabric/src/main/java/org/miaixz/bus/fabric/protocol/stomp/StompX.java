@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -37,12 +39,12 @@ import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
@@ -55,16 +57,6 @@ import org.miaixz.bus.fabric.protocol.stomp.calls.StompCall;
  * @since Java 21+
  */
 public final class StompX {
-
-    /**
-     * Runtime option key for default timeout.
-     */
-    private static final String TIMEOUT_OPTION = "timeout";
-
-    /**
-     * STOMP CONNECT heartbeat header name.
-     */
-    private static final String HEADER_HEART_BEAT = "heart-beat";
 
     /**
      * Immutable execution snapshot.
@@ -84,12 +76,10 @@ public final class StompX {
     private StompX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        final Listener<? super StompSession> currentListener = Wiring
-                .safe(Wiring.compose(current.listener(), builder.listener), currentObserver);
         this.snapshot = new StompSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, builder.destination, builder.login, builder.passcode, builder.guard, currentObserver,
-                builder.callback == null ? Wiring.callback() : builder.callback,
-                builder.handler == null ? noopHandler() : builder.handler, currentListener);
+                builder.timeout, builder.destination, builder.login, builder.passcode, builder.guard, builder.filter,
+                currentObserver, builder.callback, builder.handler == null ? noopHandler() : builder.handler,
+                builder.listener);
         this.runner = new StompRunner(snapshot);
     }
 
@@ -341,6 +331,11 @@ public final class StompX {
         private GuardRule guard;
 
         /**
+         * Message filter.
+         */
+        private Filter filter;
+
+        /**
          * Observer.
          */
         private EventObserver observer;
@@ -378,12 +373,12 @@ public final class StompX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(TIMEOUT_OPTION, Timeout.class);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.observer = EventObserver.noop();
-            this.callback = Wiring.callback();
+            this.callback = null;
             this.handler = noopHandler();
-            this.listener = Wiring.noop();
+            this.listener = null;
             this.openHandler = session -> {
             };
             this.errorHandler = cause -> {
@@ -452,7 +447,7 @@ public final class StompX {
          * @return this builder
          */
         public Builder heartBeat(final Duration outgoing, final Duration incoming) {
-            headers.set(HEADER_HEART_BEAT, heartbeat(outgoing) + "," + heartbeat(incoming));
+            headers.set(STOMP_HEADER_HEART_BEAT, heartbeat(outgoing) + "," + heartbeat(incoming));
             return this;
         }
 
@@ -564,6 +559,17 @@ public final class StompX {
         }
 
         /**
+         * Sets message filter.
+         *
+         * @param filter filter
+         * @return this builder
+         */
+        public Builder filter(final Filter filter) {
+            this.filter = filter;
+            return this;
+        }
+
+        /**
          * Sets observer.
          *
          * @param observer observer
@@ -581,7 +587,7 @@ public final class StompX {
          * @return this builder
          */
         public Builder callback(final Callback<StompSession> callback) {
-            this.callback = callback == null ? Wiring.callback() : callback;
+            this.callback = callback;
             return this;
         }
 
@@ -592,7 +598,7 @@ public final class StompX {
          * @return this builder
          */
         public Builder listener(final Listener<? super StompSession> listener) {
-            this.listener = listener == null ? Wiring.noop() : listener;
+            this.listener = listener;
             return this;
         }
 
@@ -659,11 +665,21 @@ public final class StompX {
         private Builder composeCallback() {
             this.callback = new Callback<>() {
 
+                /**
+                 * Forwards a successful open session to the configured open handler.
+                 *
+                 * @param value opened STOMP session
+                 */
                 @Override
                 public void success(final StompSession value) {
                     openHandler.accept(value);
                 }
 
+                /**
+                 * Forwards an open failure to the configured error handler.
+                 *
+                 * @param cause failure cause
+                 */
                 @Override
                 public void failure(final Throwable cause) {
                     errorHandler.accept(cause);

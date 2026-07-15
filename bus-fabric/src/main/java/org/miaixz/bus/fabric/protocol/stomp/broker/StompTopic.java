@@ -24,6 +24,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.protocol.stomp.StompMessage;
 
 /**
@@ -35,16 +36,6 @@ import org.miaixz.bus.fabric.protocol.stomp.StompMessage;
  * @since Java 21+
  */
 public record StompTopic(String id, String destination) {
-
-    /**
-     * STOMP multi-level destination wildcard suffix.
-     */
-    private static final String MULTI_LEVEL_WILDCARD = Symbol.SLASH + Symbol.STAR + Symbol.STAR;
-
-    /**
-     * STOMP single-level destination wildcard suffix.
-     */
-    private static final String SINGLE_LEVEL_WILDCARD = Symbol.SLASH + Symbol.STAR;
 
     /**
      * Creates a validated topic.
@@ -100,10 +91,10 @@ public record StompTopic(String id, String destination) {
         if (destination.equals(value)) {
             return true;
         }
-        if (destination.endsWith(MULTI_LEVEL_WILDCARD)) {
+        if (destination.endsWith(Builder.STOMP_TOPIC_MULTI_LEVEL_WILDCARD)) {
             return value.startsWith(destination.substring(Normal._0, destination.length() - Normal._2));
         }
-        if (destination.endsWith(SINGLE_LEVEL_WILDCARD)) {
+        if (destination.endsWith(Builder.STOMP_TOPIC_SINGLE_LEVEL_WILDCARD)) {
             final String prefix = destination.substring(Normal._0, destination.length() - Normal._1);
             return value.startsWith(prefix) && value.indexOf(Symbol.C_SLASH, prefix.length()) < Normal._0;
         }

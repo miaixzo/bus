@@ -359,9 +359,16 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         boolean populated = false;
         for (int i = 0; i < instances.size(); i++) {
             String instance = instances.get(i);
-            int cpu = instance.contains(Symbol.COMMA) ? numaNodeProcToLogicalProcMap.getOrDefault(instance, 0)
-                    : Parsing.parseIntOrDefault(instance, 0);
-            if (cpu >= getLogicalProcessorCount() || i >= percentList.size()) {
+            int cpu;
+            if (instance.contains(Symbol.COMMA)) {
+                if (!numaNodeProcToLogicalProcMap.containsKey(instance)) {
+                    continue;
+                }
+                cpu = numaNodeProcToLogicalProcMap.get(instance);
+            } else {
+                cpu = Parsing.parseIntOrDefault(instance, -1);
+            }
+            if (cpu < 0 || cpu >= getLogicalProcessorCount() || i >= percentList.size()) {
                 continue;
             }
             freqs[cpu] = percentList.get(i) * maxFreq / 100L;
@@ -542,8 +549,15 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         }
         for (int i = 0; i < size; i++) {
             String instance = instances.get(i);
-            int cpu = instance.contains(Symbol.COMMA) ? numaNodeProcToLogicalProcMap.getOrDefault(instance, 0)
-                    : Parsing.parseIntOrDefault(instance, 0);
+            int cpu;
+            if (instance.contains(Symbol.COMMA)) {
+                if (!numaNodeProcToLogicalProcMap.containsKey(instance)) {
+                    continue;
+                }
+                cpu = numaNodeProcToLogicalProcMap.get(instance);
+            } else {
+                cpu = Parsing.parseIntOrDefault(instance, -1);
+            }
             if (cpu < 0 || cpu >= ncpu) {
                 continue;
             }

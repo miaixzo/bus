@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Mutable SSE retry delay policy updated by server retry directives.
@@ -33,16 +34,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @since Java 21+
  */
 public final class SseRetry {
-
-    /**
-     * Default base delay.
-     */
-    private static final Duration DEFAULT_CURRENT = Duration.ofSeconds(Normal._3);
-
-    /**
-     * Default maximum delay.
-     */
-    private static final Duration DEFAULT_MAX_DELAY = Duration.ofSeconds(Normal._30);
 
     /**
      * Current base retry delay.
@@ -74,7 +65,7 @@ public final class SseRetry {
      * @return default retry policy
      */
     public static SseRetry defaults() {
-        return new SseRetry(DEFAULT_CURRENT, DEFAULT_MAX_DELAY);
+        return new SseRetry(Builder.SSE_RETRY_DEFAULT_CURRENT, Builder.SSE_RETRY_DEFAULT_MAX_DELAY);
     }
 
     /**

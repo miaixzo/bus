@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol.sse;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -29,10 +30,13 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Listener;
+import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Wiring;
+import org.miaixz.bus.fabric.observe.EventObserver;
+import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
 import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -41,12 +45,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class SseSession {
-
-    /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
+public final class SseSession implements Session {
 
     /**
      * Session address.
@@ -74,14 +73,9 @@ public final class SseSession {
     private final Runnable cancelHook;
 
     /**
-     * Lifecycle listener.
+     * Lifecycle scope.
      */
-    private final Listener<? super SseSession> listener;
-
-    /**
-     * Lifecycle state.
-     */
-    private final AtomicReference<Status> state;
+    private final LifecycleScope scope;
 
     /**
      * Creates an opened session.
@@ -94,7 +88,7 @@ public final class SseSession {
      */
     SseSession(final Address address, final SseRetry retry, final SseReader reader,
             final CompletableFuture<Void> stream, final Runnable cancelHook) {
-        this(address, retry, reader, stream, cancelHook, Wiring.noop());
+        this(address, retry, reader, stream, cancelHook, null);
     }
 
     /**
@@ -116,28 +110,31 @@ public final class SseSession {
         this.stream = require(stream, "SSE stream future");
         this.cancelHook = cancelHook == null ? () -> {
         } : cancelHook;
-        this.listener = listener == null ? Wiring.noop() : listener;
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.scope = LifecycleScope.session(
+                this,
+                "sse-session",
+                listener,
+                EventObserver.noop(),
+                ObservationMarker.SSE_OPEN,
+                ObservationMarker.SSE_CLOSED,
+                ObservationMarker.SSE_FAILED);
+        this.scope.open(this);
         this.stream.whenComplete((ignored, cause) -> {
             if (cause == null) {
-                if (state.compareAndSet(Status.OPENED, Status.CLOSED)
-                        || state.compareAndSet(Status.RUNNING, Status.CLOSED)) {
-                    this.listener.close(this);
+                if (scope.close(this)) {
                     Logger.info(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             "SSE session stream closed: scheme={}, host={}, port={}",
                             address.scheme(),
                             address.host(),
                             address.port());
                 }
             } else if (!stream.isCancelled()) {
-                if (state.compareAndSet(Status.OPENED, Status.FAILED)
-                        || state.compareAndSet(Status.RUNNING, Status.FAILED)) {
-                    this.listener.failure(this, cause);
+                if (scope.fail(cause)) {
                     Logger.warn(
                             false,
-                            LOG_TAG,
+                            "Fabric",
                             cause,
                             "SSE session stream failed: scheme={}, host={}, port={}, exception={}",
                             address.scheme(),
@@ -164,7 +161,7 @@ public final class SseSession {
      * @return lifecycle state
      */
     public Status state() {
-        return state.get();
+        return scope.state();
     }
 
     /**
@@ -182,29 +179,34 @@ public final class SseSession {
      * @return true when this invocation changed the state
      */
     public boolean close() {
-        if (state.compareAndSet(Status.OPENED, Status.CLOSED) || state.compareAndSet(Status.RUNNING, Status.CLOSED)
-                || state.compareAndSet(Status.CLOSING, Status.CLOSED)) {
-            Logger.info(
-                    true,
-                    LOG_TAG,
-                    "SSE session close started: scheme={}, host={}, port={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port());
-            cancelHook.run();
-            closeReader();
-            stream.cancel(false);
-            listener.close(this);
+        final Status current = scope.state();
+        if (current != Status.OPENED && current != Status.RUNNING && current != Status.CLOSING) {
+            return false;
+        }
+        if (current != Status.CLOSING) {
+            scope.closing();
+        }
+        Logger.info(
+                true,
+                "Fabric",
+                "SSE session close started: scheme={}, host={}, port={}",
+                address.scheme(),
+                address.host(),
+                address.port());
+        cancelHook.run();
+        closeReader();
+        stream.cancel(false);
+        final boolean changed = scope.close(this);
+        if (changed) {
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "SSE session closed: scheme={}, host={}, port={}",
                     address.scheme(),
                     address.host(),
                     address.port());
-            return true;
         }
-        return false;
+        return changed;
     }
 
     /**
@@ -213,43 +215,42 @@ public final class SseSession {
      * @return true when this invocation changed the state
      */
     public boolean cancel() {
-        while (true) {
-            final Status current = state.get();
-            if (current == Status.CANCELLED || current == Status.CLOSED || current == Status.DONE) {
-                return false;
-            }
-            if (state.compareAndSet(current, Status.CANCELLED)) {
-                Logger.info(
-                        true,
-                        LOG_TAG,
-                        "SSE session cancel started: scheme={}, host={}, port={}",
-                        address.scheme(),
-                        address.host(),
-                        address.port());
-                cancelHook.run();
-                closeReader();
-                stream.cancel(false);
-                listener.failure(this, new StatefulException("SSE session was cancelled"));
-                Logger.info(
-                        false,
-                        LOG_TAG,
-                        "SSE session cancelled: scheme={}, host={}, port={}",
-                        address.scheme(),
-                        address.host(),
-                        address.port());
-                return true;
-            }
+        final Status current = scope.state();
+        if (current == Status.CANCELLED || current == Status.CLOSED || current == Status.DONE) {
+            return false;
         }
+        final StatefulException cancelled = new StatefulException("SSE session was cancelled");
+        Logger.info(
+                true,
+                "Fabric",
+                "SSE session cancel started: scheme={}, host={}, port={}",
+                address.scheme(),
+                address.host(),
+                address.port());
+        cancelHook.run();
+        closeReader();
+        stream.cancel(false);
+        final boolean changed = scope.cancel(cancelled);
+        if (changed) {
+            Logger.info(
+                    false,
+                    "Fabric",
+                    "SSE session cancelled: scheme={}, host={}, port={}",
+                    address.scheme(),
+                    address.host(),
+                    address.port());
+        }
+        return changed;
     }
 
     /**
-     * Returns whether the session is opened.
+     * Returns session attributes.
      *
-     * @return true when opened
+     * @return empty attributes
      */
-    public boolean opened() {
-        final Status current = state.get();
-        return current == Status.OPENED || current == Status.RUNNING;
+    @Override
+    public Map<String, Object> attributes() {
+        return Map.of();
     }
 
     /**

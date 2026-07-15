@@ -25,6 +25,7 @@ import java.time.Instant;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Bounded rolling sum and count window.
@@ -33,11 +34,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @since Java 21+
  */
 public final class RollingWindow {
-
-    /**
-     * Nanoseconds per second.
-     */
-    private static final double NANOS_PER_SECOND = Normal.GIGA;
 
     /**
      * Window duration in nanoseconds.
@@ -144,7 +140,7 @@ public final class RollingWindow {
      */
     public synchronized double rate(final Instant now) {
         final long total = sum(now);
-        return total == 0 ? 0D : total / (windowNanos / NANOS_PER_SECOND);
+        return total == 0 ? 0D : total / (windowNanos / Builder.ROLLING_WINDOW_NANOS_PER_SECOND);
     }
 
     /**

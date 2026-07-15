@@ -26,22 +26,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.CookieJar;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
-import org.miaixz.bus.fabric.protocol.http.body.HttpBody;
+import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.cache.HttpCache;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpBridge;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpChain;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpConnect;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpCoordinator;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpRetry;
-import org.miaixz.bus.fabric.protocol.http.chain.HttpServer;
+import org.miaixz.bus.fabric.protocol.http.chain.HttpTransport;
+import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
@@ -54,9 +56,20 @@ import org.miaixz.bus.logger.Logger;
 final class HttpRunner {
 
     /**
-     * Logger tag used by the fabric runtime.
+     * Default HTTP request filter tag.
      */
-    private static final String LOG_TAG = "Fabric";
+
+    /**
+     * Default HTTP response filter tag.
+     */
+
+    /**
+     * SOAP request filter tag.
+     */
+
+    /**
+     * SOAP response filter tag.
+     */
 
     /**
      * Execution snapshot.
@@ -86,10 +99,9 @@ final class HttpRunner {
     HttpResponse execute(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         markExecuted();
-        emit(ObservationMarker.CALL_START, null, null);
         Logger.info(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP exchange started: method={}, scheme={}, host={}, port={}, path={}",
                 snapshot.request().method().value(),
                 snapshot.request().url().scheme(),
@@ -105,10 +117,9 @@ final class HttpRunner {
             currentCancellation.throwIfCancelled();
             emit(ObservationMarker.HTTP_RESPONSE, response, null);
             snapshot.callback().success(response);
-            emit(ObservationMarker.CALL_SUCCESS, response, null);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP exchange completed: method={}, scheme={}, host={}, port={}, path={}, code={}",
                     current.method().value(),
                     current.url().scheme(),
@@ -119,11 +130,10 @@ final class HttpRunner {
             return response;
         } catch (final CancellationException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
-            emit(ObservationMarker.CALL_FAILED, null, e);
             snapshot.callback().failure(e);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "HTTP exchange cancelled: method={}, scheme={}, host={}, port={}, path={}",
                     snapshot.request().method().value(),
@@ -134,11 +144,10 @@ final class HttpRunner {
             throw e;
         } catch (final RuntimeException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
-            emit(ObservationMarker.CALL_FAILED, null, e);
             snapshot.callback().failure(e);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "HTTP exchange failed: method={}, scheme={}, host={}, port={}, path={}, exception={}",
                     snapshot.request().method().value(),
@@ -172,11 +181,33 @@ final class HttpRunner {
                 request.url().address(),
                 request.headers(),
                 request.body().payload(),
-                request.tag());
+                request.tag() == null ? Builder.HTTP_TAG_REQUEST : request.tag());
+        final Filter filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
+        if (filter != null) {
+            Logger.debug(
+                    true,
+                    "Fabric",
+                    "HTTP filter started: method={}, scheme={}, host={}, port={}, path={}",
+                    request.method().value(),
+                    request.url().scheme(),
+                    request.url().host(),
+                    request.url().port(),
+                    request.url().path());
+            message = FilterChain.apply(message, filter);
+            Logger.debug(
+                    false,
+                    "Fabric",
+                    "HTTP filter completed: method={}, scheme={}, host={}, port={}, path={}",
+                    request.method().value(),
+                    request.url().scheme(),
+                    request.url().host(),
+                    request.url().port(),
+                    request.url().path());
+        }
         if (snapshot.guard() != null) {
             Logger.debug(
                     true,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP guard check started: method={}, scheme={}, host={}, port={}, path={}",
                     request.method().value(),
                     request.url().scheme(),
@@ -186,7 +217,7 @@ final class HttpRunner {
             snapshot.guard().check(message).throwIfRejected();
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "HTTP guard check accepted: method={}, scheme={}, host={}, port={}, path={}",
                     request.method().value(),
                     request.url().scheme(),
@@ -194,30 +225,10 @@ final class HttpRunner {
                     request.url().port(),
                     request.url().path());
         }
-        if (snapshot.filter() != null) {
-            Logger.debug(
-                    true,
-                    LOG_TAG,
-                    "HTTP filter started: method={}, scheme={}, host={}, port={}, path={}",
-                    request.method().value(),
-                    request.url().scheme(),
-                    request.url().host(),
-                    request.url().port(),
-                    request.url().path());
-            message = require(snapshot.filter().apply(message, current -> current), "Filtered message");
-            Logger.debug(
-                    false,
-                    LOG_TAG,
-                    "HTTP filter completed: method={}, scheme={}, host={}, port={}, path={}",
-                    request.method().value(),
-                    request.url().scheme(),
-                    request.url().host(),
-                    request.url().port(),
-                    request.url().path());
-        } else {
+        if (filter == null) {
             return request;
         }
-        final HttpBody body = HttpBody
+        final PayloadBody body = PayloadBody
                 .of(message.payload(), request.body().media(), snapshot.context().options().materializeMaxBytes());
         return request.toBuilder().headers(message.headers()).body(body).tag(message.tag()).build();
     }
@@ -237,7 +248,7 @@ final class HttpRunner {
         final TlsSettings currentTlsSettings = tlsSettings();
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "HTTP chain prepared: cacheEnabled={}, cookieJarEnabled={}, authenticator={}, tlsContext={}, tlsSettings={}",
                 cache != null,
                 currentCookieJar != null,
@@ -253,9 +264,9 @@ final class HttpRunner {
                         new HttpConnect(snapshot.context().directory().connectionPool(), currentTlsContext,
                                 currentTlsSettings, snapshot.context().listener(), snapshot.context().resolver(),
                                 snapshot.context().reactor().dispatcher()),
-                        new HttpServer(snapshot.context().reactor().dispatcher())),
+                        new HttpTransport(snapshot.context().reactor().dispatcher())),
                 cancellation).proceed(current);
-        return materializeLimited(response);
+        return filterResponse(materializeLimited(response));
     }
 
     /**
@@ -266,8 +277,44 @@ final class HttpRunner {
      */
     private HttpResponse materializeLimited(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
-        final HttpBody body = current.body().materializeMaxBytes(snapshot.context().options().materializeMaxBytes());
+        final PayloadBody body = current.body().materializeMaxBytes(snapshot.context().options().materializeMaxBytes());
         return current.toBuilder().body(body).build();
+    }
+
+    /**
+     * Applies configured response filters without materializing the response body.
+     *
+     * @param response response
+     * @return filtered response
+     */
+    private HttpResponse filterResponse(final HttpResponse response) {
+        final HttpResponse current = require(response, "HTTP response");
+        final Filter filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
+        if (filter == null) {
+            return current;
+        }
+        final Message filtered = FilterChain.apply(
+                Message.of(
+                        current.protocol(),
+                        current.request().url().address(),
+                        current.headers(),
+                        current.body().payload(),
+                        responseTag(current.request())),
+                filter);
+        final PayloadBody body = PayloadBody
+                .of(filtered.payload(), current.body().media(), snapshot.context().options().materializeMaxBytes());
+        return current.toBuilder().headers(filtered.headers()).body(body).build();
+    }
+
+    /**
+     * Returns the response filter tag for a request.
+     *
+     * @param request request
+     * @return response filter tag
+     */
+    private static String responseTag(final HttpRequest request) {
+        return Builder.HTTP_TAG_SOAP_REQUEST.equals(request.tag()) ? Builder.HTTP_TAG_SOAP_RESPONSE
+                : Builder.HTTP_TAG_RESPONSE;
     }
 
     /**
@@ -379,10 +426,11 @@ final class HttpRunner {
      * @param cause    failure cause
      */
     private void emit(final ObservationMarker marker, final HttpResponse response, final Throwable cause) {
-        FabricEvent.Builder builder = FabricEvent.builder(marker).tag(Tags.METHOD, snapshot.request().method().value())
-                .tag(Tags.URL, snapshot.request().url().encoded());
+        FabricEvent.Builder builder = FabricEvent.builder(marker)
+                .tag(Builder.TAG_METHOD, snapshot.request().method().value())
+                .tag(Builder.TAG_URL, snapshot.request().url().encoded());
         if (response != null) {
-            builder = builder.tag(Tags.CODE, Integer.toString(response.code()));
+            builder = builder.tag(Builder.TAG_CODE, Integer.toString(response.code()));
         }
         if (cause != null) {
             builder = builder.cause(cause);

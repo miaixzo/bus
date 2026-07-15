@@ -121,7 +121,7 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
      * @return the get displays result
      */
     @Override
-    public List<Display> getDisplays() {
+    protected List<Display> createDisplays() {
         List<byte[]> edids = DrmEdid.getEdidArrays();
         if (!edids.isEmpty()) {
             return edids.stream().map(UnixDisplay::new).collect(Collectors.toList());
@@ -143,12 +143,11 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
     /**
      * Returns the usb devices.
      *
-     * @param tree the tree
      * @return the get usb devices result
      */
     @Override
-    public List<UsbDevice> getUsbDevices(boolean tree) {
-        return LinuxUsbDevice.getUsbDevices(tree);
+    protected List<UsbDevice> createUsbDevices() {
+        return LinuxUsbDevice.getUsbDevices(true);
     }
 
     /**
@@ -157,7 +156,7 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
      * @return the get sound cards result
      */
     @Override
-    public List<SoundCard> getSoundCards() {
+    protected List<SoundCard> createSoundCards() {
         return LinuxSoundCard.getSoundCards();
     }
 
@@ -177,7 +176,7 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
      * @return the get graphics cards result
      */
     @Override
-    public List<GraphicsCard> getGraphicsCards() {
+    protected List<GraphicsCard> createGraphicsCards() {
         return LinuxGraphicsCard.getGraphicsCards();
     }
 

@@ -39,11 +39,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpCookie;
 public final class CookieJar {
 
     /**
-     * Cookie jar that never stores or returns cookies.
-     */
-    public static final CookieJar NO_COOKIES = new CookieJar(false);
-
-    /**
      * Stored cookie snapshot.
      */
     private final List<Cookie> cookies;
@@ -77,6 +72,15 @@ public final class CookieJar {
      */
     public static CookieJar memory() {
         return new CookieJar();
+    }
+
+    /**
+     * Creates a cookie jar that never stores or returns cookies.
+     *
+     * @return cookie jar
+     */
+    public static CookieJar noCookies() {
+        return new CookieJar(false);
     }
 
     /**

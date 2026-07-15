@@ -16612,7 +16612,7 @@
           "parameterTypes": [
             "int",
             "long",
-            "org.miaixz.bus.core.io.StreamProgress"
+            "org.miaixz.bus.core.io.TransferObserver"
           ]
         }
       ],
@@ -16666,7 +16666,7 @@
           "parameterTypes": [
             "int",
             "long",
-            "org.miaixz.bus.core.io.StreamProgress"
+            "org.miaixz.bus.core.io.TransferObserver"
           ]
         }
       ],
@@ -16711,7 +16711,7 @@
           "parameterTypes": [
             "int",
             "long",
-            "org.miaixz.bus.core.io.StreamProgress"
+            "org.miaixz.bus.core.io.TransferObserver"
           ]
         }
       ],
@@ -16756,7 +16756,7 @@
           "parameterTypes": [
             "int",
             "long",
-            "org.miaixz.bus.core.io.StreamProgress"
+            "org.miaixz.bus.core.io.TransferObserver"
           ]
         }
       ],
@@ -29839,7 +29839,9 @@
             "java.lang.String",
             "int",
             "int",
-            "java.lang.String"
+            "java.lang.String",
+            "boolean",
+            "boolean"
           ]
         }
       ],

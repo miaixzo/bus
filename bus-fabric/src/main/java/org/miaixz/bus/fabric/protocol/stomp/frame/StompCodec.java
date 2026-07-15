@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.stomp.frame;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +33,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
@@ -45,16 +45,6 @@ import org.miaixz.bus.fabric.Payload;
  * @since Java 21+
  */
 public final class StompCodec {
-
-    /**
-     * Frame terminator.
-     */
-    private static final byte NUL = (byte) Normal._0;
-
-    /**
-     * STOMP content length header.
-     */
-    private static final String HEADER_CONTENT_LENGTH = "content-length";
 
     /**
      * Accumulated inbound bytes.
@@ -94,21 +84,7 @@ public final class StompCodec {
             throw new ProtocolException("STOMP content-length does not match body length");
         }
         writeBody(currentOutput, currentFrame.body(), declared >= Normal._0 ? declared : bodyLength);
-        currentOutput.writeByte(NUL);
-    }
-
-    /**
-     * Encodes a frame to a JDK byte buffer compatibility boundary.
-     *
-     * @param frame frame
-     * @return encoded buffer
-     * @deprecated use {@link #encode(StompFrame, Buffer)}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer encode(final StompFrame frame) {
-        final Buffer output = new Buffer();
-        encode(frame, output);
-        return ByteBuffer.wrap(output.readByteArray()).asReadOnlyBuffer();
+        currentOutput.writeByte(Normal._0);
     }
 
     /**
@@ -136,25 +112,6 @@ public final class StompCodec {
             discard(offset);
         }
         return List.copyOf(frames);
-    }
-
-    /**
-     * Decodes frames from a JDK byte buffer compatibility boundary.
-     *
-     * @param input input bytes
-     * @return decoded frames
-     * @deprecated use {@link #decode(Buffer)}
-     */
-    @Deprecated(since = "8.8.3")
-    public List<StompFrame> decode(final ByteBuffer input) {
-        final ByteBuffer checkedInput = require(input, "STOMP input");
-        final Buffer next = new Buffer();
-        try {
-            next.write(checkedInput.duplicate());
-        } catch (final IOException e) {
-            throw new ProtocolException("Unable to append STOMP input", e);
-        }
-        return decode(next);
     }
 
     /**
@@ -243,7 +200,7 @@ public final class StompCodec {
         if (bufferSize() < cursor + length + Normal._1) {
             return null;
         }
-        if (byteAt(cursor + length) != NUL) {
+        if (byteAt(cursor + length) != Normal._0) {
             throw new ProtocolException("STOMP frame missing NUL terminator");
         }
         return new BodyResult(copy(cursor, length), cursor + length + Normal._1);
@@ -256,7 +213,7 @@ public final class StompCodec {
      * @return body or null
      */
     private BodyResult nulBody(final int cursor) {
-        final int end = toIndex(buffer.indexOf(NUL, cursor));
+        final int end = toIndex(buffer.indexOf((byte) Normal._0, cursor));
         if (end >= Normal._0) {
             return new BodyResult(copy(cursor, end - cursor), end + Normal._1);
         }
@@ -270,7 +227,7 @@ public final class StompCodec {
      * @return content length or -1
      */
     private static int contentLength(final Headers headers) {
-        final String value = headers.get(HEADER_CONTENT_LENGTH);
+        final String value = headers.get(HTTP.CONTENT_LENGTH);
         if (value == null) {
             return Normal.__1;
         }

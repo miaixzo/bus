@@ -275,7 +275,7 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
                         "Health",
                         "Failed to get Performance Info. Error code: {}",
                         Kernel32.INSTANCE.GetLastError());
-                return Triplet.of(0L, 0L, 4098L);
+                return Triplet.of(0L, 0L, 4096L);
             }
             long pageSize = performanceInfo.PageSize.longValue();
             long memAvailable = pageSize * performanceInfo.PhysicalAvailable.longValue();

@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 
 import org.miaixz.bus.core.io.source.AssignSource;
@@ -29,7 +28,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
@@ -259,16 +257,8 @@ public final class Mediator {
         }
 
         /**
-         * Opens the response body stream and closes the owner with the stream.
-         *
-         * @return body stream
-         * @deprecated use {@link #source()}
+         * Closes the stream owner.
          */
-        @Deprecated(since = "8.8.3")
-        public InputStream stream() {
-            return IoKit.buffer(source()).inputStream();
-        }
-
         @Override
         public void close() {
             try {
@@ -307,6 +297,9 @@ public final class Mediator {
             lease = require(lease, "Connection lease");
         }
 
+        /**
+         * Releases the upgraded connection lease.
+         */
         @Override
         public void close() {
             lease.close();
@@ -335,6 +328,11 @@ public final class Mediator {
             this.owner = require(owner, "Stream owner");
         }
 
+        /**
+         * Closes the body source and then closes its protocol owner.
+         *
+         * @throws IOException when the source close fails
+         */
         @Override
         public void close() throws IOException {
             IOException failure = null;

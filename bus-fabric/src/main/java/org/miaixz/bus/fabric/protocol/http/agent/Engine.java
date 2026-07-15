@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Browser engine classifier parsed from a User-Agent value.
@@ -34,12 +35,6 @@ import org.miaixz.bus.core.lang.Normal;
  * @since Java 21+
  */
 public final class Engine {
-
-    /**
-     * Unknown engine.
-     */
-    public static final Engine UNKNOWN = Instances
-            .get(Engine.class.getName() + ".unknown", () -> new Engine(Normal.UNKNOWN, null));
 
     /**
      * Known engines.
@@ -96,7 +91,7 @@ public final class Engine {
                 return engine;
             }
         }
-        return UNKNOWN;
+        return Builder.HTTP_AGENT_ENGINE_UNKNOWN;
     }
 
     /**
@@ -156,16 +151,32 @@ public final class Engine {
         return Normal.UNKNOWN.equals(name);
     }
 
+    /**
+     * Compares rendering engine classifiers by name.
+     *
+     * @param object object to compare
+     * @return true when names match
+     */
     @Override
     public boolean equals(final Object object) {
         return object instanceof Engine other && Objects.equals(name, other.name);
     }
 
+    /**
+     * Returns a hash code based on the rendering engine name.
+     *
+     * @return hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name);
     }
 
+    /**
+     * Returns the rendering engine name.
+     *
+     * @return rendering engine name
+     */
     @Override
     public String toString() {
         return name;

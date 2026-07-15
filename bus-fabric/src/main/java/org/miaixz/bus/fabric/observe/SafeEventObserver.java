@@ -45,6 +45,11 @@ final class SafeEventObserver implements EventObserver {
         this.delegate = Assert.notNull(delegate, () -> new ValidateException("Observer must not be null"));
     }
 
+    /**
+     * Emits an event to the delegate and suppresses observer failures.
+     *
+     * @param event fabric event
+     */
     @Override
     public void emit(final FabricEvent event) {
         final FabricEvent checkedEvent = Assert

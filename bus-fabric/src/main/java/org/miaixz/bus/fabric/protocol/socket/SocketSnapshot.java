@@ -26,11 +26,11 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
@@ -47,6 +47,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param frameCodec    codec used to delimit socket messages
  * @param handler       inbound message handler for the created session
  * @param guard         optional policy guard for socket messages
+ * @param filter        optional message filter for socket open, inbound, and outbound messages
  * @param observer      observer receiving socket lifecycle and traffic events
  * @param proxyHeader   PROXY protocol metadata to send or inject, or {@code null}
  * @param socketOptions channel and session tuning options
@@ -57,9 +58,9 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @since Java 21+
  */
 record SocketSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout,
-        FrameCodec frameCodec, Handler handler, GuardRule guard, EventObserver observer, ProxyHeader proxyHeader,
-        SocketOptions socketOptions, Callback<SocketSession> callback, Listener<? super SocketSession> listener,
-        boolean pooled) {
+        FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter, EventObserver observer,
+        ProxyHeader proxyHeader, SocketOptions socketOptions, Callback<SocketSession> callback,
+        Listener<? super SocketSession> listener, boolean pooled) {
 
     /**
      * Creates a validated snapshot.
@@ -74,8 +75,6 @@ record SocketSnapshot(Context context, URI uri, Address address, Headers headers
         handler = require(handler, "Handler");
         observer = EventObserver.safe(require(observer, "Observer"));
         socketOptions = require(socketOptions, "Socket options");
-        callback = Wiring.safeCallback(require(callback, "Callback"), observer);
-        listener = Wiring.safe(require(listener, "Listener"), observer);
     }
 
     /**

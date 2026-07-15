@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Fabric;
 import org.miaixz.bus.fabric.Options;
@@ -55,9 +56,9 @@ public abstract class FabricX {
      *
      * @param url     URL
      * @param headers headers
-     * @return response
+     * @return storage response
      */
-    protected HttpResult get(final String url, final Header... headers) {
+    protected Response get(final String url, final Header... headers) {
         return execute(HTTP.GET, url, null, null, headers);
     }
 
@@ -66,9 +67,9 @@ public abstract class FabricX {
      *
      * @param url     URL
      * @param headers headers
-     * @return response
+     * @return storage response
      */
-    protected HttpResult get(final String url, final Map<String, ?> headers) {
+    protected Response get(final String url, final Map<String, ?> headers) {
         return execute(HTTP.GET, url, null, null, headers);
     }
 
@@ -77,9 +78,9 @@ public abstract class FabricX {
      *
      * @param url     URL
      * @param headers headers
-     * @return response
+     * @return storage response
      */
-    protected HttpResult head(final String url, final Header... headers) {
+    protected Response head(final String url, final Header... headers) {
         return execute(HTTP.HEAD, url, null, null, headers);
     }
 
@@ -88,9 +89,9 @@ public abstract class FabricX {
      *
      * @param url     URL
      * @param headers headers
-     * @return response
+     * @return storage response
      */
-    protected HttpResult post(final String url, final Header... headers) {
+    protected Response post(final String url, final Header... headers) {
         return execute(HTTP.POST, url, Payload.empty(), MediaType.APPLICATION_OCTET_STREAM_TYPE, headers);
     }
 
@@ -101,9 +102,9 @@ public abstract class FabricX {
      * @param data        body
      * @param contentType content type
      * @param headers     headers
-     * @return response
+     * @return storage response
      */
-    protected HttpResult post(final String url, final String data, final String contentType, final Header... headers) {
+    protected Response post(final String url, final String data, final String contentType, final Header... headers) {
         return execute(
                 HTTP.POST,
                 url,
@@ -119,9 +120,9 @@ public abstract class FabricX {
      * @param data        body
      * @param contentType content type
      * @param headers     headers
-     * @return response
+     * @return storage response
      */
-    protected HttpResult post(final String url, final byte[] data, final String contentType, final Header... headers) {
+    protected Response post(final String url, final byte[] data, final String contentType, final Header... headers) {
         return execute(HTTP.POST, url, Payload.of(data == null ? new byte[0] : data), media(contentType), headers);
     }
 
@@ -132,9 +133,9 @@ public abstract class FabricX {
      * @param data        body
      * @param contentType content type
      * @param headers     headers
-     * @return response
+     * @return storage response
      */
-    protected HttpResult put(final String url, final byte[] data, final String contentType, final Header... headers) {
+    protected Response put(final String url, final byte[] data, final String contentType, final Header... headers) {
         return execute(HTTP.PUT, url, Payload.of(data == null ? new byte[0] : data), media(contentType), headers);
     }
 
@@ -145,9 +146,9 @@ public abstract class FabricX {
      * @param data        body
      * @param contentType content type
      * @param headers     headers
-     * @return response
+     * @return storage response
      */
-    protected HttpResult put(final String url, final String data, final String contentType, final Header... headers) {
+    protected Response put(final String url, final String data, final String contentType, final Header... headers) {
         return execute(HTTP.PUT, url, Payload.of(data == null ? "" : data, Charset.UTF_8), media(contentType), headers);
     }
 
@@ -158,9 +159,9 @@ public abstract class FabricX {
      * @param data        body
      * @param contentType content type
      * @param headers     headers
-     * @return response
+     * @return storage response
      */
-    protected HttpResult patch(final String url, final String data, final String contentType, final Header... headers) {
+    protected Response patch(final String url, final String data, final String contentType, final Header... headers) {
         return execute(
                 HTTP.PATCH,
                 url,
@@ -174,9 +175,9 @@ public abstract class FabricX {
      *
      * @param url     URL
      * @param headers headers
-     * @return response
+     * @return storage response
      */
-    protected HttpResult delete(final String url, final Header... headers) {
+    protected Response delete(final String url, final Header... headers) {
         return execute(HTTP.DELETE, url, null, null, headers);
     }
 
@@ -199,9 +200,9 @@ public abstract class FabricX {
      * @param body    body payload
      * @param media   body media
      * @param headers headers
-     * @return response
+     * @return storage response
      */
-    private HttpResult execute(
+    private Response execute(
             final String method,
             final String url,
             final Payload body,
@@ -212,7 +213,7 @@ public abstract class FabricX {
         if (body != null) {
             builder.body(body, media == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE : media);
         }
-        return new HttpResult(builder.execute());
+        return new Response(builder.execute());
     }
 
     /**
@@ -223,9 +224,9 @@ public abstract class FabricX {
      * @param body    body payload
      * @param media   body media
      * @param headers headers
-     * @return response
+     * @return storage response
      */
-    private HttpResult execute(
+    private Response execute(
             final String method,
             final String url,
             final Payload body,
@@ -242,7 +243,7 @@ public abstract class FabricX {
         if (body != null) {
             builder.body(body, media == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE : media);
         }
-        return new HttpResult(builder.execute());
+        return new Response(builder.execute());
     }
 
     /**
@@ -309,31 +310,59 @@ public abstract class FabricX {
     }
 
     /**
-     * Storage HTTP response.
+     * Returns the last response header value.
+     *
+     * @param response storage response
+     * @param name     header name
+     * @return header value
      */
-    protected static final class HttpResult implements AutoCloseable {
+    protected static String header(final Response response, final String name) {
+        return response.header(name);
+    }
+
+    /**
+     * Returns the last response header value or the default value when absent.
+     *
+     * @param response     storage response
+     * @param name         header name
+     * @param defaultValue default value
+     * @return header value
+     */
+    protected static String header(final Response response, final String name, final String defaultValue) {
+        final String value = header(response, name);
+        return value == null ? defaultValue : value;
+    }
+
+    /**
+     * Opens the response body as an input stream and closes the response when the stream is closed.
+     *
+     * @param response storage response
+     * @return response body stream
+     */
+    protected static InputStream stream(final Response response) {
+        return response.stream();
+    }
+
+    /**
+     * Storage response facade that keeps Fabric HTTP details inside {@link FabricX}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    protected static final class Response implements AutoCloseable {
 
         /**
-         * Fabric HTTP response.
+         * Current Fabric HTTP response.
          */
         private final HttpResponse response;
 
         /**
-         * Creates a storage response.
+         * Creates a storage response facade.
          *
-         * @param response response
+         * @param response current Fabric HTTP response
          */
-        private HttpResult(final HttpResponse response) {
+        private Response(final HttpResponse response) {
             this.response = response;
-        }
-
-        /**
-         * Returns whether the response is successful.
-         *
-         * @return true if status code is 2xx
-         */
-        public boolean isSuccessful() {
-            return response.successful();
         }
 
         /**
@@ -346,16 +375,34 @@ public abstract class FabricX {
         }
 
         /**
-         * Returns the HTTP status text.
+         * Returns whether the response status code is in the 2xx range.
          *
-         * @return status text
+         * @return {@code true} when the response is successful
          */
-        public String message() {
-            return response.message();
+        public boolean successful() {
+            return response.successful();
         }
 
         /**
-         * Returns the last value for a header.
+         * Reads the response body as UTF-8 text and closes the response.
+         *
+         * @return response body text
+         */
+        public String text() {
+            return response.text();
+        }
+
+        /**
+         * Reads the response body as bytes and closes the response.
+         *
+         * @return response body bytes
+         */
+        public byte[] bytes() {
+            return response.bytes();
+        }
+
+        /**
+         * Returns the last response header value.
          *
          * @param name header name
          * @return header value
@@ -365,135 +412,38 @@ public abstract class FabricX {
         }
 
         /**
-         * Returns the last value for a header, or the default value when absent.
+         * Opens the response body as an input stream and closes the response when the stream is closed.
          *
-         * @param name         header name
-         * @param defaultValue default value
-         * @return header value
-         */
-        public String header(final String name, final String defaultValue) {
-            final String value = header(name);
-            return value == null ? defaultValue : value;
-        }
-
-        /**
-         * Returns response headers.
-         *
-         * @return headers
-         */
-        public Map<String, java.util.List<String>> headers() {
-            return response.headers().asMap();
-        }
-
-        /**
-         * Returns the response body.
-         *
-         * @return body
-         */
-        public Body body() {
-            return new Body(response);
-        }
-
-        /**
-         * Opens a stream that closes the response when the stream is closed.
-         *
-         * @return managed response stream
+         * @return response body stream
          */
         public InputStream stream() {
-            return new ResponseInputStream(response.body().stream(), this);
+            return new FilterInputStream(IoKit.buffer(response.body().source()).inputStream()) {
+
+                /**
+                 * Closes the body stream and its owning response.
+                 *
+                 * @throws IOException when stream closing fails
+                 */
+                @Override
+                public void close() throws IOException {
+                    try {
+                        super.close();
+                    } finally {
+                        response.close();
+                    }
+                }
+
+            };
         }
 
+        /**
+         * Closes the underlying response.
+         */
         @Override
         public void close() {
             response.close();
         }
 
-    }
-
-    /**
-     * Storage HTTP response body.
-     */
-    protected static final class Body {
-
-        /**
-         * Fabric HTTP response.
-         */
-        private final HttpResponse response;
-
-        /**
-         * Creates a response body wrapper.
-         *
-         * @param response response
-         */
-        private Body(final HttpResponse response) {
-            this.response = response;
-        }
-
-        /**
-         * Returns response bytes.
-         *
-         * @return bytes
-         */
-        public byte[] bytes() {
-            return response.body().bytes();
-        }
-
-        /**
-         * Returns response text.
-         *
-         * @return response text
-         */
-        public String string() {
-            return response.body().text(Charset.UTF_8);
-        }
-
-        /**
-         * Opens the response body stream.
-         *
-         * @return body stream
-         */
-        public InputStream byteStream() {
-            return response.body().stream();
-        }
-
-    }
-
-    /**
-     * Response body stream that closes the response with the stream.
-     */
-    private static final class ResponseInputStream extends FilterInputStream {
-
-        /**
-         * Response to close with the stream.
-         */
-        private final AutoCloseable response;
-
-        /**
-         * Creates a response input stream.
-         *
-         * @param input    input stream
-         * @param response response
-         */
-        private ResponseInputStream(final InputStream input, final AutoCloseable response) {
-            super(input);
-            this.response = response;
-        }
-
-        @Override
-        public void close() throws IOException {
-            try {
-                super.close();
-            } finally {
-                try {
-                    response.close();
-                } catch (final Exception e) {
-                    if (e instanceof IOException io) {
-                        throw io;
-                    }
-                    throw new IOException(e);
-                }
-            }
-        }
     }
 
 }

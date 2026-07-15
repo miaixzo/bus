@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.PORT;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.UnoUrl;
@@ -218,11 +219,13 @@ public final class HttpHeaders {
      * @return default port
      */
     private static int defaultPort(final String scheme) {
-        return switch (scheme) {
-            case "http" -> PORT._80.getPort();
-            case "https" -> PORT._443.getPort();
-            default -> throw new ProtocolException("Unsupported HTTP scheme: " + scheme);
-        };
+        if (Protocol.HTTP.name.equals(scheme)) {
+            return PORT._80.getPort();
+        }
+        if (Protocol.HTTPS.name.equals(scheme)) {
+            return PORT._443.getPort();
+        }
+        throw new ProtocolException("Unsupported HTTP scheme: " + scheme);
     }
 
     /**

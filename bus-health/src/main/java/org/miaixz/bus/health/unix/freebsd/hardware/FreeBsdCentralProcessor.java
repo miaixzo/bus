@@ -23,8 +23,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 
 import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.platform.unix.LibCAPI.size_t;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
@@ -36,10 +34,8 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
-import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
 import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * A CPU
@@ -58,13 +54,67 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
             .compile(".*<cpu\\s.*mask=\"(\\p{XDigit}+(,\\p{XDigit}+)*)\".*>.*</cpu>.*");
 
     /**
-     * The CPTIME_SIZE constant.
+     * The CP_USER constant.
      */
-    private static final long CPTIME_SIZE;
+    private static final int CP_USER = 0;
 
-    static {
-        try (FreeBsdLibc.CpTime cpTime = new FreeBsdLibc.CpTime()) {
-            CPTIME_SIZE = cpTime.size();
+    /**
+     * The CP_NICE constant.
+     */
+    private static final int CP_NICE = 1;
+
+    /**
+     * The CP_SYS constant.
+     */
+    private static final int CP_SYS = 2;
+
+    /**
+     * The CP_INTR constant.
+     */
+    private static final int CP_INTR = 3;
+
+    /**
+     * The CP_IDLE constant.
+     */
+    private static final int CP_IDLE = 4;
+
+    /**
+     * The CPUSTATES constant.
+     */
+    private static final int CPUSTATES = 5;
+
+    /**
+     * Fills the processor tick array from a FreeBSD CPU time array.
+     *
+     * @param ticks       the target tick array
+     * @param cpTimeArray the source CPU time array
+     * @param offset      the starting offset in the source array
+     */
+    private static void fillTicks(long[] ticks, long[] cpTimeArray, int offset) {
+        ticks[CentralProcessor.TickType.USER.getIndex()] = cpTimeArray[offset + CP_USER];
+        ticks[CentralProcessor.TickType.NICE.getIndex()] = cpTimeArray[offset + CP_NICE];
+        ticks[CentralProcessor.TickType.SYSTEM.getIndex()] = cpTimeArray[offset + CP_SYS];
+        ticks[CentralProcessor.TickType.IRQ.getIndex()] = cpTimeArray[offset + CP_INTR];
+        ticks[CentralProcessor.TickType.IDLE.getIndex()] = cpTimeArray[offset + CP_IDLE];
+    }
+
+    /**
+     * Queries a FreeBSD CPU time sysctl as an unsigned 64-bit array.
+     *
+     * @param name the sysctl name
+     * @return the CPU time values, or {@code null} if the query failed
+     */
+    private static long[] queryCpTimes(String name) {
+        try (Memory p = BsdSysctlKit.sysctl(name)) {
+            if (p == null) {
+                return null;
+            }
+            int count = (int) (p.size() / Long.BYTES);
+            long[] result = new long[count];
+            for (int i = 0; i < count; i++) {
+                result[i] = p.getLong((long) i * Long.BYTES);
+            }
+            return result;
         }
     }
 
@@ -363,14 +413,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long[] querySystemCpuLoadTicks() {
         long[] ticks = new long[CentralProcessor.TickType.values().length];
-        try (FreeBsdLibc.CpTime cpTime = new FreeBsdLibc.CpTime()) {
-            BsdSysctlKit.sysctl("kern.cp_time", cpTime);
-            ticks[CentralProcessor.TickType.USER.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_USER];
-            ticks[CentralProcessor.TickType.NICE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_NICE];
-            ticks[CentralProcessor.TickType.SYSTEM.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_SYS];
-            ticks[CentralProcessor.TickType.IRQ.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_INTR];
-            ticks[CentralProcessor.TickType.IDLE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_IDLE];
+        long[] cpTime = queryCpTimes("kern.cp_time");
+        if (cpTime == null || cpTime.length < CPUSTATES) {
+            return ticks;
         }
+        fillTicks(ticks, cpTime, 0);
         return ticks;
     }
 
@@ -406,9 +453,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         double[] average = new double[nelem];
         int retval = FreeBsdLibc.INSTANCE.getloadavg(average, nelem);
         if (retval < nelem) {
-            for (int i = Math.max(retval, 0); i < average.length; i++) {
-                average[i] = -1d;
-            }
+            Arrays.fill(average, -1d);
         }
         return average;
     }
@@ -446,30 +491,13 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
         long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
-
-        // Allocate memory for array of CPTime
-        long arraySize = CPTIME_SIZE * getLogicalProcessorCount();
-        try (Memory p = new Memory(arraySize);
-                ByRef.CloseableSizeTByReference oldlenp = new ByRef.CloseableSizeTByReference(arraySize)) {
-            String name = "kern.cp_times";
-            // Fetch
-            if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, oldlenp, null, size_t.ZERO)) {
-                Logger.error(false, "Health", "Failed sysctl call: {}, Error code: {}", name, Native.getLastError());
-                return ticks;
-            }
-            // p now points to the data; need to copy each element
-            for (int cpu = 0; cpu < getLogicalProcessorCount(); cpu++) {
-                ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = p
-                        .getLong(CPTIME_SIZE * cpu + FreeBsdLibc.CP_USER * FreeBsdLibc.UINT64_SIZE); // lgtm
-                ticks[cpu][CentralProcessor.TickType.NICE.getIndex()] = p
-                        .getLong(CPTIME_SIZE * cpu + FreeBsdLibc.CP_NICE * FreeBsdLibc.UINT64_SIZE); // lgtm
-                ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = p
-                        .getLong(CPTIME_SIZE * cpu + FreeBsdLibc.CP_SYS * FreeBsdLibc.UINT64_SIZE); // lgtm
-                ticks[cpu][CentralProcessor.TickType.IRQ.getIndex()] = p
-                        .getLong(CPTIME_SIZE * cpu + FreeBsdLibc.CP_INTR * FreeBsdLibc.UINT64_SIZE); // lgtm
-                ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = p
-                        .getLong(CPTIME_SIZE * cpu + FreeBsdLibc.CP_IDLE * FreeBsdLibc.UINT64_SIZE); // lgtm
-            }
+        long[] cpTimes = queryCpTimes("kern.cp_times");
+        if (cpTimes == null) {
+            return ticks;
+        }
+        int cpus = Math.min(getLogicalProcessorCount(), cpTimes.length / CPUSTATES);
+        for (int cpu = 0; cpu < cpus; cpu++) {
+            fillTicks(ticks[cpu], cpTimes, cpu * CPUSTATES);
         }
         return ticks;
     }
@@ -481,14 +509,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
      */
     @Override
     public long queryContextSwitches() {
-        String name = "vm.stats.sys.v_swtch";
-        size_t.ByReference size = new size_t.ByReference(new size_t(FreeBsdLibc.INT_SIZE));
-        try (Memory p = new Memory(size.longValue())) {
-            if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
-                return 0L;
-            }
-            return Parsing.unsignedIntToLong(p.getInt(0));
-        }
+        return Parsing.unsignedIntToLong(BsdSysctlKit.sysctl("vm.stats.sys.v_swtch", 0));
     }
 
     /**
@@ -498,14 +519,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
      */
     @Override
     public long queryInterrupts() {
-        String name = "vm.stats.sys.v_intr";
-        size_t.ByReference size = new size_t.ByReference(new size_t(FreeBsdLibc.INT_SIZE));
-        try (Memory p = new Memory(size.longValue())) {
-            if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
-                return 0L;
-            }
-            return Parsing.unsignedIntToLong(p.getInt(0));
-        }
+        return Parsing.unsignedIntToLong(BsdSysctlKit.sysctl("vm.stats.sys.v_intr", 0));
     }
 
 }

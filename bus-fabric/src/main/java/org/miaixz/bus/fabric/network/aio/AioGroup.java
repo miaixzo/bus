@@ -42,11 +42,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 public final class AioGroup {
 
     /**
-     * Maximum read worker count.
-     */
-    private static final int MAX_READ_WORKERS = Normal._256;
-
-    /**
      * JDK channel group.
      */
     final AsynchronousChannelGroup channelGroup;
@@ -148,7 +143,7 @@ public final class AioGroup {
         final int checkedReadWorkers = Assert.checkBetween(
                 readWorkers,
                 Normal._1,
-                MAX_READ_WORKERS,
+                Normal._256,
                 () -> new ValidateException("AIO read worker count out of range"));
         final Dispatcher checkedDispatcher = Assert
                 .notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null"));

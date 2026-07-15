@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.NetKit;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Public suffix list backed domain boundary checks.
@@ -44,11 +45,6 @@ import org.miaixz.bus.core.xyz.NetKit;
  * @since Java 21+
  */
 public final class PublicSuffix {
-
-    /**
-     * Public suffix list resource.
-     */
-    private static final String PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";
 
     /**
      * Wildcard label marker.
@@ -188,8 +184,8 @@ public final class PublicSuffix {
 
         synchronized (this) {
             if (publicSuffixListBytes == null || publicSuffixExceptionListBytes == null) {
-                throw new IllegalStateException(
-                        "Unable to load " + PUBLIC_SUFFIX_RESOURCE + " resource from the classpath.");
+                throw new IllegalStateException("Unable to load " + Builder.PUBLIC_SUFFIX_PUBLIC_SUFFIX_RESOURCE
+                        + " resource from the classpath.");
             }
         }
 
@@ -277,7 +273,8 @@ public final class PublicSuffix {
      * @throws IOException when the resource cannot be read
      */
     private void readTheList() throws IOException {
-        final InputStream resource = PublicSuffix.class.getResourceAsStream(PUBLIC_SUFFIX_RESOURCE);
+        final InputStream resource = PublicSuffix.class
+                .getResourceAsStream(Builder.PUBLIC_SUFFIX_PUBLIC_SUFFIX_RESOURCE);
         if (resource == null) {
             return;
         }
@@ -360,10 +357,10 @@ public final class PublicSuffix {
                     byte0 = Symbol.C_DOT;
                     expectDot = false;
                 } else {
-                    byte0 = labels[currentLabelIndex][currentLabelByteIndex] & 0xff;
+                    byte0 = labels[currentLabelIndex][currentLabelByteIndex] & Builder.UNSIGNED_BYTE_MASK;
                 }
 
-                final int byte1 = bytesToSearch[mid + publicSuffixByteIndex] & 0xff;
+                final int byte1 = bytesToSearch[mid + publicSuffixByteIndex] & Builder.UNSIGNED_BYTE_MASK;
                 compareResult = byte0 - byte1;
                 if (compareResult != Normal._0) {
                     break;

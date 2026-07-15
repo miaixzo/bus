@@ -28,7 +28,6 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -36,7 +35,6 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Headers;
 
@@ -47,31 +45,6 @@ import org.miaixz.bus.fabric.Headers;
  * @since Java 21+
  */
 public final class WebSocketUpgrade {
-
-    /**
-     * RFC 6455 accept GUID.
-     */
-    private static final String GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-
-    /**
-     * Upgrade protocol token.
-     */
-    private static final String WEBSOCKET_TOKEN = "websocket";
-
-    /**
-     * Connection upgrade token.
-     */
-    private static final String CONNECTION_UPGRADE = "Upgrade";
-
-    /**
-     * RFC 6455 WebSocket version.
-     */
-    private static final String WEBSOCKET_VERSION = "13";
-
-    /**
-     * WebSocket handshake key byte length.
-     */
-    private static final int HANDSHAKE_KEY_BYTES = Normal._16;
 
     /**
      * Handshake random source.
@@ -98,8 +71,35 @@ public final class WebSocketUpgrade {
      */
     public Headers headers(final Headers source) {
         final Headers checked = require(source, "WebSocket headers");
-        return checked.with(HTTP.UPGRADE, WEBSOCKET_TOKEN).with(HTTP.CONNECTION, CONNECTION_UPGRADE)
-                .with(HTTP.SEC_WEBSOCKET_VERSION, WEBSOCKET_VERSION).with(HTTP.SEC_WEBSOCKET_KEY, key);
+        return checked.with(HTTP.UPGRADE, HTTP.WEBSOCKET).with(HTTP.CONNECTION, HTTP.UPGRADE)
+                .with(HTTP.SEC_WEBSOCKET_VERSION, HTTP.SEC_WEBSOCKET_VERSION_13).with(HTTP.SEC_WEBSOCKET_KEY, key);
+    }
+
+    /**
+     * Builds WebSocket upgrade response headers.
+     *
+     * @param request request headers
+     * @return response headers
+     */
+    public static Headers responseHeaders(final Headers request) {
+        final Headers checked = require(request, "WebSocket request headers");
+        return Headers.empty().with(HTTP.UPGRADE, HTTP.WEBSOCKET).with(HTTP.CONNECTION, HTTP.UPGRADE)
+                .with(HTTP.SEC_WEBSOCKET_ACCEPT, acceptKey(checked.get(HTTP.SEC_WEBSOCKET_KEY)));
+    }
+
+    /**
+     * Creates a Sec-WebSocket-Accept value.
+     *
+     * @param key Sec-WebSocket-Key value
+     * @return accept value
+     */
+    public static String acceptKey(final String key) {
+        final String checkedKey = validateHeader(key, "WebSocket key");
+        if (Base64.decode(checkedKey).length != HTTP.SEC_WEBSOCKET_KEY_BYTES) {
+            throw new ProtocolException("WebSocket key must decode to 16 bytes");
+        }
+        return Base64.encode(
+                org.miaixz.bus.crypto.Builder.sha1(checkedKey + HTTP.SEC_WEBSOCKET_ACCEPT_GUID, Charset.ISO_8859_1));
     }
 
     /**
@@ -138,7 +138,7 @@ public final class WebSocketUpgrade {
     public boolean accept(final String key, final String accept) {
         final String checkedKey = validateHeader(key, "WebSocket key");
         final String checkedAccept = validateHeader(accept, "WebSocket accept");
-        final String expected = Base64.encode(Builder.sha1(checkedKey + GUID, Charset.ISO_8859_1));
+        final String expected = acceptKey(checkedKey);
         return MessageDigest.isEqual(
                 ByteString.encodeString(expected, Charset.ISO_8859_1).toByteArray(),
                 ByteString.encodeString(checkedAccept, Charset.ISO_8859_1).toByteArray());
@@ -150,7 +150,7 @@ public final class WebSocketUpgrade {
      * @return base64 handshake key
      */
     private static String randomKey() {
-        return Base64.encode(RandomKit.randomBytes(HANDSHAKE_KEY_BYTES, RANDOM));
+        return Base64.encode(RandomKit.randomBytes(HTTP.SEC_WEBSOCKET_KEY_BYTES, RANDOM));
     }
 
     /**

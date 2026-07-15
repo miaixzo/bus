@@ -68,6 +68,8 @@ public class Nexus implements Condition {
             Map.entry(GeniusBuilder.DUBBO, EnableDubbo.class),
             // Elasticsearch
             Map.entry(GeniusBuilder.ELASTIC, EnableElastic.class),
+            // Fabric Communication
+            Map.entry(GeniusBuilder.FABRIC, EnableFabric.class),
             // HealthStatus Check
             Map.entry(GeniusBuilder.HEALTH, EnableHealth.class),
             // Internationalization (i18n)
@@ -84,8 +86,6 @@ public class Nexus implements Condition {
             Map.entry(GeniusBuilder.OFFICE, EnableOffice.class),
             // Data Desensitization
             Map.entry(GeniusBuilder.SENSITIVE, EnableSensitive.class),
-            // WebSocket
-            Map.entry(GeniusBuilder.SOCKET, EnableSocket.class),
             // Distributed Storage
             Map.entry(GeniusBuilder.STORAGE, EnableStorage.class),
             // Distributed Tracing

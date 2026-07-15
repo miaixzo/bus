@@ -17,28 +17,10 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.annotation;
-
-import java.lang.annotation.*;
-
-import org.springframework.context.annotation.Import;
-
-import org.miaixz.bus.starter.socket.SocketConfiguration;
-
 /**
- * Enables AIO-based socket server features.
- * <p>
- * This annotation imports the {@link SocketConfiguration}, which sets up the
- * {@link org.miaixz.bus.starter.socket.SocketQuickService} to manage the lifecycle of an AIO (Asynchronous I/O) server.
+ * Fabric communication service support.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@Inherited
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-@Import({ SocketConfiguration.class })
-public @interface EnableSocket {
-
-}
+package org.miaixz.bus.starter.fabric;

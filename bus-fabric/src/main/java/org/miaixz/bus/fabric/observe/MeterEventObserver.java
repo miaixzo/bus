@@ -19,16 +19,17 @@
 */
 package org.miaixz.bus.fabric.observe;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.observe.timing.StopWatch;
 import org.miaixz.bus.fabric.observe.window.RollingWindow;
 
@@ -39,26 +40,6 @@ import org.miaixz.bus.fabric.observe.window.RollingWindow;
  * @since Java 21+
  */
 public final class MeterEventObserver implements EventObserver {
-
-    /**
-     * Default rolling window duration.
-     */
-    private static final Duration DEFAULT_WINDOW = Duration.ofMinutes(1);
-
-    /**
-     * Default rolling bucket duration.
-     */
-    private static final Duration DEFAULT_BUCKET = Duration.ofSeconds(1);
-
-    /**
-     * Failure counter name.
-     */
-    private static final String FAILURE = "failure";
-
-    /**
-     * Duration metric suffix.
-     */
-    private static final String DURATION = ".duration";
 
     /**
      * Meter.
@@ -99,7 +80,7 @@ public final class MeterEventObserver implements EventObserver {
      * @return observer
      */
     public static MeterEventObserver create() {
-        return create(Clock.system(), RollingWindow.of(DEFAULT_WINDOW, DEFAULT_BUCKET));
+        return create(Clock.system(), RollingWindow.of(Builder.DURATION_60_SECONDS, Builder.DURATION_1_SECOND));
     }
 
     /**
@@ -124,8 +105,8 @@ public final class MeterEventObserver implements EventObserver {
         final ObservationMarker marker = current.marker();
         meter.increment(marker.code());
         if (marker.failure() || current.cause() != null) {
-            meter.increment(FAILURE);
-            meter.increment(marker.code() + "." + FAILURE);
+            meter.increment(Builder.METER_EVENT_OBSERVER_FAILURE);
+            meter.increment(marker.code() + Symbol.DOT + Builder.METER_EVENT_OBSERVER_FAILURE);
         }
         window.add(1, current.time());
         measure(current);
@@ -159,7 +140,7 @@ public final class MeterEventObserver implements EventObserver {
         if (event.marker().terminal()) {
             final StopWatch stopwatch = stopwatches.remove(key);
             if (stopwatch != null) {
-                meter.timing(event.marker().code() + DURATION, stopwatch.stop());
+                meter.timing(event.marker().code() + Builder.METER_EVENT_OBSERVER_DURATION, stopwatch.stop());
             }
             return;
         }
@@ -174,12 +155,12 @@ public final class MeterEventObserver implements EventObserver {
      */
     private static String timingKey(final FabricEvent event) {
         final String code = event.marker().code();
-        final int dot = code.indexOf('.');
+        final int dot = code.indexOf(Symbol.C_DOT);
         final String family = dot < 0 ? code : code.substring(0, dot);
-        final StringJoiner joiner = new StringJoiner("&", family + "|", "");
+        final StringJoiner joiner = new StringJoiner(Symbol.AND, family + "|", Normal.EMPTY);
         event.tags().asMap().entrySet().stream().filter(entry -> stableTimingTag(entry.getKey()))
                 .sorted(Map.Entry.comparingByKey())
-                .forEach(entry -> joiner.add(entry.getKey() + "=" + entry.getValue()));
+                .forEach(entry -> joiner.add(entry.getKey() + Symbol.EQUAL + entry.getValue()));
         return joiner.toString();
     }
 
@@ -190,7 +171,7 @@ public final class MeterEventObserver implements EventObserver {
      * @return true when stable
      */
     private static boolean stableTimingTag(final String key) {
-        return !Tags.PHASE.equals(key) && !Tags.RESULT.equals(key) && !Tags.EXCEPTION.equals(key);
+        return !Builder.TAG_PHASE.equals(key) && !Builder.TAG_RESULT.equals(key) && !Builder.TAG_EXCEPTION.equals(key);
     }
 
 }

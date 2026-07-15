@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket.body;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +31,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.MessageBody;
 import org.miaixz.bus.fabric.codec.body.ProgressBody;
@@ -43,21 +43,6 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
  * @since Java 21+
  */
 public final class WebSocketBody implements MessageBody, ProgressBody {
-
-    /**
-     * Default binary media.
-     */
-    private static final MediaType BINARY = MediaType.APPLICATION_OCTET_STREAM_TYPE;
-
-    /**
-     * Default UTF-8 text media.
-     */
-    private static final MediaType TEXT = MediaType.TEXT_PLAIN_TYPE.withCharset(StandardCharsets.UTF_8);
-
-    /**
-     * Maximum materialized WebSocket body bytes.
-     */
-    private static final long MAX_BODY_BYTES = Normal._16 * Normal.MEBI;
 
     /**
      * Message kind.
@@ -145,7 +130,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      * @return WebSocket body
      */
     public static WebSocketBody binary(final byte[] bytes) {
-        return new WebSocketBody(Kind.BINARY, null, Payload.of(bytes), BINARY);
+        return new WebSocketBody(Kind.BINARY, null, Payload.of(bytes), MediaType.APPLICATION_OCTET_STREAM_TYPE);
     }
 
     /**
@@ -155,19 +140,8 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      * @return WebSocket body
      */
     public static WebSocketBody binary(final ByteString bytes) {
-        return new WebSocketBody(Kind.BINARY, null, Payload.of(require(bytes, "WebSocket binary value")), BINARY);
-    }
-
-    /**
-     * Creates a binary body.
-     *
-     * @param buffer binary buffer
-     * @return WebSocket body
-     * @deprecated use {@link #binary(ByteString)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static WebSocketBody binary(final ByteBuffer buffer) {
-        return binary(snapshot(buffer));
+        return new WebSocketBody(Kind.BINARY, null, Payload.of(require(bytes, "WebSocket binary value")),
+                MediaType.APPLICATION_OCTET_STREAM_TYPE);
     }
 
     /**
@@ -179,7 +153,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      */
     public static WebSocketBody of(final Payload payload, final MediaType media) {
         final Payload current = require(payload, "WebSocket payload");
-        if (current.length() > MAX_BODY_BYTES) {
+        if (current.length() > Builder.BYTES_16_MIB) {
             throw new ProtocolException("WebSocket body payload is too large");
         }
         return new WebSocketBody(Kind.BINARY, null, current, require(media, "WebSocket media"));
@@ -222,23 +196,12 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     }
 
     /**
-     * Returns a read-only binary buffer.
-     *
-     * @return binary buffer
-     * @deprecated use {@link #binaryBytes()}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer binaryValue() {
-        return binaryBytes().asByteBuffer();
-    }
-
-    /**
      * Returns immutable binary bytes.
      *
      * @return binary bytes
      */
     public ByteString binaryBytes() {
-        return ByteString.of(payload().bytes(MAX_BODY_BYTES));
+        return ByteString.of(payload().bytes(Builder.BYTES_16_MIB));
     }
 
     /**
@@ -251,26 +214,52 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
         return new WebSocketBody(kind, text, payload, media, ProgressBody.Tracker.of(payload, listener));
     }
 
+    /**
+     * Returns the current payload, wrapped with progress tracking when enabled.
+     *
+     * @return current payload
+     */
     @Override
     public Payload payload() {
         return progress == null ? payload : progress.payload();
     }
 
+    /**
+     * Returns the WebSocket body media type.
+     *
+     * @return media type
+     */
     @Override
     public MediaType media() {
         return media;
     }
 
+    /**
+     * Returns transferred byte count reported by the progress tracker.
+     *
+     * @return transferred bytes
+     */
     @Override
     public long transferred() {
         return progress == null ? Normal.LONG_ZERO : progress.transferred();
     }
 
+    /**
+     * Returns the declared payload length.
+     *
+     * @return total bytes, or -1 when unknown
+     */
     @Override
     public long total() {
         return payload.length();
     }
 
+    /**
+     * Advances progress notification by a byte step.
+     *
+     * @param bytes step bytes
+     * @return this body
+     */
     @Override
     public WebSocketBody stepBytes(final long bytes) {
         if (progress == null) {
@@ -281,6 +270,12 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
         return this;
     }
 
+    /**
+     * Advances progress notification by a total-size rate.
+     *
+     * @param rate progress rate
+     * @return this body
+     */
     @Override
     public WebSocketBody stepRate(final double rate) {
         if (progress == null) {
@@ -289,23 +284,6 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
             progress.stepRate(rate);
         }
         return this;
-    }
-
-    /**
-     * Copies a binary buffer.
-     *
-     * @param buffer buffer
-     * @return bytes
-     */
-    private static byte[] snapshot(final ByteBuffer buffer) {
-        final ByteBuffer checked = require(buffer, "WebSocket binary value");
-        if (checked.remaining() > MAX_BODY_BYTES) {
-            throw new ProtocolException("WebSocket body payload is too large");
-        }
-        final ByteBuffer duplicate = checked.duplicate();
-        final byte[] bytes = new byte[duplicate.remaining()];
-        duplicate.get(bytes);
-        return bytes;
     }
 
     /**
@@ -328,7 +306,8 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      * @return WebSocket body
      */
     private static WebSocketBody text(final ByteString bytes, final String text) {
-        return new WebSocketBody(Kind.TEXT, text, Payload.of(bytes), TEXT);
+        return new WebSocketBody(Kind.TEXT, text, Payload.of(bytes),
+                MediaType.TEXT_PLAIN_TYPE.withCharset(StandardCharsets.UTF_8));
     }
 
     /**

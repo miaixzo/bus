@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.registry.connection.ConnectionPool;
 import org.miaixz.bus.fabric.registry.connection.ConnectionRegistry;
 import org.miaixz.bus.fabric.registry.route.Selector;
@@ -38,31 +39,6 @@ import org.miaixz.bus.fabric.registry.route.Selector;
  * @since Java 21+
  */
 public final class Directory implements AutoCloseable {
-
-    /**
-     * Connection registry key.
-     */
-    private static final String CONNECTION = "connection";
-
-    /**
-     * Route registry key.
-     */
-    private static final String ROUTE = "route";
-
-    /**
-     * Resolver registry key.
-     */
-    private static final String RESOLVER = "resolver";
-
-    /**
-     * Proxy registry key.
-     */
-    private static final String PROXY = "proxy";
-
-    /**
-     * Policy registry key.
-     */
-    private static final String POLICY = "policy";
 
     /**
      * Registered ledgers.
@@ -98,11 +74,11 @@ public final class Directory implements AutoCloseable {
      */
     public static Directory create() {
         final Directory directory = new Directory();
-        directory.register(CONNECTION, Ledger.create());
-        directory.register(ROUTE, Ledger.create());
-        directory.register(RESOLVER, Ledger.create());
-        directory.register(PROXY, Ledger.create());
-        directory.register(POLICY, Ledger.create());
+        directory.register(Builder.DIRECTORY_CONNECTION, Ledger.create());
+        directory.register(Builder.ROUTE, Ledger.create());
+        directory.register(Builder.DIRECTORY_RESOLVER, Ledger.create());
+        directory.register(Builder.DIRECTORY_PROXY, Ledger.create());
+        directory.register(Builder.DIRECTORY_POLICY, Ledger.create());
         return directory;
     }
 

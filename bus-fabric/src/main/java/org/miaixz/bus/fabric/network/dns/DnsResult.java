@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.NetKit;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Immutable DNS resolution result.
@@ -39,17 +40,12 @@ import org.miaixz.bus.core.xyz.NetKit;
  * @param host       resolved host
  * @param addresses  address snapshot
  * @param resolvedAt resolution time
- * @param ttl        positive DNS ttl or {@link #NO_TTL} when no ttl is available
+ * @param ttl        positive DNS ttl or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL} when no ttl is available
  * @param duration   resolution duration
  * @author Kimi Liu
  * @since Java 21+
  */
 public record DnsResult(String host, List<InetAddress> addresses, Instant resolvedAt, Duration ttl, Duration duration) {
-
-    /**
-     * Fixed marker used when a resolver does not expose DNS TTL metadata.
-     */
-    public static final Duration NO_TTL = Duration.ZERO;
 
     /**
      * Creates a DNS result.
@@ -76,7 +72,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
      * @return result
      */
     public static DnsResult of(final String host, final List<InetAddress> addresses, final Duration duration) {
-        return of(host, addresses, Instant.now(), NO_TTL, duration);
+        return of(host, addresses, Instant.now(), Builder.DNS_NO_TTL, duration);
     }
 
     /**
@@ -85,7 +81,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
      * @param host       host
      * @param addresses  addresses
      * @param resolvedAt resolution time
-     * @param ttl        positive ttl or {@link #NO_TTL}
+     * @param ttl        positive ttl or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL}
      * @param duration   duration
      * @return result
      */
@@ -131,7 +127,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Returns ttl metadata.
      *
-     * @return ttl or {@link #NO_TTL}
+     * @return ttl or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL}
      */
     @Override
     public Duration ttl() {
@@ -163,7 +159,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
      * @return true when ttl is available
      */
     public boolean hasTtl() {
-        return !NO_TTL.equals(ttl);
+        return !Builder.DNS_NO_TTL.equals(ttl);
     }
 
     /**

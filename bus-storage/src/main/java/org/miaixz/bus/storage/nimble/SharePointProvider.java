@@ -254,19 +254,19 @@ public class SharePointProvider extends AbstractProvider {
 
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath + ":/content";
-            HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()));
+            Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()));
             if (response.code() == 401) {
                 response.close();
                 refreshAccessToken();
                 return streamKey(bucket, objectKey);
             }
-            if (!response.isSuccessful()) {
+            if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
                 return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(toBlob(bucket, objectKey, metadata, response.stream())).build();
+                    .data(toBlob(bucket, objectKey, metadata, stream(response))).build();
         } catch (Exception e) {
             Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
             Logger.error(
@@ -303,8 +303,8 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath + ":/content";
 
-            try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return download(bucket, fileName);
@@ -312,7 +312,7 @@ public class SharePointProvider extends AbstractProvider {
                     throw new IOException("Unexpected code " + response);
                 }
 
-                byte[] content = response.body().bytes();
+                byte[] content = response.bytes();
 
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .data(content).build();
@@ -365,8 +365,8 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath + ":/content";
 
-            try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return download(bucket, fileName, file);
@@ -374,7 +374,7 @@ public class SharePointProvider extends AbstractProvider {
                     throw new IOException("Unexpected code " + response);
                 }
 
-                try (InputStream inputStream = response.body().byteStream();
+                try (InputStream inputStream = stream(response);
                         OutputStream outputStream = new FileOutputStream(file)) {
                     inputStream.transferTo(outputStream);
                 }
@@ -410,8 +410,8 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(context.getBucket(), prefix);
             String url = context.getEndpoint() + apiPath + ":/children";
 
-            try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return list();
@@ -419,7 +419,7 @@ public class SharePointProvider extends AbstractProvider {
                     throw new IOException("Unexpected code " + response);
                 }
 
-                Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+                Map<String, Object> jsonMap = JsonKit.toMap(response.text());
                 List<Map<String, Object>> items = (List<Map<String, Object>>) jsonMap.get("value");
                 List<Blob> files = new ArrayList<>();
 
@@ -506,12 +506,12 @@ public class SharePointProvider extends AbstractProvider {
 
             String requestBody = String.format("{\"name\":\"%s\"}", newName);
 
-            try (HttpResult response = patch(
+            try (Response response = patch(
                     url,
                     requestBody,
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return rename(bucket, path, oldName, newName);
@@ -691,8 +691,8 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath;
 
-            try (HttpResult response = delete(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = delete(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+                if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
                         return remove(bucket, path, fileName);
@@ -757,12 +757,12 @@ public class SharePointProvider extends AbstractProvider {
                 URLEncoder.encode(context.getSecretKey(), Charset.UTF_8),
                 URLEncoder.encode("https://graph.microsoft.com/.default", Charset.UTF_8));
 
-        try (HttpResult response = post(tokenUrl, requestBody, MediaType.APPLICATION_FORM_URLENCODED)) {
-            if (!response.isSuccessful()) {
+        try (Response response = post(tokenUrl, requestBody, MediaType.APPLICATION_FORM_URLENCODED)) {
+            if (!response.successful()) {
                 throw new IOException("Failed to obtain access token: " + response.code());
             }
 
-            Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+            Map<String, Object> jsonMap = JsonKit.toMap(response.text());
             this.accessToken = (String) jsonMap.get("access_token");
             int expiresIn = ((Number) jsonMap.get("expires_in")).intValue();
             this.tokenExpireTime = System.currentTimeMillis() + (expiresIn - 300) * 1000L;
@@ -829,7 +829,7 @@ public class SharePointProvider extends AbstractProvider {
     private Map<String, Object> getItemMetadata(String bucket, String objectKey, boolean retry) throws IOException {
         String apiPath = buildApiPath(bucket, objectKey);
         String url = context.getEndpoint() + apiPath + "?$select=id,name,size,lastModifiedDateTime,file,folder";
-        try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
+        try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
             if (response.code() == 401 && retry) {
                 refreshAccessToken();
                 return getItemMetadata(bucket, objectKey, false);
@@ -837,10 +837,10 @@ public class SharePointProvider extends AbstractProvider {
             if (response.code() == 404) {
                 return null;
             }
-            if (!response.isSuccessful()) {
+            if (!response.successful()) {
                 throw new IOException("Metadata failed: " + response.code());
             }
-            return JsonKit.toMap(response.body().string());
+            return JsonKit.toMap(response.text());
         }
     }
 
@@ -920,12 +920,12 @@ public class SharePointProvider extends AbstractProvider {
         String sessionBody = "{\"item\":{\"@microsoft.graph.conflictBehavior\":\"replace\"}}";
 
         String uploadUrl;
-        try (HttpResult response = post(
+        try (Response response = post(
                 createSessionUrl,
                 sessionBody,
                 MediaType.APPLICATION_JSON,
                 header(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()))) {
-            if (!response.isSuccessful()) {
+            if (!response.successful()) {
                 if (response.code() == 401) {
                     refreshAccessToken();
                     return chunkedUpload(bucket, objectKey, fileName, content);
@@ -933,7 +933,7 @@ public class SharePointProvider extends AbstractProvider {
                 throw new IOException("Failed to create upload session: " + response.code());
             }
 
-            Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+            Map<String, Object> jsonMap = JsonKit.toMap(response.text());
             uploadUrl = (String) jsonMap.get("uploadUrl");
         }
 
@@ -950,13 +950,13 @@ public class SharePointProvider extends AbstractProvider {
 
             String contentRange = String.format("bytes %d-%d/%d", offset, offset + currentChunkSize - 1, totalSize);
 
-            try (HttpResult response = put(
+            try (Response response = put(
                     uploadUrl,
                     chunk,
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(HTTP.CONTENT_LENGTH, String.valueOf(currentChunkSize)),
                     header(HTTP.CONTENT_RANGE, contentRange))) {
-                if (!response.isSuccessful() && response.code() != 202) {
+                if (!response.successful() && response.code() != 202) {
                     throw new IOException("Chunk upload failed: " + response.code());
                 }
             }

@@ -23,11 +23,11 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -40,25 +40,28 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Call;
+import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
-import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.stomp.body.StompBody;
 import org.miaixz.bus.fabric.protocol.stomp.broker.StompReceipt;
 import org.miaixz.bus.fabric.protocol.stomp.broker.StompTopic;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompCodec;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompFrame;
+import org.miaixz.bus.fabric.runtime.FilterChain;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -67,117 +70,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class StompSession {
-
-    /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
-     * STOMP SEND command.
-     */
-    private static final String COMMAND_SEND = "SEND";
-
-    /**
-     * STOMP SUBSCRIBE command.
-     */
-    private static final String COMMAND_SUBSCRIBE = "SUBSCRIBE";
-
-    /**
-     * STOMP UNSUBSCRIBE command.
-     */
-    private static final String COMMAND_UNSUBSCRIBE = "UNSUBSCRIBE";
-
-    /**
-     * STOMP DISCONNECT command.
-     */
-    private static final String COMMAND_DISCONNECT = "DISCONNECT";
-
-    /**
-     * STOMP RECEIPT command.
-     */
-    private static final String COMMAND_RECEIPT = "RECEIPT";
-
-    /**
-     * STOMP ERROR command.
-     */
-    private static final String COMMAND_ERROR = "ERROR";
-
-    /**
-     * STOMP MESSAGE command.
-     */
-    private static final String COMMAND_MESSAGE = "MESSAGE";
-
-    /**
-     * STOMP ACK command.
-     */
-    private static final String COMMAND_ACK = "ACK";
-
-    /**
-     * STOMP NACK command.
-     */
-    private static final String COMMAND_NACK = "NACK";
-
-    /**
-     * STOMP destination header.
-     */
-    private static final String HEADER_DESTINATION = "destination";
-
-    /**
-     * STOMP content-length header.
-     */
-    private static final String HEADER_CONTENT_LENGTH = "content-length";
-
-    /**
-     * STOMP content-type header.
-     */
-    private static final String HEADER_CONTENT_TYPE = "content-type";
-
-    /**
-     * STOMP id header.
-     */
-    private static final String HEADER_ID = "id";
-
-    /**
-     * STOMP receipt-id header.
-     */
-    private static final String HEADER_RECEIPT_ID = "receipt-id";
-
-    /**
-     * STOMP message-id header.
-     */
-    private static final String HEADER_MESSAGE_ID = "message-id";
-
-    /**
-     * STOMP subscription header.
-     */
-    private static final String HEADER_SUBSCRIPTION = "subscription";
-
-    /**
-     * Guard tag for inbound frames.
-     */
-    private static final String TAG_READ = "stomp-read";
-
-    /**
-     * Guard tag for outbound frames.
-     */
-    private static final String TAG_WRITE = "stomp-write";
-
-    /**
-     * Fallback log value for sessions without an address.
-     */
-    private static final String UNKNOWN = "unknown";
-
-    /**
-     * Old topic destination prefix.
-     */
-    public static final String TOPIC_PREFIX = "/topic";
-
-    /**
-     * Old queue destination prefix.
-     */
-    public static final String QUEUE_PREFIX = "/queue";
+public final class StompSession implements Session {
 
     /**
      * Frame sender.
@@ -225,14 +118,14 @@ public final class StompSession {
     private final GuardRule guard;
 
     /**
+     * Optional message filter.
+     */
+    private final Filter filter;
+
+    /**
      * Event observer.
      */
     private final EventObserver observer;
-
-    /**
-     * Lifecycle listener.
-     */
-    private final Listener<? super StompSession> listener;
 
     /**
      * Maximum bytes allowed when materializing session payloads.
@@ -240,9 +133,9 @@ public final class StompSession {
     private final long materializeMaxBytes;
 
     /**
-     * Lifecycle state.
+     * Lifecycle scope.
      */
-    private final AtomicReference<Status> state;
+    private final LifecycleScope scope;
 
     /**
      * Close notification guard.
@@ -259,8 +152,8 @@ public final class StompSession {
      */
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler) {
-        this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), Wiring.noop(),
-                Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), null, null,
+                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -278,8 +171,8 @@ public final class StompSession {
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
             final EventObserver observer, final Listener<? super StompSession> listener) {
-        this(sender, closeHook, cancelHook, handler, address, guard, observer, listener,
-                Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(sender, closeHook, cancelHook, handler, address, guard, observer, null, listener,
+                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -292,12 +185,13 @@ public final class StompSession {
      * @param address             session address
      * @param guard               optional guard
      * @param observer            observer
+     * @param filter              optional filter
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      */
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
-            final EventObserver observer, final Listener<? super StompSession> listener,
+            final EventObserver observer, final Filter filter, final Listener<? super StompSession> listener,
             final long materializeMaxBytes) {
         this.sender = require(sender, "STOMP sender");
         this.closeHook = closeHook == null ? () -> {
@@ -311,12 +205,51 @@ public final class StompSession {
         } : handler;
         this.address = address;
         this.guard = guard;
+        this.filter = filter;
         this.observer = EventObserver.safe(observer);
-        this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, this.observer);
+        this.scope = LifecycleScope.session(
+                this,
+                "stomp-session",
+                listener,
+                this.observer,
+                ObservationMarker.STOMP_OPEN,
+                ObservationMarker.STOMP_CLOSED,
+                ObservationMarker.STOMP_FAILED);
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
-        this.state = new AtomicReference<>(Status.OPENED);
         this.closeNotified = new AtomicBoolean();
+        this.scope.open(this);
+    }
+
+    /**
+     * Returns the session address.
+     *
+     * @return session address
+     */
+    @Override
+    public Address address() {
+        return address;
+    }
+
+    /**
+     * Sends a payload to the default destination.
+     *
+     * @param payload payload
+     * @return send call
+     */
+    @Override
+    public Call<Void> send(final Payload payload) {
+        return send(defaultDestination(), payload);
+    }
+
+    /**
+     * Returns session attributes.
+     *
+     * @return attributes
+     */
+    @Override
+    public Map<String, Object> attributes() {
+        return Map.of("observer", observer);
     }
 
     /**
@@ -331,18 +264,18 @@ public final class StompSession {
         final String target = StompMessage.validateToken(destination, "STOMP destination");
         require(payload, "STOMP payload");
         final Payload outgoing = snapshot(payload);
-        final Headers headers = Headers.builder().add(HEADER_DESTINATION, target)
-                .add(HEADER_CONTENT_LENGTH, Long.toString(outgoing.length())).build();
+        final Headers headers = Headers.builder().add(Builder.STOMP_HEADER_DESTINATION, target)
+                .add(HTTP.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Long.toString(outgoing.length())).build();
         Logger.info(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "STOMP send requested: scheme={}, host={}, port={}, destination={}, bytes={}",
                 scheme(),
                 host(),
                 port(),
                 target,
                 outgoing.length());
-        return write(StompFrame.of(COMMAND_SEND, headers, outgoing));
+        return write(StompFrame.of(Builder.STOMP_COMMAND_SEND, headers, outgoing));
     }
 
     /**
@@ -381,12 +314,12 @@ public final class StompSession {
         final String target = StompMessage.validateToken(destination, "STOMP destination");
         require(body, "STOMP body");
         final Payload outgoing = snapshot(body.payload());
-        final Headers headers = Headers.builder().add(HEADER_DESTINATION, target)
-                .add(HEADER_CONTENT_TYPE, body.media().toString())
-                .add(HEADER_CONTENT_LENGTH, Long.toString(outgoing.length())).build();
+        final Headers headers = Headers.builder().add(Builder.STOMP_HEADER_DESTINATION, target)
+                .add(HTTP.CONTENT_TYPE.toLowerCase(Locale.ROOT), body.media().toString())
+                .add(HTTP.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Long.toString(outgoing.length())).build();
         Logger.info(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "STOMP body send requested: scheme={}, host={}, port={}, destination={}, media={}, bytes={}",
                 scheme(),
                 host(),
@@ -394,7 +327,7 @@ public final class StompSession {
                 target,
                 body.media(),
                 outgoing.length());
-        return write(StompFrame.of(COMMAND_SEND, headers, outgoing));
+        return write(StompFrame.of(Builder.STOMP_COMMAND_SEND, headers, outgoing));
     }
 
     /**
@@ -422,10 +355,11 @@ public final class StompSession {
         Assert.notNull(handler, () -> new ValidateException("STOMP subscription handler must not be null"));
         final Headers extraHeaders = headers == null ? Headers.empty() : headers;
         final StompTopic topic = StompTopic.of(UUID.randomUUID().toString(), target);
-        final Headers.Builder builder = Headers.builder().add(HEADER_ID, topic.id())
-                .add(HEADER_DESTINATION, topic.destination());
+        final Headers.Builder builder = Headers.builder().add(Builder.STOMP_HEADER_ID, topic.id())
+                .add(Builder.STOMP_HEADER_DESTINATION, topic.destination());
         extraHeaders.asMap().forEach((name, values) -> {
-            if (!HEADER_ID.equalsIgnoreCase(name) && !HEADER_DESTINATION.equalsIgnoreCase(name)) {
+            if (!Builder.STOMP_HEADER_ID.equalsIgnoreCase(name)
+                    && !Builder.STOMP_HEADER_DESTINATION.equalsIgnoreCase(name)) {
                 values.forEach(value -> builder.add(name, value));
             }
         });
@@ -433,10 +367,10 @@ public final class StompSession {
             topics.put(topic.id(), new Subscription(topic, handler));
         }
         try {
-            write(StompFrame.of(COMMAND_SUBSCRIBE, builder.build(), Payload.empty()));
+            write(StompFrame.of(Builder.STOMP_COMMAND_SUBSCRIBE, builder.build(), Payload.empty()));
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "STOMP subscription created: scheme={}, host={}, port={}, destination={}, subscriptionId={}, activeSubscriptions={}",
                     scheme(),
                     host(),
@@ -450,7 +384,7 @@ public final class StompSession {
             }
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "STOMP subscription failed: scheme={}, host={}, port={}, destination={}, exception={}",
                     scheme(),
@@ -483,7 +417,7 @@ public final class StompSession {
      * @return topic
      */
     public StompTopic topic(final String destination, final Headers headers, final Consumer<StompMessage> handler) {
-        return subscribeOnce(prefixed(TOPIC_PREFIX, destination), headers, handler);
+        return subscribeOnce(prefixed(Builder.STOMP_TOPIC_PREFIX, destination), headers, handler);
     }
 
     /**
@@ -506,7 +440,7 @@ public final class StompSession {
      * @return topic
      */
     public StompTopic queue(final String destination, final Headers headers, final Consumer<StompMessage> handler) {
-        return subscribeOnce(prefixed(QUEUE_PREFIX, destination), headers, handler);
+        return subscribeOnce(prefixed(Builder.STOMP_QUEUE_PREFIX, destination), headers, handler);
     }
 
     /**
@@ -529,7 +463,7 @@ public final class StompSession {
      * @return send call
      */
     public Call<Void> ack(final String messageId) {
-        return acknowledge(COMMAND_ACK, messageId);
+        return acknowledge(Builder.STOMP_COMMAND_ACK, messageId);
     }
 
     /**
@@ -539,7 +473,7 @@ public final class StompSession {
      * @return send call
      */
     public Call<Void> ack(final StompMessage message) {
-        return acknowledge(COMMAND_ACK, message);
+        return acknowledge(Builder.STOMP_COMMAND_ACK, message);
     }
 
     /**
@@ -549,7 +483,7 @@ public final class StompSession {
      * @return send call
      */
     public Call<Void> nack(final String messageId) {
-        return acknowledge(COMMAND_NACK, messageId);
+        return acknowledge(Builder.STOMP_COMMAND_NACK, messageId);
     }
 
     /**
@@ -559,7 +493,7 @@ public final class StompSession {
      * @return send call
      */
     public Call<Void> nack(final StompMessage message) {
-        return acknowledge(COMMAND_NACK, message);
+        return acknowledge(Builder.STOMP_COMMAND_NACK, message);
     }
 
     /**
@@ -582,12 +516,12 @@ public final class StompSession {
         }
         write(
                 StompFrame.of(
-                        COMMAND_UNSUBSCRIBE,
-                        Headers.builder().add(HEADER_ID, topic.id()).build(),
+                        Builder.STOMP_COMMAND_UNSUBSCRIBE,
+                        Headers.builder().add(Builder.STOMP_HEADER_ID, topic.id()).build(),
                         Payload.empty()));
         Logger.info(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "STOMP subscription removed: scheme={}, host={}, port={}, destination={}, subscriptionId={}, activeSubscriptions={}",
                 scheme(),
                 host(),
@@ -621,7 +555,7 @@ public final class StompSession {
      * @return true when removed
      */
     public boolean untopic(final String destination) {
-        return unsubscribe(prefixed(TOPIC_PREFIX, destination));
+        return unsubscribe(prefixed(Builder.STOMP_TOPIC_PREFIX, destination));
     }
 
     /**
@@ -631,7 +565,7 @@ public final class StompSession {
      * @return true when removed
      */
     public boolean unqueue(final String destination) {
-        return unsubscribe(prefixed(QUEUE_PREFIX, destination));
+        return unsubscribe(prefixed(Builder.STOMP_QUEUE_PREFIX, destination));
     }
 
     /**
@@ -640,28 +574,34 @@ public final class StompSession {
      * @return true when state changed
      */
     public boolean close() {
-        if (transition(Status.CLOSED)) {
-            final StatefulException closeCause = new StatefulException("STOMP session was closed");
-            Logger.info(
-                    true,
-                    LOG_TAG,
-                    "STOMP session close started: scheme={}, host={}, port={}",
-                    scheme(),
-                    host(),
-                    port());
-            try {
-                write(StompFrame.of(COMMAND_DISCONNECT, Headers.empty(), Payload.empty()));
-            } catch (final RuntimeException ignored) {
-                // The close hook still owns transport cleanup after a best-effort DISCONNECT.
-            } finally {
-                cleanup(closeCause);
-                closeHook.run();
-            }
-            notifyClosed();
-            Logger.info(false, LOG_TAG, "STOMP session closed: scheme={}, host={}, port={}", scheme(), host(), port());
-            return true;
+        final Status current = scope.state();
+        if (current.terminal()) {
+            return false;
         }
-        return false;
+        if (current != Status.CLOSING) {
+            scope.closing();
+        }
+        final StatefulException closeCause = new StatefulException("STOMP session was closed");
+        Logger.info(
+                true,
+                "Fabric",
+                "STOMP session close started: scheme={}, host={}, port={}",
+                scheme(),
+                host(),
+                port());
+        try {
+            write(StompFrame.of(Builder.STOMP_COMMAND_DISCONNECT, Headers.empty(), Payload.empty()));
+        } catch (final RuntimeException ignored) {
+            // The close hook still owns transport cleanup after a best-effort DISCONNECT.
+        } finally {
+            cleanup(closeCause);
+            closeHook.run();
+        }
+        final boolean changed = notifyClosed();
+        if (changed) {
+            Logger.info(false, "Fabric", "STOMP session closed: scheme={}, host={}, port={}", scheme(), host(), port());
+        }
+        return changed;
     }
 
     /**
@@ -670,34 +610,31 @@ public final class StompSession {
      * @return true when state changed
      */
     public boolean cancel() {
-        while (true) {
-            final Status current = state.get();
-            if (current.terminal()) {
-                return false;
-            }
-            if (state.compareAndSet(current, Status.CANCELLED)) {
-                final StatefulException cancelled = new StatefulException("STOMP session was cancelled");
-                Logger.info(
-                        true,
-                        LOG_TAG,
-                        "STOMP session cancel started: scheme={}, host={}, port={}",
-                        scheme(),
-                        host(),
-                        port());
-                cleanup(cancelled);
-                cancelHook.run();
-                emit(ObservationMarker.STOMP_FAILED, Payload.empty(), null);
-                listener.failure(this, cancelled);
-                Logger.info(
-                        false,
-                        LOG_TAG,
-                        "STOMP session cancelled: scheme={}, host={}, port={}",
-                        scheme(),
-                        host(),
-                        port());
-                return true;
-            }
+        final Status current = scope.state();
+        if (current.terminal()) {
+            return false;
         }
+        final StatefulException cancelled = new StatefulException("STOMP session was cancelled");
+        Logger.info(
+                true,
+                "Fabric",
+                "STOMP session cancel started: scheme={}, host={}, port={}",
+                scheme(),
+                host(),
+                port());
+        cleanup(cancelled);
+        cancelHook.run();
+        final boolean changed = scope.cancel(cancelled);
+        if (changed) {
+            Logger.info(
+                    false,
+                    "Fabric",
+                    "STOMP session cancelled: scheme={}, host={}, port={}",
+                    scheme(),
+                    host(),
+                    port());
+        }
+        return changed;
     }
 
     /**
@@ -705,18 +642,9 @@ public final class StompSession {
      *
      * @return state
      */
+    @Override
     public Status state() {
-        return state.get();
-    }
-
-    /**
-     * Returns whether this session is opened.
-     *
-     * @return true when opened
-     */
-    boolean opened() {
-        final Status current = state.get();
-        return current == Status.OPENED || current == Status.RUNNING;
+        return scope.state();
     }
 
     /**
@@ -746,13 +674,13 @@ public final class StompSession {
      */
     void dispatch(final StompFrame frame) {
         require(frame, "STOMP frame");
-        if (COMMAND_RECEIPT.equals(frame.command())) {
-            final String receiptId = frame.headers().get(HEADER_RECEIPT_ID);
+        if (Builder.STOMP_COMMAND_RECEIPT.equals(frame.command())) {
+            final String receiptId = frame.headers().get(Builder.STOMP_HEADER_RECEIPT_ID);
             if (receiptId != null) {
                 receipts.complete(receiptId);
                 Logger.debug(
                         false,
-                        LOG_TAG,
+                        "Fabric",
                         "STOMP receipt completed: scheme={}, host={}, port={}, receiptId={}",
                         scheme(),
                         host(),
@@ -761,13 +689,13 @@ public final class StompSession {
             }
             return;
         }
-        if (COMMAND_ERROR.equals(frame.command())) {
+        if (Builder.STOMP_COMMAND_ERROR.equals(frame.command())) {
             final ProtocolException failure = new ProtocolException(
                     frame.body().text(java.nio.charset.StandardCharsets.UTF_8));
             fail(failure);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     failure,
                     "STOMP ERROR frame received: scheme={}, host={}, port={}",
                     scheme(),
@@ -775,48 +703,31 @@ public final class StompSession {
                     port());
             throw failure;
         }
-        if (!COMMAND_MESSAGE.equals(frame.command())) {
+        if (!Builder.STOMP_COMMAND_MESSAGE.equals(frame.command())) {
             return;
         }
-        final String destination = frame.headers().get(HEADER_DESTINATION);
-        final StompMessage message = StompMessage.of(destination, frame.headers(), frame.body());
-        checkGuard(frame, TAG_READ);
-        emit(ObservationMarker.STOMP_MESSAGE, frame.body(), null);
+        final StompFrame received = filter(frame, Builder.STOMP_TAG_READ);
+        final String destination = received.headers().get(Builder.STOMP_HEADER_DESTINATION);
+        final StompMessage message = StompMessage.of(destination, received.headers(), received.body());
+        checkGuard(received, Builder.STOMP_TAG_READ);
+        emit(ObservationMarker.STOMP_MESSAGE, received.body(), null);
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "STOMP message received: scheme={}, host={}, port={}, destination={}, bytes={}",
                 scheme(),
                 host(),
                 port(),
                 destination,
-                frame.body().length());
-        accept(handler, message, frame.body());
+                received.body().length());
+        accept(handler, message, received.body());
         final List<Subscription> snapshot;
         synchronized (topics) {
             snapshot = new ArrayList<>(topics.values());
         }
         for (final Subscription subscription : snapshot) {
             if (subscription.topic.matches(message)) {
-                accept(subscription.handler, message, frame.body());
-            }
-        }
-    }
-
-    /**
-     * Transitions to a terminal state.
-     *
-     * @param next next terminal state
-     * @return true when state changed
-     */
-    private boolean transition(final Status next) {
-        while (true) {
-            final Status current = state.get();
-            if (current.terminal()) {
-                return false;
-            }
-            if (state.compareAndSet(current, next)) {
-                return true;
+                accept(subscription.handler, message, received.body());
             }
         }
     }
@@ -827,13 +738,11 @@ public final class StompSession {
      * @param cause failure cause
      */
     private void fail(final RuntimeException cause) {
-        if (transition(Status.FAILED)) {
+        if (scope.fail(cause)) {
             cleanup(cause);
-            emit(ObservationMarker.STOMP_FAILED, Payload.empty(), cause);
-            listener.failure(this, cause);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     cause,
                     "STOMP session failed: scheme={}, host={}, port={}, exception={}",
                     scheme(),
@@ -858,11 +767,8 @@ public final class StompSession {
     /**
      * Notifies close observers once.
      */
-    private void notifyClosed() {
-        if (closeNotified.compareAndSet(false, true)) {
-            emit(ObservationMarker.STOMP_CLOSED, Payload.empty(), null);
-            listener.close(this);
-        }
+    private boolean notifyClosed() {
+        return scope.close(this) && closeNotified.compareAndSet(false, true);
     }
 
     /**
@@ -879,7 +785,7 @@ public final class StompSession {
             emit(ObservationMarker.STOMP_FAILED, body, e);
             Logger.warn(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "STOMP message handler failed: scheme={}, host={}, port={}, destination={}, exception={}",
                     scheme(),
@@ -902,13 +808,14 @@ public final class StompSession {
         final String id = StompMessage.validateToken(messageId, "STOMP message id");
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "STOMP acknowledgement requested: scheme={}, host={}, port={}, command={}",
                 scheme(),
                 host(),
                 port(),
                 command);
-        return write(StompFrame.of(command, Headers.builder().add(HEADER_ID, id).build(), Payload.empty()));
+        return write(
+                StompFrame.of(command, Headers.builder().add(Builder.STOMP_HEADER_ID, id).build(), Payload.empty()));
     }
 
     /**
@@ -921,14 +828,28 @@ public final class StompSession {
     private Call<Void> acknowledge(final String command, final StompMessage message) {
         ensureOpen();
         final StompMessage current = require(message, "STOMP message");
-        final String id = current.headers().get(HEADER_MESSAGE_ID);
-        final String subscription = current.headers().get(HEADER_SUBSCRIPTION);
+        final String id = current.headers().get(Builder.STOMP_HEADER_MESSAGE_ID);
+        final String subscription = current.headers().get(Builder.STOMP_HEADER_SUBSCRIPTION);
         final Headers.Builder headers = Headers.builder()
-                .add(HEADER_ID, StompMessage.validateToken(id, "STOMP message id"));
+                .add(Builder.STOMP_HEADER_ID, StompMessage.validateToken(id, "STOMP message id"));
         if (subscription != null) {
-            headers.add(HEADER_SUBSCRIPTION, StompMessage.validateToken(subscription, "STOMP subscription id"));
+            headers.add(
+                    Builder.STOMP_HEADER_SUBSCRIPTION,
+                    StompMessage.validateToken(subscription, "STOMP subscription id"));
         }
         return write(StompFrame.of(command, headers.build(), Payload.empty()));
+    }
+
+    /**
+     * Returns the default destination derived from the session address.
+     *
+     * @return default destination
+     */
+    private String defaultDestination() {
+        if (address == null || address.path() == null || Symbol.SLASH.equals(address.path())) {
+            throw new ValidateException("STOMP default destination must be configured");
+        }
+        return address.path();
     }
 
     /**
@@ -976,22 +897,39 @@ public final class StompSession {
      * @return send call
      */
     private Call<Void> write(final StompFrame frame) {
-        checkGuard(frame, TAG_WRITE);
+        final StompFrame outgoing = filter(frame, Builder.STOMP_TAG_WRITE);
+        checkGuard(outgoing, Builder.STOMP_TAG_WRITE);
         final Buffer output = new Buffer();
-        codec.encode(frame, output);
+        codec.encode(outgoing, output);
         final Call<Void> call = sender.apply(output);
-        final ObservedCall observed = new ObservedCall(call, frame.body());
+        final ObservedCall observed = new ObservedCall(call, outgoing.body());
         observed.observeIfDone();
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "STOMP frame written: scheme={}, host={}, port={}, command={}, bytes={}",
                 scheme(),
                 host(),
                 port(),
-                frame.command(),
-                frame.body().length());
+                outgoing.command(),
+                outgoing.body().length());
         return observed;
+    }
+
+    /**
+     * Applies the optional message filter to a STOMP frame.
+     *
+     * @param frame frame
+     * @param tag   direction tag
+     * @return filtered frame
+     */
+    private StompFrame filter(final StompFrame frame, final String tag) {
+        if (filter == null || address == null) {
+            return frame;
+        }
+        final Message filtered = FilterChain
+                .apply(Message.of(Protocol.STOMP, address, frame.headers(), frame.body(), tag), filter);
+        return StompFrame.of(frame.command(), filtered.headers(), filtered.payload());
     }
 
     /**
@@ -1004,17 +942,17 @@ public final class StompSession {
         if (guard != null && address != null) {
             Logger.debug(
                     true,
-                    LOG_TAG,
+                    "Fabric",
                     "STOMP guard check started: scheme={}, host={}, port={}, command={}, tag={}",
                     scheme(),
                     host(),
                     port(),
                     frame.command(),
                     tag);
-            guard.check(Message.of(address.protocol(), address, frame.headers(), frame.body(), tag)).throwIfRejected();
+            guard.check(Message.of(Protocol.STOMP, address, frame.headers(), frame.body(), tag)).throwIfRejected();
             Logger.debug(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "STOMP guard check accepted: scheme={}, host={}, port={}, command={}, tag={}",
                     scheme(),
                     host(),
@@ -1035,15 +973,7 @@ public final class StompSession {
         if (address == null) {
             return;
         }
-        final FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, address.scheme())
-                .tag(Tags.HOST, address.host()).tag(Tags.PORT, Integer.toString(address.port()));
-        if (body != null && body.length() >= Normal.LONG_ZERO) {
-            event.tag(Tags.BYTES, Long.toString(body.length()));
-        }
-        if (cause != null) {
-            event.cause(cause);
-        }
-        observer.emit(event.build());
+        scope.emit(marker, cause);
     }
 
     /**
@@ -1103,7 +1033,7 @@ public final class StompSession {
      * @return scheme or unknown
      */
     private String scheme() {
-        return address == null ? UNKNOWN : address.scheme();
+        return address == null ? Normal.UNKNOWN : address.scheme();
     }
 
     /**
@@ -1112,7 +1042,7 @@ public final class StompSession {
      * @return host or unknown
      */
     private String host() {
-        return address == null ? UNKNOWN : address.host();
+        return address == null ? Normal.UNKNOWN : address.host();
     }
 
     /**
@@ -1178,6 +1108,11 @@ public final class StompSession {
             this.observed = new AtomicBoolean();
         }
 
+        /**
+         * Executes the delegate send call and emits write observation.
+         *
+         * @return null
+         */
         @Override
         public Void execute() {
             try {
@@ -1190,6 +1125,11 @@ public final class StompSession {
             }
         }
 
+        /**
+         * Enqueues the delegate send call and observes immediate completion when available.
+         *
+         * @return this call
+         */
         @Override
         public Call<Void> enqueue() {
             delegate.enqueue();
@@ -1197,6 +1137,11 @@ public final class StompSession {
             return this;
         }
 
+        /**
+         * Awaits the delegate send call and emits write observation.
+         *
+         * @return null
+         */
         @Override
         public Void await() {
             try {
@@ -1209,6 +1154,12 @@ public final class StompSession {
             }
         }
 
+        /**
+         * Awaits the delegate send call within a timeout and emits write observation.
+         *
+         * @param timeout timeout
+         * @return null
+         */
         @Override
         public Void await(final Duration timeout) {
             try {
@@ -1221,6 +1172,11 @@ public final class StompSession {
             }
         }
 
+        /**
+         * Cancels the delegate send call and emits cancellation observation.
+         *
+         * @return true when cancelled
+         */
         @Override
         public boolean cancel() {
             final boolean cancelled = delegate.cancel();
@@ -1230,14 +1186,34 @@ public final class StompSession {
             return cancelled;
         }
 
+        /**
+         * Returns whether the delegate send call is cancelled.
+         *
+         * @return true when cancelled
+         */
         @Override
         public boolean cancelled() {
             return delegate.cancelled();
         }
 
+        /**
+         * Returns whether the delegate send call is complete.
+         *
+         * @return true when complete
+         */
         @Override
         public boolean done() {
             return delegate.done();
+        }
+
+        /**
+         * Returns the delegate lifecycle state.
+         *
+         * @return state
+         */
+        @Override
+        public Status state() {
+            return delegate.state();
         }
 
         /**

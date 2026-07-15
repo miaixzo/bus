@@ -22,7 +22,12 @@ package org.miaixz.bus.fabric.protocol.stomp;
 import org.miaixz.bus.fabric.Listener;
 
 /**
- * Old-style STOMP lifecycle listener adapter.
+ * STOMP lifecycle listener adapter.
+ * <p>
+ * This adapter exposes STOMP-specific lifecycle callbacks while bridging them to the shared fabric listener contract.
+ * Subclasses override {@link #connected(StompSession)}, {@link #disconnected(StompSession)} or
+ * {@link #error(StompSession, Throwable)} to handle session events.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -30,14 +35,14 @@ import org.miaixz.bus.fabric.Listener;
 public abstract class StompListener implements Listener<StompSession> {
 
     /**
-     * Creates a STOMP listener adapter.
+     * Creates a STOMP lifecycle listener adapter.
      */
     public StompListener() {
         // Listener adapter.
     }
 
     /**
-     * Invoked when STOMP CONNECTED is complete.
+     * Handles a successfully established STOMP session.
      *
      * @param session session
      */
@@ -46,7 +51,7 @@ public abstract class StompListener implements Listener<StompSession> {
     }
 
     /**
-     * Invoked when the STOMP session closes normally.
+     * Handles a closed STOMP session.
      *
      * @param session session
      */
@@ -55,7 +60,7 @@ public abstract class StompListener implements Listener<StompSession> {
     }
 
     /**
-     * Invoked when the STOMP session fails.
+     * Handles a STOMP session failure.
      *
      * @param session session, when available
      * @param cause   failure cause
@@ -64,16 +69,32 @@ public abstract class StompListener implements Listener<StompSession> {
         // Default listener intentionally performs no action.
     }
 
+    /**
+     * Bridges the shared open callback to the STOMP connected callback.
+     *
+     * @param source STOMP session
+     */
     @Override
     public final void open(final StompSession source) {
         connected(source);
     }
 
+    /**
+     * Bridges the shared close callback to the STOMP disconnected callback.
+     *
+     * @param source STOMP session
+     */
     @Override
     public final void close(final StompSession source) {
         disconnected(source);
     }
 
+    /**
+     * Bridges the shared failure callback to the STOMP error callback.
+     *
+     * @param source STOMP session
+     * @param cause  failure cause
+     */
     @Override
     public final void failure(final StompSession source, final Throwable cause) {
         error(source, cause);

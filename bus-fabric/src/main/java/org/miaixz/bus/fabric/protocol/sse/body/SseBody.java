@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.sse.body;
 
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
@@ -29,49 +28,20 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.ProgressBody;
 import org.miaixz.bus.fabric.codec.body.ResponseBody;
 import org.miaixz.bus.fabric.protocol.sse.SseEvent;
+import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
 
 /**
- * SSE response body representing a text/event-stream payload.
+ * SSE response body representing a {@code text/event-stream} payload.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public final class SseBody implements ResponseBody, ProgressBody {
-
-    /**
-     * SSE media type.
-     */
-    private static final MediaType EVENT_STREAM = MediaType.SERVER_SENT_EVENTS_TYPE;
-
-    /**
-     * Default SSE event type.
-     */
-    private static final String DEFAULT_EVENT = "message";
-
-    /**
-     * Event id line prefix.
-     */
-    private static final String ID_PREFIX = "id: ";
-
-    /**
-     * Event type line prefix.
-     */
-    private static final String EVENT_PREFIX = "event: ";
-
-    /**
-     * Retry line prefix.
-     */
-    private static final String RETRY_PREFIX = "retry: ";
-
-    /**
-     * Data line prefix.
-     */
-    private static final String DATA_PREFIX = "data: ";
 
     /**
      * Payload.
@@ -114,6 +84,16 @@ public final class SseBody implements ResponseBody, ProgressBody {
     }
 
     /**
+     * Creates an SSE body from a response body.
+     *
+     * @param body response body
+     * @return SSE body
+     */
+    public static SseBody of(final ResponseBody body) {
+        return of(require(body, "SSE response body").payload());
+    }
+
+    /**
      * Creates an SSE body from a source.
      *
      * @param source source
@@ -122,31 +102,6 @@ public final class SseBody implements ResponseBody, ProgressBody {
      */
     public static SseBody source(final Source source, final long length) {
         return of(Payload.source(source, length));
-    }
-
-    /**
-     * Creates an SSE body from a stream through the JDK stream compatibility boundary.
-     *
-     * @param stream stream
-     * @return SSE body
-     * @deprecated use {@link #source(Source, long)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static SseBody stream(final InputStream stream) {
-        return stream(stream, Normal.__1);
-    }
-
-    /**
-     * Creates an SSE body from a stream through the JDK stream compatibility boundary.
-     *
-     * @param stream stream
-     * @param length declared length, or -1
-     * @return SSE body
-     * @deprecated use {@link #source(Source, long)}
-     */
-    @Deprecated(since = "8.8.3")
-    public static SseBody stream(final InputStream stream, final long length) {
-        return source(IoKit.source(stream), length);
     }
 
     /**
@@ -179,18 +134,26 @@ public final class SseBody implements ResponseBody, ProgressBody {
         require(event, "SSE event");
         final StringBuilder builder = new StringBuilder();
         if (event.id() != null) {
-            builder.append(ID_PREFIX).append(event.id()).append(Symbol.LF);
+            builder.append(Builder.SSE_BODY_ID_PREFIX).append(event.id()).append(Symbol.LF);
         }
-        if (!DEFAULT_EVENT.equals(event.event())) {
-            builder.append(EVENT_PREFIX).append(event.event()).append(Symbol.LF);
+        if (!Builder.SSE_DEFAULT_EVENT.equals(event.event())) {
+            builder.append(Builder.SSE_BODY_EVENT_PREFIX).append(event.event()).append(Symbol.LF);
         }
         if (event.retry() != null) {
-            builder.append(RETRY_PREFIX).append(event.retry().toMillis()).append(Symbol.LF);
+            builder.append(Builder.SSE_BODY_RETRY_PREFIX).append(event.retry().toMillis()).append(Symbol.LF);
         }
-        final String data = event.data() == null ? Normal.EMPTY : event.data();
-        appendData(builder, data);
+        appendData(builder, event.data() == null ? Normal.EMPTY : event.data());
         builder.append(Symbol.LF);
         return builder.toString();
+    }
+
+    /**
+     * Opens this SSE body as an event stream reader.
+     *
+     * @return SSE reader
+     */
+    public SseReader reader() {
+        return new SseReader(source());
     }
 
     /**
@@ -203,26 +166,52 @@ public final class SseBody implements ResponseBody, ProgressBody {
         return new SseBody(payload, ProgressBody.Tracker.of(payload, listener));
     }
 
+    /**
+     * Returns the current payload, wrapped with progress tracking when enabled.
+     *
+     * @return current payload
+     */
     @Override
     public Payload payload() {
         return progress == null ? payload : progress.payload();
     }
 
+    /**
+     * Returns the SSE event-stream media type.
+     *
+     * @return media type
+     */
     @Override
     public MediaType media() {
-        return EVENT_STREAM;
+        return MediaType.SERVER_SENT_EVENTS_TYPE;
     }
 
+    /**
+     * Returns transferred byte count reported by the progress tracker.
+     *
+     * @return transferred bytes
+     */
     @Override
     public long transferred() {
         return progress == null ? Normal.LONG_ZERO : progress.transferred();
     }
 
+    /**
+     * Returns the declared payload length.
+     *
+     * @return total bytes, or -1 when unknown
+     */
     @Override
     public long total() {
         return payload.length();
     }
 
+    /**
+     * Advances progress notification by a byte step.
+     *
+     * @param bytes step bytes
+     * @return this body
+     */
     @Override
     public SseBody stepBytes(final long bytes) {
         if (progress == null) {
@@ -233,6 +222,12 @@ public final class SseBody implements ResponseBody, ProgressBody {
         return this;
     }
 
+    /**
+     * Advances progress notification by a total-size rate.
+     *
+     * @param rate progress rate
+     * @return this body
+     */
     @Override
     public SseBody stepRate(final double rate) {
         if (progress == null) {
@@ -283,7 +278,7 @@ public final class SseBody implements ResponseBody, ProgressBody {
      * @param end     line end index
      */
     private static void appendDataLine(final StringBuilder builder, final String data, final int start, final int end) {
-        builder.append(DATA_PREFIX).append(data, start, end).append(Symbol.LF);
+        builder.append(Builder.SSE_BODY_DATA_PREFIX).append(data, start, end).append(Symbol.LF);
     }
 
 }

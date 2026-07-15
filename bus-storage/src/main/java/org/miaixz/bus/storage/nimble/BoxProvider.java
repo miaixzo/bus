@@ -219,15 +219,15 @@ public class BoxProvider extends AbstractProvider {
 
             String fileId = (String) metadata.get("id");
             String url = API_BASE + "/files/" + fileId + "/content";
-            HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()));
-            if (!response.isSuccessful()) {
+            Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()));
+            if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
                 return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
             }
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(toBlob(bucket, objectKey, metadata, response.stream())).build();
+                    .data(toBlob(bucket, objectKey, metadata, stream(response))).build();
         } catch (Exception e) {
             Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
             Logger.error(
@@ -263,12 +263,12 @@ public class BoxProvider extends AbstractProvider {
 
             String url = API_BASE + "/files/" + fileId + "/content";
 
-            try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+                if (!response.successful()) {
                     throw new IOException("Download failed: " + response.code());
                 }
 
-                byte[] content = response.body().bytes();
+                byte[] content = response.bytes();
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .data(content).build();
             }
@@ -317,12 +317,12 @@ public class BoxProvider extends AbstractProvider {
 
             String url = API_BASE + "/files/" + fileId + "/content";
 
-            try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+                if (!response.successful()) {
                     throw new IOException("Download failed: " + response.code());
                 }
 
-                try (InputStream inputStream = response.body().byteStream();
+                try (InputStream inputStream = stream(response);
                         OutputStream outputStream = new FileOutputStream(file)) {
                     inputStream.transferTo(outputStream);
                 }
@@ -357,12 +357,12 @@ public class BoxProvider extends AbstractProvider {
             String folderId = context.getBucket();
             String url = API_BASE + "/folders/" + folderId + "/items?fields=id,name,size,modified_at,type";
 
-            try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+                if (!response.successful()) {
                     throw new IOException("List failed: " + response.code());
                 }
 
-                Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+                Map<String, Object> jsonMap = JsonKit.toMap(response.text());
                 List<Map<String, Object>> entries = (List<Map<String, Object>>) jsonMap.get("entries");
                 List<Blob> blobs = new ArrayList<>();
 
@@ -444,12 +444,12 @@ public class BoxProvider extends AbstractProvider {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("name", newName);
 
-            try (HttpResult response = put(
+            try (Response response = put(
                     url,
                     JsonKit.toJsonString(requestBody),
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Rename failed: " + response.code());
                 }
 
@@ -531,16 +531,16 @@ public class BoxProvider extends AbstractProvider {
             System.arraycopy(content, 0, body, header.length, content.length);
             System.arraycopy(footer, 0, body, header.length + content.length, footer.length);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     body,
                     "multipart/form-data; boundary=" + boundary,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Upload failed: " + response.code());
                 }
 
-                Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+                Map<String, Object> jsonMap = JsonKit.toMap(response.text());
                 List<Map<String, Object>> entries = (List<Map<String, Object>>) jsonMap.get("entries");
                 String fileId = entries != null && !entries.isEmpty() ? (String) entries.get(0).get("id") : null;
 
@@ -656,8 +656,8 @@ public class BoxProvider extends AbstractProvider {
 
             String url = API_BASE + "/files/" + fileId;
 
-            try (HttpResult response = delete(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
-                if (!response.isSuccessful()) {
+            try (Response response = delete(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+                if (!response.successful()) {
                     throw new IOException("Delete failed: " + response.code());
                 }
 
@@ -701,12 +701,12 @@ public class BoxProvider extends AbstractProvider {
     private String findFileByName(String fileName, String folderId) throws IOException {
         String url = API_BASE + "/folders/" + folderId + "/items?fields=id,name,type";
 
-        try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
-            if (!response.isSuccessful()) {
+        try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+            if (!response.successful()) {
                 throw new IOException("Search failed: " + response.code());
             }
 
-            Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+            Map<String, Object> jsonMap = JsonKit.toMap(response.text());
             List<Map<String, Object>> entries = (List<Map<String, Object>>) jsonMap.get("entries");
 
             if (entries != null) {
@@ -748,14 +748,14 @@ public class BoxProvider extends AbstractProvider {
     private Map<String, Object> getFileMetadata(String fileId) throws IOException {
         String url = API_BASE + "/files/" + fileId
                 + "?fields=id,name,size,modified_at,content_modified_at,type,sha1,extension";
-        try (HttpResult response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+        try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
             if (response.code() == 404) {
                 return null;
             }
-            if (!response.isSuccessful()) {
+            if (!response.successful()) {
                 throw new IOException("Metadata failed: " + response.code());
             }
-            Map<String, Object> metadata = JsonKit.toMap(response.body().string());
+            Map<String, Object> metadata = JsonKit.toMap(response.text());
             return "file".equals(metadata.get("type")) ? metadata : null;
         }
     }

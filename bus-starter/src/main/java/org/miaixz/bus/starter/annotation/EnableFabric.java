@@ -17,10 +17,29 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.starter.annotation;
+
+import java.lang.annotation.*;
+
+import org.springframework.context.annotation.Import;
+
+import org.miaixz.bus.starter.fabric.FabricConfiguration;
+
 /**
- * Socket communication service support.
+ * Enables fabric communication server features.
+ * <p>
+ * This annotation imports {@link FabricConfiguration}, which sets up fabric protocol quick services such as
+ * {@link org.miaixz.bus.starter.fabric.SocketQuickService} and
+ * {@link org.miaixz.bus.starter.fabric.WebSocketQuickService}.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.starter.socket;
+@Inherited
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+@Import({ FabricConfiguration.class })
+public @interface EnableFabric {
+
+}

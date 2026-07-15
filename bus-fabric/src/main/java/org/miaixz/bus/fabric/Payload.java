@@ -20,8 +20,6 @@
 package org.miaixz.bus.fabric;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -34,7 +32,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * Payload abstraction that keeps byte-array payloads repeatable and stream payloads one-shot.
@@ -88,21 +85,42 @@ public interface Payload {
     private static Payload repeatable(final ByteString snapshot) {
         return new Payload() {
 
+            /**
+             * Returns the repeatable snapshot length.
+             *
+             * @return snapshot length
+             */
             @Override
             public long length() {
                 return snapshot.size();
             }
 
+            /**
+             * Opens a new source over the repeatable snapshot.
+             *
+             * @return repeatable snapshot source
+             */
             @Override
             public Source source() {
                 return new Buffer().write(snapshot);
             }
 
+            /**
+             * Returns the repeatable snapshot bytes using the default threshold.
+             *
+             * @return snapshot bytes
+             */
             @Override
             public byte[] bytes() {
-                return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
+            /**
+             * Returns the repeatable snapshot bytes using an explicit threshold.
+             *
+             * @param maxBytes maximum bytes to materialize
+             * @return snapshot bytes
+             */
             @Override
             public byte[] bytes(final long maxBytes) {
                 validateMaterializeMaxBytes(maxBytes);
@@ -112,17 +130,35 @@ public interface Payload {
                 return snapshot.toByteArray();
             }
 
+            /**
+             * Decodes the repeatable snapshot using the default threshold.
+             *
+             * @param charset charset
+             * @return decoded text
+             */
             @Override
             public String text(final Charset charset) {
-                return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
+            /**
+             * Decodes the repeatable snapshot using an explicit threshold.
+             *
+             * @param charset  charset
+             * @param maxBytes maximum bytes to materialize
+             * @return decoded text
+             */
             @Override
             public String text(final Charset charset, final long maxBytes) {
                 validateCharset(charset);
                 return new String(bytes(maxBytes), charset);
             }
 
+            /**
+             * Returns true because byte snapshots can be read repeatedly.
+             *
+             * @return true
+             */
             @Override
             public boolean repeatable() {
                 return true;
@@ -146,22 +182,6 @@ public interface Payload {
     }
 
     /**
-     * Creates a one-shot streaming payload through the JDK stream compatibility boundary.
-     *
-     * @param input  input stream
-     * @param length declared length, or -1 when unknown
-     * @return stream payload
-     * @deprecated use {@link #source(Source, long)}
-     */
-    @Deprecated(since = "8.8.3")
-    static Payload stream(final InputStream input, final long length) {
-        if (input == null) {
-            throw new ValidateException("Payload stream must not be null");
-        }
-        return source(IoKit.source(input), length);
-    }
-
-    /**
      * Creates a one-shot source payload.
      *
      * @param input  source
@@ -178,11 +198,21 @@ public interface Payload {
         final AtomicBoolean opened = new AtomicBoolean();
         return new Payload() {
 
+            /**
+             * Returns the declared one-shot stream length.
+             *
+             * @return declared length, or -1 when unknown
+             */
             @Override
             public long length() {
                 return length;
             }
 
+            /**
+             * Opens the one-shot source exactly once.
+             *
+             * @return one-shot source
+             */
             @Override
             public Source source() {
                 if (!opened.compareAndSet(false, true)) {
@@ -191,27 +221,56 @@ public interface Payload {
                 return input;
             }
 
+            /**
+             * Materializes this one-shot stream using the default threshold.
+             *
+             * @return materialized bytes
+             */
             @Override
             public byte[] bytes() {
-                return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
+            /**
+             * Materializes this one-shot stream using an explicit threshold.
+             *
+             * @param maxBytes maximum bytes to materialize
+             * @return materialized bytes
+             */
             @Override
             public byte[] bytes(final long maxBytes) {
                 return materialize(this, maxBytes, "Payload.bytes(long)");
             }
 
+            /**
+             * Decodes this one-shot stream using the default threshold.
+             *
+             * @param charset charset
+             * @return decoded text
+             */
             @Override
             public String text(final Charset charset) {
-                return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
+            /**
+             * Decodes this one-shot stream using an explicit threshold.
+             *
+             * @param charset  charset
+             * @param maxBytes maximum bytes to materialize
+             * @return decoded text
+             */
             @Override
             public String text(final Charset charset, final long maxBytes) {
                 validateCharset(charset);
                 return new String(bytes(maxBytes), charset);
             }
 
+            /**
+             * Returns false because the source can be opened only once.
+             *
+             * @return false
+             */
             @Override
             public boolean repeatable() {
                 return false;
@@ -234,23 +293,12 @@ public interface Payload {
     Source source();
 
     /**
-     * Opens a compatibility stream backed by {@link #source()}.
-     *
-     * @return payload stream
-     * @deprecated use {@link #source()}
-     */
-    @Deprecated(since = "8.8.3")
-    default InputStream stream() {
-        return new SourceInputStream(source());
-    }
-
-    /**
      * Reads all payload bytes.
      *
      * @return payload bytes
      */
     default byte[] bytes() {
-        return materialize(this, Options.DEFAULT_MATERIALIZE_MAX_BYTES, "Payload.bytes()");
+        return materialize(this, Builder.DEFAULT_MATERIALIZE_MAX_BYTES, "Payload.bytes()");
     }
 
     /**
@@ -270,7 +318,7 @@ public interface Payload {
      * @return payload text
      */
     default String text(final Charset charset) {
-        return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -374,25 +422,6 @@ public interface Payload {
     }
 
     /**
-     * Copies a payload stream to an output stream without materializing it.
-     *
-     * @param payload payload
-     * @param output  output stream
-     * @return copied byte count
-     * @deprecated use {@link #copyTo(Payload, Sink)}
-     */
-    @Deprecated(since = "8.8.3")
-    static long copyTo(final Payload payload, final OutputStream output) {
-        if (payload == null) {
-            throw new ValidateException("Payload must not be null");
-        }
-        if (output == null) {
-            throw new ValidateException("Output stream must not be null");
-        }
-        return copyTo(payload, IoKit.sink(output));
-    }
-
-    /**
      * Validates a charset.
      *
      * @param charset charset
@@ -438,81 +467,6 @@ public interface Payload {
             return "Payload.materialize";
         }
         return entry;
-    }
-
-    /**
-     * Input stream compatibility wrapper backed by a core source.
-     */
-    final class SourceInputStream extends InputStream {
-
-        /**
-         * Delegate source.
-         */
-        private final Source source;
-
-        /**
-         * Read buffer.
-         */
-        private final Buffer buffer = new Buffer();
-
-        /**
-         * Closed flag.
-         */
-        private boolean closed;
-
-        /**
-         * Creates a source-backed stream.
-         *
-         * @param source delegate source
-         */
-        SourceInputStream(final Source source) {
-            if (source == null) {
-                throw new ValidateException("Payload source must not be null");
-            }
-            this.source = source;
-        }
-
-        @Override
-        public int read() throws IOException {
-            ensureOpen();
-            final long read = source.read(buffer, 1);
-            return read == -1 ? -1 : buffer.readByte() & 0xff;
-        }
-
-        @Override
-        public int read(final byte[] target, final int offset, final int length) throws IOException {
-            ensureOpen();
-            IoKit.checkOffsetAndCount(target.length, offset, length);
-            if (length == 0) {
-                return 0;
-            }
-            final long read = source.read(buffer, length);
-            if (read == -1) {
-                return -1;
-            }
-            return buffer.read(target, offset, (int) read);
-        }
-
-        @Override
-        public void close() throws IOException {
-            if (closed) {
-                return;
-            }
-            closed = true;
-            source.close();
-        }
-
-        /**
-         * Ensures this stream is open.
-         *
-         * @throws IOException when the stream is closed
-         */
-        private void ensureOpen() throws IOException {
-            if (closed) {
-                throw new IOException("Payload stream has been closed");
-            }
-        }
-
     }
 
 }

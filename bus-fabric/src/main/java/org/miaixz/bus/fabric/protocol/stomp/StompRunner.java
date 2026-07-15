@@ -34,6 +34,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
@@ -41,10 +42,10 @@ import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompCodec;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompFrame;
+import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -54,51 +55,6 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 final class StompRunner {
-
-    /**
-     * Logger tag used by the fabric runtime.
-     */
-    private static final String LOG_TAG = "Fabric";
-
-    /**
-     * STOMP CONNECT command.
-     */
-    private static final String COMMAND_CONNECT = "CONNECT";
-
-    /**
-     * STOMP CONNECTED command.
-     */
-    private static final String COMMAND_CONNECTED = "CONNECTED";
-
-    /**
-     * STOMP ERROR command.
-     */
-    private static final String COMMAND_ERROR = "ERROR";
-
-    /**
-     * STOMP accept-version header.
-     */
-    private static final String HEADER_ACCEPT_VERSION = "accept-version";
-
-    /**
-     * STOMP host header.
-     */
-    private static final String HEADER_HOST = "host";
-
-    /**
-     * STOMP login header.
-     */
-    private static final String HEADER_LOGIN = "login";
-
-    /**
-     * STOMP passcode header.
-     */
-    private static final String HEADER_PASSCODE = "passcode";
-
-    /**
-     * STOMP protocol version used by CONNECT.
-     */
-    private static final String VERSION_1_2 = "1.2";
 
     /**
      * Execution snapshot.
@@ -123,7 +79,7 @@ final class StompRunner {
         Session socket = null;
         Logger.info(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "STOMP open started: scheme={}, host={}, port={}, destinationPresent={}",
                 snapshot.address().scheme(),
                 snapshot.address().host(),
@@ -134,25 +90,27 @@ final class StompRunner {
                     && !Protocol.WSS.name.equals(snapshot.uri().getScheme())) {
                 throw new ProtocolException("STOMP open requires ws or wss target");
             }
-            checkGuard();
+            final Message opening = prepareOpen();
             final StompCodec inbound = new StompCodec();
             final CompletableFuture<StompFrame> connected = new CompletableFuture<>();
             final AtomicReference<StompSession> session = new AtomicReference<>();
-            socket = Mediator.openWebSocket(
-                    snapshot.context(),
+            final Session webSocket = Mediator.openWebSocket(
+                    snapshot.context().withFilter(null),
                     snapshot.uri(),
-                    snapshot.headers(),
+                    opening.headers(),
                     snapshot.timeout(),
                     (ignored, message) -> {
                         try {
                             final Buffer input = new Buffer();
                             input.write(message.payload().bytes(snapshot.context().options().materializeMaxBytes()));
                             for (final StompFrame frame : inbound.decode(input)) {
-                                if (COMMAND_CONNECTED.equals(frame.command())) {
-                                    connected.complete(frame);
-                                } else if (COMMAND_ERROR.equals(frame.command())) {
+                                if (Builder.STOMP_COMMAND_CONNECTED.equals(frame.command())) {
+                                    final StompFrame filtered = filter(frame, Builder.STOMP_TAG_CONNECTED);
+                                    connected.complete(filtered);
+                                } else if (Builder.STOMP_COMMAND_ERROR.equals(frame.command())) {
+                                    final StompFrame filtered = filter(frame, Builder.STOMP_TAG_ERROR);
                                     connected.completeExceptionally(
-                                            new ProtocolException(frame.body().text(Charset.UTF_8)));
+                                            new ProtocolException(filtered.body().text(Charset.UTF_8)));
                                 } else {
                                     final StompSession opened = session.get();
                                     if (opened != null) {
@@ -164,15 +122,16 @@ final class StompRunner {
                             connected.completeExceptionally(e);
                         }
                     });
+            socket = webSocket;
             final Session openedSocket = socket;
             final StompCodec outbound = new StompCodec();
             final Buffer output = new Buffer();
-            outbound.encode(connectFrame(), output);
+            outbound.encode(prepareConnectFrame(), output);
             awaitSend(openedSocket.send(Payload.of(output.readByteString())));
             awaitConnected(connected);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "STOMP CONNECT accepted: scheme={}, host={}, port={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
@@ -180,14 +139,12 @@ final class StompRunner {
             final StompSession opened = new StompSession(
                     buffer -> openedSocket.send(Payload.of(buffer.readByteString())), openedSocket::close,
                     openedSocket::cancel, snapshot.handler(), snapshot.address(), snapshot.guard(), snapshot.observer(),
-                    snapshot.listener(), snapshot.context().options().materializeMaxBytes());
+                    FilterChain.compose(snapshot.context().filter(), snapshot.filter()), snapshot.listener(),
+                    snapshot.context().options().materializeMaxBytes());
             session.set(opened);
-            emit(ObservationMarker.STOMP_OPEN, null);
-            snapshot.listener().open(opened);
-            snapshot.callback().success(opened);
             Logger.info(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     "STOMP open completed: scheme={}, host={}, port={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
@@ -197,11 +154,9 @@ final class StompRunner {
             if (socket != null) {
                 socket.cancel();
             }
-            emit(ObservationMarker.STOMP_FAILED, e);
-            snapshot.callback().failure(e);
             Logger.error(
                     false,
-                    LOG_TAG,
+                    "Fabric",
                     e,
                     "STOMP open failed: scheme={}, host={}, port={}, exception={}",
                     snapshot.address().scheme(),
@@ -218,20 +173,21 @@ final class StompRunner {
      * @return connect frame
      */
     StompFrame connectFrame() {
-        final Headers.Builder builder = Headers.builder().add(HEADER_ACCEPT_VERSION, VERSION_1_2)
-                .add(HEADER_HOST, snapshot.address().host());
+        final Headers.Builder builder = Headers.builder()
+                .add(Builder.STOMP_HEADER_ACCEPT_VERSION, Builder.STOMP_VERSION_1_2)
+                .add(Builder.HOST, snapshot.address().host());
         if (snapshot.login() != null) {
-            builder.add(HEADER_LOGIN, snapshot.login());
+            builder.add(Builder.STOMP_HEADER_LOGIN, snapshot.login());
         }
         if (snapshot.passcode() != null) {
-            builder.add(HEADER_PASSCODE, snapshot.passcode());
+            builder.add(Builder.STOMP_HEADER_PASSCODE, snapshot.passcode());
         }
         for (final Map.Entry<String, List<String>> entry : snapshot.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
                 builder.add(entry.getKey(), value);
             }
         }
-        return StompFrame.of(COMMAND_CONNECT, builder.build(), Payload.empty());
+        return StompFrame.of(Builder.STOMP_COMMAND_CONNECT, builder.build(), Payload.empty());
     }
 
     /**
@@ -287,33 +243,69 @@ final class StompRunner {
     /**
      * Checks the optional guard.
      */
-    private void checkGuard() {
+    private Message prepareOpen() {
+        final Message opening = FilterChain.apply(
+                Message.of(
+                        snapshot.address().protocol(),
+                        snapshot.address(),
+                        snapshot.headers(),
+                        Payload.empty(),
+                        Builder.STOMP_TAG_OPEN),
+                snapshot.context().filter(),
+                snapshot.filter());
+        checkGuard(opening);
+        return opening;
+    }
+
+    /**
+     * Creates the filtered CONNECT frame.
+     *
+     * @return filtered CONNECT frame
+     */
+    private StompFrame prepareConnectFrame() {
+        return filter(connectFrame(), Builder.STOMP_TAG_CONNECT);
+    }
+
+    /**
+     * Checks the optional guard.
+     *
+     * @param message message
+     */
+    private void checkGuard(final Message message) {
         if (snapshot.guard() == null) {
             return;
         }
         Logger.debug(
                 true,
-                LOG_TAG,
+                "Fabric",
                 "STOMP guard check started: host={}, port={}, destinationPresent={}",
                 snapshot.address().host(),
                 snapshot.address().port(),
                 snapshot.destination() != null);
-        snapshot.guard()
-                .check(
-                        Message.of(
-                                Protocol.WS,
-                                snapshot.address(),
-                                snapshot.headers(),
-                                Payload.empty(),
-                                snapshot.destination()))
-                .throwIfRejected();
+        snapshot.guard().check(message).throwIfRejected();
         Logger.debug(
                 false,
-                LOG_TAG,
+                "Fabric",
                 "STOMP guard check accepted: host={}, port={}, destinationPresent={}",
                 snapshot.address().host(),
                 snapshot.address().port(),
                 snapshot.destination() != null);
+    }
+
+    /**
+     * Applies configured STOMP filters to a frame.
+     *
+     * @param frame frame
+     * @param tag   tag
+     * @return filtered frame
+     */
+    private StompFrame filter(final StompFrame frame, final Object tag) {
+        final Message filtered = FilterChain.apply(
+                Message.of(Protocol.STOMP, snapshot.address(), frame.headers(), frame.body(), tag),
+                snapshot.context().filter(),
+                snapshot.filter());
+        checkGuard(filtered);
+        return StompFrame.of(frame.command(), filtered.headers(), filtered.payload());
     }
 
     /**
@@ -323,8 +315,9 @@ final class StompRunner {
      * @param cause  cause
      */
     private void emit(final ObservationMarker marker, final Throwable cause) {
-        FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, snapshot.address().scheme())
-                .tag(Tags.HOST, snapshot.address().host()).tag(Tags.PORT, Integer.toString(snapshot.address().port()));
+        FabricEvent.Builder event = FabricEvent.builder(marker).tag(Builder.TAG_PROTOCOL, snapshot.address().scheme())
+                .tag(Builder.HOST, snapshot.address().host())
+                .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
         if (cause != null) {
             event = event.cause(cause);
         }

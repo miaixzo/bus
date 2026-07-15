@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.network.tls;
 
+import static org.miaixz.bus.fabric.Builder.TLS_SETTINGS_DEFAULT_VERSIONS;
+
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -44,12 +46,6 @@ import org.miaixz.bus.fabric.network.tls.cert.CertificatePolicy;
  * @since Java 21+
  */
 public final class TlsSettings {
-
-    /**
-     * Default TLS versions.
-     */
-    private static final List<String> DEFAULT_VERSIONS = List
-            .of(TlsVersion.TLSv1_3.javaName(), TlsVersion.TLSv1_2.javaName());
 
     /**
      * TLS versions.
@@ -366,7 +362,7 @@ public final class TlsSettings {
          * Creates a builder with safe defaults.
          */
         private Builder() {
-            this.versions = DEFAULT_VERSIONS;
+            this.versions = TLS_SETTINGS_DEFAULT_VERSIONS;
             this.ciphers = List.of();
             this.clientAuth = TlsClientAuth.NONE;
             this.verifyHostname = true;

@@ -22,15 +22,15 @@ package org.miaixz.bus.fabric.observe.tags;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Immutable event tag set.
@@ -39,117 +39,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @since Java 21+
  */
 public final class Tags {
-
-    /**
-     * Module tag key.
-     */
-    public static final String MODULE = "module";
-
-    /**
-     * Protocol tag key.
-     */
-    public static final String PROTOCOL = "protocol";
-
-    /**
-     * Phase tag key.
-     */
-    public static final String PHASE = "phase";
-
-    /**
-     * Result tag key.
-     */
-    public static final String RESULT = "result";
-
-    /**
-     * Host tag key.
-     */
-    public static final String HOST = "host";
-
-    /**
-     * Port tag key.
-     */
-    public static final String PORT = "port";
-
-    /**
-     * Method tag key.
-     */
-    public static final String METHOD = "method";
-
-    /**
-     * URL tag key.
-     */
-    public static final String URL = "url";
-
-    /**
-     * Status code tag key.
-     */
-    public static final String CODE = "code";
-
-    /**
-     * Byte count tag key.
-     */
-    public static final String BYTES = "bytes";
-
-    /**
-     * Cache action tag key.
-     */
-    public static final String CACHE = "cache";
-
-    /**
-     * Cache key tag key.
-     */
-    public static final String KEY = "key";
-
-    /**
-     * Retry attempt tag key.
-     */
-    public static final String ATTEMPT = "attempt";
-
-    /**
-     * Retry delay tag key.
-     */
-    public static final String DELAY = "delay";
-
-    /**
-     * Listener action tag key.
-     */
-    public static final String ACTION = "action";
-
-    /**
-     * Lifecycle source tag key.
-     */
-    public static final String SOURCE = "source";
-
-    /**
-     * Exception class tag key.
-     */
-    public static final String EXCEPTION = "exception";
-
-    /**
-     * Related cause class tag key.
-     */
-    public static final String CAUSE = "cause";
-
-    /**
-     * Redacted value prefix.
-     */
-    public static final String REDACTED = "<redacted>";
-
-    /**
-     * Maximum cached normalized tag tokens.
-     */
-    private static final int TOKEN_CACHE_LIMIT = 512;
-
-    /**
-     * Maximum tag token length eligible for cache.
-     */
-    private static final int MAX_CACHED_TOKEN_LENGTH = 128;
-
-    /**
-     * Inline secret key/value pattern.
-     */
-    private static final Pattern INLINE_SECRET = Pattern.compile(
-            "(?i)(^|[?&;\\s])((?:access[-_]?token|refresh[-_]?token|token|password|passwd|secret|api[-_]?key|authorization|proxy-authorization|cookie|set-cookie)=)([^&;\\s]+)");
 
     /**
      * Small cache for repeated tag keys and short values.
@@ -307,7 +196,8 @@ public final class Tags {
      */
     public static String redact(final String value) {
         final String checked = normalize(value, "Redacted value");
-        return REDACTED.substring(0, REDACTED.length() - 1) + Symbol.C_COLON + fingerprint(checked) + ">";
+        return Builder.TAG_REDACTED.substring(0, Builder.TAG_REDACTED.length() - 1) + Symbol.C_COLON
+                + fingerprint(checked) + ">";
     }
 
     /**
@@ -333,14 +223,14 @@ public final class Tags {
      * @return cached token when available
      */
     private static String cache(final String value) {
-        if (value.length() > MAX_CACHED_TOKEN_LENGTH) {
+        if (value.length() > Normal._128) {
             return value;
         }
         final String cached = TOKENS.get(value);
         if (cached != null) {
             return cached;
         }
-        if (TOKENS.size() >= TOKEN_CACHE_LIMIT) {
+        if (TOKENS.size() >= Normal._512) {
             return value;
         }
         final String previous = TOKENS.putIfAbsent(value, value);
@@ -368,8 +258,8 @@ public final class Tags {
      * @return {@code true} when the key names credentials or session material
      */
     private static boolean sensitiveKey(final String key) {
-        final String compact = key.toLowerCase(Locale.ROOT).replace("-", Normalized.EMPTY)
-                .replace("_", Normalized.EMPTY).replace(".", Normalized.EMPTY);
+        final String compact = key.toLowerCase(Locale.ROOT).replace(Symbol.MINUS, Normal.EMPTY)
+                .replace(Symbol.UNDERLINE, Normal.EMPTY).replace(Symbol.DOT, Normal.EMPTY);
         return compact.contains("authorization") || compact.contains("cookie") || compact.contains("password")
                 || compact.contains("passwd") || compact.contains("secret") || compact.endsWith("token")
                 || compact.contains("apikey") || compact.contains("credential");
@@ -382,21 +272,136 @@ public final class Tags {
      * @return value with inline secrets fingerprinted
      */
     private static String redactInlineSecrets(final String value) {
-        final Matcher matcher = INLINE_SECRET.matcher(value);
-        StringBuffer buffer = null;
-        while (matcher.find()) {
-            if (buffer == null) {
-                buffer = new StringBuffer(value.length());
+        StringBuilder builder = null;
+        int copyStart = Normal._0;
+        int cursor = Normal._0;
+        while (cursor < value.length()) {
+            final int keyStart = nextInlineKeyStart(value, cursor);
+            if (keyStart < Normal._0) {
+                break;
             }
-            matcher.appendReplacement(
-                    buffer,
-                    Matcher.quoteReplacement(matcher.group(1) + matcher.group(2) + redact(matcher.group(3))));
+            final int equals = nextInlineEquals(value, keyStart);
+            if (equals < Normal._0) {
+                cursor = keyStart + Normal._1;
+                continue;
+            }
+            final String key = value.substring(keyStart, equals);
+            final int valueStart = equals + Normal._1;
+            final int valueEnd = inlineValueEnd(value, valueStart);
+            cursor = valueEnd;
+            if (valueEnd == valueStart || !sensitiveKey(key)) {
+                continue;
+            }
+            if (builder == null) {
+                builder = new StringBuilder(value.length());
+            }
+            builder.append(value, copyStart, valueStart);
+            builder.append(redact(value.substring(valueStart, valueEnd)));
+            copyStart = valueEnd;
         }
-        if (buffer == null) {
+        if (builder == null) {
             return value;
         }
-        matcher.appendTail(buffer);
-        return buffer.toString();
+        builder.append(value, copyStart, value.length());
+        return builder.toString();
+    }
+
+    /**
+     * Finds the next inline key start after a boundary character.
+     *
+     * @param value  tag value
+     * @param cursor scan cursor
+     * @return key start or {@code -1}
+     */
+    private static int nextInlineKeyStart(final String value, final int cursor) {
+        int index = cursor;
+        while (index < value.length()) {
+            if (index == Normal._0 || inlineKeyBoundary(value.charAt(index - Normal._1))) {
+                return index;
+            }
+            index++;
+        }
+        return Normal.__1;
+    }
+
+    /**
+     * Finds the equals sign that terminates an inline key.
+     *
+     * @param value    tag value
+     * @param keyStart key start
+     * @return equals sign index or {@code -1}
+     */
+    private static int nextInlineEquals(final String value, final int keyStart) {
+        int index = keyStart;
+        while (index < value.length()) {
+            final char current = value.charAt(index);
+            if (current == Symbol.C_EQUAL) {
+                return index == keyStart ? Normal.__1 : index;
+            }
+            if (inlineKeyBoundary(current)) {
+                return Normal.__1;
+            }
+            index++;
+        }
+        return Normal.__1;
+    }
+
+    /**
+     * Finds the end of an inline secret value.
+     *
+     * @param value      tag value
+     * @param valueStart value start
+     * @return value end
+     */
+    private static int inlineValueEnd(final String value, final int valueStart) {
+        int index = valueStart;
+        while (index < value.length()) {
+            final char current = value.charAt(index);
+            if (current == Symbol.C_AND || current == Symbol.C_SEMICOLON) {
+                return index;
+            }
+            if (Character.isWhitespace(current)
+                    && nextInlineEquals(value, skipInlineWhitespace(value, index)) >= Normal._0) {
+                return index;
+            }
+            index++;
+        }
+        return index;
+    }
+
+    /**
+     * Skips whitespace between inline key/value fragments.
+     *
+     * @param value tag value
+     * @param start scan start
+     * @return first non-whitespace index
+     */
+    private static int skipInlineWhitespace(final String value, final int start) {
+        int index = start;
+        while (index < value.length() && Character.isWhitespace(value.charAt(index))) {
+            index++;
+        }
+        return index;
+    }
+
+    /**
+     * Tests whether a character can start the next inline key.
+     *
+     * @param value character
+     * @return {@code true} when the character separates inline key/value pairs
+     */
+    private static boolean inlineKeyBoundary(final char value) {
+        return value == Symbol.C_QUESTION_MARK || inlineValueBoundary(value);
+    }
+
+    /**
+     * Tests whether a character terminates an inline value.
+     *
+     * @param value character
+     * @return {@code true} when the character terminates an inline value
+     */
+    private static boolean inlineValueBoundary(final char value) {
+        return value == Symbol.C_AND || value == Symbol.C_SEMICOLON || Character.isWhitespace(value);
     }
 
     /**
@@ -458,11 +463,6 @@ public final class Tags {
      * Empty string holder to keep normalization replacements allocation-free.
      */
     private static final class Normalized {
-
-        /**
-         * Replacement string used while compacting tag keys for sensitivity checks.
-         */
-        private static final String EMPTY = "";
 
         /**
          * Hidden constructor for normalization constants.

@@ -30,6 +30,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.SetKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.guard.GuardResult;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.registry.route.Route;
@@ -41,16 +42,6 @@ import org.miaixz.bus.fabric.registry.route.Route;
  * @since Java 21+
  */
 public final class RouteGuard {
-
-    /**
-     * Rule name.
-     */
-    private static final String NAME = "route";
-
-    /**
-     * Asynchronous socket scheme.
-     */
-    private static final String AIO_SCHEME = "aio";
 
     /**
      * Allowed normalized schemes.
@@ -117,7 +108,7 @@ public final class RouteGuard {
      * @return rule name
      */
     public String name() {
-        return NAME;
+        return Builder.ROUTE;
     }
 
     /**
@@ -143,7 +134,7 @@ public final class RouteGuard {
             return true;
         }
         return Protocol.TCP.name.equals(proxyScheme) || Protocol.SOCKET.name.equals(proxyScheme)
-                || AIO_SCHEME.equals(proxyScheme) || Protocol.TLS.name.equals(proxyScheme);
+                || Builder.AIO_SCHEME.equals(proxyScheme) || Protocol.TLS.name.equals(proxyScheme);
     }
 
     /**

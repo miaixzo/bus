@@ -210,6 +210,11 @@ public final class UserAgent {
         return mobile;
     }
 
+    /**
+     * Returns the original User-Agent value.
+     *
+     * @return User-Agent value
+     */
     @Override
     public String toString() {
         return value;

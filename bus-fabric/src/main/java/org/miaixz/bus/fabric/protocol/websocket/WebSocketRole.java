@@ -17,72 +17,42 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.protocol.socket;
-
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.guard.GuardResult;
-import org.miaixz.bus.fabric.guard.GuardRule;
-import org.miaixz.bus.fabric.guard.frame.RateGuard;
+package org.miaixz.bus.fabric.protocol.websocket;
 
 /**
- * Socket rate guard backed by the current frame rate guard.
+ * WebSocket endpoint role that selects RFC 6455 mask behavior.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class SocketRateGuard implements GuardRule {
+public enum WebSocketRole {
 
     /**
-     * Delegate byte-rate guard.
+     * Client endpoint.
      */
-    private final RateGuard delegate;
+    CLIENT,
 
     /**
-     * Creates a socket guard by delegating byte accounting to the frame-level rate guard.
+     * Server endpoint.
+     */
+    SERVER;
+
+    /**
+     * Returns whether outbound frames must be masked.
      *
-     * @param delegate frame-level byte budget guard
+     * @return true when writer must mask frames
      */
-    private SocketRateGuard(final RateGuard delegate) {
-        this.delegate = delegate;
+    public boolean writerMask() {
+        return this == CLIENT;
     }
 
     /**
-     * Creates a socket rate guard.
+     * Returns whether inbound frames are expected to be masked.
      *
-     * @param bytesPerSecond allowed bytes per second
-     * @return socket rate guard
+     * @return true when reader expects masked frames
      */
-    public static SocketRateGuard of(final long bytesPerSecond) {
-        return new SocketRateGuard(RateGuard.of(bytesPerSecond));
-    }
-
-    /**
-     * Acquires byte budget directly.
-     *
-     * @param bytes bytes to acquire
-     * @return guard result
-     */
-    public GuardResult acquire(final long bytes) {
-        return delegate.acquire(bytes);
-    }
-
-    /**
-     * Returns currently available byte budget.
-     *
-     * @return available bytes
-     */
-    public long available() {
-        return delegate.available();
-    }
-
-    @Override
-    public GuardResult check(final Message message) {
-        return delegate.check(message);
-    }
-
-    @Override
-    public String name() {
-        return "socket-rate";
+    public boolean readerExpectMasked() {
+        return this == SERVER;
     }
 
 }

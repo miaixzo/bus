@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.sse.event;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,7 +35,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.protocol.sse.SseEvent;
 
@@ -47,31 +46,6 @@ import org.miaixz.bus.fabric.protocol.sse.SseEvent;
  * @since Java 21+
  */
 public final class SseReader implements AutoCloseable {
-
-    /**
-     * Unknown field.
-     */
-    private static final int FIELD_UNKNOWN = Normal._0;
-
-    /**
-     * Data field.
-     */
-    private static final int FIELD_DATA = Normal._1;
-
-    /**
-     * Event field.
-     */
-    private static final int FIELD_EVENT = Normal._2;
-
-    /**
-     * Id field.
-     */
-    private static final int FIELD_ID = Normal._3;
-
-    /**
-     * Retry field.
-     */
-    private static final int FIELD_RETRY = Normal._4;
 
     /**
      * Underlying source.
@@ -157,17 +131,6 @@ public final class SseReader implements AutoCloseable {
     }
 
     /**
-     * Creates a compatibility reader over a UTF-8 SSE byte stream.
-     *
-     * @param input input stream
-     * @deprecated use {@link #SseReader(Source)}
-     */
-    @Deprecated(since = "8.8.3")
-    public SseReader(final InputStream input) {
-        this(input == null ? null : IoKit.source(input));
-    }
-
-    /**
      * Reads the next event from the stream.
      *
      * @return event or null at EOF
@@ -196,7 +159,7 @@ public final class SseReader implements AutoCloseable {
             }
             int field = commonField(length);
             int valueStart;
-            if (field == FIELD_UNKNOWN) {
+            if (field == Normal._0) {
                 final int colon = colon(length);
                 final int nameEnd = colon < Normal._0 ? length : colon;
                 valueStart = colon < Normal._0 ? length : colon + Normal._1;
@@ -208,7 +171,7 @@ public final class SseReader implements AutoCloseable {
                 valueStart += Normal._1;
             }
             switch (field) {
-                case FIELD_DATA -> {
+                case Normal._1 -> {
                     seen = true;
                     final String value = value(valueStart, length);
                     if (data == null && dataBuilder == null) {
@@ -222,16 +185,16 @@ public final class SseReader implements AutoCloseable {
                         appendData(dataBuilder, value);
                     }
                 }
-                case FIELD_EVENT -> {
+                case Normal._2 -> {
                     seen = true;
                     event = value(valueStart, length);
                 }
-                case FIELD_ID -> {
+                case Normal._3 -> {
                     seen = true;
                     final String value = value(valueStart, length);
                     id = value.indexOf('\0') >= Normal._0 ? id : value;
                 }
-                case FIELD_RETRY -> {
+                case Normal._4 -> {
                     final Duration parsed = parseRetry(valueStart, length);
                     if (parsed != null) {
                         seen = true;
@@ -357,7 +320,7 @@ public final class SseReader implements AutoCloseable {
                 }
                 final int start = inputPosition;
                 while (inputPosition < inputLimit) {
-                    final int current = inputBuffer[inputPosition++] & 0xff;
+                    final int current = inputBuffer[inputPosition++] & Builder.UNSIGNED_BYTE_MASK;
                     read = true;
                     if (current == Symbol.C_LF) {
                         append(inputBuffer, start, inputPosition - 1);
@@ -415,7 +378,7 @@ public final class SseReader implements AutoCloseable {
             }
             int field = commonField(length);
             int valueStart;
-            if (field == FIELD_UNKNOWN) {
+            if (field == Normal._0) {
                 final int colon = colon(length);
                 final int nameEnd = colon < Normal._0 ? length : colon;
                 valueStart = colon < Normal._0 ? length : colon + Normal._1;
@@ -427,7 +390,7 @@ public final class SseReader implements AutoCloseable {
                 valueStart += Normal._1;
             }
             switch (field) {
-                case FIELD_DATA -> {
+                case Normal._1 -> {
                     seenData = true;
                     final String value = value(valueStart, length);
                     if (data == null && dataBuilder == null) {
@@ -441,12 +404,12 @@ public final class SseReader implements AutoCloseable {
                         appendData(dataBuilder, value);
                     }
                 }
-                case FIELD_EVENT -> event = value(valueStart, length);
-                case FIELD_ID -> {
+                case Normal._2 -> event = value(valueStart, length);
+                case Normal._3 -> {
                     final String value = value(valueStart, length);
                     id = value.indexOf('\0') >= Normal._0 ? id : value;
                 }
-                case FIELD_RETRY -> {
+                case Normal._4 -> {
                     final Duration parsed = parseRetry(valueStart, length);
                     if (parsed != null) {
                         handler.retry(parsed);
@@ -478,7 +441,7 @@ public final class SseReader implements AutoCloseable {
                 return Normal.__1;
             }
         }
-        return inputBuffer[inputPosition++] & 0xff;
+        return inputBuffer[inputPosition++] & Builder.UNSIGNED_BYTE_MASK;
     }
 
     /**
@@ -565,14 +528,14 @@ public final class SseReader implements AutoCloseable {
     private int commonField(final int length) {
         return switch (line[0]) {
             case 'd' -> length > 4 && line[1] == 'a' && line[2] == 't' && line[3] == 'a' && line[4] == Symbol.C_COLON
-                    ? FIELD_DATA
-                    : FIELD_UNKNOWN;
+                    ? Normal._1
+                    : Normal._0;
             case 'e' -> length > 5 && line[1] == 'v' && line[2] == 'e' && line[3] == 'n' && line[4] == 't'
-                    && line[5] == Symbol.C_COLON ? FIELD_EVENT : FIELD_UNKNOWN;
-            case 'i' -> length > 2 && line[1] == 'd' && line[2] == Symbol.C_COLON ? FIELD_ID : FIELD_UNKNOWN;
+                    && line[5] == Symbol.C_COLON ? Normal._2 : Normal._0;
+            case 'i' -> length > 2 && line[1] == 'd' && line[2] == Symbol.C_COLON ? Normal._3 : Normal._0;
             case 'r' -> length > 5 && line[1] == 'e' && line[2] == 't' && line[3] == 'r' && line[4] == 'y'
-                    && line[5] == Symbol.C_COLON ? FIELD_RETRY : FIELD_UNKNOWN;
-            default -> FIELD_UNKNOWN;
+                    && line[5] == Symbol.C_COLON ? Normal._4 : Normal._0;
+            default -> Normal._0;
         };
     }
 
@@ -584,9 +547,9 @@ public final class SseReader implements AutoCloseable {
      */
     private static int commonValueStart(final int field) {
         return switch (field) {
-            case FIELD_DATA -> Normal._5;
-            case FIELD_EVENT, FIELD_RETRY -> Normal._6;
-            case FIELD_ID -> Normal._3;
+            case Normal._1 -> Normal._5;
+            case Normal._2, Normal._4 -> Normal._6;
+            case Normal._3 -> Normal._3;
             default -> Normal._0;
         };
     }
@@ -599,11 +562,11 @@ public final class SseReader implements AutoCloseable {
      */
     private int field(final int nameEnd) {
         return switch (nameEnd) {
-            case Normal._2 -> line[Normal._0] == 'i' && line[Normal._1] == 'd' ? FIELD_ID : FIELD_UNKNOWN;
+            case Normal._2 -> line[Normal._0] == 'i' && line[Normal._1] == 'd' ? Normal._3 : Normal._0;
             case Normal._4 -> line[Normal._0] == 'd' && line[Normal._1] == 'a' && line[Normal._2] == 't'
-                    && line[Normal._3] == 'a' ? FIELD_DATA : FIELD_UNKNOWN;
+                    && line[Normal._3] == 'a' ? Normal._1 : Normal._0;
             case Normal._5 -> field5();
-            default -> FIELD_UNKNOWN;
+            default -> Normal._0;
         };
     }
 
@@ -615,10 +578,10 @@ public final class SseReader implements AutoCloseable {
     private int field5() {
         if (line[Normal._0] == 'e' && line[Normal._1] == 'v' && line[Normal._2] == 'e' && line[Normal._3] == 'n'
                 && line[Normal._4] == 't') {
-            return FIELD_EVENT;
+            return Normal._2;
         }
         return line[Normal._0] == 'r' && line[Normal._1] == 'e' && line[Normal._2] == 't' && line[Normal._3] == 'r'
-                && line[Normal._4] == 'y' ? FIELD_RETRY : FIELD_UNKNOWN;
+                && line[Normal._4] == 'y' ? Normal._4 : Normal._0;
     }
 
     /**

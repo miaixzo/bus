@@ -29,6 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.observe.tags.Tags;
 
@@ -39,21 +40,6 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
  * @since Java 21+
  */
 public final class ProxyPlan {
-
-    /**
-     * Shared empty proxy authorization headers.
-     */
-    private static final Headers EMPTY_AUTHORIZATION = Headers.empty();
-
-    /**
-     * Direct route identifier.
-     */
-    private static final String DIRECT_ID = "direct";
-
-    /**
-     * Empty authorization diagnostic value.
-     */
-    private static final String NO_AUTHORIZATION = "none";
 
     /**
      * Proxy type.
@@ -91,8 +77,8 @@ public final class ProxyPlan {
      */
     public static ProxyPlan direct() {
         return Instances.get(
-                ProxyPlan.class.getName() + ".direct",
-                () -> new ProxyPlan(Type.DIRECT, null, EMPTY_AUTHORIZATION));
+                ProxyPlan.class.getName() + Symbol.DOT + Builder.PROXY_PLAN_DIRECT_ID,
+                () -> new ProxyPlan(Type.DIRECT, null, Headers.empty()));
     }
 
     /**
@@ -209,7 +195,7 @@ public final class ProxyPlan {
      */
     public String id() {
         if (type == Type.DIRECT) {
-            return DIRECT_ID;
+            return Builder.PROXY_PLAN_DIRECT_ID;
         }
         return type.name().toLowerCase(Locale.ROOT) + Symbol.COLON + Symbol.FORWARDSLASH + proxy.host() + Symbol.COLON
                 + proxy.port();
@@ -243,6 +229,11 @@ public final class ProxyPlan {
         return Objects.hash(type, proxy, authorization.asMap());
     }
 
+    /**
+     * Returns a diagnostic representation with sanitized credentials.
+     *
+     * @return redacted proxy plan text
+     */
     @Override
     public String toString() {
         return "ProxyPlan[type=" + type + ", id=" + id() + ", authorization=" + redactedAuthorization() + "]";
@@ -255,7 +246,7 @@ public final class ProxyPlan {
      */
     private String redactedAuthorization() {
         if (authorization.size() == Normal._0) {
-            return NO_AUTHORIZATION;
+            return Normal.NONE;
         }
         final StringBuilder builder = new StringBuilder();
         authorization.asMap().forEach((name, values) -> values.forEach(value -> {

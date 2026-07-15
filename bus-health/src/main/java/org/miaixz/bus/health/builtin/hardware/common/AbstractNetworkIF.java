@@ -175,8 +175,48 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         List<NetworkInterface> interfaces = getAllNetworkInterfaces();
 
         return includeLocalInterfaces ? interfaces
-                : getAllNetworkInterfaces().stream().parallel().filter(ni -> !isLocalInterface(ni))
+                : interfaces.stream().parallel().filter(ni -> !isLocalInterface(ni))
                         .collect(Collectors.toList());
+    }
+
+    /**
+     * Creates a platform-specific {@link NetworkIF} from a {@link NetworkInterface}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    @FunctionalInterface
+    protected interface NetworkIFFactory {
+
+        /**
+         * Creates the network interface.
+         *
+         * @param netint the underlying network interface
+         * @return the created network interface
+         * @throws InstantiationException if the interface can not be instantiated
+         */
+        NetworkIF create(NetworkInterface netint) throws InstantiationException;
+
+    }
+
+    /**
+     * Builds the list of network interfaces with the supplied platform-specific factory.
+     *
+     * @param includeLocalInterfaces include local interfaces in the result
+     * @param factory                platform-specific interface factory
+     * @return a list of network interfaces
+     */
+    protected static List<NetworkIF> getNetworks(boolean includeLocalInterfaces, NetworkIFFactory factory) {
+        List<NetworkIF> ifList = new ArrayList<>();
+        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
+            try {
+                ifList.add(factory.create(ni));
+            } catch (InstantiationException e) {
+                Logger.debug(false, "Health", "Network Interface Instantiation failed: {}",
+                        e.getClass().getSimpleName());
+            }
+        }
+        return ifList;
     }
 
     /**

@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OSThread;
 
 /**
@@ -47,6 +48,66 @@ public abstract class AbstractOSThread implements OSThread {
     private final int owningProcessId;
 
     /**
+     * The thread id.
+     */
+    protected int threadId;
+
+    /**
+     * The thread name.
+     */
+    protected String name = "";
+
+    /**
+     * The thread state.
+     */
+    protected OSProcess.State state = OSProcess.State.INVALID;
+
+    /**
+     * The minor page fault count.
+     */
+    protected long minorFaults;
+
+    /**
+     * The major page fault count.
+     */
+    protected long majorFaults;
+
+    /**
+     * The start memory address.
+     */
+    protected long startMemoryAddress;
+
+    /**
+     * The context switch count.
+     */
+    protected long contextSwitches;
+
+    /**
+     * The kernel time in milliseconds.
+     */
+    protected long kernelTime;
+
+    /**
+     * The user time in milliseconds.
+     */
+    protected long userTime;
+
+    /**
+     * The start time in milliseconds since the epoch.
+     */
+    protected long startTime;
+
+    /**
+     * The uptime in milliseconds.
+     */
+    protected long upTime;
+
+    /**
+     * The OS-dependent priority.
+     */
+    protected int priority;
+
+    /**
      * Creates a new AbstractOSThread instance.
      *
      * @param processId the process id
@@ -63,6 +124,126 @@ public abstract class AbstractOSThread implements OSThread {
     @Override
     public int getOwningProcessId() {
         return this.owningProcessId;
+    }
+
+    /**
+     * Returns the thread id.
+     *
+     * @return the thread id
+     */
+    @Override
+    public int getThreadId() {
+        return this.threadId;
+    }
+
+    /**
+     * Returns the thread name.
+     *
+     * @return the thread name
+     */
+    @Override
+    public String getName() {
+        return this.name == null ? "" : this.name;
+    }
+
+    /**
+     * Returns the thread state.
+     *
+     * @return the thread state
+     */
+    @Override
+    public OSProcess.State getState() {
+        return this.state;
+    }
+
+    /**
+     * Returns the start memory address.
+     *
+     * @return the start memory address
+     */
+    @Override
+    public long getStartMemoryAddress() {
+        return this.startMemoryAddress;
+    }
+
+    /**
+     * Returns the context switch count.
+     *
+     * @return the context switch count
+     */
+    @Override
+    public long getContextSwitches() {
+        return this.contextSwitches;
+    }
+
+    /**
+     * Returns the minor fault count.
+     *
+     * @return the minor fault count
+     */
+    @Override
+    public long getMinorFaults() {
+        return this.minorFaults;
+    }
+
+    /**
+     * Returns the major fault count.
+     *
+     * @return the major fault count
+     */
+    @Override
+    public long getMajorFaults() {
+        return this.majorFaults;
+    }
+
+    /**
+     * Returns the kernel time.
+     *
+     * @return the kernel time
+     */
+    @Override
+    public long getKernelTime() {
+        return this.kernelTime;
+    }
+
+    /**
+     * Returns the user time.
+     *
+     * @return the user time
+     */
+    @Override
+    public long getUserTime() {
+        return this.userTime;
+    }
+
+    /**
+     * Returns the uptime.
+     *
+     * @return the uptime
+     */
+    @Override
+    public long getUpTime() {
+        return this.upTime;
+    }
+
+    /**
+     * Returns the start time.
+     *
+     * @return the start time
+     */
+    @Override
+    public long getStartTime() {
+        return this.startTime;
+    }
+
+    /**
+     * Returns the priority.
+     *
+     * @return the priority
+     */
+    @Override
+    public int getPriority() {
+        return this.priority;
     }
 
     /**

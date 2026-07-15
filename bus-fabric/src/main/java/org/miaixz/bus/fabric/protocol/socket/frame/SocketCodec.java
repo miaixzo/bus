@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.socket.frame;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,39 +89,6 @@ public final class SocketCodec {
         final Buffer checkedOutput = Assert
                 .notNull(output, () -> new ValidateException("Socket codec output must not be null"));
         codec.encode(Frame.of(checkedFrame.payload()), checkedOutput);
-    }
-
-    /**
-     * Decodes socket frames from a JDK byte buffer compatibility boundary.
-     *
-     * @param input input
-     * @return frames
-     * @deprecated use {@link #decode(Buffer)}
-     */
-    @Deprecated(since = "8.8.3")
-    public List<SocketFrame> decode(final ByteBuffer input) {
-        final ByteBuffer checkedInput = Assert
-                .notNull(input, () -> new ValidateException("Socket codec input must not be null"));
-        final List<Frame> decoded = codec.decode(checkedInput);
-        final ArrayList<SocketFrame> frames = new ArrayList<>(decoded.size());
-        for (final Frame frame : decoded) {
-            frames.add(SocketFrame.of(frame.payload()));
-        }
-        return List.copyOf(frames);
-    }
-
-    /**
-     * Encodes a socket frame to a JDK byte buffer compatibility boundary.
-     *
-     * @param frame frame
-     * @return encoded bytes
-     * @deprecated use {@link #encode(SocketFrame, Buffer)}
-     */
-    @Deprecated(since = "8.8.3")
-    public ByteBuffer encode(final SocketFrame frame) {
-        final SocketFrame checkedFrame = Assert
-                .notNull(frame, () -> new ValidateException("Socket frame must not be null"));
-        return codec.encode(Frame.of(checkedFrame.payload()));
     }
 
     /**

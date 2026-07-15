@@ -208,6 +208,11 @@ public class GeniusBuilder {
     public static final String ELASTIC = Keys.BUS + Symbol.DOT + "elastic";
 
     /**
+     * Property key for Bus Fabric configuration.
+     */
+    public static final String FABRIC = Keys.BUS + Symbol.DOT + "fabric";
+
+    /**
      * Property key for Bus health configuration.
      */
     public static final String HEALTH = Keys.BUS + Symbol.DOT + "health";
@@ -261,11 +266,6 @@ public class GeniusBuilder {
      * Property key for Bus sensitive data handling configuration.
      */
     public static final String SENSITIVE = Keys.BUS + Symbol.DOT + "sensitive";
-
-    /**
-     * Property key for Bus socket communication configuration.
-     */
-    public static final String SOCKET = Keys.BUS + Symbol.DOT + "socket";
 
     /**
      * Property key for Bus object storage configuration.

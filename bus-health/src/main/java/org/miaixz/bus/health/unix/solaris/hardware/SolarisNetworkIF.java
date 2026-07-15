@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.unix.solaris.hardware;
 
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
@@ -31,7 +30,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 import org.miaixz.bus.health.unix.solaris.KstatKit;
 import org.miaixz.bus.health.unix.solaris.KstatKit.KstatChain;
 import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * SolarisNetworks class.
@@ -110,19 +108,7 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
      * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
-        List<NetworkIF> ifList = new ArrayList<>();
-        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            try {
-                ifList.add(new SolarisNetworkIF(ni));
-            } catch (InstantiationException e) {
-                Logger.debug(
-                        false,
-                        "Health",
-                        "Network Interface Instantiation failed: {}",
-                        e.getClass().getSimpleName());
-            }
-        }
-        return ifList;
+        return getNetworks(includeLocalInterfaces, SolarisNetworkIF::new);
     }
 
     /**

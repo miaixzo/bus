@@ -224,19 +224,19 @@ public class DropboxProvider extends AbstractProvider {
             Map<String, Object> args = new HashMap<>();
             args.put("path", path);
 
-            HttpResult response = post(
+            Response response = post(
                     url,
                     new byte[0],
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)));
-            if (!response.isSuccessful()) {
+            if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
                 return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(toBlob(bucket, path, metadata, response.stream())).build();
+                    .data(toBlob(bucket, path, metadata, stream(response))).build();
         } catch (Exception e) {
             Errors error = StringKit.containsIgnoreCase(e.getMessage(), "409") ? ErrorCode._113010 : ErrorCode._113012;
             Logger.error(
@@ -270,17 +270,17 @@ public class DropboxProvider extends AbstractProvider {
             Map<String, Object> args = new HashMap<>();
             args.put("path", path);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     new byte[0],
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Download failed: " + response.code());
                 }
 
-                byte[] content = response.body().bytes();
+                byte[] content = response.bytes();
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .data(content).build();
             }
@@ -327,17 +327,17 @@ public class DropboxProvider extends AbstractProvider {
             Map<String, Object> args = new HashMap<>();
             args.put("path", path);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     new byte[0],
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Download failed: " + response.code());
                 }
 
-                try (InputStream inputStream = response.body().byteStream();
+                try (InputStream inputStream = stream(response);
                         OutputStream outputStream = new FileOutputStream(file)) {
                     inputStream.transferTo(outputStream);
                 }
@@ -377,16 +377,16 @@ public class DropboxProvider extends AbstractProvider {
             requestBody.put("recursive", false);
             requestBody.put("include_deleted", false);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     JsonKit.toJsonString(requestBody),
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("List failed: " + response.code());
                 }
 
-                Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+                Map<String, Object> jsonMap = JsonKit.toMap(response.text());
                 List<Map<String, Object>> entries = (List<Map<String, Object>>) jsonMap.get("entries");
                 List<Blob> blobs = new ArrayList<>();
 
@@ -468,12 +468,12 @@ public class DropboxProvider extends AbstractProvider {
             requestBody.put("to_path", toPath);
             requestBody.put("autorename", false);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     JsonKit.toJsonString(requestBody),
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Rename failed: " + response.code());
                 }
 
@@ -541,17 +541,17 @@ public class DropboxProvider extends AbstractProvider {
             args.put("autorename", true);
             args.put("mute", false);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Upload failed: " + response.code());
                 }
 
-                Map<String, Object> jsonMap = JsonKit.toMap(response.body().string());
+                Map<String, Object> jsonMap = JsonKit.toMap(response.text());
                 String fileId = (String) jsonMap.get("id");
 
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
@@ -664,12 +664,12 @@ public class DropboxProvider extends AbstractProvider {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("path", filePath);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     JsonKit.toJsonString(requestBody),
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Delete failed: " + response.code());
                 }
 
@@ -742,7 +742,7 @@ public class DropboxProvider extends AbstractProvider {
         requestBody.put("include_media_info", false);
         requestBody.put("include_deleted", false);
 
-        try (HttpResult response = post(
+        try (Response response = post(
                 url,
                 JsonKit.toJsonString(requestBody),
                 MediaType.APPLICATION_JSON,
@@ -750,10 +750,10 @@ public class DropboxProvider extends AbstractProvider {
             if (response.code() == 409) {
                 return null;
             }
-            if (!response.isSuccessful()) {
+            if (!response.successful()) {
                 throw new IOException("Metadata failed: " + response.code());
             }
-            return JsonKit.toMap(response.body().string());
+            return JsonKit.toMap(response.text());
         }
     }
 

@@ -31,6 +31,7 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 
 /**
  * Immutable case-insensitive header collection with insertion-ordered multi-values.
@@ -220,7 +221,7 @@ public class Headers {
      * @return content length, or -1 when absent
      */
     public int contentLength() {
-        final String value = get("Content-Length");
+        final String value = get(HTTP.CONTENT_LENGTH);
         if (value == null) {
             return -1;
         }
