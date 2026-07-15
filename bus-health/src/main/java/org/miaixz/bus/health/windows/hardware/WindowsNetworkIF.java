@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.windows.hardware;
 
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sun.jna.Native;
@@ -147,19 +146,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
      * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
-        List<NetworkIF> ifList = new ArrayList<>();
-        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            try {
-                ifList.add(new WindowsNetworkIF(ni));
-            } catch (InstantiationException e) {
-                Logger.debug(
-                        false,
-                        "Health",
-                        "Network Interface Instantiation failed: {}",
-                        e.getClass().getSimpleName());
-            }
-        }
-        return ifList;
+        return getNetworks(includeLocalInterfaces, WindowsNetworkIF::new);
     }
 
     /**

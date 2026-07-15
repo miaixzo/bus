@@ -58,9 +58,9 @@ public class SolarisFileSystem extends AbstractFileSystem {
     }
 
     /**
-     * The FILE_DESC constant.
+     * The fileDesc value.
      */
-    private static final Supplier<Pair<Long, Long>> FILE_DESC = Memoizer
+    private final Supplier<Pair<Long, Long>> fileDesc = Memoizer
             .memoize(SolarisFileSystem::queryFileDescriptors, Memoizer.defaultExpiration());
 
     /**
@@ -220,7 +220,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
     public long getOpenFileDescriptors() {
         if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
-            return FILE_DESC.get().getLeft();
+            return fileDesc.get().getLeft();
         }
         try (KstatChain kc = KstatKit.openChain()) {
             Kstat ksp = kc.lookup(null, -1, "file_cache");
@@ -241,7 +241,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
     public long getMaxFileDescriptors() {
         if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
-            return FILE_DESC.get().getRight();
+            return fileDesc.get().getRight();
         }
         try (KstatChain kc = KstatKit.openChain()) {
             Kstat ksp = kc.lookup(null, -1, "file_cache");

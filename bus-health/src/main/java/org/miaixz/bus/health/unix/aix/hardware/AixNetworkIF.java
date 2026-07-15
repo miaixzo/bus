@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.unix.aix.hardware;
 
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -32,7 +31,6 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatNetInterface;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * AIXNetworks class.
@@ -121,19 +119,7 @@ public final class AixNetworkIF extends AbstractNetworkIF {
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         Supplier<perfstat_netinterface_t[]> netstats = Memoizer
                 .memoize(PerfstatNetInterface::queryNetInterfaces, Memoizer.defaultExpiration());
-        List<NetworkIF> ifList = new ArrayList<>();
-        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            try {
-                ifList.add(new AixNetworkIF(ni, netstats));
-            } catch (InstantiationException e) {
-                Logger.debug(
-                        false,
-                        "Health",
-                        "Network Interface Instantiation failed: {}",
-                        e.getClass().getSimpleName());
-            }
-        }
-        return ifList;
+        return getNetworks(includeLocalInterfaces, ni -> new AixNetworkIF(ni, netstats));
     }
 
     /**

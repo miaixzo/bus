@@ -58,6 +58,15 @@ public final class Memoizer {
     }
 
     /**
+     * Returns the expiration time for slowly changing hardware state, such as connected displays or USB devices.
+     *
+     * @return The expiration time in nanoseconds, currently 3 seconds.
+     */
+    public static long slowExpiration() {
+        return TimeUnit.SECONDS.toNanos(3);
+    }
+
+    /**
      * Returns the expiration time for installed applications.
      *
      * @return The expiration time in nanoseconds, currently 1 minute.

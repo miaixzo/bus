@@ -105,7 +105,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
      * Description inherited from parent class or interface.
      */
     @Override
-    public List<Display> getDisplays() {
+    protected List<Display> createDisplays() {
         return MacDisplay.getDisplays();
     }
 
@@ -121,15 +121,15 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
      * Description inherited from parent class or interface.
      */
     @Override
-    public List<UsbDevice> getUsbDevices(boolean tree) {
-        return MacUsbDevice.getUsbDevices(tree);
+    protected List<UsbDevice> createUsbDevices() {
+        return MacUsbDevice.getUsbDevices(true);
     }
 
     /**
      * Description inherited from parent class or interface.
      */
     @Override
-    public List<SoundCard> getSoundCards() {
+    protected List<SoundCard> createSoundCards() {
         return MacSoundCard.getSoundCards();
     }
 
@@ -147,7 +147,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
      * Description inherited from parent class or interface.
      */
     @Override
-    public List<GraphicsCard> getGraphicsCards() {
+    protected List<GraphicsCard> createGraphicsCards() {
         return MacGraphicsCard.getGraphicsCards();
     }
 

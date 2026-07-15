@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.mac.hardware;
 
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +32,6 @@ import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 import org.miaixz.bus.health.mac.driver.net.NetStat;
 import org.miaixz.bus.health.mac.jna.SystemConfiguration;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * <p>
@@ -152,19 +150,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         // One time fetch of stats
         final Map<Integer, NetStat.IFdata> data = NetStat.queryIFdata(-1);
-        List<NetworkIF> ifList = new ArrayList<>();
-        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            try {
-                ifList.add(new MacNetworkIF(ni, data));
-            } catch (InstantiationException e) {
-                Logger.debug(
-                        false,
-                        "Health",
-                        "Network Interface Instantiation failed: {}",
-                        e.getClass().getSimpleName());
-            }
-        }
-        return ifList;
+        return getNetworks(includeLocalInterfaces, ni -> new MacNetworkIF(ni, data));
     }
 
     /**

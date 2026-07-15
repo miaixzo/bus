@@ -118,8 +118,11 @@ public class MacUsbDevice extends AbstractUsbDevice {
         Map<Long, String> serialMap = new HashMap<>();
         Map<Long, List<Long>> hubMap = new HashMap<>();
 
-        List<Long> usbControllers = new ArrayList<>();
+        Set<Long> usbControllers = new LinkedHashSet<>();
         IORegistryEntry root = IOKitUtil.getRoot();
+        if (root == null) {
+            return Collections.emptyList();
+        }
         // Iterate over children of root in the IOUSB plane. This does not include
         // controllers so we have to check their parents
         IOIterator iter = root.getChildIterator(IOUSB);
@@ -137,21 +140,26 @@ public class MacUsbDevice extends AbstractUsbDevice {
                 if (controller != null) {
                     // Unique global identifier for this controller
                     id = controller.getRegistryEntryID();
-                    // Populate other data for the controller
-                    nameMap.put(id, controller.getName());
-                    // The only information we have in registry for this controller is
-                    // the locationID. Use that to search for matching PCI device to obtain
-                    // more information for the controller
-                    CFTypeRef ref = controller.createCFProperty(locationIDKey);
-                    if (ref != null) {
-                        getControllerIdByLocation(
-                                id,
-                                ref,
-                                locationIDKey,
-                                ioPropertyMatchKey,
-                                vendorIdMap,
-                                productIdMap);
-                        ref.release();
+                    if (!usbControllers.contains(id)) {
+                        // Populate other data for the controller
+                        String controllerName = controller.getName();
+                        if (controllerName != null) {
+                            nameMap.put(id, controllerName);
+                        }
+                        // The only information we have in registry for this controller is
+                        // the locationID. Use that to search for matching PCI device to obtain
+                        // more information for the controller
+                        CFTypeRef ref = controller.createCFProperty(locationIDKey);
+                        if (ref != null) {
+                            getControllerIdByLocation(
+                                    id,
+                                    ref,
+                                    locationIDKey,
+                                    ioPropertyMatchKey,
+                                    vendorIdMap,
+                                    productIdMap);
+                            ref.release();
+                        }
                     }
                     controller.release();
                 }
@@ -223,7 +231,10 @@ public class MacUsbDevice extends AbstractUsbDevice {
         // Store id as a child of parent in hubmap
         hubMap.computeIfAbsent(parentId, x -> new ArrayList<>()).add(id);
         // Get device name and store in map
-        nameMap.put(id, device.getName().trim());
+        String name = device.getName();
+        if (name != null) {
+            nameMap.put(id, name.trim());
+        }
         // Get vendor and store in map
         String vendor = device.getStringProperty("USB Vendor Name");
         if (vendor != null) {
@@ -247,22 +258,24 @@ public class MacUsbDevice extends AbstractUsbDevice {
 
         // Now get this device's children (if any) and recurse
         IOIterator childIter = device.getChildIterator(IOUSB);
-        IORegistryEntry childDevice = childIter.next();
-        while (childDevice != null) {
-            addDeviceAndChildrenToMaps(
-                    childDevice,
-                    id,
-                    nameMap,
-                    vendorMap,
-                    vendorIdMap,
-                    productIdMap,
-                    serialMap,
-                    hubMap);
+        if (childIter != null) {
+            IORegistryEntry childDevice = childIter.next();
+            while (childDevice != null) {
+                addDeviceAndChildrenToMaps(
+                        childDevice,
+                        id,
+                        nameMap,
+                        vendorMap,
+                        vendorIdMap,
+                        productIdMap,
+                        serialMap,
+                        hubMap);
 
-            childDevice.release();
-            childDevice = childIter.next();
+                childDevice.release();
+                childDevice = childIter.next();
+            }
+            childIter.release();
         }
-        childIter.release();
     }
 
     /**

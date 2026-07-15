@@ -84,15 +84,15 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     private static final boolean ALLOW_KSTAT2 = Config.get(Config._UNIX_SOLARIS_ALLOWKSTAT2, true);
 
     /**
-     * The BOOT_UPTIME constant.
-     */
-    private static final Supplier<Pair<Long, Long>> BOOT_UPTIME = Memoizer
-            .memoize(SolarisOperatingSystem::queryBootAndUptime, Memoizer.defaultExpiration());
-
-    /**
      * The BOOTTIME constant.
      */
     private static final long BOOTTIME = querySystemBootTime();
+
+    /**
+     * The uptimeSupplier value.
+     */
+    private final Supplier<Long> uptimeSupplier = Memoizer.memoize(SolarisOperatingSystem::queryUptime,
+            Memoizer.defaultExpiration());
 
     static {
         String[] split = Pattern.SPACES_PATTERN.split(Executor.getFirstAnswer("uname -rv"));
@@ -113,14 +113,38 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     }
 
     /**
-     * Queries the system uptime.
+     * Queries the system boot time.
      *
-     * @return the query system uptime result
+     * @return the query system boot time result
      */
-    private static long querySystemUptime() {
+    private static long querySystemBootTime() {
         if (HAS_KSTAT2) {
-            // Use Kstat2 implementation
-            return BOOT_UPTIME.get().getRight();
+            Object[] results = KstatKit.queryKstat2("kstat:/misc/unix/system_misc", "boot_time");
+            if (results[0] != null) {
+                return (long) results[0];
+            }
+        }
+        try (KstatChain kc = KstatKit.openChain()) {
+            Kstat ksp = kc.lookup("unix", 0, "system_misc");
+            if (ksp != null && kc.read(ksp)) {
+                return KstatKit.dataLookupLong(ksp, "boot_time");
+            }
+        }
+        return System.currentTimeMillis() / 1000L;
+    }
+
+    /**
+     * Queries the uptime.
+     *
+     * @return the query uptime result
+     */
+    private static long queryUptime() {
+        if (HAS_KSTAT2) {
+            Object[] results = KstatKit.queryKstat2("kstat:/misc/unix/system_misc", "snaptime");
+            if (results[0] != null) {
+                // Snap Time is in nanoseconds; divide for seconds
+                return (long) results[0] / 1_000_000_000L;
+            }
         }
         try (KstatChain kc = KstatKit.openChain()) {
             Kstat ksp = kc.lookup("unix", 0, "system_misc");
@@ -130,41 +154,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return 0L;
-    }
-
-    /**
-     * Queries the system boot time.
-     *
-     * @return the query system boot time result
-     */
-    private static long querySystemBootTime() {
-        if (HAS_KSTAT2) {
-            // Use Kstat2 implementation
-            return BOOT_UPTIME.get().getLeft();
-        }
-        try (KstatChain kc = KstatKit.openChain()) {
-            Kstat ksp = kc.lookup("unix", 0, "system_misc");
-            if (ksp != null && kc.read(ksp)) {
-                return KstatKit.dataLookupLong(ksp, "boot_time");
-            }
-        }
-        return System.currentTimeMillis() / 1000L - querySystemUptime();
-    }
-
-    /**
-     * Queries the boot and uptime.
-     *
-     * @return the query boot and uptime result
-     */
-    private static Pair<Long, Long> queryBootAndUptime() {
-        Object[] results = KstatKit.queryKstat2("kstat:/misc/unix/system_misc", "boot_time", "snaptime");
-
-        // boot_time is epoch seconds; keep the fallback in seconds to match getSystemBootTime().
-        long boot = results[0] == null ? System.currentTimeMillis() / 1000L : (long) results[0];
-        // Snap Time is in nanoseconds; divide for seconds
-        long snap = results[1] == null ? 0L : (long) results[1] / 1_000_000_000L;
-
-        return Pair.of(boot, snap);
     }
 
     /**
@@ -330,7 +319,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
      */
     @Override
     public long getSystemUptime() {
-        return querySystemUptime();
+        return uptimeSupplier.get();
     }
 
     /**

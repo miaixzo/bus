@@ -85,7 +85,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /**
      * Windows event log name
      */
-    private static final Supplier<String> systemLog = Memoizer
+    private static final Supplier<String> SYSTEM_LOG = Memoizer
             .memoize(WindowsOperatingSystem::querySystemLog, TimeUnit.HOURS.toNanos(1));
 
     /**
@@ -322,7 +322,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      * @return the query system boot time result
      */
     private static long querySystemBootTime() {
-        String eventLog = systemLog.get();
+        String eventLog = SYSTEM_LOG.get();
         if (eventLog != null) {
             try {
                 EventLogIterator iter = new EventLogIterator(null, eventLog, WinNT.EVENTLOG_BACKWARDS_READ);

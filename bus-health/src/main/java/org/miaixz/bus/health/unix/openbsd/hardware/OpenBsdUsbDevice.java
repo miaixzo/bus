@@ -144,66 +144,10 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
         // Build tree and return
         List<UsbDevice> controllerDevices = new ArrayList<>();
         for (String devusb : rootHubs) {
-            controllerDevices.add(
-                    getDeviceAndChildren(
-                            devusb,
-                            "0000",
-                            "0000",
-                            nameMap,
-                            vendorMap,
-                            vendorIdMap,
-                            productIdMap,
-                            serialMap,
-                            hubMap));
+            controllerDevices.add(buildDeviceTree(devusb, "0000", "0000", nameMap, vendorMap, vendorIdMap,
+                    productIdMap, serialMap, hubMap, OpenBsdUsbDevice::new));
         }
         return controllerDevices;
-    }
-
-    /**
-     * Recursively creates OpenBsdUsbDevices by fetching information from maps to populate fields
-     *
-     * @param devPath      The device node path.
-     * @param vid          The default (parent) vendor ID
-     * @param pid          The default (parent) product ID
-     * @param nameMap      the map of names
-     * @param vendorMap    the map of vendors
-     * @param vendorIdMap  the map of vendorIds
-     * @param productIdMap the map of productIds
-     * @param serialMap    the map of serial numbers
-     * @param hubMap       the map of hubs
-     * @return A SolarisUsbDevice corresponding to this device
-     */
-    private static OpenBsdUsbDevice getDeviceAndChildren(
-            String devPath,
-            String vid,
-            String pid,
-            Map<String, String> nameMap,
-            Map<String, String> vendorMap,
-            Map<String, String> vendorIdMap,
-            Map<String, String> productIdMap,
-            Map<String, String> serialMap,
-            Map<String, List<String>> hubMap) {
-        String vendorId = vendorIdMap.getOrDefault(devPath, vid);
-        String productId = productIdMap.getOrDefault(devPath, pid);
-        List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<>());
-        List<UsbDevice> usbDevices = new ArrayList<>();
-        for (String path : childPaths) {
-            usbDevices.add(
-                    getDeviceAndChildren(
-                            path,
-                            vendorId,
-                            productId,
-                            nameMap,
-                            vendorMap,
-                            vendorIdMap,
-                            productIdMap,
-                            serialMap,
-                            hubMap));
-        }
-        Collections.sort(usbDevices);
-        return new OpenBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
-                vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId,
-                serialMap.getOrDefault(devPath, Normal.EMPTY), devPath, usbDevices);
     }
 
 }
