@@ -486,7 +486,7 @@ public class VortexBridge
                         response.errorMessage());
                 return new DeliveryResult(false, true, response.errorMessage());
             }
-            if (response.isSuccessful()) {
+            if (response.successful()) {
                 Logger.debug(
                         false,
                         "Cortex",

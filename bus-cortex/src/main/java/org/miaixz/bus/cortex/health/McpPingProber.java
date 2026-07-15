@@ -88,7 +88,7 @@ public class McpPingProber implements Prober {
         if (response.errorMessage() != null) {
             return Status.fail("MCP ping failed: " + response.errorMessage(), name()).detail("url", url);
         }
-        if (!response.isSuccessful()) {
+        if (!response.successful()) {
             return Status.fail("MCP ping returned status " + response.statusCode(), name()).detail("url", url)
                     .detail("statusCode", Integer.toString(response.statusCode()));
         }

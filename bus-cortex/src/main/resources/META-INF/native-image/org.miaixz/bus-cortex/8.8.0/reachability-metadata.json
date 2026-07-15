@@ -2502,43 +2502,9 @@
           "parameterTypes": []
         },
         {
-          "name": "adapt",
-          "parameterTypes": [
-            "org.miaixz.bus.http.plugin.httpv.CoverResult"
-          ]
-        },
-        {
-          "name": "cancelQuietly",
-          "parameterTypes": [
-            "org.miaixz.bus.http.Httpv"
-          ]
-        },
-        {
-          "name": "client",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "diagnostics",
-          "parameterTypes": []
-        },
-        {
-          "name": "failureMessage",
-          "parameterTypes": [
-            "org.miaixz.bus.http.plugin.httpv.CoverResult"
-          ]
-        },
-        {
           "name": "get",
           "parameterTypes": [
             "java.lang.String",
-            "long"
-          ]
-        },
-        {
-          "name": "newHttpv",
-          "parameterTypes": [
             "long"
           ]
         },
@@ -2553,6 +2519,40 @@
         {
           "name": "shutdown",
           "parameterTypes": []
+        },
+        {
+          "name": "diagnostics",
+          "parameterTypes": []
+        },
+        {
+          "name": "client",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "adapt",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.Callout$Result"
+          ]
+        },
+        {
+          "name": "failureMessage",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.Callout$Result"
+          ]
+        },
+        {
+          "name": "decodeText",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Payload"
+          ]
+        },
+        {
+          "name": "isTimeout",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
         }
       ],
       "type": "org.miaixz.bus.cortex.Callout"
@@ -2614,7 +2614,7 @@
           "parameterTypes": []
         },
         {
-          "name": "isSuccessful",
+          "name": "successful",
           "parameterTypes": []
         },
         {
