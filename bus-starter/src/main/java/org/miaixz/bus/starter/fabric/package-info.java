@@ -17,39 +17,10 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.socket;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import org.miaixz.bus.spring.GeniusBuilder;
-
 /**
- * Configuration properties for the socket service.
- * <p>
- * This class binds properties from the configuration file (e.g., {@code application.yml}) under the prefix
- * {@code bus.socket}. It allows for customization of the socket server settings.
+ * Fabric communication service support.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@Getter
-@Setter
-@ConfigurationProperties(prefix = GeniusBuilder.SOCKET)
-public class SocketProperties {
-
-    /**
-     * Constructs a new SocketProperties instance.
-     */
-    public SocketProperties() {
-        // No initialization required.
-    }
-
-    /**
-     * The port on which the socket server will listen. Defaults to 7890.
-     */
-    private int port = 7890;
-
-}
+package org.miaixz.bus.starter.fabric;

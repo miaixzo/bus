@@ -17,28 +17,42 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.annotation;
-
-import java.lang.annotation.*;
-
-import org.springframework.context.annotation.Import;
-
-import org.miaixz.bus.starter.socket.SocketConfiguration;
+package org.miaixz.bus.fabric.protocol.websocket;
 
 /**
- * Enables AIO-based socket server features.
- * <p>
- * This annotation imports the {@link SocketConfiguration}, which sets up the
- * {@link org.miaixz.bus.starter.socket.SocketQuickService} to manage the lifecycle of an AIO (Asynchronous I/O) server.
+ * WebSocket endpoint role that selects RFC 6455 mask behavior.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@Inherited
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-@Import({ SocketConfiguration.class })
-public @interface EnableSocket {
+public enum WebSocketRole {
+
+    /**
+     * Client endpoint.
+     */
+    CLIENT,
+
+    /**
+     * Server endpoint.
+     */
+    SERVER;
+
+    /**
+     * Returns whether outbound frames must be masked.
+     *
+     * @return true when writer must mask frames
+     */
+    public boolean writerMask() {
+        return this == CLIENT;
+    }
+
+    /**
+     * Returns whether inbound frames are expected to be masked.
+     *
+     * @return true when reader expects masked frames
+     */
+    public boolean readerExpectMasked() {
+        return this == SERVER;
+    }
 
 }

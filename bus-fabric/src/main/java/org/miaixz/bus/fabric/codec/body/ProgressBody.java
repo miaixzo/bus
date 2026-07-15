@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 
 /**
@@ -51,7 +51,7 @@ public interface ProgressBody extends Body {
      */
     @Override
     default byte[] bytes() {
-        return Payload.materialize(payload(), Options.DEFAULT_MATERIALIZE_MAX_BYTES, "ProgressBody.bytes()");
+        return Payload.materialize(payload(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES, "ProgressBody.bytes()");
     }
 
     /**
@@ -135,11 +135,6 @@ public interface ProgressBody extends Body {
     final class Tracker implements TransferObserver {
 
         /**
-         * Default progress callback step.
-         */
-        private static final long DEFAULT_STEP_BYTES = Normal._8192;
-
-        /**
          * Original payload.
          */
         private final Payload original;
@@ -162,12 +157,12 @@ public interface ProgressBody extends Body {
         /**
          * Callback step in bytes.
          */
-        private final AtomicLong stepBytes = new AtomicLong(DEFAULT_STEP_BYTES);
+        private final AtomicLong stepBytes = new AtomicLong(Normal._8192);
 
         /**
          * Next byte threshold for callback.
          */
-        private final AtomicLong nextStep = new AtomicLong(DEFAULT_STEP_BYTES);
+        private final AtomicLong nextStep = new AtomicLong(Normal._8192);
 
         /**
          * Whether final callback has been fired.
@@ -401,7 +396,7 @@ public interface ProgressBody extends Body {
              */
             @Override
             public byte[] bytes() {
-                return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
             /**
@@ -423,7 +418,7 @@ public interface ProgressBody extends Body {
              */
             @Override
             public String text(final Charset charset) {
-                return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
             /**

@@ -155,9 +155,9 @@ public final class HttpResponse implements AutoCloseable {
      * @param body    body
      */
     private HttpResponse(final HttpRequest request, final int code, final String message, final Headers headers,
-                         final PayloadBody body, final Protocol protocol, final TlsHandshake handshake,
-                         final Supplier<Headers> trailers, final HttpResponse networkResponse, final HttpResponse cacheResponse,
-                         final HttpResponse priorResponse, final long sentRequestAtMillis, final long receivedResponseAtMillis) {
+            final PayloadBody body, final Protocol protocol, final TlsHandshake handshake,
+            final Supplier<Headers> trailers, final HttpResponse networkResponse, final HttpResponse cacheResponse,
+            final HttpResponse priorResponse, final long sentRequestAtMillis, final long receivedResponseAtMillis) {
         this.request = require(request, "HTTP request");
         this.code = validateCode(code);
         this.message = validateMessage(message);
@@ -482,7 +482,8 @@ public final class HttpResponse implements AutoCloseable {
             throw new ConvertException("Decoded response is not an array: {}", typeName(decoded));
         }
         final int length = Array.getLength(decoded);
-        @SuppressWarnings("unchecked") final T[] values = (T[]) Array.newInstance(require(elementType, "Decoded element type"), length);
+        @SuppressWarnings("unchecked")
+        final T[] values = (T[]) Array.newInstance(require(elementType, "Decoded element type"), length);
         for (int i = 0; i < length; i++) {
             values[i] = castDecoded(Array.get(decoded, i), elementType, "HttpResponse.decodeArray element " + i);
         }
@@ -826,7 +827,8 @@ public final class HttpResponse implements AutoCloseable {
      */
     private static <T> T[] arrayFromCollection(final Collection<?> collection, final Class<T> elementType) {
         final Class<T> expected = require(elementType, "Decoded element type");
-        @SuppressWarnings("unchecked") final T[] values = (T[]) Array.newInstance(expected, collection.size());
+        @SuppressWarnings("unchecked")
+        final T[] values = (T[]) Array.newInstance(expected, collection.size());
         int index = 0;
         for (final Object value : collection) {
             values[index] = castDecoded(value, expected, "HttpResponse.decodeArray element " + index);

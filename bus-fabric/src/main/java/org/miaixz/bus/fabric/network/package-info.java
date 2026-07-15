@@ -23,7 +23,11 @@
  * <p>
  * The network package models destinations, connectors, connections, conduits and transport types. Protocol code owns
  * message semantics and codecs; network implementations own byte or datagram movement, connection state and close
- * behavior without interpreting HTTP, socket, STOMP or WebSocket messages.
+ * behavior without interpreting HTTP, socket, STOMP or WebSocket messages. {@code Ingress} adapts an accepted
+ * {@code SocketChannel} into the shared {@code Connection} and {@code Conduit} contracts used by Socket and WebSocket
+ * server sessions. {@code Connection} exposes bus-core {@code Source} and {@code Sink} views directly for protocol
+ * readers and writers. {@code Conduit} exposes asynchronous core.io {@code Buffer} read/write operations for network
+ * implementations that need lower-level progress control.
  * </p>
  *
  * @author Kimi Liu

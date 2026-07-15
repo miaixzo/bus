@@ -199,7 +199,7 @@ public final class EventSourceFactory implements EventSource.Factory {
          * @param listener listener
          */
         private DefaultEventSource(final Context context, final HttpRequest request,
-                                   final EventSourceListener listener) {
+                final EventSourceListener listener) {
             this.context = require(context, "Context");
             this.request = require(request, "Request");
             this.listener = require(listener, "Listener");

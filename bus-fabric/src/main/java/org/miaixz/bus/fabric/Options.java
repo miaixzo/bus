@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.instance.Instances;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -36,16 +35,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @since Java 21+
  */
 public final class Options {
-
-    /**
-     * Option key for the maximum bytes allowed when materializing a payload.
-     */
-    public static final String MATERIALIZE_MAX_BYTES = "materialize.maxBytes";
-
-    /**
-     * Default maximum bytes allowed when materializing a payload.
-     */
-    public static final long DEFAULT_MATERIALIZE_MAX_BYTES = Normal._64 * Normal.MEBI;
 
     /**
      * Immutable backing values.
@@ -193,9 +182,9 @@ public final class Options {
      * @return materialize byte threshold
      */
     public long materializeMaxBytes() {
-        final Object value = get(MATERIALIZE_MAX_BYTES);
+        final Object value = get(Builder.OPTION_MATERIALIZE_MAX_BYTES);
         if (value == null) {
-            return DEFAULT_MATERIALIZE_MAX_BYTES;
+            return Builder.DEFAULT_MATERIALIZE_MAX_BYTES;
         }
         if (!(value instanceof Number number)) {
             throw new ValidateException("Materialize max bytes must be numeric");
@@ -210,7 +199,7 @@ public final class Options {
      * @return updated options
      */
     public Options materializeMaxBytes(final long bytes) {
-        return with(MATERIALIZE_MAX_BYTES, validateMaterializeMaxBytes(bytes));
+        return with(Builder.OPTION_MATERIALIZE_MAX_BYTES, validateMaterializeMaxBytes(bytes));
     }
 
     /**

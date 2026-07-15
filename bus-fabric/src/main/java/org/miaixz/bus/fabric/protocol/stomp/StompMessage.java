@@ -24,10 +24,11 @@ import java.nio.charset.Charset;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.protocol.stomp.body.StompBody;
 
@@ -41,11 +42,6 @@ import org.miaixz.bus.fabric.protocol.stomp.body.StompBody;
  * @since Java 21+
  */
 public record StompMessage(String destination, Headers headers, Payload payload) {
-
-    /**
-     * STOMP content type header.
-     */
-    private static final String CONTENT_TYPE = "content-type";
 
     /**
      * Creates a validated message.
@@ -120,7 +116,7 @@ public record StompMessage(String destination, Headers headers, Payload payload)
      * @return body
      */
     public StompBody body() {
-        final String contentType = headers.get(CONTENT_TYPE);
+        final String contentType = headers.get(HTTP.CONTENT_TYPE);
         final MediaType media = contentType == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE
                 : MediaType.parse(contentType);
         return StompBody.of(payload, media);
@@ -133,7 +129,7 @@ public record StompMessage(String destination, Headers headers, Payload payload)
      * @return text
      */
     public String text(final Charset charset) {
-        return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**

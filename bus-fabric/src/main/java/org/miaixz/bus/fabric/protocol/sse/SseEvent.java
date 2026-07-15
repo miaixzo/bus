@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Immutable server-sent event value.
@@ -37,11 +38,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @since Java 21+
  */
 public record SseEvent(String id, String event, String data, Duration retry) {
-
-    /**
-     * Default SSE event type.
-     */
-    private static final String DEFAULT_EVENT = "message";
 
     /**
      * Creates a validated event.
@@ -119,7 +115,7 @@ public record SseEvent(String id, String event, String data, Duration retry) {
      */
     private static String normalizeEvent(final String value) {
         if (value == null) {
-            return DEFAULT_EVENT;
+            return Builder.SSE_DEFAULT_EVENT;
         }
         boolean nonBlank = false;
         for (int i = 0; i < value.length(); i++) {
@@ -131,7 +127,7 @@ public record SseEvent(String id, String event, String data, Duration retry) {
                 nonBlank = true;
             }
         }
-        return nonBlank ? value : DEFAULT_EVENT;
+        return nonBlank ? value : Builder.SSE_DEFAULT_EVENT;
     }
 
     /**

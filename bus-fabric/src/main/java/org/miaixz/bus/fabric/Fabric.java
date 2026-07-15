@@ -23,9 +23,11 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.protocol.http.HttpX;
 import org.miaixz.bus.fabric.protocol.http.SoapX;
+import org.miaixz.bus.fabric.protocol.socket.SocketServer;
 import org.miaixz.bus.fabric.protocol.socket.SocketX;
 import org.miaixz.bus.fabric.protocol.sse.SseX;
 import org.miaixz.bus.fabric.protocol.stomp.StompX;
+import org.miaixz.bus.fabric.protocol.websocket.WebSocketServer;
 import org.miaixz.bus.fabric.protocol.websocket.WebSocketX;
 
 /**
@@ -162,6 +164,25 @@ public final class Fabric {
     }
 
     /**
+     * Creates a socket server builder using a default context.
+     *
+     * @return socket server builder
+     */
+    public static SocketServer.Builder socketServer() {
+        return socketServer(defaultContext());
+    }
+
+    /**
+     * Creates a socket server builder using the supplied context.
+     *
+     * @param context shared context
+     * @return socket server builder
+     */
+    public static SocketServer.Builder socketServer(final Context context) {
+        return SocketServer.builder(require(context, "Context"));
+    }
+
+    /**
      * Creates a WebSocket exchange builder using a default context.
      *
      * @return WebSocket builder
@@ -178,6 +199,25 @@ public final class Fabric {
      */
     public static WebSocketX.Builder websocket(final Context context) {
         return WebSocketX.builder(require(context, "Context"));
+    }
+
+    /**
+     * Creates a WebSocket server builder using a default context.
+     *
+     * @return WebSocket server builder
+     */
+    public static WebSocketServer.Builder websocketServer() {
+        return websocketServer(defaultContext());
+    }
+
+    /**
+     * Creates a WebSocket server builder using the supplied context.
+     *
+     * @param context shared context
+     * @return WebSocket server builder
+     */
+    public static WebSocketServer.Builder websocketServer(final Context context) {
+        return WebSocketServer.builder(require(context, "Context"));
     }
 
     /**

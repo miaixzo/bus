@@ -25,12 +25,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.fabric.runtime.resource.ResourceScope;
 
@@ -41,11 +41,6 @@ import org.miaixz.bus.fabric.runtime.resource.ResourceScope;
  * @since Java 21+
  */
 public final class LifecycleScope {
-
-    /**
-     * Lifecycle name tag key.
-     */
-    private static final String NAME = "name";
 
     /**
      * Current lifecycle state.
@@ -125,15 +120,9 @@ public final class LifecycleScope {
      * @param cancelMarker  cancellation event marker
      * @param failureMarker failure event marker
      */
-    private LifecycleScope(
-            final Object source,
-            final String name,
-            final Listener<Object> listener,
-            final EventObserver observer,
-            final ObservationMarker startMarker,
-            final ObservationMarker openMarker,
-            final ObservationMarker closeMarker,
-            final ObservationMarker cancelMarker,
+    private LifecycleScope(final Object source, final String name, final Listener<Object> listener,
+            final EventObserver observer, final ObservationMarker startMarker, final ObservationMarker openMarker,
+            final ObservationMarker closeMarker, final ObservationMarker cancelMarker,
             final ObservationMarker failureMarker) {
         this.state = new AtomicReference<>(Status.QUEUED);
         this.cancellation = Cancellation.create();
@@ -158,16 +147,8 @@ public final class LifecycleScope {
      * @return lifecycle scope
      */
     public static LifecycleScope call(final String name, final EventObserver observer) {
-        return new LifecycleScope(
-                null,
-                name,
-                noopListener(),
-                observer,
-                ObservationMarker.CALL_START,
-                null,
-                ObservationMarker.CALL_SUCCESS,
-                ObservationMarker.CALL_CANCELLED,
-                ObservationMarker.CALL_FAILED);
+        return new LifecycleScope(null, name, noopListener(), observer, ObservationMarker.CALL_START, null,
+                ObservationMarker.CALL_SUCCESS, ObservationMarker.CALL_CANCELLED, ObservationMarker.CALL_FAILED);
     }
 
     /**
@@ -191,15 +172,7 @@ public final class LifecycleScope {
             final ObservationMarker openMarker,
             final ObservationMarker closeMarker,
             final ObservationMarker failureMarker) {
-        return new LifecycleScope(
-                source,
-                name,
-                cast(listener),
-                observer,
-                null,
-                openMarker,
-                closeMarker,
-                failureMarker,
+        return new LifecycleScope(source, name, cast(listener), observer, null, openMarker, closeMarker, failureMarker,
                 failureMarker);
     }
 
@@ -247,7 +220,8 @@ public final class LifecycleScope {
      * @return original resource
      */
     public <T extends AutoCloseable> T own(final T resource) {
-        final T current = resources.add(Assert.notNull(resource, () -> new ValidateException("Resource must not be null")));
+        final T current = resources
+                .add(Assert.notNull(resource, () -> new ValidateException("Resource must not be null")));
         cancellation.closeOnCancel(current);
         return current;
     }
@@ -351,7 +325,8 @@ public final class LifecycleScope {
      * @return true when the state changed
      */
     public boolean cancel(final Throwable cause) {
-        final Throwable current = Assert.notNull(cause, () -> new ValidateException("Cancellation cause must not be null"));
+        final Throwable current = Assert
+                .notNull(cause, () -> new ValidateException("Cancellation cause must not be null"));
         cancellation.cancel(current);
         final boolean changed = transit(Status.CANCELLED);
         if (changed) {
@@ -395,11 +370,9 @@ public final class LifecycleScope {
         if (marker == null) {
             return;
         }
-        observer.emit(FabricEvent.builder(marker)
-                .tag(NAME, name)
-                .tag(Tags.SOURCE, sourceName(source))
-                .cause(cause)
-                .build());
+        observer.emit(
+                FabricEvent.builder(marker).tag(Builder.LIFECYCLE_SCOPE_NAME, name)
+                        .tag(Builder.TAG_SOURCE, sourceName(source)).cause(cause).build());
     }
 
     /**
@@ -423,10 +396,10 @@ public final class LifecycleScope {
     /**
      * Runs terminal cleanup and callbacks once.
      *
-     * @param marker       terminal marker
-     * @param cause        failure cause
-     * @param failed       failure flag
-     * @param eventSource  event source
+     * @param marker      terminal marker
+     * @param cause       failure cause
+     * @param failed      failure flag
+     * @param eventSource event source
      */
     private void terminal(
             final ObservationMarker marker,
@@ -496,12 +469,10 @@ public final class LifecycleScope {
      * @param cause  failure cause
      */
     private void listenerFailed(final String action, final RuntimeException cause) {
-        observer.emit(FabricEvent.builder(ObservationMarker.LISTENER_FAILED)
-                .tag(NAME, name)
-                .tag(Tags.ACTION, action)
-                .tag(Tags.SOURCE, sourceName(source))
-                .cause(cause)
-                .build());
+        observer.emit(
+                FabricEvent.builder(ObservationMarker.LISTENER_FAILED).tag(Builder.LIFECYCLE_SCOPE_NAME, name)
+                        .tag(Builder.TAG_ACTION, action).tag(Builder.TAG_SOURCE, sourceName(source)).cause(cause)
+                        .build());
     }
 
     /**

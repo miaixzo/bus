@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.sse;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -61,7 +63,6 @@ public final class SseX {
     /**
      * Runtime option key for default timeout.
      */
-    private static final String TIMEOUT_OPTION = "timeout";
 
     /**
      * Immutable execution snapshot.
@@ -83,8 +84,8 @@ public final class SseX {
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.snapshot = new SseSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.retry, builder.lastEventId, builder.autoReconnect, builder.responseHandler,
-                builder.guard, builder.filter, currentObserver,
-                builder.callback, builder.handler == null ? noopHandler() : builder.handler, builder.listener);
+                builder.guard, builder.filter, currentObserver, builder.callback,
+                builder.handler == null ? noopHandler() : builder.handler, builder.listener);
         this.runner = new SseRunner(snapshot);
     }
 
@@ -375,7 +376,7 @@ public final class SseX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(TIMEOUT_OPTION, Timeout.class);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.retry = SseRetry.defaults();
             this.autoReconnect = true;

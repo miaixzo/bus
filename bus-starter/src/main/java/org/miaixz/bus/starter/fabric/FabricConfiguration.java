@@ -17,9 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.socket;
-
-import jakarta.annotation.Resource;
+package org.miaixz.bus.starter.fabric;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,45 +27,58 @@ import org.springframework.context.annotation.Bean;
 import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
- * Auto-configuration for the socket service.
+ * Auto-configuration for fabric communication services.
  * <p>
- * This class enables the {@link SocketProperties} and creates the main {@link SocketQuickService} bean that manages the
- * server lifecycle.
+ * This class enables {@link FabricProperties} and creates protocol quick-service beans for configured fabric server
+ * capabilities.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@EnableConfigurationProperties(value = { SocketProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.SOCKET, name = "enabled", havingValue = "true", matchIfMissing = true)
-public class SocketConfiguration {
+@EnableConfigurationProperties(value = { FabricProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.FABRIC, name = "enabled", havingValue = "true", matchIfMissing = true)
+public class FabricConfiguration {
 
     /**
-     * Constructs a new SocketConfiguration instance.
+     * Constructs a new FabricConfiguration instance.
      */
-    public SocketConfiguration() {
+    public FabricConfiguration() {
         // No initialization required.
     }
 
     /**
-     * Injected socket configuration properties.
-     */
-    @Resource
-    private SocketProperties properties;
-
-    /**
      * Creates the {@link SocketQuickService} bean.
      * <p>
-     * This bean is responsible for starting and stopping the underlying socket server. The {@code initMethod="start"}
-     * and {@code destroyMethod="stop"} attributes ensure that the server's lifecycle is tied to the Spring application
-     * context. The bean is only created if no other bean of the same type is already present.
+     * This bean starts and stops the configured fabric socket server with the Spring application context. The bean is
+     * only created when no other socket quick service bean is already present.
      * </p>
      *
-     * @return A new {@link SocketQuickService} instance.
+     * @param properties fabric configuration properties
+     * @return socket quick service
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean
-    public SocketQuickService initialization() {
-        return new SocketQuickService(this.properties);
+    @ConditionalOnProperty(prefix = GeniusBuilder.FABRIC
+            + ".socket", name = "enabled", havingValue = "true", matchIfMissing = true)
+    public SocketQuickService socketQuickService(final FabricProperties properties) {
+        return new SocketQuickService(properties);
+    }
+
+    /**
+     * Creates the {@link WebSocketQuickService} bean.
+     * <p>
+     * This bean starts and stops the configured fabric WebSocket server with the Spring application context. The bean
+     * is only created when the WebSocket service is explicitly enabled.
+     * </p>
+     *
+     * @param properties fabric configuration properties
+     * @return WebSocket quick service
+     */
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = GeniusBuilder.FABRIC + ".websocket", name = "enabled", havingValue = "true")
+    public WebSocketQuickService webSocketQuickService(final FabricProperties properties) {
+        return new WebSocketQuickService(properties);
     }
 
 }

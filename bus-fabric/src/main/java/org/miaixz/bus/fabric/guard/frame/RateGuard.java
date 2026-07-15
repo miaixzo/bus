@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.guard.GuardResult;
@@ -36,11 +37,6 @@ import org.miaixz.bus.fabric.guard.GuardRule;
  * @since Java 21+
  */
 public final class RateGuard implements GuardRule {
-
-    /**
-     * Rule name.
-     */
-    private static final String NAME = "frame-rate";
 
     /**
      * Maximum bytes refilled per second.
@@ -150,7 +146,7 @@ public final class RateGuard implements GuardRule {
      */
     @Override
     public String name() {
-        return NAME;
+        return Builder.RATE_GUARD_NAME;
     }
 
     /**

@@ -100,10 +100,7 @@ public abstract class MonoCall<T> implements Call<T> {
      * @param observer   event observer
      * @param callback   callback
      */
-    protected MonoCall(
-            final String name,
-            final Dispatcher dispatcher,
-            final EventObserver observer,
+    protected MonoCall(final String name, final Dispatcher dispatcher, final EventObserver observer,
             final Callback<? super T> callback) {
         this.name = Assert.notBlank(name, () -> new ValidateException("Call name must not be blank"));
         this.dispatcher = dispatcher;
@@ -215,7 +212,8 @@ public abstract class MonoCall<T> implements Call<T> {
      * @return this call
      */
     public Call<T> enqueue(final Dispatcher dispatcher) {
-        final Dispatcher target = Assert.notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null"));
+        final Dispatcher target = Assert
+                .notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null"));
         if (handle.get() != null) {
             return this;
         }

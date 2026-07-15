@@ -570,8 +570,8 @@ public final class ConnectionPool implements AutoCloseable {
             releaseCreateReservation();
             throw e instanceof InternalException || e instanceof ProtocolException || e instanceof SocketException
                     || e instanceof TimeoutException || e instanceof StatefulException || e instanceof ValidateException
-                    ? e
-                    : new InternalException("Unable to create connection", e);
+                            ? e
+                            : new InternalException("Unable to create connection", e);
         }
         boolean closeable = false;
         boolean cancelled = false;

@@ -24,13 +24,13 @@ import java.net.SocketAddress;
 import java.net.SocketOption;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.nio.channels.CompletionHandler;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -42,7 +42,7 @@ import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 
 /**
- * AIO socket channel with future and completion-handler operations.
+ * AIO socket channel with core.io buffer operations.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -122,7 +122,7 @@ public final class AioChannel implements AutoCloseable {
      * @param ownsDispatcher true when close should stop dispatcher
      */
     private AioChannel(final AsynchronousSocketChannel channel, final Dispatcher dispatcher,
-                       final boolean ownsDispatcher, final SocketOptions options) {
+            final boolean ownsDispatcher, final SocketOptions options) {
         this.channel = Assert.notNull(channel, () -> new ValidateException("AIO channel must not be null"));
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("AIO dispatcher must not be null"));
         this.ownsDispatcher = ownsDispatcher;
@@ -182,65 +182,71 @@ public final class AioChannel implements AutoCloseable {
     }
 
     /**
-     * Reads bytes.
+     * Reads bytes into a core.io buffer.
      *
-     * @param target target buffer
+     * @param target    target buffer
+     * @param byteCount maximum byte count
      * @return read future
      */
-    public CompletableFuture<Integer> read(final ByteBuffer target) {
-        final ByteBuffer checkedTarget = Assert
+    public CompletableFuture<Long> read(final Buffer target, final long byteCount) {
+        final Buffer checkedTarget = Assert
                 .notNull(target, () -> new ValidateException("Read target must not be null"));
+        Assert.isTrue(byteCount >= Normal._0, () -> new ValidateException("Read byte count must not be negative"));
+        if (byteCount == Normal._0) {
+            return CompletableFuture.completedFuture(0L);
+        }
         try {
-            final Future<Integer> operation = channel.read(checkedTarget.duplicate());
-            return integerFuture(operation, "AIO read failed");
+            final ByteBuffer buffer = ByteBuffer.allocate(readCapacity(byteCount));
+            final Future<Integer> operation = channel.read(buffer);
+            return longFuture(operation, "AIO read failed").thenApply(count -> {
+                if (count > Normal._0) {
+                    buffer.flip();
+                    try {
+                        checkedTarget.write(buffer);
+                    } catch (final IOException e) {
+                        throw new SocketException("AIO read failed", e);
+                    }
+                }
+                return count;
+            });
         } catch (final RuntimeException e) {
             return CompletableFuture.failedFuture(new SocketException("AIO read failed", e));
         }
     }
 
     /**
-     * Reads bytes with a handler.
+     * Writes bytes from a core.io buffer.
      *
-     * @param target  target buffer
-     * @param handler completion handler
-     */
-    public void read(final ByteBuffer target, final CompletionHandler<Integer, ByteBuffer> handler) {
-        final CompletionHandler<Integer, ByteBuffer> checkedHandler = Assert
-                .notNull(handler, () -> new ValidateException("Read handler must not be null"));
-        complete(target, checkedHandler, read(target));
-    }
-
-    /**
-     * Writes bytes.
-     *
-     * @param source source buffer
+     * @param source    source buffer
+     * @param byteCount byte count to write
      * @return write future
      */
-    public CompletableFuture<Integer> write(final ByteBuffer source) {
-        final ByteBuffer checkedSource = Assert
+    public CompletableFuture<Long> write(final Buffer source, final long byteCount) {
+        final Buffer checkedSource = Assert
                 .notNull(source, () -> new ValidateException("Write source must not be null"));
+        Assert.isTrue(byteCount >= Normal._0, () -> new ValidateException("Write byte count must not be negative"));
+        Assert.isTrue(
+                byteCount <= checkedSource.size(),
+                () -> new ValidateException("Write byte count must not exceed source size"));
+        if (byteCount == Normal._0) {
+            return CompletableFuture.completedFuture(0L);
+        }
         try {
-            final ByteBuffer view = checkedSource.asReadOnlyBuffer();
-            if (view.remaining() > options.writeChunkSize()) {
-                view.limit(view.position() + options.writeChunkSize());
-            }
+            final ByteBuffer view = checkedSource.nioBuffer(toIntSize(Math.min(byteCount, options.writeChunkSize())));
             final Future<Integer> operation = channel.write(view);
-            return integerFuture(operation, "AIO write failed");
+            return longFuture(operation, "AIO write failed").thenApply(count -> {
+                if (count > Normal._0) {
+                    try {
+                        checkedSource.skip(count);
+                    } catch (final IOException e) {
+                        throw new SocketException("AIO write failed", e);
+                    }
+                }
+                return count;
+            });
         } catch (final RuntimeException e) {
             return CompletableFuture.failedFuture(new SocketException("AIO write failed", e));
         }
-    }
-
-    /**
-     * Writes bytes with a handler.
-     *
-     * @param source  source buffer
-     * @param handler completion handler
-     */
-    public void write(final ByteBuffer source, final CompletionHandler<Integer, ByteBuffer> handler) {
-        final CompletionHandler<Integer, ByteBuffer> checkedHandler = Assert
-                .notNull(handler, () -> new ValidateException("Write handler must not be null"));
-        complete(source, checkedHandler, write(source));
     }
 
     /**
@@ -300,7 +306,7 @@ public final class AioChannel implements AutoCloseable {
     /**
      * Applies configured JDK socket options.
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void applySocketOptions() {
         for (final java.util.Map.Entry<SocketOption<?>, Object> entry : options.socketOptions().entrySet()) {
             try {
@@ -312,16 +318,16 @@ public final class AioChannel implements AutoCloseable {
     }
 
     /**
-     * Wraps a JDK integer future.
+     * Wraps a JDK integer future as a long byte count.
      *
      * @param operation operation
      * @param message   failure message
      * @return future
      */
-    private CompletableFuture<Integer> integerFuture(final Future<Integer> operation, final String message) {
+    private CompletableFuture<Long> longFuture(final Future<Integer> operation, final String message) {
         return dispatcher.supply("aio:operation", () -> {
             try {
-                return operation.get();
+                return operation.get().longValue();
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new InternalException("Interrupted while waiting for AIO operation", e);
@@ -332,23 +338,23 @@ public final class AioChannel implements AutoCloseable {
     }
 
     /**
-     * Completes a handler from a future.
+     * Returns a bounded read capacity.
      *
-     * @param buffer  buffer
-     * @param handler handler
-     * @param future  future
+     * @param byteCount requested byte count
+     * @return read capacity
      */
-    private static void complete(
-            final ByteBuffer buffer,
-            final CompletionHandler<Integer, ByteBuffer> handler,
-            final CompletableFuture<Integer> future) {
-        future.whenComplete((value, error) -> {
-            if (error == null) {
-                handler.completed(value, buffer);
-            } else {
-                handler.failed(error, buffer);
-            }
-        });
+    private int readCapacity(final long byteCount) {
+        return toIntSize(Math.min(byteCount, options.readBufferSize()));
+    }
+
+    /**
+     * Converts a long byte count to an int size accepted by JDK buffers.
+     *
+     * @param byteCount byte count
+     * @return int size
+     */
+    private static int toIntSize(final long byteCount) {
+        return (int) Math.min(byteCount, Integer.MAX_VALUE);
     }
 
 }

@@ -65,7 +65,7 @@ public final class Message {
      * @param tag      user or runtime tag
      */
     private Message(final Protocol protocol, final Address address, final Headers headers, final Payload payload,
-                    final Object tag) {
+            final Object tag) {
         this.protocol = require(protocol, "Protocol");
         this.address = require(address, "Address");
         this.headers = require(headers, "Headers");

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.net.SocketOption;
 import java.time.Duration;
 import java.util.Collections;
@@ -39,7 +41,7 @@ import org.miaixz.bus.fabric.Options;
  * @param writeChunkSize   maximum bytes submitted in one low-level write
  * @param writeChunkCount  retained write chunk count hint
  * @param backlog          TCP server backlog
- * @param threadNum        AIO read worker count
+ * @param ioThreads        AIO read I/O thread count
  * @param socketOptions    JDK socket options passed to client channels
  * @param retainReadBuffer true to reuse one read buffer per session
  * @param connectTimeout   connection timeout
@@ -47,75 +49,9 @@ import org.miaixz.bus.fabric.Options;
  * @author Kimi Liu
  * @since Java 21+
  */
-public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChunkCount, int backlog, int threadNum,
-                            Map<SocketOption<?>, Object> socketOptions, boolean retainReadBuffer,
-                            Duration connectTimeout,
-                            Duration idleTimeout) {
-
-    /**
-     * Option key for per-session read buffer size.
-     */
-    public static final String READ_BUFFER_SIZE = "socket.readBufferSize";
-
-    /**
-     * Option key for maximum bytes submitted in one low-level write chunk.
-     */
-    public static final String WRITE_CHUNK_SIZE = "socket.writeChunkSize";
-
-    /**
-     * Option key for retained write chunk count hint.
-     */
-    public static final String WRITE_CHUNK_COUNT = "socket.writeChunkCount";
-
-    /**
-     * Option key for TCP server listen backlog.
-     */
-    public static final String BACKLOG = "socket.backlog";
-
-    /**
-     * Option key for AIO read worker count.
-     */
-    public static final String THREAD_NUM = "socket.threadNum";
-
-    /**
-     * Option key for JDK socket options applied to client channels.
-     */
-    public static final String SOCKET_OPTIONS = "socket.socketOptions";
-
-    /**
-     * Option key for retaining one reusable read buffer per session.
-     */
-    public static final String RETAIN_READ_BUFFER = "socket.retainReadBuffer";
-
-    /**
-     * Option key for connection timeout.
-     */
-    public static final String CONNECT_TIMEOUT = "socket.connectTimeout";
-
-    /**
-     * Option key for operation-time idle timeout.
-     */
-    public static final String IDLE_TIMEOUT = "socket.idleTimeout";
-
-    /**
-     * Default per-session read buffer size used when no option map value is supplied.
-     */
-    private static final int DEFAULT_READ_BUFFER_SIZE = Normal._8192;
-
-    /**
-     * Default maximum bytes submitted in one low-level socket write.
-     */
-    private static final int DEFAULT_WRITE_CHUNK_SIZE = Normal._8192;
-
-    /**
-     * Default retained write-chunk count used by socket write buffering.
-     */
-    private static final int DEFAULT_WRITE_CHUNK_COUNT = Normal._16;
-
-    /**
-     * Default TCP server backlog for socket listeners.
-     */
-    private static final int DEFAULT_BACKLOG = 1000;
+public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChunkCount, int backlog, int ioThreads,
+        Map<SocketOption<?>, Object> socketOptions, boolean retainReadBuffer, Duration connectTimeout,
+        Duration idleTimeout) {
 
     /**
      * Creates validated options.
@@ -125,7 +61,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         writeChunkSize = positive(writeChunkSize, "Write chunk size");
         writeChunkCount = positive(writeChunkCount, "Write chunk count");
         backlog = positive(backlog, "Backlog");
-        threadNum = positive(threadNum, "Thread count");
+        ioThreads = positive(ioThreads, "I/O thread count");
         socketOptions = snapshotSocketOptions(socketOptions);
         connectTimeout = timeout(connectTimeout, "Connect timeout");
         idleTimeout = timeout(idleTimeout, "Idle timeout");
@@ -139,7 +75,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     public static SocketOptions defaults() {
         return Instances.get(
                 SocketOptions.class.getName() + ".defaults",
-                () -> builder().threadNum(Math.max(Normal._1, Runtime.getRuntime().availableProcessors())).build());
+                () -> builder().ioThreads(Math.max(Normal._1, Runtime.getRuntime().availableProcessors())).build());
     }
 
     /**
@@ -161,13 +97,16 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     public static SocketOptions from(final Options options) {
         final Options checkedOptions = Assert.notNull(options, () -> new ValidateException("Options must not be null"));
         final Builder builder = builder();
-        builder.readBufferSize(number(checkedOptions, READ_BUFFER_SIZE, DEFAULT_READ_BUFFER_SIZE));
-        builder.writeChunkSize(number(checkedOptions, WRITE_CHUNK_SIZE, DEFAULT_WRITE_CHUNK_SIZE));
-        builder.writeChunkCount(number(checkedOptions, WRITE_CHUNK_COUNT, DEFAULT_WRITE_CHUNK_COUNT));
-        builder.backlog(number(checkedOptions, BACKLOG, DEFAULT_BACKLOG));
-        builder.threadNum(
-                number(checkedOptions, THREAD_NUM, Math.max(Normal._1, Runtime.getRuntime().availableProcessors())));
-        final Object rawSocketOptions = checkedOptions.get(SOCKET_OPTIONS);
+        builder.readBufferSize(number(checkedOptions, OPTION_SOCKET_READ_BUFFER_SIZE, Normal._8192));
+        builder.writeChunkSize(number(checkedOptions, OPTION_SOCKET_WRITE_CHUNK_SIZE, Normal._8192));
+        builder.writeChunkCount(number(checkedOptions, OPTION_SOCKET_WRITE_CHUNK_COUNT, Normal._16));
+        builder.backlog(number(checkedOptions, OPTION_SOCKET_BACKLOG, _1000));
+        builder.ioThreads(
+                number(
+                        checkedOptions,
+                        OPTION_SOCKET_IO_THREADS,
+                        Math.max(Normal._1, Runtime.getRuntime().availableProcessors())));
+        final Object rawSocketOptions = checkedOptions.get(OPTION_SOCKET_OPTIONS);
         if (rawSocketOptions instanceof Map<?, ?> map) {
             for (final Map.Entry<?, ?> entry : map.entrySet()) {
                 if (!(entry.getKey() instanceof SocketOption<?> option)) {
@@ -178,9 +117,9 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         } else if (rawSocketOptions != null) {
             throw new ValidateException("Socket options value must be a map");
         }
-        builder.retainReadBuffer(bool(checkedOptions, RETAIN_READ_BUFFER, false));
-        builder.connectTimeout(duration(checkedOptions, CONNECT_TIMEOUT, Duration.ofSeconds(Normal._10)));
-        builder.idleTimeout(duration(checkedOptions, IDLE_TIMEOUT, Duration.ZERO));
+        builder.retainReadBuffer(bool(checkedOptions, OPTION_SOCKET_RETAIN_READ_BUFFER, false));
+        builder.connectTimeout(duration(checkedOptions, OPTION_SOCKET_CONNECT_TIMEOUT, Duration.ofSeconds(Normal._10)));
+        builder.idleTimeout(duration(checkedOptions, OPTION_SOCKET_IDLE_TIMEOUT, Duration.ZERO));
         return builder.build();
     }
 
@@ -190,10 +129,12 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
      * @return options
      */
     public Options toOptions() {
-        return Options.empty().with(READ_BUFFER_SIZE, readBufferSize).with(WRITE_CHUNK_SIZE, writeChunkSize)
-                .with(WRITE_CHUNK_COUNT, writeChunkCount).with(BACKLOG, backlog).with(THREAD_NUM, threadNum)
-                .with(SOCKET_OPTIONS, socketOptions).with(RETAIN_READ_BUFFER, retainReadBuffer)
-                .with(CONNECT_TIMEOUT, connectTimeout).with(IDLE_TIMEOUT, idleTimeout);
+        return Options.empty().with(OPTION_SOCKET_READ_BUFFER_SIZE, readBufferSize)
+                .with(OPTION_SOCKET_WRITE_CHUNK_SIZE, writeChunkSize)
+                .with(OPTION_SOCKET_WRITE_CHUNK_COUNT, writeChunkCount).with(OPTION_SOCKET_BACKLOG, backlog)
+                .with(OPTION_SOCKET_IO_THREADS, ioThreads).with(OPTION_SOCKET_OPTIONS, socketOptions)
+                .with(OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer)
+                .with(OPTION_SOCKET_CONNECT_TIMEOUT, connectTimeout).with(OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
     }
 
     /**
@@ -204,27 +145,27 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Mutable read buffer size candidate.
          */
-        private int readBufferSize = DEFAULT_READ_BUFFER_SIZE;
+        private int readBufferSize = Normal._8192;
 
         /**
          * Mutable write chunk size candidate.
          */
-        private int writeChunkSize = DEFAULT_WRITE_CHUNK_SIZE;
+        private int writeChunkSize = Normal._8192;
 
         /**
          * Mutable retained write chunk count candidate.
          */
-        private int writeChunkCount = DEFAULT_WRITE_CHUNK_COUNT;
+        private int writeChunkCount = Normal._16;
 
         /**
          * Mutable TCP server backlog candidate.
          */
-        private int backlog = DEFAULT_BACKLOG;
+        private int backlog = _1000;
 
         /**
-         * Mutable AIO worker count candidate.
+         * Mutable AIO I/O thread count candidate.
          */
-        private int threadNum = Math.max(Normal._1, Runtime.getRuntime().availableProcessors());
+        private int ioThreads = Math.max(Normal._1, Runtime.getRuntime().availableProcessors());
 
         /**
          * Mutable JDK socket options collected before the immutable snapshot is built.
@@ -298,13 +239,13 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         }
 
         /**
-         * Sets the AIO read worker count.
+         * Sets the AIO read I/O thread count.
          *
-         * @param value worker count
+         * @param value I/O thread count
          * @return this builder
          */
-        public Builder threadNum(final int value) {
-            threadNum = positive(value, "Thread count");
+        public Builder ioThreads(final int value) {
+            ioThreads = positive(value, "I/O thread count");
             return this;
         }
 
@@ -382,7 +323,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
          * @return socket options
          */
         public SocketOptions build() {
-            return new SocketOptions(readBufferSize, writeChunkSize, writeChunkCount, backlog, threadNum, socketOptions,
+            return new SocketOptions(readBufferSize, writeChunkSize, writeChunkCount, backlog, ioThreads, socketOptions,
                     retainReadBuffer, connectTimeout, idleTimeout);
         }
 

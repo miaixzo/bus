@@ -28,6 +28,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.ProgressBody;
 import org.miaixz.bus.fabric.codec.body.ResponseBody;
@@ -41,36 +42,6 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
  * @since Java 21+
  */
 public final class SseBody implements ResponseBody, ProgressBody {
-
-    /**
-     * SSE media type.
-     */
-    private static final MediaType EVENT_STREAM = MediaType.SERVER_SENT_EVENTS_TYPE;
-
-    /**
-     * Default SSE event type.
-     */
-    private static final String DEFAULT_EVENT = "message";
-
-    /**
-     * Event id line prefix.
-     */
-    private static final String ID_PREFIX = "id: ";
-
-    /**
-     * Event type line prefix.
-     */
-    private static final String EVENT_PREFIX = "event: ";
-
-    /**
-     * Retry line prefix.
-     */
-    private static final String RETRY_PREFIX = "retry: ";
-
-    /**
-     * Data line prefix.
-     */
-    private static final String DATA_PREFIX = "data: ";
 
     /**
      * Payload.
@@ -163,13 +134,13 @@ public final class SseBody implements ResponseBody, ProgressBody {
         require(event, "SSE event");
         final StringBuilder builder = new StringBuilder();
         if (event.id() != null) {
-            builder.append(ID_PREFIX).append(event.id()).append(Symbol.LF);
+            builder.append(Builder.SSE_BODY_ID_PREFIX).append(event.id()).append(Symbol.LF);
         }
-        if (!DEFAULT_EVENT.equals(event.event())) {
-            builder.append(EVENT_PREFIX).append(event.event()).append(Symbol.LF);
+        if (!Builder.SSE_DEFAULT_EVENT.equals(event.event())) {
+            builder.append(Builder.SSE_BODY_EVENT_PREFIX).append(event.event()).append(Symbol.LF);
         }
         if (event.retry() != null) {
-            builder.append(RETRY_PREFIX).append(event.retry().toMillis()).append(Symbol.LF);
+            builder.append(Builder.SSE_BODY_RETRY_PREFIX).append(event.retry().toMillis()).append(Symbol.LF);
         }
         appendData(builder, event.data() == null ? Normal.EMPTY : event.data());
         builder.append(Symbol.LF);
@@ -212,7 +183,7 @@ public final class SseBody implements ResponseBody, ProgressBody {
      */
     @Override
     public MediaType media() {
-        return EVENT_STREAM;
+        return MediaType.SERVER_SENT_EVENTS_TYPE;
     }
 
     /**
@@ -307,7 +278,7 @@ public final class SseBody implements ResponseBody, ProgressBody {
      * @param end     line end index
      */
     private static void appendDataLine(final StringBuilder builder, final String data, final int start, final int end) {
-        builder.append(DATA_PREFIX).append(data, start, end).append(Symbol.LF);
+        builder.append(Builder.SSE_BODY_DATA_PREFIX).append(data, start, end).append(Symbol.LF);
     }
 
 }

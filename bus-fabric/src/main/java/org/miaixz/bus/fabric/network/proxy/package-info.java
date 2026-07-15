@@ -22,8 +22,9 @@
  *
  * <p>
  * Proxy plans describe whether a connection should be direct, HTTP or SOCKS and carry authentication metadata in a
- * redaction-safe form. Parsed PROXY protocol headers are represented here as network metadata; socket server code is
- * responsible for deciding when to parse and attach them to a session.
+ * redaction-safe form. Parsed PROXY protocol headers are represented here as network metadata.
+ * {@code ProxyHeaderReader} reads optional PROXY protocol v1 metadata from accepted server sockets and preserves any
+ * prefetched application payload for the protocol session.
  * </p>
  *
  * @author Kimi Liu

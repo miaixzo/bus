@@ -24,13 +24,13 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Set;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
@@ -43,22 +43,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * @since Java 21+
  */
 public final class CachePolicy {
-
-    /**
-     * Cacheable status codes.
-     */
-    private static final Set<Integer> CACHEABLE = Set.of(
-            HTTP.HTTP_OK,
-            HTTP.HTTP_NOT_AUTHORITATIVE,
-            HTTP.HTTP_NO_CONTENT,
-            HTTP.HTTP_MULT_CHOICE,
-            HTTP.HTTP_MOVED_PERM,
-            HTTP.HTTP_PERM_REDIRECT,
-            HTTP.HTTP_NOT_FOUND,
-            HTTP.HTTP_BAD_METHOD,
-            HTTP.HTTP_GONE,
-            HTTP.HTTP_REQ_TOO_LONG,
-            HTTP.HTTP_NOT_IMPLEMENTED);
 
     /**
      * Creates a policy.
@@ -91,7 +75,8 @@ public final class CachePolicy {
         if (request.method() != HTTP.Method.GET && request.method() != HTTP.Method.HEAD) {
             return false;
         }
-        if (!CACHEABLE.contains(response.code()) && !explicitlyCacheable(response, responseControl)) {
+        if (!Builder.CACHE_POLICY_CACHEABLE.contains(response.code())
+                && !explicitlyCacheable(response, responseControl)) {
             return false;
         }
         if (HttpCacheKey.varyStar(response.headers().get(HTTP.VARY))) {

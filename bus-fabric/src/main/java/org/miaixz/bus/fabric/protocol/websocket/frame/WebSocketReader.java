@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
@@ -51,102 +52,78 @@ public final class WebSocketReader implements AutoCloseable {
     /**
      * Continuation opcode.
      */
-    private static final int CONTINUATION = 0x0;
 
     /**
      * Text opcode.
      */
-    private static final int TEXT = 0x1;
 
     /**
      * Binary opcode.
      */
-    private static final int BINARY = 0x2;
 
     /**
      * Close opcode.
      */
-    private static final int CLOSE = 0x8;
 
     /**
      * Ping opcode.
      */
-    private static final int PING = 0x9;
 
     /**
      * Pong opcode.
      */
-    private static final int PONG = 0xA;
-
-    /**
-     * Default address used by compatibility constructors.
-     */
-    private static final String DEFAULT_ADDRESS = Protocol.WS_PREFIX + "localhost";
 
     /**
      * RSV bit mask.
      */
-    private static final int RSV_MASK = 0x70;
 
     /**
      * FIN bit mask.
      */
-    private static final int FIN_MASK = 0x80;
 
     /**
      * Opcode bit mask.
      */
-    private static final int OPCODE_MASK = 0x0F;
 
     /**
      * Payload mask flag.
      */
-    private static final int MASK_FLAG = 0x80;
 
     /**
      * Payload length bit mask.
      */
-    private static final int LENGTH_MASK = 0x7F;
 
     /**
      * Marker for unsigned 16-bit payload length.
      */
-    private static final int LENGTH_16_MARKER = 126;
 
     /**
      * Marker for unsigned 64-bit payload length.
      */
-    private static final int LENGTH_64_MARKER = 127;
 
     /**
      * WebSocket mask key byte length.
      */
-    private static final int MASK_KEY_BYTES = 4;
 
     /**
      * Last mask key index for modulo arithmetic.
      */
-    private static final long MASK_INDEX = 3L;
 
     /**
      * Default normal close code used when no close payload is present.
      */
-    private static final int DEFAULT_CLOSE_CODE = 1000;
 
     /**
      * Initial fragmented opcode marker.
      */
-    private static final int NO_FRAGMENT_OPCODE = -1;
 
     /**
      * Cursor value returned when no segment is available.
      */
-    private static final int NO_CURSOR_SEGMENT = -1;
 
     /**
      * Maximum message payload bytes accepted by this implementation.
      */
-    private static final long MAX_PAYLOAD_BYTES = Normal._16 * Normal.MEBI;
 
     /**
      * Source bytes.
@@ -180,7 +157,7 @@ public final class WebSocketReader implements AutoCloseable {
      * @param expectMasked expected mask flag
      */
     public WebSocketReader(final Source source, final boolean expectMasked) {
-        this(source, expectMasked, Address.parse(DEFAULT_ADDRESS));
+        this(source, expectMasked, Address.parse(Builder.WEB_SOCKET_READER_DEFAULT_ADDRESS));
     }
 
     /**
@@ -206,33 +183,33 @@ public final class WebSocketReader implements AutoCloseable {
         ensureOpen();
         final int first = readByte();
         final int second = readByte();
-        if ((first & RSV_MASK) != Normal._0) {
+        if ((first & Builder.WEBSOCKET_RSV_MASK) != Normal._0) {
             throw new ProtocolException("WebSocket RSV bits must be zero");
         }
-        final boolean fin = (first & FIN_MASK) != Normal._0;
-        final int opcode = first & OPCODE_MASK;
-        final boolean masked = (second & MASK_FLAG) != Normal._0;
-        long length = second & LENGTH_MASK;
+        final boolean fin = (first & Normal._128) != Normal._0;
+        final int opcode = first & Builder.WEBSOCKET_OPCODE_MASK;
+        final boolean masked = (second & Normal._128) != Normal._0;
+        long length = second & Builder._127;
         if (masked != expectMasked) {
             throw new ProtocolException("Unexpected WebSocket mask flag");
         }
-        if (length == LENGTH_16_MARKER) {
+        if (length == Builder.WEBSOCKET_LENGTH_16_MARKER) {
             length = readUnsignedShort();
-        } else if (length == LENGTH_64_MARKER) {
+        } else if (length == Builder._127) {
             length = readLong();
             if (length < Normal.LONG_ZERO) {
                 throw new ProtocolException("Invalid WebSocket payload length");
             }
         }
-        if (length > MAX_PAYLOAD_BYTES) {
+        if (length > Builder.BYTES_16_MIB) {
             throw new ProtocolException("WebSocket payload is too large");
         }
-        final byte[] mask = masked ? readBytes(MASK_KEY_BYTES) : null;
+        final byte[] mask = masked ? readBytes(Normal._4) : null;
         final Buffer payload = readBuffer((int) length);
         if (mask != null) {
             unmask(payload, mask, length);
         }
-        final WebSocketFrame frame = new WebSocketFrame(opcode, fin, payload.readByteString(), opcode >= CLOSE);
+        final WebSocketFrame frame = new WebSocketFrame(opcode, fin, payload.readByteString(), opcode >= Normal._8);
         validateClose(frame);
         return frame;
     }
@@ -268,25 +245,25 @@ public final class WebSocketReader implements AutoCloseable {
         require(handler, "WebSocket handler");
         final Control events = control == null ? NoopControl.INSTANCE : control;
         Buffer fragmented = null;
-        int fragmentedOpcode = NO_FRAGMENT_OPCODE;
+        int fragmentedOpcode = Normal.__1;
         try {
             while (!closed) {
                 final WebSocketFrame frame = next();
                 final int opcode = frame.opcode();
-                if (opcode == CLOSE) {
+                if (opcode == Normal._8) {
                     final WebSocketClose close = close(frame);
                     events.close(session, close);
                     return close;
                 }
-                if (opcode == PING) {
+                if (opcode == Builder.WEBSOCKET_OPCODE_PING) {
                     events.ping(session, frame.payload());
                     continue;
                 }
-                if (opcode == PONG) {
+                if (opcode == Builder.WEBSOCKET_OPCODE_PONG) {
                     events.pong(session, frame.payload());
                     continue;
                 }
-                if (opcode == TEXT || opcode == BINARY) {
+                if (opcode == Normal._1 || opcode == Builder.WEBSOCKET_OPCODE_BINARY) {
                     if (fragmented != null) {
                         throw new ProtocolException("WebSocket fragmented message is already open");
                     }
@@ -297,7 +274,7 @@ public final class WebSocketReader implements AutoCloseable {
                         fragmentedOpcode = opcode;
                         fragmented.write(frame.payload());
                     }
-                } else if (opcode == CONTINUATION) {
+                } else if (opcode == Normal._0) {
                     if (fragmented == null) {
                         throw new ProtocolException("WebSocket continuation has no initial frame");
                     }
@@ -305,7 +282,7 @@ public final class WebSocketReader implements AutoCloseable {
                     if (frame.fin()) {
                         deliver(session, handler, fragmentedOpcode, fragmented.readByteString());
                         fragmented = null;
-                        fragmentedOpcode = NO_FRAGMENT_OPCODE;
+                        fragmentedOpcode = Normal.__1;
                     }
                 }
             }
@@ -328,10 +305,10 @@ public final class WebSocketReader implements AutoCloseable {
      * @param data    message bytes
      */
     private void deliver(final Session session, final Handler handler, final int opcode, final ByteString data) {
-        if (opcode == TEXT) {
+        if (opcode == Normal._1) {
             final String text = data.string(StandardCharsets.UTF_8);
             handler.message(session, message(Payload.of(text, StandardCharsets.UTF_8)));
-        } else if (opcode == BINARY) {
+        } else if (opcode == Builder.WEBSOCKET_OPCODE_BINARY) {
             handler.message(session, message(Payload.of(data)));
         }
     }
@@ -358,7 +335,7 @@ public final class WebSocketReader implements AutoCloseable {
      * @param frame frame
      */
     private static void validateClose(final WebSocketFrame frame) {
-        if (frame.opcode() != CLOSE || frame.payload().size() == Normal._0) {
+        if (frame.opcode() != Normal._8 || frame.payload().size() == Normal._0) {
             return;
         }
         final ByteString payload = frame.payload();
@@ -382,7 +359,7 @@ public final class WebSocketReader implements AutoCloseable {
     private static WebSocketClose close(final WebSocketFrame frame) {
         final ByteString payload = frame.payload();
         if (payload.size() == Normal._0) {
-            return WebSocketClose.of(DEFAULT_CLOSE_CODE, null);
+            return WebSocketClose.of(Builder._1000, null);
         }
         final Buffer buffer = new Buffer().write(payload);
         final int code = Short.toUnsignedInt(buffer.readShort());
@@ -407,7 +384,7 @@ public final class WebSocketReader implements AutoCloseable {
     private int readByte() {
         try {
             requireBytes(Byte.BYTES);
-            return input.readByte() & 0xff;
+            return input.readByte() & Builder.UNSIGNED_BYTE_MASK;
         } catch (final RuntimeException e) {
             if (e instanceof SocketException) {
                 throw e;
@@ -519,9 +496,9 @@ public final class WebSocketReader implements AutoCloseable {
         try {
             long processed = Normal.LONG_ZERO;
             int available = cursor.seek(Normal.LONG_ZERO);
-            while (available != NO_CURSOR_SEGMENT && processed < length) {
+            while (available != Normal.__1 && processed < length) {
                 for (int i = cursor.start; i < cursor.end && processed < length; i++) {
-                    cursor.data[i] = (byte) (cursor.data[i] ^ mask[(int) (processed & MASK_INDEX)]);
+                    cursor.data[i] = (byte) (cursor.data[i] ^ mask[(int) (processed & Normal._3)]);
                     processed++;
                 }
                 if (processed < length) {

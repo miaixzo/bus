@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.network.tls;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -27,8 +28,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.SSLEngineResult;
 
+import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.buffer.NioBuffer;
 import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
+import org.miaixz.bus.core.io.sink.Sink;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -53,21 +58,6 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  * @since Java 21+
  */
 public final class TlsChannel implements Lifecycle, AutoCloseable {
-
-    /**
-     * Operation timeout seconds for internal TLS driving.
-     */
-    private static final long OPERATION_TIMEOUT_SECONDS = Normal._5;
-
-    /**
-     * Maximum idle buffers retained per TLS channel allocator.
-     */
-    private static final int BUFFER_CACHE_SIZE = Normal._4;
-
-    /**
-     * Extra packet bytes reserved when wrapping oversized plaintext.
-     */
-    private static final int EXTRA_PACKET_BYTES = Normal._1024;
 
     /**
      * Underlying network conduit.
@@ -110,6 +100,16 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
     private final AtomicBoolean notified;
 
     /**
+     * Source view for protocol readers.
+     */
+    private final Source source;
+
+    /**
+     * Sink view for protocol writers.
+     */
+    private final Sink sink;
+
+    /**
      * Creates a TLS channel.
      *
      * @param conduit        network conduit
@@ -119,24 +119,20 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
      * @param ownsDispatcher true when close should stop dispatcher
      */
     private TlsChannel(final Conduit conduit, final TlsEngine engine, final Listener<Object> listener,
-                       final Dispatcher dispatcher, final boolean ownsDispatcher) {
+            final Dispatcher dispatcher, final boolean ownsDispatcher) {
         this.conduit = Assert.notNull(conduit, () -> new ValidateException("Network conduit must not be null"));
         this.engine = Assert.notNull(engine, () -> new ValidateException("TLS engine must not be null"));
         this.packetBuffers = NioBufferAllocator
-                .heap(this.engine.engine().getSession().getPacketBufferSize(), BUFFER_CACHE_SIZE);
+                .heap(this.engine.engine().getSession().getPacketBufferSize(), Normal._4);
         this.applicationBuffers = NioBufferAllocator
-                .heap(this.engine.engine().getSession().getApplicationBufferSize(), BUFFER_CACHE_SIZE);
-        this.scope = LifecycleScope.session(
-                this,
-                "tls-channel",
-                listener,
-                EventObserver.noop(),
-                null,
-                null,
-                ObservationMarker.TLS_FAILED);
+                .heap(this.engine.engine().getSession().getApplicationBufferSize(), Normal._4);
+        this.scope = LifecycleScope
+                .session(this, "tls-channel", listener, EventObserver.noop(), null, null, ObservationMarker.TLS_FAILED);
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("TLS dispatcher must not be null"));
         this.ownsDispatcher = ownsDispatcher;
         this.notified = new AtomicBoolean();
+        this.source = new TlsSource();
+        this.sink = new TlsSink();
     }
 
     /**
@@ -193,33 +189,57 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
     }
 
     /**
-     * Reads and unwraps TLS bytes.
+     * Reads and unwraps TLS bytes into a core.io buffer.
      *
-     * @param target target buffer
+     * @param target    target buffer
+     * @param byteCount maximum byte count
      * @return read future
      */
-    public CompletableFuture<Integer> read(final ByteBuffer target) {
-        Assert.notNull(target, () -> new ValidateException("TLS read target must not be null"));
+    public CompletableFuture<Long> read(final Buffer target, final long byteCount) {
+        final Buffer checkedTarget = Assert
+                .notNull(target, () -> new ValidateException("TLS read target must not be null"));
+        Assert.isTrue(byteCount >= Normal._0, () -> new ValidateException("TLS read byte count must not be negative"));
         if (!opened()) {
             return CompletableFuture.failedFuture(new StatefulException("TLS channel is closed"));
         }
-        return dispatcher.supply("tls:read", () -> readPlain(target));
+        if (byteCount == Normal._0) {
+            return CompletableFuture.completedFuture(0L);
+        }
+        return dispatcher.supply("tls:read", () -> {
+            final ByteBuffer plain = ByteBuffer.allocate(toIntSize(byteCount));
+            final int read = readPlain(plain);
+            if (read > Normal._0) {
+                plain.flip();
+                try {
+                    checkedTarget.write(plain);
+                } catch (final IOException e) {
+                    throw new SocketException("Unable to stage TLS plain read", e);
+                }
+            }
+            return (long) read;
+        });
     }
 
     /**
-     * Wraps and writes TLS bytes.
+     * Wraps and writes TLS bytes from a core.io buffer.
      *
-     * @param source source buffer
+     * @param source    source buffer
+     * @param byteCount byte count to write
      * @return write future
      */
-    public CompletableFuture<Integer> write(final ByteBuffer source) {
-        Assert.notNull(source, () -> new ValidateException("TLS write source must not be null"));
+    public CompletableFuture<Long> write(final Buffer source, final long byteCount) {
+        final Buffer checkedSource = Assert
+                .notNull(source, () -> new ValidateException("TLS write source must not be null"));
+        Assert.isTrue(byteCount >= Normal._0, () -> new ValidateException("TLS write byte count must not be negative"));
+        Assert.isTrue(
+                byteCount <= checkedSource.size(),
+                () -> new ValidateException("TLS write byte count must not exceed source size"));
         if (!opened()) {
             return CompletableFuture.failedFuture(new StatefulException("TLS channel is closed"));
         }
-        final ByteBuffer view = source.asReadOnlyBuffer();
+        final ByteBuffer view = checkedSource.nioBuffer(toIntSize(byteCount));
         if (!view.hasRemaining()) {
-            return CompletableFuture.completedFuture(Normal._0);
+            return CompletableFuture.completedFuture(0L);
         }
         final NioBuffer packetLease = packetBuffers.allocate(packetSize(view.remaining()));
         final ByteBuffer packet = packetLease.buffer();
@@ -229,7 +249,8 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
             packet.flip();
             if (!packet.hasRemaining()) {
                 packetLease.close();
-                return CompletableFuture.completedFuture(result.bytesConsumed());
+                consumePlaintext(checkedSource, result.bytesConsumed());
+                return CompletableFuture.completedFuture((long) result.bytesConsumed());
             }
         } catch (final RuntimeException e) {
             packetLease.close();
@@ -239,7 +260,8 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
             return dispatcher.supply("tls:write", () -> {
                 try {
                     writeAll(packet);
-                    return result.bytesConsumed();
+                    consumePlaintext(checkedSource, result.bytesConsumed());
+                    return (long) result.bytesConsumed();
                 } finally {
                     packetLease.close();
                 }
@@ -248,6 +270,24 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
             packetLease.close();
             throw e;
         }
+    }
+
+    /**
+     * Returns the protocol-layer source.
+     *
+     * @return source view
+     */
+    public Source source() {
+        return source;
+    }
+
+    /**
+     * Returns the protocol-layer sink.
+     *
+     * @return sink view
+     */
+    public Sink sink() {
+        return sink;
     }
 
     /**
@@ -322,7 +362,7 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
      * @return packet buffer size
      */
     private int packetSize(final int plainBytes) {
-        return Math.max(engine.engine().getSession().getPacketBufferSize(), plainBytes + EXTRA_PACKET_BYTES);
+        return Math.max(engine.engine().getSession().getPacketBufferSize(), plainBytes + Normal._1024);
     }
 
     /**
@@ -501,16 +541,19 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
      * @param source source buffer
      */
     private void writeAll(final ByteBuffer source) {
-        while (source.hasRemaining()) {
-            final int position = source.position();
-            final int written = await(conduit.write(source));
+        final Buffer payload = new Buffer();
+        try {
+            payload.write(source);
+        } catch (final IOException e) {
+            throw new SocketException("Unable to stage TLS network write", e);
+        }
+        while (payload.size() > Normal._0) {
+            final long written = await(conduit.write(payload, payload.size()));
             if (written < Normal._0) {
                 throw new SocketException("TLS write reached EOF");
             }
             if (written == Normal._0) {
                 Thread.yield();
-            } else {
-                source.position(position + written);
             }
         }
     }
@@ -522,12 +565,16 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
      * @return bytes read
      */
     private int readInto(final ByteBuffer target) {
-        final int position = target.position();
-        final int read = await(conduit.read(target));
+        final Buffer payload = new Buffer();
+        final long read = await(conduit.read(payload, target.remaining()));
         if (read > 0) {
-            target.position(position + read);
+            try {
+                payload.read(target);
+            } catch (final IOException e) {
+                throw new SocketException("Unable to stage TLS network read", e);
+            }
         }
-        return read;
+        return toIntSize(read);
     }
 
     /**
@@ -536,9 +583,9 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
      * @param future future
      * @return operation result
      */
-    private static int await(final CompletableFuture<Integer> future) {
+    private static long await(final CompletableFuture<Long> future) {
         try {
-            return future.get(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            return future.get(Normal._5, TimeUnit.SECONDS);
         } catch (final java.util.concurrent.TimeoutException e) {
             throw new TimeoutException("TLS channel operation timed out", e);
         } catch (final InterruptedException e) {
@@ -547,6 +594,116 @@ public final class TlsChannel implements Lifecycle, AutoCloseable {
         } catch (final ExecutionException e) {
             throw new SocketException("TLS channel operation failed", e.getCause());
         }
+    }
+
+    /**
+     * Converts a long byte count to an int size accepted by JDK buffers.
+     *
+     * @param byteCount byte count
+     * @return int size
+     */
+    private static int toIntSize(final long byteCount) {
+        return (int) Math.min(byteCount, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Consumes plaintext bytes after they have been accepted by the TLS engine.
+     *
+     * @param source source buffer
+     * @param count  byte count
+     */
+    private static void consumePlaintext(final Buffer source, final int count) {
+        if (count <= Normal._0) {
+            return;
+        }
+        try {
+            source.skip(count);
+        } catch (final IOException e) {
+            throw new SocketException("Unable to consume TLS plaintext", e);
+        }
+    }
+
+    /**
+     * Source backed by this TLS channel.
+     */
+    private final class TlsSource implements Source {
+
+        /**
+         * Reads bytes through the enclosing TLS channel.
+         *
+         * @param sink      target buffer
+         * @param byteCount maximum byte count
+         * @return read byte count
+         * @throws IOException when reading fails
+         */
+        @Override
+        public long read(final Buffer sink, final long byteCount) throws IOException {
+            return await(TlsChannel.this.read(sink, byteCount));
+        }
+
+        /**
+         * Returns the no-op timeout.
+         *
+         * @return timeout
+         */
+        @Override
+        public Timeout timeout() {
+            return Timeout.NONE;
+        }
+
+        /**
+         * Closes the enclosing TLS channel.
+         */
+        @Override
+        public void close() {
+            TlsChannel.this.close();
+        }
+
+    }
+
+    /**
+     * Sink backed by this TLS channel.
+     */
+    private final class TlsSink implements Sink {
+
+        /**
+         * Writes bytes through the enclosing TLS channel.
+         *
+         * @param source    source buffer
+         * @param byteCount byte count
+         * @throws IOException when writing fails
+         */
+        @Override
+        public void write(final Buffer source, final long byteCount) throws IOException {
+            await(TlsChannel.this.write(source, byteCount));
+        }
+
+        /**
+         * Flushes this TLS sink.
+         */
+        @Override
+        public void flush() {
+            // TLS records are written immediately by write(Buffer,long).
+        }
+
+        /**
+         * Returns the no-op timeout.
+         *
+         * @return timeout
+         */
+        @Override
+        public Timeout timeout() {
+            return Timeout.NONE;
+        }
+
+        /**
+         * Closes the enclosing TLS channel.
+         */
+        @Override
+        public void close() {
+            TlsChannel.this.close();
+        }
+
     }
 
 }

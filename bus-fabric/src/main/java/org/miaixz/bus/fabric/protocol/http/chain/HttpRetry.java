@@ -186,8 +186,7 @@ public final class HttpRetry implements HttpStage {
     public HttpRequest followUp(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
         return switch (current.code()) {
-            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER,
-                 HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> redirect(
+            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> redirect(
                     current);
             case HTTP.HTTP_UNAUTHORIZED, HTTP.HTTP_PROXY_AUTH -> authenticator.authenticate(current.request(), current);
             default -> null;
@@ -266,8 +265,7 @@ public final class HttpRetry implements HttpStage {
      */
     private boolean followUpAllowed(final int code, final int followUps) {
         return switch (code) {
-            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER,
-                 HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> policy
+            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> policy
                     .redirect(code, followUps);
             case HTTP.HTTP_UNAUTHORIZED, HTTP.HTTP_PROXY_AUTH -> followUps < Normal._20;
             default -> false;

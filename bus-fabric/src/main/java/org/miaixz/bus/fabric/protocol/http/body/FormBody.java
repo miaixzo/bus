@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.RequestBody;
 
@@ -45,11 +46,6 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  * @since Java 21+
  */
 public final class FormBody implements RequestBody {
-
-    /**
-     * Default form media type.
-     */
-    private static final MediaType FORM_MEDIA = MediaType.APPLICATION_FORM_URLENCODED_TYPE;
 
     /**
      * Form media type.
@@ -233,7 +229,7 @@ public final class FormBody implements RequestBody {
          */
         @Override
         public byte[] bytes() {
-            return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**
@@ -260,7 +256,7 @@ public final class FormBody implements RequestBody {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**
@@ -346,7 +342,7 @@ public final class FormBody implements RequestBody {
          */
         public FormBody build() {
             final List<Entry> snapshot = List.copyOf(entries);
-            return new FormBody(FORM_MEDIA, new FormPayload(snapshot));
+            return new FormBody(MediaType.APPLICATION_FORM_URLENCODED_TYPE, new FormPayload(snapshot));
         }
 
     }

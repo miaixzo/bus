@@ -26,6 +26,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import org.miaixz.bus.core.io.sink.Sink;
+import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -33,6 +35,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.network.Connection;
@@ -50,7 +53,6 @@ import org.miaixz.bus.fabric.network.udp.UdpNetwork;
 import org.miaixz.bus.fabric.network.udp.UdpSession;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec;
 import org.miaixz.bus.fabric.protocol.socket.session.SocketLease;
 import org.miaixz.bus.fabric.runtime.FilterChain;
@@ -64,31 +66,6 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 final class SocketRunner {
-
-    /**
-     * Socket-scoped TLS context option key.
-     */
-    private static final String SOCKET_TLS_CONTEXT = "socket.tlsContext";
-
-    /**
-     * Shared TLS context option key.
-     */
-    private static final String TLS_CONTEXT = "tlsContext";
-
-    /**
-     * Socket-scoped TLS settings option key.
-     */
-    private static final String SOCKET_TLS_SETTINGS = "socket.tlsSettings";
-
-    /**
-     * Shared TLS settings option key.
-     */
-    private static final String TLS_SETTINGS = "tlsSettings";
-
-    /**
-     * Socket open filter tag.
-     */
-    private static final String TAG_SOCKET_OPEN = "socket-open";
 
     /**
      * Execution snapshot.
@@ -383,7 +360,7 @@ final class SocketRunner {
                         snapshot.address(),
                         snapshot.headers(),
                         Payload.empty(),
-                        TAG_SOCKET_OPEN),
+                        Builder.SOCKET_TAG_OPEN),
                 snapshot.context().filter(),
                 snapshot.filter());
     }
@@ -422,18 +399,18 @@ final class SocketRunner {
      */
     private Map<String, Object> attributes(final Message opening) {
         final LinkedHashMap<String, Object> attributes = new LinkedHashMap<>();
-        attributes.put(SocketSession.ATTRIBUTE_HEADERS, require(opening, "Opening message").headers().asMap());
-        attributes.put(SocketSession.ATTRIBUTE_OBSERVER, snapshot.observer());
-        attributes.put(SocketSession.ATTRIBUTE_SOCKET_OPTIONS, snapshot.socketOptions());
+        attributes.put(Builder.ATTRIBUTE_HEADERS, require(opening, "Opening message").headers().asMap());
+        attributes.put(Builder.ATTRIBUTE_OBSERVER, snapshot.observer());
+        attributes.put(Builder.ATTRIBUTE_SOCKET_OPTIONS, snapshot.socketOptions());
         if (snapshot.guard() != null) {
-            attributes.put(SocketSession.ATTRIBUTE_GUARD, snapshot.guard());
+            attributes.put(Builder.ATTRIBUTE_GUARD, snapshot.guard());
         }
         final Object filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
         if (filter != null) {
-            attributes.put(SocketSession.ATTRIBUTE_FILTER, filter);
+            attributes.put(Builder.ATTRIBUTE_FILTER, filter);
         }
         if (snapshot.proxyHeader() != null) {
-            attributes.put(SocketSession.ATTRIBUTE_PROXY_HEADER, snapshot.proxyHeader());
+            attributes.put(Builder.ATTRIBUTE_PROXY_HEADER, snapshot.proxyHeader());
             emit(ObservationMarker.PROXY_PARSED, null);
         }
         return attributes;
@@ -445,11 +422,11 @@ final class SocketRunner {
      * @return TLS context
      */
     private TlsContext tlsContext() {
-        if (snapshot.context().options().contains(SOCKET_TLS_CONTEXT)) {
-            return snapshot.context().options().get(SOCKET_TLS_CONTEXT, TlsContext.class);
+        if (snapshot.context().options().contains(Builder.OPTION_SOCKET_TLS_CONTEXT)) {
+            return snapshot.context().options().get(Builder.OPTION_SOCKET_TLS_CONTEXT, TlsContext.class);
         }
-        if (snapshot.context().options().contains(TLS_CONTEXT)) {
-            return snapshot.context().options().get(TLS_CONTEXT, TlsContext.class);
+        if (snapshot.context().options().contains(Builder.OPTION_TLS_CONTEXT)) {
+            return snapshot.context().options().get(Builder.OPTION_TLS_CONTEXT, TlsContext.class);
         }
         return TlsContext.defaults();
     }
@@ -460,11 +437,11 @@ final class SocketRunner {
      * @return TLS settings
      */
     private TlsSettings tlsSettings() {
-        if (snapshot.context().options().contains(SOCKET_TLS_SETTINGS)) {
-            return snapshot.context().options().get(SOCKET_TLS_SETTINGS, TlsSettings.class);
+        if (snapshot.context().options().contains(Builder.OPTION_SOCKET_TLS_SETTINGS)) {
+            return snapshot.context().options().get(Builder.OPTION_SOCKET_TLS_SETTINGS, TlsSettings.class);
         }
-        if (snapshot.context().options().contains(TLS_SETTINGS)) {
-            return snapshot.context().options().get(TLS_SETTINGS, TlsSettings.class);
+        if (snapshot.context().options().contains(Builder.OPTION_TLS_SETTINGS)) {
+            return snapshot.context().options().get(Builder.OPTION_TLS_SETTINGS, TlsSettings.class);
         }
         return TlsSettings.defaults();
     }
@@ -476,8 +453,9 @@ final class SocketRunner {
      * @param cause  failure cause
      */
     private void emit(final ObservationMarker marker, final Throwable cause) {
-        final FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, snapshot.address().scheme())
-                .tag(Tags.HOST, snapshot.address().host()).tag(Tags.PORT, Integer.toString(snapshot.address().port()));
+        final FabricEvent.Builder event = FabricEvent.builder(marker)
+                .tag(Builder.TAG_PROTOCOL, snapshot.address().scheme()).tag(Builder.HOST, snapshot.address().host())
+                .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
         if (cause != null) {
             event.cause(cause);
         }
@@ -553,25 +531,23 @@ final class SocketRunner {
         }
 
         /**
-         * Reads decrypted bytes through the TLS channel.
+         * Returns the TLS source view.
          *
-         * @param buffer destination buffer
-         * @return read future
+         * @return source view
          */
         @Override
-        public CompletableFuture<Integer> read(final java.nio.ByteBuffer buffer) {
-            return tls.read(buffer);
+        public Source source() {
+            return tls.source();
         }
 
         /**
-         * Writes plaintext bytes through the TLS channel.
+         * Returns the TLS sink view.
          *
-         * @param buffer source buffer
-         * @return write future
+         * @return sink view
          */
         @Override
-        public CompletableFuture<Integer> write(final java.nio.ByteBuffer buffer) {
-            return tls.write(buffer);
+        public Sink sink() {
+            return tls.sink();
         }
 
         /**

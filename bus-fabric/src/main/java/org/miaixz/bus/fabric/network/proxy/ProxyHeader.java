@@ -32,6 +32,7 @@ import org.miaixz.bus.core.net.ip.IPv4;
 import org.miaixz.bus.core.net.ip.IPv6;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Parsed PROXY protocol v1 header with cached source address metadata.
@@ -45,26 +46,6 @@ import org.miaixz.bus.fabric.Address;
  * @since Java 21+
  */
 public record ProxyHeader(String source, String target, int sourcePort, int targetPort, Address sourceAddress) {
-
-    /**
-     * PROXY protocol v1 command token.
-     */
-    private static final String COMMAND_PROXY = "PROXY";
-
-    /**
-     * PROXY protocol v1 unknown transport token.
-     */
-    private static final String PROTOCOL_UNKNOWN = "UNKNOWN";
-
-    /**
-     * PROXY protocol v1 IPv4 TCP token.
-     */
-    private static final String PROTOCOL_TCP4 = "TCP4";
-
-    /**
-     * PROXY protocol v1 IPv6 TCP token.
-     */
-    private static final String PROTOCOL_TCP6 = "TCP6";
 
     /**
      * Creates a validated proxy header.
@@ -102,15 +83,16 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
         if (tokens.length < Normal._2) {
             throw new ValidateException("PROXY header must include command and protocol");
         }
-        if (!COMMAND_PROXY.equals(tokens[Normal._0])) {
+        if (!Builder.PROXY_HEADER_COMMAND_PROXY.equals(tokens[Normal._0])) {
             throw new ProtocolException("Invalid PROXY header command");
         }
         final String protocol = tokens[Normal._1].toUpperCase(Locale.ROOT);
-        if (PROTOCOL_UNKNOWN.equals(protocol)) {
+        if (Builder.PROXY_HEADER_PROTOCOL_UNKNOWN.equals(protocol)) {
             // UNKNOWN intentionally carries no synthesized Address.
             return new ProxyHeader(Normal.EMPTY, Normal.EMPTY, Normal._0, Normal._0, null);
         }
-        if (!PROTOCOL_TCP4.equals(protocol) && !PROTOCOL_TCP6.equals(protocol)) {
+        if (!Builder.PROXY_HEADER_PROTOCOL_TCP4.equals(protocol)
+                && !Builder.PROXY_HEADER_PROTOCOL_TCP6.equals(protocol)) {
             throw new ProtocolException("Unsupported PROXY header protocol: " + protocol);
         }
         if (tokens.length != Normal._6) {
@@ -231,7 +213,7 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
      * @return normalized IP
      */
     private static String normalizeIp(final String value, final String protocol, final String name) {
-        return PROTOCOL_TCP4.equals(protocol) ? normalizeIpv4(value) : normalizeIpv6(value, name);
+        return Builder.PROXY_HEADER_PROTOCOL_TCP4.equals(protocol) ? normalizeIpv4(value) : normalizeIpv6(value, name);
     }
 
     /**

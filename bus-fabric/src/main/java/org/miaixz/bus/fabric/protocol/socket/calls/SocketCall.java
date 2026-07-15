@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.socket.SocketSession;
@@ -40,7 +41,6 @@ public final class SocketCall extends MonoCall<SocketSession> {
     /**
      * Activity name for asynchronous socket opens.
      */
-    private static final String ACTIVITY_SOCKET_OPEN = "socket-open";
 
     /**
      * Source exchange.
@@ -68,7 +68,7 @@ public final class SocketCall extends MonoCall<SocketSession> {
      * @param dispatcher dispatcher used by enqueue()
      */
     private SocketCall(final SocketX exchange, final Dispatcher dispatcher) {
-        super(ACTIVITY_SOCKET_OPEN, dispatcher, EventObserver.noop());
+        super(Builder.SOCKET_TAG_OPEN, dispatcher, EventObserver.noop());
         this.exchange = require(exchange, "Socket exchange");
         this.session = new AtomicReference<>();
     }

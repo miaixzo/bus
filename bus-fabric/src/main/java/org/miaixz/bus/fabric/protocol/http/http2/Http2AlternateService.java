@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * HTTP/2 ALTSVC payload value.
@@ -35,11 +36,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @since Java 21+
  */
 public record Http2AlternateService(String origin, String value) {
-
-    /**
-     * Origin length field size.
-     */
-    private static final int ORIGIN_LENGTH_BYTES = Normal._2;
 
     /**
      * Creates an ALTSVC payload value.
@@ -73,15 +69,15 @@ public record Http2AlternateService(String origin, String value) {
     static Http2AlternateService decode(final ByteString payload, final int streamId) {
         final ByteString checkedPayload = Assert
                 .notNull(payload, () -> new ProtocolException("Invalid HTTP/2 ALTSVC payload"));
-        if (checkedPayload.size() < ORIGIN_LENGTH_BYTES) {
+        if (checkedPayload.size() < Normal._2) {
             throw new ProtocolException("Invalid HTTP/2 ALTSVC payload");
         }
         final int originLength = unsignedShort(checkedPayload);
-        if (originLength > checkedPayload.size() - ORIGIN_LENGTH_BYTES) {
+        if (originLength > checkedPayload.size() - Normal._2) {
             throw new ProtocolException("Invalid HTTP/2 ALTSVC origin length");
         }
-        final int valueOffset = ORIGIN_LENGTH_BYTES + originLength;
-        final ByteString originBytes = checkedPayload.substring(ORIGIN_LENGTH_BYTES, valueOffset);
+        final int valueOffset = Normal._2 + originLength;
+        final ByteString originBytes = checkedPayload.substring(Normal._2, valueOffset);
         final ByteString valueBytes = checkedPayload.substring(valueOffset);
         return fromBytes(originBytes, valueBytes, streamId);
     }
@@ -114,16 +110,16 @@ public record Http2AlternateService(String origin, String value) {
         final Buffer checkedPayload = Assert
                 .notNull(payload, () -> new ProtocolException("Invalid HTTP/2 ALTSVC payload"));
         final long payloadSize = checkedPayload.size();
-        if (payloadSize < ORIGIN_LENGTH_BYTES) {
+        if (payloadSize < Normal._2) {
             throw new ProtocolException("Invalid HTTP/2 ALTSVC payload");
         }
         final int originLength = unsignedShort(checkedPayload);
-        if (originLength > payloadSize - ORIGIN_LENGTH_BYTES) {
+        if (originLength > payloadSize - Normal._2) {
             throw new ProtocolException("Invalid HTTP/2 ALTSVC origin length");
         }
-        final long valueOffset = ORIGIN_LENGTH_BYTES + (long) originLength;
+        final long valueOffset = Normal._2 + (long) originLength;
         return fromBytes(
-                readByteString(checkedPayload, ORIGIN_LENGTH_BYTES, originLength),
+                readByteString(checkedPayload, Normal._2, originLength),
                 readByteString(checkedPayload, valueOffset, payloadSize - valueOffset),
                 streamId);
     }
@@ -170,7 +166,8 @@ public record Http2AlternateService(String origin, String value) {
      * @return unsigned length
      */
     private static int unsignedShort(final ByteString payload) {
-        return ((payload.getByte(Normal._0) & 0xff) << Normal._8) | (payload.getByte(Normal._1) & 0xff);
+        return ((payload.getByte(Normal._0) & Builder.UNSIGNED_BYTE_MASK) << Normal._8)
+                | (payload.getByte(Normal._1) & Builder.UNSIGNED_BYTE_MASK);
     }
 
     /**
@@ -180,7 +177,8 @@ public record Http2AlternateService(String origin, String value) {
      * @return unsigned length
      */
     private static int unsignedShort(final Buffer payload) {
-        return ((payload.getByte(Normal._0) & 0xff) << Normal._8) | (payload.getByte(Normal._1) & 0xff);
+        return ((payload.getByte(Normal._0) & Builder.UNSIGNED_BYTE_MASK) << Normal._8)
+                | (payload.getByte(Normal._1) & Builder.UNSIGNED_BYTE_MASK);
     }
 
     /**

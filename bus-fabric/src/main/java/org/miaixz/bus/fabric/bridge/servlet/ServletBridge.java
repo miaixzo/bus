@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.bridge.servlet;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
@@ -29,13 +27,14 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.bridge.Ingress;
+import org.miaixz.bus.fabric.bridge.Ingestion;
 import org.miaixz.bus.fabric.bridge.Translator;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
- * Servlet-style bridge translator that maps external ingresses to HTTP request snapshots without executing HTTP chains.
+ * Servlet-style bridge translator that maps external ingestions to HTTP request snapshots without executing HTTP
+ * chains.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -43,15 +42,10 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 public final class ServletBridge implements Translator<HttpRequest> {
 
     /**
-     * Closed state reserved for lifecycle integration.
-     */
-    private final AtomicBoolean closed;
-
-    /**
      * Creates a servlet bridge.
      */
     private ServletBridge() {
-        this.closed = new AtomicBoolean();
+        // No initialization required.
     }
 
     /**
@@ -64,46 +58,46 @@ public final class ServletBridge implements Translator<HttpRequest> {
     }
 
     /**
-     * Returns whether an ingress can be translated as servlet input.
+     * Returns whether an ingestion can be translated as servlet input.
      *
-     * @param ingress ingress
+     * @param ingestion ingestion
      * @return true when supported
      */
-    public boolean supports(final Ingress ingress) {
-        Assert.notNull(ingress, () -> new ValidateException("Ingress must not be null"));
-        final Object servlet = ingress.attributes().get("servlet");
-        final Object type = ingress.attributes().get("type");
-        return Boolean.TRUE.equals(servlet) || "servlet".equals(type) || !ingress.method().isBlank();
+    public boolean supports(final Ingestion ingestion) {
+        Assert.notNull(ingestion, () -> new ValidateException("Ingestion must not be null"));
+        final Object servlet = ingestion.attributes().get("servlet");
+        final Object type = ingestion.attributes().get("type");
+        return Boolean.TRUE.equals(servlet) || "servlet".equals(type) || !ingestion.method().isBlank();
     }
 
     /**
-     * Translates an ingress into an HTTP request snapshot.
+     * Translates an ingestion into an HTTP request snapshot.
      *
-     * @param ingress ingress
+     * @param ingestion ingestion
      * @return HTTP request
      */
     @Override
-    public HttpRequest translate(final Ingress ingress) {
-        Assert.notNull(ingress, () -> new ValidateException("Ingress must not be null"));
-        final Headers headers = ingress.headers();
-        final String method = ingress.method().isBlank() ? HTTP.GET : ingress.method();
-        final String path = ingress.path();
+    public HttpRequest translate(final Ingestion ingestion) {
+        Assert.notNull(ingestion, () -> new ValidateException("Ingestion must not be null"));
+        final Headers headers = ingestion.headers();
+        final String method = ingestion.method().isBlank() ? HTTP.GET : ingestion.method();
+        final String path = ingestion.path();
         final String host = headers.get(HTTP.HOST) == null ? Protocol.HOST_LOCAL : headers.get(HTTP.HOST);
         final MediaType media = headers.get(HTTP.CONTENT_TYPE) == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE
                 : MediaType.parse(headers.get(HTTP.CONTENT_TYPE));
-        final Payload payload = ingress.payload();
+        final Payload payload = ingestion.payload();
         return HttpRequest.builder().method(method(method)).url(UnoUrl.parse(Protocol.HTTP_PREFIX + host + path))
-                .headers(headers).body(PayloadBody.of(payload, media)).tag(ingress).build();
+                .headers(headers).body(PayloadBody.of(payload, media)).tag(ingestion).build();
     }
 
     /**
-     * Converts an ingress into an HTTP request snapshot.
+     * Converts an ingestion into an HTTP request snapshot.
      *
-     * @param ingress ingress
+     * @param ingestion ingestion
      * @return HTTP request
      */
-    public HttpRequest toRequest(final Ingress ingress) {
-        return translate(ingress);
+    public HttpRequest toRequest(final Ingestion ingestion) {
+        return translate(ingestion);
     }
 
     /**

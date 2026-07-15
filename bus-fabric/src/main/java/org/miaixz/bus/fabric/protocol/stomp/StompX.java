@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -55,16 +57,6 @@ import org.miaixz.bus.fabric.protocol.stomp.calls.StompCall;
  * @since Java 21+
  */
 public final class StompX {
-
-    /**
-     * Runtime option key for default timeout.
-     */
-    private static final String TIMEOUT_OPTION = "timeout";
-
-    /**
-     * STOMP CONNECT heartbeat header name.
-     */
-    private static final String HEADER_HEART_BEAT = "heart-beat";
 
     /**
      * Immutable execution snapshot.
@@ -381,7 +373,7 @@ public final class StompX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(TIMEOUT_OPTION, Timeout.class);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.observer = EventObserver.noop();
             this.callback = null;
@@ -455,7 +447,7 @@ public final class StompX {
          * @return this builder
          */
         public Builder heartBeat(final Duration outgoing, final Duration incoming) {
-            headers.set(HEADER_HEART_BEAT, heartbeat(outgoing) + "," + heartbeat(incoming));
+            headers.set(STOMP_HEADER_HEART_BEAT, heartbeat(outgoing) + "," + heartbeat(incoming));
             return this;
         }
 

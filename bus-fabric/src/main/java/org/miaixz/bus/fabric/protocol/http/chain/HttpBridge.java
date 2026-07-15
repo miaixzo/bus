@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import org.miaixz.bus.core.io.source.GzipSource;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -46,11 +47,6 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 public final class HttpBridge implements HttpStage {
-
-    /**
-     * Product token used in the default User-Agent.
-     */
-    private static final String PRODUCT = "bus-fabric";
 
     /**
      * Stage name.
@@ -103,7 +99,7 @@ public final class HttpBridge implements HttpStage {
     public static String defaultUserAgent() {
         final Package source = HttpBridge.class.getPackage();
         final String version = source == null ? null : source.getImplementationVersion();
-        return version == null || version.isBlank() ? PRODUCT : PRODUCT + "/" + version;
+        return version == null || version.isBlank() ? Keys.BUS : Keys.BUS + "/" + version;
     }
 
     /**
@@ -178,7 +174,12 @@ public final class HttpBridge implements HttpStage {
     public HttpResponse receive(final HttpResponse response) {
         final HttpResponse source = require(response, "HTTP response");
         if (!gzip(source.headers())) {
-            Logger.debug(false, "Fabric", "HTTP bridge response decode skipped: code={}, gzip={}", source.code(), false);
+            Logger.debug(
+                    false,
+                    "Fabric",
+                    "HTTP bridge response decode skipped: code={}, gzip={}",
+                    source.code(),
+                    false);
             return source;
         }
         Logger.debug(true, "Fabric", "HTTP bridge gzip decode started: code={}", source.code());

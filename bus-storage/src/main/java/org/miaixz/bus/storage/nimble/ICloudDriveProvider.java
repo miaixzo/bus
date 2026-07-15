@@ -231,14 +231,14 @@ public class ICloudDriveProvider extends AbstractProvider {
                         .build();
             }
 
-            HttpResult response = get(downloadUrl);
-            if (!response.isSuccessful()) {
+            Response response = get(downloadUrl);
+            if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
                 return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(toBlob(bucket, path, record, response.stream())).build();
+                    .data(toBlob(bucket, path, record, stream(response))).build();
         } catch (Exception e) {
             Logger.error(
                     false,
@@ -270,11 +270,11 @@ public class ICloudDriveProvider extends AbstractProvider {
                         .build();
             }
 
-            try (HttpResult response = get(downloadUrl)) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(downloadUrl)) {
+                if (!response.successful()) {
                     throw new IOException("Download failed: " + response.code());
                 }
-                byte[] content = response.body().bytes();
+                byte[] content = response.bytes();
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .data(content).build();
             }
@@ -536,13 +536,13 @@ public class ICloudDriveProvider extends AbstractProvider {
 
             String jsonBody = JsonKit.toJsonString(query);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
-                if (response.isSuccessful()) {
-                    String responseBody = response.body().string();
+                if (response.successful()) {
+                    String responseBody = response.text();
                     Map<String, Object> result = JsonKit.toPojo(responseBody, Map.class);
                     List<Map<String, Object>> records = (List<Map<String, Object>>) result.get("records");
                     return (records != null && !records.isEmpty()) ? records.get(0) : null;
@@ -580,13 +580,13 @@ public class ICloudDriveProvider extends AbstractProvider {
 
             String jsonBody = JsonKit.toJsonString(query);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
-                if (response.isSuccessful()) {
-                    String responseBody = response.body().string();
+                if (response.successful()) {
+                    String responseBody = response.text();
                     Map<String, Object> result = JsonKit.toPojo(responseBody, Map.class);
                     List<Map<String, Object>> records = (List<Map<String, Object>>) result.get("records");
                     return records != null ? records : new ArrayList<>();
@@ -638,13 +638,13 @@ public class ICloudDriveProvider extends AbstractProvider {
 
             String jsonBody = JsonKit.toJsonString(request);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
-                if (response.isSuccessful()) {
-                    String responseBody = response.body().string();
+                if (response.successful()) {
+                    String responseBody = response.text();
                     Map<String, Object> result = JsonKit.toPojo(responseBody, Map.class);
                     List<Map<String, Object>> tokensList = (List<Map<String, Object>>) result.get("tokens");
                     if (tokensList != null && !tokensList.isEmpty()) {
@@ -667,8 +667,8 @@ public class ICloudDriveProvider extends AbstractProvider {
 
     private boolean uploadAsset(String uploadUrl, byte[] content) {
         try {
-            try (HttpResult response = post(uploadUrl, content, MediaType.APPLICATION_OCTET_STREAM)) {
-                return response.isSuccessful();
+            try (Response response = post(uploadUrl, content, MediaType.APPLICATION_OCTET_STREAM)) {
+                return response.successful();
             }
         } catch (Exception e) {
             Logger.error(
@@ -723,12 +723,12 @@ public class ICloudDriveProvider extends AbstractProvider {
 
             String jsonBody = JsonKit.toJsonString(request);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
-                return response.isSuccessful();
+                return response.successful();
             }
         } catch (Exception e) {
             Logger.error(
@@ -767,12 +767,12 @@ public class ICloudDriveProvider extends AbstractProvider {
 
             String jsonBody = JsonKit.toJsonString(request);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
-                return response.isSuccessful();
+                return response.successful();
             }
         } catch (Exception e) {
             Logger.error(
@@ -802,12 +802,12 @@ public class ICloudDriveProvider extends AbstractProvider {
 
             String jsonBody = JsonKit.toJsonString(request);
 
-            try (HttpResult response = post(
+            try (Response response = post(
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
                     header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
-                return response.isSuccessful();
+                return response.successful();
             }
         } catch (Exception e) {
             Logger.error(

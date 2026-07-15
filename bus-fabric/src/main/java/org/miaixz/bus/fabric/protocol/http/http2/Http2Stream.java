@@ -35,9 +35,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Status;
 
@@ -48,11 +47,6 @@ import org.miaixz.bus.fabric.Status;
  * @since Java 21+
  */
 public final class Http2Stream implements AutoCloseable {
-
-    /**
-     * Default stream flow-control window.
-     */
-    private static final long DEFAULT_WINDOW = HTTP.DEFAULT_INITIAL_WINDOW_SIZE;
 
     /**
      * Stream id.
@@ -117,7 +111,7 @@ public final class Http2Stream implements AutoCloseable {
         this.sink = new StreamBody(ignored -> {
         });
         this.state = new AtomicReference<>(Status.OPENED);
-        this.receiveWindow = new AtomicLong(DEFAULT_WINDOW);
+        this.receiveWindow = new AtomicLong(Builder.HTTP2_STREAM_DEFAULT_WINDOW);
     }
 
     /**
@@ -415,7 +409,7 @@ public final class Http2Stream implements AutoCloseable {
          */
         @Override
         public synchronized byte[] bytes() {
-            return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**
@@ -443,7 +437,7 @@ public final class Http2Stream implements AutoCloseable {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**

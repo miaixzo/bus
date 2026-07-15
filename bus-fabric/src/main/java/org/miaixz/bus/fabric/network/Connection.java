@@ -19,9 +19,8 @@
 */
 package org.miaixz.bus.fabric.network;
 
-import java.nio.ByteBuffer;
-import java.util.concurrent.CompletableFuture;
-
+import org.miaixz.bus.core.io.sink.Sink;
+import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.fabric.Lifecycle;
 
 /**
@@ -47,20 +46,18 @@ public interface Connection extends AutoCloseable, Lifecycle {
     Conduit conduit();
 
     /**
-     * Reads bytes into a buffer.
+     * Returns the protocol-layer read view.
      *
-     * @param buffer target buffer
-     * @return read future
+     * @return protocol-layer source
      */
-    CompletableFuture<Integer> read(ByteBuffer buffer);
+    Source source();
 
     /**
-     * Writes bytes from a buffer.
+     * Returns the protocol-layer write view.
      *
-     * @param buffer source buffer
-     * @return write future
+     * @return protocol-layer sink
      */
-    CompletableFuture<Integer> write(ByteBuffer buffer);
+    Sink sink();
 
     /**
      * Returns whether the connection is healthy.

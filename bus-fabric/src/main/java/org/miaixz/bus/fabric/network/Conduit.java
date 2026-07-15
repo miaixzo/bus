@@ -19,9 +19,11 @@
 */
 package org.miaixz.bus.fabric.network;
 
-import java.nio.ByteBuffer;
-import java.nio.channels.CompletionHandler;
 import java.util.concurrent.CompletableFuture;
+
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.sink.Sink;
+import org.miaixz.bus.core.io.source.Source;
 
 /**
  * Asynchronous network conduit contract.
@@ -34,34 +36,34 @@ public interface Conduit extends AutoCloseable {
     /**
      * Reads bytes into a target buffer.
      *
-     * @param target target buffer
-     * @return read future
+     * @param target    target buffer
+     * @param byteCount maximum byte count to read
+     * @return future containing the read byte count, or {@code Normal.__1} at EOF
      */
-    CompletableFuture<Integer> read(ByteBuffer target);
+    CompletableFuture<Long> read(Buffer target, long byteCount);
 
     /**
-     * Reads bytes with a completion handler.
+     * Writes bytes from a source buffer and consumes the written bytes.
      *
-     * @param target  target buffer
-     * @param handler completion handler
+     * @param source    source buffer
+     * @param byteCount byte count to write
+     * @return future containing the written byte count
      */
-    void read(ByteBuffer target, CompletionHandler<Integer, ByteBuffer> handler);
+    CompletableFuture<Long> write(Buffer source, long byteCount);
 
     /**
-     * Writes bytes from a source buffer.
+     * Returns the core.io read view.
      *
-     * @param source source buffer
-     * @return write future
+     * @return source view
      */
-    CompletableFuture<Integer> write(ByteBuffer source);
+    Source source();
 
     /**
-     * Writes bytes with a completion handler.
+     * Returns the core.io write view.
      *
-     * @param source  source buffer
-     * @param handler completion handler
+     * @return sink view
      */
-    void write(ByteBuffer source, CompletionHandler<Integer, ByteBuffer> handler);
+    Sink sink();
 
     /**
      * Returns whether this conduit is open.

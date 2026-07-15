@@ -79,7 +79,7 @@ public final class HttpChain {
      * @param connection network connection
      */
     private HttpChain(final List<HttpStage> stages, final int index, final ConnectionLease lease,
-                      final Connection connection, final Cancellation cancellation) {
+            final Connection connection, final Cancellation cancellation) {
         this.stages = List.copyOf(validateStages(stages));
         this.index = validateIndex(index, this.stages.size());
         this.lease = lease;

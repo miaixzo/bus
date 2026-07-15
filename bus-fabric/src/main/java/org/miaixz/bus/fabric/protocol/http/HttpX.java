@@ -98,7 +98,7 @@ public final class HttpX {
      * @param guard    guard
      */
     private HttpX(final Context context, final HttpRequest request, final Callback<HttpResponse> callback,
-                  final EventObserver observer, final Filter filter, final GuardRule guard) {
+            final EventObserver observer, final Filter filter, final GuardRule guard) {
         this.snapshot = new HttpSnapshot(context, request, callback, observer, filter, guard);
         this.runner = new HttpRunner(snapshot);
     }

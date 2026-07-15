@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
@@ -42,7 +43,6 @@ import org.miaixz.bus.fabric.cache.DiskStore;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
@@ -597,7 +597,8 @@ public final class HttpCache implements AutoCloseable {
      */
     private void emit(final String action, final String key) {
         observer.emit(
-                FabricEvent.builder(cacheMarker(action)).tag(Tags.CACHE, action).tag(Tags.KEY, keyHash(key)).build());
+                FabricEvent.builder(cacheMarker(action)).tag(Builder.TAG_CACHE, action)
+                        .tag(Builder.TAG_KEY, keyHash(key)).build());
     }
 
     /**

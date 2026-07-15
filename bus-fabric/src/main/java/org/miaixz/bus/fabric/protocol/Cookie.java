@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol;
 
+import static org.miaixz.bus.fabric.Builder.COOKIE_MAX_DATE_MILLIS;
+
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -45,16 +47,6 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
  * @since Java 21+
  */
 public final class Cookie {
-
-    /**
-     * Far-future expiration timestamp used when a session cookie needs a millisecond value.
-     */
-    private static final long MAX_DATE_MILLIS = 253402300799999L;
-
-    /**
-     * RFC 1123 date formatter used by cookie headers.
-     */
-    private static final DateTimeFormatter EXPIRES_FORMAT = DateTimeFormatter.RFC_1123_DATE_TIME;
 
     /**
      * Cookie name.
@@ -109,7 +101,7 @@ public final class Cookie {
      * @param httpOnly HTTP-only flag
      */
     private Cookie(final String name, final String value, final String domain, final String host, final String path,
-                   final Instant expires, final boolean secure, final boolean httpOnly) {
+            final Instant expires, final boolean secure, final boolean httpOnly) {
         this.name = validateToken(name, "Cookie name");
         this.value = validateToken(value, "Cookie value");
         this.domain = domain == null ? null : validateCookieDomain(domain);
@@ -249,7 +241,7 @@ public final class Cookie {
      * @return expiration time in milliseconds, or a far-future value for session cookies
      */
     public long expiresAt() {
-        return expires == null ? MAX_DATE_MILLIS : expires.toEpochMilli();
+        return expires == null ? COOKIE_MAX_DATE_MILLIS : expires.toEpochMilli();
     }
 
     /**
@@ -329,7 +321,7 @@ public final class Cookie {
         builder.append("; Path=").append(path);
         if (expires != null) {
             builder.append("; ").append(HTTP.EXPIRES).append(Symbol.C_EQUAL)
-                    .append(EXPIRES_FORMAT.format(expires.atZone(ZoneOffset.UTC)));
+                    .append(DateTimeFormatter.RFC_1123_DATE_TIME.format(expires.atZone(ZoneOffset.UTC)));
         }
         if (secure) {
             builder.append("; Secure");
@@ -354,7 +346,7 @@ public final class Cookie {
         builder.append("; Path=").append(path);
         if (expires != null) {
             builder.append("; ").append(HTTP.EXPIRES).append(Symbol.C_EQUAL)
-                    .append(EXPIRES_FORMAT.format(expires.atZone(ZoneOffset.UTC)));
+                    .append(DateTimeFormatter.RFC_1123_DATE_TIME.format(expires.atZone(ZoneOffset.UTC)));
         }
         if (secure) {
             builder.append("; Secure");
@@ -373,7 +365,7 @@ public final class Cookie {
      */
     private static Instant parseExpires(final String value) {
         try {
-            return EXPIRES_FORMAT.parse(value, Instant::from);
+            return DateTimeFormatter.RFC_1123_DATE_TIME.parse(value, Instant::from);
         } catch (final DateTimeParseException e) {
             throw new ProtocolException("Invalid cookie expires attribute", e);
         }
@@ -603,7 +595,8 @@ public final class Cookie {
          * @return this builder
          */
         public Builder expiresAt(final long expiresAt) {
-            this.expires = expiresAt <= 0 ? Instant.EPOCH : Instant.ofEpochMilli(Math.min(expiresAt, MAX_DATE_MILLIS));
+            this.expires = expiresAt <= 0 ? Instant.EPOCH
+                    : Instant.ofEpochMilli(Math.min(expiresAt, COOKIE_MAX_DATE_MILLIS));
             return this;
         }
 

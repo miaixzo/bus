@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +34,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Address;
@@ -60,16 +63,6 @@ import org.miaixz.bus.fabric.protocol.websocket.calls.WebSocketCall;
 public final class WebSocketX {
 
     /**
-     * Runtime option key for default timeout.
-     */
-    private static final String TIMEOUT_OPTION = "timeout";
-
-    /**
-     * WebSocket subprotocol request header.
-     */
-    private static final String HEADER_SEC_WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
-
-    /**
      * Immutable execution snapshot.
      */
     private final WebSocketSnapshot snapshot;
@@ -88,8 +81,8 @@ public final class WebSocketX {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.snapshot = new WebSocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, builder.guard, builder.filter, currentObserver,
-                builder.callback, builder.handler(), builder.listener);
+                builder.timeout, builder.guard, builder.filter, currentObserver, builder.callback, builder.handler(),
+                builder.listener);
         this.runner = new WebSocketRunner(snapshot);
     }
 
@@ -342,7 +335,7 @@ public final class WebSocketX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(TIMEOUT_OPTION, Timeout.class);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.observer = EventObserver.noop();
             this.callback = null;
@@ -394,7 +387,7 @@ public final class WebSocketX {
          * @return this builder
          */
         public Builder protocol(final String protocol) {
-            headers.set(HEADER_SEC_WEBSOCKET_PROTOCOL, protocol);
+            headers.set(HTTP.SEC_WEBSOCKET_PROTOCOL, protocol);
             return this;
         }
 

@@ -42,8 +42,8 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Status;
 
@@ -54,31 +54,6 @@ import org.miaixz.bus.fabric.Status;
  * @since Java 21+
  */
 public final class DiskStore implements CacheStore {
-
-    /**
-     * Cache version.
-     */
-    private static final int VERSION = 20260706;
-
-    /**
-     * Metadata entry index.
-     */
-    private static final int ENTRY_METADATA = 0;
-
-    /**
-     * Body entry index.
-     */
-    private static final int ENTRY_BODY = 1;
-
-    /**
-     * Entry value count.
-     */
-    private static final int ENTRY_COUNT = 2;
-
-    /**
-     * Streaming copy buffer size.
-     */
-    private static final int BUFFER_SIZE = 64 * Normal._1024;
 
     /**
      * Directory.
@@ -103,8 +78,12 @@ public final class DiskStore implements CacheStore {
      */
     private DiskStore(final Path directory, final long maxSize) {
         this.directory = directory;
-        this.cache = DiskLruCache
-                .create(DiskLruCache.DiskFile.SYSTEM, directory.toFile(), VERSION, ENTRY_COUNT, maxSize);
+        this.cache = DiskLruCache.create(
+                DiskLruCache.DiskFile.SYSTEM,
+                directory.toFile(),
+                Builder.DISK_STORE_VERSION,
+                Normal._2,
+                maxSize);
         this.state = new AtomicReference<>(Status.OPENED);
     }
 
@@ -231,10 +210,10 @@ public final class DiskStore implements CacheStore {
         Assert.notNull(payload, () -> new ValidateException("Cache payload must not be null"));
         final Buffer buffer = new Buffer();
         try (Source input = payload.source()) {
-            long read = input.read(buffer, BUFFER_SIZE);
+            long read = input.read(buffer, Normal._64 * Normal._1024);
             while (read != -1L) {
                 writer.write(buffer, read);
-                read = input.read(buffer, BUFFER_SIZE);
+                read = input.read(buffer, Normal._64 * Normal._1024);
             }
         }
     }
@@ -257,8 +236,8 @@ public final class DiskStore implements CacheStore {
             if (editor == null) {
                 return null;
             }
-            writeMeta(editor.newSink(ENTRY_METADATA), checked, entry);
-            return new DiskWriter(editor, new EntrySink(editor.newSink(ENTRY_BODY)));
+            writeMeta(editor.newSink(Normal._0), checked, entry);
+            return new DiskWriter(editor, new EntrySink(editor.newSink(Normal._1)));
         } catch (final IOException | RuntimeException e) {
             abortQuietly(editor);
             if (e instanceof RuntimeException runtime) {
@@ -296,7 +275,7 @@ public final class DiskStore implements CacheStore {
             final Iterator<DiskLruCache.Snapshot> snapshots = cache.snapshots();
             while (snapshots.hasNext()) {
                 try (DiskLruCache.Snapshot snapshot = snapshots.next()) {
-                    keys.add(readMeta(snapshot.getSource(ENTRY_METADATA)).key());
+                    keys.add(readMeta(snapshot.getSource(Normal._0)).key());
                 }
             }
             return keys.iterator();
@@ -384,9 +363,9 @@ public final class DiskStore implements CacheStore {
      * @throws IOException when reading fails
      */
     private CacheEntry read(final DiskLruCache.Snapshot snapshot) throws IOException {
-        final Metadata metadata = readMeta(snapshot.getSource(ENTRY_METADATA));
-        final Payload payload = new SourcePayload(IoKit.buffer(snapshot.getSource(ENTRY_BODY)), snapshot,
-                snapshot.getLength(ENTRY_BODY));
+        final Metadata metadata = readMeta(snapshot.getSource(Normal._0));
+        final Payload payload = new SourcePayload(IoKit.buffer(snapshot.getSource(Normal._1)), snapshot,
+                snapshot.getLength(Normal._1));
         return CacheEntry.of(metadata.metadata(), payload);
     }
 
@@ -779,7 +758,7 @@ public final class DiskStore implements CacheStore {
          */
         @Override
         public byte[] bytes() {
-            return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**
@@ -809,7 +788,7 @@ public final class DiskStore implements CacheStore {
          */
         @Override
         public String text(final java.nio.charset.Charset charset) {
-            return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**

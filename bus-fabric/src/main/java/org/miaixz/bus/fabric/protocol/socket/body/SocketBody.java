@@ -40,16 +40,6 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
 public final class SocketBody implements MessageBody, ProgressBody {
 
     /**
-     * Default binary media type.
-     */
-    private static final MediaType BINARY = MediaType.APPLICATION_OCTET_STREAM_TYPE;
-
-    /**
-     * Default UTF-8 text media type.
-     */
-    private static final MediaType TEXT = MediaType.TEXT_PLAIN_TYPE.withCharset(StandardCharsets.UTF_8);
-
-    /**
      * Payload.
      */
     private final Payload payload;
@@ -94,7 +84,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
      * @return socket body
      */
     public static SocketBody of(final Payload payload) {
-        return of(payload, BINARY);
+        return of(payload, MediaType.APPLICATION_OCTET_STREAM_TYPE);
     }
 
     /**
@@ -115,7 +105,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
      * @return socket body
      */
     public static SocketBody bytes(final byte[] bytes) {
-        return of(Payload.of(bytes), BINARY);
+        return of(Payload.of(bytes), MediaType.APPLICATION_OCTET_STREAM_TYPE);
     }
 
     /**
@@ -241,7 +231,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
      * @return media type
      */
     private static MediaType textMedia(final Charset charset) {
-        return StandardCharsets.UTF_8.equals(charset) ? TEXT : MediaType.TEXT_PLAIN_TYPE.withCharset(charset);
+        return MediaType.TEXT_PLAIN_TYPE.withCharset(charset);
     }
 
 }

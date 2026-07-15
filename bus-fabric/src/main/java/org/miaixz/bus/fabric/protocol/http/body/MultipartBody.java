@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -40,7 +42,6 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.RequestBody;
 
@@ -55,12 +56,7 @@ public final class MultipartBody implements RequestBody {
     /**
      * CRLF bytes.
      */
-    private static final byte[] CRLF = {Symbol.C_CR, Symbol.C_LF};
-
-    /**
-     * Multipart boundary media parameter.
-     */
-    private static final String BOUNDARY_PARAMETER = "boundary";
+    private static final byte[] CRLF = { Symbol.C_CR, Symbol.C_LF };
 
     /**
      * Multipart boundary.
@@ -364,7 +360,7 @@ public final class MultipartBody implements RequestBody {
             final String current = validateBoundary(boundary == null ? ID.fastSimpleUUID() : boundary);
             final List<Part> snapshot = List.copyOf(parts);
             final MediaType media = new MediaType(MediaType.MULTIPART_FORM_DATA_TYPE.type(),
-                    MediaType.MULTIPART_FORM_DATA_TYPE.subtype(), Map.of(BOUNDARY_PARAMETER, current));
+                    MediaType.MULTIPART_FORM_DATA_TYPE.subtype(), Map.of(MULTIPART_BODY_BOUNDARY_PARAMETER, current));
             return new MultipartBody(current, snapshot, media, new MultipartPayload(current, snapshot));
         }
 
@@ -434,7 +430,7 @@ public final class MultipartBody implements RequestBody {
          */
         @Override
         public byte[] bytes() {
-            return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**
@@ -456,7 +452,7 @@ public final class MultipartBody implements RequestBody {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**

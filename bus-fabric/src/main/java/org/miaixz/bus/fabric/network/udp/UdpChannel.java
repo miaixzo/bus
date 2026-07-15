@@ -54,16 +54,6 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 public final class UdpChannel implements Lifecycle, AutoCloseable {
 
     /**
-     * Maximum IPv4 UDP payload size without IP and UDP headers.
-     */
-    static final int MAX_DATAGRAM = Normal._65535 - Normal._28;
-
-    /**
-     * Maximum pending sends.
-     */
-    private static final int MAX_PENDING_SENDS = Normal._1024;
-
-    /**
      * Local address.
      */
     private final Address local;
@@ -104,7 +94,7 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
         this.local = Assert.notNull(local, () -> new ValidateException("UDP local address must not be null"));
         this.channel = Assert.notNull(channel, () -> new ValidateException("UDP datagram channel must not be null"));
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("UDP dispatcher must not be null"));
-        this.buffers = NioBufferAllocator.heap(MAX_DATAGRAM, Normal._4);
+        this.buffers = NioBufferAllocator.heap((Normal._65535 - Normal._28), Normal._4);
         this.scope = LifecycleScope.resource(this, "udp-channel", null, EventObserver.noop());
         this.pendingSends = new AtomicInteger();
         this.scope.open(this);
@@ -123,11 +113,11 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
         final SocketAddress checkedRemote = Assert
                 .notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
         ensureOpened();
-        if (checkedSource.remaining() > MAX_DATAGRAM) {
+        if (checkedSource.remaining() > (Normal._65535 - Normal._28)) {
             return CompletableFuture.failedFuture(new ProtocolException("UDP datagram exceeds maximum payload"));
         }
         final int pending = pendingSends.incrementAndGet();
-        if (pending > MAX_PENDING_SENDS) {
+        if (pending > Normal._1024) {
             pendingSends.decrementAndGet();
             return CompletableFuture.failedFuture(new StatefulException("UDP send queue is full"));
         }

@@ -86,7 +86,7 @@ public final class ConnectionLease {
      * @param acquiredAt  acquired time
      */
     ConnectionLease(final ConnectionPool pool, final Destination destination, final Connection connection,
-                    final Instant acquiredAt) {
+            final Instant acquiredAt) {
         this.pool = require(pool, "Connection pool");
         this.destination = require(destination, "Connection destination");
         this.connection = require(connection, "Connection");

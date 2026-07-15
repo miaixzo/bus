@@ -36,11 +36,6 @@ import org.miaixz.bus.fabric.Clock;
 public final class StopWatch {
 
     /**
-     * Unset stop marker.
-     */
-    private static final long UNSET = -1L;
-
-    /**
      * Runtime clock.
      */
     private final Clock clock;
@@ -64,7 +59,7 @@ public final class StopWatch {
     private StopWatch(final Clock clock, final long startNanos) {
         this.clock = clock;
         this.startNanos = startNanos;
-        this.stopNanos = new AtomicLong(UNSET);
+        this.stopNanos = new AtomicLong(-1L);
     }
 
     /**
@@ -85,7 +80,7 @@ public final class StopWatch {
      */
     public Duration elapsed() {
         final long stopped = stopNanos.get();
-        final long end = stopped == UNSET ? clock.nanos() : stopped;
+        final long end = stopped == -1L ? clock.nanos() : stopped;
         return duration(end);
     }
 
@@ -96,12 +91,12 @@ public final class StopWatch {
      */
     public Duration stop() {
         final long stopped = stopNanos.get();
-        if (stopped != UNSET) {
+        if (stopped != -1L) {
             return duration(stopped);
         }
         final long now = clock.nanos();
         duration(now);
-        stopNanos.compareAndSet(UNSET, now);
+        stopNanos.compareAndSet(-1L, now);
         return duration(stopNanos.get());
     }
 
@@ -111,7 +106,7 @@ public final class StopWatch {
      * @return true when stopped
      */
     public boolean stopped() {
-        return stopNanos.get() != UNSET;
+        return stopNanos.get() != -1L;
     }
 
     /**

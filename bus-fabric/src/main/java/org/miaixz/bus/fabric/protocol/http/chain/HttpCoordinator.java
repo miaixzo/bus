@@ -176,7 +176,11 @@ public final class HttpCoordinator implements HttpStage {
             final HttpResponse updated = cache.update(cached, network).toBuilder().request(current)
                     .cacheResponse(cached).networkResponse(network).build();
             network.close();
-            Logger.debug(false, "Fabric", "HTTP cache coordinator merged conditional response: code={}", updated.code());
+            Logger.debug(
+                    false,
+                    "Fabric",
+                    "HTTP cache coordinator merged conditional response: code={}",
+                    updated.code());
             return write(current, updated);
         }
         if (cached != null) {

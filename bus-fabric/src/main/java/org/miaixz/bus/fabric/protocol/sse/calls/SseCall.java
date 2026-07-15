@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.sse.SseSession;
@@ -40,7 +41,6 @@ public final class SseCall extends MonoCall<SseSession> {
     /**
      * Dispatcher activity name for opening the SSE stream.
      */
-    private static final String ACTIVITY_OPEN = "sse-open";
 
     /**
      * Source exchange.
@@ -68,7 +68,7 @@ public final class SseCall extends MonoCall<SseSession> {
      * @param dispatcher dispatcher used by enqueue()
      */
     private SseCall(final SseX exchange, final Dispatcher dispatcher) {
-        super(ACTIVITY_OPEN, dispatcher, EventObserver.noop());
+        super(Builder.SSE_TAG_OPEN, dispatcher, EventObserver.noop());
         this.exchange = require(exchange, "SSE exchange");
         this.session = new AtomicReference<>();
     }

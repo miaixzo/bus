@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.websocket.WebSocketSession;
@@ -40,7 +41,6 @@ public final class WebSocketCall extends MonoCall<WebSocketSession> {
     /**
      * Dispatcher activity name for opening the WebSocket session.
      */
-    private static final String ACTIVITY_OPEN = "websocket-open";
 
     /**
      * Source exchange.
@@ -68,7 +68,7 @@ public final class WebSocketCall extends MonoCall<WebSocketSession> {
      * @param dispatcher dispatcher used by enqueue()
      */
     private WebSocketCall(final WebSocketX exchange, final Dispatcher dispatcher) {
-        super(ACTIVITY_OPEN, dispatcher, EventObserver.noop());
+        super(Builder.WEBSOCKET_OPEN, dispatcher, EventObserver.noop());
         this.exchange = require(exchange, "WebSocket exchange");
         this.session = new AtomicReference<>();
     }

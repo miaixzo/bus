@@ -48,6 +48,7 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Filter;
@@ -63,21 +64,6 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  * @since Java 21+
  */
 public final class SoapX {
-
-    /**
-     * Default method prefix.
-     */
-    private static final String METHOD_PREFIX = "m";
-
-    /**
-     * Default SOAP header prefix.
-     */
-    private static final String HEADER_PREFIX = "h";
-
-    /**
-     * Default SOAP header namespace for local-name header convenience methods.
-     */
-    private static final String HEADER_NAMESPACE = "urn:bus:fabric:soap:header";
 
     /**
      * Runtime context.
@@ -316,7 +302,7 @@ public final class SoapX {
     public SoapX method(final String namespace, final String localName) {
         final String checkedNamespace = optionalLine(namespace, "SOAP namespace");
         final QName qName = checkedNamespace.isBlank() ? new QName(name(localName, "SOAP method"))
-                : new QName(checkedNamespace, name(localName, "SOAP method"), METHOD_PREFIX);
+                : new QName(checkedNamespace, name(localName, "SOAP method"), Builder.SOAP_METHOD_PREFIX);
         return method(qName);
     }
 
@@ -572,9 +558,10 @@ public final class SoapX {
         final String checked = name(localName, "SOAP header");
         if (methodElement != null && StringKit.isNotBlank(methodElement.getNamespaceURI())) {
             return new QName(methodElement.getNamespaceURI(), checked,
-                    StringKit.isBlank(methodElement.getPrefix()) ? METHOD_PREFIX : methodElement.getPrefix());
+                    StringKit.isBlank(methodElement.getPrefix()) ? Builder.SOAP_METHOD_PREFIX
+                            : methodElement.getPrefix());
         }
-        return new QName(HEADER_NAMESPACE, checked, HEADER_PREFIX);
+        return new QName(Builder.SOAP_X_HEADER_NAMESPACE, checked, Builder.SOAP_X_HEADER_PREFIX);
     }
 
     /**
@@ -665,10 +652,10 @@ public final class SoapX {
         if (StringKit.isBlank(namespace)) {
             return name.getLocalPart();
         }
-        if (namespace.endsWith("#") || namespace.endsWith("/") || namespace.endsWith(":")) {
+        if (namespace.endsWith(Symbol.HASH) || namespace.endsWith(Symbol.SLASH) || namespace.endsWith(Symbol.COLON)) {
             return namespace + name.getLocalPart();
         }
-        return namespace + "#" + name.getLocalPart();
+        return namespace + Symbol.HASH + name.getLocalPart();
     }
 
     /**

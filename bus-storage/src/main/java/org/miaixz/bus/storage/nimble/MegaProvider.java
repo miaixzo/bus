@@ -183,12 +183,12 @@ public class MegaProvider extends AbstractProvider {
 
         String jsonBody = JsonKit.toJsonString(command);
 
-        try (HttpResult response = post(url, jsonBody, MediaType.APPLICATION_JSON)) {
-            if (!response.isSuccessful()) {
+        try (Response response = post(url, jsonBody, MediaType.APPLICATION_JSON)) {
+            if (!response.successful()) {
                 throw new IOException("API request failed: " + response.code());
             }
 
-            String responseBody = response.body().string();
+            String responseBody = response.text();
             // Mega returns an array, we take the first element
             List<Object> resultList = JsonKit.toPojo(responseBody, List.class);
             if (resultList != null && !resultList.isEmpty()) {
@@ -260,12 +260,12 @@ public class MegaProvider extends AbstractProvider {
             }
 
             // Download file content
-            try (HttpResult response = get(downloadUrl)) {
-                if (!response.isSuccessful()) {
+            try (Response response = get(downloadUrl)) {
+                if (!response.successful()) {
                     throw new IOException("Download failed: " + response.code());
                 }
 
-                byte[] content = response.body().bytes();
+                byte[] content = response.bytes();
                 // Note: Content is encrypted and would need to be decrypted with file key
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .data(content).build();
@@ -547,11 +547,11 @@ public class MegaProvider extends AbstractProvider {
             // Upload file content (encrypted)
             // Note: Content should be encrypted before upload in real implementation
             String completionHandle;
-            try (HttpResult response = post(uploadUrl, content, MediaType.APPLICATION_OCTET_STREAM)) {
-                if (!response.isSuccessful()) {
+            try (Response response = post(uploadUrl, content, MediaType.APPLICATION_OCTET_STREAM)) {
+                if (!response.successful()) {
                     throw new IOException("Upload failed: " + response.code());
                 }
-                completionHandle = response.body().string();
+                completionHandle = response.text();
             }
 
             // Complete upload by creating file node

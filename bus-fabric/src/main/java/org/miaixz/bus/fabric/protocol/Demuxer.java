@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol;
 
+import static org.miaixz.bus.fabric.Builder.DEMUXER_DEFAULT_CHANNEL_HEADER;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -42,11 +44,6 @@ import org.miaixz.bus.fabric.Session;
  * @since Java 21+
  */
 public final class Demuxer implements Handler {
-
-    /**
-     * Default message channel header.
-     */
-    private static final String DEFAULT_CHANNEL_HEADER = "X-Fabric-Channel";
 
     /**
      * Channel handlers.
@@ -77,7 +74,7 @@ public final class Demuxer implements Handler {
      * @param resolver      custom resolver
      */
     private Demuxer(final Map<String, Handler> handlers, final Handler fallback, final String channelHeader,
-                    final Function<Message, String> resolver) {
+            final Function<Message, String> resolver) {
         this.handlers = Collections.unmodifiableMap(new LinkedHashMap<>(require(handlers, "Handlers")));
         this.fallback = fallback;
         this.channelHeader = validateToken(channelHeader, "Channel header");
@@ -250,7 +247,7 @@ public final class Demuxer implements Handler {
         /**
          * Channel header name.
          */
-        private String channelHeader = DEFAULT_CHANNEL_HEADER;
+        private String channelHeader = DEMUXER_DEFAULT_CHANNEL_HEADER;
 
         /**
          * Custom channel resolver.

@@ -23,6 +23,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.codec.frame.Frame;
 import org.miaixz.bus.fabric.guard.GuardResult;
 
@@ -33,11 +34,6 @@ import org.miaixz.bus.fabric.guard.GuardResult;
  * @since Java 21+
  */
 public final class LimitGuard {
-
-    /**
-     * Rule name.
-     */
-    private static final String NAME = "frame-limit";
 
     /**
      * Maximum allowed bytes.
@@ -106,7 +102,7 @@ public final class LimitGuard {
      * @return rule name
      */
     public String name() {
-        return NAME;
+        return Builder.GUARD_FRAME_LIMIT_GUARD_NAME;
     }
 
     /**

@@ -28,6 +28,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Length-based frame codec for binary protocols that prefix payloads with a length value.
@@ -184,7 +185,7 @@ public final class LengthCodec implements FrameCodec {
         long value = 0L;
         for (int i = 0; i < size; i++) {
             final int current = Byte.toUnsignedInt(buffer.getByte(offset + i));
-            if (size == Long.BYTES && i == 0 && (current & 0x80) != 0) {
+            if (size == Long.BYTES && i == 0 && (current & Normal._128) != 0) {
                 throw new ProtocolException("Length-field value exceeds signed long range");
             }
             value = (value << Byte.SIZE) | current;
@@ -201,7 +202,7 @@ public final class LengthCodec implements FrameCodec {
      */
     private static void writeLength(final Buffer target, final long value, final int size) {
         for (int shift = (size - 1) * Byte.SIZE; shift >= 0; shift -= Byte.SIZE) {
-            target.writeByte((int) ((value >>> shift) & 0xff));
+            target.writeByte((int) ((value >>> shift) & org.miaixz.bus.fabric.Builder.UNSIGNED_BYTE_MASK));
         }
     }
 

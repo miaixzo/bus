@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Message;
 
 /**
@@ -34,11 +35,6 @@ import org.miaixz.bus.fabric.Message;
  * @since Java 21+
  */
 public final class GuardChain implements GuardRule {
-
-    /**
-     * Rule name.
-     */
-    private static final String NAME = "chain";
 
     /**
      * Ordered guard rules.
@@ -91,7 +87,7 @@ public final class GuardChain implements GuardRule {
      */
     @Override
     public String name() {
-        return NAME;
+        return Builder.GUARD_CHAIN_NAME;
     }
 
     /**

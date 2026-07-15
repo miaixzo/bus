@@ -18,11 +18,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines adapters from external server or framework ingress objects into fabric messages.
+ * Defines adapters from external server or framework ingestion objects into fabric messages.
  *
  * <p>
  * Bridge types translate an already accepted request, event or container callback into root fabric values. They are the
- * boundary between framework objects and fabric protocols: they may inspect ingress metadata and choose a protocol
+ * boundary between framework objects and fabric protocols: they may inspect ingestion metadata and choose a protocol
  * target, but they must not open client connections, start dispatchers or perform protocol-specific retries.
  * </p>
  *

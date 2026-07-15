@@ -37,81 +37,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public final class Http2Frame {
 
     /**
-     * DATA frame type.
-     */
-    public static final int DATA = Normal._0;
-
-    /**
-     * HEADERS frame type.
-     */
-    public static final int HEADERS = Normal._1;
-
-    /**
-     * PRIORITY frame type.
-     */
-    public static final int PRIORITY = Normal._2;
-
-    /**
-     * RST_STREAM frame type.
-     */
-    public static final int RST_STREAM = Normal._3;
-
-    /**
-     * SETTINGS frame type.
-     */
-    public static final int SETTINGS = Normal._4;
-
-    /**
-     * PUSH_PROMISE frame type.
-     */
-    public static final int PUSH_PROMISE = Normal._5;
-
-    /**
-     * PING frame type.
-     */
-    public static final int PING = Normal._6;
-
-    /**
-     * GOAWAY frame type.
-     */
-    public static final int GOAWAY = Normal._7;
-
-    /**
-     * WINDOW_UPDATE frame type.
-     */
-    public static final int WINDOW_UPDATE = Normal._8;
-
-    /**
-     * CONTINUATION frame type.
-     */
-    public static final int CONTINUATION = Normal._9;
-
-    /**
-     * ALTSVC frame type.
-     */
-    public static final int ALTSVC = Normal._10;
-
-    /**
-     * END_STREAM flag.
-     */
-    public static final int END_STREAM = Normal._1;
-
-    /**
-     * END_HEADERS flag.
-     */
-    public static final int END_HEADERS = Normal._4;
-
-    /**
-     * ACK flag used by SETTINGS and PING.
-     */
-    public static final int ACK = Normal._1;
-
-    /**
-     * PRIORITY flag used by HEADERS.
-     */
-    public static final int PRIORITY_FLAG = Normal._32;
-
-    /**
      * Frame type.
      */
     private final int type;
@@ -185,8 +110,8 @@ public final class Http2Frame {
      * @param promisedStreamId promised stream id
      */
     private Http2Frame(final int type, final int streamId, final int flags, final ByteString payload,
-                       final List<Http2Header> headers, final Http2Settings settings, final long windowDelta, final int errorCode,
-                       final int promisedStreamId) {
+            final List<Http2Header> headers, final Http2Settings settings, final long windowDelta, final int errorCode,
+            final int promisedStreamId) {
         this(type, streamId, flags, payload, headers, settings, windowDelta, errorCode, promisedStreamId, null, null);
     }
 
@@ -206,8 +131,8 @@ public final class Http2Frame {
      * @param alternateService alternate service metadata
      */
     private Http2Frame(final int type, final int streamId, final int flags, final ByteString payload,
-                       final List<Http2Header> headers, final Http2Settings settings, final long windowDelta, final int errorCode,
-                       final int promisedStreamId, final Http2Priority priority, final Http2AlternateService alternateService) {
+            final List<Http2Header> headers, final Http2Settings settings, final long windowDelta, final int errorCode,
+            final int promisedStreamId, final Http2Priority priority, final Http2AlternateService alternateService) {
         this.type = type;
         this.streamId = streamId;
         this.flags = flags;
@@ -217,7 +142,7 @@ public final class Http2Frame {
         this.windowDelta = windowDelta;
         this.errorCode = errorCode;
         this.promisedStreamId = promisedStreamId;
-        this.endStream = (flags & END_STREAM) != Normal._0;
+        this.endStream = (flags & Normal._1) != Normal._0;
         this.priority = priority;
         this.alternateService = alternateService;
     }
@@ -233,8 +158,8 @@ public final class Http2Frame {
     public static Http2Frame data(final int streamId, final ByteString payload, final boolean endStream) {
         positiveStream(streamId);
         final ByteString checkedPayload = Assert
-                .notNull(payload, () -> new ValidateException("HTTP/2 DATA payload must not be null"));
-        return new Http2Frame(DATA, streamId, endStream ? END_STREAM : Normal._0, checkedPayload, List.of(), null,
+                .notNull(payload, () -> new ValidateException("HTTP/2 Normal._0 payload must not be null"));
+        return new Http2Frame(Normal._0, streamId, endStream ? Normal._1 : Normal._0, checkedPayload, List.of(), null,
                 Normal._0, Normal._0, Normal._0);
     }
 
@@ -269,9 +194,8 @@ public final class Http2Frame {
                 headers,
                 "HTTP/2 headers must not contain null values");
         validatePriorityOwner(streamId, priority);
-        final int flags = END_HEADERS | (endStream ? END_STREAM : Normal._0)
-                | (priority == null ? Normal._0 : PRIORITY_FLAG);
-        return new Http2Frame(HEADERS, streamId, flags, ByteString.EMPTY, checkedHeaders, null, Normal._0, Normal._0,
+        final int flags = Normal._4 | (endStream ? Normal._1 : Normal._0) | (priority == null ? Normal._0 : Normal._32);
+        return new Http2Frame(Normal._1, streamId, flags, ByteString.EMPTY, checkedHeaders, null, Normal._0, Normal._0,
                 Normal._0, priority, null);
     }
 
@@ -287,7 +211,7 @@ public final class Http2Frame {
         final Http2Priority checkedPriority = Assert
                 .notNull(priority, () -> new ValidateException("HTTP/2 priority must not be null"));
         validatePriorityOwner(streamId, checkedPriority);
-        return new Http2Frame(PRIORITY, streamId, Normal._0, checkedPriority.encodeBytes(), List.of(), null, Normal._0,
+        return new Http2Frame(Normal._2, streamId, Normal._0, checkedPriority.encodeBytes(), List.of(), null, Normal._0,
                 Normal._0, Normal._0, checkedPriority, null);
     }
 
@@ -325,7 +249,7 @@ public final class Http2Frame {
         final List<Http2Header> checkedHeaders = headersSnapshot(
                 headers,
                 "HTTP/2 push headers must not contain null values");
-        return new Http2Frame(PUSH_PROMISE, streamId, END_HEADERS, ByteString.EMPTY, checkedHeaders, null, Normal._0,
+        return new Http2Frame(Normal._5, streamId, Normal._4, ByteString.EMPTY, checkedHeaders, null, Normal._0,
                 Normal._0, promisedStreamId);
     }
 
@@ -338,7 +262,7 @@ public final class Http2Frame {
     public static Http2Frame settings(final Http2Settings settings) {
         final Http2Settings checkedSettings = Assert
                 .notNull(settings, () -> new ValidateException("HTTP/2 settings must not be null"));
-        return new Http2Frame(SETTINGS, Normal._0, Normal._0, settingsPayload(checkedSettings), List.of(),
+        return new Http2Frame(Normal._4, Normal._0, Normal._0, settingsPayload(checkedSettings), List.of(),
                 checkedSettings, Normal._0, Normal._0, Normal._0);
     }
 
@@ -348,7 +272,7 @@ public final class Http2Frame {
      * @return frame
      */
     public static Http2Frame settingsAck() {
-        return new Http2Frame(SETTINGS, Normal._0, ACK, ByteString.EMPTY, List.of(), null, Normal._0, Normal._0,
+        return new Http2Frame(Normal._4, Normal._0, Normal._1, ByteString.EMPTY, List.of(), null, Normal._0, Normal._0,
                 Normal._0);
     }
 
@@ -362,8 +286,8 @@ public final class Http2Frame {
     public static Http2Frame ping(final long payload, final boolean ack) {
         final Buffer value = new Buffer();
         value.writeLong(payload);
-        return new Http2Frame(PING, Normal._0, ack ? ACK : Normal._0, value.readByteString(), List.of(), null,
-                Normal._0, Normal._0, Normal._0);
+        return new Http2Frame(Normal._6, Normal._0, ack ? Normal._1 : Normal._0, value.readByteString(), List.of(),
+                null, Normal._0, Normal._0, Normal._0);
     }
 
     /**
@@ -376,13 +300,13 @@ public final class Http2Frame {
      */
     public static Http2Frame goAway(final int lastStreamId, final int errorCode, final ByteString debugData) {
         if (lastStreamId < Normal._0 || errorCode < Normal._0) {
-            throw new ValidateException("Invalid HTTP/2 GOAWAY metadata");
+            throw new ValidateException("Invalid HTTP/2 Normal._7 metadata");
         }
         final Buffer payload = new Buffer();
         payload.writeInt(lastStreamId & Integer.MAX_VALUE);
         payload.writeInt(errorCode);
         payload.write(debugData == null ? ByteString.EMPTY : debugData);
-        return new Http2Frame(GOAWAY, Normal._0, Normal._0, payload.readByteString(), List.of(), null, Normal._0,
+        return new Http2Frame(Normal._7, Normal._0, Normal._0, payload.readByteString(), List.of(), null, Normal._0,
                 errorCode, Normal._0);
     }
 
@@ -399,7 +323,7 @@ public final class Http2Frame {
         }
         final Buffer payload = new Buffer();
         payload.writeInt((int) delta);
-        return new Http2Frame(WINDOW_UPDATE, streamId, Normal._0, payload.readByteString(), List.of(), null, delta,
+        return new Http2Frame(Normal._8, streamId, Normal._0, payload.readByteString(), List.of(), null, delta,
                 Normal._0, Normal._0);
     }
 
@@ -417,7 +341,7 @@ public final class Http2Frame {
         }
         final Buffer payload = new Buffer();
         payload.writeInt(errorCode);
-        return new Http2Frame(RST_STREAM, streamId, Normal._0, payload.readByteString(), List.of(), null, Normal._0,
+        return new Http2Frame(Normal._3, streamId, Normal._0, payload.readByteString(), List.of(), null, Normal._0,
                 errorCode, Normal._0);
     }
 
@@ -430,7 +354,7 @@ public final class Http2Frame {
      */
     public static Http2Frame alternateService(final int streamId, final Http2AlternateService alternateService) {
         if (streamId < Normal._0) {
-            throw new ValidateException("HTTP/2 ALTSVC stream id must not be negative");
+            throw new ValidateException("HTTP/2 Normal._10 stream id must not be negative");
         }
         final Http2AlternateService checkedAlternateService = Assert
                 .notNull(alternateService, () -> new ValidateException("HTTP/2 alternate service must not be null"));
@@ -439,7 +363,7 @@ public final class Http2Frame {
         } catch (final ProtocolException e) {
             throw new ValidateException(e.getMessage(), e);
         }
-        return new Http2Frame(ALTSVC, streamId, Normal._0, checkedAlternateService.encodeBytes(), List.of(), null,
+        return new Http2Frame(Normal._10, streamId, Normal._0, checkedAlternateService.encodeBytes(), List.of(), null,
                 Normal._0, Normal._0, Normal._0, null, checkedAlternateService);
     }
 
@@ -524,7 +448,7 @@ public final class Http2Frame {
      * @return true when ACK is set
      */
     public boolean ack() {
-        return (flags & ACK) != Normal._0;
+        return (flags & Normal._1) != Normal._0;
     }
 
     /**
@@ -551,7 +475,7 @@ public final class Http2Frame {
      * @return headers
      */
     public List<Http2Header> headers() {
-        return type == HEADERS || type == PUSH_PROMISE ? List.copyOf(headers) : List.of();
+        return type == Normal._1 || type == Normal._5 ? List.copyOf(headers) : List.of();
     }
 
     /**
@@ -560,7 +484,7 @@ public final class Http2Frame {
      * @return settings or null
      */
     public Http2Settings settings() {
-        return type == SETTINGS && settings != null ? settings.copy() : null;
+        return type == Normal._4 && settings != null ? settings.copy() : null;
     }
 
     /**
@@ -587,7 +511,7 @@ public final class Http2Frame {
      * @return ping payload
      */
     public long pingPayload() {
-        if (type != PING || payload.size() != Normal._8) {
+        if (type != Normal._6 || payload.size() != Normal._8) {
             return Normal._0;
         }
         return new Buffer().write(payload).readLong();
@@ -599,7 +523,7 @@ public final class Http2Frame {
      * @return last stream id
      */
     public int lastStreamId() {
-        if (type != GOAWAY || payload.size() < Normal._4 * Normal._2) {
+        if (type != Normal._7 || payload.size() < Normal._4 * Normal._2) {
             return Normal._0;
         }
         return new Buffer().write(payload).readInt() & Integer.MAX_VALUE;
@@ -611,7 +535,7 @@ public final class Http2Frame {
      * @return debug data
      */
     public ByteString debugDataBytes() {
-        if (type != GOAWAY || payload.size() <= Normal._4 * Normal._2) {
+        if (type != Normal._7 || payload.size() <= Normal._4 * Normal._2) {
             return ByteString.EMPTY;
         }
         return payload.substring(Normal._4 * Normal._2);
@@ -632,7 +556,7 @@ public final class Http2Frame {
      * @return priority metadata, or null when absent
      */
     public Http2Priority priority() {
-        return type == PRIORITY || type == HEADERS ? priority : null;
+        return type == Normal._2 || type == Normal._1 ? priority : null;
     }
 
     /**
@@ -641,7 +565,7 @@ public final class Http2Frame {
      * @return alternate service metadata, or null when absent
      */
     public Http2AlternateService alternateService() {
-        return type == ALTSVC ? alternateService : null;
+        return type == Normal._10 ? alternateService : null;
     }
 
     /**
@@ -707,7 +631,7 @@ public final class Http2Frame {
      * @return settings or null
      */
     private static Http2Settings decodedSettings(final int type, final int flags, final ByteString payload) {
-        if (type != SETTINGS || (flags & ACK) != Normal._0 || payload == null || payload.size() == Normal._0) {
+        if (type != Normal._4 || (flags & Normal._1) != Normal._0 || payload == null || payload.size() == Normal._0) {
             return null;
         }
         final Buffer view = new Buffer().write(payload);
@@ -726,7 +650,7 @@ public final class Http2Frame {
      * @return delta
      */
     private static long decodedWindowDelta(final int type, final ByteString payload) {
-        if (type != WINDOW_UPDATE || payload == null || payload.size() != Normal._4) {
+        if (type != Normal._8 || payload == null || payload.size() != Normal._4) {
             return Normal._0;
         }
         return new Buffer().write(payload).readInt() & Integer.MAX_VALUE;
@@ -743,10 +667,10 @@ public final class Http2Frame {
         if (payload == null) {
             return Normal._0;
         }
-        if (type == RST_STREAM && payload.size() == Normal._4) {
+        if (type == Normal._3 && payload.size() == Normal._4) {
             return new Buffer().write(payload).readInt();
         }
-        if (type == GOAWAY && payload.size() >= Normal._4 * Normal._2) {
+        if (type == Normal._7 && payload.size() >= Normal._4 * Normal._2) {
             final Buffer view = new Buffer().write(payload);
             view.readInt();
             return view.readInt();
@@ -762,7 +686,7 @@ public final class Http2Frame {
      * @return promised stream id
      */
     private static int decodedPromisedStreamId(final int type, final ByteString payload) {
-        if (type != PUSH_PROMISE || payload == null || payload.size() < Normal._4) {
+        if (type != Normal._5 || payload == null || payload.size() < Normal._4) {
             return Normal._0;
         }
         final int id = new Buffer().write(payload).readInt() & Integer.MAX_VALUE;
@@ -781,7 +705,7 @@ public final class Http2Frame {
      * @return priority or null
      */
     private static Http2Priority decodedPriority(final int type, final int streamId, final ByteString payload) {
-        if (type != PRIORITY) {
+        if (type != Normal._2) {
             return null;
         }
         return Http2Priority.decode(payload, streamId);
@@ -799,7 +723,7 @@ public final class Http2Frame {
             final int type,
             final int streamId,
             final ByteString payload) {
-        if (type != ALTSVC) {
+        if (type != Normal._10) {
             return null;
         }
         return Http2AlternateService.decode(payload, streamId);

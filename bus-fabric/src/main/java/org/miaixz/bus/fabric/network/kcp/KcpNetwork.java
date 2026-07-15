@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.network.Transport;
 import org.miaixz.bus.fabric.network.udp.UdpNetwork;
@@ -48,26 +48,6 @@ import org.miaixz.bus.fabric.network.udp.UdpSession;
  * @since Java 21+
  */
 public final class KcpNetwork implements AutoCloseable {
-
-    /**
-     * Default send and receive window.
-     */
-    private static final int DEFAULT_WINDOW = Normal._32;
-
-    /**
-     * Default retransmission delay.
-     */
-    private static final Duration DEFAULT_RETRANSMIT_DELAY = Duration.ofMillis(Normal._200);
-
-    /**
-     * Unsigned 32-bit sequence mask used by KCP wire fields.
-     */
-    private static final long SEQUENCE_MASK = 0xffff_ffffL;
-
-    /**
-     * Half of the unsigned 32-bit sequence space.
-     */
-    private static final long HALF_SEQUENCE_SPACE = (SEQUENCE_MASK + Normal._1) / Normal._2;
 
     /**
      * Wrapped UDP network.
@@ -170,7 +150,7 @@ public final class KcpNetwork implements AutoCloseable {
      * @param udp UDP network
      */
     private KcpNetwork(final UdpNetwork udp) {
-        this(udp, Clock.systemUTC(), DEFAULT_WINDOW, DEFAULT_WINDOW, DEFAULT_RETRANSMIT_DELAY);
+        this(udp, Clock.systemUTC(), Normal._32, Normal._32, Builder.KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY);
     }
 
     /**
@@ -183,7 +163,7 @@ public final class KcpNetwork implements AutoCloseable {
      * @param retransmitDelay   retransmission delay
      */
     private KcpNetwork(final UdpNetwork udp, final Clock clock, final int sendWindowSize, final int receiveWindowSize,
-                       final Duration retransmitDelay) {
+            final Duration retransmitDelay) {
         this.udp = Assert.notNull(udp, () -> new ValidateException("UDP network must not be null"));
         this.sequence = new AtomicLong();
         this.clock = Assert.notNull(clock, () -> new ValidateException("KCP clock must not be null"));
@@ -251,7 +231,7 @@ public final class KcpNetwork implements AutoCloseable {
         if (sendWindow.size() >= currentSendLimit()) {
             throw new StatefulException("KCP send window is full");
         }
-        final long current = sequence.getAndUpdate(value -> (value + Normal._1) & SEQUENCE_MASK);
+        final long current = sequence.getAndUpdate(value -> (value + Normal._1) & Builder.UNSIGNED_INT_MASK);
         final ByteString bytes = ByteString.of(payload.bytes(KcpPacket.maxPayloadBytes()));
         final KcpPacket packet = KcpPacket.data(current, bytes, remainingReceiveWindow(), now());
         sendWindow.put(current, new SentPacket(packet, packet.timestamp()));
@@ -310,7 +290,7 @@ public final class KcpNetwork implements AutoCloseable {
             }
             delivered.add(ready.payloadBytes());
             deliveredPackets++;
-            expectedReceiveSequence = (expectedReceiveSequence + Normal._1) & SEQUENCE_MASK;
+            expectedReceiveSequence = (expectedReceiveSequence + Normal._1) & Builder.UNSIGNED_INT_MASK;
         }
         return new Inbound(ack, delivered);
     }
@@ -404,7 +384,7 @@ public final class KcpNetwork implements AutoCloseable {
      * @return packet
      */
     public KcpPacket unpack(final Payload payload) {
-        return unpack(payload, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return unpack(payload, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -502,7 +482,7 @@ public final class KcpNetwork implements AutoCloseable {
      * @return {@code true} when the packet is older than the receive window can use
      */
     private boolean isBeforeExpected(final long current) {
-        return sequenceDistance(expectedReceiveSequence, current) >= HALF_SEQUENCE_SPACE;
+        return sequenceDistance(expectedReceiveSequence, current) >= Builder.KCP_NETWORK_HALF_SEQUENCE_SPACE;
     }
 
     /**
@@ -534,7 +514,7 @@ public final class KcpNetwork implements AutoCloseable {
      * @return distance in the KCP sequence space
      */
     private static long sequenceDistance(final long from, final long to) {
-        return (to - from) & SEQUENCE_MASK;
+        return (to - from) & Builder.UNSIGNED_INT_MASK;
     }
 
     /**
@@ -583,8 +563,7 @@ public final class KcpNetwork implements AutoCloseable {
      * @param congestionWindow  current congestion window
      */
     public record Stats(int pending, int buffered, long acknowledged, long retransmissions, long duplicates, long drops,
-                        long received, long delivered, long lastRttMillis, long smoothedRttMillis,
-                        int congestionWindow) {
+            long received, long delivered, long lastRttMillis, long smoothedRttMillis, int congestionWindow) {
 
     }
 

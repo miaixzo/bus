@@ -48,21 +48,6 @@ public final class HttpCacheControl {
     private static final HttpCacheControl EMPTY = new HttpCacheControl(Map.of());
 
     /**
-     * Forces a network validation.
-     */
-    public static final HttpCacheControl FORCE_NETWORK = new HttpCacheControl(
-            Map.of(HTTP.CACHE_DIRECTIVE_NO_CACHE, Normal.EMPTY));
-
-    /**
-     * Forces cache usage and accepts stale entries.
-     */
-    public static final HttpCacheControl FORCE_CACHE = new HttpCacheControl(Map.of(
-            HTTP.CACHE_DIRECTIVE_ONLY_IF_CACHED,
-            Normal.EMPTY,
-            HTTP.CACHE_DIRECTIVE_MAX_STALE,
-            Integer.toString(Integer.MAX_VALUE)));
-
-    /**
      * Parsed directive values keyed by lower-case directive name.
      */
     private final Map<String, String> directives;
@@ -75,6 +60,17 @@ public final class HttpCacheControl {
     private HttpCacheControl(final Map<String, String> directives) {
         this.directives = directives.isEmpty() ? Map.of()
                 : Collections.unmodifiableMap(new LinkedHashMap<>(directives));
+    }
+
+    /**
+     * Creates a cache control snapshot from directive values.
+     *
+     * @param directives directive values
+     * @return cache control
+     */
+    public static HttpCacheControl of(final Map<String, String> directives) {
+        return new HttpCacheControl(Assert
+                .notNull(directives, () -> new ValidateException("HTTP cache control directives must not be null")));
     }
 
     /**

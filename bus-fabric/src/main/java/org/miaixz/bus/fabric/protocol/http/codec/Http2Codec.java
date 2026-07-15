@@ -63,11 +63,6 @@ import org.miaixz.bus.fabric.protocol.http.http2.Http2Writer;
 public final class Http2Codec implements HttpCodec {
 
     /**
-     * Binary media fallback.
-     */
-    private static final MediaType BINARY = MediaType.APPLICATION_OCTET_STREAM_TYPE;
-
-    /**
      * HTTP/2 connection.
      */
     private final Http2Connection connection;
@@ -153,14 +148,14 @@ public final class Http2Codec implements HttpCodec {
         try {
             while (!end || code < Normal._0) {
                 final Http2Frame frame = connection.nextFrame(stream.id(), current.timeout().read());
-                if (frame.type() == Http2Frame.HEADERS) {
+                if (frame.type() == Normal._1) {
                     headers = fromHttp2(frame.headers(), true);
                     final String status = pseudo(frame.headers(), HTTP.RESPONSE_STATUS_UTF8);
                     if (status == null) {
                         throw new ProtocolException("HTTP/2 response is missing :status");
                     }
                     code = parseStatus(status);
-                } else if (frame.type() == Http2Frame.RST_STREAM) {
+                } else if (frame.type() == Normal._3) {
                     throw new SocketException("HTTP/2 stream was reset");
                 }
                 end = frame.endStream();
@@ -336,7 +331,7 @@ public final class Http2Codec implements HttpCodec {
      */
     private static MediaType media(final Headers headers) {
         final String contentType = headers.get(HTTP.CONTENT_TYPE);
-        return contentType == null ? BINARY : MediaType.parse(contentType);
+        return contentType == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE : MediaType.parse(contentType);
     }
 
     /**

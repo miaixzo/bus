@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -113,7 +114,7 @@ public final class UdpSession implements Session {
      * @param onClose  close cleanup hook
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
-               final Runnable onClose) {
+            final Runnable onClose) {
         this.remote = Assert.notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
         this.channel = Assert.notNull(channel, () -> new ValidateException("UDP channel must not be null"));
         this.scope = LifecycleScope.session(
@@ -169,8 +170,8 @@ public final class UdpSession implements Session {
         final Payload checkedPayload = Assert
                 .notNull(payload, () -> new ValidateException("UDP payload must not be null"));
         ensureOpened();
-        final byte[] bytes = checkedPayload.bytes(UdpChannel.MAX_DATAGRAM + 1L);
-        if (bytes.length > UdpChannel.MAX_DATAGRAM) {
+        final byte[] bytes = checkedPayload.bytes((Normal._65535 - Normal._28) + 1L);
+        if (bytes.length > (Normal._65535 - Normal._28)) {
             return CompletableFuture.failedFuture(new ProtocolException("UDP payload exceeds maximum datagram size"));
         }
         final CompletableFuture<Integer> future = channel.send(ByteBuffer.wrap(bytes), socket(remote));

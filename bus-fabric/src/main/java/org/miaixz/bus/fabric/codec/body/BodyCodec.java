@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 
 /**
@@ -191,7 +191,7 @@ public final class BodyCodec {
          */
         @Override
         public byte[] bytes() {
-            return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**
@@ -213,7 +213,7 @@ public final class BodyCodec {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**

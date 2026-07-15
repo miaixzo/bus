@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
+import static org.miaixz.bus.fabric.Builder.SOAP_BODY_SOAP_NAMESPACE;
+import static org.miaixz.bus.fabric.Builder.SOAP_BODY_SOAP_PREFIX;
+import static org.miaixz.bus.fabric.Builder.SOAP_METHOD_PREFIX;
+
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -40,21 +44,6 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  * @since Java 21+
  */
 public final class SoapBody implements RequestBody {
-
-    /**
-     * SOAP envelope namespace.
-     */
-    private static final String SOAP_NAMESPACE = "http://schemas.xmlsoap.org/soap/envelope/";
-
-    /**
-     * SOAP prefix.
-     */
-    private static final String SOAP_PREFIX = "soap";
-
-    /**
-     * Method prefix.
-     */
-    private static final String METHOD_PREFIX = "m";
 
     /**
      * Method namespace.
@@ -97,7 +86,7 @@ public final class SoapBody implements RequestBody {
      * @param action    action
      */
     private SoapBody(final String namespace, final String method, final Map<String, Object> headers,
-                     final Map<String, Object> params, final Charset charset, final String action) {
+            final Map<String, Object> params, final Charset charset, final String action) {
         this.namespace = optionalLine(namespace, "SOAP namespace");
         this.method = name(method, "SOAP method");
         this.headers = Collections.unmodifiableMap(
@@ -136,24 +125,24 @@ public final class SoapBody implements RequestBody {
     public String xml() {
         final StringBuilder builder = new StringBuilder(256);
         builder.append("<?xml version=\"1.0\" encoding=\"").append(charset.name()).append("\"?>");
-        builder.append('<').append(SOAP_PREFIX).append(":Envelope xmlns:").append(SOAP_PREFIX).append("=\"")
-                .append(SOAP_NAMESPACE).append('"');
+        builder.append('<').append(SOAP_BODY_SOAP_PREFIX).append(":Envelope xmlns:").append(SOAP_BODY_SOAP_PREFIX)
+                .append("=\"").append(SOAP_BODY_SOAP_NAMESPACE).append('"');
         if (!namespace.isBlank()) {
-            builder.append(" xmlns:").append(METHOD_PREFIX).append("=\"").append(escapeAttribute(namespace))
+            builder.append(" xmlns:").append(SOAP_METHOD_PREFIX).append("=\"").append(escapeAttribute(namespace))
                     .append('"');
         }
         builder.append('>');
         if (!headers.isEmpty()) {
-            builder.append('<').append(SOAP_PREFIX).append(":Header>");
+            builder.append('<').append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
             appendElements(builder, headers);
-            builder.append("</").append(SOAP_PREFIX).append(":Header>");
+            builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
         }
-        builder.append('<').append(SOAP_PREFIX).append(":Body>");
+        builder.append('<').append(SOAP_BODY_SOAP_PREFIX).append(":Body>");
         appendOpen(builder, method, !namespace.isBlank());
         appendElements(builder, params);
         appendClose(builder, method, !namespace.isBlank());
-        builder.append("</").append(SOAP_PREFIX).append(":Body>");
-        builder.append("</").append(SOAP_PREFIX).append(":Envelope>");
+        builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Body>");
+        builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Envelope>");
         return builder.toString();
     }
 
@@ -220,7 +209,7 @@ public final class SoapBody implements RequestBody {
     private static void appendOpen(final StringBuilder builder, final String name, final boolean method) {
         builder.append('<');
         if (method) {
-            builder.append(METHOD_PREFIX).append(Symbol.C_COLON);
+            builder.append(SOAP_METHOD_PREFIX).append(Symbol.C_COLON);
         }
         builder.append(name).append('>');
     }
@@ -235,7 +224,7 @@ public final class SoapBody implements RequestBody {
     private static void appendClose(final StringBuilder builder, final String name, final boolean method) {
         builder.append("</");
         if (method) {
-            builder.append(METHOD_PREFIX).append(Symbol.C_COLON);
+            builder.append(SOAP_METHOD_PREFIX).append(Symbol.C_COLON);
         }
         builder.append(name).append('>');
     }
@@ -247,7 +236,7 @@ public final class SoapBody implements RequestBody {
      * @return escaped text
      */
     private static String escapeText(final String value) {
-        return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+        return value.replace(Symbol.AND, "&amp;").replace(Symbol.LT, "&lt;").replace(Symbol.GT, "&gt;");
     }
 
     /**
@@ -304,10 +293,10 @@ public final class SoapBody implements RequestBody {
         if (namespace == null || namespace.isBlank()) {
             return method;
         }
-        if (namespace.endsWith("#") || namespace.endsWith("/") || namespace.endsWith(":")) {
+        if (namespace.endsWith(Symbol.HASH) || namespace.endsWith(Symbol.SLASH) || namespace.endsWith(Symbol.COLON)) {
             return namespace + method;
         }
-        return namespace + "#" + method;
+        return namespace + Symbol.HASH + method;
     }
 
     /**

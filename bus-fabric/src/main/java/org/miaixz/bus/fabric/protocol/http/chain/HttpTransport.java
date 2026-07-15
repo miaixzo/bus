@@ -45,7 +45,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class HttpServer implements HttpStage {
+public final class HttpTransport implements HttpStage {
 
     /**
      * Stage name.
@@ -58,28 +58,28 @@ public final class HttpServer implements HttpStage {
     private final Function<HttpChain, HttpCodec> codecs;
 
     /**
-     * Creates a server stage.
+     * Creates a transport stage.
      */
-    public HttpServer() {
-        this(HttpServer::networkCodec);
+    public HttpTransport() {
+        this(HttpTransport::networkCodec);
     }
 
     /**
-     * Creates a server stage with shared dispatcher.
+     * Creates a transport stage with shared dispatcher.
      *
      * @param dispatcher runtime dispatcher
      */
-    public HttpServer(final Dispatcher dispatcher) {
+    public HttpTransport(final Dispatcher dispatcher) {
         this(chain -> networkCodec(chain, require(dispatcher, "Dispatcher")));
     }
 
     /**
-     * Creates a server stage with a codec factory.
+     * Creates a transport stage with a codec factory.
      *
      * @param codecs codec factory
      */
-    HttpServer(final Function<HttpChain, HttpCodec> codecs) {
-        this.name = normalizeName("http-server");
+    HttpTransport(final Function<HttpChain, HttpCodec> codecs) {
+        this.name = normalizeName("http-transport");
         this.codecs = require(codecs, "HTTP codec factory");
     }
 
@@ -201,7 +201,7 @@ public final class HttpServer implements HttpStage {
     private static String normalizeName(final String value) {
         Assert.isFalse(
                 StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("HTTP server name must be non-blank and single-line"));
+                () -> new ValidateException("HTTP transport name must be non-blank and single-line"));
         return StringKit.trim(value).toLowerCase(Locale.ROOT);
     }
 

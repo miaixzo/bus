@@ -134,25 +134,25 @@ public class UpyunOssProvider extends AbstractProvider {
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature(HTTP.HEAD, path, date, 0);
 
-            try (HttpResult response = head(
+            try (Response response = head(
                     this.context.getEndpoint() + path,
                     header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
                     header(HTTP.DATE, date))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     return Message.builder().errcode(toError(response.code()).getKey())
                             .errmsg(toError(response.code()).getValue()).build();
                 }
 
                 String name = nameOf(objectKey);
                 Map<String, Object> extend = new HashMap<>();
-                extend.put("date", response.header(HTTP.DATE));
-                extend.put("lastModified", response.header(HTTP.LAST_MODIFIED));
+                extend.put("date", header(response, HTTP.DATE));
+                extend.put("lastModified", header(response, HTTP.LAST_MODIFIED));
 
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .data(
                                 Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
-                                        .size(response.header(HTTP.CONTENT_LENGTH, "0"))
-                                        .type(response.header(HTTP.CONTENT_TYPE)).hash(response.header(HTTP.ETAG))
+                                        .size(header(response, HTTP.CONTENT_LENGTH, "0"))
+                                        .type(header(response, HTTP.CONTENT_TYPE)).hash(header(response, HTTP.ETAG))
                                         .extend(extend).build())
                         .build();
             }
@@ -214,11 +214,11 @@ public class UpyunOssProvider extends AbstractProvider {
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature(HTTP.GET, path, date, 0);
 
-            HttpResult response = get(
+            Response response = get(
                     this.context.getEndpoint() + path,
                     header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
                     header(HTTP.DATE, date));
-            if (!response.isSuccessful()) {
+            if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
                 return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
@@ -226,14 +226,14 @@ public class UpyunOssProvider extends AbstractProvider {
 
             String name = nameOf(objectKey);
             Map<String, Object> extend = new HashMap<>();
-            extend.put("date", response.header(HTTP.DATE));
-            extend.put("lastModified", response.header(HTTP.LAST_MODIFIED));
+            extend.put("date", header(response, HTTP.DATE));
+            extend.put("lastModified", header(response, HTTP.LAST_MODIFIED));
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(
-                            Blob.builder().inputStream(response.stream()).bucket(bucket).key(objectKey).name(name)
-                                    .path(objectKey).size(response.header(HTTP.CONTENT_LENGTH, "0"))
-                                    .type(response.header(HTTP.CONTENT_TYPE)).hash(response.header(HTTP.ETAG))
+                            Blob.builder().inputStream(stream(response)).bucket(bucket).key(objectKey).name(name)
+                                    .path(objectKey).size(header(response, HTTP.CONTENT_LENGTH, "0"))
+                                    .type(header(response, HTTP.CONTENT_TYPE)).hash(header(response, HTTP.ETAG))
                                     .extend(extend).build())
                     .build();
         } catch (Exception e) {
@@ -296,16 +296,16 @@ public class UpyunOssProvider extends AbstractProvider {
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature("GET", path, date, 0);
 
-            try (HttpResult response = get(
+            try (Response response = get(
                     this.context.getEndpoint() + path,
                     header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
                     header(HTTP.DATE, date))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
 
                 // Read all bytes directly from the response body
-                byte[] content = response.body().bytes();
+                byte[] content = response.bytes();
 
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .data(content).build();
@@ -363,16 +363,16 @@ public class UpyunOssProvider extends AbstractProvider {
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature("GET", path, date, 0);
 
-            try (HttpResult response = get(
+            try (Response response = get(
                     this.context.getEndpoint() + path,
                     header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
                     header(HTTP.DATE, date))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
 
                 // Use try-with-resources to automatically close both streams
-                try (InputStream inputStream = response.body().byteStream();
+                try (InputStream inputStream = stream(response);
                         OutputStream outputStream = new FileOutputStream(file)) {
                     inputStream.transferTo(outputStream);
                 }
@@ -409,15 +409,15 @@ public class UpyunOssProvider extends AbstractProvider {
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature("GET", path, date, 0);
 
-            try (HttpResult response = get(
+            try (Response response = get(
                     this.context.getEndpoint() + path,
                     header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
                     header(HTTP.DATE, date),
                     header("x-upyun-list-limit", "100"))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
-                String responseBody = response.body().string();
+                String responseBody = response.text();
                 List<Blob> files = new ArrayList<>();
                 String[] lines = responseBody.split("\n");
                 for (String line : lines) {
@@ -495,28 +495,28 @@ public class UpyunOssProvider extends AbstractProvider {
             String getSignature = generateSignature("GET", oldPath, date, 0);
 
             byte[] content;
-            try (HttpResult response = get(
+            try (Response response = get(
                     this.context.getEndpoint() + oldPath,
                     header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + getSignature),
                     header(HTTP.DATE, date))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
-                content = response.body().bytes();
+                content = response.bytes();
             }
 
             // Upload to new path
             String putDate = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String putSignature = generateSignature("PUT", newPath, putDate, content.length);
 
-            try (HttpResult response = put(
+            try (Response response = put(
                     this.context.getEndpoint() + newPath,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + putSignature),
                     header(HTTP.DATE, putDate),
                     header(HTTP.CONTENT_LENGTH, String.valueOf(content.length)))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
             }
@@ -525,11 +525,11 @@ public class UpyunOssProvider extends AbstractProvider {
             String deleteDate = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String deleteSignature = generateSignature("DELETE", oldPath, deleteDate, 0);
 
-            try (HttpResult response = delete(
+            try (Response response = delete(
                     this.context.getEndpoint() + oldPath,
                     header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + deleteSignature),
                     header(HTTP.DATE, deleteDate))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
             }
@@ -595,14 +595,14 @@ public class UpyunOssProvider extends AbstractProvider {
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature(HTTP.PUT, requestPath, date, content.length);
 
-            try (HttpResult response = put(
+            try (Response response = put(
                     this.context.getEndpoint() + requestPath,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
                     header(HTTP.DATE, date),
                     header(HTTP.CONTENT_LENGTH, String.valueOf(content.length)))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
@@ -718,11 +718,11 @@ public class UpyunOssProvider extends AbstractProvider {
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature("DELETE", requestPath, date, 0);
 
-            try (HttpResult response = delete(
+            try (Response response = delete(
                     this.context.getEndpoint() + requestPath,
                     header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
                     header(HTTP.DATE, date))) {
-                if (!response.isSuccessful()) {
+                if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())

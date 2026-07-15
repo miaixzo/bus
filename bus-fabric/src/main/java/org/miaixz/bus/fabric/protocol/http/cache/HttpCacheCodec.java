@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.UnoUrl;
@@ -42,76 +43,6 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  * @since Java 21+
  */
 final class HttpCacheCodec {
-
-    /**
-     * Metadata protocol marker.
-     */
-    private static final String META_PROTOCOL = "Fabric-Cache-Protocol";
-
-    /**
-     * HTTP protocol marker.
-     */
-    private static final String META_PROTOCOL_HTTP = "http";
-
-    /**
-     * Metadata request method.
-     */
-    private static final String META_METHOD = "Fabric-Http-Method";
-
-    /**
-     * Metadata request URL.
-     */
-    private static final String META_URL = "Fabric-Http-Url";
-
-    /**
-     * Metadata response code.
-     */
-    private static final String META_CODE = "Fabric-Http-Code";
-
-    /**
-     * Metadata response message.
-     */
-    private static final String META_MESSAGE = "Fabric-Http-Message";
-
-    /**
-     * Metadata response protocol.
-     */
-    private static final String META_RESPONSE_PROTOCOL = "Fabric-Http-Response-Protocol";
-
-    /**
-     * Metadata sent timestamp.
-     */
-    private static final String META_SENT_AT = "Fabric-Http-Sent-At";
-
-    /**
-     * Metadata received timestamp.
-     */
-    private static final String META_RECEIVED_AT = "Fabric-Http-Received-At";
-
-    /**
-     * Metadata response media.
-     */
-    private static final String META_MEDIA = "Fabric-Http-Media";
-
-    /**
-     * Metadata request header name.
-     */
-    private static final String META_REQUEST_HEADER_NAME = "Fabric-Http-Request-Header-Name";
-
-    /**
-     * Metadata request header value.
-     */
-    private static final String META_REQUEST_HEADER_VALUE = "Fabric-Http-Request-Header-Value";
-
-    /**
-     * Metadata response header name.
-     */
-    private static final String META_RESPONSE_HEADER_NAME = "Fabric-Http-Response-Header-Name";
-
-    /**
-     * Metadata response header value.
-     */
-    private static final String META_RESPONSE_HEADER_VALUE = "Fabric-Http-Response-Header-Value";
 
     /**
      * Hidden constructor for HTTP cache metadata encoding helpers.
@@ -140,15 +71,26 @@ final class HttpCacheCodec {
      * @return cache entry
      */
     static CacheEntry toEntry(final HttpRequest request, final HttpResponse response, final Payload payload) {
-        final Headers.Builder metadata = Headers.builder().add(META_PROTOCOL, META_PROTOCOL_HTTP)
-                .add(META_METHOD, request.method().name()).add(META_URL, request.url().encoded())
-                .add(META_CODE, Integer.toString(response.code())).add(META_MESSAGE, response.message())
-                .add(META_RESPONSE_PROTOCOL, response.protocol().name())
-                .add(META_SENT_AT, Long.toString(response.sentRequestAtMillis()))
-                .add(META_RECEIVED_AT, Long.toString(response.receivedResponseAtMillis()))
-                .add(META_MEDIA, response.body().media().value());
-        appendHeaders(metadata, request.headers(), META_REQUEST_HEADER_NAME, META_REQUEST_HEADER_VALUE);
-        appendHeaders(metadata, response.headers(), META_RESPONSE_HEADER_NAME, META_RESPONSE_HEADER_VALUE);
+        final Headers.Builder metadata = Headers.builder()
+                .add(Builder.HTTP_CACHE_CODEC_META_PROTOCOL, Builder.HTTP_CACHE_CODEC_META_PROTOCOL_HTTP)
+                .add(Builder.HTTP_CACHE_CODEC_META_METHOD, request.method().name())
+                .add(Builder.HTTP_CACHE_CODEC_META_URL, request.url().encoded())
+                .add(Builder.HTTP_CACHE_CODEC_META_CODE, Integer.toString(response.code()))
+                .add(Builder.HTTP_CACHE_CODEC_META_MESSAGE, response.message())
+                .add(Builder.HTTP_CACHE_CODEC_META_RESPONSE_PROTOCOL, response.protocol().name())
+                .add(Builder.HTTP_CACHE_CODEC_META_SENT_AT, Long.toString(response.sentRequestAtMillis()))
+                .add(Builder.HTTP_CACHE_CODEC_META_RECEIVED_AT, Long.toString(response.receivedResponseAtMillis()))
+                .add(Builder.HTTP_CACHE_CODEC_META_MEDIA, response.body().media().value());
+        appendHeaders(
+                metadata,
+                request.headers(),
+                Builder.HTTP_CACHE_CODEC_META_REQUEST_HEADER_NAME,
+                Builder.HTTP_CACHE_CODEC_META_REQUEST_HEADER_VALUE);
+        appendHeaders(
+                metadata,
+                response.headers(),
+                Builder.HTTP_CACHE_CODEC_META_RESPONSE_HEADER_NAME,
+                Builder.HTTP_CACHE_CODEC_META_RESPONSE_HEADER_VALUE);
         return CacheEntry.of(metadata.build(), payload);
     }
 
@@ -160,19 +102,32 @@ final class HttpCacheCodec {
      */
     static HttpResponse fromEntry(final CacheEntry entry) {
         final Headers metadata = entry.metadata();
-        if (!META_PROTOCOL_HTTP.equals(metadata.get(META_PROTOCOL))) {
+        if (!Builder.HTTP_CACHE_CODEC_META_PROTOCOL_HTTP.equals(metadata.get(Builder.HTTP_CACHE_CODEC_META_PROTOCOL))) {
             throw new ProtocolException("Cache entry is not an HTTP entry");
         }
         final HttpRequest request = HttpRequest.builder()
-                .method(HTTP.Method.of(requiredMetadata(metadata, META_METHOD)))
-                .url(UnoUrl.parse(requiredMetadata(metadata, META_URL)))
-                .headers(readHeaders(metadata, META_REQUEST_HEADER_NAME, META_REQUEST_HEADER_VALUE)).build();
+                .method(HTTP.Method.of(requiredMetadata(metadata, Builder.HTTP_CACHE_CODEC_META_METHOD)))
+                .url(UnoUrl.parse(requiredMetadata(metadata, Builder.HTTP_CACHE_CODEC_META_URL)))
+                .headers(
+                        readHeaders(
+                                metadata,
+                                Builder.HTTP_CACHE_CODEC_META_REQUEST_HEADER_NAME,
+                                Builder.HTTP_CACHE_CODEC_META_REQUEST_HEADER_VALUE))
+                .build();
         return HttpResponse.builder().request(request).code(readCode(metadata))
-                .message(requiredMetadata(metadata, META_MESSAGE))
-                .headers(readHeaders(metadata, META_RESPONSE_HEADER_NAME, META_RESPONSE_HEADER_VALUE))
-                .body(PayloadBody.of(entry.payload(), MediaType.parse(requiredMetadata(metadata, META_MEDIA))))
-                .protocol(readProtocol(metadata)).sentRequestAtMillis(readLong(metadata, META_SENT_AT))
-                .receivedResponseAtMillis(readLong(metadata, META_RECEIVED_AT)).build();
+                .message(requiredMetadata(metadata, Builder.HTTP_CACHE_CODEC_META_MESSAGE))
+                .headers(
+                        readHeaders(
+                                metadata,
+                                Builder.HTTP_CACHE_CODEC_META_RESPONSE_HEADER_NAME,
+                                Builder.HTTP_CACHE_CODEC_META_RESPONSE_HEADER_VALUE))
+                .body(
+                        PayloadBody.of(
+                                entry.payload(),
+                                MediaType.parse(requiredMetadata(metadata, Builder.HTTP_CACHE_CODEC_META_MEDIA))))
+                .protocol(readProtocol(metadata))
+                .sentRequestAtMillis(readLong(metadata, Builder.HTTP_CACHE_CODEC_META_SENT_AT))
+                .receivedResponseAtMillis(readLong(metadata, Builder.HTTP_CACHE_CODEC_META_RECEIVED_AT)).build();
     }
 
     /**
@@ -287,7 +242,7 @@ final class HttpCacheCodec {
      */
     private static int readCode(final Headers metadata) {
         try {
-            return Integer.parseInt(requiredMetadata(metadata, META_CODE));
+            return Integer.parseInt(requiredMetadata(metadata, Builder.HTTP_CACHE_CODEC_META_CODE));
         } catch (final NumberFormatException e) {
             throw new ProtocolException("Invalid cached HTTP status code", e);
         }
@@ -300,7 +255,7 @@ final class HttpCacheCodec {
      * @return protocol, or {@code null} when older metadata did not store one
      */
     private static Protocol readProtocol(final Headers metadata) {
-        final String value = metadata.get(META_RESPONSE_PROTOCOL);
+        final String value = metadata.get(Builder.HTTP_CACHE_CODEC_META_RESPONSE_PROTOCOL);
         if (value == null) {
             return null;
         }

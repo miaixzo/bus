@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 
 /**
@@ -84,7 +84,7 @@ public interface Body extends AutoCloseable {
      * @return body bytes
      */
     default byte[] bytes() {
-        return Payload.materialize(payload(), Options.DEFAULT_MATERIALIZE_MAX_BYTES, "Body.bytes()");
+        return Payload.materialize(payload(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES, "Body.bytes()");
     }
 
     /**

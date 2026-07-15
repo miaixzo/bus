@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -108,7 +109,8 @@ public record Address(String scheme, String host, int port, String path) {
      * @return true for secure protocols
      */
     public boolean secure() {
-        return "https".equals(scheme) || "wss".equals(scheme) || "tls".equals(scheme);
+        return Protocol.HTTPS.name.equals(scheme) || Protocol.WSS.name.equals(scheme)
+                || Protocol.TLS.name.equals(scheme);
     }
 
     /**
@@ -141,16 +143,21 @@ public record Address(String scheme, String host, int port, String path) {
      * @return effective port
      */
     private static int effectivePort(final String scheme, final int port) {
-        if (port >= 0) {
+        if (port >= Normal._0) {
             return validatePort(port);
         }
-        return switch (scheme) {
-            case "http", "ws" -> PORT._80.getPort();
-            case "https", "wss", "tls" -> PORT._443.getPort();
-            case "tcp", "udp", "socket", "aio", "kcp" -> throw new ValidateException(
-                    "Scheme requires an explicit port: " + scheme);
-            default -> throw new ProtocolException("Unsupported address scheme: " + scheme);
-        };
+        if (Protocol.HTTP.name.equals(scheme) || Protocol.WS.name.equals(scheme)) {
+            return PORT._80.getPort();
+        }
+        if (Protocol.HTTPS.name.equals(scheme) || Protocol.WSS.name.equals(scheme)
+                || Protocol.TLS.name.equals(scheme)) {
+            return PORT._443.getPort();
+        }
+        if (Protocol.TCP.name.equals(scheme) || Protocol.UDP.name.equals(scheme) || Protocol.SOCKET.name.equals(scheme)
+                || Builder.AIO_SCHEME.equals(scheme) || Builder.SOCKET_X_KCP_SCHEME.equals(scheme)) {
+            throw new ValidateException("Scheme requires an explicit port: " + scheme);
+        }
+        throw new ProtocolException("Unsupported address scheme: " + scheme);
     }
 
     /**
@@ -160,17 +167,31 @@ public record Address(String scheme, String host, int port, String path) {
      * @return protocol
      */
     private static Protocol protocolFor(final String scheme) {
-        return switch (scheme) {
-            case "http" -> Protocol.HTTP;
-            case "https" -> Protocol.HTTPS;
-            case "ws" -> Protocol.WS;
-            case "wss" -> Protocol.WSS;
-            case "tcp", "aio" -> Protocol.TCP;
-            case "udp", "kcp" -> Protocol.UDP;
-            case "tls" -> Protocol.TLS;
-            case "socket" -> Protocol.SOCKET;
-            default -> throw new ProtocolException("Unsupported address scheme: " + scheme);
-        };
+        if (Protocol.HTTP.name.equals(scheme)) {
+            return Protocol.HTTP;
+        }
+        if (Protocol.HTTPS.name.equals(scheme)) {
+            return Protocol.HTTPS;
+        }
+        if (Protocol.WS.name.equals(scheme)) {
+            return Protocol.WS;
+        }
+        if (Protocol.WSS.name.equals(scheme)) {
+            return Protocol.WSS;
+        }
+        if (Protocol.TCP.name.equals(scheme) || Builder.AIO_SCHEME.equals(scheme)) {
+            return Protocol.TCP;
+        }
+        if (Protocol.UDP.name.equals(scheme) || Builder.SOCKET_X_KCP_SCHEME.equals(scheme)) {
+            return Protocol.UDP;
+        }
+        if (Protocol.TLS.name.equals(scheme)) {
+            return Protocol.TLS;
+        }
+        if (Protocol.SOCKET.name.equals(scheme)) {
+            return Protocol.SOCKET;
+        }
+        throw new ProtocolException("Unsupported address scheme: " + scheme);
     }
 
     /**
@@ -238,7 +259,7 @@ public record Address(String scheme, String host, int port, String path) {
      * @return port
      */
     private static int validatePort(final int port) {
-        if (port < 1 || port > 65535) {
+        if (port < Normal._1 || port > Normal._65535) {
             throw new ValidateException("Port must be between 1 and 65535");
         }
         return port;

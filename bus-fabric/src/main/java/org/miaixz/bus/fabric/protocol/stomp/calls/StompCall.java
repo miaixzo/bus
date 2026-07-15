@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.stomp.StompSession;
@@ -40,7 +41,6 @@ public final class StompCall extends MonoCall<StompSession> {
     /**
      * Dispatcher activity name for opening the STOMP session.
      */
-    private static final String ACTIVITY_OPEN = "stomp-open";
 
     /**
      * Source exchange.
@@ -68,7 +68,7 @@ public final class StompCall extends MonoCall<StompSession> {
      * @param dispatcher dispatcher used by enqueue()
      */
     private StompCall(final StompX exchange, final Dispatcher dispatcher) {
-        super(ACTIVITY_OPEN, dispatcher, EventObserver.noop());
+        super(Builder.STOMP_TAG_OPEN, dispatcher, EventObserver.noop());
         this.exchange = require(exchange, "STOMP exchange");
         this.session = new AtomicReference<>();
     }

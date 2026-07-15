@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
@@ -38,16 +39,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  * @since Java 21+
  */
 public final class HttpAuth {
-
-    /**
-     * Basic scheme.
-     */
-    private static final String BASIC = "Basic";
-
-    /**
-     * Lower-case basic scheme.
-     */
-    private static final String BASIC_LOWER = "basic";
 
     /**
      * Authentication scheme.
@@ -80,7 +71,7 @@ public final class HttpAuth {
     public static HttpAuth basic(final String username, final String password) {
         final String user = validateUsername(username);
         final String pass = validatePassword(password);
-        return new HttpAuth(BASIC, Base64.encode(user + Symbol.C_COLON + pass, Charset.UTF_8));
+        return new HttpAuth(Builder.HTTP_AUTH_BASIC, Base64.encode(user + Symbol.C_COLON + pass, Charset.UTF_8));
     }
 
     /**
@@ -113,7 +104,7 @@ public final class HttpAuth {
     public HttpRequest authenticate(final HttpRequest request, final Challenge challenge) {
         final HttpRequest current = require(request, "Request");
         final Challenge currentChallenge = require(challenge, "Challenge");
-        if (!BASIC_LOWER.equals(currentChallenge.scheme())) {
+        if (!Builder.HTTP_AUTH_BASIC_LOWER.equals(currentChallenge.scheme())) {
             throw new ProtocolException("Unsupported authentication scheme");
         }
         final String header = proxy(currentChallenge) ? HTTP.PROXY_AUTHORIZATION : HTTP.AUTHORIZATION;

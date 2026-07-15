@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Device classifier parsed from a User-Agent value.
@@ -37,66 +38,19 @@ import org.miaixz.bus.core.lang.Normal;
 public final class Device {
 
     /**
-     * Unknown device.
-     */
-    public static final Device UNKNOWN = Instances
-            .get(Device.class.getName() + ".unknown", () -> new Device(Normal.UNKNOWN, null));
-
-    /**
-     * iPhone.
-     */
-    public static final Device IPHONE = Instances
-            .get(Device.class.getName() + ".iphone", () -> new Device("iPhone", "iphone"));
-
-    /**
-     * iPod.
-     */
-    public static final Device IPOD = Instances.get(Device.class.getName() + ".ipod", () -> new Device("iPod", "ipod"));
-
-    /**
-     * iPad.
-     */
-    public static final Device IPAD = Instances.get(Device.class.getName() + ".ipad", () -> new Device("iPad", "ipad"));
-
-    /**
-     * Android.
-     */
-    public static final Device ANDROID = Instances
-            .get(Device.class.getName() + ".android", () -> new Device("Android", "android"));
-
-    /**
-     * HarmonyOS.
-     */
-    public static final Device HARMONY = Instances
-            .get(Device.class.getName() + ".harmony", () -> new Device("Harmony", "OpenHarmony"));
-
-    /**
-     * Google TV.
-     */
-    public static final Device GOOGLE_TV = Instances
-            .get(Device.class.getName() + ".googleTv", () -> new Device("GoogleTV", "googletv"));
-
-    /**
-     * Windows Phone.
-     */
-    public static final Device WINDOWS_PHONE = Instances.get(
-            Device.class.getName() + ".windowsPhone",
-            () -> new Device("Windows Phone", "windows (ce|phone|mobile)( os)?"));
-
-    /**
      * Mobile classifiers.
      */
     private static final List<Device> MOBILE_DEVICES = Instances.get(
             Device.class.getName() + ".mobileDevices",
             () -> new CopyOnWriteArrayList<>(List.of(
-                    WINDOWS_PHONE,
-                    IPAD,
-                    IPOD,
-                    IPHONE,
+                    new Device("Windows Phone", "windows (ce|phone|mobile)( os)?"),
+                    new Device("iPad", "ipad"),
+                    new Device("iPod", "ipod"),
+                    new Device("iPhone", "iphone"),
                     new Device("Android", "XiaoMi|MI\\s+"),
-                    ANDROID,
-                    HARMONY,
-                    GOOGLE_TV,
+                    new Device("Android", "android"),
+                    new Device("Harmony", "OpenHarmony"),
+                    new Device("GoogleTV", "googletv"),
                     new Device("htcFlyer", "htc_flyer"),
                     new Device("Symbian", "symbian(os)?"),
                     new Device("Blackberry", "blackberry"))));
@@ -152,7 +106,7 @@ public final class Device {
                 return device;
             }
         }
-        return UNKNOWN;
+        return Builder.HTTP_AGENT_DEVICE_UNKNOWN;
     }
 
     /**
@@ -220,7 +174,7 @@ public final class Device {
      * @return true when iPhone or iPod
      */
     public boolean iPhoneOrIPod() {
-        return equals(IPHONE) || equals(IPOD);
+        return equals(Builder.HTTP_AGENT_DEVICE_IPHONE) || equals(Builder.HTTP_AGENT_DEVICE_IPOD);
     }
 
     /**
@@ -229,7 +183,7 @@ public final class Device {
      * @return true when iPad
      */
     public boolean iPad() {
-        return equals(IPAD);
+        return equals(Builder.HTTP_AGENT_DEVICE_IPAD);
     }
 
     /**
@@ -247,7 +201,7 @@ public final class Device {
      * @return true when Android
      */
     public boolean android() {
-        return equals(ANDROID) || equals(GOOGLE_TV);
+        return equals(Builder.HTTP_AGENT_DEVICE_ANDROID) || equals(Builder.HTTP_AGENT_DEVICE_GOOGLE_TV);
     }
 
     /**
@@ -256,7 +210,7 @@ public final class Device {
      * @return true when HarmonyOS
      */
     public boolean harmony() {
-        return equals(HARMONY);
+        return equals(Builder.HTTP_AGENT_DEVICE_HARMONY);
     }
 
     /**

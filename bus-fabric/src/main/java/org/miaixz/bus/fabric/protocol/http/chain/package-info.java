@@ -22,8 +22,9 @@
  *
  * <p>
  * Chain stages bridge requests, apply cache policy, acquire connections, retry recoverable failures and coordinate the
- * final server exchange. This package is a runtime implementation detail; user extensions must use the public
- * {@code filter(...)}, {@code guard(...)}, and {@code observe(...)} entry points on protocol builders.
+ * final {@code HttpTransport} network exchange. This package is a runtime implementation detail and does not expose an
+ * HTTP server API; user extensions must use the public {@code filter(...)}, {@code guard(...)}, and
+ * {@code observe(...)} entry points on protocol builders.
  * </p>
  *
  * @author Kimi Liu

@@ -117,7 +117,7 @@ public record Destination(Protocol protocol, Address address, Options options) {
         final Object selected = options.get("protocol");
         return selected != null
                 && ("h2".equalsIgnoreCase(selected.toString()) || "http/2".equalsIgnoreCase(selected.toString())
-                || "h2_prior_knowledge".equalsIgnoreCase(selected.toString()));
+                        || "h2_prior_knowledge".equalsIgnoreCase(selected.toString()));
     }
 
     /**

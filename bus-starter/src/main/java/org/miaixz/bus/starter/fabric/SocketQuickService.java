@@ -17,18 +17,18 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.socket;
+package org.miaixz.bus.starter.fabric;
 
 import java.util.function.Supplier;
 
 import jakarta.annotation.Resource;
 
-import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Fabric;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
-import org.miaixz.bus.fabric.network.tcp.TcpServer;
+import org.miaixz.bus.fabric.protocol.socket.SocketServer;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -40,9 +40,9 @@ import org.miaixz.bus.logger.Logger;
 public class SocketQuickService {
 
     /**
-     * The configuration properties for the socket server.
+     * Fabric configuration properties.
      */
-    private final SocketProperties properties;
+    private final FabricProperties properties;
 
     /**
      * Current fabric message handler.
@@ -57,21 +57,16 @@ public class SocketQuickService {
     private Supplier<FrameCodec> frameCodec;
 
     /**
-     * Running TCP server.
+     * Running socket server.
      */
-    private TcpServer server;
-
-    /**
-     * Accepted-connection adapter.
-     */
-    private SocketHandlerAdapter adapter;
+    private SocketServer server;
 
     /**
      * Constructs a new SocketQuickService with the given properties.
      *
-     * @param properties socket configuration properties
+     * @param properties fabric configuration properties
      */
-    public SocketQuickService(SocketProperties properties) {
+    public SocketQuickService(FabricProperties properties) {
         this.properties = properties;
     }
 
@@ -100,19 +95,16 @@ public class SocketQuickService {
         if (server != null && server.running()) {
             return;
         }
+        final FabricProperties.Socket socket = properties.getSocket();
         final Handler currentHandler = handler == null ? SocketQuickService::noop : handler;
-        final SocketFrameDecoder currentDecoder = frameCodec == null ? SocketFrameDecoder.line()
-                : SocketFrameDecoder.of(frameCodec);
-        final TcpServer currentServer = new TcpServer(Address.parse("tcp://0.0.0.0:" + properties.getPort()));
-        final SocketHandlerAdapter currentAdapter = new SocketHandlerAdapter(currentHandler, currentDecoder);
-        currentServer.accept(currentAdapter);
+        final FrameCodec currentCodec = frameCodec == null ? FrameCodec.line() : frameCodec.get();
+        final SocketServer currentServer = Fabric.socketServer().bind(socket.getHost(), socket.getPort())
+                .frame(currentCodec).onMessage(currentHandler).build();
         try {
             currentServer.start();
             server = currentServer;
-            adapter = currentAdapter;
-            Logger.info(true, "Starter", "Socket server started on port: {}", properties.getPort());
+            Logger.info(true, "Starter", "Socket server started on port: {}", socket.getPort());
         } catch (RuntimeException e) {
-            currentAdapter.close();
             currentServer.close();
             Logger.error(false, "Starter", "Failed to start socket server", e);
         }
@@ -122,13 +114,8 @@ public class SocketQuickService {
      * Stops the socket server.
      */
     public synchronized void stop() {
-        final TcpServer currentServer = server;
-        final SocketHandlerAdapter currentAdapter = adapter;
+        final SocketServer currentServer = server;
         server = null;
-        adapter = null;
-        if (currentAdapter != null) {
-            currentAdapter.close();
-        }
         if (currentServer != null) {
             currentServer.close();
             Logger.info(false, "Starter", "Socket server stopped.");

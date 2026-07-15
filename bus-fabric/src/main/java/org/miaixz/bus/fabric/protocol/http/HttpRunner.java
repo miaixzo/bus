@@ -26,13 +26,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.CookieJar;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
@@ -42,7 +42,7 @@ import org.miaixz.bus.fabric.protocol.http.chain.HttpChain;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpConnect;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpCoordinator;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpRetry;
-import org.miaixz.bus.fabric.protocol.http.chain.HttpServer;
+import org.miaixz.bus.fabric.protocol.http.chain.HttpTransport;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
@@ -58,22 +58,18 @@ final class HttpRunner {
     /**
      * Default HTTP request filter tag.
      */
-    private static final String TAG_HTTP_REQUEST = "http-request";
 
     /**
      * Default HTTP response filter tag.
      */
-    private static final String TAG_HTTP_RESPONSE = "http-response";
 
     /**
      * SOAP request filter tag.
      */
-    private static final String TAG_SOAP_REQUEST = "soap-request";
 
     /**
      * SOAP response filter tag.
      */
-    private static final String TAG_SOAP_RESPONSE = "soap-response";
 
     /**
      * Execution snapshot.
@@ -185,7 +181,7 @@ final class HttpRunner {
                 request.url().address(),
                 request.headers(),
                 request.body().payload(),
-                request.tag() == null ? TAG_HTTP_REQUEST : request.tag());
+                request.tag() == null ? Builder.HTTP_TAG_REQUEST : request.tag());
         final Filter filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
         if (filter != null) {
             Logger.debug(
@@ -268,7 +264,7 @@ final class HttpRunner {
                         new HttpConnect(snapshot.context().directory().connectionPool(), currentTlsContext,
                                 currentTlsSettings, snapshot.context().listener(), snapshot.context().resolver(),
                                 snapshot.context().reactor().dispatcher()),
-                        new HttpServer(snapshot.context().reactor().dispatcher())),
+                        new HttpTransport(snapshot.context().reactor().dispatcher())),
                 cancellation).proceed(current);
         return filterResponse(materializeLimited(response));
     }
@@ -317,7 +313,8 @@ final class HttpRunner {
      * @return response filter tag
      */
     private static String responseTag(final HttpRequest request) {
-        return TAG_SOAP_REQUEST.equals(request.tag()) ? TAG_SOAP_RESPONSE : TAG_HTTP_RESPONSE;
+        return Builder.HTTP_TAG_SOAP_REQUEST.equals(request.tag()) ? Builder.HTTP_TAG_SOAP_RESPONSE
+                : Builder.HTTP_TAG_RESPONSE;
     }
 
     /**
@@ -429,10 +426,11 @@ final class HttpRunner {
      * @param cause    failure cause
      */
     private void emit(final ObservationMarker marker, final HttpResponse response, final Throwable cause) {
-        FabricEvent.Builder builder = FabricEvent.builder(marker).tag(Tags.METHOD, snapshot.request().method().value())
-                .tag(Tags.URL, snapshot.request().url().encoded());
+        FabricEvent.Builder builder = FabricEvent.builder(marker)
+                .tag(Builder.TAG_METHOD, snapshot.request().method().value())
+                .tag(Builder.TAG_URL, snapshot.request().url().encoded());
         if (response != null) {
-            builder = builder.tag(Tags.CODE, Integer.toString(response.code()));
+            builder = builder.tag(Builder.TAG_CODE, Integer.toString(response.code()));
         }
         if (cause != null) {
             builder = builder.cause(cause);

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -65,17 +67,6 @@ public final class SocketX {
     /**
      * Context option key for the default timeout policy.
      */
-    private static final String TIMEOUT_OPTION = "timeout";
-
-    /**
-     * AIO compatibility scheme accepted by the socket builder.
-     */
-    private static final String AIO_SCHEME = "aio";
-
-    /**
-     * KCP compatibility scheme accepted by the socket builder.
-     */
-    private static final String KCP_SCHEME = "kcp";
 
     /**
      * Immutable execution snapshot.
@@ -97,8 +88,7 @@ public final class SocketX {
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.snapshot = new SocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.frameCodec, builder.handler(), builder.guard, builder.filter, currentObserver,
-                builder.proxyHeader, builder.socketOptions,
-                builder.callback, builder.listener, builder.pooled);
+                builder.proxyHeader, builder.socketOptions, builder.callback, builder.listener, builder.pooled);
         this.runner = new SocketRunner(snapshot);
     }
 
@@ -257,7 +247,7 @@ public final class SocketX {
             final URI parsed = new URI(value.trim());
             final String scheme = parsed.getScheme();
             if (!Protocol.TCP.name.equalsIgnoreCase(scheme) && !Protocol.UDP.name.equalsIgnoreCase(scheme)
-                    && !Protocol.TLS.name.equalsIgnoreCase(scheme) && !KCP_SCHEME.equalsIgnoreCase(scheme)
+                    && !Protocol.TLS.name.equalsIgnoreCase(scheme) && !SOCKET_X_KCP_SCHEME.equalsIgnoreCase(scheme)
                     && !Protocol.SOCKET.name.equalsIgnoreCase(scheme) && !AIO_SCHEME.equalsIgnoreCase(scheme)) {
                 throw new ProtocolException("Socket URL must use tcp, tls, udp, kcp, socket, or aio");
             }
@@ -404,7 +394,7 @@ public final class SocketX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(TIMEOUT_OPTION, Timeout.class);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.socketOptions = hasSocketOptions(context.options()) ? SocketOptions.from(context.options())
                     : SocketOptions.defaults();
@@ -482,7 +472,7 @@ public final class SocketX {
          * @return this builder
          */
         public Builder kcp(final String host, final int port) {
-            return to(target(KCP_SCHEME, host, port));
+            return to(target(SOCKET_X_KCP_SCHEME, host, port));
         }
 
         /**
@@ -578,23 +568,13 @@ public final class SocketX {
         }
 
         /**
-         * Sets TCP server backlog.
+         * Sets AIO read I/O thread count.
          *
-         * @param backlog backlog
+         * @param ioThreads I/O thread count
          * @return this builder
          */
-        public Builder backlog(final int backlog) {
-            return socketOptions(copySocketOptions().backlog(backlog).build());
-        }
-
-        /**
-         * Sets AIO read worker count.
-         *
-         * @param threadNum worker count
-         * @return this builder
-         */
-        public Builder threadNum(final int threadNum) {
-            return socketOptions(copySocketOptions().threadNum(threadNum).build());
+        public Builder ioThreads(final int ioThreads) {
+            return socketOptions(copySocketOptions().ioThreads(ioThreads).build());
         }
 
         /**
@@ -1000,7 +980,7 @@ public final class SocketX {
         private SocketOptions.Builder copySocketOptions() {
             return SocketOptions.builder().readBufferSize(socketOptions.readBufferSize())
                     .writeChunkSize(socketOptions.writeChunkSize()).writeChunkCount(socketOptions.writeChunkCount())
-                    .backlog(socketOptions.backlog()).threadNum(socketOptions.threadNum())
+                    .backlog(socketOptions.backlog()).ioThreads(socketOptions.ioThreads())
                     .socketOptions(socketOptions.socketOptions()).retainReadBuffer(socketOptions.retainReadBuffer())
                     .connectTimeout(socketOptions.connectTimeout()).idleTimeout(socketOptions.idleTimeout());
         }
@@ -1026,11 +1006,10 @@ public final class SocketX {
      * @return true when socket-specific keys exist
      */
     private static boolean hasSocketOptions(final org.miaixz.bus.fabric.Options options) {
-        return options.contains(SocketOptions.READ_BUFFER_SIZE) || options.contains(SocketOptions.WRITE_CHUNK_SIZE)
-                || options.contains(SocketOptions.WRITE_CHUNK_COUNT) || options.contains(SocketOptions.BACKLOG)
-                || options.contains(SocketOptions.THREAD_NUM) || options.contains(SocketOptions.SOCKET_OPTIONS)
-                || options.contains(SocketOptions.RETAIN_READ_BUFFER) || options.contains(SocketOptions.CONNECT_TIMEOUT)
-                || options.contains(SocketOptions.IDLE_TIMEOUT);
+        return options.contains(OPTION_SOCKET_READ_BUFFER_SIZE) || options.contains(OPTION_SOCKET_WRITE_CHUNK_SIZE)
+                || options.contains(OPTION_SOCKET_WRITE_CHUNK_COUNT) || options.contains(OPTION_SOCKET_IO_THREADS)
+                || options.contains(OPTION_SOCKET_OPTIONS) || options.contains(OPTION_SOCKET_RETAIN_READ_BUFFER)
+                || options.contains(OPTION_SOCKET_CONNECT_TIMEOUT) || options.contains(OPTION_SOCKET_IDLE_TIMEOUT);
     }
 
 }

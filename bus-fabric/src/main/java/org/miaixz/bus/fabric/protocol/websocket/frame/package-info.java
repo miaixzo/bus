@@ -23,6 +23,8 @@
  * <p>
  * Frame readers and writers handle masking, opcodes, fragmentation, payload lengths and close status payloads. They
  * operate on byte streams and return frame values; session classes decide how frames affect handlers and lifecycle.
+ * Client and server sessions share {@code WebSocketReader} and {@code WebSocketWriter}; the package-level
+ * {@code WebSocketRole} contract decides whether outbound frames are masked and whether inbound frames must be masked.
  * </p>
  *
  * @author Kimi Liu

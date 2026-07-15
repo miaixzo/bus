@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.ProgressBody;
 import org.miaixz.bus.fabric.codec.body.RequestBody;
@@ -43,11 +43,6 @@ import org.miaixz.bus.fabric.codec.body.ResponseBody;
  * @since Java 21+
  */
 public final class PayloadBody implements RequestBody, ResponseBody, ProgressBody {
-
-    /**
-     * Default binary media type.
-     */
-    private static final MediaType BINARY = MediaType.APPLICATION_OCTET_STREAM_TYPE;
 
     /**
      * Payload reference.
@@ -86,7 +81,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      * @param media   media
      */
     private PayloadBody(final Payload payload, final MediaType media) {
-        this(payload, media, null, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(payload, media, null, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -97,7 +92,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      * @param progress optional progress tracker
      */
     private PayloadBody(final Payload payload, final MediaType media, final ProgressBody.Tracker progress) {
-        this(payload, media, progress, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(payload, media, progress, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -109,7 +104,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      * @param materializeMaxBytes materialize byte threshold
      */
     private PayloadBody(final Payload payload, final MediaType media, final ProgressBody.Tracker progress,
-                        final long materializeMaxBytes) {
+            final long materializeMaxBytes) {
         this.payload = Assert.notNull(payload, () -> new ValidateException("Payload must not be null"));
         this.media = Assert.notNull(media, () -> new ValidateException("MediaType must not be null"));
         this.length = validateLength(this.payload.length());
@@ -125,7 +120,9 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      * @return empty body
      */
     public static PayloadBody empty() {
-        return Instances.get(PayloadBody.class.getName() + ".empty", () -> new PayloadBody(Payload.empty(), BINARY));
+        return Instances.get(
+                PayloadBody.class.getName() + ".empty",
+                () -> new PayloadBody(Payload.empty(), MediaType.APPLICATION_OCTET_STREAM_TYPE));
     }
 
     /**

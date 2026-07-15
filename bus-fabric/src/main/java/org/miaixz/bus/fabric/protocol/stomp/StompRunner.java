@@ -34,6 +34,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
@@ -41,7 +42,6 @@ import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompCodec;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompFrame;
@@ -55,66 +55,6 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 final class StompRunner {
-
-    /**
-     * STOMP CONNECT command.
-     */
-    private static final String COMMAND_CONNECT = "CONNECT";
-
-    /**
-     * STOMP CONNECTED command.
-     */
-    private static final String COMMAND_CONNECTED = "CONNECTED";
-
-    /**
-     * STOMP ERROR command.
-     */
-    private static final String COMMAND_ERROR = "ERROR";
-
-    /**
-     * STOMP accept-version header.
-     */
-    private static final String HEADER_ACCEPT_VERSION = "accept-version";
-
-    /**
-     * STOMP host header.
-     */
-    private static final String HEADER_HOST = "host";
-
-    /**
-     * STOMP login header.
-     */
-    private static final String HEADER_LOGIN = "login";
-
-    /**
-     * STOMP passcode header.
-     */
-    private static final String HEADER_PASSCODE = "passcode";
-
-    /**
-     * STOMP protocol version used by CONNECT.
-     */
-    private static final String VERSION_1_2 = "1.2";
-
-    /**
-     * STOMP open filter tag.
-     */
-    private static final String TAG_STOMP_OPEN = "stomp-open";
-
-    /**
-     * STOMP CONNECT frame filter tag.
-     */
-    private static final String TAG_STOMP_CONNECT = "stomp-connect";
-
-    /**
-     * STOMP CONNECTED frame filter tag.
-     */
-    private static final String TAG_STOMP_CONNECTED = "stomp-connected";
-
-    /**
-     * STOMP ERROR frame filter tag.
-     */
-    private static final String TAG_STOMP_ERROR = "stomp-error";
 
     /**
      * Execution snapshot.
@@ -164,11 +104,11 @@ final class StompRunner {
                             final Buffer input = new Buffer();
                             input.write(message.payload().bytes(snapshot.context().options().materializeMaxBytes()));
                             for (final StompFrame frame : inbound.decode(input)) {
-                                if (COMMAND_CONNECTED.equals(frame.command())) {
-                                    final StompFrame filtered = filter(frame, TAG_STOMP_CONNECTED);
+                                if (Builder.STOMP_COMMAND_CONNECTED.equals(frame.command())) {
+                                    final StompFrame filtered = filter(frame, Builder.STOMP_TAG_CONNECTED);
                                     connected.complete(filtered);
-                                } else if (COMMAND_ERROR.equals(frame.command())) {
-                                    final StompFrame filtered = filter(frame, TAG_STOMP_ERROR);
+                                } else if (Builder.STOMP_COMMAND_ERROR.equals(frame.command())) {
+                                    final StompFrame filtered = filter(frame, Builder.STOMP_TAG_ERROR);
                                     connected.completeExceptionally(
                                             new ProtocolException(filtered.body().text(Charset.UTF_8)));
                                 } else {
@@ -233,20 +173,21 @@ final class StompRunner {
      * @return connect frame
      */
     StompFrame connectFrame() {
-        final Headers.Builder builder = Headers.builder().add(HEADER_ACCEPT_VERSION, VERSION_1_2)
-                .add(HEADER_HOST, snapshot.address().host());
+        final Headers.Builder builder = Headers.builder()
+                .add(Builder.STOMP_HEADER_ACCEPT_VERSION, Builder.STOMP_VERSION_1_2)
+                .add(Builder.HOST, snapshot.address().host());
         if (snapshot.login() != null) {
-            builder.add(HEADER_LOGIN, snapshot.login());
+            builder.add(Builder.STOMP_HEADER_LOGIN, snapshot.login());
         }
         if (snapshot.passcode() != null) {
-            builder.add(HEADER_PASSCODE, snapshot.passcode());
+            builder.add(Builder.STOMP_HEADER_PASSCODE, snapshot.passcode());
         }
         for (final Map.Entry<String, List<String>> entry : snapshot.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
                 builder.add(entry.getKey(), value);
             }
         }
-        return StompFrame.of(COMMAND_CONNECT, builder.build(), Payload.empty());
+        return StompFrame.of(Builder.STOMP_COMMAND_CONNECT, builder.build(), Payload.empty());
     }
 
     /**
@@ -309,7 +250,7 @@ final class StompRunner {
                         snapshot.address(),
                         snapshot.headers(),
                         Payload.empty(),
-                        TAG_STOMP_OPEN),
+                        Builder.STOMP_TAG_OPEN),
                 snapshot.context().filter(),
                 snapshot.filter());
         checkGuard(opening);
@@ -322,7 +263,7 @@ final class StompRunner {
      * @return filtered CONNECT frame
      */
     private StompFrame prepareConnectFrame() {
-        return filter(connectFrame(), TAG_STOMP_CONNECT);
+        return filter(connectFrame(), Builder.STOMP_TAG_CONNECT);
     }
 
     /**
@@ -374,8 +315,9 @@ final class StompRunner {
      * @param cause  cause
      */
     private void emit(final ObservationMarker marker, final Throwable cause) {
-        FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, snapshot.address().scheme())
-                .tag(Tags.HOST, snapshot.address().host()).tag(Tags.PORT, Integer.toString(snapshot.address().port()));
+        FabricEvent.Builder event = FabricEvent.builder(marker).tag(Builder.TAG_PROTOCOL, snapshot.address().scheme())
+                .tag(Builder.HOST, snapshot.address().host())
+                .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
         if (cause != null) {
             event = event.cause(cause);
         }

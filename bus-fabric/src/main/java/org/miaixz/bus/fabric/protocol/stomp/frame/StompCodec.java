@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
@@ -44,16 +45,6 @@ import org.miaixz.bus.fabric.Payload;
  * @since Java 21+
  */
 public final class StompCodec {
-
-    /**
-     * Frame terminator.
-     */
-    private static final byte NUL = (byte) Normal._0;
-
-    /**
-     * STOMP content length header.
-     */
-    private static final String HEADER_CONTENT_LENGTH = "content-length";
 
     /**
      * Accumulated inbound bytes.
@@ -93,7 +84,7 @@ public final class StompCodec {
             throw new ProtocolException("STOMP content-length does not match body length");
         }
         writeBody(currentOutput, currentFrame.body(), declared >= Normal._0 ? declared : bodyLength);
-        currentOutput.writeByte(NUL);
+        currentOutput.writeByte(Normal._0);
     }
 
     /**
@@ -209,7 +200,7 @@ public final class StompCodec {
         if (bufferSize() < cursor + length + Normal._1) {
             return null;
         }
-        if (byteAt(cursor + length) != NUL) {
+        if (byteAt(cursor + length) != Normal._0) {
             throw new ProtocolException("STOMP frame missing NUL terminator");
         }
         return new BodyResult(copy(cursor, length), cursor + length + Normal._1);
@@ -222,7 +213,7 @@ public final class StompCodec {
      * @return body or null
      */
     private BodyResult nulBody(final int cursor) {
-        final int end = toIndex(buffer.indexOf(NUL, cursor));
+        final int end = toIndex(buffer.indexOf((byte) Normal._0, cursor));
         if (end >= Normal._0) {
             return new BodyResult(copy(cursor, end - cursor), end + Normal._1);
         }
@@ -236,7 +227,7 @@ public final class StompCodec {
      * @return content length or -1
      */
     private static int contentLength(final Headers headers) {
-        final String value = headers.get(HEADER_CONTENT_LENGTH);
+        final String value = headers.get(HTTP.CONTENT_LENGTH);
         if (value == null) {
             return Normal.__1;
         }

@@ -87,7 +87,7 @@ public final class SseSession implements Session {
      * @param cancelHook cancellation hook
      */
     SseSession(final Address address, final SseRetry retry, final SseReader reader,
-               final CompletableFuture<Void> stream, final Runnable cancelHook) {
+            final CompletableFuture<Void> stream, final Runnable cancelHook) {
         this(address, retry, reader, stream, cancelHook, null);
     }
 
@@ -102,16 +102,22 @@ public final class SseSession implements Session {
      * @param listener   lifecycle listener
      */
     SseSession(final Address address, final SseRetry retry, final SseReader reader,
-               final CompletableFuture<Void> stream, final Runnable cancelHook,
-               final Listener<? super SseSession> listener) {
+            final CompletableFuture<Void> stream, final Runnable cancelHook,
+            final Listener<? super SseSession> listener) {
         this.address = require(address, "SSE address");
         this.retry = require(retry, "SSE retry");
         this.reader = new AtomicReference<>(require(reader, "SSE reader"));
         this.stream = require(stream, "SSE stream future");
         this.cancelHook = cancelHook == null ? () -> {
         } : cancelHook;
-        this.scope = LifecycleScope.session(this, "sse-session", listener, EventObserver.noop(),
-                ObservationMarker.SSE_OPEN, ObservationMarker.SSE_CLOSED, ObservationMarker.SSE_FAILED);
+        this.scope = LifecycleScope.session(
+                this,
+                "sse-session",
+                listener,
+                EventObserver.noop(),
+                ObservationMarker.SSE_OPEN,
+                ObservationMarker.SSE_CLOSED,
+                ObservationMarker.SSE_FAILED);
         this.scope.open(this);
         this.stream.whenComplete((ignored, cause) -> {
             if (cause == null) {

@@ -186,7 +186,7 @@ final class DefaultDispatcher implements Dispatcher {
      * @param scheduler delay scheduler
      */
     DefaultDispatcher(final DispatchQueue queue, final DispatchWorker worker,
-                      final ScheduledExecutorService scheduler) {
+            final ScheduledExecutorService scheduler) {
         this.queue = require(queue, "Dispatch queue");
         this.worker = require(worker, "Dispatch worker");
         this.scheduler = require(scheduler, "Dispatch scheduler");

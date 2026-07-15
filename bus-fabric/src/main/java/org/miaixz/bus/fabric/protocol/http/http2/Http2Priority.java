@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * HTTP/2 stream priority metadata.
@@ -38,25 +39,10 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public record Http2Priority(int dependencyStreamId, int weight, boolean exclusive) {
 
     /**
-     * Encoded priority payload size.
-     */
-    static final int LENGTH = Normal._5;
-
-    /**
-     * Maximum HTTP/2 stream id.
-     */
-    private static final int MAX_STREAM_ID = Integer.MAX_VALUE;
-
-    /**
-     * Exclusive dependency bit mask.
-     */
-    private static final int EXCLUSIVE_MASK = Integer.MIN_VALUE;
-
-    /**
      * Creates priority metadata.
      */
     public Http2Priority {
-        if (dependencyStreamId < Normal._0 || dependencyStreamId > MAX_STREAM_ID || weight < Normal._1
+        if (dependencyStreamId < Normal._0 || dependencyStreamId > Integer.MAX_VALUE || weight < Normal._1
                 || weight > Normal._256) {
             throw new ValidateException("Invalid HTTP/2 priority metadata");
         }
@@ -84,7 +70,7 @@ public record Http2Priority(int dependencyStreamId, int weight, boolean exclusiv
     static Http2Priority decode(final ByteString payload, final int streamId) {
         final ByteString checkedPayload = Assert
                 .notNull(payload, () -> new ProtocolException("Invalid HTTP/2 PRIORITY payload"));
-        if (checkedPayload.size() < LENGTH) {
+        if (checkedPayload.size() < Normal._5) {
             throw new ProtocolException("Invalid HTTP/2 PRIORITY payload");
         }
         final Buffer view = new Buffer().write(checkedPayload);
@@ -100,12 +86,13 @@ public record Http2Priority(int dependencyStreamId, int weight, boolean exclusiv
      */
     private static Http2Priority decodeView(final Buffer view, final int streamId) {
         final int dependency = view.readInt();
-        final boolean exclusive = (dependency & EXCLUSIVE_MASK) != Normal._0;
-        final int dependencyStreamId = dependency & MAX_STREAM_ID;
+        final boolean exclusive = (dependency & Builder.HTTP2_PRIORITY_EXCLUSIVE_MASK) != Normal._0;
+        final int dependencyStreamId = dependency & Integer.MAX_VALUE;
         if (streamId > Normal._0 && dependencyStreamId == streamId) {
             throw new ProtocolException("HTTP/2 stream cannot depend on itself");
         }
-        return new Http2Priority(dependencyStreamId, (view.readByte() & 0xff) + Normal._1, exclusive);
+        return new Http2Priority(dependencyStreamId, (view.readByte() & Builder.UNSIGNED_BYTE_MASK) + Normal._1,
+                exclusive);
     }
 
     /**
@@ -118,11 +105,11 @@ public record Http2Priority(int dependencyStreamId, int weight, boolean exclusiv
     static Http2Priority decode(final Buffer payload, final int streamId) {
         final Buffer checkedPayload = Assert
                 .notNull(payload, () -> new ProtocolException("Invalid HTTP/2 PRIORITY payload"));
-        if (checkedPayload.size() < LENGTH) {
+        if (checkedPayload.size() < Normal._5) {
             throw new ProtocolException("Invalid HTTP/2 PRIORITY payload");
         }
         final Buffer view = new Buffer();
-        checkedPayload.copyTo(view, Normal._0, LENGTH);
+        checkedPayload.copyTo(view, Normal._0, Normal._5);
         return decodeView(view, streamId);
     }
 
@@ -133,7 +120,7 @@ public record Http2Priority(int dependencyStreamId, int weight, boolean exclusiv
      */
     public ByteString encodeBytes() {
         final Buffer payload = new Buffer();
-        payload.writeInt(exclusive ? dependencyStreamId | EXCLUSIVE_MASK : dependencyStreamId);
+        payload.writeInt(exclusive ? dependencyStreamId | Builder.HTTP2_PRIORITY_EXCLUSIVE_MASK : dependencyStreamId);
         payload.writeByte(weight - Normal._1);
         return payload.readByteString();
     }

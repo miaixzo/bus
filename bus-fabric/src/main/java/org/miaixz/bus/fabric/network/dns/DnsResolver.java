@@ -28,10 +28,10 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.NetKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
  * DNS resolver with observer events and system fallback.
@@ -132,7 +132,7 @@ public final class DnsResolver {
      * @param cause  cause
      */
     private void emit(final ObservationMarker marker, final String host, final Throwable cause) {
-        observer.emit(FabricEvent.builder(marker).tag(Tags.HOST, host).cause(cause).build());
+        observer.emit(FabricEvent.builder(marker).tag(Builder.HOST, host).cause(cause).build());
     }
 
     /**

@@ -88,8 +88,8 @@ public final class UserAgent {
      * @param mobile          mobile flag
      */
     private UserAgent(final String value, final Browser browser, final Device device, final ClientOs clientOs,
-                      final Engine engine, final String browserVersion, final String engineVersion, final String clientOsVersion,
-                      final boolean mobile) {
+            final Engine engine, final String browserVersion, final String engineVersion, final String clientOsVersion,
+            final boolean mobile) {
         this.value = value;
         this.browser = browser;
         this.device = device;

@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -161,7 +162,7 @@ public final class TcpServer implements AutoCloseable {
      * @param options    socket options
      */
     public TcpServer(final Address address, final Listener<Object> listener, final Dispatcher dispatcher,
-                     final SocketOptions options) {
+            final SocketOptions options) {
         this(address, listener, dispatcher, false, options);
     }
 
@@ -174,7 +175,7 @@ public final class TcpServer implements AutoCloseable {
      * @param ownsDispatcher true when close should stop dispatcher
      */
     private TcpServer(final Address address, final Listener<Object> listener, final Dispatcher dispatcher,
-                      final boolean ownsDispatcher) {
+            final boolean ownsDispatcher) {
         this(address, listener, dispatcher, ownsDispatcher, SocketOptions.defaults());
     }
 
@@ -188,7 +189,7 @@ public final class TcpServer implements AutoCloseable {
      * @param options        socket options
      */
     private TcpServer(final Address address, final Listener<Object> listener, final Dispatcher dispatcher,
-                      final boolean ownsDispatcher, final SocketOptions options) {
+            final boolean ownsDispatcher, final SocketOptions options) {
         this.address = Assert.notNull(address, () -> new ValidateException("Server address must not be null"));
         this.sessions = new ConcurrentLinkedQueue<>();
         this.running = new AtomicBoolean();
@@ -231,8 +232,8 @@ public final class TcpServer implements AutoCloseable {
                 opened.bind(socket(address), backlog);
                 server = opened;
                 acceptHandle = dispatcher.enqueue(
-                        "tcp-server:" + address.host() + ":" + address.port(),
-                        Activity.of("tcp-accept", this::acceptLoop));
+                        Protocol.TCP.name + "-server" + Symbol.COLON + address.host() + Symbol.COLON + address.port(),
+                        Activity.of(Protocol.TCP.name + "-accept", this::acceptLoop));
                 notifyOpen(this);
             } catch (final IOException e) {
                 running.set(false);
@@ -444,7 +445,7 @@ public final class TcpServer implements AutoCloseable {
          * @param dispatcher runtime dispatcher
          */
         private TcpSession(final Address address, final SocketChannel socket, final Listener<Object> listener,
-                           final Dispatcher dispatcher) {
+                final Dispatcher dispatcher) {
             this.address = address;
             this.socket = Assert.notNull(socket, () -> new ValidateException("TCP session socket must not be null"));
             this.dispatcher = dispatcher;

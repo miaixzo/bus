@@ -1732,13 +1732,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.starter.annotation.EnableSocket"
+      "type": "org.miaixz.bus.starter.annotation.EnableFabric"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.starter.annotation.EnableSocket"
+      "type": "org.miaixz.bus.starter.annotation.EnableFabric"
     },
     {
       "condition": {
@@ -5000,13 +5000,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.starter.socket.SocketConfiguration"
+      "type": "org.miaixz.bus.starter.fabric.FabricConfiguration"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.starter.socket.SocketConfiguration"
+      "type": "org.miaixz.bus.starter.fabric.FabricConfiguration"
     },
     {
       "condition": {
@@ -5018,29 +5018,37 @@
           "parameterTypes": []
         },
         {
-          "name": "initialization",
-          "parameterTypes": []
+          "name": "socketQuickService",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.fabric.FabricProperties"
+          ]
+        },
+        {
+          "name": "webSocketQuickService",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.fabric.FabricProperties"
+          ]
         }
       ],
-      "type": "org.miaixz.bus.starter.socket.SocketConfiguration"
+      "type": "org.miaixz.bus.starter.fabric.FabricConfiguration"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.starter.socket.SocketConfiguration"
+      "type": "org.miaixz.bus.starter.fabric.FabricConfiguration"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.starter.socket.SocketProperties"
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.starter.socket.SocketProperties"
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties"
     },
     {
       "condition": {
@@ -5050,6 +5058,86 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "getSocket",
+          "parameterTypes": []
+        },
+        {
+          "name": "setSocket",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.fabric.FabricProperties$Socket"
+          ]
+        },
+        {
+          "name": "getWebsocket",
+          "parameterTypes": []
+        },
+        {
+          "name": "setWebsocket",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket"
+          ]
+        },
+        {
+          "name": "getDns",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDns",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.fabric.FabricProperties$Dns"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Socket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Socket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "setEnabled",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHost",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         },
         {
           "name": "getPort",
@@ -5062,25 +5150,145 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.starter.socket.SocketProperties"
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Socket"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.starter.socket.SocketProperties"
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Socket"
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.starter.socket.SocketQuickService"
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.starter.socket.SocketQuickService"
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "setEnabled",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHost",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPort",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Dns"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Dns"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "setEnabled",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "isCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCache",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Dns"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Dns"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.starter.fabric.SocketQuickService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.fabric.SocketQuickService"
     },
     {
       "condition": {
@@ -5090,7 +5298,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.starter.socket.SocketProperties"
+            "org.miaixz.bus.starter.fabric.FabricProperties"
           ]
         },
         {
@@ -5102,13 +5310,53 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.starter.socket.SocketQuickService"
+      "type": "org.miaixz.bus.starter.fabric.SocketQuickService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.starter.fabric.WebSocketQuickService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.starter.fabric.WebSocketQuickService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.fabric.FabricProperties"
+          ]
+        },
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.starter.fabric.WebSocketQuickService"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
-      "type": "org.miaixz.bus.starter.socket.SocketQuickService"
+      "type": "org.miaixz.bus.starter.fabric.WebSocketQuickService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.starter.fabric.SocketQuickService"
     },
     {
       "condition": {

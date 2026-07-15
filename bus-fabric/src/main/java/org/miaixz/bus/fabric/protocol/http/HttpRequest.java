@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Timeout;
@@ -102,7 +103,7 @@ public final class HttpRequest {
      * @param timeout timeout
      */
     private HttpRequest(final HTTP.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
-                        final Map<Class<?>, Object> tags, final ProxyPlan proxy, final Timeout timeout) {
+            final Map<Class<?>, Object> tags, final ProxyPlan proxy, final Timeout timeout) {
         this.method = require(method, "HTTP method");
         this.url = require(url, "URL");
         this.headers = require(headers, "Headers");
@@ -229,7 +230,7 @@ public final class HttpRequest {
      * @return true when URL scheme is https
      */
     public boolean isHttps() {
-        return "https".equals(url.scheme());
+        return Protocol.HTTPS.name.equals(url.scheme());
     }
 
     /**

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.cache.CacheWriter;
 
@@ -85,7 +85,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      * @param abortCallback  abort callback
      */
     HttpCacheWriter(final Payload delegate, final CacheWriter writer, final Runnable commitCallback,
-                    final Runnable abortCallback) {
+            final Runnable abortCallback) {
         this.delegate = Assert.notNull(delegate, () -> new ValidateException("Payload must not be null"));
         this.writer = Assert.notNull(writer, () -> new ValidateException("Cache writer must not be null"));
         this.commitCallback = Assert
@@ -125,7 +125,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      */
     @Override
     public byte[] bytes() {
-        return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -147,7 +147,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      */
     @Override
     public String text(final Charset charset) {
-        return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -254,7 +254,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
          * @param abort  abort callback
          */
         private CacheWritingSource(final Source source, final CacheWriter writer, final Runnable commit,
-                                   final Runnable abort) {
+                final Runnable abort) {
             this.source = source;
             this.writer = writer;
             this.commit = commit;

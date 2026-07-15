@@ -19,22 +19,22 @@
 */
 package org.miaixz.bus.fabric.protocol.socket.session;
 
-import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.io.sink.Sink;
+import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.Timeout;
@@ -140,7 +140,7 @@ public final class SocketLease {
                 handler,
                 attributes,
                 sessionListener,
-                Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -238,7 +238,7 @@ public final class SocketLease {
                 handler,
                 attributes,
                 sessionListener,
-                Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -548,7 +548,7 @@ public final class SocketLease {
     private static Map<String, Object> attributes(final SocketOptions socketOptions, final Map<String, Object> source) {
         final java.util.LinkedHashMap<String, Object> values = new java.util.LinkedHashMap<>(
                 source == null ? Map.of() : source);
-        values.putIfAbsent(SocketSession.ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
+        values.putIfAbsent(Builder.ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
         return Map.copyOf(values);
     }
 
@@ -665,25 +665,23 @@ public final class SocketLease {
         }
 
         /**
-         * Reads through the delegated connection.
+         * Returns the delegated source view.
          *
-         * @param buffer destination buffer
-         * @return read future
+         * @return source view
          */
         @Override
-        public CompletableFuture<Integer> read(final ByteBuffer buffer) {
-            return delegate.read(buffer);
+        public Source source() {
+            return delegate.source();
         }
 
         /**
-         * Writes through the delegated connection.
+         * Returns the delegated sink view.
          *
-         * @param buffer source buffer
-         * @return write future
+         * @return sink view
          */
         @Override
-        public CompletableFuture<Integer> write(final ByteBuffer buffer) {
-            return delegate.write(buffer);
+        public Sink sink() {
+            return delegate.sink();
         }
 
         /**

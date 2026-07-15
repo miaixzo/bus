@@ -29,6 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.protocol.websocket.WebSocketClose;
 
 /**
@@ -46,47 +47,34 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
     /**
      * Continuation opcode.
      */
-    private static final int CONTINUATION = 0x0;
 
     /**
      * Text opcode.
      */
-    private static final int TEXT = 0x1;
 
     /**
      * Binary opcode.
      */
-    private static final int BINARY = 0x2;
 
     /**
      * Close opcode.
      */
-    private static final int CLOSE = 0x8;
 
     /**
      * Ping opcode.
      */
-    private static final int PING = 0x9;
 
     /**
      * Pong opcode.
      */
-    private static final int PONG = 0xA;
 
     /**
      * Maximum message payload bytes accepted by this implementation.
      */
-    private static final long MAX_PAYLOAD_BYTES = Normal._16 * Normal.MEBI;
 
     /**
      * Maximum control frame payload bytes.
      */
-    private static final int MAX_CONTROL_PAYLOAD_BYTES = 125;
-
-    /**
-     * First disallowed text control code point.
-     */
-    private static final char MIN_TEXT_CODE_POINT = 0x20;
 
     /**
      * Creates a frame snapshot.
@@ -99,11 +87,11 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
     public WebSocketFrame {
         opcode = validateOpcode(opcode);
         payload = snapshot(payload);
-        control = opcode >= CLOSE;
+        control = opcode >= Normal._8;
         if (control && !fin) {
             throw new ProtocolException("WebSocket control frame must be final");
         }
-        if (control && payload.size() > MAX_CONTROL_PAYLOAD_BYTES) {
+        if (control && payload.size() > Builder._125) {
             throw new ProtocolException("WebSocket control payload is too large");
         }
     }
@@ -115,7 +103,7 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
      * @return text frame
      */
     public static WebSocketFrame text(final String value) {
-        return of(TEXT, true, validateText(value));
+        return of(Normal._1, true, validateText(value));
     }
 
     /**
@@ -126,7 +114,7 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
      */
     public static WebSocketFrame text(final ByteString value) {
         validateText(value);
-        return of(TEXT, true, value);
+        return of(Normal._1, true, value);
     }
 
     /**
@@ -136,7 +124,7 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
      * @return binary frame
      */
     public static WebSocketFrame binary(final ByteString payload) {
-        return of(BINARY, true, require(payload, "WebSocket payload"));
+        return of(Builder.WEBSOCKET_OPCODE_BINARY, true, require(payload, "WebSocket payload"));
     }
 
     /**
@@ -154,7 +142,7 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
         payload[0] = (byte) (code >>> Byte.SIZE);
         payload[1] = (byte) code;
         System.arraycopy(reasonData, 0, payload, Short.BYTES, reasonData.length);
-        return of(CLOSE, true, ByteString.of(payload));
+        return of(Normal._8, true, ByteString.of(payload));
     }
 
     /**
@@ -166,7 +154,7 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
      * @return frame
      */
     private static WebSocketFrame of(final int opcode, final boolean fin, final ByteString payload) {
-        return new WebSocketFrame(opcode, fin, payload, opcode >= CLOSE);
+        return new WebSocketFrame(opcode, fin, payload, opcode >= Normal._8);
     }
 
     /**
@@ -177,7 +165,7 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
      */
     private static int validateOpcode(final int opcode) {
         return switch (opcode) {
-            case CONTINUATION, TEXT, BINARY, CLOSE, PING, PONG -> opcode;
+            case Normal._0, Normal._1, Builder.WEBSOCKET_OPCODE_BINARY, Normal._8, Builder.WEBSOCKET_OPCODE_PING, Builder.WEBSOCKET_OPCODE_PONG -> opcode;
             default -> throw new ProtocolException("Invalid WebSocket opcode");
         };
     }
@@ -190,7 +178,7 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
      */
     private static ByteString snapshot(final ByteString payload) {
         final ByteString checked = require(payload, "WebSocket payload");
-        if (checked.size() > MAX_PAYLOAD_BYTES) {
+        if (checked.size() > Builder.BYTES_16_MIB) {
             throw new ProtocolException("WebSocket payload is too large");
         }
         return ByteString.of(checked.toByteArray());
@@ -205,7 +193,8 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
         final String checked = require(value, "WebSocket text");
         for (int i = Normal._0; i < checked.length(); i++) {
             final char current = checked.charAt(i);
-            if (current < MIN_TEXT_CODE_POINT && current != Symbol.C_CR && current != Symbol.C_LF) {
+            if (current < Builder.WEB_SOCKET_FRAME_MIN_TEXT_CODE_POINT && current != Symbol.C_CR
+                    && current != Symbol.C_LF) {
                 throw new ValidateException("WebSocket text contains an invalid control character");
             }
         }

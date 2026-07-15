@@ -112,7 +112,7 @@ public interface Payload {
              */
             @Override
             public byte[] bytes() {
-                return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
             /**
@@ -138,7 +138,7 @@ public interface Payload {
              */
             @Override
             public String text(final Charset charset) {
-                return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
             /**
@@ -228,7 +228,7 @@ public interface Payload {
              */
             @Override
             public byte[] bytes() {
-                return bytes(Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
             /**
@@ -250,7 +250,7 @@ public interface Payload {
              */
             @Override
             public String text(final Charset charset) {
-                return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
             }
 
             /**
@@ -298,7 +298,7 @@ public interface Payload {
      * @return payload bytes
      */
     default byte[] bytes() {
-        return materialize(this, Options.DEFAULT_MATERIALIZE_MAX_BYTES, "Payload.bytes()");
+        return materialize(this, Builder.DEFAULT_MATERIALIZE_MAX_BYTES, "Payload.bytes()");
     }
 
     /**
@@ -318,7 +318,7 @@ public interface Payload {
      * @return payload text
      */
     default String text(final Charset charset) {
-        return text(charset, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**

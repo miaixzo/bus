@@ -23,10 +23,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
  * Socket traffic observer backed by current observation markers.
@@ -142,7 +142,7 @@ public final class SocketTrafficObserver implements EventObserver {
      * @return byte count, or {@code 0} when absent or invalid
      */
     private static long bytes(final FabricEvent event) {
-        final String value = event.tags().get(Tags.BYTES);
+        final String value = event.tags().get(Builder.TAG_BYTES);
         if (StringKit.isBlank(value)) {
             return Normal.LONG_ZERO;
         }

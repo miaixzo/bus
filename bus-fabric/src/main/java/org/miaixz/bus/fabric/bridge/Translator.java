@@ -20,7 +20,7 @@
 package org.miaixz.bus.fabric.bridge;
 
 /**
- * Translator contract that converts external ingresses into concrete fabric targets.
+ * Translator contract that converts external ingestions into concrete fabric targets.
  *
  * @param <T> translated target type
  * @author Kimi Liu
@@ -29,19 +29,19 @@ package org.miaixz.bus.fabric.bridge;
 public interface Translator<T> {
 
     /**
-     * Translates an external ingress into a concrete target.
+     * Translates an external ingestion into a concrete target.
      *
-     * @param ingress ingress
+     * @param ingestion ingestion
      * @return translated target
      */
-    T translate(Ingress ingress);
+    T translate(Ingestion ingestion);
 
     /**
-     * Returns whether this translator supports an ingress.
+     * Returns whether this translator supports an ingestion.
      *
-     * @param ingress ingress
+     * @param ingestion ingestion
      * @return true when supported
      */
-    boolean supports(Ingress ingress);
+    boolean supports(Ingestion ingestion);
 
 }

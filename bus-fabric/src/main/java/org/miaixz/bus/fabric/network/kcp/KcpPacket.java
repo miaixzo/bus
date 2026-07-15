@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Immutable KCP packet snapshot.
@@ -39,48 +40,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @since Java 21+
  */
 public record KcpPacket(Type type, long sequence, long acknowledgement, int window, long timestamp,
-                        ByteString payloadBytes) {
-
-    /**
-     * Packet wire version.
-     */
-    private static final byte VERSION = (byte) Normal._1;
-
-    /**
-     * Wire header size.
-     */
-    private static final int HEADER_BYTES = Byte.BYTES + Byte.BYTES + Integer.BYTES + Integer.BYTES + Short.BYTES
-            + Long.BYTES;
-
-    /**
-     * Compact sequence header size.
-     */
-    private static final int COMPACT_SEQUENCE_BYTES = Long.BYTES;
-
-    /**
-     * Maximum unsigned 32-bit sequence.
-     */
-    private static final long MAX_SEQUENCE = 0xffff_ffffL;
-
-    /**
-     * Maximum UDP payload size.
-     */
-    private static final int MAX_DATAGRAM = 65_507;
-
-    /**
-     * Maximum KCP payload size once the wire header is included.
-     */
-    private static final int MAX_PAYLOAD = MAX_DATAGRAM - HEADER_BYTES;
-
-    /**
-     * Default advertised window.
-     */
-    private static final int DEFAULT_WINDOW = Normal._32;
-
-    /**
-     * Acknowledgement marker used by data packets.
-     */
-    private static final long NO_ACKNOWLEDGEMENT = Normal.__1;
+        ByteString payloadBytes) {
 
     /**
      * Creates a validated packet.
@@ -88,7 +48,7 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
     public KcpPacket {
         type = Assert.notNull(type, () -> new ValidateException("KCP packet type must not be null"));
         validateSequence(sequence, "KCP sequence");
-        if (acknowledgement != NO_ACKNOWLEDGEMENT) {
+        if (acknowledgement != Normal.__1) {
             validateSequence(acknowledgement, "KCP acknowledgement");
         }
         Assert.checkBetween(
@@ -101,12 +61,12 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
                 payloadBytes,
                 () -> new ValidateException("KCP payload must be non-null and fit in one datagram"));
         Assert.isTrue(
-                payloadBytes.size() <= MAX_PAYLOAD,
+                payloadBytes.size() <= Builder.KCP_PACKET_MAX_PAYLOAD,
                 () -> new ValidateException("KCP payload must be non-null and fit in one datagram"));
         if (type == Type.ACK && payloadBytes.size() > Normal._0) {
             throw new ValidateException("KCP ACK packet must not carry payload");
         }
-        if (type == Type.DATA && acknowledgement != NO_ACKNOWLEDGEMENT) {
+        if (type == Type.DATA && acknowledgement != Normal.__1) {
             throw new ValidateException("KCP DATA packet must not carry acknowledgement");
         }
         if (type == Type.ACK && acknowledgement < Normal._0) {
@@ -131,7 +91,7 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
      * @param payloadBytes payload bytes
      */
     public KcpPacket(final long sequence, final ByteString payloadBytes) {
-        this(Type.DATA, sequence, NO_ACKNOWLEDGEMENT, DEFAULT_WINDOW, System.currentTimeMillis(), payloadBytes);
+        this(Type.DATA, sequence, Normal.__1, Normal._32, System.currentTimeMillis(), payloadBytes);
     }
 
     /**
@@ -153,7 +113,7 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
      * @return packet
      */
     public static KcpPacket of(final long sequence, final ByteString payloadBytes) {
-        return data(sequence, payloadBytes, DEFAULT_WINDOW, System.currentTimeMillis());
+        return data(sequence, payloadBytes, Normal._32, System.currentTimeMillis());
     }
 
     /**
@@ -183,7 +143,7 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
             final ByteString payloadBytes,
             final int window,
             final long timestamp) {
-        return new KcpPacket(Type.DATA, sequence, NO_ACKNOWLEDGEMENT, window, timestamp, payloadBytes);
+        return new KcpPacket(Type.DATA, sequence, Normal.__1, window, timestamp, payloadBytes);
     }
 
     /**
@@ -193,7 +153,7 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
      * @return packet
      */
     public static KcpPacket ack(final long acknowledgement) {
-        return ack(acknowledgement, DEFAULT_WINDOW, System.currentTimeMillis());
+        return ack(acknowledgement, Normal._32, System.currentTimeMillis());
     }
 
     /**
@@ -216,13 +176,14 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
      */
     public static KcpPacket fromDatagram(final byte[] datagram) {
         Assert.notNull(datagram, () -> new ValidateException("KCP datagram must not be null"));
-        if (datagram.length > MAX_DATAGRAM) {
+        if (datagram.length > (Normal._65535 - Normal._28)) {
             throw new ProtocolException("KCP datagram exceeds maximum UDP payload");
         }
-        if (datagram.length > Normal._0 && datagram[Normal._0] == VERSION && datagram.length < HEADER_BYTES) {
+        if (datagram.length > Normal._0 && datagram[Normal._0] == Normal._1
+                && datagram.length < Builder.KCP_PACKET_HEADER_BYTES) {
             throw new ProtocolException("KCP versioned datagram is too short");
         }
-        if (datagram.length >= HEADER_BYTES && datagram[Normal._0] == VERSION) {
+        if (datagram.length >= Builder.KCP_PACKET_HEADER_BYTES && datagram[Normal._0] == Normal._1) {
             final Buffer buffer = new Buffer().write(datagram);
             buffer.readByte();
             final Type type = Type.fromWire(buffer.readByte());
@@ -234,7 +195,7 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
             return type == Type.ACK ? ack(acknowledgement, window, timestamp)
                     : data(sequence, payload, window, timestamp);
         }
-        if (datagram.length >= COMPACT_SEQUENCE_BYTES) {
+        if (datagram.length >= Normal._8) {
             final Buffer buffer = new Buffer().write(datagram);
             final long sequence = buffer.readLong();
             final ByteString payload = buffer.readByteString();
@@ -249,7 +210,7 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
      * @return header bytes
      */
     public static int headerBytes() {
-        return HEADER_BYTES;
+        return Builder.KCP_PACKET_HEADER_BYTES;
     }
 
     /**
@@ -258,7 +219,7 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
      * @return max datagram bytes
      */
     public static int maxDatagramBytes() {
-        return MAX_DATAGRAM;
+        return (Normal._65535 - Normal._28);
     }
 
     /**
@@ -267,7 +228,7 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
      * @return max payload bytes
      */
     public static int maxPayloadBytes() {
-        return MAX_PAYLOAD;
+        return Builder.KCP_PACKET_MAX_PAYLOAD;
     }
 
     /**
@@ -277,7 +238,7 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
      */
     public byte[] datagram() {
         final Buffer buffer = new Buffer();
-        buffer.writeByte(VERSION);
+        buffer.writeByte(Normal._1);
         buffer.writeByte(type.wire);
         buffer.writeInt((int) sequence);
         buffer.writeInt((int) (acknowledgement < Normal._0 ? Normal._0 : acknowledgement));
@@ -294,7 +255,11 @@ public record KcpPacket(Type type, long sequence, long acknowledgement, int wind
      * @param name  field name used in validation messages
      */
     private static void validateSequence(final long value, final String name) {
-        Assert.checkBetween(value, Normal._0, MAX_SEQUENCE, () -> new ValidateException(name + " out of range"));
+        Assert.checkBetween(
+                value,
+                Normal._0,
+                Builder.UNSIGNED_INT_MASK,
+                () -> new ValidateException(name + " out of range"));
     }
 
     /**

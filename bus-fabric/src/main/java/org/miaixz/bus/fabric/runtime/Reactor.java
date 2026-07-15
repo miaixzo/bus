@@ -78,7 +78,7 @@ public final class Reactor implements AutoCloseable {
      * @param scope      scope
      */
     private Reactor(final Dispatcher dispatcher, final Clock clock, final Directory directory,
-                    final EventObserver observer, final ResourceScope scope) {
+            final EventObserver observer, final ResourceScope scope) {
         this.dispatcher = require(dispatcher, "Dispatcher");
         this.clock = require(clock, "Clock");
         this.directory = require(directory, "Directory");

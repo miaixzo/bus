@@ -32,15 +32,15 @@ import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 
 /**
- * Immutable external ingress metadata used before protocol adaptation.
+ * Immutable external ingestion metadata used before protocol adaptation.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class Ingress {
+public final class Ingestion {
 
     /**
-     * Ingress path.
+     * Ingestion path.
      */
     private final String path;
 
@@ -65,7 +65,7 @@ public final class Ingress {
     private final Map<String, Object> attributes;
 
     /**
-     * Creates a bridge ingress.
+     * Creates a bridge ingestion.
      *
      * @param path       path
      * @param method     method
@@ -73,8 +73,8 @@ public final class Ingress {
      * @param payload    payload
      * @param attributes attributes
      */
-    private Ingress(final String path, final String method, final Headers headers, final Payload payload,
-                    final Map<String, Object> attributes) {
+    private Ingestion(final String path, final String method, final Headers headers, final Payload payload,
+            final Map<String, Object> attributes) {
         this.path = normalizePath(path);
         this.method = normalizeOptionalMethod(method);
         this.headers = headers == null ? Headers.empty() : headers;
@@ -83,7 +83,7 @@ public final class Ingress {
     }
 
     /**
-     * Creates an ingress builder.
+     * Creates an ingestion builder.
      *
      * @return builder
      */
@@ -92,7 +92,7 @@ public final class Ingress {
     }
 
     /**
-     * Returns the ingress path.
+     * Returns the ingestion path.
      *
      * @return path
      */
@@ -162,7 +162,7 @@ public final class Ingress {
      * @return null sentinel
      */
     private static Object nullValue() {
-        return Instances.get(Ingress.class.getName() + ".null", Object::new);
+        return Instances.get(Ingestion.class.getName() + ".null", Object::new);
     }
 
     /**
@@ -222,7 +222,7 @@ public final class Ingress {
     }
 
     /**
-     * Builder for bridge ingresses.
+     * Builder for bridge ingestions.
      *
      * @author Kimi Liu
      * @since Java 21+
@@ -318,12 +318,12 @@ public final class Ingress {
         }
 
         /**
-         * Builds a bridge ingress.
+         * Builds a bridge ingestion.
          *
-         * @return bridge ingress
+         * @return bridge ingestion
          */
-        public Ingress build() {
-            return new Ingress(path, method, headers, payload, attributes);
+        public Ingestion build() {
+            return new Ingestion(path, method, headers, payload, attributes);
         }
 
     }

@@ -34,6 +34,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Synchronous single-path WebSocket frame writer.
@@ -46,77 +47,62 @@ public final class WebSocketWriter implements AutoCloseable {
     /**
      * Binary opcode.
      */
-    private static final int BINARY = 0x2;
 
     /**
      * Ping opcode.
      */
-    private static final int PING = 0x9;
 
     /**
      * Pong opcode.
      */
-    private static final int PONG = 0xA;
 
     /**
      * FIN bit mask.
      */
-    private static final int FIN_MASK = 0x80;
 
     /**
      * Payload mask flag.
      */
-    private static final int MASK_FLAG = 0x80;
 
     /**
      * Inline payload length limit.
      */
-    private static final int INLINE_PAYLOAD_LIMIT = 125;
 
     /**
      * Marker for unsigned 16-bit payload length.
      */
-    private static final int LENGTH_16_MARKER = 126;
 
     /**
      * Marker for unsigned 64-bit payload length.
      */
-    private static final int LENGTH_64_MARKER = 127;
 
     /**
      * Byte mask.
      */
-    private static final int BYTE_MASK = 0xFF;
 
     /**
      * First shift for an eight-byte network-order long.
      */
-    private static final int LONG_INITIAL_SHIFT = 56;
 
     /**
      * Bits per payload length byte.
      */
-    private static final int LENGTH_BYTE_BITS = Byte.SIZE;
 
     /**
      * WebSocket mask key byte length.
      */
-    private static final int MASK_KEY_BYTES = 4;
 
     /**
      * Last mask key index for modulo arithmetic.
      */
-    private static final long MASK_INDEX = 3L;
 
     /**
      * Cursor value returned when no segment is available.
      */
-    private static final int NO_CURSOR_SEGMENT = -1;
 
     /**
      * Maximum message payload bytes accepted by this implementation.
      */
-    private static final long MAX_PAYLOAD_BYTES = Normal._16 * Normal.MEBI;
 
     /**
      * Output sink.
@@ -184,7 +170,7 @@ public final class WebSocketWriter implements AutoCloseable {
         this.output = require(output, "WebSocket output");
         this.mask = mask;
         this.random = require(random, "WebSocket random");
-        this.maskKey = new byte[MASK_KEY_BYTES];
+        this.maskKey = new byte[Normal._4];
         this.header = new Buffer();
         this.staging = new Buffer();
         this.maskCursor = new Buffer.UnsafeCursor();
@@ -221,13 +207,13 @@ public final class WebSocketWriter implements AutoCloseable {
      */
     public synchronized void binary(final Source source, final long length) {
         final Source checkedSource = require(source, "WebSocket binary source");
-        if (length < Normal.LONG_ZERO || length > MAX_PAYLOAD_BYTES) {
+        if (length < Normal.LONG_ZERO || length > Builder.BYTES_16_MIB) {
             throw new ProtocolException("WebSocket binary payload length is invalid");
         }
         ensureOpen();
         reserve(length);
         try {
-            writeHeader(BINARY, true, length);
+            writeHeader(Builder.WEBSOCKET_OPCODE_BINARY, true, length);
             if (mask) {
                 random.nextBytes(maskKey);
                 writeMaskKey();
@@ -248,10 +234,10 @@ public final class WebSocketWriter implements AutoCloseable {
      */
     public void ping(final ByteString payload) {
         final ByteString checkedPayload = require(payload, "WebSocket ping payload");
-        if (checkedPayload.size() > INLINE_PAYLOAD_LIMIT) {
+        if (checkedPayload.size() > Builder._125) {
             throw new ValidateException("WebSocket ping payload is too large");
         }
-        write(new WebSocketFrame(PING, true, checkedPayload, true));
+        write(new WebSocketFrame(Builder.WEBSOCKET_OPCODE_PING, true, checkedPayload, true));
     }
 
     /**
@@ -261,10 +247,10 @@ public final class WebSocketWriter implements AutoCloseable {
      */
     public void pong(final ByteString payload) {
         final ByteString checkedPayload = require(payload, "WebSocket pong payload");
-        if (checkedPayload.size() > INLINE_PAYLOAD_LIMIT) {
+        if (checkedPayload.size() > Builder._125) {
             throw new ProtocolException("WebSocket pong payload is too large");
         }
-        write(new WebSocketFrame(PONG, true, checkedPayload, true));
+        write(new WebSocketFrame(Builder.WEBSOCKET_OPCODE_PONG, true, checkedPayload, true));
     }
 
     /**
@@ -340,18 +326,18 @@ public final class WebSocketWriter implements AutoCloseable {
      */
     private void writeHeader(final int opcode, final boolean fin, final long length) throws IOException {
         header.clear();
-        header.writeByte((fin ? FIN_MASK : Normal._0) | opcode);
-        final int maskBit = mask ? MASK_FLAG : Normal._0;
-        if (length <= INLINE_PAYLOAD_LIMIT) {
+        header.writeByte((fin ? Normal._128 : Normal._0) | opcode);
+        final int maskBit = mask ? Normal._128 : Normal._0;
+        if (length <= Builder._125) {
             header.writeByte(maskBit | (int) length);
         } else if (length <= Normal._65535) {
-            header.writeByte(maskBit | LENGTH_16_MARKER);
-            header.writeByte((int) (length >>> LENGTH_BYTE_BITS) & BYTE_MASK);
-            header.writeByte((int) length & BYTE_MASK);
+            header.writeByte(maskBit | Builder.WEBSOCKET_LENGTH_16_MARKER);
+            header.writeByte((int) (length >>> Byte.SIZE) & Builder.UNSIGNED_BYTE_MASK);
+            header.writeByte((int) length & Builder.UNSIGNED_BYTE_MASK);
         } else {
-            header.writeByte(maskBit | LENGTH_64_MARKER);
-            for (int shift = LONG_INITIAL_SHIFT; shift >= Normal._0; shift -= LENGTH_BYTE_BITS) {
-                header.writeByte((int) (length >>> shift) & BYTE_MASK);
+            header.writeByte(maskBit | Builder._127);
+            for (int shift = Normal._56; shift >= Normal._0; shift -= Byte.SIZE) {
+                header.writeByte((int) (length >>> shift) & Builder.UNSIGNED_BYTE_MASK);
             }
         }
         output.write(header, header.size());
@@ -429,10 +415,10 @@ public final class WebSocketWriter implements AutoCloseable {
         try {
             long processed = Normal.LONG_ZERO;
             int available = maskCursor.seek(Normal.LONG_ZERO);
-            while (available != NO_CURSOR_SEGMENT && processed < byteCount) {
+            while (available != Normal.__1 && processed < byteCount) {
                 for (int i = maskCursor.start; i < maskCursor.end && processed < byteCount; i++) {
                     maskCursor.data[i] = (byte) (maskCursor.data[i]
-                            ^ maskKey[(int) ((offset + processed) & MASK_INDEX)]);
+                            ^ maskKey[(int) ((offset + processed) & Normal._3)]);
                     processed++;
                 }
                 if (processed < byteCount) {
@@ -451,7 +437,7 @@ public final class WebSocketWriter implements AutoCloseable {
      */
     private void reserve(final long length) {
         final long current = queuedBytes.addAndGet(length);
-        if (current > MAX_PAYLOAD_BYTES) {
+        if (current > Builder.BYTES_16_MIB) {
             queuedBytes.addAndGet(-length);
             throw new StatefulException("WebSocket write queue is full");
         }

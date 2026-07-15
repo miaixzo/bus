@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.fabric.runtime.dispatch;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;

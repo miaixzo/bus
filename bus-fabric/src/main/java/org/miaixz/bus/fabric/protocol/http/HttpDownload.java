@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
+import static org.miaixz.bus.fabric.Builder.BYTES_64_KIB;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +34,6 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -52,11 +53,6 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 public final class HttpDownload {
-
-    /**
-     * Copy buffer size.
-     */
-    private static final int BUFFER_SIZE = Normal._64 * Normal._1024;
 
     /**
      * HTTP executor.
@@ -109,7 +105,7 @@ public final class HttpDownload {
      * @param resume       whether partial files may be resumed
      */
     private HttpDownload(final Exchange exchange, final HttpRequest request, final Path target,
-                         final Cancellation cancellation, final BiConsumer<Long, Long> progress, final boolean resume) {
+            final Cancellation cancellation, final BiConsumer<Long, Long> progress, final boolean resume) {
         this.exchange = require(exchange, "HTTP download exchange");
         this.request = require(request, "HTTP request");
         this.target = validateTarget(target);
@@ -331,15 +327,15 @@ public final class HttpDownload {
             final long total,
             final boolean append) {
         final StandardOpenOption[] options = append
-                ? new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.APPEND}
-                : new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING};
+                ? new StandardOpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND }
+                : new StandardOpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING };
         try (Source input = response.body().source(); Sink output = IoKit.sink(part, options)) {
             final Buffer buffer = new Buffer();
             long written = offset;
             progress(written, total);
             while (true) {
                 cancellation.throwIfCancelled();
-                final long read = input.read(buffer, BUFFER_SIZE);
+                final long read = input.read(buffer, BYTES_64_KIB);
                 cancellation.throwIfCancelled();
                 if (read < 0) {
                     break;

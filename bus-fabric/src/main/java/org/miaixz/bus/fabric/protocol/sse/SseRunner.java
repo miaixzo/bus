@@ -34,12 +34,12 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.sse.body.SseBody;
 import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
@@ -56,41 +56,6 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 final class SseRunner {
-
-    /**
-     * SSE dispatch key prefix.
-     */
-    private static final String DISPATCH_PREFIX = "sse:" + Symbol.FORWARDSLASH;
-
-    /**
-     * Last event identifier request header.
-     */
-    private static final String LAST_EVENT_ID = "Last-Event-ID";
-
-    /**
-     * SSE open filter tag.
-     */
-    private static final String TAG_SSE_OPEN = "sse-open";
-
-    /**
-     * SSE opening response filter tag.
-     */
-    private static final String TAG_SSE_RESPONSE = "sse-response";
-
-    /**
-     * SSE event filter tag.
-     */
-    private static final String TAG_SSE_EVENT = "sse-event";
-
-    /**
-     * Dispatcher activity name for stream reads.
-     */
-    private static final String ACTIVITY_READ = "sse-read";
-
-    /**
-     * Dispatcher activity name for reconnect delays.
-     */
-    private static final String ACTIVITY_RETRY = "sse-retry";
 
     /**
      * Execution snapshot.
@@ -174,7 +139,8 @@ final class SseRunner {
      * @return dispatch key
      */
     String dispatchKey() {
-        return DISPATCH_PREFIX + snapshot.address().host() + Symbol.C_COLON + snapshot.address().port();
+        return Builder.SSE_RUNNER_DISPATCH_PREFIX + snapshot.address().host() + Symbol.C_COLON
+                + snapshot.address().port();
     }
 
     /**
@@ -204,7 +170,7 @@ final class SseRunner {
         final Headers.Builder builder = Headers.builder().add(HTTP.ACCEPT, MediaType.SERVER_SENT_EVENTS)
                 .add(HTTP.CACHE_CONTROL, HTTP.CACHE_DIRECTIVE_NO_CACHE);
         if (eventId != null) {
-            builder.add(LAST_EVENT_ID, eventId);
+            builder.add(Builder.SSE_RUNNER_LAST_EVENT_ID, eventId);
         }
         for (final Map.Entry<String, List<String>> entry : snapshot.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
@@ -212,7 +178,7 @@ final class SseRunner {
             }
         }
         final Message opening = filter(
-                Message.of(Protocol.HTTP, snapshot.address(), builder.build(), Payload.empty(), TAG_SSE_OPEN));
+                Message.of(Protocol.HTTP, snapshot.address(), builder.build(), Payload.empty(), Builder.SSE_TAG_OPEN));
         checkGuard(opening);
         final Mediator.HttpStream response = Mediator.openHttpStream(
                 snapshot.context().withFilter(null),
@@ -220,7 +186,12 @@ final class SseRunner {
                 opening.headers(),
                 snapshot.timeout());
         final Message accepted = filter(
-                Message.of(Protocol.HTTP, snapshot.address(), response.headers(), Payload.empty(), TAG_SSE_RESPONSE));
+                Message.of(
+                        Protocol.HTTP,
+                        snapshot.address(),
+                        response.headers(),
+                        Payload.empty(),
+                        Builder.SSE_TAG_RESPONSE));
         snapshot.responseHandler().accept(response.status(), accepted.headers());
         Logger.debug(
                 false,
@@ -351,7 +322,7 @@ final class SseRunner {
         }
         final Payload payload = Payload.of(event.data(), StandardCharsets.UTF_8);
         final Message received = filter(
-                Message.of(Protocol.HTTP, snapshot.address(), Headers.empty(), payload, TAG_SSE_EVENT));
+                Message.of(Protocol.HTTP, snapshot.address(), Headers.empty(), payload, Builder.SSE_TAG_EVENT));
         checkGuard(received);
         final Payload filteredPayload = received.payload();
         final SseEvent filteredEvent = SseEvent.of(
@@ -372,8 +343,14 @@ final class SseRunner {
         try {
             snapshot.handler().accept(filteredEvent);
         } catch (final RuntimeException e) {
-            Logger.warn(false, "Fabric", e, "SSE event handler failed: host={}, port={}, exception={}",
-                    snapshot.address().host(), snapshot.address().port(), e.getClass().getSimpleName());
+            Logger.warn(
+                    false,
+                    "Fabric",
+                    e,
+                    "SSE event handler failed: host={}, port={}, exception={}",
+                    snapshot.address().host(),
+                    snapshot.address().port(),
+                    e.getClass().getSimpleName());
         }
     }
 
@@ -411,7 +388,9 @@ final class SseRunner {
         final DispatchHandle next = snapshot.context().reactor().dispatcher().schedule(
                 dispatchKey(),
                 delay,
-                Activity.of(ACTIVITY_RETRY, () -> reconnect(retry, stream, holder, eventId, handle, attempt)));
+                Activity.of(
+                        Builder.SSE_ACTIVITY_RETRY,
+                        () -> reconnect(retry, stream, holder, eventId, handle, attempt)));
         handle.set(next);
         if (!session.opened() || stream.isCancelled()) {
             next.cancel();
@@ -497,7 +476,9 @@ final class SseRunner {
             final int attempt) {
         return snapshot.context().reactor().dispatcher().enqueue(
                 dispatchKey(),
-                Activity.of(ACTIVITY_READ, () -> read(reader, retry, stream, holder, eventId, handle, attempt)));
+                Activity.of(
+                        Builder.SSE_ACTIVITY_READ,
+                        () -> read(reader, retry, stream, holder, eventId, handle, attempt)));
     }
 
     /**
@@ -594,10 +575,11 @@ final class SseRunner {
      * @param payload event payload
      */
     private void emit(final ObservationMarker marker, final Throwable cause, final Payload payload) {
-        final FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, snapshot.address().scheme())
-                .tag(Tags.HOST, snapshot.address().host()).tag(Tags.PORT, Integer.toString(snapshot.address().port()));
+        final FabricEvent.Builder event = FabricEvent.builder(marker)
+                .tag(Builder.TAG_PROTOCOL, snapshot.address().scheme()).tag(Builder.HOST, snapshot.address().host())
+                .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
         if (payload != null && payload.length() >= Normal.LONG_ZERO) {
-            event.tag(Tags.BYTES, Long.toString(payload.length()));
+            event.tag(Builder.TAG_BYTES, Long.toString(payload.length()));
         }
         if (cause != null) {
             event.cause(cause);

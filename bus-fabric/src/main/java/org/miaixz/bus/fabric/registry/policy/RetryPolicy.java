@@ -112,8 +112,7 @@ public final class RetryPolicy {
                 status < Normal._100 || followUps < Normal._0,
                 () -> new ValidateException("Status and follow-up count are invalid"));
         return followUps < maxFollowUps && switch (status) {
-            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER,
-                 HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> true;
+            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> true;
             default -> false;
         };
     }
