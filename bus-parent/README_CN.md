@@ -172,12 +172,7 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-storage</artifactId>
         </dependency>
-
-        <!-- 分布式链路追踪 -->
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-tracer</artifactId>
-        </dependency>
+        
     </dependencies>
 </project>
 ```

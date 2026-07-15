@@ -62,6 +62,11 @@
 
     <dependency>
         <groupId>org.miaixz</groupId>
+        <artifactId>bus-health</artifactId>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.miaixz</groupId>
         <artifactId>bus-mapper</artifactId>
     </dependency>
 </dependencies>
