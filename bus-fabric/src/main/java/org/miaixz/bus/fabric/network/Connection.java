@@ -22,7 +22,7 @@ package org.miaixz.bus.fabric.network;
 import java.nio.ByteBuffer;
 import java.util.concurrent.CompletableFuture;
 
-import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.Lifecycle;
 
 /**
  * Protocol-neutral network connection contract.
@@ -30,7 +30,7 @@ import org.miaixz.bus.fabric.Status;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface Connection extends AutoCloseable {
+public interface Connection extends AutoCloseable, Lifecycle {
 
     /**
      * Returns the connection destination.
@@ -45,13 +45,6 @@ public interface Connection extends AutoCloseable {
      * @return network conduit
      */
     Conduit conduit();
-
-    /**
-     * Returns the lifecycle state.
-     *
-     * @return lifecycle state
-     */
-    Status state();
 
     /**
      * Reads bytes into a buffer.

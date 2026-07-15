@@ -45,7 +45,6 @@ import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Demuxer;
@@ -88,11 +87,9 @@ public final class WebSocketX {
     private WebSocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        final Listener<? super WebSocketSession> currentListener = Wiring
-                .safe(Wiring.compose(current.listener(), builder.listener), currentObserver);
         this.snapshot = new WebSocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.guard, builder.filter, currentObserver,
-                builder.callback == null ? Wiring.callback() : builder.callback, builder.handler(), currentListener);
+                builder.callback, builder.handler(), builder.listener);
         this.runner = new WebSocketRunner(snapshot);
     }
 
@@ -348,9 +345,9 @@ public final class WebSocketX {
             final Timeout configured = context.options().get(TIMEOUT_OPTION, Timeout.class);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.observer = EventObserver.noop();
-            this.callback = Wiring.callback();
+            this.callback = null;
             this.handler = Demuxer.noop();
-            this.listener = Wiring.noop();
+            this.listener = null;
             this.openHandler = session -> {
             };
             this.errorHandler = cause -> {
@@ -479,7 +476,7 @@ public final class WebSocketX {
          * @return this builder
          */
         public Builder callback(final Callback<WebSocketSession> callback) {
-            this.callback = callback == null ? Wiring.callback() : callback;
+            this.callback = callback;
             return this;
         }
 
@@ -587,7 +584,7 @@ public final class WebSocketX {
          * @return this builder
          */
         public Builder listener(final Listener<? super WebSocketSession> listener) {
-            this.listener = listener == null ? Wiring.noop() : listener;
+            this.listener = listener;
             return this;
         }
 

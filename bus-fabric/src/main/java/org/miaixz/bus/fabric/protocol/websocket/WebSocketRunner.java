@@ -110,9 +110,6 @@ final class WebSocketRunner {
                     FilterChain.compose(snapshot.context().filter(), snapshot.filter()), snapshot.observer(),
                     snapshot.listener(), snapshot.context().options().materializeMaxBytes());
             lease = null;
-            emit(ObservationMarker.WEBSOCKET_OPEN, null);
-            snapshot.listener().open(session);
-            snapshot.callback().success(session);
             Logger.info(
                     false,
                     "Fabric",
@@ -125,8 +122,6 @@ final class WebSocketRunner {
             closeUpgrade(upgraded);
             closeLease(lease);
             final RuntimeException failure = socketFailure(e);
-            emit(ObservationMarker.WEBSOCKET_FAILED, failure);
-            snapshot.callback().failure(failure);
             Logger.error(
                     false,
                     "Fabric",

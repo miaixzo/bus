@@ -50,12 +50,9 @@ import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
-import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.websocket.body.WebSocketBody;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketFrame;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader;
@@ -65,6 +62,7 @@ import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -131,26 +129,6 @@ public final class WebSocketSession implements Session {
     private static final String ACTIVITY_CLOSE_TIMEOUT = "websocket-close-timeout";
 
     /**
-     * Queue bytes observation tag.
-     */
-    private static final String EVENT_QUEUE_BYTES = "queueBytes";
-
-    /**
-     * Sent ping count observation tag.
-     */
-    private static final String EVENT_SENT_PING_COUNT = "sentPingCount";
-
-    /**
-     * Received ping count observation tag.
-     */
-    private static final String EVENT_RECEIVED_PING_COUNT = "receivedPingCount";
-
-    /**
-     * Received pong count observation tag.
-     */
-    private static final String EVENT_RECEIVED_PONG_COUNT = "receivedPongCount";
-
-    /**
      * Materialization operation name for generic payload sends.
      */
     private static final String MATERIALIZE_SEND_PAYLOAD = "WebSocketSession.send(Payload)";
@@ -206,9 +184,9 @@ public final class WebSocketSession implements Session {
     private final String dispatchKey;
 
     /**
-     * Lifecycle state.
+     * Lifecycle scope.
      */
-    private final AtomicReference<Status> state;
+    private final LifecycleScope scope;
 
     /**
      * Close callback guard.
@@ -251,11 +229,6 @@ public final class WebSocketSession implements Session {
     private final EventObserver observer;
 
     /**
-     * Lifecycle listener.
-     */
-    private final Listener<? super WebSocketSession> listener;
-
-    /**
      * Maximum bytes allowed when materializing session payloads.
      */
     private final long materializeMaxBytes;
@@ -267,7 +240,7 @@ public final class WebSocketSession implements Session {
      */
     WebSocketSession(final Address address) {
         this(address, null, null, null, null, null, null, Duration.ZERO, null, null, EventObserver.noop(),
-                Wiring.noop(), Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                null, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -282,7 +255,7 @@ public final class WebSocketSession implements Session {
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
                      final ConnectionLease lease, final Handler handler) {
         this(address, writer, reader, lease, handler, null, null, Duration.ZERO, null, null, EventObserver.noop(),
-                Wiring.noop(), Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                null, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -299,7 +272,7 @@ public final class WebSocketSession implements Session {
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
                      final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey) {
         this(address, writer, reader, lease, handler, dispatcher, dispatchKey, Duration.ZERO, null, null,
-                EventObserver.noop(), Wiring.noop(), Options.DEFAULT_MATERIALIZE_MAX_BYTES);
+                EventObserver.noop(), null, Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -354,7 +327,6 @@ public final class WebSocketSession implements Session {
         this.writer = writer;
         this.reader = reader;
         this.lease = lease;
-        this.state = new AtomicReference<>(Status.OPENED);
         this.closeNotified = new AtomicBoolean();
         this.awaitingPong = new AtomicBoolean();
         this.sentPingCount = new AtomicInteger();
@@ -368,9 +340,12 @@ public final class WebSocketSession implements Session {
         this.guard = guard;
         this.filter = filter;
         this.observer = EventObserver.safe(observer);
-        this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, this.observer);
+        this.scope = LifecycleScope.session(this, "websocket-session", listener, this.observer,
+                ObservationMarker.WEBSOCKET_OPEN, ObservationMarker.WEBSOCKET_CLOSED,
+                ObservationMarker.WEBSOCKET_FAILED);
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
+        this.scope.open(this);
         if (reader != null) {
             readerHandle.set(startReader(handler, dispatcher, dispatchKey));
         }
@@ -392,7 +367,7 @@ public final class WebSocketSession implements Session {
      * @return lifecycle state
      */
     public Status state() {
-        return state.get();
+        return scope.state();
     }
 
     /**
@@ -638,44 +613,31 @@ public final class WebSocketSession implements Session {
      */
     @Override
     public boolean cancel() {
-        while (true) {
-            final Status current = state.get();
-            if (current == Status.CANCELLED || current == Status.CLOSED || current == Status.DONE) {
-                return false;
-            }
-            if (state.compareAndSet(current, Status.CANCELLED)) {
-                Logger.info(
-                        true,
-                        "Fabric",
-                        "WebSocket session cancel started: scheme={}, host={}, port={}",
-                        address.scheme(),
-                        address.host(),
-                        address.port());
-                awaitingPong.set(false);
-                closeNative();
-                emit(ObservationMarker.WEBSOCKET_FAILED, Payload.empty(), null);
-                listener.failure(this, new StatefulException("WebSocket session was cancelled"));
-                Logger.info(
-                        false,
-                        "Fabric",
-                        "WebSocket session cancelled: scheme={}, host={}, port={}",
-                        address.scheme(),
-                        address.host(),
-                        address.port());
-                return true;
-            }
+        final Status current = scope.state();
+        if (current == Status.CANCELLED || current == Status.CLOSED || current == Status.DONE) {
+            return false;
         }
-    }
-
-    /**
-     * Returns whether the session is open.
-     *
-     * @return true when opened
-     */
-    @Override
-    public boolean opened() {
-        final Status current = state.get();
-        return current == Status.OPENED || current == Status.RUNNING;
+        final StatefulException cancelled = new StatefulException("WebSocket session was cancelled");
+        Logger.info(
+                true,
+                "Fabric",
+                "WebSocket session cancel started: scheme={}, host={}, port={}",
+                address.scheme(),
+                address.host(),
+                address.port());
+        awaitingPong.set(false);
+        closeNative();
+        final boolean changed = scope.cancel(cancelled);
+        if (changed) {
+            Logger.info(
+                    false,
+                    "Fabric",
+                    "WebSocket session cancelled: scheme={}, host={}, port={}",
+                    address.scheme(),
+                    address.host(),
+                    address.port());
+        }
+        return changed;
     }
 
     /**
@@ -772,19 +734,7 @@ public final class WebSocketSession implements Session {
      * @param cause   failure cause
      */
     private void emit(final ObservationMarker marker, final Payload payload, final Throwable cause) {
-        final FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, address.scheme())
-                .tag(Tags.HOST, address.host()).tag(Tags.PORT, Integer.toString(address.port()));
-        if (payload != null && payload.length() >= Normal.LONG_ZERO) {
-            event.tag(Tags.BYTES, Long.toString(payload.length()));
-        }
-        event.tag(EVENT_QUEUE_BYTES, Long.toString(queueSize()))
-                .tag(EVENT_SENT_PING_COUNT, Integer.toString(sentPingCount()))
-                .tag(EVENT_RECEIVED_PING_COUNT, Integer.toString(receivedPingCount()))
-                .tag(EVENT_RECEIVED_PONG_COUNT, Integer.toString(receivedPongCount()));
-        if (cause != null) {
-            event.cause(cause);
-        }
-        observer.emit(event.build());
+        scope.emit(marker, cause);
     }
 
     /**
@@ -810,7 +760,7 @@ public final class WebSocketSession implements Session {
     private void scheduleCloseTimeout() {
         final DispatchHandle next = dispatcher
                 .schedule(dispatchKey, CANCEL_AFTER_CLOSE, Activity.of(ACTIVITY_CLOSE_TIMEOUT, () -> {
-                    if (state.get() == Status.CLOSING) {
+                    if (scope.state() == Status.CLOSING) {
                         cancel();
                     }
                 }));
@@ -991,11 +941,10 @@ public final class WebSocketSession implements Session {
                 });
                 completeClose(handler);
             } catch (final RuntimeException e) {
-                if (!delivered.get() && !state.get().terminal()) {
-                    state.set(Status.FAILED);
+                if (!delivered.get() && !scope.state().terminal()) {
+                    scope.fail(e);
                     emit(ObservationMarker.WEBSOCKET_FAILED, Payload.empty(), e);
                     handler.failure(WebSocketSession.this, e);
-                    listener.failure(WebSocketSession.this, e);
                 }
             } finally {
                 closeNative();
@@ -1043,7 +992,7 @@ public final class WebSocketSession implements Session {
         try {
             if (!awaitingPong.compareAndSet(false, true)) {
                 final TimeoutException timeout = new TimeoutException("WebSocket pong timeout");
-                state.set(Status.FAILED);
+                scope.fail(timeout);
                 emit(ObservationMarker.WEBSOCKET_FAILED, Payload.empty(), timeout);
                 Logger.debug(
                         false,
@@ -1052,7 +1001,6 @@ public final class WebSocketSession implements Session {
                         address.scheme(),
                         address.host(),
                         address.port());
-                listener.failure(this, timeout);
                 closeNative();
                 return;
             }
@@ -1066,10 +1014,9 @@ public final class WebSocketSession implements Session {
             ping(ByteString.EMPTY);
         } catch (final RuntimeException e) {
             awaitingPong.set(false);
-            if (!state.get().terminal()) {
-                state.set(Status.FAILED);
+            if (!scope.state().terminal()) {
+                scope.fail(e);
                 emit(ObservationMarker.WEBSOCKET_FAILED, Payload.empty(), e);
-                listener.failure(this, e);
             }
             closeNative();
         }
@@ -1125,15 +1072,11 @@ public final class WebSocketSession implements Session {
      * @return true when this caller owns the close transition
      */
     private boolean beginClosing() {
-        while (true) {
-            final Status current = state.get();
-            if (current == Status.CLOSING || current.terminal()) {
-                return false;
-            }
-            if (state.compareAndSet(current, Status.CLOSING)) {
-                return true;
-            }
+        final Status current = scope.state();
+        if (current == Status.CLOSING || current.terminal()) {
+            return false;
         }
+        return scope.closing();
     }
 
     /**
@@ -1163,14 +1106,11 @@ public final class WebSocketSession implements Session {
      * @param handler optional session handler
      */
     private void completeClose(final Handler handler) {
-        state.set(Status.CLOSED);
         awaitingPong.set(false);
-        if (closeNotified.compareAndSet(false, true)) {
-            emit(ObservationMarker.WEBSOCKET_CLOSED, Payload.empty(), null);
+        if (scope.close(this) && closeNotified.compareAndSet(false, true)) {
             if (handler != null) {
                 handler.closed(this);
             }
-            listener.close(this);
             Logger.info(
                     false,
                     "Fabric",
@@ -1320,7 +1260,23 @@ public final class WebSocketSession implements Session {
          */
         @Override
         public boolean done() {
-            return future.isDone();
+            return state().terminal();
+        }
+
+        /**
+         * Returns lifecycle state.
+         *
+         * @return state
+         */
+        @Override
+        public Status state() {
+            if (future.isCancelled() || source.isCancelled()) {
+                return Status.CANCELLED;
+            }
+            if (future.isCompletedExceptionally()) {
+                return Status.FAILED;
+            }
+            return future.isDone() ? Status.DONE : Status.RUNNING;
         }
 
         /**

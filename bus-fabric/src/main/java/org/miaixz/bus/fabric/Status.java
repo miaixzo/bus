@@ -84,7 +84,16 @@ public enum Status {
      * @return true when closed
      */
     public boolean closed() {
-        return this == CLOSED || this == DONE;
+        return this == CLOSED;
+    }
+
+    /**
+     * Returns whether this status completed successfully.
+     *
+     * @return true when done or closed
+     */
+    public boolean successful() {
+        return this == DONE || this == CLOSED;
     }
 
     /**
@@ -121,9 +130,14 @@ public enum Status {
         if (terminal()) {
             return this == next;
         }
+        if (this == next) {
+            return true;
+        }
         return switch (this) {
-            case QUEUED -> next == RUNNING || next == OPENED || next == CANCELLED || next == DONE || next == FAILED;
-            case RUNNING -> next == OPENED || next == CLOSING || next == CANCELLED || next == DONE || next == FAILED;
+            case QUEUED -> next == RUNNING || next == OPENED || next == CANCELLED || next == DONE || next == CLOSED
+                    || next == FAILED;
+            case RUNNING -> next == OPENED || next == CLOSING || next == CANCELLED || next == DONE || next == CLOSED
+                    || next == FAILED;
             case OPENED -> next == CLOSING || next == CLOSED || next == CANCELLED || next == FAILED;
             case CLOSING -> next == CLOSED || next == CANCELLED || next == FAILED;
             default -> false;

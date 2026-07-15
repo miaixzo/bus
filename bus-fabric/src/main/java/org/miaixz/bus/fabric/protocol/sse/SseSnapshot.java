@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
@@ -76,9 +75,7 @@ record SseSnapshot(Context context, URI uri, Address address, Headers headers, T
         retry = copyRetry(require(retry, "SSE retry"));
         responseHandler = require(responseHandler, "SSE response handler");
         observer = EventObserver.safe(require(observer, "Observer"));
-        callback = Wiring.safeCallback(require(callback, "Callback"), observer);
         handler = require(handler, "SSE handler");
-        listener = Wiring.safe(require(listener, "Listener"), observer);
     }
 
     /**

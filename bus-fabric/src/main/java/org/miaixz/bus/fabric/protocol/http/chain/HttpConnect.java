@@ -64,7 +64,6 @@ import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Connector;
@@ -80,10 +79,13 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
+import org.miaixz.bus.fabric.observe.EventObserver;
+import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.registry.connection.ConnectionPool;
 import org.miaixz.bus.fabric.registry.route.Route;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
@@ -180,7 +182,7 @@ public final class HttpConnect implements HttpStage {
      * Creates a connect stage with a default socket connector.
      */
     public HttpConnect() {
-        this(ConnectionPool.create(null), TlsContext.defaults(), TlsSettings.defaults(), Wiring.noop(),
+        this(ConnectionPool.create(null), TlsContext.defaults(), TlsSettings.defaults(), null,
                 DnsResolver.system(), Dispatcher.create());
     }
 
@@ -190,7 +192,7 @@ public final class HttpConnect implements HttpStage {
      * @param pool connection pool
      */
     public HttpConnect(final ConnectionPool pool) {
-        this(pool, TlsContext.defaults(), TlsSettings.defaults(), Wiring.noop(), DnsResolver.system(),
+        this(pool, TlsContext.defaults(), TlsSettings.defaults(), null, DnsResolver.system(),
                 Dispatcher.create());
     }
 
@@ -202,7 +204,7 @@ public final class HttpConnect implements HttpStage {
      * @param tlsSettings TLS settings
      */
     public HttpConnect(final ConnectionPool pool, final TlsContext tlsContext, final TlsSettings tlsSettings) {
-        this(pool, tlsContext, tlsSettings, Wiring.noop(), DnsResolver.system(), Dispatcher.create());
+        this(pool, tlsContext, tlsSettings, null, DnsResolver.system(), Dispatcher.create());
     }
 
     /**
@@ -259,7 +261,7 @@ public final class HttpConnect implements HttpStage {
      */
     HttpConnect(final ConnectionPool pool, final Connector connector, final TlsContext tlsContext,
                 final TlsSettings tlsSettings) {
-        this(pool, connector, tlsContext, tlsSettings, Wiring.noop(), DnsResolver.system(), Dispatcher.create());
+        this(pool, connector, tlsContext, tlsSettings, null, DnsResolver.system(), Dispatcher.create());
     }
 
     /**
@@ -310,7 +312,7 @@ public final class HttpConnect implements HttpStage {
         this.connector = require(connector, "Network connector");
         this.tlsContext = tlsContext;
         this.tlsSettings = tlsSettings;
-        this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+        this.listener = safe(listener);
         this.resolver = require(resolver, "DNS resolver");
         this.dispatcher = require(dispatcher, "Dispatcher");
     }
@@ -1159,6 +1161,16 @@ public final class HttpConnect implements HttpStage {
     }
 
     /**
+     * Protects listener callbacks from escaping.
+     *
+     * @param listener listener
+     * @return safe listener
+     */
+    private static Listener<Object> safe(final Listener<Object> listener) {
+        return listener == null ? NoopListener.INSTANCE : new SafeListener(listener);
+    }
+
+    /**
      * Validates required references.
      *
      * @param value value
@@ -1689,6 +1701,16 @@ public final class HttpConnect implements HttpStage {
         }
 
         /**
+         * Returns TLS lifecycle state.
+         *
+         * @return state
+         */
+        @Override
+        public Status state() {
+            return tls.state();
+        }
+
+        /**
          * Closes TLS resources.
          */
         @Override
@@ -1752,7 +1774,7 @@ public final class HttpConnect implements HttpStage {
          */
         private SocketConnector(final Listener<Object> listener, final DnsResolver resolver,
                                 final Dispatcher dispatcher) {
-            this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+            this.listener = safe(listener);
             this.resolver = require(resolver, "DNS resolver");
             this.dispatcher = require(dispatcher, "Dispatcher");
         }
@@ -1821,7 +1843,6 @@ public final class HttpConnect implements HttpStage {
                             new InetSocketAddress(candidate, address.port()),
                             timeoutMillis(timeout.connect()));
                     final Connection connection = new SocketConnection(address, channel, listener, dispatcher);
-                    listener.open(connection);
                     return connection;
                 } catch (final SocketTimeoutException e) {
                     IoKit.closeQuietly(channel);
@@ -1871,14 +1892,9 @@ public final class HttpConnect implements HttpStage {
         private final Conduit conduit;
 
         /**
-         * State.
+         * Lifecycle scope.
          */
-        private volatile Status state = Status.OPENED;
-
-        /**
-         * Lifecycle listener.
-         */
-        private final Listener<Object> listener;
+        private final LifecycleScope scope;
 
         /**
          * Creates a socket connection.
@@ -1893,7 +1909,15 @@ public final class HttpConnect implements HttpStage {
             this.destination = Destination.of(address.protocol(), address, Options.empty());
             this.socket = require(socket, "Socket channel");
             this.conduit = new SocketConduit(socket, dispatcher);
-            this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+            this.scope = LifecycleScope.session(
+                    this,
+                    "http-socket-connection",
+                    listener,
+                    EventObserver.noop(),
+                    ObservationMarker.CONNECT_SUCCESS,
+                    null,
+                    ObservationMarker.CONNECT_FAILED);
+            this.scope.open(this);
         }
 
         /**
@@ -1923,7 +1947,7 @@ public final class HttpConnect implements HttpStage {
          */
         @Override
         public Status state() {
-            return state;
+            return scope.state();
         }
 
         /**
@@ -1955,7 +1979,7 @@ public final class HttpConnect implements HttpStage {
          */
         @Override
         public boolean healthy() {
-            return state == Status.OPENED && socket.isConnected() && socket.isOpen();
+            return scope.state() == Status.OPENED && socket.isConnected() && socket.isOpen();
         }
 
         /**
@@ -1973,10 +1997,13 @@ public final class HttpConnect implements HttpStage {
          */
         @Override
         public void close() {
-            if (state != Status.CLOSED) {
-                state = Status.CLOSED;
+            if (scope.state().terminal()) {
+                return;
+            }
+            try {
                 conduit.close();
-                listener.close(this);
+            } finally {
+                scope.close(this);
             }
         }
 
@@ -2108,6 +2135,73 @@ public final class HttpConnect implements HttpStage {
                 }
             });
         }
+
+    }
+
+    /**
+     * Safe listener wrapper.
+     *
+     * @param delegate listener delegate
+     */
+    private record SafeListener(Listener<Object> delegate) implements Listener<Object> {
+
+        /**
+         * Handles open events.
+         *
+         * @param source lifecycle source
+         */
+        @Override
+        public void open(final Object source) {
+            try {
+                delegate.open(source);
+            } catch (final RuntimeException ignored) {
+                // Listener failures must not break HTTP connection lifecycle transitions.
+            }
+        }
+
+        /**
+         * Handles close events.
+         *
+         * @param source lifecycle source
+         */
+        @Override
+        public void close(final Object source) {
+            try {
+                delegate.close(source);
+            } catch (final RuntimeException ignored) {
+                // Listener failures must not break HTTP connection lifecycle transitions.
+            }
+        }
+
+        /**
+         * Handles failure events.
+         *
+         * @param source lifecycle source
+         * @param cause  failure cause
+         */
+        @Override
+        public void failure(final Object source, final Throwable cause) {
+            try {
+                delegate.failure(source, cause);
+            } catch (final RuntimeException ignored) {
+                // Listener failures must not break HTTP connection lifecycle transitions.
+            }
+        }
+
+    }
+
+    /**
+     * Internal no-operation listener.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private enum NoopListener implements Listener<Object> {
+
+        /**
+         * Singleton no-operation listener.
+         */
+        INSTANCE
 
     }
 

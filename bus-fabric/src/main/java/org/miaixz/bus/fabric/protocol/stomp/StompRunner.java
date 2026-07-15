@@ -154,7 +154,7 @@ final class StompRunner {
             final StompCodec inbound = new StompCodec();
             final CompletableFuture<StompFrame> connected = new CompletableFuture<>();
             final AtomicReference<StompSession> session = new AtomicReference<>();
-            socket = Mediator.openWebSocket(
+            final Session webSocket = Mediator.openWebSocket(
                     snapshot.context().withFilter(null),
                     snapshot.uri(),
                     opening.headers(),
@@ -182,6 +182,7 @@ final class StompRunner {
                             connected.completeExceptionally(e);
                         }
                     });
+            socket = webSocket;
             final Session openedSocket = socket;
             final StompCodec outbound = new StompCodec();
             final Buffer output = new Buffer();
@@ -201,9 +202,6 @@ final class StompRunner {
                     FilterChain.compose(snapshot.context().filter(), snapshot.filter()), snapshot.listener(),
                     snapshot.context().options().materializeMaxBytes());
             session.set(opened);
-            emit(ObservationMarker.STOMP_OPEN, null);
-            snapshot.listener().open(opened);
-            snapshot.callback().success(opened);
             Logger.info(
                     false,
                     "Fabric",
@@ -216,8 +214,6 @@ final class StompRunner {
             if (socket != null) {
                 socket.cancel();
             }
-            emit(ObservationMarker.STOMP_FAILED, e);
-            snapshot.callback().failure(e);
             Logger.error(
                     false,
                     "Fabric",

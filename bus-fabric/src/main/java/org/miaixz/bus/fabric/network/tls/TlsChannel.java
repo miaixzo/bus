@@ -24,7 +24,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.SSLEngineResult;
 
@@ -38,11 +37,14 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.crypto.builtin.TlsHandshake;
+import org.miaixz.bus.fabric.Lifecycle;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.network.Conduit;
+import org.miaixz.bus.fabric.observe.EventObserver;
+import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
 /**
  * TLS channel wrapper over a network conduit and SSLEngine adapter.
@@ -50,7 +52,7 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class TlsChannel implements AutoCloseable {
+public final class TlsChannel implements Lifecycle, AutoCloseable {
 
     /**
      * Operation timeout seconds for internal TLS driving.
@@ -88,14 +90,9 @@ public final class TlsChannel implements AutoCloseable {
     private final NioBufferAllocator applicationBuffers;
 
     /**
-     * Lifecycle state.
+     * Lifecycle scope.
      */
-    private final AtomicReference<Status> state;
-
-    /**
-     * Lifecycle listener.
-     */
-    private final Listener<Object> listener;
+    private final LifecycleScope scope;
 
     /**
      * Runtime dispatcher for TLS operations.
@@ -129,8 +126,14 @@ public final class TlsChannel implements AutoCloseable {
                 .heap(this.engine.engine().getSession().getPacketBufferSize(), BUFFER_CACHE_SIZE);
         this.applicationBuffers = NioBufferAllocator
                 .heap(this.engine.engine().getSession().getApplicationBufferSize(), BUFFER_CACHE_SIZE);
-        this.state = new AtomicReference<>(Status.OPENED);
-        this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+        this.scope = LifecycleScope.session(
+                this,
+                "tls-channel",
+                listener,
+                EventObserver.noop(),
+                null,
+                null,
+                ObservationMarker.TLS_FAILED);
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("TLS dispatcher must not be null"));
         this.ownsDispatcher = ownsDispatcher;
         this.notified = new AtomicBoolean();
@@ -144,7 +147,7 @@ public final class TlsChannel implements AutoCloseable {
      * @return TLS channel
      */
     public static TlsChannel wrap(final Conduit conduit, final TlsEngine engine) {
-        return new TlsChannel(conduit, engine, Wiring.noop(), Dispatcher.create(), true);
+        return new TlsChannel(conduit, engine, null, Dispatcher.create(), true);
     }
 
     /**
@@ -156,7 +159,7 @@ public final class TlsChannel implements AutoCloseable {
      * @return TLS channel
      */
     public static TlsChannel wrap(final Conduit conduit, final TlsEngine engine, final Listener<Object> listener) {
-        return new TlsChannel(conduit, engine, listener == null ? Wiring.noop() : listener, Dispatcher.create(), true);
+        return new TlsChannel(conduit, engine, listener, Dispatcher.create(), true);
     }
 
     /**
@@ -173,7 +176,7 @@ public final class TlsChannel implements AutoCloseable {
             final TlsEngine engine,
             final Listener<Object> listener,
             final Dispatcher dispatcher) {
-        return new TlsChannel(conduit, engine, listener == null ? Wiring.noop() : listener,
+        return new TlsChannel(conduit, engine, listener,
                 Assert.notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null")), false);
     }
 
@@ -186,15 +189,7 @@ public final class TlsChannel implements AutoCloseable {
         if (!opened()) {
             return CompletableFuture.failedFuture(new StatefulException("TLS channel is closed"));
         }
-        return dispatcher.supply("tls:handshake", this::driveHandshake).whenComplete((handshake, cause) -> {
-            if (cause == null) {
-                if (notified.compareAndSet(false, true)) {
-                    listener.open(this);
-                }
-            } else {
-                listener.failure(this, cause);
-            }
-        });
+        return dispatcher.supply("tls:handshake", this::driveHandshake);
     }
 
     /**
@@ -260,8 +255,20 @@ public final class TlsChannel implements AutoCloseable {
      *
      * @return true when opened
      */
+    @Override
     public boolean opened() {
-        return state.get() == Status.OPENED && conduit.opened();
+        final Status current = scope.state();
+        return (current == Status.QUEUED || current == Status.OPENED) && conduit.opened();
+    }
+
+    /**
+     * Returns lifecycle state.
+     *
+     * @return state
+     */
+    @Override
+    public Status state() {
+        return scope.state();
     }
 
     /**
@@ -269,9 +276,10 @@ public final class TlsChannel implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (state.getAndSet(Status.CLOSED) == Status.CLOSED) {
+        if (scope.state().terminal()) {
             return;
         }
+        scope.closing();
         RuntimeException failure = null;
         try {
             sendCloseNotify();
@@ -301,7 +309,7 @@ public final class TlsChannel implements AutoCloseable {
         }
         packetBuffers.close();
         applicationBuffers.close();
-        listener.close(this);
+        scope.close(this);
         if (failure != null) {
             throw failure;
         }
@@ -323,10 +331,10 @@ public final class TlsChannel implements AutoCloseable {
      * @return handshake metadata
      */
     private TlsHandshake driveHandshake() {
-        final Status previous = state.getAndSet(Status.RUNNING);
-        if (previous == Status.CLOSED) {
+        if (scope.state().terminal()) {
             throw new StatefulException("TLS channel is closed");
         }
+        scope.start();
         final ByteBuffer empty = ByteBuffer.allocate(Normal._0);
         final NioBuffer inboundLease = packetBuffers.allocate();
         NioBuffer applicationLease = applicationBuffers.allocate();
@@ -378,16 +386,18 @@ public final class TlsChannel implements AutoCloseable {
                     default -> throw new StatefulException("Unexpected TLS handshake status: " + status);
                 }
             }
-            state.set(Status.OPENED);
+            if (notified.compareAndSet(false, true)) {
+                scope.open(this);
+            }
             return engine.handshake();
         } catch (final RuntimeException e) {
-            state.set(Status.FAILED);
             closeAfterFailure(e);
+            scope.fail(e);
             throw e;
         } catch (final Exception e) {
-            state.set(Status.FAILED);
             final SocketException failure = new SocketException("TLS handshake failed", e);
             closeAfterFailure(failure);
+            scope.fail(failure);
             throw failure;
         } finally {
             inboundLease.close();

@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 
@@ -70,9 +69,7 @@ record StompSnapshot(Context context, URI uri, Address address, Headers headers,
         headers = require(headers, "Headers");
         timeout = require(timeout, "Timeout");
         observer = EventObserver.safe(require(observer, "Observer"));
-        callback = Wiring.safeCallback(require(callback, "Callback"), observer);
         handler = require(handler, "STOMP handler");
-        listener = Wiring.safe(require(listener, "Listener"), observer);
     }
 
     /**

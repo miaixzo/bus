@@ -103,7 +103,6 @@ final class HttpRunner {
     HttpResponse execute(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         markExecuted();
-        emit(ObservationMarker.CALL_START, null, null);
         Logger.info(
                 true,
                 "Fabric",
@@ -122,7 +121,6 @@ final class HttpRunner {
             currentCancellation.throwIfCancelled();
             emit(ObservationMarker.HTTP_RESPONSE, response, null);
             snapshot.callback().success(response);
-            emit(ObservationMarker.CALL_SUCCESS, response, null);
             Logger.info(
                     false,
                     "Fabric",
@@ -136,7 +134,6 @@ final class HttpRunner {
             return response;
         } catch (final CancellationException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
-            emit(ObservationMarker.CALL_FAILED, null, e);
             snapshot.callback().failure(e);
             Logger.warn(
                     false,
@@ -151,7 +148,6 @@ final class HttpRunner {
             throw e;
         } catch (final RuntimeException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
-            emit(ObservationMarker.CALL_FAILED, null, e);
             snapshot.callback().failure(e);
             Logger.error(
                     false,

@@ -24,7 +24,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 
@@ -50,7 +49,6 @@ record HttpSnapshot(Context context, HttpRequest request, Callback<HttpResponse>
         context = require(context, "Context");
         request = require(request, "HTTP request");
         observer = EventObserver.safe(require(observer, "Observer"));
-        callback = Wiring.safeCallback(require(callback, "Callback"), observer);
     }
 
     /**

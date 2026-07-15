@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
@@ -99,12 +98,12 @@ public final class SocketLease {
                 pool,
                 destination,
                 Timeout.of(Duration.ofSeconds(Normal._10)),
-                Wiring.noop(),
+                null,
                 DnsResolver.system(),
                 FrameCodec.line(),
                 null,
                 Map.of(),
-                Wiring.noop());
+                null);
     }
 
     /**
@@ -173,13 +172,12 @@ public final class SocketLease {
         final ConnectionPool currentPool = require(pool, "Connection pool");
         final Destination currentDestination = require(destination, "Connection destination");
         final Timeout currentTimeout = require(timeout, "Timeout");
-        final Listener<Object> currentListener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+        final Listener<Object> currentListener = listener;
         final DnsResolver currentResolver = require(resolver, "DNS resolver");
         final FrameCodec currentCodec = require(frameCodec, "Frame codec");
         final SocketOptions socketOptions = SocketOptions.from(currentDestination.options());
         final Map<String, Object> currentAttributes = attributes(socketOptions, attributes);
-        final Listener<? super SocketSession> currentSessionListener = sessionListener == null ? Wiring.noop()
-                : sessionListener;
+        final Listener<? super SocketSession> currentSessionListener = sessionListener;
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         final ConnectionLease lease = currentPool.acquire(
                 currentDestination,
@@ -274,14 +272,13 @@ public final class SocketLease {
         final ConnectionPool currentPool = require(pool, "Connection pool");
         final Destination currentDestination = require(destination, "Connection destination");
         final Timeout currentTimeout = require(timeout, "Timeout");
-        final Listener<Object> currentListener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+        final Listener<Object> currentListener = listener;
         final DnsResolver currentResolver = require(resolver, "DNS resolver");
         final Dispatcher currentDispatcher = require(dispatcher, "Dispatcher");
         final FrameCodec currentCodec = require(frameCodec, "Frame codec");
         final SocketOptions socketOptions = SocketOptions.from(currentDestination.options());
         final Map<String, Object> currentAttributes = attributes(socketOptions, attributes);
-        final Listener<? super SocketSession> currentSessionListener = sessionListener == null ? Wiring.noop()
-                : sessionListener;
+        final Listener<? super SocketSession> currentSessionListener = sessionListener;
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         final ConnectionLease lease = currentPool.acquire(
                 currentDestination,

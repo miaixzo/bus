@@ -44,7 +44,6 @@ import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
@@ -82,13 +81,10 @@ public final class SseX {
     private SseX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        final Listener<? super SseSession> currentListener = Wiring
-                .safe(Wiring.compose(current.listener(), builder.listener), currentObserver);
         this.snapshot = new SseSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.retry, builder.lastEventId, builder.autoReconnect, builder.responseHandler,
                 builder.guard, builder.filter, currentObserver,
-                builder.callback == null ? Wiring.callback() : builder.callback,
-                builder.handler == null ? noopHandler() : builder.handler, currentListener);
+                builder.callback, builder.handler == null ? noopHandler() : builder.handler, builder.listener);
         this.runner = new SseRunner(snapshot);
     }
 
@@ -386,9 +382,9 @@ public final class SseX {
             this.responseHandler = (status, headers) -> {
             };
             this.observer = EventObserver.noop();
-            this.callback = Wiring.callback();
+            this.callback = null;
             this.handler = noopHandler();
-            this.listener = Wiring.noop();
+            this.listener = null;
             this.openHandler = session -> {
             };
             this.errorHandler = cause -> {
@@ -617,7 +613,7 @@ public final class SseX {
          * @return this builder
          */
         public Builder callback(final Callback<SseSession> callback) {
-            this.callback = callback == null ? Wiring.callback() : callback;
+            this.callback = callback;
             return this;
         }
 
@@ -628,7 +624,7 @@ public final class SseX {
          * @return this builder
          */
         public Builder listener(final Listener<? super SseSession> listener) {
-            this.listener = listener == null ? Wiring.noop() : listener;
+            this.listener = listener;
             return this;
         }
 

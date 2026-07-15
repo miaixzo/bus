@@ -21,13 +21,15 @@ package org.miaixz.bus.fabric;
 
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.exception.ValidateException;
+
 /**
  * Long-lived fabric session contract for opened protocol connections.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface Session {
+public interface Session extends Lifecycle {
 
     /**
      * Returns the session address.
@@ -35,28 +37,6 @@ public interface Session {
      * @return session address
      */
     Address address();
-
-    /**
-     * Returns the lifecycle state.
-     *
-     * @return lifecycle state
-     */
-    Status state();
-
-    /**
-     * Returns whether the session is opened.
-     *
-     * @return true when opened
-     */
-    boolean opened();
-
-    /**
-     * Sends a payload through the session.
-     *
-     * @param payload payload
-     * @return send call
-     */
-    Call<Void> send(Payload payload);
 
     /**
      * Closes the session normally.
@@ -78,5 +58,18 @@ public interface Session {
      * @return immutable attributes snapshot
      */
     Map<String, Object> attributes();
+
+    /**
+     * Sends a payload through this session when the protocol supports outbound messages.
+     *
+     * @param payload payload
+     * @return send call
+     */
+    default Call<Void> send(final Payload payload) {
+        if (payload == null) {
+            throw new ValidateException("Payload must not be null");
+        }
+        return Call.unsupported("Session does not support send");
+    }
 
 }

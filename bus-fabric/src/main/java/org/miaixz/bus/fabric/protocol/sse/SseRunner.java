@@ -141,9 +141,6 @@ final class SseRunner {
             }, snapshot.listener());
             holder.set(session);
             handle.set(submitRead(reader, sessionRetry, stream, holder, eventId, handle, Normal._0));
-            emit(ObservationMarker.SSE_OPEN, null);
-            snapshot.listener().open(session);
-            snapshot.callback().success(session);
             Logger.info(
                     false,
                     "Fabric",
@@ -158,8 +155,6 @@ final class SseRunner {
             if (reader == null) {
                 closeResponse(response);
             }
-            emit(ObservationMarker.SSE_FAILED, e);
-            snapshot.callback().failure(e);
             Logger.error(
                     false,
                     "Fabric",
@@ -322,7 +317,6 @@ final class SseRunner {
                 stream.complete(null);
             }
         } catch (final RuntimeException e) {
-            emit(ObservationMarker.SSE_FAILED, e);
             Logger.warn(
                     false,
                     "Fabric",
@@ -333,7 +327,6 @@ final class SseRunner {
                     attempt,
                     e.getClass().getSimpleName());
             if (session == null || session.opened()) {
-                snapshot.callback().failure(e);
                 closeReader(reader);
                 if (snapshot.autoReconnect()) {
                     scheduleReconnect(retry, stream, holder, eventId, handle, attempt + 1);
@@ -379,12 +372,8 @@ final class SseRunner {
         try {
             snapshot.handler().accept(filteredEvent);
         } catch (final RuntimeException e) {
-            emit(ObservationMarker.SSE_FAILED, e, filteredPayload);
-            try {
-                snapshot.callback().failure(e);
-            } catch (final RuntimeException ignored) {
-                // Event handler isolation must not turn listener failures into reconnect loops.
-            }
+            Logger.warn(false, "Fabric", e, "SSE event handler failed: host={}, port={}, exception={}",
+                    snapshot.address().host(), snapshot.address().port(), e.getClass().getSimpleName());
         }
     }
 
@@ -469,8 +458,6 @@ final class SseRunner {
                     snapshot.address().port(),
                     attempt);
         } catch (final RuntimeException e) {
-            emit(ObservationMarker.SSE_FAILED, e);
-            snapshot.callback().failure(e);
             Logger.warn(
                     false,
                     "Fabric",

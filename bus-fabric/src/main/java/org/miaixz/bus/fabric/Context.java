@@ -80,7 +80,7 @@ public final class Context {
         this.directory = require(directory, "Directory");
         this.resolver = require(resolver, "DNS resolver");
         this.resolver.observer(this.reactor.observer());
-        this.listener = Wiring.safe(require(listener, "Lifecycle listener"), reactor.observer());
+        this.listener = listener;
         this.filter = filter;
     }
 
@@ -110,7 +110,7 @@ public final class Context {
     public static Builder builder() {
         final Directory directory = Directory.create();
         final Reactor reactor = Reactor.builder().directory(directory).build();
-        return new Builder(reactor, Options.empty(), directory, DnsResolver.system(), Wiring.noop(), null);
+        return new Builder(reactor, Options.empty(), directory, DnsResolver.system(), null, null);
     }
 
     /**
@@ -256,7 +256,7 @@ public final class Context {
             this.options = require(options, "Options");
             this.directory = require(directory, "Directory");
             this.resolver = require(resolver, "DNS resolver");
-            this.listener = require(listener, "Lifecycle listener");
+            this.listener = listener;
             this.filter = filter;
         }
 
@@ -311,7 +311,7 @@ public final class Context {
          * @return this builder
          */
         public Builder listener(final Listener<Object> listener) {
-            this.listener = require(listener, "Lifecycle listener");
+            this.listener = listener;
             return this;
         }
 

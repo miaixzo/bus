@@ -129,9 +129,6 @@ final class SocketRunner {
                 case KCP -> openKcp(opening);
                 default -> throw new ProtocolException("Socket exchange does not support transport: " + transport);
             };
-            emit(ObservationMarker.SOCKET_OPEN, null);
-            snapshot.listener().open(session);
-            snapshot.callback().success(session);
             Logger.info(
                     false,
                     "Fabric",
@@ -143,8 +140,6 @@ final class SocketRunner {
                     snapshot.pooled());
             return session;
         } catch (final RuntimeException e) {
-            emit(ObservationMarker.SOCKET_FAILED, e);
-            snapshot.callback().failure(e);
             Logger.error(
                     false,
                     "Fabric",
@@ -554,7 +549,7 @@ final class SocketRunner {
          */
         @Override
         public org.miaixz.bus.fabric.Status state() {
-            return raw.state();
+            return tls.state();
         }
 
         /**

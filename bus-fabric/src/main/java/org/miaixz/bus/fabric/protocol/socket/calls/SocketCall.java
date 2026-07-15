@@ -19,64 +19,33 @@
 */
 package org.miaixz.bus.fabric.protocol.socket.calls;
 
-import java.time.Duration;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.observe.EventObserver;
+import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.socket.SocketSession;
 import org.miaixz.bus.fabric.protocol.socket.SocketX;
-import org.miaixz.bus.fabric.runtime.Activity;
-import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
-import org.miaixz.bus.logger.Logger;
 
 /**
- * Single-use socket open call.
+ * Single-use socket open call backed by the shared protocol call lifecycle.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class SocketCall implements Call<SocketSession> {
+public final class SocketCall extends MonoCall<SocketSession> {
 
     /**
-     * Dispatcher activity name for asynchronous socket opens.
+     * Activity name for asynchronous socket opens.
      */
     private static final String ACTIVITY_SOCKET_OPEN = "socket-open";
 
     /**
-     * Exchange.
+     * Source exchange.
      */
     private final SocketX exchange;
-
-    /**
-     * Optional dispatcher for default asynchronous submission.
-     */
-    private final Dispatcher dispatcher;
-
-    /**
-     * Future.
-     */
-    private final CompletableFuture<SocketSession> future;
-
-    /**
-     * State.
-     */
-    private final AtomicReference<Status> state;
-
-    /**
-     * Dispatch handle.
-     */
-    private final AtomicReference<DispatchHandle> handle;
 
     /**
      * Opened session.
@@ -99,11 +68,8 @@ public final class SocketCall implements Call<SocketSession> {
      * @param dispatcher dispatcher used by enqueue()
      */
     private SocketCall(final SocketX exchange, final Dispatcher dispatcher) {
+        super(ACTIVITY_SOCKET_OPEN, dispatcher, EventObserver.noop());
         this.exchange = require(exchange, "Socket exchange");
-        this.dispatcher = dispatcher;
-        this.future = new CompletableFuture<>();
-        this.state = new AtomicReference<>(Status.QUEUED);
-        this.handle = new AtomicReference<>();
         this.session = new AtomicReference<>();
     }
 
@@ -134,224 +100,52 @@ public final class SocketCall implements Call<SocketSession> {
      * @return session
      */
     public SocketSession open() {
-        if (!state.compareAndSet(Status.QUEUED, Status.RUNNING)) {
-            throw new StatefulException("Socket call can only be opened once");
-        }
-        Logger.info(true, "Fabric", "Socket call started: key={}", exchange.dispatchKey());
-        try {
-            final SocketSession opened = exchange.open();
-            session.set(opened);
-            state.set(Status.DONE);
-            future.complete(opened);
-            Logger.info(false, "Fabric", "Socket call completed: key={}", exchange.dispatchKey());
-            return opened;
-        } catch (final RuntimeException e) {
-            state.set(Status.FAILED);
-            future.completeExceptionally(e);
-            Logger.error(
-                    false,
-                    "Fabric",
-                    e,
-                    "Socket call failed: key={}, exception={}",
-                    exchange.dispatchKey(),
-                    e.getClass().getSimpleName());
-            throw e;
-        }
+        return execute();
     }
 
     /**
-     * Executes synchronously.
+     * Performs the socket open operation.
      *
-     * @return session
+     * @return socket session
      */
     @Override
-    public SocketSession execute() {
-        return open();
+    protected SocketSession perform() {
+        final SocketSession opened = exchange.open();
+        session.set(opened);
+        return opened;
     }
 
     /**
-     * Enqueues this call to its configured dispatcher.
-     *
-     * @return this call
+     * Cancels the opened session when present.
      */
     @Override
-    public Call<SocketSession> enqueue() {
-        return enqueue(require(dispatcher, "Dispatcher"));
+    protected void cancelRunning() {
+        final SocketSession current = session.get();
+        if (current != null) {
+            current.cancel();
+        }
     }
 
     /**
-     * Enqueues this call to a dispatcher.
+     * Cancels a session produced after cancellation.
      *
-     * @param dispatcher dispatcher
-     * @return this call
-     */
-    public Call<SocketSession> enqueue(final Dispatcher dispatcher) {
-        final Dispatcher currentDispatcher = require(dispatcher, "Dispatcher");
-        if (handle.get() != null) {
-            return this;
-        }
-        final Activity activity = Activity.of(ACTIVITY_SOCKET_OPEN, () -> {
-            try {
-                open();
-            } catch (final RuntimeException e) {
-                future.completeExceptionally(e);
-                throw e;
-            }
-        });
-        final DispatchHandle enqueued = currentDispatcher.enqueue(exchange.dispatchKey(), activity);
-        if (!handle.compareAndSet(null, enqueued)) {
-            enqueued.cancel();
-        } else {
-            Logger.info(false, "Fabric", "Socket call enqueued: key={}", exchange.dispatchKey());
-        }
-        return this;
-    }
-
-    /**
-     * Waits for this call to complete.
+     * @param value produced session
      */
     @Override
-    public SocketSession await() {
-        startIfNeeded();
-        return awaitFuture(future);
+    protected void closeAfterCancelled(final SocketSession value) {
+        if (value != null) {
+            value.cancel();
+        }
     }
 
     /**
-     * Waits for this call to complete within a timeout.
+     * Returns the dispatch key.
      *
-     * @param timeout timeout
-     * @return session
+     * @return dispatch key
      */
     @Override
-    public SocketSession await(final Duration timeout) {
-        validateTimeout(timeout);
-        startIfNeeded();
-        return awaitFuture(future, timeout);
-    }
-
-    /**
-     * Cancels this call.
-     *
-     * @return true when state changed
-     */
-    @Override
-    public boolean cancel() {
-        while (true) {
-            final Status current = state.get();
-            if (current == Status.CANCELLED || current == Status.DONE || current == Status.FAILED) {
-                return false;
-            }
-            if (state.compareAndSet(current, Status.CANCELLED)) {
-                final DispatchHandle currentHandle = handle.get();
-                if (currentHandle != null) {
-                    currentHandle.cancel();
-                }
-                final SocketSession currentSession = session.get();
-                if (currentSession != null) {
-                    currentSession.cancel();
-                }
-                future.cancel(false);
-                Logger.info(false, "Fabric", "Socket call cancelled: key={}", exchange.dispatchKey());
-                return true;
-            }
-        }
-    }
-
-    /**
-     * Returns whether cancelled.
-     *
-     * @return true when cancelled
-     */
-    @Override
-    public boolean cancelled() {
-        final DispatchHandle current = handle.get();
-        return state.get() == Status.CANCELLED || future.isCancelled() || current != null && current.cancelled();
-    }
-
-    /**
-     * Returns whether done.
-     *
-     * @return true when done
-     */
-    @Override
-    public boolean done() {
-        return future.isDone();
-    }
-
-    /**
-     * Starts the call when await() is used as the first terminal operation.
-     */
-    private void startIfNeeded() {
-        if (state.get() != Status.QUEUED || handle.get() != null) {
-            return;
-        }
-        if (dispatcher == null) {
-            execute();
-        } else {
-            enqueue();
-        }
-    }
-
-    /**
-     * Waits for a future to complete.
-     *
-     * @param future future
-     * @return completed value
-     */
-    private static SocketSession awaitFuture(final CompletableFuture<SocketSession> future) {
-        try {
-            return future.get();
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new InternalException("Interrupted while waiting for socket call", e);
-        } catch (final ExecutionException e) {
-            throw new InternalException("Socket call failed", e.getCause());
-        } catch (final CancellationException e) {
-            throw new InternalException("Socket call was cancelled", e);
-        }
-    }
-
-    /**
-     * Waits for a future to complete within a timeout.
-     *
-     * @param future  future
-     * @param timeout timeout
-     * @return completed value
-     */
-    private SocketSession awaitFuture(final CompletableFuture<SocketSession> future, final Duration timeout) {
-        if (timeout.isZero()) {
-            if (!future.isDone()) {
-                cancel();
-                throw new TimeoutException("Socket call timed out");
-            }
-            return awaitFuture(future);
-        }
-        try {
-            return future.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new InternalException("Interrupted while waiting for socket call", e);
-        } catch (final ExecutionException e) {
-            throw new InternalException("Socket call failed", e.getCause());
-        } catch (final CancellationException e) {
-            throw new InternalException("Socket call was cancelled", e);
-        } catch (final java.util.concurrent.TimeoutException e) {
-            cancel();
-            throw new TimeoutException("Socket call timed out", e);
-        } catch (final ArithmeticException e) {
-            throw new ValidateException("Timeout is too large");
-        }
-    }
-
-    /**
-     * Validates timeout.
-     *
-     * @param timeout timeout
-     */
-    private static void validateTimeout(final Duration timeout) {
-        final Duration checked = Assert
-                .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
-        Assert.isTrue(!checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
+    protected String dispatchKey() {
+        return exchange.dispatchKey();
     }
 
     /**

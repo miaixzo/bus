@@ -50,11 +50,14 @@ import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Wiring;
+import org.miaixz.bus.fabric.observe.EventObserver;
+import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * TCP server with a fixed backlog and handler-based accept loop.
@@ -125,7 +128,7 @@ public final class TcpServer implements AutoCloseable {
      * @param address listen address
      */
     public TcpServer(final Address address) {
-        this(address, Wiring.noop(), Dispatcher.create(), true);
+        this(address, null, Dispatcher.create(), true);
     }
 
     /**
@@ -190,7 +193,7 @@ public final class TcpServer implements AutoCloseable {
         this.sessions = new ConcurrentLinkedQueue<>();
         this.running = new AtomicBoolean();
         this.closed = new AtomicBoolean();
-        this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+        this.listener = listener == null ? NoopListener.INSTANCE : listener;
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("TCP dispatcher must not be null"));
         this.ownsDispatcher = ownsDispatcher;
         this.backlog = (options == null ? SocketOptions.defaults() : options).backlog();
@@ -230,16 +233,16 @@ public final class TcpServer implements AutoCloseable {
                 acceptHandle = dispatcher.enqueue(
                         "tcp-server:" + address.host() + ":" + address.port(),
                         Activity.of("tcp-accept", this::acceptLoop));
-                listener.open(this);
+                notifyOpen(this);
             } catch (final IOException e) {
                 running.set(false);
                 IoKit.closeQuietly(opened);
-                listener.failure(this, e);
+                notifyFailure(this, e);
                 throw new SocketException("Unable to start TCP server", e);
             } catch (final RuntimeException e) {
                 running.set(false);
                 IoKit.closeQuietly(opened);
-                listener.failure(this, e);
+                notifyFailure(this, e);
                 throw new InternalException("Unable to start TCP server", e);
             }
         }
@@ -285,7 +288,7 @@ public final class TcpServer implements AutoCloseable {
             if (ownsDispatcher) {
                 dispatcher.close();
             }
-            listener.close(this);
+            notifyClose(this);
         }
     }
 
@@ -303,7 +306,7 @@ public final class TcpServer implements AutoCloseable {
                 handle(socket);
             } catch (final IOException e) {
                 if (running.get()) {
-                    listener.failure(this, e);
+                    notifyFailure(this, e);
                     throw new SocketException("TCP accept failed", e);
                 }
                 return;
@@ -324,13 +327,11 @@ public final class TcpServer implements AutoCloseable {
         }
         final TcpSession session = new TcpSession(address, socket, listener, dispatcher);
         sessions.add(session);
-        listener.open(session);
         final Message message = Message.of(Protocol.TCP, address, Headers.empty(), Payload.empty(), socket);
         try {
             current.message(session, message);
         } catch (final RuntimeException e) {
-            listener.failure(session, e);
-            session.close();
+            session.fail(e);
             throw e;
         }
     }
@@ -360,6 +361,56 @@ public final class TcpServer implements AutoCloseable {
     }
 
     /**
+     * Notifies listener open without allowing listener failures to escape.
+     *
+     * @param source lifecycle source
+     */
+    private void notifyOpen(final Object source) {
+        try {
+            listener.open(source);
+        } catch (final RuntimeException e) {
+            listenerFailed("open", e);
+        }
+    }
+
+    /**
+     * Notifies listener close without allowing listener failures to escape.
+     *
+     * @param source lifecycle source
+     */
+    private void notifyClose(final Object source) {
+        try {
+            listener.close(source);
+        } catch (final RuntimeException e) {
+            listenerFailed("close", e);
+        }
+    }
+
+    /**
+     * Notifies listener failure without allowing listener failures to escape.
+     *
+     * @param source lifecycle source
+     * @param cause  failure cause
+     */
+    private void notifyFailure(final Object source, final Throwable cause) {
+        try {
+            listener.failure(source, cause);
+        } catch (final RuntimeException e) {
+            listenerFailed("failure", e);
+        }
+    }
+
+    /**
+     * Logs listener callback failures.
+     *
+     * @param action listener action
+     * @param cause  listener failure
+     */
+    private void listenerFailed(final String action, final RuntimeException cause) {
+        Logger.warn(false, "Fabric", cause, "TCP listener {} callback failed", action);
+    }
+
+    /**
      * Accepted TCP session.
      */
     private static final class TcpSession implements Session {
@@ -375,19 +426,14 @@ public final class TcpServer implements AutoCloseable {
         private final SocketChannel socket;
 
         /**
-         * Lifecycle listener.
-         */
-        private final Listener<Object> listener;
-
-        /**
          * Runtime dispatcher.
          */
         private final Dispatcher dispatcher;
 
         /**
-         * State.
+         * Lifecycle scope.
          */
-        private volatile Status state = Status.OPENED;
+        private final LifecycleScope scope;
 
         /**
          * Creates a session.
@@ -400,9 +446,18 @@ public final class TcpServer implements AutoCloseable {
         private TcpSession(final Address address, final SocketChannel socket, final Listener<Object> listener,
                            final Dispatcher dispatcher) {
             this.address = address;
-            this.socket = socket;
-            this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+            this.socket = Assert.notNull(socket, () -> new ValidateException("TCP session socket must not be null"));
             this.dispatcher = dispatcher;
+            this.scope = LifecycleScope.session(
+                    this,
+                    "tcp-session",
+                    listener,
+                    EventObserver.noop(),
+                    ObservationMarker.SOCKET_OPEN,
+                    ObservationMarker.SOCKET_CLOSED,
+                    ObservationMarker.SOCKET_FAILED);
+            this.scope.own(() -> IoKit.closeQuietly(this.socket));
+            this.scope.open(this);
         }
 
         /**
@@ -422,7 +477,7 @@ public final class TcpServer implements AutoCloseable {
          */
         @Override
         public Status state() {
-            return state;
+            return scope.state();
         }
 
         /**
@@ -432,7 +487,7 @@ public final class TcpServer implements AutoCloseable {
          */
         @Override
         public boolean opened() {
-            return state == Status.OPENED && socket.isOpen();
+            return scope.state() == Status.OPENED && socket.isOpen();
         }
 
         /**
@@ -462,13 +517,7 @@ public final class TcpServer implements AutoCloseable {
          */
         @Override
         public boolean close() {
-            if (state != Status.CLOSED) {
-                IoKit.closeQuietly(socket);
-                state = Status.CLOSED;
-                listener.close(this);
-                return true;
-            }
-            return false;
+            return scope.close(this);
         }
 
         /**
@@ -478,13 +527,17 @@ public final class TcpServer implements AutoCloseable {
          */
         @Override
         public boolean cancel() {
-            if (state != Status.CANCELLED) {
-                IoKit.closeQuietly(socket);
-                state = Status.CANCELLED;
-                listener.failure(this, new StatefulException("TCP session was cancelled"));
-                return true;
-            }
-            return false;
+            return scope.cancel(new StatefulException("TCP session was cancelled"));
+        }
+
+        /**
+         * Fails this session.
+         *
+         * @param cause failure cause
+         * @return true when failed
+         */
+        private boolean fail(final Throwable cause) {
+            return scope.fail(cause);
         }
 
         /**
@@ -623,6 +676,22 @@ public final class TcpServer implements AutoCloseable {
         }
 
         /**
+         * Returns lifecycle state.
+         *
+         * @return state
+         */
+        @Override
+        public Status state() {
+            if (future.isCancelled()) {
+                return Status.CANCELLED;
+            }
+            if (future.isCompletedExceptionally()) {
+                return Status.FAILED;
+            }
+            return future.isDone() ? Status.DONE : Status.RUNNING;
+        }
+
+        /**
          * Validates timeout.
          *
          * @param timeout timeout
@@ -634,6 +703,21 @@ public final class TcpServer implements AutoCloseable {
                     checkedTimeout.isNegative(),
                     () -> new ValidateException("Timeout must be non-null and non-negative"));
         }
+
+    }
+
+    /**
+     * Internal no-operation listener.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private enum NoopListener implements Listener<Object> {
+
+        /**
+         * Singleton no-operation listener.
+         */
+        INSTANCE
 
     }
 

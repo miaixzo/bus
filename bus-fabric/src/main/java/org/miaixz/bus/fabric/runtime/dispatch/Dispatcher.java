@@ -26,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -36,7 +35,9 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
 /**
  * Dispatcher contract for asynchronous activities.
@@ -163,9 +164,9 @@ final class DefaultDispatcher implements Dispatcher {
     private final ScheduledExecutorService scheduler;
 
     /**
-     * Lifecycle state.
+     * Dispatcher lifecycle scope.
      */
-    private final AtomicReference<Status> state;
+    private final LifecycleScope scope;
 
     /**
      * Idle callbacks awaiting an empty queue.
@@ -189,9 +190,19 @@ final class DefaultDispatcher implements Dispatcher {
         this.queue = require(queue, "Dispatch queue");
         this.worker = require(worker, "Dispatch worker");
         this.scheduler = require(scheduler, "Dispatch scheduler");
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.scope = LifecycleScope.resource(this, "dispatcher", null, EventObserver.noop());
+        this.scope.open(this);
         this.idleCallbacks = new ArrayList<>();
         this.delayed = new ArrayList<>();
+    }
+
+    /**
+     * Returns the dispatcher lifecycle state.
+     *
+     * @return lifecycle state
+     */
+    public Status state() {
+        return scope.state();
     }
 
     /**
@@ -378,8 +389,7 @@ final class DefaultDispatcher implements Dispatcher {
      */
     @Override
     public void close() {
-        if (!state.compareAndSet(Status.OPENED, Status.CLOSING)
-                && !state.compareAndSet(Status.RUNNING, Status.CLOSING)) {
+        if (!scope.closing()) {
             return;
         }
         RuntimeException failure = null;
@@ -406,7 +416,7 @@ final class DefaultDispatcher implements Dispatcher {
                 failure = e;
             }
         }
-        state.set(Status.CLOSED);
+        scope.close(this);
         drainIdleCallbacks();
         if (failure != null) {
             throw new InternalException("Unable to close dispatcher", failure);
@@ -643,7 +653,7 @@ final class DefaultDispatcher implements Dispatcher {
      * Ensures this dispatcher is open.
      */
     private void ensureOpen() {
-        if (state.get() != Status.OPENED) {
+        if (scope.state() != Status.OPENED) {
             throw new StatefulException("Dispatcher is closed");
         }
     }

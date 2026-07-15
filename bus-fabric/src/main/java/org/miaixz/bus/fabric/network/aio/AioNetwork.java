@@ -42,15 +42,17 @@ import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
 import org.miaixz.bus.fabric.network.dns.DnsResolver;
 import org.miaixz.bus.fabric.network.dns.DnsResult;
 import org.miaixz.bus.fabric.network.tcp.TcpServer;
+import org.miaixz.bus.fabric.observe.EventObserver;
+import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
 /**
  * Default AIO network adapter for client connections and TCP servers.
@@ -124,7 +126,7 @@ public final class AioNetwork implements AutoCloseable {
         this.resolver = Assert.notNull(resolver, () -> new ValidateException("DNS resolver must not be null"));
         this.managed = new ConcurrentLinkedDeque<>();
         this.closed = new AtomicBoolean();
-        this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, null);
+        this.listener = safe(listener);
         this.socketOptions = socketOptions == null ? SocketOptions.defaults() : socketOptions;
     }
 
@@ -148,7 +150,7 @@ public final class AioNetwork implements AutoCloseable {
         try {
             final SocketOptions current = socketOptions == null ? SocketOptions.defaults() : socketOptions;
             group = AioGroup.create(current.threadNum());
-            return new AioNetwork(group, AioProvider.system(), DnsResolver.system(), Wiring.noop(), current);
+            return new AioNetwork(group, AioProvider.system(), DnsResolver.system(), null, current);
         } catch (final RuntimeException e) {
             if (group != null) {
                 group.shutdown();
@@ -179,8 +181,7 @@ public final class AioNetwork implements AutoCloseable {
         try {
             final SocketOptions current = socketOptions == null ? SocketOptions.defaults() : socketOptions;
             group = AioGroup.create(current.threadNum());
-            return new AioNetwork(group, AioProvider.system(), DnsResolver.system(),
-                    listener == null ? Wiring.noop() : listener, current);
+            return new AioNetwork(group, AioProvider.system(), DnsResolver.system(), listener, current);
         } catch (final RuntimeException e) {
             if (group != null) {
                 group.shutdown();
@@ -218,7 +219,7 @@ public final class AioNetwork implements AutoCloseable {
             group = AioGroup.create(current.threadNum());
             return new AioNetwork(group, AioProvider.system(),
                     Assert.notNull(resolver, () -> new ValidateException("DNS resolver must not be null")),
-                    listener == null ? Wiring.noop() : listener, current);
+                    listener, current);
         } catch (final RuntimeException e) {
             if (group != null) {
                 group.shutdown();
@@ -264,7 +265,7 @@ public final class AioNetwork implements AutoCloseable {
                     Assert.notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null")));
             return new AioNetwork(group, AioProvider.system(),
                     Assert.notNull(resolver, () -> new ValidateException("DNS resolver must not be null")),
-                    listener == null ? Wiring.noop() : listener, current);
+                    listener, current);
         } catch (final RuntimeException e) {
             if (group != null) {
                 group.shutdown();
@@ -299,7 +300,7 @@ public final class AioNetwork implements AutoCloseable {
      * @return connection future
      */
     public CompletableFuture<Connection> connect(final Address address, final Timeout timeout) {
-        return connect(address, timeout, Wiring.noop());
+        return connect(address, timeout, null);
     }
 
     /**
@@ -316,7 +317,7 @@ public final class AioNetwork implements AutoCloseable {
             final Listener<Object> listener) {
         final Address checkedAddress = Assert.notNull(address, () -> new ValidateException("Address must not be null"));
         final Timeout checkedTimeout = Assert.notNull(timeout, () -> new ValidateException("Timeout must not be null"));
-        final Listener<Object> current = Wiring.safe(Wiring.compose(this.listener, listener), null);
+        final Listener<Object> current = compose(this.listener, listener);
         final DnsResult result = resolver.resolve(checkedAddress.host());
         if (result.empty()) {
             return CompletableFuture
@@ -374,7 +375,6 @@ public final class AioNetwork implements AutoCloseable {
             }
             final Connection connection = new AioConnection(
                     Destination.of(address.protocol(), address, socketOptions.toOptions()), channel, listener);
-            listener.open(connection);
             opened.complete(connection);
         });
         return opened;
@@ -388,7 +388,7 @@ public final class AioNetwork implements AutoCloseable {
      * @return server
      */
     public TcpServer server(final Address address, final Handler handler) {
-        return server(address, handler, Wiring.noop());
+        return server(address, handler, null);
     }
 
     /**
@@ -404,8 +404,8 @@ public final class AioNetwork implements AutoCloseable {
                 .notNull(address, () -> new ValidateException("Server address must not be null"));
         final Handler checkedHandler = Assert
                 .notNull(handler, () -> new ValidateException("Server handler must not be null"));
-        final TcpServer server = provider
-                .openServer(checkedAddress, group, Wiring.compose(this.listener, listener), socketOptions);
+        final TcpServer server = provider.openServer(checkedAddress, group, compose(this.listener, listener),
+                socketOptions);
         server.accept(checkedHandler);
         managed.add(server);
         return server;
@@ -439,6 +439,31 @@ public final class AioNetwork implements AutoCloseable {
     }
 
     /**
+     * Composes the network listener with a per-operation listener.
+     *
+     * @param first  first listener
+     * @param second second listener
+     * @return safe composed listener
+     */
+    private static Listener<Object> compose(final Listener<Object> first, final Listener<Object> second) {
+        final Listener<Object> left = first == null ? NoopListener.INSTANCE : first;
+        if (second == null) {
+            return left;
+        }
+        return safe(new CompositeListener(left, second));
+    }
+
+    /**
+     * Protects listener callbacks from escaping.
+     *
+     * @param listener listener
+     * @return safe listener
+     */
+    private static Listener<Object> safe(final Listener<Object> listener) {
+        return listener == null ? NoopListener.INSTANCE : new SafeListener(listener);
+    }
+
+    /**
      * AIO network connection.
      */
     private static final class AioConnection implements Connection {
@@ -459,14 +484,9 @@ public final class AioNetwork implements AutoCloseable {
         private final Conduit conduit;
 
         /**
-         * Lifecycle listener.
+         * Lifecycle scope.
          */
-        private final Listener<Object> listener;
-
-        /**
-         * Lifecycle state.
-         */
-        private volatile Status state = Status.OPENED;
+        private final LifecycleScope scope;
 
         /**
          * Creates a connection.
@@ -480,7 +500,15 @@ public final class AioNetwork implements AutoCloseable {
                     .notNull(destination, () -> new ValidateException("Connection destination must not be null"));
             this.aio = Assert.notNull(aio, () -> new ValidateException("AIO channel must not be null"));
             this.conduit = new AioConduit(this.aio);
-            this.listener = Wiring.safe(listener, null);
+            this.scope = LifecycleScope.session(
+                    this,
+                    "aio-connection",
+                    listener,
+                    EventObserver.noop(),
+                    ObservationMarker.CONNECT_SUCCESS,
+                    null,
+                    ObservationMarker.CONNECT_FAILED);
+            this.scope.open(this);
         }
 
         /**
@@ -510,7 +538,7 @@ public final class AioNetwork implements AutoCloseable {
          */
         @Override
         public Status state() {
-            return state;
+            return scope.state();
         }
 
         /**
@@ -542,7 +570,7 @@ public final class AioNetwork implements AutoCloseable {
          */
         @Override
         public boolean healthy() {
-            return state == Status.OPENED && aio.opened();
+            return scope.state() == Status.OPENED && aio.opened();
         }
 
         /**
@@ -560,10 +588,13 @@ public final class AioNetwork implements AutoCloseable {
          */
         @Override
         public void close() {
-            if (state != Status.CLOSED) {
+            if (scope.state().terminal()) {
+                return;
+            }
+            try {
                 aio.close();
-                state = Status.CLOSED;
-                listener.close(this);
+            } finally {
+                scope.close(this);
             }
         }
 
@@ -649,6 +680,153 @@ public final class AioNetwork implements AutoCloseable {
         public void close() {
             aio.close();
         }
+
+    }
+
+    /**
+     * Composed listener.
+     *
+     * @param first  first listener
+     * @param second second listener
+     */
+    private record CompositeListener(Listener<Object> first, Listener<Object> second) implements Listener<Object> {
+
+        /**
+         * Handles open events.
+         *
+         * @param source lifecycle source
+         */
+        @Override
+        public void open(final Object source) {
+            RuntimeException failure = null;
+            try {
+                first.open(source);
+            } catch (final RuntimeException e) {
+                failure = e;
+            }
+            try {
+                second.open(source);
+            } catch (final RuntimeException e) {
+                failure = failure == null ? e : failure;
+            }
+            if (failure != null) {
+                throw failure;
+            }
+        }
+
+        /**
+         * Handles close events.
+         *
+         * @param source lifecycle source
+         */
+        @Override
+        public void close(final Object source) {
+            RuntimeException failure = null;
+            try {
+                first.close(source);
+            } catch (final RuntimeException e) {
+                failure = e;
+            }
+            try {
+                second.close(source);
+            } catch (final RuntimeException e) {
+                failure = failure == null ? e : failure;
+            }
+            if (failure != null) {
+                throw failure;
+            }
+        }
+
+        /**
+         * Handles failure events.
+         *
+         * @param source lifecycle source
+         * @param cause  failure cause
+         */
+        @Override
+        public void failure(final Object source, final Throwable cause) {
+            RuntimeException failure = null;
+            try {
+                first.failure(source, cause);
+            } catch (final RuntimeException e) {
+                failure = e;
+            }
+            try {
+                second.failure(source, cause);
+            } catch (final RuntimeException e) {
+                failure = failure == null ? e : failure;
+            }
+            if (failure != null) {
+                throw failure;
+            }
+        }
+
+    }
+
+    /**
+     * Safe listener wrapper.
+     *
+     * @param delegate listener delegate
+     */
+    private record SafeListener(Listener<Object> delegate) implements Listener<Object> {
+
+        /**
+         * Handles open events.
+         *
+         * @param source lifecycle source
+         */
+        @Override
+        public void open(final Object source) {
+            try {
+                delegate.open(source);
+            } catch (final RuntimeException ignored) {
+                // Listener failures must not break network lifecycle transitions.
+            }
+        }
+
+        /**
+         * Handles close events.
+         *
+         * @param source lifecycle source
+         */
+        @Override
+        public void close(final Object source) {
+            try {
+                delegate.close(source);
+            } catch (final RuntimeException ignored) {
+                // Listener failures must not break network lifecycle transitions.
+            }
+        }
+
+        /**
+         * Handles failure events.
+         *
+         * @param source lifecycle source
+         * @param cause  failure cause
+         */
+        @Override
+        public void failure(final Object source, final Throwable cause) {
+            try {
+                delegate.failure(source, cause);
+            } catch (final RuntimeException ignored) {
+                // Listener failures must not break network lifecycle transitions.
+            }
+        }
+
+    }
+
+    /**
+     * Internal no-operation listener.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private enum NoopListener implements Listener<Object> {
+
+        /**
+         * Singleton no-operation listener.
+         */
+        INSTANCE
 
     }
 

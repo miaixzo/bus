@@ -53,7 +53,6 @@ import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.codec.DataCodec;
 import org.miaixz.bus.fabric.codec.body.RequestBody;
 import org.miaixz.bus.fabric.guard.GuardRule;
@@ -379,7 +378,7 @@ public final class HttpX {
         /**
          * Callback.
          */
-        private Callback<HttpResponse> callback = Wiring.callback();
+        private Callback<HttpResponse> callback;
 
         /**
          * Creates a builder.
@@ -1432,7 +1431,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder callback(final Callback<HttpResponse> callback) {
-            this.callback = callback == null ? Wiring.callback() : callback;
+            this.callback = callback;
             return this;
         }
 

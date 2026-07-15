@@ -46,7 +46,6 @@ import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
@@ -96,12 +95,10 @@ public final class SocketX {
     private SocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        final Listener<? super SocketSession> currentListener = Wiring
-                .safe(Wiring.compose(current.listener(), builder.listener), currentObserver);
         this.snapshot = new SocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.frameCodec, builder.handler(), builder.guard, builder.filter, currentObserver,
                 builder.proxyHeader, builder.socketOptions,
-                builder.callback == null ? Wiring.callback() : builder.callback, currentListener, builder.pooled);
+                builder.callback, builder.listener, builder.pooled);
         this.runner = new SocketRunner(snapshot);
     }
 
@@ -415,8 +412,8 @@ public final class SocketX {
             this.frameCodec = FrameCodec.line();
             this.handler = Demuxer.noop();
             this.observer = EventObserver.noop();
-            this.callback = Wiring.callback();
-            this.listener = Wiring.noop();
+            this.callback = null;
+            this.listener = null;
             this.openHandler = session -> {
             };
             this.errorHandler = cause -> {
@@ -858,7 +855,7 @@ public final class SocketX {
          * @return this builder
          */
         public Builder callback(final Callback<SocketSession> callback) {
-            this.callback = callback == null ? Wiring.callback() : callback;
+            this.callback = callback;
             return this;
         }
 
@@ -869,7 +866,7 @@ public final class SocketX {
          * @return this builder
          */
         public Builder listener(final Listener<? super SocketSession> listener) {
-            this.listener = listener == null ? Wiring.noop() : listener;
+            this.listener = listener;
             return this;
         }
 

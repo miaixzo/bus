@@ -49,19 +49,18 @@ import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
-import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.stomp.body.StompBody;
 import org.miaixz.bus.fabric.protocol.stomp.broker.StompReceipt;
 import org.miaixz.bus.fabric.protocol.stomp.broker.StompTopic;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompCodec;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompFrame;
 import org.miaixz.bus.fabric.runtime.FilterChain;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -70,7 +69,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class StompSession {
+public final class StompSession implements Session {
 
     /**
      * STOMP SEND command.
@@ -233,19 +232,14 @@ public final class StompSession {
     private final EventObserver observer;
 
     /**
-     * Lifecycle listener.
-     */
-    private final Listener<? super StompSession> listener;
-
-    /**
      * Maximum bytes allowed when materializing session payloads.
      */
     private final long materializeMaxBytes;
 
     /**
-     * Lifecycle state.
+     * Lifecycle scope.
      */
-    private final AtomicReference<Status> state;
+    private final LifecycleScope scope;
 
     /**
      * Close notification guard.
@@ -262,7 +256,7 @@ public final class StompSession {
      */
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
                  final Consumer<StompMessage> handler) {
-        this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), null, Wiring.noop(),
+        this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), null, null,
                 Options.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
@@ -317,11 +311,43 @@ public final class StompSession {
         this.guard = guard;
         this.filter = filter;
         this.observer = EventObserver.safe(observer);
-        this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, this.observer);
+        this.scope = LifecycleScope.session(this, "stomp-session", listener, this.observer,
+                ObservationMarker.STOMP_OPEN, ObservationMarker.STOMP_CLOSED, ObservationMarker.STOMP_FAILED);
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
-        this.state = new AtomicReference<>(Status.OPENED);
         this.closeNotified = new AtomicBoolean();
+        this.scope.open(this);
+    }
+
+    /**
+     * Returns the session address.
+     *
+     * @return session address
+     */
+    @Override
+    public Address address() {
+        return address;
+    }
+
+    /**
+     * Sends a payload to the default destination.
+     *
+     * @param payload payload
+     * @return send call
+     */
+    @Override
+    public Call<Void> send(final Payload payload) {
+        return send(defaultDestination(), payload);
+    }
+
+    /**
+     * Returns session attributes.
+     *
+     * @return attributes
+     */
+    @Override
+    public Map<String, Object> attributes() {
+        return Map.of("observer", observer);
     }
 
     /**
@@ -645,28 +671,34 @@ public final class StompSession {
      * @return true when state changed
      */
     public boolean close() {
-        if (transition(Status.CLOSED)) {
-            final StatefulException closeCause = new StatefulException("STOMP session was closed");
-            Logger.info(
-                    true,
-                    "Fabric",
-                    "STOMP session close started: scheme={}, host={}, port={}",
-                    scheme(),
-                    host(),
-                    port());
-            try {
-                write(StompFrame.of(COMMAND_DISCONNECT, Headers.empty(), Payload.empty()));
-            } catch (final RuntimeException ignored) {
-                // The close hook still owns transport cleanup after a best-effort DISCONNECT.
-            } finally {
-                cleanup(closeCause);
-                closeHook.run();
-            }
-            notifyClosed();
-            Logger.info(false, "Fabric", "STOMP session closed: scheme={}, host={}, port={}", scheme(), host(), port());
-            return true;
+        final Status current = scope.state();
+        if (current.terminal()) {
+            return false;
         }
-        return false;
+        if (current != Status.CLOSING) {
+            scope.closing();
+        }
+        final StatefulException closeCause = new StatefulException("STOMP session was closed");
+        Logger.info(
+                true,
+                "Fabric",
+                "STOMP session close started: scheme={}, host={}, port={}",
+                scheme(),
+                host(),
+                port());
+        try {
+            write(StompFrame.of(COMMAND_DISCONNECT, Headers.empty(), Payload.empty()));
+        } catch (final RuntimeException ignored) {
+            // The close hook still owns transport cleanup after a best-effort DISCONNECT.
+        } finally {
+            cleanup(closeCause);
+            closeHook.run();
+        }
+        final boolean changed = notifyClosed();
+        if (changed) {
+            Logger.info(false, "Fabric", "STOMP session closed: scheme={}, host={}, port={}", scheme(), host(), port());
+        }
+        return changed;
     }
 
     /**
@@ -675,34 +707,31 @@ public final class StompSession {
      * @return true when state changed
      */
     public boolean cancel() {
-        while (true) {
-            final Status current = state.get();
-            if (current.terminal()) {
-                return false;
-            }
-            if (state.compareAndSet(current, Status.CANCELLED)) {
-                final StatefulException cancelled = new StatefulException("STOMP session was cancelled");
-                Logger.info(
-                        true,
-                        "Fabric",
-                        "STOMP session cancel started: scheme={}, host={}, port={}",
-                        scheme(),
-                        host(),
-                        port());
-                cleanup(cancelled);
-                cancelHook.run();
-                emit(ObservationMarker.STOMP_FAILED, Payload.empty(), null);
-                listener.failure(this, cancelled);
-                Logger.info(
-                        false,
-                        "Fabric",
-                        "STOMP session cancelled: scheme={}, host={}, port={}",
-                        scheme(),
-                        host(),
-                        port());
-                return true;
-            }
+        final Status current = scope.state();
+        if (current.terminal()) {
+            return false;
         }
+        final StatefulException cancelled = new StatefulException("STOMP session was cancelled");
+        Logger.info(
+                true,
+                "Fabric",
+                "STOMP session cancel started: scheme={}, host={}, port={}",
+                scheme(),
+                host(),
+                port());
+        cleanup(cancelled);
+        cancelHook.run();
+        final boolean changed = scope.cancel(cancelled);
+        if (changed) {
+            Logger.info(
+                    false,
+                    "Fabric",
+                    "STOMP session cancelled: scheme={}, host={}, port={}",
+                    scheme(),
+                    host(),
+                    port());
+        }
+        return changed;
     }
 
     /**
@@ -710,18 +739,9 @@ public final class StompSession {
      *
      * @return state
      */
+    @Override
     public Status state() {
-        return state.get();
-    }
-
-    /**
-     * Returns whether this session is opened.
-     *
-     * @return true when opened
-     */
-    boolean opened() {
-        final Status current = state.get();
-        return current == Status.OPENED || current == Status.RUNNING;
+        return scope.state();
     }
 
     /**
@@ -810,33 +830,13 @@ public final class StompSession {
     }
 
     /**
-     * Transitions to a terminal state.
-     *
-     * @param next next terminal state
-     * @return true when state changed
-     */
-    private boolean transition(final Status next) {
-        while (true) {
-            final Status current = state.get();
-            if (current.terminal()) {
-                return false;
-            }
-            if (state.compareAndSet(current, next)) {
-                return true;
-            }
-        }
-    }
-
-    /**
      * Fails the session and clears broker state.
      *
      * @param cause failure cause
      */
     private void fail(final RuntimeException cause) {
-        if (transition(Status.FAILED)) {
+        if (scope.fail(cause)) {
             cleanup(cause);
-            emit(ObservationMarker.STOMP_FAILED, Payload.empty(), cause);
-            listener.failure(this, cause);
             Logger.warn(
                     false,
                     "Fabric",
@@ -864,11 +864,8 @@ public final class StompSession {
     /**
      * Notifies close observers once.
      */
-    private void notifyClosed() {
-        if (closeNotified.compareAndSet(false, true)) {
-            emit(ObservationMarker.STOMP_CLOSED, Payload.empty(), null);
-            listener.close(this);
-        }
+    private boolean notifyClosed() {
+        return scope.close(this) && closeNotified.compareAndSet(false, true);
     }
 
     /**
@@ -935,6 +932,18 @@ public final class StompSession {
             headers.add(HEADER_SUBSCRIPTION, StompMessage.validateToken(subscription, "STOMP subscription id"));
         }
         return write(StompFrame.of(command, headers.build(), Payload.empty()));
+    }
+
+    /**
+     * Returns the default destination derived from the session address.
+     *
+     * @return default destination
+     */
+    private String defaultDestination() {
+        if (address == null || address.path() == null || Symbol.SLASH.equals(address.path())) {
+            throw new ValidateException("STOMP default destination must be configured");
+        }
+        return address.path();
     }
 
     /**
@@ -1058,15 +1067,7 @@ public final class StompSession {
         if (address == null) {
             return;
         }
-        final FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, address.scheme())
-                .tag(Tags.HOST, address.host()).tag(Tags.PORT, Integer.toString(address.port()));
-        if (body != null && body.length() >= Normal.LONG_ZERO) {
-            event.tag(Tags.BYTES, Long.toString(body.length()));
-        }
-        if (cause != null) {
-            event.cause(cause);
-        }
-        observer.emit(event.build());
+        scope.emit(marker, cause);
     }
 
     /**
@@ -1297,6 +1298,16 @@ public final class StompSession {
         @Override
         public boolean done() {
             return delegate.done();
+        }
+
+        /**
+         * Returns the delegate lifecycle state.
+         *
+         * @return state
+         */
+        @Override
+        public Status state() {
+            return delegate.state();
         }
 
         /**

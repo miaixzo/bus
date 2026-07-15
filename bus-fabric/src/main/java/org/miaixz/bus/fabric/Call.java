@@ -34,7 +34,70 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface Call<T> {
+public interface Call<T> extends Lifecycle {
+
+    /**
+     * Creates a call that represents an unsupported operation.
+     *
+     * @param operation operation description
+     * @param <T>       result type
+     * @return unsupported call
+     */
+    static <T> Call<T> unsupported(final String operation) {
+        final String message = operation == null || operation.isBlank() ? "Unsupported fabric call" : operation;
+        return new Call<>() {
+
+            /**
+             * Cancellation flag.
+             */
+            private volatile boolean cancelled;
+
+            /**
+             * Executes this unsupported call.
+             *
+             * @return never returns
+             */
+            @Override
+            public T execute() {
+                throw new UnsupportedOperationException(message);
+            }
+
+            /**
+             * Marks this unsupported call as already completed.
+             *
+             * @return this call
+             */
+            @Override
+            public Call<T> enqueue() {
+                return this;
+            }
+
+            /**
+             * Cancels this unsupported call.
+             *
+             * @return true when this invocation changed the call to cancelled
+             */
+            @Override
+            public boolean cancel() {
+                if (cancelled) {
+                    return false;
+                }
+                cancelled = true;
+                return true;
+            }
+
+            /**
+             * Returns the lifecycle state.
+             *
+             * @return failed or cancelled state
+             */
+            @Override
+            public Status state() {
+                return cancelled ? Status.CANCELLED : Status.FAILED;
+            }
+
+        };
+    }
 
     /**
      * Executes this call synchronously.
@@ -62,14 +125,19 @@ public interface Call<T> {
      *
      * @return true when cancelled
      */
-    boolean cancelled();
+    @Override
+    default boolean cancelled() {
+        return Lifecycle.super.cancelled();
+    }
 
     /**
      * Returns whether this call is complete.
      *
      * @return true when complete
      */
-    boolean done();
+    default boolean done() {
+        return terminal();
+    }
 
     /**
      * Waits for this call to complete.

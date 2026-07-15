@@ -58,7 +58,6 @@ import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.codec.frame.Frame;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.Connection;
@@ -67,14 +66,13 @@ import org.miaixz.bus.fabric.network.kcp.KcpPacket;
 import org.miaixz.bus.fabric.network.udp.UdpSession;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
-import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.protocol.Demuxer;
 import org.miaixz.bus.fabric.protocol.socket.body.SocketBody;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketFrame;
 import org.miaixz.bus.fabric.protocol.socket.session.SocketLease;
 import org.miaixz.bus.fabric.runtime.FilterChain;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -161,11 +159,6 @@ public final class SocketSession implements Session {
     private final AutoCloseable owner;
 
     /**
-     * Lifecycle listener.
-     */
-    private final Listener<? super SocketSession> listener;
-
-    /**
      * Maximum bytes allowed when materializing session payloads.
      */
     private final long materializeMaxBytes;
@@ -211,9 +204,9 @@ public final class SocketSession implements Session {
     private volatile long lastActivityNanos;
 
     /**
-     * Lifecycle state.
+     * Lifecycle scope.
      */
-    private final AtomicReference<Status> state;
+    private final LifecycleScope scope;
 
     /**
      * Creates a current connection-backed socket session for framework integrations.
@@ -255,7 +248,7 @@ public final class SocketSession implements Session {
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
                   final Map<String, Object> attributes, final AutoCloseable owner) {
-        this(address, connection, codec, handler, attributes, owner, Wiring.noop());
+        this(address, connection, codec, handler, attributes, owner, null);
     }
 
     /**
@@ -328,7 +321,7 @@ public final class SocketSession implements Session {
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
                   final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner) {
-        this(address, datagram, kcp, codec, handler, attributes, owner, Wiring.noop());
+        this(address, datagram, kcp, codec, handler, attributes, owner, null);
     }
 
     /**
@@ -467,7 +460,8 @@ public final class SocketSession implements Session {
         final Object observer = this.attributes.get(ATTRIBUTE_OBSERVER);
         final EventObserver currentObserver = observer instanceof EventObserver current ? EventObserver.safe(current)
                 : EventObserver.noop();
-        this.listener = Wiring.safe(listener == null ? Wiring.noop() : listener, currentObserver);
+        this.scope = LifecycleScope.session(this, "socket-session", listener, currentObserver,
+                ObservationMarker.SOCKET_OPEN, ObservationMarker.SOCKET_CLOSED, ObservationMarker.SOCKET_FAILED);
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
         this.socketOptions = socketOptions == null ? SocketOptions.defaults() : socketOptions;
@@ -486,7 +480,7 @@ public final class SocketSession implements Session {
         this.writeTail = new AtomicReference<>(CompletableFuture.completedFuture(null));
         this.activeWrite = new AtomicReference<>();
         this.lastActivityNanos = System.nanoTime();
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.scope.open(this);
     }
 
     /**
@@ -504,7 +498,7 @@ public final class SocketSession implements Session {
      * @return state
      */
     public Status state() {
-        return state.get();
+        return scope.state();
     }
 
     /**
@@ -632,19 +626,24 @@ public final class SocketSession implements Session {
      * @return true when state changed
      */
     public boolean close() {
-        if (state.compareAndSet(Status.OPENED, Status.CLOSED) || state.compareAndSet(Status.RUNNING, Status.CLOSED)
-                || state.compareAndSet(Status.CLOSING, Status.CLOSED)) {
-            Logger.info(
-                    true,
-                    "Fabric",
-                    "Socket session close started: scheme={}, host={}, port={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port());
-            closeResources(true);
-            emit(ObservationMarker.SOCKET_CLOSED, Payload.empty(), null);
+        final Status current = scope.state();
+        if (current != Status.OPENED && current != Status.RUNNING && current != Status.CLOSING) {
+            return false;
+        }
+        if (current != Status.CLOSING) {
+            scope.closing();
+        }
+        Logger.info(
+                true,
+                "Fabric",
+                "Socket session close started: scheme={}, host={}, port={}",
+                address.scheme(),
+                address.host(),
+                address.port());
+        closeResources(true);
+        final boolean changed = scope.close(this);
+        if (changed) {
             handler.closed(this);
-            listener.close(this);
             Logger.info(
                     false,
                     "Fabric",
@@ -652,9 +651,8 @@ public final class SocketSession implements Session {
                     address.scheme(),
                     address.host(),
                     address.port());
-            return true;
         }
-        return false;
+        return changed;
     }
 
     /**
@@ -663,33 +661,31 @@ public final class SocketSession implements Session {
      * @return true when state changed
      */
     public boolean cancel() {
-        while (true) {
-            final Status current = state.get();
-            if (current == Status.CANCELLED || current == Status.CLOSED || current == Status.DONE) {
-                return false;
-            }
-            if (state.compareAndSet(current, Status.CANCELLED)) {
-                final StatefulException cancelled = new StatefulException("Socket session was cancelled");
-                Logger.info(
-                        true,
-                        "Fabric",
-                        "Socket session cancel started: scheme={}, host={}, port={}",
-                        address.scheme(),
-                        address.host(),
-                        address.port());
-                closeResources(false);
-                emit(ObservationMarker.SOCKET_FAILED, Payload.empty(), cancelled);
-                notifyFailure(cancelled);
-                Logger.info(
-                        false,
-                        "Fabric",
-                        "Socket session cancelled: scheme={}, host={}, port={}",
-                        address.scheme(),
-                        address.host(),
-                        address.port());
-                return true;
-            }
+        final Status current = scope.state();
+        if (current == Status.CANCELLED || current == Status.CLOSED || current == Status.DONE) {
+            return false;
         }
+        final StatefulException cancelled = new StatefulException("Socket session was cancelled");
+        Logger.info(
+                true,
+                "Fabric",
+                "Socket session cancel started: scheme={}, host={}, port={}",
+                address.scheme(),
+                address.host(),
+                address.port());
+        closeResources(false);
+        final boolean changed = scope.cancel(cancelled);
+        if (changed) {
+            notifyFailure(cancelled);
+            Logger.info(
+                    false,
+                    "Fabric",
+                    "Socket session cancelled: scheme={}, host={}, port={}",
+                    address.scheme(),
+                    address.host(),
+                    address.port());
+        }
+        return changed;
     }
 
     /**
@@ -708,16 +704,6 @@ public final class SocketSession implements Session {
      */
     public SocketOptions socketOptions() {
         return socketOptions;
-    }
-
-    /**
-     * Returns whether opened.
-     *
-     * @return true when opened
-     */
-    public boolean opened() {
-        final Status current = state.get();
-        return current == Status.OPENED || current == Status.RUNNING;
     }
 
     /**
@@ -921,7 +907,7 @@ public final class SocketSession implements Session {
         final byte[] payload = bytes(encoded);
         final Payload outgoing = kcp == null ? Payload.of(payload)
                 : Payload.of(kcp.pack(kcp.encode(Payload.of(payload))));
-        return datagram.send(outgoing);
+        return datagram.sendDatagram(outgoing);
     }
 
     /**
@@ -1095,18 +1081,7 @@ public final class SocketSession implements Session {
      * @param cause  failure cause
      */
     private void emit(final ObservationMarker marker, final long bytes, final Throwable cause) {
-        final Object value = attributes.get(ATTRIBUTE_OBSERVER);
-        final EventObserver observer = value instanceof EventObserver current ? EventObserver.safe(current)
-                : EventObserver.noop();
-        final FabricEvent.Builder event = FabricEvent.builder(marker).tag(Tags.PROTOCOL, address.scheme())
-                .tag(Tags.HOST, address.host()).tag(Tags.PORT, Integer.toString(address.port()));
-        if (bytes >= 0) {
-            event.tag(Tags.BYTES, Long.toString(bytes));
-        }
-        if (cause != null) {
-            event.cause(cause);
-        }
-        observer.emit(event.build());
+        scope.emit(marker, cause);
     }
 
     /**
@@ -1117,7 +1092,6 @@ public final class SocketSession implements Session {
     private void notifyFailure(final Throwable cause) {
         final Throwable current = cause == null ? new StatefulException("Socket session failed") : cause;
         handler.failure(this, current);
-        listener.failure(this, current);
     }
 
     /**
@@ -1472,7 +1446,23 @@ public final class SocketSession implements Session {
          */
         @Override
         public boolean done() {
-            return future.isDone();
+            return state().terminal();
+        }
+
+        /**
+         * Returns lifecycle state.
+         *
+         * @return state
+         */
+        @Override
+        public Status state() {
+            if (future.isCancelled()) {
+                return Status.CANCELLED;
+            }
+            if (future.isCompletedExceptionally()) {
+                return Status.FAILED;
+            }
+            return future.isDone() ? Status.DONE : Status.RUNNING;
         }
 
         /**

@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.Wiring;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
@@ -76,8 +75,6 @@ record SocketSnapshot(Context context, URI uri, Address address, Headers headers
         handler = require(handler, "Handler");
         observer = EventObserver.safe(require(observer, "Observer"));
         socketOptions = require(socketOptions, "Socket options");
-        callback = Wiring.safeCallback(require(callback, "Callback"), observer);
-        listener = Wiring.safe(require(listener, "Listener"), observer);
     }
 
     /**
