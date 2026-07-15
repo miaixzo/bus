@@ -802,14 +802,39 @@ public class HTTP {
     public static final String SEC_WEBSOCKET_KEY = "Sec-WebSocket-Key";
 
     /**
+     * WebSocket Sec-WebSocket-Key decoded byte count. RFC 6455, Section 4.1
+     */
+    public static final int SEC_WEBSOCKET_KEY_BYTES = Normal._16;
+
+    /**
      * WebSocket Sec-WebSocket-Accept header. RFC 6455, Section 4.2.2
      */
     public static final String SEC_WEBSOCKET_ACCEPT = "Sec-WebSocket-Accept";
 
     /**
+     * WebSocket Sec-WebSocket-Accept GUID. RFC 6455, Section 4.2.2
+     */
+    public static final String SEC_WEBSOCKET_ACCEPT_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+
+    /**
      * WebSocket Sec-WebSocket-Version header. RFC 6455, Section 4.1
      */
     public static final String SEC_WEBSOCKET_VERSION = "Sec-WebSocket-Version";
+
+    /**
+     * WebSocket protocol version required by RFC 6455.
+     */
+    public static final String SEC_WEBSOCKET_VERSION_13 = "13";
+
+    /**
+     * WebSocket Sec-WebSocket-Protocol header. RFC 6455, Section 4.1
+     */
+    public static final String SEC_WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
+
+    /**
+     * WebSocket protocol token. RFC 6455, Section 4.1
+     */
+    public static final String WEBSOCKET = "websocket";
 
     /**
      * HTTP Strict-Transport-Security header for HSTS. RFC 6797
