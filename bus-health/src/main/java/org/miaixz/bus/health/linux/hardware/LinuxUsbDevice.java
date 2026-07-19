@@ -206,8 +206,18 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
         // Build tree and return
         List<UsbDevice> controllerDevices = new ArrayList<>();
         for (String controller : usbControllers) {
-            controllerDevices.add(buildDeviceTree(controller, "0000", "0000", nameMap, vendorMap, vendorIdMap,
-                    productIdMap, serialMap, hubMap, LinuxUsbDevice::new));
+            controllerDevices.add(
+                    buildDeviceTree(
+                            controller,
+                            "0000",
+                            "0000",
+                            nameMap,
+                            vendorMap,
+                            vendorIdMap,
+                            productIdMap,
+                            serialMap,
+                            hubMap,
+                            LinuxUsbDevice::new));
         }
         return controllerDevices;
     }

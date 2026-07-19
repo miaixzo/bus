@@ -144,8 +144,18 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
         // Build tree and return
         List<UsbDevice> controllerDevices = new ArrayList<>();
         for (String devusb : rootHubs) {
-            controllerDevices.add(buildDeviceTree(devusb, "0000", "0000", nameMap, vendorMap, vendorIdMap,
-                    productIdMap, serialMap, hubMap, OpenBsdUsbDevice::new));
+            controllerDevices.add(
+                    buildDeviceTree(
+                            devusb,
+                            "0000",
+                            "0000",
+                            nameMap,
+                            vendorMap,
+                            vendorIdMap,
+                            productIdMap,
+                            serialMap,
+                            hubMap,
+                            OpenBsdUsbDevice::new));
         }
         return controllerDevices;
     }

@@ -71,20 +71,20 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     /**
      * The sound card list supplier.
      */
-    private final Supplier<List<SoundCard>> soundCards = Memoizer.memoize(this::createSoundCards,
-            Memoizer.slowExpiration());
+    private final Supplier<List<SoundCard>> soundCards = Memoizer
+            .memoize(this::createSoundCards, Memoizer.slowExpiration());
 
     /**
      * The graphics card list supplier.
      */
-    private final Supplier<List<GraphicsCard>> graphicsCards = Memoizer.memoize(this::createGraphicsCards,
-            Memoizer.slowExpiration());
+    private final Supplier<List<GraphicsCard>> graphicsCards = Memoizer
+            .memoize(this::createGraphicsCards, Memoizer.slowExpiration());
 
     /**
      * The USB device tree supplier.
      */
-    private final Supplier<List<UsbDevice>> usbDevicesTree = Memoizer.memoize(this::createUsbDevices,
-            Memoizer.slowExpiration());
+    private final Supplier<List<UsbDevice>> usbDevicesTree = Memoizer
+            .memoize(this::createUsbDevices, Memoizer.slowExpiration());
 
     /**
      * Returns the computer system.

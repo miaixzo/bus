@@ -232,7 +232,7 @@ public class ApiAssets extends Assets {
          * Metadata key storing the service lease duration.
          */
         private static final String LEASE = "lease";
-        
+
         /**
          * Stable public key used by admin and bridge paths, for example {@code dp.license.get:1.0:1}.
          */

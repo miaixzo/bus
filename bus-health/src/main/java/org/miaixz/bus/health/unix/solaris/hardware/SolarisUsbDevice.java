@@ -157,8 +157,18 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
             // Only do controllers that are USB device type
             if (PCI_TYPE_USB.equals(deviceTypeMap.getOrDefault(controller, Normal.EMPTY))
                     || "usb".equals(deviceTypeMap.getOrDefault(controller, Normal.EMPTY))) {
-                controllerDevices.add(buildDeviceTree(controller, "0000", "0000", nameMap, Collections.emptyMap(),
-                        vendorIdMap, productIdMap, Collections.emptyMap(), hubMap, SolarisUsbDevice::new));
+                controllerDevices.add(
+                        buildDeviceTree(
+                                controller,
+                                "0000",
+                                "0000",
+                                nameMap,
+                                Collections.emptyMap(),
+                                vendorIdMap,
+                                productIdMap,
+                                Collections.emptyMap(),
+                                hubMap,
+                                SolarisUsbDevice::new));
             }
         }
         return controllerDevices;

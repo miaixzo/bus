@@ -21,8 +21,8 @@
  * HTTP API service-definition and runtime-instance registry support.
  * <p>
  * {@code ApiAssets} defaults its type to API. Optional runtime hints such as beat interval, lease duration and key are
- * carried by the typed {@code ApiAssets.Meta} payload in metadata. {@code ApiRegistry} persists service
- * definitions through the shared {@code StoreBackedRegistry} path and separately projects runtime instances to
+ * carried by the typed {@code ApiAssets.Meta} payload in metadata. {@code ApiRegistry} persists service definitions
+ * through the shared {@code StoreBackedRegistry} path and separately projects runtime instances to
  * {@code reg:{ns}:instance:{method}:{version}:{fingerprint}} cache keys. When a durable {@code RegistryStore} is
  * present, instance queries read from that store first and warm the cache projection from the returned snapshots.
  * <p>

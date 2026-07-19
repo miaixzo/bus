@@ -233,13 +233,28 @@ public abstract class AbstractUsbDevice implements UsbDevice {
         String productId = productIdMap.getOrDefault(id, pid);
         List<UsbDevice> connectedDevices = new ArrayList<>();
         for (String childId : hubMap.getOrDefault(id, Collections.emptyList())) {
-            connectedDevices.add(buildDeviceTree(childId, vendorId, productId, nameMap, vendorMap, vendorIdMap,
-                    productIdMap, serialMap, hubMap, factory));
+            connectedDevices.add(
+                    buildDeviceTree(
+                            childId,
+                            vendorId,
+                            productId,
+                            nameMap,
+                            vendorMap,
+                            vendorIdMap,
+                            productIdMap,
+                            serialMap,
+                            hubMap,
+                            factory));
         }
         Collections.sort(connectedDevices);
-        return factory.create(nameMap.getOrDefault(id, vendorId + Symbol.COLON + productId),
-                vendorMap.getOrDefault(id, Normal.EMPTY), vendorId, productId,
-                serialMap.getOrDefault(id, Normal.EMPTY), id, connectedDevices);
+        return factory.create(
+                nameMap.getOrDefault(id, vendorId + Symbol.COLON + productId),
+                vendorMap.getOrDefault(id, Normal.EMPTY),
+                vendorId,
+                productId,
+                serialMap.getOrDefault(id, Normal.EMPTY),
+                id,
+                connectedDevices);
     }
 
     /**
@@ -263,8 +278,14 @@ public abstract class AbstractUsbDevice implements UsbDevice {
          * @param connectedDevices the connected child devices
          * @return the created USB device
          */
-        UsbDevice create(String name, String vendor, String vendorId, String productId, String serialNumber,
-                String uniqueDeviceId, List<UsbDevice> connectedDevices);
+        UsbDevice create(
+                String name,
+                String vendor,
+                String vendorId,
+                String productId,
+                String serialNumber,
+                String uniqueDeviceId,
+                List<UsbDevice> connectedDevices);
 
     }
 
