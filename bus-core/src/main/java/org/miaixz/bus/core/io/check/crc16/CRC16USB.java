@@ -32,7 +32,7 @@ import java.io.Serial;
 public class CRC16USB extends CRC16Checksum {
 
     /**
-     * Constructs a new CRC16USB. Utility class constructor for static access.
+     * Creates a CRC-16/USB checksum implementation.
      */
     private CRC16USB() {
         // No initialization required.

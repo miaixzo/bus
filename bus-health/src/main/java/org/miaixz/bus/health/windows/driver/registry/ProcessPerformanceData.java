@@ -43,7 +43,7 @@ import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation.ProcessPe
 public final class ProcessPerformanceData {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Windows process performance data registry queries on the static API.
      */
     private ProcessPerformanceData() {
         // No initialization required.

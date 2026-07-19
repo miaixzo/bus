@@ -37,7 +37,7 @@ import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
 public final class SystemPages {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Solaris kernel page-statistic queries on the static API.
      */
     private SystemPages() {
         // No initialization required.

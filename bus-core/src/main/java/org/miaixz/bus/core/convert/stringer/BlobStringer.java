@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class BlobStringer implements Function<Object, String> {
 
     /**
-     * Constructs a new BlobStringer. Utility class constructor for static access.
+     * Creates the shared BLOB-to-string converter.
      */
     private BlobStringer() {
         // No initialization required.

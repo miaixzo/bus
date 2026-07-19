@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class AsyncTimeout extends Timeout {
 
     /**
-     * Constructs a new AsyncTimeout. Utility class constructor for static access.
+     * Creates a new {@code AsyncTimeout} instance.
      */
     public AsyncTimeout() {
         // No initialization required.

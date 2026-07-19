@@ -43,7 +43,7 @@ import org.miaixz.bus.logger.Logger;
 public final class PerfCounterQuery {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Windows performance-counter queries on the static API.
      */
     private PerfCounterQuery() {
         // No initialization required.

@@ -82,7 +82,7 @@ public final class PublicSuffix {
     private byte[] publicSuffixExceptionListBytes;
 
     /**
-     * Prevents utility construction.
+     * Keeps public-suffix matching on the static API.
      */
     private PublicSuffix() {
         // No initialization required.

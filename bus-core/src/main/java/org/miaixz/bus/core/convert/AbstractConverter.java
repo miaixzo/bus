@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public abstract class AbstractConverter implements Converter, Serializable {
 
     /**
-     * Constructs a new AbstractConverter. Utility class constructor for static access.
+     * Creates a new {@code AbstractConverter} instance.
      */
     public AbstractConverter() {
         // No initialization required.

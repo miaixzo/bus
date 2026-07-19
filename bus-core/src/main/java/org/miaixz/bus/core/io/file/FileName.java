@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FileName {
 
     /**
-     * Constructs a new FileName. Utility class constructor for static access.
+     * Keeps file-name parsing and normalization on the static API.
      */
     private FileName() {
         // No initialization required.

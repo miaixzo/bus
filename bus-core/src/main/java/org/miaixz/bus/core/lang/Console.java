@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Console {
 
     /**
-     * Constructs a new Console. Utility class constructor for static access.
+     * Keeps console input and output on the static API.
      */
     private Console() {
         // No initialization required.

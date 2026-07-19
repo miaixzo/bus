@@ -73,9 +73,7 @@ public final class Holder {
     private static final String INIT_MARKER_KEY = "vortex:performance:initialized";
 
     /**
-     * Private constructor to prevent instantiation.
-     * <p>
-     * This is a utility class with only static members. Attempting to instantiate will throw an exception.
+     * Keeps Vortex shared-resource access on the static holder API.
      */
     private Holder() {
         throw new UnsupportedOperationException("Holder class cannot be instantiated");

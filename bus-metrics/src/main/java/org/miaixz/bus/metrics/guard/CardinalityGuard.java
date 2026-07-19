@@ -62,7 +62,7 @@ public final class CardinalityGuard {
     private static final ConcurrentHashMap<String, Long> LAST_LOG_TS = new ConcurrentHashMap<>();
 
     /**
-     * Private constructor; this is a static utility class.
+     * Keeps metric-cardinality policy enforcement on the static API.
      */
     private CardinalityGuard() {
         // No initialization required.

@@ -43,7 +43,7 @@ public final class ItemNormalizer {
     public static final String INLINE_SOURCE = "INLINE";
 
     /**
-     * Creates the item normalization utility holder.
+     * Keeps configuration-item normalization on the static API.
      */
     private ItemNormalizer() {
         // No initialization required.

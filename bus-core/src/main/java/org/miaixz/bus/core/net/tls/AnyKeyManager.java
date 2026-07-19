@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AnyKeyManager {
 
     /**
-     * Constructs a new AnyKeyManager. Utility class constructor for static access.
+     * Keeps key-manager factory and certificate loading on the static API.
      */
     private AnyKeyManager() {
         // No initialization required.

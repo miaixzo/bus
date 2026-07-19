@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicLongArray;
 public class AtomicLongArrayConverter extends AbstractConverter {
 
     /**
-     * Constructs a new AtomicLongArrayConverter. Utility class constructor for static access.
+     * Creates a new {@code AtomicLongArrayConverter} instance.
      */
     public AtomicLongArrayConverter() {
         // No initialization required.

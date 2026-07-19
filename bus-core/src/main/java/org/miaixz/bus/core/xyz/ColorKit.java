@@ -41,7 +41,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class ColorKit {
 
     /**
-     * Constructs a new ColorKit. Utility class constructor for static access.
+     * Keeps color parsing and conversion on the static API.
      */
     private ColorKit() {
         // No initialization required.

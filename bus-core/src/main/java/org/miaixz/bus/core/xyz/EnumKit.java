@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class EnumKit {
 
     /**
-     * Constructs a new EnumKit. Utility class constructor for static access.
+     * Keeps enum lookup and conversion on the static API.
      */
     private EnumKit() {
         // No initialization required.

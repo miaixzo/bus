@@ -32,7 +32,7 @@ import java.io.Serial;
 public class CRC16CCITT extends CRC16Checksum {
 
     /**
-     * Constructs a new CRC16CCITT. Utility class constructor for static access.
+     * Creates a CRC-16/CCITT checksum implementation.
      */
     private CRC16CCITT() {
         // No initialization required.

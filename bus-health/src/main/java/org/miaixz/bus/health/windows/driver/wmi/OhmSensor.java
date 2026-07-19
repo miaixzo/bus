@@ -36,7 +36,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class OhmSensor {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Open Hardware Monitor sensor queries on the static API.
      */
     private OhmSensor() {
         // No initialization required.

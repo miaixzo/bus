@@ -39,7 +39,7 @@ import org.miaixz.bus.logger.Logger;
 public final class SysctlKit {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps macOS sysctl queries on the static API.
      */
     private SysctlKit() {
         // No initialization required.

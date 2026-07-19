@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Calendar extends Calculate {
 
     /**
-     * Constructs a new Calendar. Utility class constructor for static access.
+     * Creates a new {@code Calendar} instance.
      */
     public Calendar() {
         // No initialization required.

@@ -37,7 +37,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32OperatingSystem {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Win32 operating system queries on the static API.
      */
     private Win32OperatingSystem() {
         // No initialization required.

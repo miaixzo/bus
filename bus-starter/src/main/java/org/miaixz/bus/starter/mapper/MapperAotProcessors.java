@@ -66,7 +66,7 @@ import org.miaixz.bus.mapper.builder.MapperMethodTypeResolver;
 public final class MapperAotProcessors {
 
     /**
-     * Prevents instantiation of this utility holder.
+     * Keeps mapper AOT processor discovery on the static API.
      */
     private MapperAotProcessors() {
         // No initialization required.

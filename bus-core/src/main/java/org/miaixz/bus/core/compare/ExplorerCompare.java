@@ -51,7 +51,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ExplorerCompare implements Comparator<CharSequence> {
 
     /**
-     * Constructs a new ExplorerCompare. Utility class constructor for static access.
+     * Creates the shared Windows Explorer-style string comparator.
      */
     private ExplorerCompare() {
         // No initialization required.

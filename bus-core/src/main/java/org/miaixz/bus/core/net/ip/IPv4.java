@@ -60,7 +60,7 @@ import org.miaixz.bus.core.xyz.*;
 public class IPv4 {
 
     /**
-     * Constructs a new IPv4. Utility class constructor for static access.
+     * Creates a new {@code IPv4} instance.
      */
     public IPv4() {
         // No initialization required.

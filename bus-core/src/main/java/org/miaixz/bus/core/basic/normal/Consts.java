@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class Consts extends Normal {
 
     /**
-     * Constructs a new Consts. Utility class constructor for static access.
+     * Creates a constants holder for framework defaults.
      */
     public Consts() {
         // No initialization required.

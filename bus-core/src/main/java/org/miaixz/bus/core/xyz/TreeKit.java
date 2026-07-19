@@ -41,7 +41,7 @@ import org.miaixz.bus.core.tree.parser.NodeParser;
 public class TreeKit {
 
     /**
-     * Constructs a new tree utility instance.
+     * Creates a tree-operation helper.
      */
     public TreeKit() {
         // No initialization required.

@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Resolver extends Converter {
 
     /**
-     * Constructs a new Resolver. Utility class constructor for static access.
+     * Creates a new {@code Resolver} instance.
      */
     public Resolver() {
         // No initialization required.

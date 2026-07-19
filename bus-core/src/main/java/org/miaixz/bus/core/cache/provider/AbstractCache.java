@@ -53,7 +53,7 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
     /**
-     * Constructs a new AbstractCache. Utility class constructor for static access.
+     * Creates a new {@code AbstractCache} instance.
      */
     public AbstractCache() {
         // No initialization required.

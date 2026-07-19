@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ChineseNumberParser {
 
     /**
-     * Constructs a new ChineseNumberParser. Utility class constructor for static access.
+     * Keeps Chinese-number parsing on the static API.
      */
     private ChineseNumberParser() {
         // No initialization required.

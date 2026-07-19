@@ -30,7 +30,7 @@ import java.io.Serial;
 public class CRC16Ansi extends CRC16Checksum {
 
     /**
-     * Constructs a new CRC16Ansi. Utility class constructor for static access.
+     * Creates a CRC-16/ANSI checksum implementation.
      */
     private CRC16Ansi() {
         // No initialization required.

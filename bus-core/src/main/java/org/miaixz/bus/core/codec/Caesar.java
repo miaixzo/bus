@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class Caesar {
 
     /**
-     * Constructs a new Caesar. Utility class constructor for static access.
+     * Keeps Caesar-cipher encoding and decoding on the static API.
      */
     private Caesar() {
         // No initialization required.

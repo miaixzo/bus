@@ -56,7 +56,7 @@ public final class MetadataCodec {
     public static final String LEGACY_SPECIES = "species";
 
     /**
-     * Creates the metadata codec utility holder.
+     * Keeps registry metadata encoding and decoding on the static API.
      */
     private MetadataCodec() {
         // No initialization required.

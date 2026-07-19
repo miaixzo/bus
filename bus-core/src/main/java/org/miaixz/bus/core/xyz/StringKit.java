@@ -37,7 +37,7 @@ import org.miaixz.bus.core.text.TextSimilarity;
 public class StringKit extends CharsBacker {
 
     /**
-     * Constructs a new string utility instance.
+     * Creates a string-processing helper.
      */
     public StringKit() {
         // No initialization required.

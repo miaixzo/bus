@@ -42,7 +42,7 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
 public final class ThreadInfo {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps macOS thread metadata queries on the static API.
      */
     private ThreadInfo() {
         // No initialization required.

@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.ByteKit;
 public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]> {
 
     /**
-     * Constructs a new CityHash. Utility class constructor for static access.
+     * Creates the shared CityHash implementation.
      */
     private CityHash() {
         // No initialization required.

@@ -34,7 +34,7 @@ import org.miaixz.bus.core.codec.hash.metro.MetroHash64;
 public class HashKit {
 
     /**
-     * Constructs a new HashKit. Utility class constructor for static access.
+     * Keeps hash calculation on the static API.
      */
     private HashKit() {
         // No initialization required.

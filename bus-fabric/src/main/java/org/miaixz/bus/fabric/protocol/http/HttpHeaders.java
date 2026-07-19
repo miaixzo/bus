@@ -48,7 +48,7 @@ import org.miaixz.bus.fabric.protocol.http.agent.UserAgent;
 public final class HttpHeaders {
 
     /**
-     * Prevents utility construction.
+     * Keeps HTTP header normalization on the static API.
      */
     private HttpHeaders() {
         // No initialization required.

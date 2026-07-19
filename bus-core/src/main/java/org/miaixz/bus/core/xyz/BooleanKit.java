@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class BooleanKit {
 
     /**
-     * Constructs a new BooleanKit. Utility class constructor for static access.
+     * Keeps Boolean parsing and conversion on the static API.
      */
     private BooleanKit() {
         // No initialization required.

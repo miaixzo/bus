@@ -31,7 +31,7 @@ import org.miaixz.bus.logger.Logger;
 public final class ItemRevisionNumbers {
 
     /**
-     * Prevents utility class instantiation.
+     * Keeps configuration revision-number handling on the static API.
      */
     private ItemRevisionNumbers() {
         // No initialization required.

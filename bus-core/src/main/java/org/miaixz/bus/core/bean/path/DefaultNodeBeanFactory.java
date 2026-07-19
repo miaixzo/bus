@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.*;
 public class DefaultNodeBeanFactory implements NodeBeanFactory<Object> {
 
     /**
-     * Constructs a new DefaultNodeBeanFactory. Utility class constructor for static access.
+     * Creates the default factory used to materialize bean-path nodes.
      */
     private DefaultNodeBeanFactory() {
         // No initialization required.

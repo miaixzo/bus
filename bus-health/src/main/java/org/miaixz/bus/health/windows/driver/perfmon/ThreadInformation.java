@@ -38,7 +38,7 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 public final class ThreadInformation {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Windows thread information performance-counter queries on the static API.
      */
     private ThreadInformation() {
         // No initialization required.

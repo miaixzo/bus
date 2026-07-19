@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CreditCode {
 
     /**
-     * Constructs a new CreditCode. Utility class constructor for static access.
+     * Keeps unified social credit-code validation on the static API.
      */
     private CreditCode() {
         // No initialization required.

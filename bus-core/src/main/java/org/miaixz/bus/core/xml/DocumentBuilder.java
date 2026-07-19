@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class DocumentBuilder {
 
     /**
-     * Constructs a new DocumentBuilder. Utility class constructor for static access.
+     * Keeps XML document-builder creation on the static API.
      */
     private DocumentBuilder() {
         // No initialization required.

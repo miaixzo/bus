@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 public final class HttpLine {
 
     /**
-     * Creates utility helpers.
+     * Keeps HTTP start-line parsing on the static API.
      */
     private HttpLine() {
         // No initialization required.

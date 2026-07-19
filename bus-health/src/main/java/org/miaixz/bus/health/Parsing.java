@@ -57,7 +57,7 @@ import org.miaixz.bus.logger.Logger;
 public final class Parsing {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps health-data parsing on the static API.
      */
     private Parsing() {
         // No initialization required.

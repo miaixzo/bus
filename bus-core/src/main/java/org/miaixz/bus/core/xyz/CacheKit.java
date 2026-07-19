@@ -30,7 +30,7 @@ import org.miaixz.bus.core.cache.provider.*;
 public class CacheKit {
 
     /**
-     * Constructs a new CacheKit. Utility class constructor for static access.
+     * Keeps cache construction and access on the static API.
      */
     private CacheKit() {
         // No initialization required.

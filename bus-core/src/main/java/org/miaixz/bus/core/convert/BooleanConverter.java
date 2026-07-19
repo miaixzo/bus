@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.BooleanKit;
 public class BooleanConverter extends AbstractConverter {
 
     /**
-     * Constructs a new BooleanConverter. Utility class constructor for static access.
+     * Creates a new {@code BooleanConverter} instance.
      */
     public BooleanConverter() {
         // No initialization required.

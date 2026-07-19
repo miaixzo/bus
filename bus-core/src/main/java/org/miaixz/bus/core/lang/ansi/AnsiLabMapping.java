@@ -32,7 +32,7 @@ import java.util.Map;
 public abstract class AnsiLabMapping {
 
     /**
-     * Constructs a new AnsiLabMapping. Utility class constructor for static access.
+     * Creates a new {@code AnsiLabMapping} instance.
      */
     AnsiLabMapping() {
         // No initialization required.

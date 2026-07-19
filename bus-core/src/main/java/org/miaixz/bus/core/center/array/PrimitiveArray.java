@@ -54,7 +54,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class PrimitiveArray extends ArrayValidator {
 
     /**
-     * Constructs a new PrimitiveArray. Utility class constructor for static access.
+     * Creates a new {@code PrimitiveArray} instance.
      */
     public PrimitiveArray() {
         // No initialization required.

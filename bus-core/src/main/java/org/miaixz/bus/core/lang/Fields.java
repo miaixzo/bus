@@ -56,7 +56,7 @@ package org.miaixz.bus.core.lang;
 public class Fields {
 
     /**
-     * Constructs a new Fields. Utility class constructor for static access.
+     * Keeps shared date and time format patterns on the static API.
      */
     private Fields() {
         // No initialization required.

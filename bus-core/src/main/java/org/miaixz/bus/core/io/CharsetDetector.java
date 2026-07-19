@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class CharsetDetector {
 
     /**
-     * Constructs a new CharsetDetector. Utility class constructor for static access.
+     * Keeps byte-stream charset detection on the static API.
      */
     private CharsetDetector() {
         // No initialization required.

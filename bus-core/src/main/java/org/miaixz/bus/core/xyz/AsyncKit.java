@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class AsyncKit {
 
     /**
-     * Constructs a new AsyncKit. Utility class constructor for static access.
+     * Keeps asynchronous task coordination on the static API.
      */
     private AsyncKit() {
         // No initialization required.

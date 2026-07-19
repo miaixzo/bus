@@ -95,7 +95,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class AnnotatedElements {
 
     /**
-     * Constructs a new AnnotatedElements. Utility class constructor for static access.
+     * Keeps merged-annotation traversal on the static API.
      */
     private AnnotatedElements() {
         // No initialization required.

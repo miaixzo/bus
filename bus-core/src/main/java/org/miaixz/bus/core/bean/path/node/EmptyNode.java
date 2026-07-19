@@ -29,7 +29,7 @@ package org.miaixz.bus.core.bean.path.node;
 public class EmptyNode implements Node {
 
     /**
-     * Constructs a new EmptyNode. Utility class constructor for static access.
+     * Creates the shared empty bean-path node.
      */
     private EmptyNode() {
         // No initialization required.

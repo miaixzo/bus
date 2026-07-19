@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
 public class FieldKit {
 
     /**
-     * Constructs a new FieldKit. Utility class constructor for static access.
+     * Keeps reflected field access on the static API.
      */
     private FieldKit() {
         // No initialization required.

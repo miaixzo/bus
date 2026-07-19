@@ -37,7 +37,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32Fan {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Win32 fan queries on the static API.
      */
     private Win32Fan() {
         // No initialization required.

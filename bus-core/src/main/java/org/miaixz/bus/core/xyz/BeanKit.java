@@ -60,7 +60,7 @@ import org.miaixz.bus.core.lang.mutable.MutableEntry;
 public class BeanKit {
 
     /**
-     * Constructs a new BeanKit. Utility class constructor for static access.
+     * Keeps bean inspection, copying, and property access on the static API.
      */
     private BeanKit() {
         // No initialization required.

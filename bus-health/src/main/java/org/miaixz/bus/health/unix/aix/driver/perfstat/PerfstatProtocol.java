@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class PerfstatProtocol {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps AIX perfstat protocol queries on the static API.
      */
     private PerfstatProtocol() {
         // No initialization required.

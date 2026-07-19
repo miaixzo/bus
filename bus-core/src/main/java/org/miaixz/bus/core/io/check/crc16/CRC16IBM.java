@@ -32,7 +32,7 @@ import java.io.Serial;
 public class CRC16IBM extends CRC16Checksum {
 
     /**
-     * Constructs a new CRC16IBM. Utility class constructor for static access.
+     * Creates a new {@code CRC16IBM} instance.
      */
     public CRC16IBM() {
         // No initialization required.

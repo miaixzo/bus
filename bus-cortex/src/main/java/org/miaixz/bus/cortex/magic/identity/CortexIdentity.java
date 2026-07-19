@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Normal;
 public final class CortexIdentity {
 
     /**
-     * Creates the shared identity utility holder.
+     * Keeps Cortex identity handling on the static API.
      */
     private CortexIdentity() {
         // No initialization required.

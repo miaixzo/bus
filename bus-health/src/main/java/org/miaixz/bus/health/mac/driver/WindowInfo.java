@@ -43,7 +43,7 @@ import org.miaixz.bus.health.mac.jna.CoreGraphics;
 public final class WindowInfo {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps macOS desktop-window queries on the static API.
      */
     private WindowInfo() {
         // No initialization required.

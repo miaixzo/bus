@@ -59,7 +59,7 @@ import io.temporal.workflow.Workflow;
 public final class NativeWorkflowAdapter {
 
     /**
-     * Utility class constructor.
+     * Keeps native-image workflow adaptation on the static API.
      */
     private NativeWorkflowAdapter() {
         // No initialization required.

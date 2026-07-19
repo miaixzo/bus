@@ -32,7 +32,7 @@ import java.io.Serial;
 public class CRC16XModem extends CRC16Checksum {
 
     /**
-     * Constructs a new CRC16XModem. Utility class constructor for static access.
+     * Creates a CRC-16/XMODEM checksum implementation.
      */
     private CRC16XModem() {
         // No initialization required.

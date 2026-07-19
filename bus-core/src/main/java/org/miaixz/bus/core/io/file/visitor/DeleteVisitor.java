@@ -35,7 +35,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 public class DeleteVisitor extends SimpleFileVisitor<Path> {
 
     /**
-     * Constructs a new DeleteVisitor. Utility class constructor for static access.
+     * Creates the shared file-tree deletion visitor.
      */
     private DeleteVisitor() {
         // No initialization required.

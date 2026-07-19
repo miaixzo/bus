@@ -36,7 +36,7 @@ import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
 public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
 
     /**
-     * Constructs a new Base58Provider. Utility class constructor for static access.
+     * Creates the shared Base58 codec provider.
      */
     private Base58Provider() {
         // No initialization required.

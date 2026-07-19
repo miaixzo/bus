@@ -49,7 +49,7 @@ public final class ProxyHeaderReader {
     private static final byte[] PREFIX = "PROXY ".getBytes(Charset.US_ASCII);
 
     /**
-     * Utility class.
+     * Keeps proxy-header decoding on the static API.
      */
     private ProxyHeaderReader() {
         // No initialization required.

@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AnyTrustManager extends X509ExtendedTrustManager {
 
     /**
-     * Constructs a new AnyTrustManager. Utility class constructor for static access.
+     * Creates the shared trust manager that accepts every certificate.
      */
     private AnyTrustManager() {
         // No initialization required.

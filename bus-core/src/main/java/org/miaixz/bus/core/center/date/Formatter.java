@@ -57,7 +57,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
 public class Formatter {
 
     /**
-     * Constructs a new Formatter. Utility class constructor for static access.
+     * Creates a new {@code Formatter} instance.
      */
     public Formatter() {
         // No initialization required.

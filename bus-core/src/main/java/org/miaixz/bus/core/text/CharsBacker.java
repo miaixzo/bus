@@ -80,7 +80,7 @@ import org.miaixz.bus.core.xyz.*;
 public class CharsBacker extends CharsValidator {
 
     /**
-     * Constructs a new CharsBacker. Utility class constructor for static access.
+     * Creates a new {@code CharsBacker} instance.
      */
     public CharsBacker() {
         // No initialization required.

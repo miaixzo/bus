@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.protocol.Cookie;
 public final class HttpCookie {
 
     /**
-     * Prevents utility construction.
+     * Keeps HTTP cookie parsing and formatting on the static API.
      */
     private HttpCookie() {
         // No initialization required.

@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], byte[]>, Serializable {
 
     /**
-     * Constructs a new Base62Provider. Utility class constructor for static access.
+     * Creates the shared Base62 codec provider.
      */
     private Base62Provider() {
         // No initialization required.

@@ -46,7 +46,7 @@ import org.miaixz.bus.logger.Logger;
 public final class PerfCounterWildcardQuery {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps wildcard Windows performance-counter queries on the static API.
      */
     private PerfCounterWildcardQuery() {
         // No initialization required.

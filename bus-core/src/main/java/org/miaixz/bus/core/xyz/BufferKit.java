@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class BufferKit {
 
     /**
-     * Constructs a new BufferKit. Utility class constructor for static access.
+     * Keeps byte-buffer and character-buffer operations on the static API.
      */
     private BufferKit() {
         // No initialization required.

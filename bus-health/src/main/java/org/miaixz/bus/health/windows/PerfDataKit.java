@@ -52,7 +52,7 @@ import org.miaixz.bus.logger.Logger;
 public final class PerfDataKit {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Windows performance-data parsing on the static API.
      */
     private PerfDataKit() {
         // No initialization required.

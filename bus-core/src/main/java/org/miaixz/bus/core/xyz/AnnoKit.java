@@ -52,7 +52,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class AnnoKit {
 
     /**
-     * Constructs a new AnnoKit. Utility class constructor for static access.
+     * Keeps annotation lookup and synthesis on the static API.
      */
     private AnnoKit() {
         // No initialization required.

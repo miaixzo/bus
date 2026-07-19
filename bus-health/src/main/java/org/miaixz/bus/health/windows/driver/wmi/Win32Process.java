@@ -40,7 +40,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32Process {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Win32 process queries on the static API.
      */
     private Win32Process() {
         // No initialization required.

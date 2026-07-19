@@ -35,7 +35,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 public final class ItemBindingProjection {
 
     /**
-     * Prevents utility class instantiation.
+     * Keeps configuration binding projection on the static API.
      */
     private ItemBindingProjection() {
         // No initialization required.

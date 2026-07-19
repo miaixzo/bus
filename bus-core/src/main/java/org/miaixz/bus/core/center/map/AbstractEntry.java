@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public abstract class AbstractEntry<K, V> implements Map.Entry<K, V> {
 
     /**
-     * Constructs a new AbstractEntry. Utility class constructor for static access.
+     * Creates a new {@code AbstractEntry} instance.
      */
     public AbstractEntry() {
         // No initialization required.

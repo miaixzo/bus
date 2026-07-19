@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
 
     /**
-     * Constructs a new Base64Decoder. Utility class constructor for static access.
+     * Creates the shared Base64 decoder.
      */
     private Base64Decoder() {
         // No initialization required.

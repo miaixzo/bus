@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class Graph<T> extends SetValueMap<T, T> {
 
     /**
-     * Constructs a new Graph. Utility class constructor for static access.
+     * Creates a new {@code Graph} instance.
      */
     public Graph() {
         // No initialization required.

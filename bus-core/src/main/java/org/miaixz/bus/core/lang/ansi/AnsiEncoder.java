@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class AnsiEncoder {
 
     /**
-     * Constructs a new AnsiEncoder. Utility class constructor for static access.
+     * Keeps ANSI escape-sequence encoding on the static API.
      */
     private AnsiEncoder() {
         // No initialization required.
