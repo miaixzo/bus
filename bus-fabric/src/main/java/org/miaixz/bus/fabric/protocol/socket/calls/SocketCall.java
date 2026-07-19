@@ -41,10 +41,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class SocketCall extends MonoCall<SocketSession> {
 
     /**
-     * Activity name for asynchronous socket opens.
-     */
-
-    /**
      * Socket protocol operation.
      */
     private final Function<Cancellation, SocketSession> operation;

@@ -42,6 +42,8 @@ import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpRunner;
 import org.miaixz.bus.fabric.protocol.sse.body.SseBody;
@@ -222,8 +224,11 @@ final class SseRunner {
         final HttpRequest request = HttpRequest.builder().method(HTTP.Method.GET)
                 .url(UnoUrl.parse(snapshot.uri().toString())).headers(opening.headers()).timeout(snapshot.timeout())
                 .build();
-        final HttpRunner.Stream response = HttpRunner
-                .stream(snapshot.context().withFilter(null), request, cancellation);
+        final HttpRunner.Stream response = Mediator.convert(
+                Type.SSE,
+                Type.HTTP_STREAM,
+                cancellation,
+                current -> HttpRunner.stream(snapshot.context().withFilter(null), request, current));
         final Message accepted = filter(
                 Message.of(
                         Protocol.HTTP,

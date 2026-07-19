@@ -42,6 +42,8 @@ import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpRunner;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader;
@@ -59,10 +61,6 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 public final class WebSocketRunner {
-
-    /**
-     * WebSocket open filter tag.
-     */
 
     /**
      * Execution snapshot.
@@ -134,7 +132,11 @@ public final class WebSocketRunner {
             final HttpRequest request = HttpRequest.builder().method(HTTP.Method.GET)
                     .url(UnoUrl.parse(upgrade.httpUri(snapshot.uri()).toString()))
                     .headers(upgrade.headers(opening.headers())).timeout(snapshot.timeout()).build();
-            upgraded = HttpRunner.upgrade(snapshot.context(), request, currentCancellation);
+            upgraded = Mediator.convert(
+                    Type.WEBSOCKET,
+                    Type.HTTP_UPGRADE,
+                    currentCancellation,
+                    current -> HttpRunner.upgrade(snapshot.context(), request, current));
             currentCancellation.throwIfCancelled();
             upgrade.validate(upgraded.status(), upgraded.headers());
             final Connection connection = upgraded.connection();

@@ -48,6 +48,8 @@ import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.stomp.calls.StompCall;
 
 /**
@@ -199,7 +201,7 @@ public final class StompX {
                 snapshot.context().reactor().dispatcher(),
                 callback,
                 snapshot.observer(),
-                runner::open,
+                cancellation -> Mediator.execute(Type.STOMP, cancellation, runner::open),
                 dispatchKey());
     }
 

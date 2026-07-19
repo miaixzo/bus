@@ -54,6 +54,8 @@ import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Demuxer;
 import org.miaixz.bus.fabric.protocol.Itinerary;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.socket.calls.SocketCall;
 
 /**
@@ -63,10 +65,6 @@ import org.miaixz.bus.fabric.protocol.socket.calls.SocketCall;
  * @since Java 21+
  */
 public final class SocketX {
-
-    /**
-     * Context option key for the default timeout policy.
-     */
 
     /**
      * Immutable execution snapshot.
@@ -209,7 +207,7 @@ public final class SocketX {
                 snapshot.context().reactor().dispatcher(),
                 callback,
                 snapshot.observer(),
-                runner::open,
+                cancellation -> Mediator.execute(Type.SOCKET, cancellation, runner::open),
                 dispatchKey());
     }
 

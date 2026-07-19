@@ -59,6 +59,8 @@ import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
 import org.miaixz.bus.fabric.protocol.http.body.FileBody;
 import org.miaixz.bus.fabric.protocol.http.body.FormBody;
@@ -142,7 +144,11 @@ public final class HttpX {
      * @return response call
      */
     public Call<HttpResponse> call() {
-        return HttpCall.create(snapshot.request(), snapshot.context().reactor().dispatcher(), callback, runner::run);
+        return HttpCall.create(
+                snapshot.request(),
+                snapshot.context().reactor().dispatcher(),
+                callback,
+                cancellation -> Mediator.execute(Type.HTTP, cancellation, runner::run));
     }
 
     /**

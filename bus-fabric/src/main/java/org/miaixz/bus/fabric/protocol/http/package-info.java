@@ -21,11 +21,13 @@
  * Implements the current HTTP request/response exchange model.
  *
  * <p>
- * {@code HttpX} is the builder and immutable exchange entry, {@code SoapX} provides the SOAP-over-HTTP entry,
- * {@code HttpRunner} executes snapshots, and request, response and cookie types carry HTTP semantics. This package owns
- * HTTP method, header, redirect and response body behavior while delegating connection acquisition, TLS and proxy
- * routing to network and registry packages. HTTP/1 and HTTP/2 codecs use core.io {@code Source}, {@code Sink}, and
- * {@code Buffer} for connection IO; protocol code must not call legacy connection read/write methods directly.
+ * Synchronous and asynchronous client requests follow {@code HttpX -> HttpCall -> Mediator -> HttpRunner}.
+ * {@code SoapX} delegates to {@code HttpX}, and the default Context-backed {@code HttpDownload} exchange also enters
+ * {@code HttpRunner} through {@code Mediator}; a custom download Exchange remains caller supplied. {@code HTTP_STREAM}
+ * and {@code HTTP_UPGRADE} are internal carrier targets reached only by the allowed SSE and WebSocket conversions.
+ * Request, response and cookie types carry HTTP semantics, while connection acquisition, TLS and proxy routing remain
+ * in the network and registry packages. HTTP/1 and HTTP/2 codecs use core.io {@code Source}, {@code Sink}, and
+ * {@code Buffer} for connection IO.
  * </p>
  *
  * @author Kimi Liu

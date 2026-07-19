@@ -21,10 +21,11 @@
  * Implements current socket exchanges, sessions, runners and server-side socket utilities.
  *
  * <p>
- * {@code SocketX} is the client builder, {@code SocketServer} is the server listener builder, and {@code SocketSession}
- * is the shared client/server session that owns framed message read/write, guard checks, observations and handler
- * lifecycle. {@code SocketRunner} opens client TCP, UDP, KCP or TLS transports while server accepted channels are
- * adapted through the shared network package.
+ * Synchronous and asynchronous client opens follow {@code SocketX -> SocketCall -> Mediator -> SocketRunner}. Socket
+ * has no carrier conversion. {@code SocketSession} owns established-session framed message read/write, guard checks,
+ * observations and handler lifecycle. {@code SocketServer} and accepted server channels remain server-side paths and do
+ * not enter the client Mediator route. {@code SocketRunner} opens client TCP, UDP, KCP or TLS transports through the
+ * shared network package.
  * </p>
  *
  * @author Kimi Liu

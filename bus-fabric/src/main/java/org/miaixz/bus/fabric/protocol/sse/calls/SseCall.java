@@ -41,10 +41,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class SseCall extends MonoCall<SseSession> {
 
     /**
-     * Dispatcher activity name for opening the SSE stream.
-     */
-
-    /**
      * SSE protocol operation.
      */
     private final Function<Cancellation, SseSession> operation;

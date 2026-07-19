@@ -41,10 +41,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class WebSocketCall extends MonoCall<WebSocketSession> {
 
     /**
-     * Dispatcher activity name for opening the WebSocket session.
-     */
-
-    /**
      * WebSocket protocol operation.
      */
     private final Function<Cancellation, WebSocketSession> operation;

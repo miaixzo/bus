@@ -41,10 +41,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class StompCall extends MonoCall<StompSession> {
 
     /**
-     * Dispatcher activity name for opening the STOMP session.
-     */
-
-    /**
      * STOMP protocol operation.
      */
     private final Function<Cancellation, StompSession> operation;

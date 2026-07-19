@@ -52,6 +52,8 @@ import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Demuxer;
 import org.miaixz.bus.fabric.protocol.Itinerary;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.websocket.calls.WebSocketCall;
 
 /**
@@ -138,7 +140,7 @@ public final class WebSocketX {
                 snapshot.context().reactor().dispatcher(),
                 callback,
                 snapshot.observer(),
-                runner::open,
+                cancellation -> Mediator.execute(Type.WEBSOCKET, cancellation, runner::open),
                 dispatchKey());
     }
 

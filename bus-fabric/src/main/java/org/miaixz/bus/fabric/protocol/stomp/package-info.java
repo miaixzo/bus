@@ -21,9 +21,11 @@
  * Implements STOMP exchanges, sessions and listener lifecycle.
  *
  * <p>
- * {@code StompX} opens a framed STOMP connection, {@code StompSession} manages CONNECT, SEND, SUBSCRIBE, ACK and close
- * behavior, and listeners receive session lifecycle events. This package owns STOMP command semantics while frame
- * encoding and body handling are delegated to child packages.
+ * Synchronous and asynchronous client opens follow {@code StompX -> StompCall -> Mediator -> StompRunner}. The runner
+ * establishes its carrier only through the allowed {@code Mediator.convert(STOMP, WEBSOCKET) -> WebSocketRunner}
+ * transition; the WebSocket runner then performs its own allowed HTTP upgrade conversion. {@code StompRunner} completes
+ * the CONNECT handshake, and {@code StompSession} manages established-session SEND, SUBSCRIBE, ACK and close behavior.
+ * Listeners receive lifecycle events, while child packages own frame encoding and body handling.
  * </p>
  *
  * @author Kimi Liu

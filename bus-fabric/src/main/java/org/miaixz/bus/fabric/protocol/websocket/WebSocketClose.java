@@ -38,38 +38,6 @@ import org.miaixz.bus.fabric.Builder;
 public record WebSocketClose(int code, String reason, boolean normal) {
 
     /**
-     * Normal close status code.
-     */
-
-    /**
-     * First protocol-defined close status code after normal close.
-     */
-
-    /**
-     * Last protocol-defined close status code accepted by this implementation.
-     */
-
-    /**
-     * Reserved no-status close code.
-     */
-
-    /**
-     * Reserved abnormal close code.
-     */
-
-    /**
-     * First application-defined close status code.
-     */
-
-    /**
-     * Last application-defined close status code.
-     */
-
-    /**
-     * Maximum close reason payload bytes after the two-byte close code.
-     */
-
-    /**
      * Creates a close description.
      *
      * @param code   close code

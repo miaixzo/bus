@@ -49,6 +49,8 @@ import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.sse.calls.SseCall;
 import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
 
@@ -59,10 +61,6 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
  * @since Java 21+
  */
 public final class SseX {
-
-    /**
-     * Runtime option key for default timeout.
-     */
 
     /**
      * Immutable execution snapshot.
@@ -197,7 +195,7 @@ public final class SseX {
                 snapshot.context().reactor().dispatcher(),
                 callback,
                 snapshot.observer(),
-                runner::open,
+                cancellation -> Mediator.execute(Type.SSE, cancellation, runner::open),
                 dispatchKey());
     }
 

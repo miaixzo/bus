@@ -43,6 +43,8 @@ import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompCodec;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompFrame;
 import org.miaixz.bus.fabric.protocol.websocket.WebSocketRunner;
@@ -108,34 +110,40 @@ final class StompRunner {
             final StompCodec inbound = new StompCodec();
             final CompletableFuture<StompFrame> connected = new CompletableFuture<>();
             final AtomicReference<StompSession> session = new AtomicReference<>();
-            final Session webSocket = WebSocketRunner.create(
-                    snapshot.context().withFilter(null),
-                    snapshot.uri(),
-                    opening.headers(),
-                    snapshot.timeout(),
-                    (ignored, message) -> {
-                        try {
-                            final Buffer input = new Buffer();
-                            input.write(message.payload().bytes(snapshot.context().options().materializeMaxBytes()));
-                            for (final StompFrame frame : inbound.decode(input)) {
-                                if (Builder.STOMP_COMMAND_CONNECTED.equals(frame.command())) {
-                                    final StompFrame filtered = filter(frame, Builder.STOMP_TAG_CONNECTED);
-                                    connected.complete(filtered);
-                                } else if (Builder.STOMP_COMMAND_ERROR.equals(frame.command())) {
-                                    final StompFrame filtered = filter(frame, Builder.STOMP_TAG_ERROR);
-                                    connected.completeExceptionally(
-                                            new ProtocolException(filtered.body().text(Charset.UTF_8)));
-                                } else {
-                                    final StompSession opened = session.get();
-                                    if (opened != null) {
-                                        opened.dispatch(frame);
+            final Session webSocket = Mediator.convert(
+                    Type.STOMP,
+                    Type.WEBSOCKET,
+                    currentCancellation,
+                    current -> WebSocketRunner.create(
+                            snapshot.context().withFilter(null),
+                            snapshot.uri(),
+                            opening.headers(),
+                            snapshot.timeout(),
+                            (ignored, message) -> {
+                                try {
+                                    final Buffer input = new Buffer();
+                                    input.write(
+                                            message.payload()
+                                                    .bytes(snapshot.context().options().materializeMaxBytes()));
+                                    for (final StompFrame frame : inbound.decode(input)) {
+                                        if (Builder.STOMP_COMMAND_CONNECTED.equals(frame.command())) {
+                                            final StompFrame filtered = filter(frame, Builder.STOMP_TAG_CONNECTED);
+                                            connected.complete(filtered);
+                                        } else if (Builder.STOMP_COMMAND_ERROR.equals(frame.command())) {
+                                            final StompFrame filtered = filter(frame, Builder.STOMP_TAG_ERROR);
+                                            connected.completeExceptionally(
+                                                    new ProtocolException(filtered.body().text(Charset.UTF_8)));
+                                        } else {
+                                            final StompSession opened = session.get();
+                                            if (opened != null) {
+                                                opened.dispatch(frame);
+                                            }
+                                        }
                                     }
+                                } catch (final RuntimeException e) {
+                                    connected.completeExceptionally(e);
                                 }
-                            }
-                        } catch (final RuntimeException e) {
-                            connected.completeExceptionally(e);
-                        }
-                    }).open(currentCancellation);
+                            }).open(current));
             socket = webSocket;
             final Session openedSocket = socket;
             final Runnable unregisterCancellation = currentCancellation.onCancel(openedSocket::cancel);

@@ -45,66 +45,6 @@ import org.miaixz.bus.fabric.Builder;
 public final class WebSocketWriter implements AutoCloseable {
 
     /**
-     * Binary opcode.
-     */
-
-    /**
-     * Ping opcode.
-     */
-
-    /**
-     * Pong opcode.
-     */
-
-    /**
-     * FIN bit mask.
-     */
-
-    /**
-     * Payload mask flag.
-     */
-
-    /**
-     * Inline payload length limit.
-     */
-
-    /**
-     * Marker for unsigned 16-bit payload length.
-     */
-
-    /**
-     * Marker for unsigned 64-bit payload length.
-     */
-
-    /**
-     * Byte mask.
-     */
-
-    /**
-     * First shift for an eight-byte network-order long.
-     */
-
-    /**
-     * Bits per payload length byte.
-     */
-
-    /**
-     * WebSocket mask key byte length.
-     */
-
-    /**
-     * Last mask key index for modulo arithmetic.
-     */
-
-    /**
-     * Cursor value returned when no segment is available.
-     */
-
-    /**
-     * Maximum message payload bytes accepted by this implementation.
-     */
-
-    /**
      * Output sink.
      */
     private final Sink output;
