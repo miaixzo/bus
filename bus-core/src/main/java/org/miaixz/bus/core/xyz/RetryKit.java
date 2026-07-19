@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.thread.RetryableTask;
 public class RetryKit {
 
     /**
-     * Creates a retry-operation helper.
+     * Creates an instance for retrying tasks after configured failures.
      */
     public RetryKit() {
         // No initialization required.

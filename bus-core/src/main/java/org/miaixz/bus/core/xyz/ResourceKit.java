@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ResourceKit {
 
     /**
-     * Creates a resource-loading helper.
+     * Creates an instance for locating and reading resources.
      */
     public ResourceKit() {
         // No initialization required.

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.center.set.SetFromMap;
 public class SetKit {
 
     /**
-     * Creates a set-operation helper.
+     * Creates an instance for set creation and manipulation.
      */
     public SetKit() {
         // No initialization required.

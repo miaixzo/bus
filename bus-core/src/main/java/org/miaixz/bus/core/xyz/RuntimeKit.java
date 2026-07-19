@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class RuntimeKit {
 
     /**
-     * Creates a runtime-process helper.
+     * Creates an instance for executing system commands and reading their output.
      */
     public RuntimeKit() {
         // No initialization required.

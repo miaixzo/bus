@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.thread.*;
 public class ThreadKit {
 
     /**
-     * Creates a thread-management helper.
+     * Creates an instance for thread and executor operations.
      */
     public ThreadKit() {
         // No initialization required.

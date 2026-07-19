@@ -44,7 +44,7 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
     private Map<E, String> namesMap;
 
     /**
-     * Creates a JSON enum helper for lower-case enum values.
+     * Initializes enum name mappings with lower-case serialized values.
      *
      * @param enumType the enum type
      */
@@ -53,7 +53,7 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
     }
 
     /**
-     * Creates a JSON enum helper.
+     * Initializes enum name mappings with configurable first-letter capitalization.
      *
      * @param enumType               the enum type
      * @param firstLetterCapitalized whether the first letter is capitalized
@@ -76,7 +76,7 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
     }
 
     /**
-     * Creates a JSON enum helper with optional camel-case values.
+     * Initializes enum name mappings with optional first-letter capitalization and camel-case conversion.
      *
      * @param enumType               the enum type
      * @param firstLetterCapitalized whether the first letter is capitalized
@@ -87,7 +87,8 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
     }
 
     /**
-     * Creates a JSON enum helper with optional camel-case values and underscore preservation.
+     * Initializes enum name mappings with configurable capitalization, camel-case conversion, and underscore
+     * preservation.
      *
      * @param enumType               the enum type
      * @param firstLetterCapitalized whether the first letter is capitalized
