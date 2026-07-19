@@ -97,7 +97,7 @@ public class Assets {
 - `namespace`、`type`、`app_id` 是可选路由范围；缺失时只跳过对应层级
 - `type` 在 route key 中统一使用数字 `Type.key()`
 - `verb` 在 route key 中统一使用数字 verb code，而不是 `GET` / `POST` 文本
-- `ApiAssets.routeKey` 继续保留为轻量公开别名 `method:version:verbCode`
+- `ApiAssets.key` 继续保留为轻量公开别名 `method:version:verbCode`
 - 注册和查询共用同一条候选链
 - 查询命中首个“有候选结果”的层级后，如果该层有多个资产，则直接返回 `null`
 

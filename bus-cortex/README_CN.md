@@ -54,7 +54,7 @@ ApiAssets（服务定义，canonical identity = namespace + type + method + vers
 
 相同 fingerprint 重复注册视为**幂等刷新 TTL**，不视为冲突。
 
-**网关路由语义**：同步到 bus-vortex 时，`ApiAssets.routeKey` 继续保留为轻量公开别名
+**网关路由语义**：同步到 bus-vortex 时，`ApiAssets.key` 继续保留为轻量公开别名
 `method:version:verbCode`，例如 `dp.license.get:1.0:1`。真正的运行时候选链由 `Keying` 单独生成，顺序为：
 
 1. `namespace:type:app_id:method:version:verb`

@@ -98,7 +98,7 @@ public class Assets {
 - `namespace`, `type`, and `app_id` are optional route scopes; when absent the corresponding levels are skipped
 - `type` always uses numeric `Type.key()` inside route keys
 - `verb` always uses the numeric verb code rather than `GET` / `POST` text
-- `ApiAssets.routeKey` remains the lightweight public alias `method:version:verbCode`
+- `ApiAssets.key` remains the lightweight public alias `method:version:verbCode`
 - Registration and lookup share the same candidate chain
 - Lookup stops at the first level that has candidates; if that level resolves to multiple assets, the gateway returns `null`
 

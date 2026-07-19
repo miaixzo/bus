@@ -4112,7 +4112,7 @@
           "parameterTypes": []
         },
         {
-          "name": "$default$leaseSeconds",
+          "name": "$default$lease",
           "parameterTypes": []
         },
         {
@@ -4174,7 +4174,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getLeaseSeconds",
+          "name": "getLease",
           "parameterTypes": []
         },
         {
@@ -4286,7 +4286,7 @@
           ]
         },
         {
-          "name": "setLeaseSeconds",
+          "name": "setLease",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -4454,7 +4454,7 @@
           ]
         },
         {
-          "name": "leaseSeconds",
+          "name": "lease",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -6846,21 +6846,21 @@
           ]
         },
         {
-          "name": "heartbeatIntervalMs",
+          "name": "beat",
           "parameterTypes": []
         },
         {
-          "name": "heartbeatIntervalMs",
+          "name": "beat",
           "parameterTypes": [
             "java.lang.Long"
           ]
         },
         {
-          "name": "leaseSeconds",
+          "name": "lease",
           "parameterTypes": []
         },
         {
-          "name": "leaseSeconds",
+          "name": "lease",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -6892,11 +6892,11 @@
           ]
         },
         {
-          "name": "routeKey",
+          "name": "key",
           "parameterTypes": []
         },
         {
-          "name": "routeKey",
+          "name": "key",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -7034,15 +7034,15 @@
           ]
         },
         {
-          "name": "getHeartbeatIntervalMs",
+          "name": "getBeat",
           "parameterTypes": []
         },
         {
-          "name": "getLeaseSeconds",
+          "name": "getLease",
           "parameterTypes": []
         },
         {
-          "name": "getRouteKey",
+          "name": "getKey",
           "parameterTypes": []
         },
         {
@@ -7050,19 +7050,19 @@
           "parameterTypes": []
         },
         {
-          "name": "setHeartbeatIntervalMs",
+          "name": "setBeat",
           "parameterTypes": [
             "java.lang.Long"
           ]
         },
         {
-          "name": "setLeaseSeconds",
+          "name": "setLease",
           "parameterTypes": [
             "java.lang.Integer"
           ]
         },
         {
-          "name": "setRouteKey",
+          "name": "setKey",
           "parameterTypes": [
             "java.lang.String"
           ]

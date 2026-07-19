@@ -260,8 +260,8 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         if (instance == null) {
             return prepared;
         }
-        if (instance.getLeaseSeconds() == null) {
-            instance.setLeaseSeconds(prepared.meta().getLeaseSeconds());
+        if (instance.getLease() == null) {
+            instance.setLease(prepared.meta().getLease());
         }
         if (StringKit.isEmpty(instance.getApp_id())) {
             instance.setApp_id(prepared.getApp_id());

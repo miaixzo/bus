@@ -172,7 +172,7 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-storage</artifactId>
         </dependency>
-        
+
     </dependencies>
 </project>
 ```

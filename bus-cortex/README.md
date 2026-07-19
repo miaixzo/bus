@@ -54,7 +54,7 @@ ApiAssets (definition, canonical identity = namespace + type + method + version[
 
 Same-fingerprint re-registration is treated as an **idempotent TTL refresh**, not a conflict.
 
-**Gateway Route Semantics**: When synchronized to bus-vortex, `ApiAssets.routeKey` remains the lightweight public alias
+**Gateway Route Semantics**: When synchronized to bus-vortex, `ApiAssets.key` remains the lightweight public alias
 `method:version:verbCode`, for example `dp.license.get:1.0:1`. Runtime lookup candidates are generated separately by
 `Keying` in this order:
 

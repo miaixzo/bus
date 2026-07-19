@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.registry.api;
 
+import java.util.Map;
+
 import jakarta.persistence.Transient;
 
 import lombok.Getter;
@@ -31,6 +33,7 @@ import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import org.miaixz.bus.cortex.registry.MetadataCodec;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -49,7 +52,7 @@ public class ApiAssets extends Assets {
     /**
      * Default service lease duration used when API metadata does not define one.
      */
-    private static final int DEFAULT_LEASE_SECONDS = 30;
+    private static final int DEFAULT_LEASE = 30;
 
     /**
      * API-specific metadata view.
@@ -94,7 +97,7 @@ public class ApiAssets extends Assets {
      */
     public void meta(Meta meta) {
         this.meta = meta == null ? new Meta() : meta;
-        super.metadata(this.meta.merge());
+        super.metadata(this.meta.merge(getMetadata()));
     }
 
     /**
@@ -115,34 +118,34 @@ public class ApiAssets extends Assets {
     public ApiAssets normalizeMeta(Keying<Keying.RegistrySpec> keying) {
         Keying<Keying.RegistrySpec> effective = keying == null ? RegistryGenerator.INSTANCE : keying;
         Meta meta = meta();
-        meta.setRouteKey(defaultRouteKey(effective));
-        if (meta.getLeaseSeconds() == null) {
-            meta.setLeaseSeconds(DEFAULT_LEASE_SECONDS);
+        meta.setKey(defaultKey(effective));
+        if (meta.getLease() == null) {
+            meta.setLease(DEFAULT_LEASE);
         }
-        if (meta.getHeartbeatIntervalMs() == null) {
-            meta.setHeartbeatIntervalMs(Builder.DEFAULT_HEALTH_INTERVAL_MS);
+        if (meta.getBeat() == null) {
+            meta.setBeat(Builder.DEFAULT_HEALTH_INTERVAL_MS);
         }
         meta(meta);
         return this;
     }
 
     /**
-     * Returns heartbeat interval from API metadata.
+     * Returns beat interval from API metadata.
      *
-     * @return heartbeat interval in milliseconds
+     * @return beat interval in milliseconds
      */
-    public Long heartbeatIntervalMs() {
-        return meta().getHeartbeatIntervalMs();
+    public Long beat() {
+        return meta().getBeat();
     }
 
     /**
-     * Stores heartbeat interval into API metadata.
+     * Stores beat interval into API metadata.
      *
-     * @param heartbeatIntervalMs heartbeat interval in milliseconds
+     * @param beat beat interval in milliseconds
      */
-    public void heartbeatIntervalMs(Long heartbeatIntervalMs) {
+    public void beat(Long beat) {
         Meta meta = meta();
-        meta.setHeartbeatIntervalMs(heartbeatIntervalMs);
+        meta.setBeat(beat);
         meta(meta);
     }
 
@@ -151,57 +154,57 @@ public class ApiAssets extends Assets {
      *
      * @return lease duration in seconds
      */
-    public Integer leaseSeconds() {
-        return meta().getLeaseSeconds();
+    public Integer lease() {
+        return meta().getLease();
     }
 
     /**
      * Stores service lease duration into API metadata.
      *
-     * @param leaseSeconds lease duration in seconds
+     * @param lease lease duration in seconds
      */
-    public void leaseSeconds(Integer leaseSeconds) {
+    public void lease(Integer lease) {
         Meta meta = meta();
-        meta.setLeaseSeconds(leaseSeconds);
+        meta.setLease(lease);
         meta(meta);
     }
 
     /**
-     * Returns route key from API metadata.
+     * Returns registry key from API metadata.
      * <p>
      * The built-in format uses {@code method:version:verbCode}, for example {@code dp.license.get:1.0:1}.
      * </p>
      *
-     * @return route key
+     * @return registry key
      */
-    public String routeKey() {
-        return meta().getRouteKey();
+    public String key() {
+        return meta().getKey();
     }
 
     /**
-     * Stores route key into API metadata.
+     * Stores registry key into API metadata.
      * <p>
-     * The built-in default route-key format uses the numeric registry verb code rather than the HTTP token string.
+     * The built-in default key format uses the numeric registry verb code rather than the HTTP token string.
      * </p>
      *
-     * @param routeKey route key
+     * @param key registry key
      */
-    public void routeKey(String routeKey) {
+    public void key(String key) {
         Meta meta = meta();
-        meta.setRouteKey(routeKey);
+        meta.setKey(key);
         meta(meta);
     }
 
     /**
-     * Builds the default public route alias from method, version, and numeric verb code.
+     * Builds the default public key from method, version, and numeric verb code.
      * <p>
      * This metadata field intentionally keeps the lightweight public alias semantics. Runtime lookup candidates are now
      * generated independently by the registry-side {@link Keying#keys(Object)} candidate chain.
      * </p>
      *
-     * @return default route key or {@code null}
+     * @return default key or {@code null}
      */
-    private String defaultRouteKey(Keying<Keying.RegistrySpec> keying) {
+    private String defaultKey(Keying<Keying.RegistrySpec> keying) {
         return keying.key(Keying.RegistrySpec.route(null, null, null, getMethod(), getVersion(), getVerb()));
     }
 
@@ -216,19 +219,34 @@ public class ApiAssets extends Assets {
     public static class Meta {
 
         /**
-         * Heartbeat interval in milliseconds expected for runtime instances of this service.
+         * Metadata key storing the generated registry key.
          */
-        private Long heartbeatIntervalMs;
+        private static final String KEY = "key";
+
+        /**
+         * Metadata key storing the beat interval.
+         */
+        private static final String BEAT = "beat";
+
+        /**
+         * Metadata key storing the service lease duration.
+         */
+        private static final String LEASE = "lease";
+        
+        /**
+         * Stable public key used by admin and bridge paths, for example {@code dp.license.get:1.0:1}.
+         */
+        private String key;
+
+        /**
+         * Beat interval in milliseconds expected for runtime instances of this service.
+         */
+        private Long beat;
 
         /**
          * Lease timeout in seconds for runtime instances of this service.
          */
-        private Integer leaseSeconds;
-
-        /**
-         * Stable public route alias used by admin and bridge paths, for example {@code dp.license.get:1.0:1}.
-         */
-        private String routeKey;
+        private Integer lease;
 
         /**
          * Creates an empty API metadata view.
@@ -268,7 +286,36 @@ public class ApiAssets extends Assets {
          * @return metadata JSON
          */
         public String merge() {
-            return JsonKit.toJsonString(this);
+            return merge(null);
+        }
+
+        /**
+         * Converts this API metadata to JSON while preserving extension fields already present in the raw metadata.
+         *
+         * @param metadata existing raw metadata JSON
+         * @return merged metadata JSON
+         */
+        public String merge(String metadata) {
+            Map<String, Object> root = MetadataCodec.root(metadata);
+            if (key == null) {
+                root.remove(KEY);
+            } else {
+                root.put(KEY, key);
+            }
+
+            if (beat == null) {
+                root.remove(BEAT);
+            } else {
+                root.put(BEAT, beat);
+            }
+
+            if (lease == null) {
+                root.remove(LEASE);
+            } else {
+                root.put(LEASE, lease);
+            }
+
+            return MetadataCodec.json(root);
         }
 
     }
