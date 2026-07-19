@@ -79,6 +79,11 @@ public final class SocketX {
     private final SocketRunner runner;
 
     /**
+     * Callback managed by the shared call lifecycle.
+     */
+    private final Callback<SocketSession> callback;
+
+    /**
      * Creates an exchange.
      *
      * @param builder builder
@@ -88,8 +93,9 @@ public final class SocketX {
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.snapshot = new SocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.frameCodec, builder.handler(), builder.guard, builder.filter, currentObserver,
-                builder.proxyHeader, builder.socketOptions, builder.callback, builder.listener, builder.pooled);
+                builder.proxyHeader, builder.socketOptions, builder.listener, builder.pooled);
         this.runner = new SocketRunner(snapshot);
+        this.callback = builder.callback;
     }
 
     /**
@@ -172,7 +178,7 @@ public final class SocketX {
      * @return session
      */
     public SocketSession open() {
-        return runner.open();
+        return call().execute();
     }
 
     /**
@@ -199,7 +205,12 @@ public final class SocketX {
      * @return socket call
      */
     public Call<SocketSession> call() {
-        return SocketCall.create(this, snapshot.context().reactor().dispatcher());
+        return SocketCall.create(
+                snapshot.context().reactor().dispatcher(),
+                callback,
+                snapshot.observer(),
+                runner::open,
+                dispatchKey());
     }
 
     /**

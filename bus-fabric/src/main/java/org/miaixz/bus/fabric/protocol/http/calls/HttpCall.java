@@ -19,16 +19,19 @@
 */
 package org.miaixz.bus.fabric.protocol.http.calls;
 
+import java.util.function.Function;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.HttpX;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * Single-use HTTP call backed by the shared protocol call lifecycle.
@@ -39,74 +42,55 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 public final class HttpCall extends MonoCall<HttpResponse> {
 
     /**
-     * Source exchange.
+     * HTTP protocol operation.
      */
-    private final HttpX exchange;
+    private final Function<Cancellation, HttpResponse> operation;
 
     /**
-     * Request snapshot.
+     * Request snapshot used to build the dispatch key.
      */
     private final HttpRequest request;
 
     /**
-     * Creates a call.
+     * Creates an HTTP call.
      *
-     * @param exchange source exchange
-     */
-    private HttpCall(final HttpX exchange) {
-        this(exchange, null);
-    }
-
-    /**
-     * Creates a call.
-     *
-     * @param exchange   source exchange
+     * @param request    immutable HTTP request
      * @param dispatcher dispatcher used by enqueue()
+     * @param callback   callback managed by the call lifecycle
+     * @param operation  HTTP protocol operation
      */
-    private HttpCall(final HttpX exchange, final Dispatcher dispatcher) {
-        super("http-call", dispatcher, EventObserver.noop());
-        this.exchange = require(exchange, "HTTP exchange");
-        this.request = require(exchange.request(), "HTTP request");
+    private HttpCall(final HttpRequest request, final Dispatcher dispatcher,
+            final Callback<? super HttpResponse> callback, final Function<Cancellation, HttpResponse> operation) {
+        super("http-call", dispatcher, EventObserver.noop(), callback);
+        this.request = require(request, "HTTP request");
+        this.operation = require(operation, "HTTP operation");
     }
 
     /**
-     * Creates a call for an exchange.
+     * Creates an HTTP call.
      *
-     * @param exchange source exchange
+     * @param request    immutable HTTP request
+     * @param dispatcher dispatcher used by enqueue()
+     * @param callback   callback managed by the call lifecycle
+     * @param operation  HTTP protocol operation
      * @return HTTP call
      */
-    public static HttpCall create(final HttpX exchange) {
-        return new HttpCall(exchange);
+    public static HttpCall create(
+            final HttpRequest request,
+            final Dispatcher dispatcher,
+            final Callback<? super HttpResponse> callback,
+            final Function<Cancellation, HttpResponse> operation) {
+        return new HttpCall(request, require(dispatcher, "Dispatcher"), callback, operation);
     }
 
     /**
-     * Creates a call for an exchange.
-     *
-     * @param exchange   source exchange
-     * @param dispatcher dispatcher used by enqueue()
-     * @return HTTP call
-     */
-    public static HttpCall create(final HttpX exchange, final Dispatcher dispatcher) {
-        return new HttpCall(exchange, require(dispatcher, "Dispatcher"));
-    }
-
-    /**
-     * Returns the request snapshot.
-     *
-     * @return request
-     */
-    public HttpRequest request() {
-        return request;
-    }
-
-    /**
-     * Performs the HTTP exchange.
+     * Executes the HTTP protocol operation.
      *
      * @return HTTP response
      */
     @Override
     protected HttpResponse perform() {
-        return exchange.execute(cancellation());
+        return operation.apply(cancellation());
     }
 
     /**
@@ -122,7 +106,7 @@ public final class HttpCall extends MonoCall<HttpResponse> {
     }
 
     /**
-     * Builds a stable async dispatch key for this request authority.
+     * Builds a stable asynchronous dispatch key for the request authority.
      *
      * @return dispatch key
      */
@@ -133,7 +117,7 @@ public final class HttpCall extends MonoCall<HttpResponse> {
     }
 
     /**
-     * Validates required references.
+     * Validates a required reference.
      *
      * @param value value
      * @param name  field name

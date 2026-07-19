@@ -20,15 +20,17 @@
 package org.miaixz.bus.fabric.protocol.sse.calls;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.sse.SseSession;
-import org.miaixz.bus.fabric.protocol.sse.SseX;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * Single-use SSE open call backed by the shared protocol call lifecycle.
@@ -43,9 +45,14 @@ public final class SseCall extends MonoCall<SseSession> {
      */
 
     /**
-     * Source exchange.
+     * SSE protocol operation.
      */
-    private final SseX exchange;
+    private final Function<Cancellation, SseSession> operation;
+
+    /**
+     * Stable asynchronous dispatch key.
+     */
+    private final String key;
 
     /**
      * Opened session.
@@ -55,43 +62,38 @@ public final class SseCall extends MonoCall<SseSession> {
     /**
      * Creates a call.
      *
-     * @param exchange exchange
-     */
-    private SseCall(final SseX exchange) {
-        this(exchange, null);
-    }
-
-    /**
-     * Creates a call.
-     *
-     * @param exchange   exchange
      * @param dispatcher dispatcher used by enqueue()
+     * @param callback   callback managed by the call lifecycle
+     * @param observer   lifecycle observer
+     * @param operation  SSE protocol operation
+     * @param key        asynchronous dispatch key
      */
-    private SseCall(final SseX exchange, final Dispatcher dispatcher) {
-        super(Builder.SSE_TAG_OPEN, dispatcher, EventObserver.noop());
-        this.exchange = require(exchange, "SSE exchange");
+    private SseCall(final Dispatcher dispatcher, final Callback<? super SseSession> callback,
+            final EventObserver observer, final Function<Cancellation, SseSession> operation, final String key) {
+        super(Builder.SSE_TAG_OPEN, dispatcher, observer, callback);
+        this.operation = require(operation, "SSE operation");
+        this.key = require(key, "SSE dispatch key");
         this.session = new AtomicReference<>();
     }
 
     /**
      * Creates a call.
      *
-     * @param exchange exchange
-     * @return call
-     */
-    public static SseCall create(final SseX exchange) {
-        return new SseCall(exchange);
-    }
-
-    /**
-     * Creates a call.
-     *
-     * @param exchange   exchange
      * @param dispatcher dispatcher used by enqueue()
+     * @param callback   callback managed by the call lifecycle
+     * @param observer   lifecycle observer
+     * @param operation  SSE protocol operation
+     * @param key        asynchronous dispatch key
      * @return call
      */
-    public static SseCall create(final SseX exchange, final Dispatcher dispatcher) {
-        return new SseCall(exchange, require(dispatcher, "Dispatcher"));
+    public static SseCall create(
+            final Dispatcher dispatcher,
+            final Callback<? super SseSession> callback,
+            final EventObserver observer,
+            final Function<Cancellation, SseSession> operation,
+            final String key) {
+        return new SseCall(require(dispatcher, "Dispatcher"), callback,
+                EventObserver.safe(require(observer, "Observer")), operation, key);
     }
 
     /**
@@ -110,7 +112,7 @@ public final class SseCall extends MonoCall<SseSession> {
      */
     @Override
     protected SseSession perform() {
-        final SseSession opened = exchange.open();
+        final SseSession opened = operation.apply(cancellation());
         session.set(opened);
         return opened;
     }
@@ -145,7 +147,7 @@ public final class SseCall extends MonoCall<SseSession> {
      */
     @Override
     protected String dispatchKey() {
-        return exchange.dispatchKey();
+        return key;
     }
 
     /**

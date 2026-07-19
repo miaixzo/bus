@@ -19,25 +19,37 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket;
 
+import java.net.URI;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Handler;
+import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.network.Connection;
+import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.http.HttpRequest;
+import org.miaixz.bus.fabric.protocol.http.HttpRunner;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketWriter;
 import org.miaixz.bus.fabric.protocol.websocket.upgrade.WebSocketUpgrade;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.runtime.FilterChain;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -46,7 +58,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-final class WebSocketRunner {
+public final class WebSocketRunner {
 
     /**
      * WebSocket open filter tag.
@@ -67,13 +79,46 @@ final class WebSocketRunner {
     }
 
     /**
+     * Creates a runner for an internal WebSocket transport operation.
+     *
+     * @param context shared context
+     * @param uri     target URI
+     * @param headers request headers
+     * @param timeout timeout policy
+     * @param handler message handler
+     * @return runner
+     */
+    public static WebSocketRunner create(
+            final Context context,
+            final URI uri,
+            final Headers headers,
+            final Timeout timeout,
+            final Handler handler) {
+        final URI currentUri = require(uri, "WebSocket URI");
+        return new WebSocketRunner(new WebSocketSnapshot(require(context, "Context"), currentUri,
+                Address.from(currentUri), require(headers, "Headers"), require(timeout, "Timeout"), null, null,
+                EventObserver.noop(), require(handler, "Handler"), null));
+    }
+
+    /**
      * Opens the WebSocket synchronously.
      *
      * @return opened session
      */
-    WebSocketSession open() {
+    public WebSocketSession open() {
+        return open(Cancellation.create());
+    }
+
+    /**
+     * Opens the WebSocket within a cancellation scope.
+     *
+     * @param cancellation cancellation scope
+     * @return opened session
+     */
+    public WebSocketSession open(final Cancellation cancellation) {
+        final Cancellation currentCancellation = require(cancellation, "Cancellation");
         ConnectionLease lease = null;
-        Mediator.HttpUpgrade upgraded = null;
+        HttpRunner.Upgrade upgraded = null;
         Logger.info(
                 true,
                 "Fabric",
@@ -82,13 +127,15 @@ final class WebSocketRunner {
                 snapshot.address().host(),
                 snapshot.address().port());
         try {
+            currentCancellation.throwIfCancelled();
             final Message opening = prepareOpen();
+            currentCancellation.throwIfCancelled();
             final WebSocketUpgrade upgrade = new WebSocketUpgrade();
-            upgraded = Mediator.upgradeHttp1(
-                    snapshot.context(),
-                    upgrade.httpUri(snapshot.uri()),
-                    upgrade.headers(opening.headers()),
-                    snapshot.timeout());
+            final HttpRequest request = HttpRequest.builder().method(HTTP.Method.GET)
+                    .url(UnoUrl.parse(upgrade.httpUri(snapshot.uri()).toString()))
+                    .headers(upgrade.headers(opening.headers())).timeout(snapshot.timeout()).build();
+            upgraded = HttpRunner.upgrade(snapshot.context(), request, currentCancellation);
+            currentCancellation.throwIfCancelled();
             upgrade.validate(upgraded.status(), upgraded.headers());
             final Connection connection = upgraded.connection();
             lease = upgraded.lease();
@@ -106,15 +153,33 @@ final class WebSocketRunner {
                             snapshot.observer()),
                     null, FilterChain.compose(snapshot.context().filter(), snapshot.filter()), snapshot.observer(),
                     snapshot.listener(), snapshot.context().options().materializeMaxBytes());
-            lease = null;
-            Logger.info(
+            final Runnable unregisterCancellation = currentCancellation.onCancel(session::cancel);
+            try {
+                currentCancellation.throwIfCancelled();
+                lease = null;
+                Logger.info(
+                        false,
+                        "Fabric",
+                        "WebSocket open completed: scheme={}, host={}, port={}",
+                        snapshot.address().scheme(),
+                        snapshot.address().host(),
+                        snapshot.address().port());
+                return session;
+            } finally {
+                unregisterCancellation.run();
+            }
+        } catch (final CancellationException e) {
+            closeUpgrade(upgraded);
+            closeLease(lease);
+            Logger.warn(
                     false,
                     "Fabric",
-                    "WebSocket open completed: scheme={}, host={}, port={}",
+                    e,
+                    "WebSocket open cancelled: scheme={}, host={}, port={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
                     snapshot.address().port());
-            return session;
+            throw e;
         } catch (final RuntimeException e) {
             closeUpgrade(upgraded);
             closeLease(lease);
@@ -200,7 +265,7 @@ final class WebSocketRunner {
      *
      * @param upgrade upgrade result
      */
-    private static void closeUpgrade(final Mediator.HttpUpgrade upgrade) {
+    private static void closeUpgrade(final HttpRunner.Upgrade upgrade) {
         if (upgrade != null) {
             upgrade.close();
         }

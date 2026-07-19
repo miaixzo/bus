@@ -19,18 +19,27 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.io.source.AssignSource;
+import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Filter;
+import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
+import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
+import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.protocol.CookieJar;
@@ -43,6 +52,8 @@ import org.miaixz.bus.fabric.protocol.http.chain.HttpConnect;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpCoordinator;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpRetry;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpTransport;
+import org.miaixz.bus.fabric.protocol.http.codec.Http1Codec;
+import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
@@ -53,23 +64,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-final class HttpRunner {
-
-    /**
-     * Default HTTP request filter tag.
-     */
-
-    /**
-     * Default HTTP response filter tag.
-     */
-
-    /**
-     * SOAP request filter tag.
-     */
-
-    /**
-     * SOAP response filter tag.
-     */
+public final class HttpRunner {
 
     /**
      * Execution snapshot.
@@ -92,11 +87,80 @@ final class HttpRunner {
     }
 
     /**
-     * Executes this exchange once.
+     * Creates an HTTP runner with default optional execution components.
+     *
+     * @param context shared context
+     * @param request immutable HTTP request
+     * @return HTTP runner
+     */
+    public static HttpRunner create(final Context context, final HttpRequest request) {
+        return new HttpRunner(new HttpSnapshot(require(context, "Context"), require(request, "HTTP request"),
+                EventObserver.noop(), null, null));
+    }
+
+    /**
+     * Opens an HTTP response stream with a new cancellation scope.
+     *
+     * @param context shared context
+     * @param request immutable HTTP request
+     * @return owned HTTP stream
+     */
+    public static Stream stream(final Context context, final HttpRequest request) {
+        return stream(context, request, Cancellation.create());
+    }
+
+    /**
+     * Opens an HTTP response stream.
+     *
+     * @param context      shared context
+     * @param request      immutable HTTP request
+     * @param cancellation cancellation scope
+     * @return owned HTTP stream
+     */
+    public static Stream stream(final Context context, final HttpRequest request, final Cancellation cancellation) {
+        final HttpResponse response = create(context, request).run(require(cancellation, "Cancellation"));
+        return new Stream(response.code(), response.headers(), response.body().payload(), response);
+    }
+
+    /**
+     * Performs an HTTP/1.1 upgrade with a new cancellation scope.
+     *
+     * @param context shared context
+     * @param request immutable HTTP upgrade request
+     * @return HTTP upgrade result
+     */
+    public static Upgrade upgrade(final Context context, final HttpRequest request) {
+        return upgrade(context, request, Cancellation.create());
+    }
+
+    /**
+     * Performs an HTTP/1.1 upgrade.
+     *
+     * @param context      shared context
+     * @param request      immutable HTTP upgrade request
+     * @param cancellation cancellation scope
+     * @return HTTP upgrade result
+     */
+    public static Upgrade upgrade(final Context context, final HttpRequest request, final Cancellation cancellation) {
+        return create(context, request).upgrade(require(cancellation, "Cancellation"));
+    }
+
+    /**
+     * Executes this exchange once with a new cancellation scope.
      *
      * @return response
      */
-    HttpResponse execute(final Cancellation cancellation) {
+    public HttpResponse run() {
+        return run(Cancellation.create());
+    }
+
+    /**
+     * Executes this exchange once.
+     *
+     * @param cancellation cancellation scope
+     * @return response
+     */
+    public HttpResponse run(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         markExecuted();
         Logger.info(
@@ -116,7 +180,6 @@ final class HttpRunner {
             final HttpResponse response = exchange(current, currentCancellation);
             currentCancellation.throwIfCancelled();
             emit(ObservationMarker.HTTP_RESPONSE, response, null);
-            snapshot.callback().success(response);
             Logger.info(
                     false,
                     "Fabric",
@@ -130,7 +193,6 @@ final class HttpRunner {
             return response;
         } catch (final CancellationException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
-            snapshot.callback().failure(e);
             Logger.warn(
                     false,
                     "Fabric",
@@ -144,7 +206,6 @@ final class HttpRunner {
             throw e;
         } catch (final RuntimeException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
-            snapshot.callback().failure(e);
             Logger.error(
                     false,
                     "Fabric",
@@ -156,6 +217,39 @@ final class HttpRunner {
                     snapshot.request().url().port(),
                     snapshot.request().url().path(),
                     e.getClass().getSimpleName());
+            throw e;
+        }
+    }
+
+    /**
+     * Performs the configured HTTP/1.1 upgrade.
+     *
+     * @param cancellation cancellation scope
+     * @return HTTP upgrade result
+     */
+    private Upgrade upgrade(final Cancellation cancellation) {
+        final Cancellation currentCancellation = require(cancellation, "Cancellation");
+        markExecuted();
+        currentCancellation.throwIfCancelled();
+        final CookieJar cookies = cookieJar();
+        final HttpRequest request = new HttpBridge(cookies, userAgent()).prepare(snapshot.request());
+        final HttpConnect connect = new HttpConnect(snapshot.context().directory().connectionPool(), tlsContext(),
+                tlsSettings(), snapshot.context().listener(), snapshot.context().resolver(),
+                snapshot.context().reactor().dispatcher());
+        final ConnectionLease lease = connect.acquire(request, currentCancellation);
+        try {
+            currentCancellation.throwIfCancelled();
+            final Connection connection = lease.connection();
+            final Http1Codec codec = new Http1Codec(connection);
+            codec.writeRequest(request);
+            final HttpResponse response = codec.readResponse(request);
+            currentCancellation.throwIfCancelled();
+            if (cookies != null) {
+                cookies.save(request.url(), response.headers());
+            }
+            return new Upgrade(response.code(), response.headers(), connection, lease);
+        } catch (final RuntimeException e) {
+            lease.close();
             throw e;
         }
     }
@@ -448,6 +542,135 @@ final class HttpRunner {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Owned HTTP response stream.
+     *
+     * @param status  response status
+     * @param headers response headers
+     * @param body    response body
+     * @param owner   response owner
+     */
+    public record Stream(int status, Headers headers, Payload body, AutoCloseable owner) implements AutoCloseable {
+
+        /**
+         * Creates a validated stream result.
+         */
+        public Stream {
+            headers = require(headers, "Headers");
+            body = require(body, "Payload");
+            owner = require(owner, "Stream owner");
+        }
+
+        /**
+         * Opens the response body source and binds it to the response owner.
+         *
+         * @return owned response source
+         */
+        public Source source() {
+            return new OwnedSource(body.source(), this);
+        }
+
+        /**
+         * Closes the response owner.
+         */
+        @Override
+        public void close() {
+            try {
+                owner.close();
+            } catch (final RuntimeException e) {
+                throw e;
+            } catch (final Exception e) {
+                throw new InternalException("Unable to close HTTP stream", e);
+            }
+        }
+
+    }
+
+    /**
+     * HTTP/1.1 upgrade result with its leased connection.
+     *
+     * @param status     response status
+     * @param headers    response headers
+     * @param connection upgraded connection
+     * @param lease      connection lease
+     */
+    public record Upgrade(int status, Headers headers, Connection connection, ConnectionLease lease)
+            implements AutoCloseable {
+
+        /**
+         * Creates a validated upgrade result.
+         */
+        public Upgrade {
+            headers = require(headers, "Headers");
+            connection = require(connection, "Network connection");
+            lease = require(lease, "Connection lease");
+        }
+
+        /**
+         * Releases the upgraded connection lease.
+         */
+        @Override
+        public void close() {
+            lease.close();
+        }
+
+    }
+
+    /**
+     * Source that closes its protocol owner after the response body source.
+     */
+    private static final class OwnedSource extends AssignSource {
+
+        /**
+         * Close owner.
+         */
+        private final AutoCloseable owner;
+
+        /**
+         * Creates an owned source.
+         *
+         * @param source response body source
+         * @param owner  response owner
+         */
+        private OwnedSource(final Source source, final AutoCloseable owner) {
+            super(require(source, "Body source"));
+            this.owner = require(owner, "Stream owner");
+        }
+
+        /**
+         * Closes the body source and then closes its owner.
+         *
+         * @throws IOException when source closing fails
+         */
+        @Override
+        public void close() throws IOException {
+            IOException failure = null;
+            try {
+                super.close();
+            } catch (final IOException e) {
+                failure = e;
+            }
+            try {
+                owner.close();
+            } catch (final RuntimeException e) {
+                if (failure != null) {
+                    e.addSuppressed(failure);
+                }
+                throw e;
+            } catch (final Exception e) {
+                final InternalException wrapped = new InternalException("Unable to close owned stream", e);
+                if (failure != null) {
+                    wrapped.addSuppressed(failure);
+                }
+                throw wrapped;
+            }
+            if (failure != null) {
+                throw failure;
+            }
+        }
+
     }
 
 }

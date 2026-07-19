@@ -20,15 +20,17 @@
 package org.miaixz.bus.fabric.protocol.stomp.calls;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.stomp.StompSession;
-import org.miaixz.bus.fabric.protocol.stomp.StompX;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * Single-use STOMP open call backed by the shared protocol call lifecycle.
@@ -43,9 +45,14 @@ public final class StompCall extends MonoCall<StompSession> {
      */
 
     /**
-     * Source exchange.
+     * STOMP protocol operation.
      */
-    private final StompX exchange;
+    private final Function<Cancellation, StompSession> operation;
+
+    /**
+     * Stable asynchronous dispatch key.
+     */
+    private final String key;
 
     /**
      * Opened session.
@@ -55,43 +62,38 @@ public final class StompCall extends MonoCall<StompSession> {
     /**
      * Creates a call.
      *
-     * @param exchange exchange
-     */
-    private StompCall(final StompX exchange) {
-        this(exchange, null);
-    }
-
-    /**
-     * Creates a call.
-     *
-     * @param exchange   exchange
      * @param dispatcher dispatcher used by enqueue()
+     * @param callback   callback managed by the call lifecycle
+     * @param observer   lifecycle observer
+     * @param operation  STOMP protocol operation
+     * @param key        asynchronous dispatch key
      */
-    private StompCall(final StompX exchange, final Dispatcher dispatcher) {
-        super(Builder.STOMP_TAG_OPEN, dispatcher, EventObserver.noop());
-        this.exchange = require(exchange, "STOMP exchange");
+    private StompCall(final Dispatcher dispatcher, final Callback<? super StompSession> callback,
+            final EventObserver observer, final Function<Cancellation, StompSession> operation, final String key) {
+        super(Builder.STOMP_TAG_OPEN, dispatcher, observer, callback);
+        this.operation = require(operation, "STOMP operation");
+        this.key = require(key, "STOMP dispatch key");
         this.session = new AtomicReference<>();
     }
 
     /**
      * Creates a call.
      *
-     * @param exchange exchange
-     * @return call
-     */
-    public static StompCall create(final StompX exchange) {
-        return new StompCall(exchange);
-    }
-
-    /**
-     * Creates a call.
-     *
-     * @param exchange   exchange
      * @param dispatcher dispatcher used by enqueue()
+     * @param callback   callback managed by the call lifecycle
+     * @param observer   lifecycle observer
+     * @param operation  STOMP protocol operation
+     * @param key        asynchronous dispatch key
      * @return call
      */
-    public static StompCall create(final StompX exchange, final Dispatcher dispatcher) {
-        return new StompCall(exchange, require(dispatcher, "Dispatcher"));
+    public static StompCall create(
+            final Dispatcher dispatcher,
+            final Callback<? super StompSession> callback,
+            final EventObserver observer,
+            final Function<Cancellation, StompSession> operation,
+            final String key) {
+        return new StompCall(require(dispatcher, "Dispatcher"), callback,
+                EventObserver.safe(require(observer, "Observer")), operation, key);
     }
 
     /**
@@ -110,7 +112,7 @@ public final class StompCall extends MonoCall<StompSession> {
      */
     @Override
     protected StompSession perform() {
-        final StompSession opened = exchange.open();
+        final StompSession opened = operation.apply(cancellation());
         session.set(opened);
         return opened;
     }
@@ -145,7 +147,7 @@ public final class StompCall extends MonoCall<StompSession> {
      */
     @Override
     protected String dispatchKey() {
-        return exchange.dispatchKey();
+        return key;
     }
 
     /**

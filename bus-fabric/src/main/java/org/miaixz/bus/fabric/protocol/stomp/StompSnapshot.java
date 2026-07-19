@@ -25,7 +25,6 @@ import java.util.function.Consumer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
@@ -48,7 +47,6 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param guard       optional policy guard for STOMP messages
  * @param filter      optional message filter for STOMP frames and messages
  * @param observer    observer receiving STOMP lifecycle events
- * @param callback    callback receiving the opened STOMP session or failure
  * @param handler     inbound message handler
  * @param listener    session lifecycle listener
  * @author Kimi Liu
@@ -56,7 +54,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  */
 record StompSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout, String destination,
         String login, String passcode, GuardRule guard, Filter filter, EventObserver observer,
-        Callback<StompSession> callback, Consumer<StompMessage> handler, Listener<? super StompSession> listener) {
+        Consumer<StompMessage> handler, Listener<? super StompSession> listener) {
 
     /**
      * Creates a validated snapshot.

@@ -20,15 +20,17 @@
 package org.miaixz.bus.fabric.protocol.websocket.calls;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.websocket.WebSocketSession;
-import org.miaixz.bus.fabric.protocol.websocket.WebSocketX;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * Single-use WebSocket open call backed by the shared protocol call lifecycle.
@@ -43,9 +45,14 @@ public final class WebSocketCall extends MonoCall<WebSocketSession> {
      */
 
     /**
-     * Source exchange.
+     * WebSocket protocol operation.
      */
-    private final WebSocketX exchange;
+    private final Function<Cancellation, WebSocketSession> operation;
+
+    /**
+     * Stable asynchronous dispatch key.
+     */
+    private final String key;
 
     /**
      * Opened session.
@@ -55,43 +62,38 @@ public final class WebSocketCall extends MonoCall<WebSocketSession> {
     /**
      * Creates a call.
      *
-     * @param exchange exchange
-     */
-    private WebSocketCall(final WebSocketX exchange) {
-        this(exchange, null);
-    }
-
-    /**
-     * Creates a call.
-     *
-     * @param exchange   exchange
      * @param dispatcher dispatcher used by enqueue()
+     * @param callback   callback managed by the call lifecycle
+     * @param observer   lifecycle observer
+     * @param operation  WebSocket protocol operation
+     * @param key        asynchronous dispatch key
      */
-    private WebSocketCall(final WebSocketX exchange, final Dispatcher dispatcher) {
-        super(Builder.WEBSOCKET_OPEN, dispatcher, EventObserver.noop());
-        this.exchange = require(exchange, "WebSocket exchange");
+    private WebSocketCall(final Dispatcher dispatcher, final Callback<? super WebSocketSession> callback,
+            final EventObserver observer, final Function<Cancellation, WebSocketSession> operation, final String key) {
+        super(Builder.WEBSOCKET_OPEN, dispatcher, observer, callback);
+        this.operation = require(operation, "WebSocket operation");
+        this.key = require(key, "WebSocket dispatch key");
         this.session = new AtomicReference<>();
     }
 
     /**
      * Creates a call.
      *
-     * @param exchange exchange
-     * @return call
-     */
-    public static WebSocketCall create(final WebSocketX exchange) {
-        return new WebSocketCall(exchange);
-    }
-
-    /**
-     * Creates a call.
-     *
-     * @param exchange   exchange
      * @param dispatcher dispatcher used by enqueue()
+     * @param callback   callback managed by the call lifecycle
+     * @param observer   lifecycle observer
+     * @param operation  WebSocket protocol operation
+     * @param key        asynchronous dispatch key
      * @return call
      */
-    public static WebSocketCall create(final WebSocketX exchange, final Dispatcher dispatcher) {
-        return new WebSocketCall(exchange, require(dispatcher, "Dispatcher"));
+    public static WebSocketCall create(
+            final Dispatcher dispatcher,
+            final Callback<? super WebSocketSession> callback,
+            final EventObserver observer,
+            final Function<Cancellation, WebSocketSession> operation,
+            final String key) {
+        return new WebSocketCall(require(dispatcher, "Dispatcher"), callback,
+                EventObserver.safe(require(observer, "Observer")), operation, key);
     }
 
     /**
@@ -110,7 +112,7 @@ public final class WebSocketCall extends MonoCall<WebSocketSession> {
      */
     @Override
     protected WebSocketSession perform() {
-        final WebSocketSession opened = exchange.open();
+        final WebSocketSession opened = operation.apply(cancellation());
         session.set(opened);
         return opened;
     }
@@ -145,7 +147,7 @@ public final class WebSocketCall extends MonoCall<WebSocketSession> {
      */
     @Override
     protected String dispatchKey() {
-        return exchange.dispatchKey();
+        return key;
     }
 
     /**

@@ -67,7 +67,6 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.body.SoapBody;
 import org.miaixz.bus.fabric.protocol.http.body.TextBody;
 import org.miaixz.bus.fabric.protocol.http.calls.HttpCall;
-import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * Immutable HTTP exchange.
@@ -88,6 +87,11 @@ public final class HttpX {
     private final HttpRunner runner;
 
     /**
+     * Callback managed by the shared call lifecycle.
+     */
+    private final Callback<HttpResponse> callback;
+
+    /**
      * Creates an HTTP exchange.
      *
      * @param context  shared context
@@ -99,8 +103,9 @@ public final class HttpX {
      */
     private HttpX(final Context context, final HttpRequest request, final Callback<HttpResponse> callback,
             final EventObserver observer, final Filter filter, final GuardRule guard) {
-        this.snapshot = new HttpSnapshot(context, request, callback, observer, filter, guard);
+        this.snapshot = new HttpSnapshot(context, request, observer, filter, guard);
         this.runner = new HttpRunner(snapshot);
+        this.callback = callback;
     }
 
     /**
@@ -128,17 +133,7 @@ public final class HttpX {
      * @return response
      */
     public HttpResponse execute() {
-        return runner.execute(Cancellation.create());
-    }
-
-    /**
-     * Executes this exchange with a shared cancellation scope.
-     *
-     * @param cancellation cancellation scope
-     * @return response
-     */
-    public HttpResponse execute(final Cancellation cancellation) {
-        return runner.execute(cancellation);
+        return call().execute();
     }
 
     /**
@@ -147,7 +142,7 @@ public final class HttpX {
      * @return response call
      */
     public Call<HttpResponse> call() {
-        return HttpCall.create(this, snapshot.context().reactor().dispatcher());
+        return HttpCall.create(snapshot.request(), snapshot.context().reactor().dispatcher(), callback, runner::run);
     }
 
     /**

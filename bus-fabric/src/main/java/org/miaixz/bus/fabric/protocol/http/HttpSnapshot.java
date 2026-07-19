@@ -21,7 +21,6 @@ package org.miaixz.bus.fabric.protocol.http;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.guard.GuardRule;
@@ -32,15 +31,13 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  *
  * @param context  runtime services used by the exchange
  * @param request  immutable HTTP request to execute
- * @param callback callback receiving the final HTTP response or failure
  * @param observer observer receiving lifecycle and network events
  * @param filter   optional message filter applied before protocol execution
  * @param guard    optional policy guard applied to request messages
  * @author Kimi Liu
  * @since Java 21+
  */
-record HttpSnapshot(Context context, HttpRequest request, Callback<HttpResponse> callback, EventObserver observer,
-        Filter filter, GuardRule guard) {
+record HttpSnapshot(Context context, HttpRequest request, EventObserver observer, Filter filter, GuardRule guard) {
 
     /**
      * Creates a validated snapshot.

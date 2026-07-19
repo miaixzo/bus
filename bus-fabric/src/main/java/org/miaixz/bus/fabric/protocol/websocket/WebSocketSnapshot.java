@@ -24,7 +24,6 @@ import java.net.URI;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Handler;
@@ -45,15 +44,13 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param guard    optional policy guard for WebSocket messages
  * @param filter   optional message filter for WebSocket open, inbound, and outbound messages
  * @param observer observer receiving WebSocket lifecycle events
- * @param callback callback receiving the opened WebSocket session or failure
  * @param handler  inbound message handler
  * @param listener session lifecycle listener
  * @author Kimi Liu
  * @since Java 21+
  */
 record WebSocketSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout, GuardRule guard,
-        Filter filter, EventObserver observer, Callback<WebSocketSession> callback, Handler handler,
-        Listener<? super WebSocketSession> listener) {
+        Filter filter, EventObserver observer, Handler handler, Listener<? super WebSocketSession> listener) {
 
     /**
      * Creates a validated snapshot.

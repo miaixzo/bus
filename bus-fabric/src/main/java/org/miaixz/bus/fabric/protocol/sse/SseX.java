@@ -75,6 +75,11 @@ public final class SseX {
     private final SseRunner runner;
 
     /**
+     * Callback managed by the shared call lifecycle.
+     */
+    private final Callback<SseSession> callback;
+
+    /**
      * Creates an exchange.
      *
      * @param builder builder
@@ -84,9 +89,10 @@ public final class SseX {
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.snapshot = new SseSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.retry, builder.lastEventId, builder.autoReconnect, builder.responseHandler,
-                builder.guard, builder.filter, currentObserver, builder.callback,
+                builder.guard, builder.filter, currentObserver,
                 builder.handler == null ? noopHandler() : builder.handler, builder.listener);
         this.runner = new SseRunner(snapshot);
+        this.callback = builder.callback;
     }
 
     /**
@@ -160,7 +166,7 @@ public final class SseX {
      * @return opened session
      */
     public SseSession open() {
-        return runner.open();
+        return call().execute();
     }
 
     /**
@@ -187,7 +193,12 @@ public final class SseX {
      * @return SSE call
      */
     public Call<SseSession> call() {
-        return SseCall.create(this, snapshot.context().reactor().dispatcher());
+        return SseCall.create(
+                snapshot.context().reactor().dispatcher(),
+                callback,
+                snapshot.observer(),
+                runner::open,
+                dispatchKey());
     }
 
     /**

@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.sse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -38,15 +39,18 @@ import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
-import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.http.HttpRequest;
+import org.miaixz.bus.fabric.protocol.http.HttpRunner;
 import org.miaixz.bus.fabric.protocol.sse.body.SseBody;
 import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
 import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -77,8 +81,19 @@ final class SseRunner {
      * @return opened session
      */
     SseSession open() {
+        return open(Cancellation.create());
+    }
+
+    /**
+     * Opens the SSE stream within a cancellation scope.
+     *
+     * @param cancellation cancellation scope
+     * @return opened session
+     */
+    SseSession open(final Cancellation cancellation) {
+        final Cancellation currentCancellation = require(cancellation, "Cancellation");
         SseReader reader = null;
-        Mediator.HttpStream response = null;
+        HttpRunner.Stream response = null;
         Logger.info(
                 true,
                 "Fabric",
@@ -89,7 +104,9 @@ final class SseRunner {
                 snapshot.autoReconnect(),
                 snapshot.lastEventId() != null);
         try {
-            response = response();
+            currentCancellation.throwIfCancelled();
+            response = response(currentCancellation);
+            currentCancellation.throwIfCancelled();
             validateResponse(response);
             reader = SseBody.source(response.source(), response.body().length()).reader();
             final SseRetry sessionRetry = SseRetry.defaults();
@@ -106,15 +123,35 @@ final class SseRunner {
             }, snapshot.listener());
             holder.set(session);
             handle.set(submitRead(reader, sessionRetry, stream, holder, eventId, handle, Normal._0));
-            Logger.info(
+            final Runnable unregisterCancellation = currentCancellation.onCancel(session::cancel);
+            try {
+                currentCancellation.throwIfCancelled();
+                Logger.info(
+                        false,
+                        "Fabric",
+                        "SSE open completed: scheme={}, host={}, port={}, autoReconnect={}",
+                        snapshot.address().scheme(),
+                        snapshot.address().host(),
+                        snapshot.address().port(),
+                        snapshot.autoReconnect());
+                return session;
+            } finally {
+                unregisterCancellation.run();
+            }
+        } catch (final CancellationException e) {
+            closeReader(reader);
+            if (reader == null) {
+                closeResponse(response);
+            }
+            Logger.warn(
                     false,
                     "Fabric",
-                    "SSE open completed: scheme={}, host={}, port={}, autoReconnect={}",
+                    e,
+                    "SSE open cancelled: scheme={}, host={}, port={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
-                    snapshot.address().port(),
-                    snapshot.autoReconnect());
-            return session;
+                    snapshot.address().port());
+            throw e;
         } catch (final RuntimeException e) {
             closeReader(reader);
             if (reader == null) {
@@ -146,19 +183,21 @@ final class SseRunner {
     /**
      * Opens the HTTP response through the fabric HTTP chain.
      *
+     * @param cancellation cancellation scope
      * @return response
      */
-    private Mediator.HttpStream response() {
-        return response(snapshot.lastEventId());
+    private HttpRunner.Stream response(final Cancellation cancellation) {
+        return response(snapshot.lastEventId(), cancellation);
     }
 
     /**
      * Opens the HTTP response through the fabric HTTP chain.
      *
-     * @param eventId current event id
+     * @param eventId      current event id
+     * @param cancellation cancellation scope
      * @return response
      */
-    private Mediator.HttpStream response(final String eventId) {
+    private HttpRunner.Stream response(final String eventId, final Cancellation cancellation) {
         Logger.debug(
                 true,
                 "Fabric",
@@ -180,11 +219,11 @@ final class SseRunner {
         final Message opening = filter(
                 Message.of(Protocol.HTTP, snapshot.address(), builder.build(), Payload.empty(), Builder.SSE_TAG_OPEN));
         checkGuard(opening);
-        final Mediator.HttpStream response = Mediator.openHttpStream(
-                snapshot.context().withFilter(null),
-                snapshot.uri(),
-                opening.headers(),
-                snapshot.timeout());
+        final HttpRequest request = HttpRequest.builder().method(HTTP.Method.GET)
+                .url(UnoUrl.parse(snapshot.uri().toString())).headers(opening.headers()).timeout(snapshot.timeout())
+                .build();
+        final HttpRunner.Stream response = HttpRunner
+                .stream(snapshot.context().withFilter(null), request, cancellation);
         final Message accepted = filter(
                 Message.of(
                         Protocol.HTTP,
@@ -209,7 +248,7 @@ final class SseRunner {
      *
      * @param response response
      */
-    private static void validateResponse(final Mediator.HttpStream response) {
+    private static void validateResponse(final HttpRunner.Stream response) {
         final int status = response.status();
         if (status < HTTP.HTTP_OK || status >= HTTP.HTTP_MULT_CHOICE) {
             throw new ProtocolException("SSE response status must be 2xx");
@@ -494,9 +533,9 @@ final class SseRunner {
             return null;
         }
         SseReader next = null;
-        Mediator.HttpStream response = null;
+        HttpRunner.Stream response = null;
         try {
-            response = response(eventId.get());
+            response = response(eventId.get(), Cancellation.create());
             validateResponse(response);
             next = SseBody.source(response.source(), response.body().length()).reader();
             session.replaceReader(next);
@@ -592,7 +631,7 @@ final class SseRunner {
      *
      * @param response response
      */
-    private static void closeResponse(final Mediator.HttpStream response) {
+    private static void closeResponse(final HttpRunner.Stream response) {
         if (response != null) {
             response.close();
         }

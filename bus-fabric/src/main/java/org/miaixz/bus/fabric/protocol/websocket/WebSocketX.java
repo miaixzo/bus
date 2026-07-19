@@ -73,6 +73,11 @@ public final class WebSocketX {
     private final WebSocketRunner runner;
 
     /**
+     * Callback managed by the shared call lifecycle.
+     */
+    private final Callback<WebSocketSession> callback;
+
+    /**
      * Creates an exchange.
      *
      * @param builder builder
@@ -81,9 +86,9 @@ public final class WebSocketX {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.snapshot = new WebSocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, builder.guard, builder.filter, currentObserver, builder.callback, builder.handler(),
-                builder.listener);
+                builder.timeout, builder.guard, builder.filter, currentObserver, builder.handler(), builder.listener);
         this.runner = new WebSocketRunner(snapshot);
+        this.callback = builder.callback;
     }
 
     /**
@@ -102,7 +107,7 @@ public final class WebSocketX {
      * @return opened session
      */
     public WebSocketSession open() {
-        return runner.open();
+        return call().execute();
     }
 
     /**
@@ -129,7 +134,12 @@ public final class WebSocketX {
      * @return WebSocket call
      */
     public Call<WebSocketSession> call() {
-        return WebSocketCall.create(this, snapshot.context().reactor().dispatcher());
+        return WebSocketCall.create(
+                snapshot.context().reactor().dispatcher(),
+                callback,
+                snapshot.observer(),
+                runner::open,
+                dispatchKey());
     }
 
     /**

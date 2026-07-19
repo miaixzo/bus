@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
@@ -51,7 +50,6 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
  * @param guard           optional policy guard for stream messages
  * @param filter          optional message filter for stream open and events
  * @param observer        observer receiving SSE lifecycle events
- * @param callback        callback receiving the opened SSE session or failure
  * @param handler         application event handler
  * @param listener        session lifecycle listener
  * @author Kimi Liu
@@ -59,8 +57,7 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
  */
 record SseSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout, SseRetry retry,
         String lastEventId, boolean autoReconnect, BiConsumer<Integer, Headers> responseHandler, GuardRule guard,
-        Filter filter, EventObserver observer, Callback<SseSession> callback, Consumer<SseEvent> handler,
-        Listener<? super SseSession> listener) {
+        Filter filter, EventObserver observer, Consumer<SseEvent> handler, Listener<? super SseSession> listener) {
 
     /**
      * Creates a validated snapshot.

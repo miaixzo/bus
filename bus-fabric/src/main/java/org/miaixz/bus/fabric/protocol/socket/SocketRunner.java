@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.socket;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -57,6 +58,7 @@ import org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec;
 import org.miaixz.bus.fabric.protocol.socket.session.SocketLease;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -87,6 +89,17 @@ final class SocketRunner {
      * @return session
      */
     SocketSession open() {
+        return open(Cancellation.create());
+    }
+
+    /**
+     * Opens a socket session within a cancellation scope.
+     *
+     * @param cancellation cancellation scope
+     * @return session
+     */
+    SocketSession open(final Cancellation cancellation) {
+        final Cancellation currentCancellation = require(cancellation, "Cancellation");
         Logger.info(
                 true,
                 "Fabric",
@@ -96,8 +109,11 @@ final class SocketRunner {
                 snapshot.address().port(),
                 snapshot.pooled());
         try {
+            currentCancellation.throwIfCancelled();
             final Message opening = prepareOpen();
+            currentCancellation.throwIfCancelled();
             checkGuard(opening);
+            currentCancellation.throwIfCancelled();
             final Transport transport = Transport.fromScheme(snapshot.address().scheme());
             final SocketSession session = switch (transport) {
                 case TCP -> openTcp(opening);
@@ -106,16 +122,33 @@ final class SocketRunner {
                 case KCP -> openKcp(opening);
                 default -> throw new ProtocolException("Socket exchange does not support transport: " + transport);
             };
-            Logger.info(
+            final Runnable unregisterCancellation = currentCancellation.onCancel(session::cancel);
+            try {
+                currentCancellation.throwIfCancelled();
+                Logger.info(
+                        false,
+                        "Fabric",
+                        "Socket open completed: scheme={}, host={}, port={}, transport={}, pooled={}",
+                        snapshot.address().scheme(),
+                        snapshot.address().host(),
+                        snapshot.address().port(),
+                        transport,
+                        snapshot.pooled());
+                return session;
+            } finally {
+                unregisterCancellation.run();
+            }
+        } catch (final CancellationException e) {
+            Logger.warn(
                     false,
                     "Fabric",
-                    "Socket open completed: scheme={}, host={}, port={}, transport={}, pooled={}",
+                    e,
+                    "Socket open cancelled: scheme={}, host={}, port={}, pooled={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
                     snapshot.address().port(),
-                    transport,
                     snapshot.pooled());
-            return session;
+            throw e;
         } catch (final RuntimeException e) {
             Logger.error(
                     false,

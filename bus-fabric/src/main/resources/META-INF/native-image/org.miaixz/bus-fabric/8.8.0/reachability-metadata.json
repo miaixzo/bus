@@ -2348,12 +2348,6 @@
           "parameterTypes": []
         },
         {
-          "name": "execute",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.runtime.resource.Cancellation"
-          ]
-        },
-        {
           "name": "headers",
           "parameterTypes": []
         },

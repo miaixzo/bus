@@ -24,7 +24,6 @@ import java.net.URI;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Handler;
@@ -51,7 +50,6 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param observer      observer receiving socket lifecycle and traffic events
  * @param proxyHeader   PROXY protocol metadata to send or inject, or {@code null}
  * @param socketOptions channel and session tuning options
- * @param callback      callback receiving the opened socket session or failure
  * @param listener      session lifecycle listener
  * @param pooled        whether the exchange may use pooled transport resources
  * @author Kimi Liu
@@ -59,8 +57,8 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  */
 record SocketSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout,
         FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter, EventObserver observer,
-        ProxyHeader proxyHeader, SocketOptions socketOptions, Callback<SocketSession> callback,
-        Listener<? super SocketSession> listener, boolean pooled) {
+        ProxyHeader proxyHeader, SocketOptions socketOptions, Listener<? super SocketSession> listener,
+        boolean pooled) {
 
     /**
      * Creates a validated snapshot.
