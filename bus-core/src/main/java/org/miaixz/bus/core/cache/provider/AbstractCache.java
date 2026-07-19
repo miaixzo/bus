@@ -251,11 +251,6 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Returns the default cache timeout. Each object can also have its own specific timeout.
-     *
-     * @return The default timeout in milliseconds.
-     */
-    /**
      * Returns the default cache timeout in milliseconds.
      *
      * @return The default timeout in milliseconds, or {@code 0} if no timeout is set.
@@ -315,12 +310,6 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
         return this.cacheMap.toString();
     }
 
-    /**
-     * Sets the cache event listener.
-     *
-     * @param listener The listener to set.
-     * @return This cache instance.
-     */
     /**
      * Sets the cache event listener.
      *

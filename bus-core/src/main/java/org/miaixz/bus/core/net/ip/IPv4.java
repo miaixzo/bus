@@ -122,16 +122,10 @@ public class IPv4 {
     public static final long IPV4_LOOPBACK_NUM_MIN = IPv4.ipv4ToLong(IPV4_LOOPBACK_STR_MIN);
 
     /**
-     * The maximum string representation of the IPv4 loopback address range.
-     */
-    /**
      * The maximum string representation of IPv4 loopback address range (127.255.255.255).
      */
     public static final String IPV4_LOOPBACK_STR_MAX = "127.255.255.255";
 
-    /**
-     * The maximum numeric value of the IPv4 loopback address range.
-     */
     /**
      * The maximum numeric value of IPv4 loopback address range (127.255.255.255).
      */

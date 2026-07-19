@@ -45,10 +45,6 @@ public abstract class AbstractEntry<K, V> implements Map.Entry<K, V> {
     }
 
     /**
-     * Constructs a new AbstractEntry. Protected constructor for subclasses.
-     */
-
-    /**
      * Sets the value associated with this entry. This default implementation throws an
      * {@link UnsupportedOperationException}, indicating that the entry is read-only. Subclasses can override this
      * method to provide mutable entry behavior.

@@ -33,10 +33,6 @@ import javax.crypto.Cipher;
 public enum Algorithm {
 
     /**
-     * Asymmetric - Algorithm Types *****************************
-     */
-
-    /**
      * RSA algorithm.
      */
     RSA("RSA"),
@@ -64,10 +60,6 @@ public enum Algorithm {
      * Elliptic Curve Digital Signature Algorithm (ECDSA).
      */
     ECDSA("ECDSA"),
-
-    /**
-     * Asymmetric - Signature Algorithms ****************************
-     */
 
     /**
      * RSA signature algorithm with no digest.
@@ -142,10 +134,6 @@ public enum Algorithm {
     SHA512WITHRSA_PSS("SHA512WithRSA/PSS"),
 
     /**
-     * Digest - Algorithm Types ****************************
-     */
-
-    /**
      * MD2 message digest algorithm.
      */
     MD2("MD2"),
@@ -175,10 +163,6 @@ public enum Algorithm {
     SHA1PRNG("SHA1PRNG"),
 
     /**
-     * Digest - HMAC Algorithms ****************************
-     */
-
-    /**
      * HmacMD5 algorithm.
      */
     HMACMD5("HmacMD5"),
@@ -206,10 +190,6 @@ public enum Algorithm {
      * SM4 CMAC mode implementation, requires BouncyCastle library support.
      */
     SM4CMAC("SM4CMAC"),
-
-    /**
-     * Symmetric - Algorithm Types ****************************
-     */
 
     /**
      * Default AES encryption mode: AES/ECB/PKCS5Padding.
@@ -254,10 +234,6 @@ public enum Algorithm {
     PBEWITHSHA1ANDRC2_40("PBEWithSHA1AndRC2_40"),
 
     /**
-     * National Algorithms ******************************
-     */
-
-    /**
      * SM1 symmetric algorithm.
      */
     SM1("SM1"),
@@ -275,10 +251,6 @@ public enum Algorithm {
      * SM4 iterative block cipher algorithm.
      */
     SM4("SM4"),
-
-    /**
-     * Other Algorithms ******************************
-     */
 
     /**
      * ZUC algorithm - ZUC-128.

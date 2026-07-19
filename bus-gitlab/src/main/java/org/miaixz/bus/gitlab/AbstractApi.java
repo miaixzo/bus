@@ -643,18 +643,6 @@ public abstract class AbstractApi implements Constants {
     }
 
     /**
-     * Perform a file upload with the specified File instance and path objects, returning a ClientResponse instance with
-     * the data returned from the endpoint.
-     *
-     * @param expectedStatus the HTTP status that should be returned from the server
-     * @param name           the name for the form field that contains the file name
-     * @param fileToUpload   a File instance pointing to the file to upload
-     * @param mediaType      unused; will be removed in the next major version
-     * @param pathArgs       variable list of arguments used to build the URI
-     * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
-     */
-    /**
      * Performs a file upload with the specified file and path objects.
      *
      * @param expectedStatus the HTTP status that should be returned from the server

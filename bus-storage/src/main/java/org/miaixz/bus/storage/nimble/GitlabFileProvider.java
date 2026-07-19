@@ -229,13 +229,6 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the default GitLab project (bucket).
-     *
-     * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content as a byte array if
-     *         successful.
-     */
-    /**
      * Downloads a file from the default GitLab project (bucket) and returns its content as a byte array.
      *
      * @param fileName The name of the file to download.
