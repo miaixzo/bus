@@ -56,10 +56,10 @@ public class Query extends Lifecycle {
     protected String nonce;
 
     /**
-     * Extended search parameters, typically used for dynamic or complex query conditions in JSON format.
+     * The keyword used for search filtering.
      */
     @Transient
-    protected String params;
+    protected String keyword;
 
     /**
      * The current page number (1-based) for paginated results.
