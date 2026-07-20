@@ -34,7 +34,7 @@ import org.miaixz.bus.cortex.Vector;
 public final class RegistryScopeMapping {
 
     /**
-     * Prevents utility class instantiation.
+     * Keeps registry scope mapping on the static API.
      */
     private RegistryScopeMapping() {
         // No initialization required.

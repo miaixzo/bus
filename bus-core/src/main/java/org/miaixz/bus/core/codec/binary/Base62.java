@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Base62 {
 
     /**
-     * Constructs a new Base62. Utility class constructor for static access.
+     * Keeps Base62 encoding and decoding on the static API.
      */
     private Base62() {
         // No initialization required.

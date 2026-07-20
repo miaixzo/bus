@@ -38,7 +38,7 @@ import org.miaixz.bus.health.linux.SysPath;
 public final class Sysfs {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Linux sysfs hardware queries on the static API.
      */
     private Sysfs() {
         // No initialization required.

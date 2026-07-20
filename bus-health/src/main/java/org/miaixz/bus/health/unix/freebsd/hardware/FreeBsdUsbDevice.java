@@ -152,8 +152,18 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
             // parents' children with the buses' children
             String parent = parentMap.get(usbus);
             hubMap.put(parent, new ArrayList<>(hubMap.getOrDefault(usbus, Collections.emptyList())));
-            controllerDevices.add(buildDeviceTree(parent, "0000", "0000", nameMap, vendorMap, vendorIdMap,
-                    productIdMap, serialMap, hubMap, FreeBsdUsbDevice::new));
+            controllerDevices.add(
+                    buildDeviceTree(
+                            parent,
+                            "0000",
+                            "0000",
+                            nameMap,
+                            vendorMap,
+                            vendorIdMap,
+                            productIdMap,
+                            serialMap,
+                            hubMap,
+                            FreeBsdUsbDevice::new));
         }
         return controllerDevices;
     }

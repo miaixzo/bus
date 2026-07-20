@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.loader.LazyFunLoader;
 public class SAXParserFactory {
 
     /**
-     * Constructs a new SAX parser factory utility.
+     * Creates a SAX parser factory adapter.
      */
     public SAXParserFactory() {
         // No initialization required.

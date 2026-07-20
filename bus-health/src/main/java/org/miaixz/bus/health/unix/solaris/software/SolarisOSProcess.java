@@ -225,7 +225,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
         updateAttributes();
     }
 
-    /***
+    /**
      * Returns Enum STATE for the state value obtained from status string of thread/process.
      *
      * @param stateValue state value from the status string

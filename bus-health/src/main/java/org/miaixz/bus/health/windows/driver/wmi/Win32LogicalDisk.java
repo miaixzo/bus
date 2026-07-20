@@ -37,7 +37,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32LogicalDisk {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Win32 logical disk queries on the static API.
      */
     private Win32LogicalDisk() {
         // No initialization required.

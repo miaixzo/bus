@@ -35,7 +35,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32LogicalDiskToPartition {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Win32 logical disk to partition queries on the static API.
      */
     private Win32LogicalDiskToPartition() {
         // No initialization required.

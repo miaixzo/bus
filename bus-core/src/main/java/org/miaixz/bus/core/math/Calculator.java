@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Calculator {
 
     /**
-     * Constructs a new Calculator. Utility class constructor for static access.
+     * Creates an expression calculator used by the static calculation entry point.
      */
     private Calculator() {
         // No initialization required.

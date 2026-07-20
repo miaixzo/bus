@@ -29,7 +29,7 @@ package org.miaixz.bus.core.center.date;
 public class Galaxy {
 
     /**
-     * Constructs a new Galaxy. Utility class constructor for static access.
+     * Keeps date-calendar creation on the static API.
      */
     private Galaxy() {
         // No initialization required.

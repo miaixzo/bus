@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class CheckKit {
 
     /**
-     * Constructs a new CheckKit. Utility class constructor for static access.
+     * Keeps validation checks on the static API.
      */
     private CheckKit() {
         // No initialization required.

@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
 
     /**
-     * Constructs a new AbstractTable. Utility class constructor for static access.
+     * Creates a new {@code AbstractTable} instance.
      */
     protected AbstractTable() {
         // No initialization required.

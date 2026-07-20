@@ -241,13 +241,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     }
 
     /**
-     * JNA wrapper for the BATTERY_QUERY_INFORMATION structure.
-     * <p>
-     * This class maps to the native Windows structure used to query battery information.
-     * </p>
-     */
-    // MOVE?
-    /**
      * The BATTERY_QUERY_INFORMATION class.
      *
      * @author Kimi Liu

@@ -91,8 +91,8 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     /**
      * The uptimeSupplier value.
      */
-    private final Supplier<Long> uptimeSupplier = Memoizer.memoize(SolarisOperatingSystem::queryUptime,
-            Memoizer.defaultExpiration());
+    private final Supplier<Long> uptimeSupplier = Memoizer
+            .memoize(SolarisOperatingSystem::queryUptime, Memoizer.defaultExpiration());
 
     static {
         String[] split = Pattern.SPACES_PATTERN.split(Executor.getFirstAnswer("uname -rv"));

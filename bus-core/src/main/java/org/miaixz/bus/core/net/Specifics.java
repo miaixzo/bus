@@ -93,10 +93,6 @@ public class Specifics {
             "X-API-ID", "X-API-KEY", "API-KEY", "API-ID" };
 
     /**
-     * --- CRUD & Resource Actions (Explicit Operations) ---
-     */
-
-    /**
      * Resource retrieval ({@code /get}). Explicit path for fetching a single resource.
      */
     public static final String MAPPING_GET = "/get";
@@ -162,10 +158,6 @@ public class Specifics {
     public static final String MAPPING_PREVIEW = "/preview";
 
     /**
-     * --- Registry & Data Transfer (Storage Standards) ---
-     */
-
-    /**
      * Base path for registry endpoints ({@code /registry}).
      */
     public static final String MAPPING_REGISTRY = "/registry";
@@ -226,10 +218,6 @@ public class Specifics {
     public static final String MAPPING_PART = "/part";
 
     /**
-     * --- Observability & Ops (Maintenance & Diagnostics) ---
-     */
-
-    /**
      * Health status ({@code /health}). Main health check endpoint.
      */
     public static final String MAPPING_HEALTH = "/health";
@@ -278,10 +266,6 @@ public class Specifics {
      * Environment config ({@code /env}). View environment variables.
      */
     public static final String MAPPING_ENV = "/env";
-
-    /**
-     * --- Control Plane & Business (Jobs & Workflows) ---
-     */
 
     /**
      * Task trigger ({@code /trigger}). Starting a workflow or background job.
@@ -334,10 +318,6 @@ public class Specifics {
     public static final String MAPPING_ROLLBACK = "/rollback";
 
     /**
-     * --- Security & Identity (Authentication & Gateway) ---
-     */
-
-    /**
      * Auth entry ({@code /auth}). Login or identity verification.
      */
     public static final String MAPPING_AUTH = "/auth";
@@ -383,10 +363,6 @@ public class Specifics {
     public static final String MAPPING_SESSION = "/session";
 
     /**
-     * --- Communication & Interaction (Real-time & Discovery) ---
-     */
-
-    /**
      * Search engine ({@code /search}). Resource discovery and querying.
      */
     public static final String MAPPING_SEARCH = "/search";
@@ -425,10 +401,6 @@ public class Specifics {
      * Message publication ({@code /publish}). Pub/Sub producer endpoint.
      */
     public static final String MAPPING_PUBLISH = "/publish";
-
-    /**
-     * --- Protocol Level (RFC 8615 & Static Files) ---
-     */
 
     /**
      * OIDC config ({@code /.well-known/openid-configuration}). Discovery for identity providers.

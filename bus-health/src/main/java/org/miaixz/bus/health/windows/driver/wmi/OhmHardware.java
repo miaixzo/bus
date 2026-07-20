@@ -36,7 +36,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class OhmHardware {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Open Hardware Monitor hardware queries on the static API.
      */
     private OhmHardware() {
         // No initialization required.

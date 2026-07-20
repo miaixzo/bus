@@ -38,7 +38,7 @@ import org.miaixz.bus.health.Config;
 public final class ProcPath {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Linux procfs path resolution on the static API.
      */
     private ProcPath() {
         // No initialization required.

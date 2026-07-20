@@ -151,7 +151,7 @@ public final class StringBuilderPool {
     }
 
     /**
-     * Private constructor to prevent instantiation of this utility class.
+     * Keeps per-thread string-builder pool management on the static API.
      *
      * @throws UnsupportedOperationException always
      */

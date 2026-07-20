@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.*;
 public class Assert {
 
     /**
-     * Constructs a new Assert. Utility class constructor for static access.
+     * Keeps argument and state assertions on the static API.
      */
     private Assert() {
         // No initialization required.

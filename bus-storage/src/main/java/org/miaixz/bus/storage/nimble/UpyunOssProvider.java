@@ -52,9 +52,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
 public class UpyunOssProvider extends AbstractProvider {
 
     /**
-     * The HTTP client instance used for making requests to the Upyun API.
-     */
-    /**
      * Constructs an Upyun OSS provider with the given context. Initializes the HTTP client using the provided
      * credentials and endpoint configuration.
      *
@@ -251,13 +248,6 @@ public class UpyunOssProvider extends AbstractProvider {
         }
     }
 
-    /**
-     * Downloads a file from the default storage bucket.
-     *
-     * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content as a byte array if
-     *         successful.
-     */
     /**
      * Downloads a file from the default storage bucket and returns its content as a byte array.
      *

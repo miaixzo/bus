@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.*;
 public class CollectionStream extends CollectionValidator {
 
     /**
-     * Constructs a new CollectionStream. Utility class constructor for static access.
+     * Creates a new {@code CollectionStream} instance.
      */
     public CollectionStream() {
         // No initialization required.

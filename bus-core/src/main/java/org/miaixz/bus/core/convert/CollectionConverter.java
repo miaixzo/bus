@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class CollectionConverter implements MatcherConverter, Serializable {
 
     /**
-     * Constructs a new CollectionConverter. Utility class constructor for static access.
+     * Creates a new {@code CollectionConverter} instance.
      */
     CollectionConverter() {
         // No initialization required.

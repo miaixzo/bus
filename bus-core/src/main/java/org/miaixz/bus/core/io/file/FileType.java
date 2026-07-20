@@ -913,7 +913,7 @@ public class FileType {
     };
 
     /**
-     * Private constructor to prevent instantiation of this utility class.
+     * Keeps file-type detection on the static API.
      */
     private FileType() {
         // No initialization required.

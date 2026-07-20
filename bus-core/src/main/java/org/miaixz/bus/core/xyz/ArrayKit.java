@@ -45,7 +45,7 @@ import org.miaixz.bus.core.text.StringJoiner;
 public class ArrayKit extends PrimitiveArray {
 
     /**
-     * Constructs a new ArrayKit. Utility class constructor for static access.
+     * Keeps array creation and transformation on the static API.
      */
     private ArrayKit() {
         // No initialization required.

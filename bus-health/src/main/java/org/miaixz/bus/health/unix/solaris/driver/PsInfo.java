@@ -47,7 +47,7 @@ import org.miaixz.bus.logger.Logger;
 public final class PsInfo {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Solaris process-information queries on the static API.
      */
     private PsInfo() {
         // No initialization required.

@@ -64,7 +64,7 @@ public final class WorkflowEndpointParser {
     private static final String HTTPS_SCHEME = Protocol.HTTPS.getName();
 
     /**
-     * Prevents utility instantiation.
+     * Keeps Temporal endpoint parsing on the static API.
      */
     private WorkflowEndpointParser() {
         // No initialization required.

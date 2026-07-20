@@ -32,7 +32,7 @@ import java.io.Serial;
 public class CRC16Modbus extends CRC16Checksum {
 
     /**
-     * Constructs a new CRC16Modbus. Utility class constructor for static access.
+     * Creates a CRC-16/MODBUS checksum implementation.
      */
     private CRC16Modbus() {
         // No initialization required.

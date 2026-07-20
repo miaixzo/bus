@@ -48,7 +48,7 @@ import org.miaixz.bus.core.codec.binary.encoder.Base32Encoder;
 public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
 
     /**
-     * Constructs a new Base32Provider. Utility class constructor for static access.
+     * Creates the shared Base32 codec provider.
      */
     private Base32Provider() {
         // No initialization required.

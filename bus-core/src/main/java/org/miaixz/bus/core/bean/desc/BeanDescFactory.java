@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.RecordKit;
 public class BeanDescFactory {
 
     /**
-     * Constructs a new BeanDescFactory. Utility class constructor for static access.
+     * Keeps bean-description factory selection on the static API.
      */
     private BeanDescFactory() {
         // No initialization required.

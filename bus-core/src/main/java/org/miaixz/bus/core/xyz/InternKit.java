@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.intern.WeakIntern;
 public class InternKit {
 
     /**
-     * Constructs a new InternKit. Utility class constructor for static access.
+     * Keeps object interning on the static API.
      */
     private InternKit() {
         // No initialization required.

@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ArrayValidator {
 
     /**
-     * Constructs a new ArrayValidator. Utility class constructor for static access.
+     * Creates a new {@code ArrayValidator} instance.
      */
     ArrayValidator() {
         // No initialization required.

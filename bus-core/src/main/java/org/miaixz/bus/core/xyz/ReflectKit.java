@@ -58,7 +58,7 @@ import org.miaixz.bus.core.text.StringTrimer;
 public class ReflectKit {
 
     /**
-     * Constructs a new reflection utility instance.
+     * Creates an instance for reflection-based member and type operations.
      */
     public ReflectKit() {
         // No initialization required.

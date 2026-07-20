@@ -43,6 +43,8 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Headers;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
@@ -125,9 +127,10 @@ public final class HttpDownload {
      */
     public static Builder builder(final Context context) {
         final Context current = require(context, "Context");
-        return new Builder((request, cancellation) -> HttpX.builder(current).method(request.method())
-                .url(request.url().encoded()).headers(request.headers()).body(request.body()).tag(request.tag())
-                .proxy(request.proxy()).timeout(request.timeout()).build().execute(cancellation));
+        return new Builder((request, cancellation) -> Mediator.execute(
+                Type.HTTP,
+                cancellation,
+                currentCancellation -> HttpRunner.create(current, request).run(currentCancellation)));
     }
 
     /**

@@ -35,7 +35,7 @@ import org.miaixz.bus.health.linux.ProcPath;
 public final class UpTime {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Linux uptime queries on the static API.
      */
     private UpTime() {
         // No initialization required.

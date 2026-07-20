@@ -32,7 +32,7 @@ import java.io.Serial;
 public class CRC16Maxim extends CRC16Checksum {
 
     /**
-     * Constructs a new CRC16Maxim. Utility class constructor for static access.
+     * Creates a CRC-16/MAXIM checksum implementation.
      */
     private CRC16Maxim() {
         // No initialization required.

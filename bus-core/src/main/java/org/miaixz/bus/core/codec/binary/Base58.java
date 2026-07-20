@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public class Base58 {
 
     /**
-     * Constructs a new Base58. Utility class constructor for static access.
+     * Keeps Base58 encoding and decoding on the static API.
      */
     private Base58() {
         // No initialization required.

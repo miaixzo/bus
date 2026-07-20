@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Controller {
 
     /**
-     * Constructs a new Controller. Utility class constructor for static access.
+     * Creates the base MVC controller support.
      */
     public Controller() {
         // No initialization required.

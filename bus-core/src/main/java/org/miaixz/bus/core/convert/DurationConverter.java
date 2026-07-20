@@ -32,7 +32,7 @@ import java.time.temporal.TemporalAmount;
 public class DurationConverter extends AbstractConverter {
 
     /**
-     * Constructs a new DurationConverter. Utility class constructor for static access.
+     * Creates a new {@code DurationConverter} instance.
      */
     public DurationConverter() {
         // No initialization required.

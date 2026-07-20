@@ -41,7 +41,7 @@ import org.apache.ibatis.reflection.TypeParameterResolver;
 public final class MapperMethodTypeResolver {
 
     /**
-     * Prevents instantiation of this utility class.
+     * Keeps mapper method-type resolution on the static API.
      */
     private MapperMethodTypeResolver() {
         // No initialization required.

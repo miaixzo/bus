@@ -51,7 +51,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class ClassKit {
 
     /**
-     * Constructs a new ClassKit. Utility class constructor for static access.
+     * Keeps class loading and introspection on the static API.
      */
     private ClassKit() {
         // No initialization required.

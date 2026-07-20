@@ -21,9 +21,10 @@
  * Defines shared protocol concepts that sit above raw network connections.
  *
  * <p>
- * Protocol-neutral types model cookies, route itineraries, demuxers and mediators that can be reused by HTTP and
- * long-lived protocols. They coordinate messages and metadata but must not depend on a concrete transport
- * implementation or expose protocol-specific builders.
+ * Protocol-neutral types model cookies, route itineraries and demuxers shared by HTTP and long-lived protocols.
+ * {@code Mediator} is the single management entry for direct client execution and supported carrier transitions, while
+ * {@code Mediator.Invocation} keeps concrete transport behavior in the owning protocol package. These types coordinate
+ * routing and metadata without depending on protocol-specific builders or transport implementations.
  * </p>
  *
  * @author Kimi Liu

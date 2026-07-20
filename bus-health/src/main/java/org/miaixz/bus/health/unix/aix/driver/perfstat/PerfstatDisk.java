@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class PerfstatDisk {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps AIX perfstat disk queries on the static API.
      */
     private PerfstatDisk() {
         // No initialization required.

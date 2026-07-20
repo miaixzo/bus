@@ -35,7 +35,7 @@ import org.miaixz.bus.core.text.ASCIIStrCache;
 public class CharKit {
 
     /**
-     * Constructs a new CharKit. Utility class constructor for static access.
+     * Keeps character inspection and conversion on the static API.
      */
     private CharKit() {
         // No initialization required.

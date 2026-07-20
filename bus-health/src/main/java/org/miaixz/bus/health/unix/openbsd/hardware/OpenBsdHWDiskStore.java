@@ -114,8 +114,8 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
     public static List<HWDiskStore> getDisks() {
         List<HWDiskStore> diskList = new ArrayList<>();
         List<String> dmesg = null; // Lazily fetch in loop if needed
-        Supplier<List<String>> iostat = Memoizer.memoize(OpenBsdHWDiskStore::querySystatIostat,
-                Memoizer.defaultExpiration());
+        Supplier<List<String>> iostat = Memoizer
+                .memoize(OpenBsdHWDiskStore::querySystatIostat, Memoizer.defaultExpiration());
 
         // Get list of disks from sysctl
         // hw.disknames=sd0:2cf69345d371cd82,cd0:,sd1:

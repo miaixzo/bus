@@ -34,7 +34,7 @@ import java.util.List;
 public final class TID {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps native thread-ID lookup on the static API.
      */
     private TID() {
         // No initialization required.

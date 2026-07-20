@@ -32,7 +32,7 @@ import org.miaixz.bus.core.basic.service.ErrorService;
 public class ErrorAdvice {
 
     /**
-     * Constructs a new ErrorAdvice. Utility class constructor for static access.
+     * Creates a new {@code ErrorAdvice} instance.
      */
     public ErrorAdvice() {
         // No initialization required.

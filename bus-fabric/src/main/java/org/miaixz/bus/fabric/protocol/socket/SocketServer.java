@@ -76,10 +76,6 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 public final class SocketServer implements Lifecycle {
 
     /**
-     * Open message tag.
-     */
-
-    /**
      * Shared context.
      */
     private final Context context;

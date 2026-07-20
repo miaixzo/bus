@@ -215,7 +215,7 @@ public class AixOSProcess extends AbstractOSProcess {
         updateAttributes(cpuMem);
     }
 
-    /***
+    /**
      * Returns Enum STATE for the state value obtained from status string of thread/process.
      *
      * @param stateValue state value from the status string

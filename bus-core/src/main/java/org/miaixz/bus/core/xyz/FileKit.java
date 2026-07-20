@@ -53,7 +53,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class FileKit extends PathResolve {
 
     /**
-     * Constructs a new FileKit. Utility class constructor for static access.
+     * Keeps file and path operations on the static API.
      */
     private FileKit() {
         // No initialization required.

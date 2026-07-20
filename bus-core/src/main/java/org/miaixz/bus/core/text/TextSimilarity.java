@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TextSimilarity {
 
     /**
-     * Constructs a new text similarity utility instance.
+     * Creates a text-similarity calculator.
      */
     public TextSimilarity() {
         // No initialization required.

@@ -45,38 +45,6 @@ import org.miaixz.bus.fabric.protocol.websocket.WebSocketClose;
 public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolean control) {
 
     /**
-     * Continuation opcode.
-     */
-
-    /**
-     * Text opcode.
-     */
-
-    /**
-     * Binary opcode.
-     */
-
-    /**
-     * Close opcode.
-     */
-
-    /**
-     * Ping opcode.
-     */
-
-    /**
-     * Pong opcode.
-     */
-
-    /**
-     * Maximum message payload bytes accepted by this implementation.
-     */
-
-    /**
-     * Maximum control frame payload bytes.
-     */
-
-    /**
      * Creates a frame snapshot.
      *
      * @param opcode  frame opcode

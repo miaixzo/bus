@@ -41,7 +41,7 @@ import org.miaixz.bus.logger.Logger;
 public final class OpenBsdSysctlKit {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps OpenBSD sysctl queries on the static API.
      */
     private OpenBsdSysctlKit() {
         // No initialization required.

@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Charset {
 
     /**
-     * Constructs a new Charset. Utility class constructor for static access.
+     * Keeps common charset lookup on the static API.
      */
     private Charset() {
         // No initialization required.

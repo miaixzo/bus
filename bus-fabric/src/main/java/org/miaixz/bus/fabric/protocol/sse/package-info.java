@@ -21,9 +21,11 @@
  * Implements server-sent event exchanges, reconnect handling and listener delivery.
  *
  * <p>
- * {@code SseX} opens an HTTP request that remains attached to a streaming event reader, while {@code SseSession}
- * exposes lifecycle control and listener notification. This package owns SSE retry and event dispatch semantics; HTTP
- * connection creation and response decoding remain in the HTTP protocol layer.
+ * Synchronous and asynchronous client opens follow {@code SseX -> SseCall -> Mediator -> SseRunner}. The runner obtains
+ * its HTTP response stream only through the allowed {@code Mediator.convert(SSE, HTTP_STREAM) -> HttpRunner} carrier
+ * transition. {@code EventSourceFactory} delegates to {@code SseX}; it does not add a second routing layer.
+ * {@code SseSession} owns lifecycle control and listener notification, and each reconnect keeps its independently
+ * created cancellation scope while using the same conversion.
  * </p>
  *
  * @author Kimi Liu

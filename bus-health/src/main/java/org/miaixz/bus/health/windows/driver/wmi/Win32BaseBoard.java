@@ -37,7 +37,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32BaseBoard {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Win32 base board queries on the static API.
      */
     private Win32BaseBoard() {
         // No initialization required.

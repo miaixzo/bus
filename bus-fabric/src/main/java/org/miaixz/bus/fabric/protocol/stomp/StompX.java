@@ -48,6 +48,8 @@ import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.stomp.calls.StompCall;
 
 /**
@@ -69,6 +71,11 @@ public final class StompX {
     private final StompRunner runner;
 
     /**
+     * Callback managed by the shared call lifecycle.
+     */
+    private final Callback<StompSession> callback;
+
+    /**
      * Creates an exchange.
      *
      * @param builder builder
@@ -78,9 +85,9 @@ public final class StompX {
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.snapshot = new StompSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.destination, builder.login, builder.passcode, builder.guard, builder.filter,
-                currentObserver, builder.callback, builder.handler == null ? noopHandler() : builder.handler,
-                builder.listener);
+                currentObserver, builder.handler == null ? noopHandler() : builder.handler, builder.listener);
         this.runner = new StompRunner(snapshot);
+        this.callback = builder.callback;
     }
 
     /**
@@ -163,7 +170,7 @@ public final class StompX {
      * @return session
      */
     public StompSession open() {
-        return runner.open();
+        return call().execute();
     }
 
     /**
@@ -190,7 +197,12 @@ public final class StompX {
      * @return STOMP call
      */
     public Call<StompSession> call() {
-        return StompCall.create(this, snapshot.context().reactor().dispatcher());
+        return StompCall.create(
+                snapshot.context().reactor().dispatcher(),
+                callback,
+                snapshot.observer(),
+                cancellation -> Mediator.execute(Type.STOMP, cancellation, runner::open),
+                dispatchKey());
     }
 
     /**

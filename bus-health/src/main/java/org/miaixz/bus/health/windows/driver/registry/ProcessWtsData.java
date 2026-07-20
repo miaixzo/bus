@@ -49,7 +49,7 @@ import org.miaixz.bus.logger.Logger;
 public final class ProcessWtsData {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Windows process WTS-data registry queries on the static API.
      */
     private ProcessWtsData() {
         // No initialization required.

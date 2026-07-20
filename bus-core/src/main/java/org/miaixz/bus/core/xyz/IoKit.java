@@ -70,7 +70,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class IoKit {
 
     /**
-     * Constructs a new IoKit. Utility class constructor for static access.
+     * Keeps stream and resource I/O on the static API.
      */
     private IoKit() {
         // No initialization required.

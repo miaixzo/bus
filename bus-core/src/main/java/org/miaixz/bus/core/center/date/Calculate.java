@@ -33,7 +33,7 @@ import java.time.temporal.*;
 public class Calculate extends Resolver {
 
     /**
-     * Constructs a new Calculate. Utility class constructor for static access.
+     * Creates a new {@code Calculate} instance.
      */
     public Calculate() {
         // No initialization required.

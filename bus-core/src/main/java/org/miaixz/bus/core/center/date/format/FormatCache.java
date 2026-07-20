@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.tuple.Tuple;
 public abstract class FormatCache<F extends Format> {
 
     /**
-     * Constructs a new FormatCache. Utility class constructor for static access.
+     * Creates a new {@code FormatCache} instance.
      */
     protected FormatCache() {
         // No initialization required.

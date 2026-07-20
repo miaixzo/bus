@@ -59,7 +59,7 @@ public final class CertificatePin {
     private static final DigesterFactory SHA1 = DigesterFactory.ofJdk("SHA-1");
 
     /**
-     * Creates a certificate pin helper.
+     * Restricts construction to the static certificate pin operations defined by this class.
      */
     private CertificatePin() {
         // Utility class.

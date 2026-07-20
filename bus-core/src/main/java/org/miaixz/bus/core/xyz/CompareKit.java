@@ -35,7 +35,7 @@ import org.miaixz.bus.core.compare.PinyinCompare;
 public class CompareKit {
 
     /**
-     * Constructs a new CompareKit. Utility class constructor for static access.
+     * Keeps comparator construction and comparison on the static API.
      */
     private CompareKit() {
         // No initialization required.

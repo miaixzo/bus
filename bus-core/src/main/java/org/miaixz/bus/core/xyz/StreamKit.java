@@ -48,7 +48,7 @@ import org.miaixz.bus.core.tree.HierarchyIterator;
 public class StreamKit {
 
     /**
-     * Constructs a new stream utility instance.
+     * Creates an instance for constructing and transforming streams.
      */
     public StreamKit() {
         // No initialization required.

@@ -45,7 +45,7 @@ import redis.clients.jedis.JedisPoolConfig;
 public final class RedisBackends {
 
     /**
-     * Hidden constructor for utility class.
+     * Keeps Redis backend construction on the static factory API.
      */
     private RedisBackends() {
         // No initialization required.

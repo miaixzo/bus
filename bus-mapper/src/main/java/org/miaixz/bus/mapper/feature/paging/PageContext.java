@@ -80,8 +80,7 @@ public final class PageContext {
     private static final ThreadLocal<Boolean> LOCAL_COUNT_REQUIRED = new ThreadLocal<>();
 
     /**
-     * Private constructor to prevent instantiation. This class is a utility class designed to be used via static
-     * methods.
+     * Creates the fluent pagination context bound to the current thread.
      */
     private PageContext() {
         // No initialization required.

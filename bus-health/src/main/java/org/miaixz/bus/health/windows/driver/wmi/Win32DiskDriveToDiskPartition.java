@@ -35,7 +35,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32DiskDriveToDiskPartition {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Win32 disk drive to disk partition queries on the static API.
      */
     private Win32DiskDriveToDiskPartition() {
         // No initialization required.

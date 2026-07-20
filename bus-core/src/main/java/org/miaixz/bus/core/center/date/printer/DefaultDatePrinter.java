@@ -38,7 +38,7 @@ import java.util.TimeZone;
 public class DefaultDatePrinter implements DatePrinter, Serializable {
 
     /**
-     * Constructs a new DefaultDatePrinter. Utility class constructor for static access.
+     * Creates the default date-printer settings.
      */
     private DefaultDatePrinter() {
         // No initialization required.

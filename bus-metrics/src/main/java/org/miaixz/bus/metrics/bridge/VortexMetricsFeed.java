@@ -35,7 +35,7 @@ import org.miaixz.bus.metrics.Metrics;
 public class VortexMetricsFeed {
 
     /**
-     * Private constructor; this is a static utility class.
+     * Keeps Vortex metric publication on the static API.
      */
     private VortexMetricsFeed() {
         // No initialization required.

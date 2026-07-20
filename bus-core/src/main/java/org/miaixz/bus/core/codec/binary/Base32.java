@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Base32 {
 
     /**
-     * Constructs a new Base32. Utility class constructor for static access.
+     * Keeps Base32 encoding and decoding on the static API.
      */
     private Base32() {
         // No initialization required.

@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class BoundedOperation {
 
     /**
-     * Constructs a new BoundedOperation. Utility class constructor for static access.
+     * Keeps range-bound operations on the static API.
      */
     private BoundedOperation() {
         // No initialization required.

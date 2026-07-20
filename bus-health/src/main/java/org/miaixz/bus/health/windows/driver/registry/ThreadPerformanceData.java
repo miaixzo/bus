@@ -41,7 +41,7 @@ import org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation.ThreadPerf
 public final class ThreadPerformanceData {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Windows thread performance data registry queries on the static API.
      */
     private ThreadPerformanceData() {
         // No initialization required.

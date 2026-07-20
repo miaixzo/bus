@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class ActualTypeMapper {
 
     /**
-     * Constructs a new ActualTypeMapper. Utility class constructor for static access.
+     * Keeps generic type-variable resolution on the static API.
      */
     private ActualTypeMapper() {
         // No initialization required.

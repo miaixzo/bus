@@ -19,34 +19,16 @@
 */
 package org.miaixz.bus.fabric.protocol;
 
-import java.io.IOException;
-import java.net.URI;
-
-import org.miaixz.bus.core.io.source.AssignSource;
-import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Session;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.network.Connection;
-import org.miaixz.bus.fabric.network.tls.TlsSettings;
-import org.miaixz.bus.fabric.network.tls.context.TlsContext;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.chain.HttpBridge;
-import org.miaixz.bus.fabric.protocol.http.chain.HttpConnect;
-import org.miaixz.bus.fabric.protocol.http.codec.Http1Codec;
-import org.miaixz.bus.fabric.protocol.websocket.WebSocketX;
-import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
- * Central protocol mediator used by leaf protocols to reuse sibling protocol capabilities.
+ * Central entry for direct protocol execution and supported protocol-carrier transitions.
+ * <p>
+ * This class validates routing and cancellation only. Concrete request preparation, transport work, callbacks and
+ * resource ownership remain in the protocol runners and call lifecycle.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -54,311 +36,157 @@ import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 public final class Mediator {
 
     /**
-     * Utility class.
+     * Restricts construction because protocol routing is exposed through static operations.
      */
     private Mediator() {
-        // No initialization required.
+        // Static routing entry.
     }
 
     /**
-     * Opens an HTTP GET stream through the HTTP exchange chain.
+     * Executes a supported direct protocol type.
      *
-     * @param context shared context
-     * @param uri     target URI
-     * @param headers request headers
-     * @param timeout request timeout
-     * @return protocol-neutral stream response
+     * @param type         direct protocol type
+     * @param cancellation caller-owned cancellation scope
+     * @param invocation   concrete protocol invocation
+     * @param <T>          protocol result type
+     * @return protocol result
      */
-    public static HttpStream openHttpStream(
-            final Context context,
-            final URI uri,
-            final Headers headers,
-            final org.miaixz.bus.fabric.Timeout timeout) {
-        final HttpResponse response = org.miaixz.bus.fabric.protocol.http.HttpX.builder(require(context, "Context"))
-                .to(require(uri, "HTTP URI").toString()).get().headers(require(headers, "Headers"))
-                .timeout(require(timeout, "Timeout")).build().execute();
-        return new HttpStream(response.code(), response.headers(), response.body().payload(), response);
-    }
-
-    /**
-     * Performs an HTTP/1.1 upgrade request and returns the still-open leased connection.
-     *
-     * @param context shared context
-     * @param uri     HTTP upgrade URI
-     * @param headers upgrade request headers
-     * @param timeout upgrade timeout
-     * @return upgrade result
-     */
-    public static HttpUpgrade upgradeHttp1(
-            final Context context,
-            final URI uri,
-            final Headers headers,
-            final org.miaixz.bus.fabric.Timeout timeout) {
-        final Context current = require(context, "Context");
-        final HttpRequest request = new HttpBridge(cookieJar(current), userAgent(current)).prepare(
-                HttpRequest.builder().method(HTTP.Method.GET)
-                        .url(UnoUrl.parse(require(uri, "HTTP upgrade URI").toString()))
-                        .headers(require(headers, "Headers")).timeout(require(timeout, "Timeout")).build());
-        final HttpConnect connect = new HttpConnect(current.directory().connectionPool(), tlsContext(current),
-                tlsSettings(current), current.listener(), current.resolver(), current.reactor().dispatcher());
-        final ConnectionLease lease = connect.acquire(request);
-        try {
-            final Connection connection = lease.connection();
-            final Http1Codec codec = new Http1Codec(connection);
-            codec.writeRequest(request);
-            final HttpResponse response = codec.readResponse(request);
-            final CookieJar cookies = cookieJar(current);
-            if (cookies != null) {
-                cookies.save(request.url(), response.headers());
-            }
-            return new HttpUpgrade(response.code(), response.headers(), connection, lease);
-        } catch (final RuntimeException e) {
-            lease.close();
-            throw e;
+    public static <T> T execute(
+            final Type type,
+            final Cancellation cancellation,
+            final Invocation<Cancellation, T> invocation) {
+        final Type currentType = require(type, "Protocol type");
+        final Cancellation currentCancellation = require(cancellation, "Cancellation");
+        final Invocation<Cancellation, T> currentInvocation = require(invocation, "Protocol invocation");
+        if (!direct(currentType)) {
+            throw new ProtocolException("Unsupported direct protocol type: " + currentType);
         }
+        currentCancellation.throwIfCancelled();
+        return currentInvocation.invoke(currentCancellation);
     }
 
     /**
-     * Opens a WebSocket session through the WebSocket exchange builder.
+     * Executes a supported protocol-carrier transition.
      *
-     * @param context shared context
-     * @param uri     target URI
-     * @param headers request headers
-     * @param timeout open timeout policy
-     * @param handler message handler
-     * @return opened session
+     * @param source       source protocol type
+     * @param target       target carrier type
+     * @param cancellation caller-owned cancellation scope
+     * @param invocation   concrete target protocol invocation
+     * @param <T>          protocol result type
+     * @return protocol result
      */
-    public static Session openWebSocket(
-            final Context context,
-            final URI uri,
-            final Headers headers,
-            final org.miaixz.bus.fabric.Timeout timeout,
-            final Handler handler) {
-        return WebSocketX.builder(require(context, "Context")).to(require(uri, "WebSocket URI").toString())
-                .headers(require(headers, "Headers")).timeout(require(timeout, "Timeout"))
-                .onMessage(require(handler, "Handler")).open();
+    public static <T> T convert(
+            final Type source,
+            final Type target,
+            final Cancellation cancellation,
+            final Invocation<Cancellation, T> invocation) {
+        final Type currentSource = require(source, "Source protocol type");
+        final Type currentTarget = require(target, "Target protocol type");
+        final Cancellation currentCancellation = require(cancellation, "Cancellation");
+        final Invocation<Cancellation, T> currentInvocation = require(invocation, "Protocol invocation");
+        if (!transition(currentSource, currentTarget)) {
+            throw new ProtocolException("Unsupported protocol transition: " + currentSource + " -> " + currentTarget);
+        }
+        currentCancellation.throwIfCancelled();
+        return currentInvocation.invoke(currentCancellation);
     }
 
     /**
-     * Validates required references.
+     * Returns whether an operation is a supported direct client operation.
+     *
+     * @param type protocol type
+     * @return {@code true} for a supported direct operation
+     */
+    private static boolean direct(final Type type) {
+        return switch (type) {
+            case HTTP, SOCKET, SSE, STOMP, WEBSOCKET -> true;
+            case HTTP_STREAM, HTTP_UPGRADE -> false;
+        };
+    }
+
+    /**
+     * Returns whether a source-to-target carrier transition is supported.
+     *
+     * @param source source protocol type
+     * @param target target carrier type
+     * @return {@code true} for a supported transition
+     */
+    private static boolean transition(final Type source, final Type target) {
+        return source == Type.SSE && target == Type.HTTP_STREAM
+                || source == Type.WEBSOCKET && target == Type.HTTP_UPGRADE
+                || source == Type.STOMP && target == Type.WEBSOCKET;
+    }
+
+    /**
+     * Validates a required routing value.
      *
      * @param value value
      * @param name  field name
      * @param <T>   value type
-     * @return value
+     * @return validated value
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
-     * Returns configured cookie jar, if present.
+     * Represents a typed invocation with one input and one result.
      *
-     * @param context context
-     * @return cookie jar or null
+     * @param <I> input type
+     * @param <O> result type
      */
-    private static CookieJar cookieJar(final Context context) {
-        if (context.options().contains("http.cookieJar")) {
-            return context.options().get("http.cookieJar", CookieJar.class);
-        }
-        if (context.options().contains("cookieJar")) {
-            return context.options().get("cookieJar", CookieJar.class);
-        }
-        if (context.options().contains("http.cookieStore")) {
-            return context.options().get("http.cookieStore", CookieJar.class);
-        }
-        if (context.options().contains("cookieStore")) {
-            return context.options().get("cookieStore", CookieJar.class);
-        }
-        return null;
-    }
-
-    /**
-     * Returns configured HTTP User-Agent.
-     *
-     * @param context context
-     * @return User-Agent
-     */
-    private static String userAgent(final Context context) {
-        if (context.options().contains("http.userAgent")) {
-            final String value = context.options().get("http.userAgent", String.class);
-            return value == null ? HttpBridge.defaultUserAgent() : value;
-        }
-        if (context.options().contains("userAgent")) {
-            final String value = context.options().get("userAgent", String.class);
-            return value == null ? HttpBridge.defaultUserAgent() : value;
-        }
-        return HttpBridge.defaultUserAgent();
-    }
-
-    /**
-     * Returns configured TLS context.
-     *
-     * @param context context
-     * @return TLS context
-     */
-    private static TlsContext tlsContext(final Context context) {
-        if (context.options().contains("http.tlsContext")) {
-            return context.options().get("http.tlsContext", TlsContext.class);
-        }
-        if (context.options().contains("tlsContext")) {
-            return context.options().get("tlsContext", TlsContext.class);
-        }
-        return TlsContext.defaults();
-    }
-
-    /**
-     * Returns configured TLS settings.
-     *
-     * @param context context
-     * @return TLS settings
-     */
-    private static TlsSettings tlsSettings(final Context context) {
-        if (context.options().contains("http.tlsSettings")) {
-            return context.options().get("http.tlsSettings", TlsSettings.class);
-        }
-        if (context.options().contains("tlsSettings")) {
-            return context.options().get("tlsSettings", TlsSettings.class);
-        }
-        return TlsSettings.defaults();
-    }
-
-    /**
-     * HTTP stream response without exposing HTTP implementation classes to leaf protocols.
-     *
-     * @param status  status code
-     * @param headers response headers
-     * @param body    body payload
-     * @param owner   close owner
-     */
-    public record HttpStream(int status, Headers headers, Payload body, AutoCloseable owner) implements AutoCloseable {
+    @FunctionalInterface
+    public interface Invocation<I, O> {
 
         /**
-         * Creates a stream snapshot.
+         * Invokes the operation with the supplied input.
          *
-         * @param status  status code
-         * @param headers response headers
-         * @param body    body payload
-         * @param owner   close owner
+         * @param input invocation input
+         * @return invocation result
          */
-        public HttpStream {
-            headers = require(headers, "Headers");
-            body = require(body, "Payload");
-            owner = require(owner, "Stream owner");
-        }
-
-        /**
-         * Opens the response body source and closes the owner with the source.
-         *
-         * @return body source
-         */
-        public Source source() {
-            return new OwnedSource(body.source(), this);
-        }
-
-        /**
-         * Closes the stream owner.
-         */
-        @Override
-        public void close() {
-            try {
-                owner.close();
-            } catch (final RuntimeException e) {
-                throw e;
-            } catch (final Exception e) {
-                throw new InternalException("Unable to close HTTP stream", e);
-            }
-        }
+        O invoke(I input);
 
     }
 
     /**
-     * HTTP upgrade response without exposing HTTP implementation classes to leaf protocols.
-     *
-     * @param status     status code
-     * @param headers    response headers
-     * @param connection upgraded connection
-     * @param lease      connection lease
+     * Defines direct protocol types and internal carrier types.
      */
-    public record HttpUpgrade(int status, Headers headers, Connection connection, ConnectionLease lease)
-            implements AutoCloseable {
+    public enum Type {
 
         /**
-         * Creates an upgrade snapshot.
-         *
-         * @param status     status code
-         * @param headers    response headers
-         * @param connection upgraded connection
-         * @param lease      connection lease
+         * HTTP request execution.
          */
-        public HttpUpgrade {
-            headers = require(headers, "Headers");
-            connection = require(connection, "Network connection");
-            lease = require(lease, "Connection lease");
-        }
+        HTTP,
 
         /**
-         * Releases the upgraded connection lease.
+         * HTTP response stream acquisition for a carrier protocol.
          */
-        @Override
-        public void close() {
-            lease.close();
-        }
-
-    }
-
-    /**
-     * Source that closes its protocol owner after the body source.
-     */
-    private static final class OwnedSource extends AssignSource {
+        HTTP_STREAM,
 
         /**
-         * Close owner.
+         * HTTP connection upgrade for a carrier protocol.
          */
-        private final AutoCloseable owner;
+        HTTP_UPGRADE,
 
         /**
-         * Creates an owned source.
-         *
-         * @param source body source
-         * @param owner  close owner
+         * Socket client connection opening.
          */
-        private OwnedSource(final Source source, final AutoCloseable owner) {
-            super(require(source, "Body source"));
-            this.owner = require(owner, "Stream owner");
-        }
+        SOCKET,
 
         /**
-         * Closes the body source and then closes its protocol owner.
-         *
-         * @throws IOException when the source close fails
+         * Server-sent event session opening.
          */
-        @Override
-        public void close() throws IOException {
-            IOException failure = null;
-            try {
-                super.close();
-            } catch (final IOException e) {
-                failure = e;
-            }
-            try {
-                owner.close();
-            } catch (final RuntimeException e) {
-                if (failure != null) {
-                    e.addSuppressed(failure);
-                }
-                throw e;
-            } catch (final Exception e) {
-                final InternalException wrapped = new InternalException("Unable to close owned stream", e);
-                if (failure != null) {
-                    wrapped.addSuppressed(failure);
-                }
-                throw wrapped;
-            }
-            if (failure != null) {
-                throw failure;
-            }
-        }
+        SSE,
+
+        /**
+         * STOMP session opening.
+         */
+        STOMP,
+
+        /**
+         * WebSocket session opening.
+         */
+        WEBSOCKET
 
     }
 

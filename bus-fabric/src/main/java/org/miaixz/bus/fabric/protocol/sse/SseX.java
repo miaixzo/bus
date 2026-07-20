@@ -49,6 +49,8 @@ import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
+import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.sse.calls.SseCall;
 import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
 
@@ -61,10 +63,6 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
 public final class SseX {
 
     /**
-     * Runtime option key for default timeout.
-     */
-
-    /**
      * Immutable execution snapshot.
      */
     private final SseSnapshot snapshot;
@@ -73,6 +71,11 @@ public final class SseX {
      * Execution runner.
      */
     private final SseRunner runner;
+
+    /**
+     * Callback managed by the shared call lifecycle.
+     */
+    private final Callback<SseSession> callback;
 
     /**
      * Creates an exchange.
@@ -84,9 +87,10 @@ public final class SseX {
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.snapshot = new SseSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.retry, builder.lastEventId, builder.autoReconnect, builder.responseHandler,
-                builder.guard, builder.filter, currentObserver, builder.callback,
+                builder.guard, builder.filter, currentObserver,
                 builder.handler == null ? noopHandler() : builder.handler, builder.listener);
         this.runner = new SseRunner(snapshot);
+        this.callback = builder.callback;
     }
 
     /**
@@ -160,7 +164,7 @@ public final class SseX {
      * @return opened session
      */
     public SseSession open() {
-        return runner.open();
+        return call().execute();
     }
 
     /**
@@ -187,7 +191,12 @@ public final class SseX {
      * @return SSE call
      */
     public Call<SseSession> call() {
-        return SseCall.create(this, snapshot.context().reactor().dispatcher());
+        return SseCall.create(
+                snapshot.context().reactor().dispatcher(),
+                callback,
+                snapshot.observer(),
+                cancellation -> Mediator.execute(Type.SSE, cancellation, runner::open),
+                dispatchKey());
     }
 
     /**

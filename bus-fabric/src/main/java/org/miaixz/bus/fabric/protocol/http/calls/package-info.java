@@ -21,8 +21,8 @@
  * Wraps HTTP exchanges in single-use call objects.
  *
  * <p>
- * HTTP calls bind an {@code HttpX} exchange to dispatcher execution, cancellation and callback delivery. They own call
- * state and one-shot semantics, while the HTTP runner still owns protocol execution and response creation.
+ * HTTP calls bind protocol operations to dispatcher execution, cancellation and callback delivery. They own call state
+ * and one-shot semantics, while the HTTP runner owns protocol execution and response creation.
  * </p>
  *
  * @author Kimi Liu

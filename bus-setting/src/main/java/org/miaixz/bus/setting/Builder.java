@@ -46,7 +46,7 @@ import org.miaixz.bus.setting.nimble.yaml.Yaml;
 public class Builder {
 
     /**
-     * Private constructor to prevent instantiation of this utility class.
+     * Keeps setting construction and loading on the static API.
      */
     private Builder() {
         // No initialization required.

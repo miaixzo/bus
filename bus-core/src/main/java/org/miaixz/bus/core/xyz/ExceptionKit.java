@@ -44,7 +44,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ExceptionKit {
 
     /**
-     * Constructs a new ExceptionKit. Utility class constructor for static access.
+     * Keeps exception traversal and conversion on the static API.
      */
     private ExceptionKit() {
         // No initialization required.

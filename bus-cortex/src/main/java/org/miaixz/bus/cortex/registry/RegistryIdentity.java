@@ -36,7 +36,7 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 public final class RegistryIdentity {
 
     /**
-     * Creates the registry-identity utility holder.
+     * Keeps registry identity handling on the static API.
      */
     private RegistryIdentity() {
         // No initialization required.

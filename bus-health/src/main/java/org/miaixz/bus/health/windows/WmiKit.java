@@ -43,7 +43,7 @@ import org.miaixz.bus.health.Parsing;
 public final class WmiKit {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps WMI queries on the static API.
      */
     private WmiKit() {
         // No initialization required.

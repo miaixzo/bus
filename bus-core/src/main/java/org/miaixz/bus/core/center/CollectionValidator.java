@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class CollectionValidator {
 
     /**
-     * Constructs a new CollectionValidator. Utility class constructor for static access.
+     * Creates a new {@code CollectionValidator} instance.
      */
     public CollectionValidator() {
         // No initialization required.

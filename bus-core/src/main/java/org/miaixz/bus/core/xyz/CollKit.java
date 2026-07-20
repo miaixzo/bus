@@ -58,7 +58,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class CollKit extends CollectionStream {
 
     /**
-     * Constructs a new CollKit. Utility class constructor for static access.
+     * Keeps collection creation and transformation on the static API.
      */
     private CollKit() {
         // No initialization required.

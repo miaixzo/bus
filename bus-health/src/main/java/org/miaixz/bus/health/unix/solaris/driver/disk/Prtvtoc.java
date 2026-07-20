@@ -40,7 +40,7 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 public final class Prtvtoc {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Solaris disk-table queries on the static API.
      */
     private Prtvtoc() {
         // No initialization required.

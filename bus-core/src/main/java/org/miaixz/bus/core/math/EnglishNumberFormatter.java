@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class EnglishNumberFormatter {
 
     /**
-     * Constructs a new EnglishNumberFormatter. Utility class constructor for static access.
+     * Keeps English-number formatting on the static API.
      */
     private EnglishNumberFormatter() {
         // No initialization required.

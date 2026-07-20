@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Hex {
 
     /**
-     * Constructs a new Hex. Utility class constructor for static access.
+     * Creates a new {@code Hex} instance.
      */
     public Hex() {
         // No initialization required.

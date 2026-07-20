@@ -42,7 +42,7 @@ import java.util.Objects;
 public class Coordinate {
 
     /**
-     * Constructs a new Coordinate. Utility class constructor for static access.
+     * Keeps coordinate conversion on the static API.
      */
     private Coordinate() {
         // No initialization required.

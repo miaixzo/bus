@@ -31,7 +31,7 @@ import java.util.Currency;
 public class CurrencyConverter extends AbstractConverter {
 
     /**
-     * Constructs a new CurrencyConverter. Utility class constructor for static access.
+     * Creates a new {@code CurrencyConverter} instance.
      */
     public CurrencyConverter() {
         // No initialization required.

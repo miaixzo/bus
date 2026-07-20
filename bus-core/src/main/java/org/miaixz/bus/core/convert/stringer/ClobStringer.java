@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class ClobStringer implements Function<Object, String> {
 
     /**
-     * Constructs a new ClobStringer. Utility class constructor for static access.
+     * Creates the shared CLOB-to-string converter.
      */
     private ClobStringer() {
         // No initialization required.

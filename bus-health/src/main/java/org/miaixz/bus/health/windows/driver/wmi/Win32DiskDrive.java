@@ -35,7 +35,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32DiskDrive {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Win32 disk drive queries on the static API.
      */
     private Win32DiskDrive() {
         // No initialization required.

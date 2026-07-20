@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class HTTP {
 
     /**
-     * Constructs a new HTTP. Utility class constructor for static access.
+     * Keeps HTTP method, status, and header definitions on the static API.
      */
     private HTTP() {
         // No initialization required.

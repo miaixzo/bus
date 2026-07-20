@@ -924,7 +924,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         copy.setPid(instance.getPid());
         copy.setScheme(instance.getScheme());
         copy.setHealthPath(instance.getHealthPath());
-        copy.setLeaseSeconds(instance.getLeaseSeconds());
+        copy.setLease(instance.getLease());
         copy.setLastHeartbeatAt(instance.getLastHeartbeatAt());
         copy.setLastProbeAt(instance.getLastProbeAt());
         copy.setStateChangedAt(instance.getStateChangedAt());

@@ -37,7 +37,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32Bios {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Win32 BIOS queries on the static API.
      */
     private Win32Bios() {
         // No initialization required.

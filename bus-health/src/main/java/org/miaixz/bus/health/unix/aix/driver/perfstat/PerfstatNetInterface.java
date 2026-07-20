@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class PerfstatNetInterface {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps AIX perfstat net interface queries on the static API.
      */
     private PerfstatNetInterface() {
         // No initialization required.

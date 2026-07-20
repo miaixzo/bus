@@ -43,7 +43,7 @@ import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
 public final class Xwininfo {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps X11 desktop-window queries on the static API.
      */
     private Xwininfo() {
         // No initialization required.

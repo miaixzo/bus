@@ -36,7 +36,7 @@ import org.miaixz.bus.mapper.binding.basic.ClassMapper;
 public final class MapperEntityResolver {
 
     /**
-     * Prevents instantiation of this utility class.
+     * Keeps mapper entity resolution on the static API.
      */
     private MapperEntityResolver() {
         // No initialization required.

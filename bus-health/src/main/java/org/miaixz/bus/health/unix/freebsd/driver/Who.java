@@ -41,7 +41,7 @@ import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 public final class Who {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps FreeBSD logged-in-user queries on the static API.
      */
     private Who() {
         // No initialization required.

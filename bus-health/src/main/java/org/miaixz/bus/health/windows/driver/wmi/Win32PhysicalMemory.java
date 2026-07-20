@@ -37,7 +37,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public final class Win32PhysicalMemory {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Win32 physical memory queries on the static API.
      */
     private Win32PhysicalMemory() {
         // No initialization required.

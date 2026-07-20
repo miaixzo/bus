@@ -41,7 +41,7 @@ import org.miaixz.bus.health.unix.shared.jna.SolarisLibc;
 public final class Who {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Solaris logged-in-user queries on the static API.
      */
     private Who() {
         // No initialization required.

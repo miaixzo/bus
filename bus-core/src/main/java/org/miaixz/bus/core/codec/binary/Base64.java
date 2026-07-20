@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.*;
 public class Base64 {
 
     /**
-     * Constructs a new Base64. Utility class constructor for static access.
+     * Keeps Base64 encoding and decoding on the static API.
      */
     private Base64() {
         // No initialization required.

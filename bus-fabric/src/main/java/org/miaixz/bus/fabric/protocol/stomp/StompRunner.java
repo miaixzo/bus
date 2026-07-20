@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.stomp;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,9 +44,12 @@ import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.protocol.Mediator;
+import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompCodec;
 import org.miaixz.bus.fabric.protocol.stomp.frame.StompFrame;
+import org.miaixz.bus.fabric.protocol.websocket.WebSocketRunner;
 import org.miaixz.bus.fabric.runtime.FilterChain;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -76,6 +80,17 @@ final class StompRunner {
      * @return session
      */
     StompSession open() {
+        return open(Cancellation.create());
+    }
+
+    /**
+     * Opens a STOMP session within a cancellation scope.
+     *
+     * @param cancellation cancellation scope
+     * @return session
+     */
+    StompSession open(final Cancellation cancellation) {
+        final Cancellation currentCancellation = require(cancellation, "Cancellation");
         Session socket = null;
         Logger.info(
                 true,
@@ -86,6 +101,7 @@ final class StompRunner {
                 snapshot.address().port(),
                 snapshot.destination() != null);
         try {
+            currentCancellation.throwIfCancelled();
             if (!Protocol.WS.name.equals(snapshot.uri().getScheme())
                     && !Protocol.WSS.name.equals(snapshot.uri().getScheme())) {
                 throw new ProtocolException("STOMP open requires ws or wss target");
@@ -94,62 +110,90 @@ final class StompRunner {
             final StompCodec inbound = new StompCodec();
             final CompletableFuture<StompFrame> connected = new CompletableFuture<>();
             final AtomicReference<StompSession> session = new AtomicReference<>();
-            final Session webSocket = Mediator.openWebSocket(
-                    snapshot.context().withFilter(null),
-                    snapshot.uri(),
-                    opening.headers(),
-                    snapshot.timeout(),
-                    (ignored, message) -> {
-                        try {
-                            final Buffer input = new Buffer();
-                            input.write(message.payload().bytes(snapshot.context().options().materializeMaxBytes()));
-                            for (final StompFrame frame : inbound.decode(input)) {
-                                if (Builder.STOMP_COMMAND_CONNECTED.equals(frame.command())) {
-                                    final StompFrame filtered = filter(frame, Builder.STOMP_TAG_CONNECTED);
-                                    connected.complete(filtered);
-                                } else if (Builder.STOMP_COMMAND_ERROR.equals(frame.command())) {
-                                    final StompFrame filtered = filter(frame, Builder.STOMP_TAG_ERROR);
-                                    connected.completeExceptionally(
-                                            new ProtocolException(filtered.body().text(Charset.UTF_8)));
-                                } else {
-                                    final StompSession opened = session.get();
-                                    if (opened != null) {
-                                        opened.dispatch(frame);
+            final Session webSocket = Mediator.convert(
+                    Type.STOMP,
+                    Type.WEBSOCKET,
+                    currentCancellation,
+                    current -> WebSocketRunner.create(
+                            snapshot.context().withFilter(null),
+                            snapshot.uri(),
+                            opening.headers(),
+                            snapshot.timeout(),
+                            (ignored, message) -> {
+                                try {
+                                    final Buffer input = new Buffer();
+                                    input.write(
+                                            message.payload()
+                                                    .bytes(snapshot.context().options().materializeMaxBytes()));
+                                    for (final StompFrame frame : inbound.decode(input)) {
+                                        if (Builder.STOMP_COMMAND_CONNECTED.equals(frame.command())) {
+                                            final StompFrame filtered = filter(frame, Builder.STOMP_TAG_CONNECTED);
+                                            connected.complete(filtered);
+                                        } else if (Builder.STOMP_COMMAND_ERROR.equals(frame.command())) {
+                                            final StompFrame filtered = filter(frame, Builder.STOMP_TAG_ERROR);
+                                            connected.completeExceptionally(
+                                                    new ProtocolException(filtered.body().text(Charset.UTF_8)));
+                                        } else {
+                                            final StompSession opened = session.get();
+                                            if (opened != null) {
+                                                opened.dispatch(frame);
+                                            }
+                                        }
                                     }
+                                } catch (final RuntimeException e) {
+                                    connected.completeExceptionally(e);
                                 }
-                            }
-                        } catch (final RuntimeException e) {
-                            connected.completeExceptionally(e);
-                        }
-                    });
+                            }).open(current));
             socket = webSocket;
             final Session openedSocket = socket;
-            final StompCodec outbound = new StompCodec();
-            final Buffer output = new Buffer();
-            outbound.encode(prepareConnectFrame(), output);
-            awaitSend(openedSocket.send(Payload.of(output.readByteString())));
-            awaitConnected(connected);
-            Logger.info(
+            final Runnable unregisterCancellation = currentCancellation.onCancel(openedSocket::cancel);
+            try {
+                currentCancellation.throwIfCancelled();
+                final StompCodec outbound = new StompCodec();
+                final Buffer output = new Buffer();
+                outbound.encode(prepareConnectFrame(), output);
+                awaitSend(openedSocket.send(Payload.of(output.readByteString())));
+                currentCancellation.throwIfCancelled();
+                awaitConnected(connected);
+                currentCancellation.throwIfCancelled();
+                Logger.info(
+                        false,
+                        "Fabric",
+                        "STOMP CONNECT accepted: scheme={}, host={}, port={}",
+                        snapshot.address().scheme(),
+                        snapshot.address().host(),
+                        snapshot.address().port());
+                final StompSession opened = new StompSession(
+                        buffer -> openedSocket.send(Payload.of(buffer.readByteString())), openedSocket::close,
+                        openedSocket::cancel, snapshot.handler(), snapshot.address(), snapshot.guard(),
+                        snapshot.observer(), FilterChain.compose(snapshot.context().filter(), snapshot.filter()),
+                        snapshot.listener(), snapshot.context().options().materializeMaxBytes());
+                session.set(opened);
+                currentCancellation.throwIfCancelled();
+                Logger.info(
+                        false,
+                        "Fabric",
+                        "STOMP open completed: scheme={}, host={}, port={}",
+                        snapshot.address().scheme(),
+                        snapshot.address().host(),
+                        snapshot.address().port());
+                return opened;
+            } finally {
+                unregisterCancellation.run();
+            }
+        } catch (final CancellationException e) {
+            if (socket != null) {
+                socket.cancel();
+            }
+            Logger.warn(
                     false,
                     "Fabric",
-                    "STOMP CONNECT accepted: scheme={}, host={}, port={}",
+                    e,
+                    "STOMP open cancelled: scheme={}, host={}, port={}",
                     snapshot.address().scheme(),
                     snapshot.address().host(),
                     snapshot.address().port());
-            final StompSession opened = new StompSession(
-                    buffer -> openedSocket.send(Payload.of(buffer.readByteString())), openedSocket::close,
-                    openedSocket::cancel, snapshot.handler(), snapshot.address(), snapshot.guard(), snapshot.observer(),
-                    FilterChain.compose(snapshot.context().filter(), snapshot.filter()), snapshot.listener(),
-                    snapshot.context().options().materializeMaxBytes());
-            session.set(opened);
-            Logger.info(
-                    false,
-                    "Fabric",
-                    "STOMP open completed: scheme={}, host={}, port={}",
-                    snapshot.address().scheme(),
-                    snapshot.address().host(),
-                    snapshot.address().port());
-            return opened;
+            throw e;
         } catch (final RuntimeException e) {
             if (socket != null) {
                 socket.cancel();

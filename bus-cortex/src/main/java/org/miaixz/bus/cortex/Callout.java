@@ -82,7 +82,7 @@ public final class Callout {
     };
 
     /**
-     * Creates a new Callout utility holder.
+     * Keeps Cortex callout construction on the static API.
      */
     private Callout() {
         // No initialization required.

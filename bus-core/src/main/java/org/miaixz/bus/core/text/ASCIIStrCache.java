@@ -29,7 +29,7 @@ package org.miaixz.bus.core.text;
 public class ASCIIStrCache {
 
     /**
-     * Constructs a new ASCIIStrCache. Utility class constructor for static access.
+     * Keeps ASCII string-cache lookup on the static API.
      */
     private ASCIIStrCache() {
         // No initialization required.

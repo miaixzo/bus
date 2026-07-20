@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.ReflectKit;
 public class EmptyBeanConverter extends AbstractConverter implements MatcherConverter, Serializable {
 
     /**
-     * Constructs a new EmptyBeanConverter. Utility class constructor for static access.
+     * Creates a new {@code EmptyBeanConverter} instance.
      */
     public EmptyBeanConverter() {
         // No initialization required.

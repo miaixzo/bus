@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.*;
 public class EnumConverter extends AbstractConverter implements MatcherConverter {
 
     /**
-     * Constructs a new EnumConverter. Utility class constructor for static access.
+     * Creates a new {@code EnumConverter} instance.
      */
     public EnumConverter() {
         // No initialization required.

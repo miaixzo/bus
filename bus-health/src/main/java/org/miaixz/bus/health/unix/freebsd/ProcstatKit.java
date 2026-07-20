@@ -39,7 +39,7 @@ import org.miaixz.bus.health.Parsing;
 public final class ProcstatKit {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps FreeBSD procstat queries on the static API.
      */
     private ProcstatKit() {
         // No initialization required.

@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.IteratorKit;
 public final class Weighers {
 
     /**
-     * Constructs a new Weighers. Utility class constructor for static access.
+     * Keeps cache-entry weigher selection on the static API.
      */
     private Weighers() {
         throw new AssertionError("No " + Weighers.class.getName() + " instances for you!");

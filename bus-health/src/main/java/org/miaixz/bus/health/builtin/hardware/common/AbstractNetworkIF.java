@@ -175,8 +175,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         List<NetworkInterface> interfaces = getAllNetworkInterfaces();
 
         return includeLocalInterfaces ? interfaces
-                : interfaces.stream().parallel().filter(ni -> !isLocalInterface(ni))
-                        .collect(Collectors.toList());
+                : interfaces.stream().parallel().filter(ni -> !isLocalInterface(ni)).collect(Collectors.toList());
     }
 
     /**
@@ -212,7 +211,10 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             try {
                 ifList.add(factory.create(ni));
             } catch (InstantiationException e) {
-                Logger.debug(false, "Health", "Network Interface Instantiation failed: {}",
+                Logger.debug(
+                        false,
+                        "Health",
+                        "Network Interface Instantiation failed: {}",
                         e.getClass().getSimpleName());
             }
         }

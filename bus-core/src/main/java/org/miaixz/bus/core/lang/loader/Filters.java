@@ -30,7 +30,7 @@ import java.util.Collection;
 public abstract class Filters {
 
     /**
-     * Constructs a new Filters. Utility class constructor for static access.
+     * Keeps classpath filter composition on the static API.
      */
     private Filters() {
         // No initialization required.

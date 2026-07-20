@@ -45,7 +45,7 @@ public class GlobalThreadPool {
     }
 
     /**
-     * Private constructor to prevent instantiation of this utility class.
+     * Keeps global executor lifecycle management on the static API.
      */
     private GlobalThreadPool() {
         // No initialization required.

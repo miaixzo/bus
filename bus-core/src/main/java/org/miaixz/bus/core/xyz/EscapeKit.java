@@ -38,7 +38,7 @@ import org.miaixz.bus.core.text.escape.XmlUnescape;
 public class EscapeKit {
 
     /**
-     * Constructs a new EscapeKit. Utility class constructor for static access.
+     * Keeps text escaping and unescaping on the static API.
      */
     private EscapeKit() {
         // No initialization required.

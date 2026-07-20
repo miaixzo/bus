@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class Converter extends Formatter {
 
     /**
-     * Constructs a new Converter. Utility class constructor for static access.
+     * Creates a new {@code Converter} instance.
      */
     public Converter() {
         // No initialization required.

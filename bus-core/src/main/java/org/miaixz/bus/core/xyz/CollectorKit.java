@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
 public class CollectorKit {
 
     /**
-     * Constructs a new CollectorKit. Utility class constructor for static access.
+     * Keeps stream collector construction on the static API.
      */
     private CollectorKit() {
         // No initialization required.

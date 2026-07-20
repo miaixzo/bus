@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class CharsValidator {
 
     /**
-     * Constructs a new CharsValidator. Utility class constructor for static access.
+     * Creates a new {@code CharsValidator} instance.
      */
     public CharsValidator() {
         // No initialization required.

@@ -48,7 +48,7 @@ public final class LlmPriceTable {
     }
 
     /**
-     * Private constructor; this is a static utility class.
+     * Keeps built-in LLM price lookup on the static registry API.
      */
     private LlmPriceTable() {
         // No initialization required.

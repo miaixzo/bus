@@ -32,7 +32,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class DefaultChildLimitProvider extends AbstractChildLimitProvider {
 
     /**
-     * Constructs a new DefaultChildLimitProvider. Utility class constructor for static access.
+     * Creates a new {@code DefaultChildLimitProvider} instance.
      */
     public DefaultChildLimitProvider() {
         // No initialization required.

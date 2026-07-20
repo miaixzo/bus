@@ -75,26 +75,6 @@ import org.miaixz.bus.logger.Logger;
 public final class WebSocketSession implements Session {
 
     /**
-     * Normal close status code.
-     */
-
-    /**
-     * Close status code used when the outbound queue is full.
-     */
-
-    /**
-     * Maximum bytes in a WebSocket control payload.
-     */
-
-    /**
-     * Maximum queued outbound bytes.
-     */
-
-    /**
-     * Close reason used when the outbound queue is full.
-     */
-
-    /**
      * Session address.
      */
     private final Address address;

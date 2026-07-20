@@ -56,7 +56,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class DateKit extends Calendar {
 
     /**
-     * Constructs a new DateKit. Utility class constructor for static access.
+     * Keeps date and time operations on the static API.
      */
     private DateKit() {
         // No initialization required.
@@ -1730,7 +1730,7 @@ public class DateKit extends Calendar {
     public static class SQL {
 
         /**
-         * Constructs a new SQL. Utility class constructor for static access.
+         * Keeps SQL date and time conversion on the static API.
          */
         private SQL() {
             // No initialization required.

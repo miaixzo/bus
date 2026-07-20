@@ -45,7 +45,7 @@ import org.miaixz.bus.core.Loader;
 public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
 
     /**
-     * Constructs a new AtomicLoader. Utility class constructor for static access.
+     * Keeps atomic lazy-loading coordination on the static API.
      */
     private AtomicLoader() {
         // No initialization required.

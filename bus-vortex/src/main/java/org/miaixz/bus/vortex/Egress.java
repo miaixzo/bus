@@ -59,7 +59,7 @@ import reactor.util.retry.Retry;
 public final class Egress {
 
     /**
-     * Utility class constructor.
+     * Keeps outbound HTTP request creation on the static egress API.
      */
     private Egress() {
         throw new UnsupportedOperationException("Egress class cannot be instantiated");
@@ -308,7 +308,7 @@ public final class Egress {
         private static volatile WebClient client;
 
         /**
-         * Utility holder constructor.
+         * Keeps the shared outbound HTTP client inside its holder.
          */
         private ClientHolder() {
             // No initialization required.

@@ -29,7 +29,7 @@ package org.miaixz.bus.core.math;
 public class BitStatus {
 
     /**
-     * Constructs a new BitStatus. Utility class constructor for static access.
+     * Keeps bit-mask status operations on the static API.
      */
     private BitStatus() {
         // No initialization required.

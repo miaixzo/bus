@@ -120,7 +120,7 @@ public class Instance {
      * Lease duration in seconds used by active registries and self-registration heartbeats.
      */
     @Builder.Default
-    private Integer leaseSeconds = 30;
+    private Integer lease = 30;
 
     /**
      * Timestamp of the most recent heartbeat observed for the instance.

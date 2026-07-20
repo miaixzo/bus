@@ -45,7 +45,7 @@ public class TlsParameters {
     public static final String HTTPS_ENDPOINT_IDENTIFICATION = "HTTPS";
 
     /**
-     * Constructs a new TlsParameters. Utility class constructor for static access.
+     * Keeps TLS parameter construction on the static API.
      */
     private TlsParameters() {
         // No initialization required.

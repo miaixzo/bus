@@ -53,7 +53,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class ByteKit {
 
     /**
-     * Constructs a new ByteKit. Utility class constructor for static access.
+     * Keeps byte conversion and comparison on the static API.
      */
     private ByteKit() {
         // No initialization required.

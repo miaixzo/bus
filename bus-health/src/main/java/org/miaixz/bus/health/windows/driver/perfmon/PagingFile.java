@@ -35,7 +35,7 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
 public final class PagingFile {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Windows paging file performance-counter queries on the static API.
      */
     private PagingFile() {
         // No initialization required.

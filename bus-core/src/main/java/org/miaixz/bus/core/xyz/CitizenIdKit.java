@@ -41,7 +41,7 @@ import org.miaixz.bus.core.data.CIN10;
 public class CitizenIdKit {
 
     /**
-     * Constructs a new CitizenIdKit. Utility class constructor for static access.
+     * Keeps citizen identification-number validation on the static API.
      */
     private CitizenIdKit() {
         // No initialization required.

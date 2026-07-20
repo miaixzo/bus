@@ -42,7 +42,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class HexKit extends Hex {
 
     /**
-     * Constructs a new HexKit. Utility class constructor for static access.
+     * Keeps hexadecimal encoding and decoding on the static API.
      */
     private HexKit() {
         // No initialization required.

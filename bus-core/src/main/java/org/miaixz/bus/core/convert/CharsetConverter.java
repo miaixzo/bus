@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Charset;
 public class CharsetConverter extends AbstractConverter {
 
     /**
-     * Constructs a new CharsetConverter. Utility class constructor for static access.
+     * Creates a new {@code CharsetConverter} instance.
      */
     public CharsetConverter() {
         // No initialization required.

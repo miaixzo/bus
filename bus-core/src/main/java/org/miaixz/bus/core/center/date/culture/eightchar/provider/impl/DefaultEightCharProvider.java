@@ -33,7 +33,7 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 public class DefaultEightCharProvider implements EightCharProvider {
 
     /**
-     * Constructs a new DefaultEightCharProvider. Utility class constructor for static access.
+     * Creates a new {@code DefaultEightCharProvider} instance.
      */
     public DefaultEightCharProvider() {
         // No initialization required.

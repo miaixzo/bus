@@ -53,7 +53,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     private static final long serialVersionUID = 2852279106156L;
 
     /**
-     * Constructs a new ExecutorBuilder. Utility class constructor for static access.
+     * Creates an executor builder returned by the static factory method.
      */
     private ExecutorBuilder() {
         // No initialization required.

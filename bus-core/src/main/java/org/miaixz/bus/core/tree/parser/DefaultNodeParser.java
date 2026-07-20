@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 public class DefaultNodeParser<T> implements NodeParser<TreeNode<T>, T> {
 
     /**
-     * Constructs a new DefaultNodeParser. Utility class constructor for static access.
+     * Creates a new {@code DefaultNodeParser} instance.
      */
     public DefaultNodeParser() {
         // No initialization required.

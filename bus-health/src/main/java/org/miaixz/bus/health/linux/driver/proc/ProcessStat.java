@@ -195,7 +195,7 @@ public final class ProcessStat {
         return numericFiles == null ? new File[0] : numericFiles;
     }
 
-    /***
+    /**
      * Returns Enum STATE for the state value obtained from status file of any process/thread.
      *
      * @param stateValue state value from the status file

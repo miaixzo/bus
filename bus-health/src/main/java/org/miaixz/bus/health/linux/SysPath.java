@@ -38,7 +38,7 @@ import org.miaixz.bus.health.Config;
 public final class SysPath {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Linux sysfs path resolution on the static API.
      */
     private SysPath() {
         // No initialization required.

@@ -38,7 +38,7 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 public final class ProcessInformation {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps Windows process information performance-counter queries on the static API.
      */
     private ProcessInformation() {
         // No initialization required.

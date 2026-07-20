@@ -54,7 +54,7 @@ import org.miaixz.bus.logger.Logger;
 public final class SmcKit {
 
     /**
-     * Prevents instantiation of utility class.
+     * Keeps macOS SMC queries on the static API.
      */
     private SmcKit() {
         // No initialization required.

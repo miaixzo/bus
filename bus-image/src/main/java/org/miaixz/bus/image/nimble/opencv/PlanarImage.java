@@ -36,7 +36,6 @@ public interface PlanarImage extends ImageSize, AutoCloseable {
      *
      * @return the operation result.
      */
-    // Core properties
     int channels();
 
     /**
@@ -102,7 +101,6 @@ public interface PlanarImage extends ImageSize, AutoCloseable {
      * @param column the column.
      * @return the get.
      */
-    // Data access
     double[] get(int row, int column);
 
     /**
@@ -160,7 +158,6 @@ public interface PlanarImage extends ImageSize, AutoCloseable {
      *
      * @param dstImg the dst img.
      */
-    // Operations
     void assignTo(Mat dstImg);
 
     /**
@@ -173,7 +170,6 @@ public interface PlanarImage extends ImageSize, AutoCloseable {
      *
      * @return true if the released condition is true; otherwise false.
      */
-    // Resource management
     boolean isReleased();
 
     /**

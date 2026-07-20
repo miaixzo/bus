@@ -34,7 +34,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public abstract class AbstractChildLimitProvider implements ChildLimitProvider {
 
     /**
-     * Constructs a new AbstractChildLimitProvider. Utility class constructor for static access.
+     * Creates a new {@code AbstractChildLimitProvider} instance.
      */
     protected AbstractChildLimitProvider() {
         // No initialization required.

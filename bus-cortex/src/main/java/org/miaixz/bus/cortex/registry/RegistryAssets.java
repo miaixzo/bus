@@ -41,7 +41,7 @@ import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
 public final class RegistryAssets {
 
     /**
-     * Creates the registry assets utility holder.
+     * Keeps registry asset lookup on the static API.
      */
     private RegistryAssets() {
         // No initialization required.

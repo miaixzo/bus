@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class CastKit {
 
     /**
-     * Constructs a new CastKit. Utility class constructor for static access.
+     * Keeps runtime type casting on the static API.
      */
     private CastKit() {
         // No initialization required.

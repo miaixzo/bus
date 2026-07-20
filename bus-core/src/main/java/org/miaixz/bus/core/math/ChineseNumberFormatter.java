@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ChineseNumberFormatter {
 
     /**
-     * Constructs a new ChineseNumberFormatter. Utility class constructor for static access.
+     * Creates a configurable Chinese-number formatter.
      */
     private ChineseNumberFormatter() {
         // No initialization required.
