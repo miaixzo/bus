@@ -26,6 +26,7 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.protocol.http.HttpCookie;
@@ -49,20 +50,27 @@ public final class CookieJar {
     private final boolean accepts;
 
     /**
+     * Runtime clock used for all expiry decisions.
+     */
+    private final Clock clock;
+
+    /**
      * Creates an empty jar.
      */
     private CookieJar() {
-        this(true);
+        this(true, Clock.system());
     }
 
     /**
      * Creates a jar.
      *
      * @param accepts whether cookies are accepted
+     * @param clock   runtime clock
      */
-    private CookieJar(final boolean accepts) {
+    private CookieJar(final boolean accepts, final Clock clock) {
         this.cookies = new ArrayList<>();
         this.accepts = accepts;
+        this.clock = require(clock, "Clock");
     }
 
     /**
@@ -71,7 +79,17 @@ public final class CookieJar {
      * @return cookie jar
      */
     public static CookieJar memory() {
-        return new CookieJar();
+        return memory(Clock.system());
+    }
+
+    /**
+     * Creates an in-memory cookie jar using an explicit runtime clock.
+     *
+     * @param clock runtime clock
+     * @return cookie jar
+     */
+    public static CookieJar memory(final Clock clock) {
+        return new CookieJar(true, clock);
     }
 
     /**
@@ -80,7 +98,7 @@ public final class CookieJar {
      * @return cookie jar
      */
     public static CookieJar noCookies() {
-        return new CookieJar(false);
+        return new CookieJar(false, Clock.system());
     }
 
     /**
@@ -210,7 +228,7 @@ public final class CookieJar {
      * Removes expired cookies.
      */
     private void pruneExpired() {
-        cookies.removeIf(CookieJar::expired);
+        cookies.removeIf(this::expired);
     }
 
     /**
@@ -219,9 +237,9 @@ public final class CookieJar {
      * @param cookie cookie
      * @return true when expired
      */
-    private static boolean expired(final Cookie cookie) {
+    private boolean expired(final Cookie cookie) {
         final Instant expires = cookie.expires();
-        return expires != null && !Instant.now().isBefore(expires);
+        return expires != null && !clock.now().isBefore(expires);
     }
 
     /**

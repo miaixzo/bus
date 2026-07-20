@@ -25,9 +25,11 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.tags.Tags;
 
@@ -64,7 +66,19 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
      * @return event builder
      */
     public static Builder builder(final ObservationMarker marker) {
-        return new Builder(Assert.notNull(marker, () -> new ValidateException("Observe marker must not be null")));
+        return builder(marker, Clock.system());
+    }
+
+    /**
+     * Creates an event builder using an explicit runtime clock.
+     *
+     * @param marker event marker
+     * @param clock  runtime clock
+     * @return event builder
+     */
+    public static Builder builder(final ObservationMarker marker, final Clock clock) {
+        return new Builder(Assert.notNull(marker, () -> new ValidateException("Observe marker must not be null")),
+                Assert.notNull(clock, () -> new ValidateException("Event clock must not be null")));
     }
 
     /**
@@ -81,6 +95,11 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
         private final ObservationMarker marker;
 
         /**
+         * Runtime clock.
+         */
+        private final Clock clock;
+
+        /**
          * Tag values.
          */
         private final Map<String, String> tags;
@@ -94,14 +113,17 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
          * Creates a builder.
          *
          * @param marker event marker
+         * @param clock  runtime clock
          */
-        private Builder(final ObservationMarker marker) {
+        private Builder(final ObservationMarker marker, final Clock clock) {
             this.marker = marker;
+            this.clock = clock;
             this.tags = new LinkedHashMap<>();
             tag(TAG_MODULE, module(marker));
             tag(TAG_PROTOCOL, module(marker));
             tag(TAG_PHASE, phase(marker));
             tag(TAG_RESULT, result(marker));
+            tag(TAG_OPERATION_ID, ID.objectId());
         }
 
         /**
@@ -137,7 +159,7 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
             if (cause != null) {
                 tags.putIfAbsent(TAG_EXCEPTION, cause.getClass().getName());
             }
-            return new FabricEvent(marker, Instant.now(), Tags.of(tags), cause);
+            return new FabricEvent(marker, clock.now(), Tags.of(tags), cause);
         }
 
     }

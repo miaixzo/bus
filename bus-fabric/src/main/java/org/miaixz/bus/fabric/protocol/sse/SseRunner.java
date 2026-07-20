@@ -26,6 +26,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -34,8 +35,8 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
@@ -44,6 +45,7 @@ import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.Mediator.Type;
+import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpRunner;
 import org.miaixz.bus.fabric.protocol.sse.body.SseBody;
@@ -94,6 +96,17 @@ final class SseRunner {
      */
     SseSession open(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
+        final String operationId = ID.objectId();
+        final SseRetry sessionRetry = SseRetry.defaults();
+        sessionRetry.update(snapshot.retry().current());
+        final CompletableFuture<Void> stream = new CompletableFuture<>();
+        final AtomicReference<SseSession> holder = new AtomicReference<>();
+        final AtomicReference<DispatchHandle> handle = new AtomicReference<>();
+        final AtomicReference<String> eventId = new AtomicReference<>(snapshot.lastEventId());
+        final SseSession session = new SseSession(snapshot.address(), sessionRetry, currentCancellation, stream,
+                snapshot.listener(), snapshot.observer(), snapshot.context().clock(), operationId);
+        holder.set(session);
+        Call<HttpRunner.Stream> httpCall = null;
         SseReader reader = null;
         HttpRunner.Stream response = null;
         Logger.info(
@@ -107,24 +120,16 @@ final class SseRunner {
                 snapshot.lastEventId() != null);
         try {
             currentCancellation.throwIfCancelled();
-            response = response(currentCancellation);
+            httpCall = responseCall(snapshot.lastEventId(), currentCancellation);
+            session.replaceHttpCall(httpCall);
+            currentCancellation.throwIfCancelled();
+            response = httpCall.execute();
             currentCancellation.throwIfCancelled();
             validateResponse(response);
             reader = SseBody.source(response.source(), response.body().length()).reader();
-            final SseRetry sessionRetry = SseRetry.defaults();
-            sessionRetry.update(snapshot.retry().current());
-            final CompletableFuture<Void> stream = new CompletableFuture<>();
-            final AtomicReference<SseSession> holder = new AtomicReference<>();
-            final AtomicReference<DispatchHandle> handle = new AtomicReference<>();
-            final AtomicReference<String> eventId = new AtomicReference<>(snapshot.lastEventId());
-            final SseSession session = new SseSession(snapshot.address(), sessionRetry, reader, stream, () -> {
-                final DispatchHandle current = handle.get();
-                if (current != null) {
-                    current.cancel();
-                }
-            }, snapshot.listener());
-            holder.set(session);
-            handle.set(submitRead(reader, sessionRetry, stream, holder, eventId, handle, Normal._0));
+            session.replaceReader(httpCall, response, reader);
+            handle.set(submitRead(reader, sessionRetry, stream, holder, eventId, handle, operationId, Normal._0));
+            session.replaceReaderHandle(handle.get());
             final Runnable unregisterCancellation = currentCancellation.onCancel(session::cancel);
             try {
                 currentCancellation.throwIfCancelled();
@@ -141,10 +146,7 @@ final class SseRunner {
                 unregisterCancellation.run();
             }
         } catch (final CancellationException e) {
-            closeReader(reader);
-            if (reader == null) {
-                closeResponse(response);
-            }
+            session.cancel();
             Logger.warn(
                     false,
                     "Fabric",
@@ -155,10 +157,7 @@ final class SseRunner {
                     snapshot.address().port());
             throw e;
         } catch (final RuntimeException e) {
-            closeReader(reader);
-            if (reader == null) {
-                closeResponse(response);
-            }
+            session.failure(e);
             Logger.error(
                     false,
                     "Fabric",
@@ -183,20 +182,28 @@ final class SseRunner {
     }
 
     /**
-     * Opens the HTTP response through the fabric HTTP chain.
+     * Creates one HTTP stream Call without starting network I/O.
      *
-     * @param cancellation cancellation scope
-     * @return response
+     * @param eventId      current event id
+     * @param cancellation shared cancellation scope
+     * @return HTTP stream Call
      */
-    private HttpRunner.Stream response(final Cancellation cancellation) {
-        return response(snapshot.lastEventId(), cancellation);
+    private Call<HttpRunner.Stream> responseCall(final String eventId, final Cancellation cancellation) {
+        return MonoCall.create(
+                "sse-http-stream",
+                dispatchKey() + ":http",
+                snapshot.context().reactor().dispatcher(),
+                snapshot.observer(),
+                null,
+                () -> response(eventId, cancellation),
+                cancellation::cancel);
     }
 
     /**
-     * Opens the HTTP response through the fabric HTTP chain.
+     * Opens one HTTP response through the fabric HTTP carrier.
      *
      * @param eventId      current event id
-     * @param cancellation cancellation scope
+     * @param cancellation shared cancellation scope
      * @return response
      */
     private HttpRunner.Stream response(final String eventId, final Cancellation cancellation) {
@@ -258,7 +265,14 @@ final class SseRunner {
         if (status < HTTP.HTTP_OK || status >= HTTP.HTTP_MULT_CHOICE) {
             throw new ProtocolException("SSE response status must be 2xx");
         }
-        if (!StringKit.containsIgnoreCase(response.headers().get(HTTP.CONTENT_TYPE), MediaType.SERVER_SENT_EVENTS)) {
+        final String value = response.headers().get(HTTP.CONTENT_TYPE);
+        final MediaType mediaType;
+        try {
+            mediaType = MediaType.parse(value);
+        } catch (final RuntimeException e) {
+            throw new ProtocolException("SSE response has an invalid Content-Type", e);
+        }
+        if (!"text".equalsIgnoreCase(mediaType.type()) || !"event-stream".equalsIgnoreCase(mediaType.subtype())) {
             throw new ProtocolException("SSE response must be text/event-stream");
         }
     }
@@ -266,13 +280,14 @@ final class SseRunner {
     /**
      * Reads and dispatches events in the background.
      *
-     * @param reader  reader
-     * @param retry   retry policy
-     * @param stream  stream future
-     * @param holder  session holder
-     * @param eventId current event id
-     * @param handle  current dispatch handle
-     * @param attempt reconnect attempt
+     * @param reader      reader
+     * @param retry       retry policy
+     * @param stream      stream future
+     * @param holder      session holder
+     * @param eventId     current event id
+     * @param handle      current dispatch handle
+     * @param operationId operation identifier
+     * @param attempt     reconnect attempt
      */
     private void read(
             final SseReader reader,
@@ -281,6 +296,7 @@ final class SseRunner {
             final AtomicReference<SseSession> holder,
             final AtomicReference<String> eventId,
             final AtomicReference<DispatchHandle> handle,
+            final String operationId,
             final int attempt) {
         final SseSession session = holder.get();
         if (session != null && !session.opened() || stream.isCancelled()) {
@@ -300,7 +316,7 @@ final class SseRunner {
                 @Override
                 public void event(final String id, final String event, final String data) {
                     final SseEvent current = SseEvent.of(id, event, data, null);
-                    dispatch(current, eventId);
+                    dispatch(current, eventId, operationId);
                 }
 
                 /**
@@ -321,7 +337,7 @@ final class SseRunner {
                         "SSE stream ended; reconnect enabled: host={}, port={}",
                         snapshot.address().host(),
                         snapshot.address().port());
-                scheduleReconnect(retry, stream, holder, eventId, handle, Normal._0);
+                scheduleReconnect(retry, stream, holder, eventId, handle, operationId, Normal._0);
             } else {
                 Logger.info(
                         false,
@@ -344,7 +360,7 @@ final class SseRunner {
             if (session == null || session.opened()) {
                 closeReader(reader);
                 if (snapshot.autoReconnect()) {
-                    scheduleReconnect(retry, stream, holder, eventId, handle, attempt + 1);
+                    scheduleReconnect(retry, stream, holder, eventId, handle, operationId, attempt + 1);
                 } else {
                     stream.completeExceptionally(e);
                 }
@@ -360,7 +376,7 @@ final class SseRunner {
      * @param event   event
      * @param eventId current event id
      */
-    private void dispatch(final SseEvent event, final AtomicReference<String> eventId) {
+    private void dispatch(final SseEvent event, final AtomicReference<String> eventId, final String operationId) {
         if (event.id() != null) {
             eventId.set(event.id());
         }
@@ -374,7 +390,7 @@ final class SseRunner {
                 event.event(),
                 filteredPayload.text(StandardCharsets.UTF_8, snapshot.context().options().materializeMaxBytes()),
                 event.retry());
-        emit(ObservationMarker.SSE_EVENT, null, filteredPayload);
+        emit(ObservationMarker.SSE_EVENT, null, filteredPayload, operationId);
         Logger.debug(
                 false,
                 "Fabric",
@@ -401,12 +417,13 @@ final class SseRunner {
     /**
      * Schedules a reconnect attempt without occupying a dispatcher worker.
      *
-     * @param retry   retry policy
-     * @param stream  stream future
-     * @param holder  session holder
-     * @param eventId current event id
-     * @param handle  current dispatch handle
-     * @param attempt attempt index
+     * @param retry       retry policy
+     * @param stream      stream future
+     * @param holder      session holder
+     * @param eventId     current event id
+     * @param handle      current dispatch handle
+     * @param operationId operation identifier
+     * @param attempt     attempt index
      */
     private void scheduleReconnect(
             final SseRetry retry,
@@ -414,6 +431,7 @@ final class SseRunner {
             final AtomicReference<SseSession> holder,
             final AtomicReference<String> eventId,
             final AtomicReference<DispatchHandle> handle,
+            final String operationId,
             final int attempt) {
         final SseSession session = holder.get();
         if (session == null || !session.opened() || stream.isCancelled()) {
@@ -434,7 +452,8 @@ final class SseRunner {
                 delay,
                 Activity.of(
                         Builder.SSE_ACTIVITY_RETRY,
-                        () -> reconnect(retry, stream, holder, eventId, handle, attempt)));
+                        () -> reconnect(retry, stream, holder, eventId, handle, operationId, attempt)));
+        session.replaceReconnectHandle(next);
         handle.set(next);
         if (!session.opened() || stream.isCancelled()) {
             next.cancel();
@@ -445,12 +464,13 @@ final class SseRunner {
     /**
      * Opens the replacement stream and enqueues the next reader task.
      *
-     * @param retry   retry policy
-     * @param stream  stream future
-     * @param holder  session holder
-     * @param eventId current event id
-     * @param handle  current dispatch handle
-     * @param attempt attempt index
+     * @param retry       retry policy
+     * @param stream      stream future
+     * @param holder      session holder
+     * @param eventId     current event id
+     * @param handle      current dispatch handle
+     * @param operationId operation identifier
+     * @param attempt     attempt index
      */
     private void reconnect(
             final SseRetry retry,
@@ -458,6 +478,7 @@ final class SseRunner {
             final AtomicReference<SseSession> holder,
             final AtomicReference<String> eventId,
             final AtomicReference<DispatchHandle> handle,
+            final String operationId,
             final int attempt) {
         try {
             Logger.info(
@@ -472,7 +493,8 @@ final class SseRunner {
                 stream.complete(null);
                 return;
             }
-            handle.set(submitRead(next, retry, stream, holder, eventId, handle, attempt));
+            handle.set(submitRead(next, retry, stream, holder, eventId, handle, operationId, attempt));
+            holder.get().replaceReaderHandle(handle.get());
             Logger.info(
                     false,
                     "Fabric",
@@ -491,7 +513,7 @@ final class SseRunner {
                     attempt,
                     e.getClass().getSimpleName());
             if (snapshot.autoReconnect()) {
-                scheduleReconnect(retry, stream, holder, eventId, handle, attempt + 1);
+                scheduleReconnect(retry, stream, holder, eventId, handle, operationId, attempt + 1);
             } else {
                 stream.completeExceptionally(e);
             }
@@ -501,13 +523,14 @@ final class SseRunner {
     /**
      * Enqueues a reader task to the shared dispatcher.
      *
-     * @param reader  reader
-     * @param retry   retry policy
-     * @param stream  stream future
-     * @param holder  session holder
-     * @param eventId current event id
-     * @param handle  current dispatch handle
-     * @param attempt reconnect attempt
+     * @param reader      reader
+     * @param retry       retry policy
+     * @param stream      stream future
+     * @param holder      session holder
+     * @param eventId     current event id
+     * @param handle      current dispatch handle
+     * @param operationId operation identifier
+     * @param attempt     reconnect attempt
      * @return dispatch handle
      */
     private DispatchHandle submitRead(
@@ -517,12 +540,14 @@ final class SseRunner {
             final AtomicReference<SseSession> holder,
             final AtomicReference<String> eventId,
             final AtomicReference<DispatchHandle> handle,
+            final String operationId,
             final int attempt) {
-        return snapshot.context().reactor().dispatcher().enqueue(
+        return snapshot.context().reactor().dispatcher().background(
                 dispatchKey(),
+                holder,
                 Activity.of(
                         Builder.SSE_ACTIVITY_READ,
-                        () -> read(reader, retry, stream, holder, eventId, handle, attempt)));
+                        () -> read(reader, retry, stream, holder, eventId, handle, operationId, attempt)));
     }
 
     /**
@@ -537,15 +562,25 @@ final class SseRunner {
         if (session == null || !session.opened()) {
             return null;
         }
+        final Cancellation cancellation = session.cancellation();
+        cancellation.throwIfCancelled();
+        final Call<HttpRunner.Stream> call = responseCall(eventId.get(), cancellation);
+        session.replaceHttpCall(call);
+        if (!session.opened() || cancellation.cancelled()) {
+            call.cancel();
+            return null;
+        }
         SseReader next = null;
         HttpRunner.Stream response = null;
         try {
-            response = response(eventId.get(), Cancellation.create());
+            response = call.execute();
+            cancellation.throwIfCancelled();
             validateResponse(response);
             next = SseBody.source(response.source(), response.body().length()).reader();
-            session.replaceReader(next);
+            session.replaceReader(call, response, next);
             return next;
         } catch (final RuntimeException e) {
+            call.cancel();
             closeReader(next);
             if (next == null) {
                 closeResponse(response);
@@ -604,23 +639,19 @@ final class SseRunner {
     /**
      * Emits an observation event.
      *
-     * @param marker marker
-     * @param cause  failure cause
+     * @param marker      marker
+     * @param cause       failure cause
+     * @param payload     event payload
+     * @param operationId operation identifier shared by this SSE session
      */
-    private void emit(final ObservationMarker marker, final Throwable cause) {
-        emit(marker, cause, null);
-    }
-
-    /**
-     * Emits an observation event.
-     *
-     * @param marker  marker
-     * @param cause   failure cause
-     * @param payload event payload
-     */
-    private void emit(final ObservationMarker marker, final Throwable cause, final Payload payload) {
-        final FabricEvent.Builder event = FabricEvent.builder(marker)
-                .tag(Builder.TAG_PROTOCOL, snapshot.address().scheme()).tag(Builder.HOST, snapshot.address().host())
+    private void emit(
+            final ObservationMarker marker,
+            final Throwable cause,
+            final Payload payload,
+            final String operationId) {
+        final FabricEvent.Builder event = FabricEvent.builder(marker, snapshot.context().clock())
+                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_PROTOCOL, snapshot.address().scheme())
+                .tag(Builder.HOST, snapshot.address().host())
                 .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
         if (payload != null && payload.length() >= Normal.LONG_ZERO) {
             event.tag(Builder.TAG_BYTES, Long.toString(payload.length()));

@@ -31,7 +31,10 @@ import org.miaixz.bus.fabric.guard.GuardResult;
 import org.miaixz.bus.fabric.guard.GuardRule;
 
 /**
- * Token bucket guard for frame throughput.
+ * Token bucket guard for frame throughput. One guard instance owns exactly one token bucket, so sessions that share an
+ * instance are limited by one global aggregate balance. Per-session limiting requires creating a separate
+ * {@code RateGuard} for every session; the framework never clones a guard implicitly. Rejected acquisitions return
+ * immediately without waiting, sleeping, or scheduling work.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -19,16 +19,19 @@
 */
 package org.miaixz.bus.fabric.network.kcp;
 
-import java.time.Clock;
 import java.time.Duration;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -36,6 +39,7 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.network.Transport;
 import org.miaixz.bus.fabric.network.udp.UdpNetwork;
@@ -60,6 +64,11 @@ public final class KcpNetwork implements AutoCloseable {
     private final AtomicLong sequence;
 
     /**
+     * Logical message identifier.
+     */
+    private final AtomicLong messageId;
+
+    /**
      * Clock.
      */
     private final Clock clock;
@@ -80,6 +89,11 @@ public final class KcpNetwork implements AutoCloseable {
     private final Duration retransmitDelay;
 
     /**
+     * Wire version emitted by this endpoint.
+     */
+    private final int wireVersion;
+
+    /**
      * Unacknowledged outbound packets.
      */
     private final LinkedHashMap<Long, SentPacket> sendWindow;
@@ -88,6 +102,16 @@ public final class KcpNetwork implements AutoCloseable {
      * Buffered inbound packets.
      */
     private final TreeMap<Long, KcpPacket> receiveWindow;
+
+    /**
+     * Complete logical messages waiting for send-window capacity.
+     */
+    private final ArrayDeque<OutboundMessage> outboundQueue;
+
+    /**
+     * Active V2 fragment reassemblies.
+     */
+    private final HashMap<ReassemblyKey, ReassemblyState> reassemblies;
 
     /**
      * Close flag.
@@ -145,12 +169,22 @@ public final class KcpNetwork implements AutoCloseable {
     private int congestionWindow;
 
     /**
+     * Logical bytes retained by the outbound queue.
+     */
+    private long outboundQueueBytes;
+
+    /**
+     * Fragment bytes retained by active reassemblies.
+     */
+    private long reassemblyBytes;
+
+    /**
      * Creates a KCP network.
      *
      * @param udp UDP network
      */
     private KcpNetwork(final UdpNetwork udp) {
-        this(udp, Clock.systemUTC(), Normal._32, Normal._32, Builder.KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY);
+        this(udp, Clock.system(), Normal._1, Normal._32, Normal._32, Builder.KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY);
     }
 
     /**
@@ -158,15 +192,21 @@ public final class KcpNetwork implements AutoCloseable {
      *
      * @param udp               UDP network
      * @param clock             clock
+     * @param wireVersion       wire version
      * @param sendWindowSize    send window size
      * @param receiveWindowSize receive window size
      * @param retransmitDelay   retransmission delay
      */
-    private KcpNetwork(final UdpNetwork udp, final Clock clock, final int sendWindowSize, final int receiveWindowSize,
-            final Duration retransmitDelay) {
+    private KcpNetwork(final UdpNetwork udp, final Clock clock, final int wireVersion, final int sendWindowSize,
+            final int receiveWindowSize, final Duration retransmitDelay) {
         this.udp = Assert.notNull(udp, () -> new ValidateException("UDP network must not be null"));
         this.sequence = new AtomicLong();
+        this.messageId = new AtomicLong();
         this.clock = Assert.notNull(clock, () -> new ValidateException("KCP clock must not be null"));
+        if (wireVersion != Normal._1 && wireVersion != Normal._2) {
+            throw new ValidateException("KCP wire version must be 1 or 2");
+        }
+        this.wireVersion = wireVersion;
         this.sendWindowSize = Assert.checkBetween(
                 sendWindowSize,
                 Normal._1,
@@ -184,6 +224,8 @@ public final class KcpNetwork implements AutoCloseable {
                 () -> new ValidateException("KCP retransmit delay must be non-negative"));
         this.sendWindow = new LinkedHashMap<>();
         this.receiveWindow = new TreeMap<>();
+        this.outboundQueue = new ArrayDeque<>();
+        this.reassemblies = new HashMap<>();
         this.closed = new AtomicBoolean();
         this.lastRttMillis = Normal.__1;
         this.smoothedRttMillis = Normal.__1;
@@ -216,26 +258,45 @@ public final class KcpNetwork implements AutoCloseable {
             final int sendWindowSize,
             final int receiveWindowSize,
             final Duration retransmitDelay) {
-        return new KcpNetwork(udp, clock, sendWindowSize, receiveWindowSize, retransmitDelay);
+        return new KcpNetwork(udp, clock, Normal._1, sendWindowSize, receiveWindowSize, retransmitDelay);
     }
 
     /**
-     * Encodes a payload into a packet.
+     * Creates a KCP network with an explicit wire version.
+     *
+     * @param udp         UDP network
+     * @param clock       clock
+     * @param wireVersion wire version, either 1 or 2
+     * @return KCP network
+     */
+    public static KcpNetwork create(final UdpNetwork udp, final Clock clock, final int wireVersion) {
+        return new KcpNetwork(udp, clock, wireVersion, Normal._32, Normal._32,
+                Builder.KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY);
+    }
+
+    /**
+     * Enqueues a complete logical payload and emits packets currently allowed by the send window.
      *
      * @param payload payload
-     * @return packet
+     * @return packets ready for UDP send
      */
-    public synchronized KcpPacket encode(final Payload payload) {
+    public synchronized List<KcpPacket> encode(final Payload payload) {
         Assert.notNull(payload, () -> new ValidateException("KCP payload must not be null"));
         ensureOpen();
-        if (sendWindow.size() >= currentSendLimit()) {
-            throw new StatefulException("KCP send window is full");
+        expireReassemblies();
+        final long limit = wireVersion == Normal._1 ? Builder.KCP_PACKET_V1_MAX_PAYLOAD
+                : Builder.KCP_NETWORK_MAX_MESSAGE_BYTES;
+        final ByteString bytes = ByteString.of(payload.bytes(limit));
+        if (wireVersion == Normal._1 && bytes.size() > Builder.KCP_PACKET_V1_MAX_PAYLOAD) {
+            throw new ValidateException("KCP V1 payload exceeds one packet");
         }
-        final long current = sequence.getAndUpdate(value -> (value + Normal._1) & Builder.UNSIGNED_INT_MASK);
-        final ByteString bytes = ByteString.of(payload.bytes(KcpPacket.maxPayloadBytes()));
-        final KcpPacket packet = KcpPacket.data(current, bytes, remainingReceiveWindow(), now());
-        sendWindow.put(current, new SentPacket(packet, packet.timestamp()));
-        return packet;
+        if (outboundQueueBytes + bytes.size() > Builder.KCP_NETWORK_MAX_OUTBOUND_QUEUE_BYTES) {
+            throw new StatefulException("KCP outbound queue byte limit exceeded");
+        }
+        final long id = wireVersion == Normal._2 ? nextMessageId() : Normal._0;
+        outboundQueue.addLast(new OutboundMessage(bytes, id));
+        outboundQueueBytes += bytes.size();
+        return drainOutbound();
     }
 
     /**
@@ -264,23 +325,26 @@ public final class KcpNetwork implements AutoCloseable {
     public synchronized Inbound receive(final KcpPacket packet) {
         Assert.notNull(packet, () -> new ValidateException("KCP packet must not be null"));
         ensureOpen();
+        expireReassemblies();
         if (packet.type() == KcpPacket.Type.ACK) {
-            acknowledge(packet);
-            return new Inbound(null, List.of());
+            acknowledgePacket(packet);
+            return new Inbound(List.of(), drainOutbound());
         }
-        final KcpPacket ack = KcpPacket.ack(packet.sequence(), remainingReceiveWindow(), now());
-        final ArrayList<ByteString> delivered = new ArrayList<>();
+        final KcpPacket ack = acknowledgementFor(packet);
+        final ArrayList<Payload> delivered = new ArrayList<>();
+        final ArrayList<KcpPacket> outbound = new ArrayList<>();
+        outbound.add(ack);
         if (isBeforeExpected(packet.sequence())) {
             duplicatePackets++;
-            return new Inbound(ack, delivered);
+            return new Inbound(delivered, outbound);
         }
         if (sequenceDistance(expectedReceiveSequence, packet.sequence()) >= receiveWindowSize) {
             droppedPackets++;
-            return new Inbound(null, delivered);
+            return new Inbound(delivered, List.of());
         }
         if (receiveWindow.putIfAbsent(packet.sequence(), packet) != null) {
             duplicatePackets++;
-            return new Inbound(ack, delivered);
+            return new Inbound(delivered, outbound);
         }
         receivedPackets++;
         while (true) {
@@ -288,11 +352,10 @@ public final class KcpNetwork implements AutoCloseable {
             if (ready == null) {
                 break;
             }
-            delivered.add(ready.payloadBytes());
-            deliveredPackets++;
+            deliver(ready, delivered);
             expectedReceiveSequence = (expectedReceiveSequence + Normal._1) & Builder.UNSIGNED_INT_MASK;
         }
-        return new Inbound(ack, delivered);
+        return new Inbound(delivered, outbound);
     }
 
     /**
@@ -303,6 +366,15 @@ public final class KcpNetwork implements AutoCloseable {
     public synchronized void acknowledge(final KcpPacket packet) {
         Assert.notNull(packet, () -> new ValidateException("KCP ACK packet must not be null"));
         ensureOpen();
+        acknowledgePacket(packet);
+    }
+
+    /**
+     * Removes one acknowledged packet without draining queued messages.
+     *
+     * @param packet ACK packet
+     */
+    private void acknowledgePacket(final KcpPacket packet) {
         if (packet.type() != KcpPacket.Type.ACK) {
             throw new ValidateException("KCP acknowledgement requires ACK packet");
         }
@@ -321,13 +393,17 @@ public final class KcpNetwork implements AutoCloseable {
      */
     public synchronized List<KcpPacket> retransmitDue() {
         ensureOpen();
+        expireReassemblies();
         final long current = now();
         final ArrayList<KcpPacket> due = new ArrayList<>();
         for (final var entry : sendWindow.entrySet()) {
             final SentPacket sent = entry.getValue();
             if (current - sent.sentAt >= retransmitDelay.toMillis()) {
+                if (sent.retries >= Builder.KCP_NETWORK_MAX_RETRANSMISSIONS) {
+                    throw new StatefulException("KCP packet retry limit exhausted");
+                }
                 due.add(sent.packet);
-                entry.setValue(new SentPacket(sent.packet, current));
+                entry.setValue(new SentPacket(sent.packet, current, sent.retries + Normal._1));
             }
         }
         if (!due.isEmpty()) {
@@ -352,7 +428,11 @@ public final class KcpNetwork implements AutoCloseable {
      * @return buffered count
      */
     public synchronized int buffered() {
-        return receiveWindow.size();
+        int fragments = receiveWindow.size();
+        for (final ReassemblyState state : reassemblies.values()) {
+            fragments += state.fragments.size();
+        }
+        return fragments;
     }
 
     /**
@@ -361,9 +441,8 @@ public final class KcpNetwork implements AutoCloseable {
      * @return state snapshot
      */
     public synchronized Stats stats() {
-        return new Stats(sendWindow.size(), receiveWindow.size(), acknowledgedPackets, retransmissions,
-                duplicatePackets, droppedPackets, receivedPackets, deliveredPackets, lastRttMillis, smoothedRttMillis,
-                congestionWindow);
+        return new Stats(sendWindow.size(), buffered(), acknowledgedPackets, retransmissions, duplicatePackets,
+                droppedPackets, receivedPackets, deliveredPackets, lastRttMillis, smoothedRttMillis, congestionWindow);
     }
 
     /**
@@ -420,6 +499,10 @@ public final class KcpNetwork implements AutoCloseable {
         if (closed.compareAndSet(false, true)) {
             sendWindow.clear();
             receiveWindow.clear();
+            outboundQueue.clear();
+            reassemblies.clear();
+            outboundQueueBytes = Normal.LONG_ZERO;
+            reassemblyBytes = Normal.LONG_ZERO;
             udp.close();
         }
     }
@@ -446,6 +529,177 @@ public final class KcpNetwork implements AutoCloseable {
         return Address.parse(
                 Transport.UDP.scheme() + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + address.host() + Symbol.COLON
                         + address.port());
+    }
+
+    /**
+     * Emits queued fragments until the current send and congestion windows are full.
+     *
+     * @return packets ready for UDP send
+     */
+    private List<KcpPacket> drainOutbound() {
+        final ArrayList<KcpPacket> emitted = new ArrayList<>();
+        while (sendWindow.size() < currentSendLimit() && !outboundQueue.isEmpty()) {
+            final OutboundMessage message = outboundQueue.peekFirst();
+            final int maxPayload = wireVersion == Normal._1 ? Builder.KCP_PACKET_V1_MAX_PAYLOAD
+                    : Builder.KCP_PACKET_V2_MAX_PAYLOAD;
+            final int start = message.nextFragment * maxPayload;
+            final int end = Math.min(message.bytes.size(), start + maxPayload);
+            final ByteString fragment = message.bytes.substring(start, end);
+            final long currentSequence = nextSequence();
+            final long currentTime = now();
+            final KcpPacket packet = wireVersion == Normal._1
+                    ? KcpPacket.data(currentSequence, fragment, remainingReceiveWindow(), currentTime)
+                    : KcpPacket.dataV2(
+                            currentSequence,
+                            fragment,
+                            remainingReceiveWindow(),
+                            currentTime,
+                            message.messageId,
+                            message.nextFragment,
+                            message.fragmentCount);
+            sendWindow.put(currentSequence, new SentPacket(packet, currentTime, Normal._0));
+            emitted.add(packet);
+            message.nextFragment++;
+            if (message.nextFragment == message.fragmentCount) {
+                outboundQueue.removeFirst();
+                outboundQueueBytes -= message.bytes.size();
+            }
+        }
+        return List.copyOf(emitted);
+    }
+
+    /**
+     * Delivers a V1 packet directly or adds a V2 fragment to bounded reassembly state.
+     *
+     * @param packet    ordered data packet
+     * @param delivered completed logical payloads
+     */
+    private void deliver(final KcpPacket packet, final List<Payload> delivered) {
+        if (packet.version() != Normal._2) {
+            delivered.add(
+                    packet.payloadBytes().size() == Normal._0 ? Payload.empty() : Payload.of(packet.payloadBytes()));
+            deliveredPackets++;
+            return;
+        }
+        final ReassemblyKey key = new ReassemblyKey(udp, packet.messageId());
+        ReassemblyState state = reassemblies.get(key);
+        final long added = packet.payloadBytes().size();
+        if (state == null) {
+            if (reassemblies.size() >= Builder.KCP_NETWORK_MAX_ACTIVE_REASSEMBLIES) {
+                throw new StatefulException("KCP active reassembly limit exceeded");
+            }
+            if (added > Builder.KCP_NETWORK_MAX_MESSAGE_BYTES) {
+                throw new StatefulException("KCP reassembled message byte limit exceeded");
+            }
+            if (reassemblyBytes + added > Builder.KCP_NETWORK_MAX_REASSEMBLY_BYTES) {
+                throw new StatefulException("KCP total reassembly byte limit exceeded");
+            }
+            if (sourceReassemblyBytes(key.source) + added > Builder.KCP_NETWORK_MAX_SOURCE_REASSEMBLY_BYTES) {
+                throw new StatefulException("KCP source reassembly byte limit exceeded");
+            }
+            state = new ReassemblyState(packet.fragmentCount(), now());
+            reassemblies.put(key, state);
+        } else if (state.fragmentCount != packet.fragmentCount()) {
+            throw new StatefulException("KCP fragment count changed during reassembly");
+        }
+        if (state.fragments.containsKey(packet.fragmentIndex())) {
+            return;
+        }
+        if (state.bytes + added > Builder.KCP_NETWORK_MAX_MESSAGE_BYTES) {
+            throw new StatefulException("KCP reassembled message byte limit exceeded");
+        }
+        if (reassemblyBytes + added > Builder.KCP_NETWORK_MAX_REASSEMBLY_BYTES) {
+            throw new StatefulException("KCP total reassembly byte limit exceeded");
+        }
+        if (sourceReassemblyBytes(key.source) + added > Builder.KCP_NETWORK_MAX_SOURCE_REASSEMBLY_BYTES) {
+            throw new StatefulException("KCP source reassembly byte limit exceeded");
+        }
+        state.fragments.put(packet.fragmentIndex(), packet.payloadBytes());
+        state.bytes += added;
+        reassemblyBytes += added;
+        if (state.fragments.size() != state.fragmentCount) {
+            return;
+        }
+        final Buffer merged = new Buffer();
+        for (int index = Normal._0; index < state.fragmentCount; index++) {
+            final ByteString fragment = state.fragments.get(index);
+            if (fragment == null) {
+                return;
+            }
+            merged.write(fragment);
+        }
+        reassemblies.remove(key);
+        reassemblyBytes -= state.bytes;
+        delivered.add(merged.size() == Normal.LONG_ZERO ? Payload.empty() : Payload.of(merged.readByteString()));
+        deliveredPackets++;
+    }
+
+    /**
+     * Returns retained reassembly bytes for one source.
+     *
+     * @param source source identity
+     * @return retained bytes
+     */
+    private long sourceReassemblyBytes(final Object source) {
+        long bytes = Normal.LONG_ZERO;
+        for (final Map.Entry<ReassemblyKey, ReassemblyState> entry : reassemblies.entrySet()) {
+            if (entry.getKey().source == source) {
+                bytes += entry.getValue().bytes;
+            }
+        }
+        return bytes;
+    }
+
+    /**
+     * Removes expired reassemblies and fails the owning session path.
+     */
+    private void expireReassemblies() {
+        final long current = now();
+        boolean expired = false;
+        final var iterator = reassemblies.entrySet().iterator();
+        while (iterator.hasNext()) {
+            final ReassemblyState state = iterator.next().getValue();
+            if (current - state.createdAt >= Builder.KCP_NETWORK_REASSEMBLY_TIMEOUT.toMillis()) {
+                reassemblyBytes -= state.bytes;
+                iterator.remove();
+                expired = true;
+            }
+        }
+        if (expired) {
+            throw new StatefulException("KCP fragment reassembly expired");
+        }
+    }
+
+    /**
+     * Creates an ACK using the inbound packet version, with legacy data acknowledged as V1.
+     *
+     * @param packet inbound data packet
+     * @return ACK packet
+     */
+    private KcpPacket acknowledgementFor(final KcpPacket packet) {
+        if (packet.version() == Normal._2) {
+            return new KcpPacket(Normal._2, KcpPacket.Type.ACK, Normal._0, packet.sequence(), remainingReceiveWindow(),
+                    now(), Normal._0, Normal._0, Normal._0, ByteString.EMPTY);
+        }
+        return KcpPacket.ack(packet.sequence(), remainingReceiveWindow(), now());
+    }
+
+    /**
+     * Returns and advances the unsigned packet sequence.
+     *
+     * @return current sequence
+     */
+    private long nextSequence() {
+        return sequence.getAndUpdate(value -> (value + Normal._1) & Builder.UNSIGNED_INT_MASK);
+    }
+
+    /**
+     * Returns and advances the unsigned logical message identifier.
+     *
+     * @return current message identifier
+     */
+    private long nextMessageId() {
+        return messageId.getAndUpdate(value -> (value + Normal._1) & Builder.UNSIGNED_INT_MASK);
     }
 
     /**
@@ -520,16 +774,17 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Inbound KCP processing result.
      *
-     * @param ack      ACK to send, or null
-     * @param payloads ordered payloads ready for application delivery
+     * @param delivered complete logical payloads ready for application delivery
+     * @param outbound  ACK and newly released data packets ready for UDP send
      */
-    public record Inbound(KcpPacket ack, List<ByteString> payloads) {
+    public record Inbound(List<Payload> delivered, List<KcpPacket> outbound) {
 
         /**
          * Creates an inbound result.
          */
         public Inbound {
-            payloads = List.copyOf(payloads);
+            delivered = List.copyOf(delivered);
+            outbound = List.copyOf(outbound);
         }
 
         /**
@@ -538,9 +793,9 @@ public final class KcpNetwork implements AutoCloseable {
          * @return payload snapshots
          */
         public List<byte[]> payloadArrays() {
-            final ArrayList<byte[]> values = new ArrayList<>(payloads.size());
-            for (final ByteString payload : payloads) {
-                values.add(payload.toByteArray());
+            final ArrayList<byte[]> values = new ArrayList<>(delivered.size());
+            for (final Payload payload : delivered) {
+                values.add(payload.bytes(Builder.KCP_NETWORK_MAX_MESSAGE_BYTES));
             }
             return List.copyOf(values);
         }
@@ -570,10 +825,101 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Outbound packet retained until an acknowledgement arrives or retransmission is needed.
      *
-     * @param packet packet snapshot
-     * @param sentAt send time in milliseconds
+     * @param packet  packet snapshot
+     * @param sentAt  send time in milliseconds
+     * @param retries retransmission count
      */
-    private record SentPacket(KcpPacket packet, long sentAt) {
+    private record SentPacket(KcpPacket packet, long sentAt, int retries) {
+
+    }
+
+    /**
+     * Complete logical message retained until every fragment enters the send window.
+     */
+    private final class OutboundMessage {
+
+        /**
+         * Complete message bytes.
+         */
+        private final ByteString bytes;
+
+        /**
+         * V2 logical message identifier.
+         */
+        private final long messageId;
+
+        /**
+         * Total fragment count.
+         */
+        private final int fragmentCount;
+
+        /**
+         * Next fragment index to emit.
+         */
+        private int nextFragment;
+
+        /**
+         * Creates a queued logical message.
+         *
+         * @param bytes     complete message bytes
+         * @param messageId V2 message identifier
+         */
+        private OutboundMessage(final ByteString bytes, final long messageId) {
+            this.bytes = bytes;
+            this.messageId = messageId;
+            final int maxPayload = wireVersion == Normal._1 ? Builder.KCP_PACKET_V1_MAX_PAYLOAD
+                    : Builder.KCP_PACKET_V2_MAX_PAYLOAD;
+            this.fragmentCount = Math.max(Normal._1, (bytes.size() + maxPayload - Normal._1) / maxPayload);
+        }
+
+    }
+
+    /**
+     * Reassembly identity scoped to one UDP source.
+     *
+     * @param source    source identity
+     * @param messageId logical message identifier
+     */
+    private record ReassemblyKey(Object source, long messageId) {
+
+    }
+
+    /**
+     * Mutable bounded state for one V2 logical message.
+     */
+    private static final class ReassemblyState {
+
+        /**
+         * Expected fragment count.
+         */
+        private final int fragmentCount;
+
+        /**
+         * Creation time in milliseconds.
+         */
+        private final long createdAt;
+
+        /**
+         * Fragments indexed by their wire position.
+         */
+        private final TreeMap<Integer, ByteString> fragments;
+
+        /**
+         * Retained payload bytes.
+         */
+        private long bytes;
+
+        /**
+         * Creates an empty reassembly.
+         *
+         * @param fragmentCount expected fragment count
+         * @param createdAt     creation time
+         */
+        private ReassemblyState(final int fragmentCount, final long createdAt) {
+            this.fragmentCount = fragmentCount;
+            this.createdAt = createdAt;
+            this.fragments = new TreeMap<>();
+        }
 
     }
 

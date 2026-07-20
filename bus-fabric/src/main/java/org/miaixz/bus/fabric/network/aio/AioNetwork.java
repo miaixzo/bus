@@ -320,6 +320,9 @@ public final class AioNetwork implements AutoCloseable {
             final Listener<Object> listener) {
         final Address checkedAddress = Assert.notNull(address, () -> new ValidateException("Address must not be null"));
         final Timeout checkedTimeout = Assert.notNull(timeout, () -> new ValidateException("Timeout must not be null"));
+        if (closed.get()) {
+            return CompletableFuture.failedFuture(new SocketException("AIO network is closed"));
+        }
         final Listener<Object> current = compose(this.listener, listener);
         final DnsResult result = resolver.resolve(checkedAddress.host());
         if (result.empty()) {
@@ -362,18 +365,49 @@ public final class AioNetwork implements AutoCloseable {
         managed.add(channel);
         final InetSocketAddress socket = new InetSocketAddress(addresses.get(index), address.port());
         final CompletableFuture<Connection> opened = new CompletableFuture<>();
-        channel.connect(socket, timeout).whenComplete((ignored, cause) -> {
+        final CompletableFuture<Void> operation = channel.connect(socket, timeout);
+        opened.whenComplete((connection, cause) -> {
+            if (opened.isCancelled()) {
+                operation.cancel(true);
+                managed.remove(channel);
+                IoKit.closeQuietly(channel);
+            }
+        });
+        operation.whenComplete((ignored, cause) -> {
+            if (opened.isCancelled()) {
+                managed.remove(channel);
+                IoKit.closeQuietly(channel);
+                return;
+            }
             if (cause != null) {
                 managed.remove(channel);
                 IoKit.closeQuietly(channel);
-                connectCandidate(address, timeout, listener, addresses, index + Normal._1, ExceptionKit.unwrap(cause))
-                        .whenComplete((connection, next) -> {
-                            if (next == null) {
-                                opened.complete(connection);
-                            } else {
-                                opened.completeExceptionally(ExceptionKit.unwrap(next));
-                            }
-                        });
+                final CompletableFuture<Connection> nextAttempt = connectCandidate(
+                        address,
+                        timeout,
+                        listener,
+                        addresses,
+                        index + Normal._1,
+                        ExceptionKit.unwrap(cause));
+                if (opened.isCancelled()) {
+                    nextAttempt.cancel(true);
+                    return;
+                }
+                opened.whenComplete((connection, nextCause) -> {
+                    if (opened.isCancelled()) {
+                        nextAttempt.cancel(true);
+                    }
+                });
+                nextAttempt.whenComplete((connection, next) -> {
+                    if (opened.isCancelled()) {
+                        return;
+                    }
+                    if (next == null) {
+                        opened.complete(connection);
+                    } else {
+                        opened.completeExceptionally(ExceptionKit.unwrap(next));
+                    }
+                });
                 return;
             }
             final Connection connection = new AioConnection(
@@ -641,7 +675,23 @@ public final class AioNetwork implements AutoCloseable {
          */
         @Override
         public CompletableFuture<Long> read(final Buffer target, final long byteCount) {
-            return aio.read(target, byteCount);
+            if (target == null) {
+                return CompletableFuture.failedFuture(new ValidateException("Read target must not be null"));
+            }
+            if (byteCount < Normal._0) {
+                return CompletableFuture.failedFuture(new ValidateException("Read byte count must not be negative"));
+            }
+            final long before = target.size();
+            final CompletableFuture<Long> operation;
+            try {
+                operation = aio.read(target, byteCount);
+            } catch (final RuntimeException e) {
+                return CompletableFuture.failedFuture(e);
+            }
+            if (operation == null) {
+                return CompletableFuture.failedFuture(new InternalException("AIO read returned a null future"));
+            }
+            return operation.thenApply(count -> validateReadResult(count, byteCount, before, target.size()));
         }
 
         /**
@@ -653,7 +703,80 @@ public final class AioNetwork implements AutoCloseable {
          */
         @Override
         public CompletableFuture<Long> write(final Buffer source, final long byteCount) {
-            return aio.write(source, byteCount);
+            if (source == null) {
+                return CompletableFuture.failedFuture(new ValidateException("Write source must not be null"));
+            }
+            if (byteCount < Normal._0 || byteCount > source.size()) {
+                return CompletableFuture
+                        .failedFuture(new ValidateException("Write byte count must be between zero and source size"));
+            }
+            final long before = source.size();
+            final CompletableFuture<Long> operation;
+            try {
+                operation = aio.write(source, byteCount);
+            } catch (final RuntimeException e) {
+                return CompletableFuture.failedFuture(e);
+            }
+            if (operation == null) {
+                return CompletableFuture.failedFuture(new InternalException("AIO write returned a null future"));
+            }
+            return operation.thenApply(count -> validateWriteResult(count, byteCount, before, source.size()));
+        }
+
+        /**
+         * Validates one completed channel read.
+         *
+         * @param count     reported byte count
+         * @param requested requested byte count
+         * @param before    target size before the operation
+         * @param after     target size after the operation
+         * @return validated byte count
+         */
+        private static long validateReadResult(
+                final Long count,
+                final long requested,
+                final long before,
+                final long after) {
+            if (count == null) {
+                throw new InternalException("AIO read returned a null byte count");
+            }
+            if (count < Normal.__1 || count > requested) {
+                throw new InternalException("AIO read returned an invalid byte count: " + count);
+            }
+            if (requested == Normal._0 && count != Normal._0) {
+                throw new InternalException("AIO zero-byte read returned a nonzero result: " + count);
+            }
+            final long appended = after - before;
+            if ((count == Normal.__1 && appended != Normal._0) || (count >= Normal._0 && appended != count)) {
+                throw new InternalException("AIO read count did not match appended bytes");
+            }
+            return count;
+        }
+
+        /**
+         * Validates one completed channel write.
+         *
+         * @param count     reported byte count
+         * @param requested requested byte count
+         * @param before    source size before the operation
+         * @param after     source size after the operation
+         * @return validated byte count
+         */
+        private static long validateWriteResult(
+                final Long count,
+                final long requested,
+                final long before,
+                final long after) {
+            if (count == null) {
+                throw new InternalException("AIO write returned a null byte count");
+            }
+            if (count < Normal._0 || count > requested) {
+                throw new InternalException("AIO write returned an invalid byte count: " + count);
+            }
+            if (count != requested || before - after != requested) {
+                throw new InternalException("AIO write did not fully consume requested bytes");
+            }
+            return count;
         }
 
         /**
@@ -704,7 +827,12 @@ public final class AioNetwork implements AutoCloseable {
          */
         private static long await(final CompletableFuture<Long> future, final String message) throws IOException {
             try {
-                return Assert.notNull(future, () -> new ValidateException("IO future must not be null")).get();
+                final Long count = Assert.notNull(future, () -> new ValidateException("IO future must not be null"))
+                        .get();
+                if (count == null) {
+                    throw new InternalException("AIO operation returned a null byte count");
+                }
+                return count;
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new IOException(message, e);
@@ -715,6 +843,9 @@ public final class AioNetwork implements AutoCloseable {
                 }
                 if (cause instanceof RuntimeException runtime) {
                     throw runtime;
+                }
+                if (cause instanceof Error error) {
+                    throw error;
                 }
                 throw new IOException(message, cause);
             }
@@ -735,7 +866,11 @@ public final class AioNetwork implements AutoCloseable {
              */
             @Override
             public long read(final Buffer sink, final long byteCount) throws IOException {
-                return await(AioConduit.this.read(sink, byteCount), "Unable to read AIO source");
+                final long count = await(AioConduit.this.read(sink, byteCount), "Unable to read AIO source");
+                if (count == Normal._0 && byteCount != Normal._0) {
+                    throw new InternalException("AIO source returned zero for a positive read request");
+                }
+                return count;
             }
 
             /**
@@ -772,7 +907,11 @@ public final class AioNetwork implements AutoCloseable {
              */
             @Override
             public void write(final Buffer source, final long byteCount) throws IOException {
-                await(AioConduit.this.write(source, byteCount), "Unable to write AIO sink");
+                final long before = source == null ? Normal._0 : source.size();
+                final long count = await(AioConduit.this.write(source, byteCount), "Unable to write AIO sink");
+                if (count != byteCount || before - source.size() != byteCount) {
+                    throw new InternalException("AIO sink did not fully consume requested bytes");
+                }
             }
 
             /**

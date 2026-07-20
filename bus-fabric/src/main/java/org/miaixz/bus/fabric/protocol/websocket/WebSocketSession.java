@@ -19,30 +19,42 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayDeque;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
+import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Call;
+import org.miaixz.bus.fabric.Clock;
+import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
@@ -51,9 +63,12 @@ import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
+import org.miaixz.bus.fabric.observe.event.FabricEvent;
+import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.websocket.body.WebSocketBody;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketFrame;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader;
@@ -64,15 +79,51 @@ import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Open WebSocket session.
+ * Open WebSocket session that owns frame ordering, message aggregation, control handling, and terminal notification.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public final class WebSocketSession implements Session {
+
+    /**
+     * Maximum complete outbound wire bytes retained by one session.
+     */
+    private static final long MAX_QUEUED_BYTES = 64L * Normal._1024 * Normal._1024;
+
+    /**
+     * Maximum payload bytes in one complete inbound or outbound message.
+     */
+    private static final long MAX_MESSAGE_BYTES = 16L * Normal._1024 * Normal._1024;
+
+    /**
+     * Milliseconds between non-blocking completion checks.
+     */
+    private static final long ENTRY_WAIT_MILLIS = Normal._1;
+
+    /**
+     * Protocol error close code.
+     */
+    private static final int CLOSE_PROTOCOL_ERROR = 1002;
+
+    /**
+     * Invalid payload close code.
+     */
+    private static final int CLOSE_INVALID_PAYLOAD = 1007;
+
+    /**
+     * Message too large close code.
+     */
+    private static final int CLOSE_MESSAGE_TOO_LARGE = 1009;
+
+    /**
+     * Internal error close code.
+     */
+    private static final int CLOSE_INTERNAL_ERROR = 1011;
 
     /**
      * Session address.
@@ -85,14 +136,19 @@ public final class WebSocketSession implements Session {
     private final WebSocketRole role;
 
     /**
-     * Native frame writer.
+     * Single-frame writer.
      */
     private final WebSocketWriter writer;
 
     /**
-     * Native frame reader.
+     * Single-frame reader.
      */
     private final WebSocketReader reader;
+
+    /**
+     * Output sink flushed after each complete outbound entry.
+     */
+    private final Sink output;
 
     /**
      * Native connection lease.
@@ -105,14 +161,64 @@ public final class WebSocketSession implements Session {
     private final AutoCloseable owner;
 
     /**
+     * User message and terminal handler.
+     */
+    private final Handler handler;
+
+    /**
      * Session attributes.
      */
     private final Map<String, Object> attributes;
 
     /**
+     * Dispatcher used by the reader, drain, ping, and close deadline.
+     */
+    private final Dispatcher dispatcher;
+
+    /**
+     * Whether this session owns its compatibility dispatcher.
+     */
+    private final boolean ownsDispatcher;
+
+    /**
+     * Session dispatch key.
+     */
+    private final String dispatchKey;
+
+    /**
+     * Session clock.
+     */
+    private final Clock clock;
+
+    /**
+     * Close handshake timeout.
+     */
+    private final Duration closeTimeout;
+
+    /**
+     * Automatic ping interval.
+     */
+    private final Duration pingInterval;
+
+    /**
+     * Shared cancellation scope.
+     */
+    private final Cancellation cancellation;
+
+    /**
+     * Cancellation callback removal handle.
+     */
+    private final AtomicReference<Runnable> cancellationRegistration;
+
+    /**
      * Native reader dispatch handle.
      */
     private final AtomicReference<DispatchHandle> readerHandle;
+
+    /**
+     * Outbound drain dispatch handle.
+     */
+    private final AtomicReference<DispatchHandle> drainHandle;
 
     /**
      * Automatic ping dispatch handle.
@@ -125,29 +231,99 @@ public final class WebSocketSession implements Session {
     private final AtomicReference<DispatchHandle> closeTimeoutHandle;
 
     /**
-     * Dispatcher for close-timeout scheduling.
-     */
-    private final Dispatcher dispatcher;
-
-    /**
-     * Session dispatch key.
-     */
-    private final String dispatchKey;
-
-    /**
      * Lifecycle scope.
      */
     private final LifecycleScope scope;
 
     /**
-     * Close callback guard.
+     * Optional guard.
      */
-    private final AtomicBoolean closeNotified;
+    private final GuardRule guard;
+
+    /**
+     * Optional message filter.
+     */
+    private final Filter filter;
+
+    /**
+     * Event observer enriched with complete WebSocket wire byte counts.
+     */
+    private final EventObserver observer;
+
+    /**
+     * Per-emission complete WebSocket wire byte count.
+     */
+    private final ThreadLocal<Long> trafficBytes;
+
+    /**
+     * Maximum bytes allowed when materializing session payloads.
+     */
+    private final long materializeMaxBytes;
+
+    /**
+     * Outbound queue monitor.
+     */
+    private final Object outboundLock;
+
+    /**
+     * Ordered outbound entries not yet active.
+     */
+    private final ArrayDeque<OutboundEntry> outbound;
+
+    /**
+     * Complete reserved wire bytes across queued and active entries.
+     */
+    private long queuedBytes;
+
+    /**
+     * Guard allowing at most one active background drain.
+     */
+    private final AtomicBoolean draining;
+
+    /**
+     * Currently active outbound entry.
+     */
+    private final AtomicReference<OutboundEntry> activeEntry;
+
+    /**
+     * Guard allowing exactly one terminal notification path.
+     */
+    private final AtomicBoolean terminalNotified;
+
+    /**
+     * Guard allowing exactly one native resource cleanup.
+     */
+    private final AtomicBoolean resourcesClosed;
+
+    /**
+     * Guard allowing exactly one close entry.
+     */
+    private final AtomicBoolean closeQueued;
+
+    /**
+     * Whether a close frame was physically flushed.
+     */
+    private final AtomicBoolean closeWritten;
+
+    /**
+     * Whether a peer close frame was received.
+     */
+    private final AtomicBoolean peerCloseReceived;
+
+    /**
+     * Failure delivered after the best-effort protocol close frame.
+     */
+    private final AtomicReference<Throwable> failureAfterClose;
 
     /**
      * Automatic ping awaiting pong flag.
      */
     private final AtomicBoolean awaitingPong;
+
+    /**
+     * Whether one automatic ping is queued but not yet flushed.
+     */
+    private final AtomicBoolean automaticPingPending;
 
     /**
      * Sent ping count.
@@ -165,37 +341,19 @@ public final class WebSocketSession implements Session {
     private final AtomicInteger receivedPongCount;
 
     /**
-     * Optional guard.
-     */
-    private final GuardRule guard;
-
-    /**
-     * Optional message filter.
-     */
-    private final Filter filter;
-
-    /**
-     * Event observer.
-     */
-    private final EventObserver observer;
-
-    /**
-     * Maximum bytes allowed when materializing session payloads.
-     */
-    private final long materializeMaxBytes;
-
-    /**
      * Creates a transport-less session for validated upgrade snapshots.
      *
      * @param address session address
      */
     WebSocketSession(final Address address) {
-        this(address, null, null, null, null, null, null, Duration.ZERO, null, null, EventObserver.noop(), null,
+        this(address, null, null, null, null, null, null, null, false, defaultDispatchKey(address), Clock.system(),
+                Duration.ZERO, Builder.DURATION_60_SECONDS, null, WebSocketRole.CLIENT,
+                defaultAttributes(EventObserver.noop()), null, EventObserver.noop(), null, Cancellation.create(),
                 Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
-     * Creates an opened session.
+     * Creates an opened compatibility session with an owned dispatcher.
      *
      * @param address session address
      * @param writer  native writer
@@ -205,36 +363,40 @@ public final class WebSocketSession implements Session {
      */
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
             final ConnectionLease lease, final Handler handler) {
-        this(address, writer, reader, lease, handler, null, null, Duration.ZERO, null, null, EventObserver.noop(), null,
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(address, writer, reader, null, lease, null, handler, Dispatcher.create(), true,
+                defaultDispatchKey(address), Clock.system(), Duration.ZERO, Builder.DURATION_60_SECONDS, null,
+                WebSocketRole.CLIENT, defaultAttributes(EventObserver.noop()), null, EventObserver.noop(), null,
+                Cancellation.create(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
-     * Creates an opened session.
+     * Creates an opened compatibility session.
      *
      * @param address     session address
      * @param writer      native writer
      * @param reader      native reader
      * @param lease       native lease
      * @param handler     native handler
-     * @param dispatcher  dispatcher for reader loop
+     * @param dispatcher  dispatcher for background work
      * @param dispatchKey dispatch key
      */
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey) {
-        this(address, writer, reader, lease, handler, dispatcher, dispatchKey, Duration.ZERO, null, null,
-                EventObserver.noop(), null, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(address, writer, reader, null, lease, null, handler, dispatcher, false, dispatchKey, Clock.system(),
+                Duration.ZERO, Builder.DURATION_60_SECONDS, null, WebSocketRole.CLIENT,
+                defaultAttributes(EventObserver.noop()), null, EventObserver.noop(), null, Cancellation.create(),
+                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
-     * Creates an opened session.
+     * Creates an opened compatibility session with lifecycle collaborators.
      *
      * @param address     session address
      * @param writer      native writer
      * @param reader      native reader
      * @param lease       native lease
      * @param handler     native handler
-     * @param dispatcher  dispatcher for reader loop
+     * @param dispatcher  dispatcher for background work
      * @param dispatchKey dispatch key
      * @param ping        ping interval
      * @param guard       optional guard
@@ -245,19 +407,20 @@ public final class WebSocketSession implements Session {
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
             final Duration ping, final GuardRule guard, final EventObserver observer,
             final Listener<? super WebSocketSession> listener) {
-        this(address, writer, reader, lease, handler, dispatcher, dispatchKey, ping, guard, null, observer, listener,
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(address, writer, reader, null, lease, null, handler, dispatcher, false, dispatchKey, Clock.system(), ping,
+                Builder.DURATION_60_SECONDS, guard, WebSocketRole.CLIENT, defaultAttributes(observer), null, observer,
+                listener, Cancellation.create(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
-     * Creates an opened session.
+     * Creates an opened compatibility session with filtering.
      *
      * @param address             session address
      * @param writer              native writer
      * @param reader              native reader
      * @param lease               native lease
      * @param handler             native handler
-     * @param dispatcher          dispatcher for reader loop
+     * @param dispatcher          dispatcher for background work
      * @param dispatchKey         dispatch key
      * @param ping                ping interval
      * @param guard               optional guard
@@ -270,19 +433,20 @@ public final class WebSocketSession implements Session {
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
             final Duration ping, final GuardRule guard, final Filter filter, final EventObserver observer,
             final Listener<? super WebSocketSession> listener, final long materializeMaxBytes) {
-        this(address, writer, reader, lease, handler, dispatcher, dispatchKey, ping, guard, WebSocketRole.CLIENT,
-                defaultAttributes(observer), null, filter, observer, listener, materializeMaxBytes);
+        this(address, writer, reader, null, lease, null, handler, dispatcher, false, dispatchKey, Clock.system(), ping,
+                Builder.DURATION_60_SECONDS, guard, WebSocketRole.CLIENT, defaultAttributes(observer), filter, observer,
+                listener, Cancellation.create(), materializeMaxBytes);
     }
 
     /**
-     * Creates an opened session with an explicit endpoint role and owner.
+     * Creates an opened compatibility session with an explicit endpoint role and owner.
      *
      * @param address             session address
      * @param writer              native writer
      * @param reader              native reader
      * @param lease               native lease
      * @param handler             native handler
-     * @param dispatcher          dispatcher for reader loop
+     * @param dispatcher          dispatcher for background work
      * @param dispatchKey         dispatch key
      * @param ping                ping interval
      * @param guard               optional guard
@@ -299,30 +463,123 @@ public final class WebSocketSession implements Session {
             final Duration ping, final GuardRule guard, final WebSocketRole role, final Map<String, Object> attributes,
             final AutoCloseable owner, final Filter filter, final EventObserver observer,
             final Listener<? super WebSocketSession> listener, final long materializeMaxBytes) {
+        this(address, writer, reader, null, lease, owner, handler, dispatcher, false, dispatchKey, Clock.system(), ping,
+                Builder.DURATION_60_SECONDS, guard, role, attributes, filter, observer, listener, Cancellation.create(),
+                materializeMaxBytes);
+    }
+
+    /**
+     * Creates the final source-and-sink owned session used by WebSocket runners.
+     *
+     * @param address      session address
+     * @param source       underlying source
+     * @param sink         underlying sink
+     * @param lease        native lease
+     * @param handler      native handler
+     * @param context      runtime context
+     * @param timeout      timeout policy
+     * @param dispatchKey  dispatch key
+     * @param guard        optional guard
+     * @param role         endpoint role
+     * @param attributes   attributes
+     * @param owner        owner closed with native resources
+     * @param filter       optional filter
+     * @param observer     observer
+     * @param listener     lifecycle listener
+     * @param cancellation shared cancellation scope
+     */
+    WebSocketSession(final Address address, final Source source, final Sink sink, final ConnectionLease lease,
+            final Handler handler, final Context context, final Timeout timeout, final String dispatchKey,
+            final GuardRule guard, final WebSocketRole role, final Map<String, Object> attributes,
+            final AutoCloseable owner, final Filter filter, final EventObserver observer,
+            final Listener<? super WebSocketSession> listener, final Cancellation cancellation) {
+        this(address,
+                new WebSocketWriter(require(sink, "WebSocket sink"), require(role, "WebSocket role").writerMask()),
+                new WebSocketReader(require(source, "WebSocket source"), role.readerExpectMasked()), sink, lease, owner,
+                handler, require(context, "Context").reactor().dispatcher(), false, dispatchKey, context.clock(),
+                require(timeout, "WebSocket timeout").ping(), timeout.close(), guard, role, attributes, filter,
+                observer, listener, cancellation, context.options().materializeMaxBytes());
+    }
+
+    /**
+     * Creates the fully specified session and starts its owned background activities.
+     *
+     * @param address             session address
+     * @param writer              single-frame writer
+     * @param reader              single-frame reader
+     * @param output              output sink, when owned directly
+     * @param lease               native lease
+     * @param owner               optional owner
+     * @param handler             message handler
+     * @param dispatcher          dispatcher
+     * @param ownsDispatcher      dispatcher ownership flag
+     * @param dispatchKey         dispatch key
+     * @param clock               session clock
+     * @param ping                ping interval
+     * @param closeTimeout        close timeout
+     * @param guard               optional guard
+     * @param role                endpoint role
+     * @param attributes          attributes
+     * @param filter              optional filter
+     * @param observer            observer
+     * @param listener            lifecycle listener
+     * @param cancellation        shared cancellation scope
+     * @param materializeMaxBytes materialize byte threshold
+     */
+    private WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
+            final Sink output, final ConnectionLease lease, final AutoCloseable owner, final Handler handler,
+            final Dispatcher dispatcher, final boolean ownsDispatcher, final String dispatchKey, final Clock clock,
+            final Duration ping, final Duration closeTimeout, final GuardRule guard, final WebSocketRole role,
+            final Map<String, Object> attributes, final Filter filter, final EventObserver observer,
+            final Listener<? super WebSocketSession> listener, final Cancellation cancellation,
+            final long materializeMaxBytes) {
         this.address = require(address, "WebSocket address");
         Assert.isFalse(reader != null && handler == null, () -> new ValidateException("Handler must not be null"));
         Assert.isFalse(
-                reader != null && dispatcher == null,
+                (reader != null || writer != null) && dispatcher == null,
                 () -> new ValidateException("Dispatcher must not be null"));
         this.role = require(role, "WebSocket role");
         this.writer = writer;
         this.reader = reader;
+        this.output = output;
         this.lease = lease;
         this.owner = owner;
-        this.closeNotified = new AtomicBoolean();
+        this.handler = handler;
+        this.dispatcher = dispatcher;
+        this.ownsDispatcher = ownsDispatcher;
+        this.dispatchKey = validateDispatchKey(dispatchKey, writer != null || reader != null);
+        this.clock = require(clock, "WebSocket clock");
+        this.pingInterval = validateDuration(ping, "WebSocket ping interval");
+        this.closeTimeout = validateDuration(closeTimeout, "WebSocket close timeout");
+        this.guard = guard;
+        this.filter = filter;
+        final EventObserver sink = EventObserver.safe(observer);
+        this.trafficBytes = new ThreadLocal<>();
+        this.observer = event -> sink.emit(withTrafficBytes(event));
+        this.attributes = attributes(attributes, this.observer);
+        this.cancellation = require(cancellation, "WebSocket cancellation");
+        this.cancellationRegistration = new AtomicReference<>(WebSocketSession::noop);
+        this.readerHandle = new AtomicReference<>();
+        this.drainHandle = new AtomicReference<>();
+        this.pingHandle = new AtomicReference<>();
+        this.closeTimeoutHandle = new AtomicReference<>();
+        this.outboundLock = new Object();
+        this.outbound = new ArrayDeque<>();
+        this.draining = new AtomicBoolean();
+        this.activeEntry = new AtomicReference<>();
+        this.terminalNotified = new AtomicBoolean();
+        this.resourcesClosed = new AtomicBoolean();
+        this.closeQueued = new AtomicBoolean();
+        this.closeWritten = new AtomicBoolean();
+        this.peerCloseReceived = new AtomicBoolean();
+        this.failureAfterClose = new AtomicReference<>();
         this.awaitingPong = new AtomicBoolean();
+        this.automaticPingPending = new AtomicBoolean();
         this.sentPingCount = new AtomicInteger();
         this.receivedPingCount = new AtomicInteger();
         this.receivedPongCount = new AtomicInteger();
-        this.readerHandle = new AtomicReference<>();
-        this.pingHandle = new AtomicReference<>();
-        this.closeTimeoutHandle = new AtomicReference<>();
-        this.dispatcher = dispatcher;
-        this.dispatchKey = dispatchKey;
-        this.guard = guard;
-        this.filter = filter;
-        this.observer = EventObserver.safe(observer);
-        this.attributes = attributes(attributes, this.observer);
+        Payload.validateMaterializeMaxBytes(materializeMaxBytes);
+        this.materializeMaxBytes = materializeMaxBytes;
         this.scope = LifecycleScope.session(
                 this,
                 "websocket-session",
@@ -330,14 +587,16 @@ public final class WebSocketSession implements Session {
                 this.observer,
                 ObservationMarker.WEBSOCKET_OPEN,
                 ObservationMarker.WEBSOCKET_CLOSED,
-                ObservationMarker.WEBSOCKET_FAILED);
-        Payload.validateMaterializeMaxBytes(materializeMaxBytes);
-        this.materializeMaxBytes = materializeMaxBytes;
+                ObservationMarker.WEBSOCKET_FAILED,
+                this.clock);
         this.scope.open(this);
-        if (reader != null) {
-            readerHandle.set(startReader(handler, dispatcher, dispatchKey));
+        this.cancellationRegistration.set(this.cancellation.onCancel(this::cancel));
+        if (!terminalNotified.get() && reader != null) {
+            startReader();
         }
-        pingHandle.set(startPing(validatePing(ping), dispatcher, dispatchKey));
+        if (!terminalNotified.get()) {
+            schedulePing();
+        }
     }
 
     /**
@@ -368,21 +627,23 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Returns currently queued outbound payload bytes.
+     * Returns complete reserved outbound wire bytes.
      *
      * @return queued bytes
      */
     public long queueSize() {
-        return writer == null ? Normal.LONG_ZERO : writer.queuedBytes();
+        synchronized (outboundLock) {
+            return queuedBytes;
+        }
     }
 
     /**
-     * Returns the close timeout used for live sessions.
+     * Returns the close timeout used by this session.
      *
      * @return close timeout
      */
     public Duration closeTimeout() {
-        return Builder.DURATION_60_SECONDS;
+        return closeTimeout;
     }
 
     /**
@@ -413,125 +674,68 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Sends a generic payload as a binary message.
+     * Creates a lazy binary send Call.
      *
      * @param payload payload
-     * @return send call
+     * @return lazy send Call
      */
     @Override
     public Call<Void> send(final Payload payload) {
-        final Payload checkedPayload = require(payload, "WebSocket payload");
-        ensureOpened();
-        if (writer == null) {
-            throw new StatefulException("WebSocket session has no transport");
-        }
-        final Message outgoing = filter(checkedPayload, Builder.WEBSOCKET_WRITE);
-        checkGuard(outgoing);
-        final Payload outgoingPayload = outgoing.payload();
-        final long length = outgoingPayload.length();
-        if (length >= Normal.LONG_ZERO) {
-            checkQueueLimit(length);
-            return writeNative(() -> writeBinary(outgoingPayload, length), outgoingPayload);
-        }
-        final ByteString bytes = ByteString
-                .of(materialize(outgoingPayload, Builder.WEB_SOCKET_SESSION_MATERIALIZE_SEND_PAYLOAD));
-        checkQueueLimit(bytes.size());
-        return writeNative(() -> writer.write(WebSocketFrame.binary(bytes)), Payload.of(bytes));
+        final Payload checked = require(payload, "WebSocket payload");
+        return outboundCall("websocket-send", EntryKind.APPLICATION, () -> binaryFrame(checked));
     }
 
     /**
-     * Sends a WebSocket body using its text or binary message kind.
+     * Creates a lazy text or binary body send Call.
      *
      * @param body body
-     * @return send call
+     * @return lazy send Call
      */
     public Call<Void> send(final WebSocketBody body) {
-        final WebSocketBody checkedBody = require(body, "WebSocket body");
-        ensureOpened();
-        if (writer == null) {
-            throw new StatefulException("WebSocket session has no transport");
-        }
-        final Payload payload = checkedBody.payload();
-        if (checkedBody.binaryMessage()) {
-            return send(payload);
-        }
-        final Message outgoing = filter(payload, Builder.WEBSOCKET_WRITE);
-        checkGuard(outgoing);
-        final ByteString text = ByteString.of(materialize(outgoing.payload(), "WebSocketSession.send(WebSocketBody)"));
-        checkQueueLimit(text.size());
-        return writeNative(() -> writer.write(WebSocketFrame.text(text)), Payload.of(text));
+        final WebSocketBody checked = require(body, "WebSocket body");
+        return outboundCall("websocket-send", EntryKind.APPLICATION, () -> bodyFrame(checked));
     }
 
     /**
-     * Sends a text message.
+     * Creates a lazy text send Call.
      *
      * @param text text
-     * @return send call
+     * @return lazy send Call
      */
     public Call<Void> send(final String text) {
-        final ByteString value = validateSendText(text);
-        ensureOpened();
-        final Payload payload = Payload.of(value);
-        final Message outgoing = filter(payload, Builder.WEBSOCKET_WRITE);
-        checkGuard(outgoing);
-        final ByteString filtered = ByteString.of(materialize(outgoing.payload(), "WebSocketSession.send(String)"));
-        if (writer != null) {
-            checkQueueLimit(filtered.size());
-            return writeNative(() -> writer.write(WebSocketFrame.text(filtered)), Payload.of(filtered));
-        }
-        throw new StatefulException("WebSocket session has no transport");
+        final String checked = require(text, "WebSocket text");
+        return outboundCall("websocket-send", EntryKind.APPLICATION, () -> textFrame(checked));
     }
 
     /**
-     * Sends a binary message.
+     * Creates a lazy binary send Call.
      *
      * @param bytes binary bytes
-     * @return send call
+     * @return lazy send Call
      */
     public Call<Void> send(final ByteString bytes) {
-        final ByteString checkedBytes = require(bytes, "WebSocket binary payload");
-        ensureOpened();
-        final Payload payload = Payload.of(checkedBytes);
-        final Message outgoing = filter(payload, Builder.WEBSOCKET_WRITE);
-        checkGuard(outgoing);
-        final ByteString filtered = ByteString.of(materialize(outgoing.payload(), "WebSocketSession.send(ByteString)"));
-        if (writer != null) {
-            checkQueueLimit(filtered.size());
-            return writeNative(() -> writer.write(WebSocketFrame.binary(filtered)), Payload.of(filtered));
-        }
-        throw new StatefulException("WebSocket session has no transport");
+        final ByteString checked = require(bytes, "WebSocket binary payload");
+        return outboundCall(
+                "websocket-send",
+                EntryKind.APPLICATION,
+                () -> binaryFrame(Payload.of(ByteString.of(checked.toByteArray()))));
     }
 
     /**
-     * Sends a ping.
+     * Creates a lazy ping Call.
      *
      * @param payload ping payload
-     * @return send call
+     * @return lazy ping Call
      */
     public Call<Void> ping(final ByteString payload) {
-        final ByteString checkedPayload = require(payload, "WebSocket ping payload");
-        if (checkedPayload.size() > Builder._125) {
-            throw new ValidateException("WebSocket ping payload is too large");
-        }
-        ensureOpened();
-        final Message outgoing = filter(Payload.of(checkedPayload), Builder.WEBSOCKET_PING);
-        final ByteString filtered = ByteString.of(materialize(outgoing.payload(), "WebSocketSession.ping"));
-        if (filtered.size() > Builder._125) {
-            throw new ValidateException("WebSocket ping payload is too large");
-        }
-        final Payload body = Payload.of(filtered);
-        checkGuard(outgoing.withPayload(body));
-        if (writer != null) {
-            sentPingCount.incrementAndGet();
-            return writeNative(() -> writer.ping(filtered), body);
-        }
-        throw new StatefulException("WebSocket session has no transport");
+        final ByteString checked = require(payload, "WebSocket ping payload");
+        return outboundCall("websocket-ping", EntryKind.PING, () -> pingFrame(checked));
     }
 
     /**
-     * Closes the session normally.
+     * Starts a normal close handshake.
      *
-     * @return true when state changed
+     * @return true when this invocation moved the session to closing
      */
     @Override
     public boolean close() {
@@ -539,171 +743,894 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Closes the session.
+     * Starts a close handshake with an explicit close description.
      *
      * @param code   close code
      * @param reason close reason
-     * @return true when state changed
+     * @return true when this invocation moved the session to closing
      */
     public boolean close(final int code, final String reason) {
         final WebSocketClose close = WebSocketClose.of(code, reason);
-        if (beginClosing()) {
-            Logger.info(
-                    true,
-                    "Fabric",
-                    "WebSocket session close started: scheme={}, host={}, port={}, code={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port(),
-                    close.code());
-            RuntimeException failure = null;
-            if (writer != null) {
-                try {
-                    writer.writeClose(close.code(), close.reason());
-                } catch (final RuntimeException e) {
-                    failure = e;
-                }
-            }
-            if (reader != null && dispatcher != null && StringKit.isNotBlank(dispatchKey)) {
-                scheduleCloseTimeout();
-            } else {
-                completeClose(null);
-                try {
-                    closeNative();
-                } catch (final RuntimeException e) {
-                    if (failure == null) {
-                        failure = e;
-                    } else {
-                        failure.addSuppressed(e);
-                    }
-                }
-            }
-            if (failure != null) {
-                Logger.warn(
-                        false,
-                        "Fabric",
-                        failure,
-                        "WebSocket session close failed: scheme={}, host={}, port={}, code={}, exception={}",
-                        address.scheme(),
-                        address.host(),
-                        address.port(),
-                        close.code(),
-                        failure.getClass().getSimpleName());
-                throw failure;
-            }
-            Logger.info(
-                    false,
-                    "Fabric",
-                    "WebSocket session close requested: scheme={}, host={}, port={}, code={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port(),
-                    close.code());
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Cancels the session.
-     *
-     * @return true when state changed
-     */
-    @Override
-    public boolean cancel() {
-        final Status current = scope.state();
-        if (current == Status.CANCELLED || current == Status.CLOSED || current == Status.DONE) {
+        if (!beginClosing()) {
             return false;
         }
-        final StatefulException cancelled = new StatefulException("WebSocket session was cancelled");
         Logger.info(
                 true,
                 "Fabric",
-                "WebSocket session cancel started: scheme={}, host={}, port={}",
+                "WebSocket session close started: scheme={}, host={}, port={}, code={}",
                 address.scheme(),
                 address.host(),
-                address.port());
-        awaitingPong.set(false);
-        closeNative();
-        final boolean changed = scope.cancel(cancelled);
-        if (changed) {
-            Logger.info(
-                    false,
-                    "Fabric",
-                    "WebSocket session cancelled: scheme={}, host={}, port={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port());
+                address.port(),
+                close.code());
+        if (writer == null) {
+            terminate(Termination.CLOSE, null);
+            return true;
         }
-        return changed;
+        try {
+            enqueueClose(WebSocketFrame.close(close.code(), close.reason()));
+        } catch (final RuntimeException e) {
+            terminate(Termination.FAIL, e);
+        }
+        return true;
     }
 
+    /**
+     * Cancels this session and all active native work.
+     *
+     * @return true when this invocation selected the terminal path
+     */
+    @Override
+    public boolean cancel() {
+        return terminate(Termination.CANCEL, new CancellationException("WebSocket session was cancelled"));
+    }
+
+    /**
+     * Returns immutable session attributes.
+     *
+     * @return session attributes
+     */
     @Override
     public Map<String, Object> attributes() {
         return attributes;
     }
 
     /**
-     * Writes a native frame and exposes the completed call.
+     * Creates a lazy outbound Call.
      *
-     * @param action write action
-     * @return send call
+     * @param name    Call name
+     * @param kind    entry kind
+     * @param factory frame factory executed after Call start
+     * @return lazy outbound Call
      */
-    private Call<Void> writeNative(final Runnable action, final Payload payload) {
-        final CompletableFuture<Void> future = new CompletableFuture<>();
+    private Call<Void> outboundCall(final String name, final EntryKind kind, final Supplier<WebSocketFrame> factory) {
+        return new OutboundCall(name, kind, factory);
+    }
+
+    /**
+     * Builds a filtered binary frame after a Call starts.
+     *
+     * @param payload source payload
+     * @return binary frame
+     */
+    private WebSocketFrame binaryFrame(final Payload payload) {
+        final Message outgoing = filter(payload, Builder.WEBSOCKET_WRITE);
+        checkGuard(outgoing);
+        return WebSocketFrame.binary(materialize(outgoing.payload(), "WebSocketSession.send(Payload)"));
+    }
+
+    /**
+     * Builds a filtered body frame after a Call starts.
+     *
+     * @param body source body
+     * @return text or binary frame
+     */
+    private WebSocketFrame bodyFrame(final WebSocketBody body) {
+        final Message outgoing = filter(body.payload(), Builder.WEBSOCKET_WRITE);
+        checkGuard(outgoing);
+        final ByteString bytes = materialize(outgoing.payload(), "WebSocketSession.send(WebSocketBody)");
+        return body.binaryMessage() ? WebSocketFrame.binary(bytes) : WebSocketFrame.text(bytes);
+    }
+
+    /**
+     * Builds a filtered text frame after a Call starts.
+     *
+     * @param text source text
+     * @return text frame
+     */
+    private WebSocketFrame textFrame(final String text) {
+        final ByteString source = validateSendText(text);
+        final Message outgoing = filter(Payload.of(source), Builder.WEBSOCKET_WRITE);
+        checkGuard(outgoing);
+        return WebSocketFrame.text(materialize(outgoing.payload(), "WebSocketSession.send(String)"));
+    }
+
+    /**
+     * Builds a filtered ping frame after a Call starts.
+     *
+     * @param payload source ping payload
+     * @return ping frame
+     */
+    private WebSocketFrame pingFrame(final ByteString payload) {
+        if (payload.size() > Builder._125) {
+            throw new ValidateException("WebSocket ping payload is too large");
+        }
+        final Message outgoing = filter(Payload.of(ByteString.of(payload.toByteArray())), Builder.WEBSOCKET_PING);
+        checkGuard(outgoing);
+        final ByteString filtered = materialize(outgoing.payload(), "WebSocketSession.ping");
+        if (filtered.size() > Builder._125) {
+            throw new ValidateException("WebSocket ping payload is too large");
+        }
+        return new WebSocketFrame(Builder.WEBSOCKET_OPCODE_PING, true, filtered, true);
+    }
+
+    /**
+     * Materializes a payload without exceeding either the configured limit or the fixed message limit.
+     *
+     * @param payload   payload
+     * @param operation operation name
+     * @return immutable bytes
+     */
+    private ByteString materialize(final Payload payload, final String operation) {
+        final long declared = payload.length();
+        if (declared > MAX_MESSAGE_BYTES) {
+            throw new ValidateException("WebSocket message is too large");
+        }
+        final long limit = Math.min(materializeMaxBytes, MAX_MESSAGE_BYTES);
         try {
-            action.run();
-            future.complete(null);
-            emit(ObservationMarker.WEBSOCKET_MESSAGE, payload, null);
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "WebSocket message sent: scheme={}, host={}, port={}, bytes={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port(),
-                    payload.length());
+            return ByteString.of(Payload.materialize(payload, limit, operation));
         } catch (final RuntimeException e) {
-            future.completeExceptionally(e);
-            emit(ObservationMarker.WEBSOCKET_FAILED, payload, e);
+            throw new InternalException("Unable to materialize WebSocket payload for " + operation, e);
+        }
+    }
+
+    /**
+     * Enqueues an entry while reserving its complete wire bytes.
+     *
+     * @param entry entry
+     */
+    private void enqueue(final OutboundEntry entry) {
+        ensureWritable(entry.kind());
+        synchronized (outboundLock) {
+            if (terminalNotified.get()) {
+                throw new StatefulException("WebSocket session is terminated");
+            }
+            final long next = queuedBytes + entry.wireBytes();
+            if (next < queuedBytes || next > MAX_QUEUED_BYTES) {
+                throw new StatefulException("WebSocket write queue is full");
+            }
+            if (!entry.reserve()) {
+                throw new StatefulException("WebSocket entry was already reserved");
+            }
+            queuedBytes = next;
+            insert(entry);
+        }
+        startDrain();
+    }
+
+    /**
+     * Inserts one entry according to WebSocket application and control ordering.
+     *
+     * @param entry entry
+     */
+    private void insert(final OutboundEntry entry) {
+        if (entry.kind() == EntryKind.APPLICATION) {
+            outbound.addLast(entry);
+            return;
+        }
+        if (entry.kind() == EntryKind.CLOSE) {
+            outbound.addFirst(entry);
+            return;
+        }
+        final ArrayDeque<OutboundEntry> ordered = new ArrayDeque<>(outbound.size() + Normal._1);
+        while (!outbound.isEmpty() && outbound.peekFirst().kind() != EntryKind.APPLICATION) {
+            ordered.addLast(outbound.removeFirst());
+        }
+        ordered.addLast(entry);
+        ordered.addAll(outbound);
+        outbound.clear();
+        outbound.addAll(ordered);
+    }
+
+    /**
+     * Enqueues the single internal close entry.
+     *
+     * @param frame close frame
+     */
+    private void enqueueClose(final WebSocketFrame frame) {
+        if (!closeQueued.compareAndSet(false, true)) {
+            return;
+        }
+        try {
+            enqueue(new OutboundEntry(frame, EntryKind.CLOSE, wireBytes(frame, role.writerMask())));
+        } catch (final RuntimeException e) {
+            closeQueued.set(false);
+            throw e;
+        }
+    }
+
+    /**
+     * Enqueues an internal pong entry for a received ping.
+     *
+     * @param payload ping payload
+     */
+    private void enqueuePong(final ByteString payload) {
+        if (scope.state() != Status.OPENED) {
+            return;
+        }
+        final WebSocketFrame frame = new WebSocketFrame(Builder.WEBSOCKET_OPCODE_PONG, true, payload, true);
+        try {
+            enqueue(new OutboundEntry(frame, EntryKind.PONG, wireBytes(frame, role.writerMask())));
+        } catch (final StatefulException e) {
+            if (scope.state() == Status.OPENED && !terminalNotified.get()) {
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * Starts at most one background drain.
+     */
+    private void startDrain() {
+        if (writer == null || terminalNotified.get() || closeWritten.get() || !hasQueued()
+                || !draining.compareAndSet(false, true)) {
+            return;
+        }
+        try {
+            final DispatchHandle created = dispatcher.background(
+                    dispatchKey + ":drain",
+                    this,
+                    Activity.of("websocket-drain", this::drain, cancellation));
+            drainHandle.set(created);
+            created.future().whenComplete((ignored, cause) -> drainFinished(created, cause));
+        } catch (final RuntimeException | Error e) {
+            draining.set(false);
+            terminate(Termination.FAIL, e);
+            throw e;
+        }
+    }
+
+    /**
+     * Handles background drain completion and closes the enqueue race.
+     *
+     * @param completed completed handle
+     * @param cause     completion cause
+     */
+    private void drainFinished(final DispatchHandle completed, final Throwable cause) {
+        drainHandle.compareAndSet(completed, null);
+        draining.set(false);
+        if (cause != null && !terminalNotified.get() && !completed.cancelled()) {
+            terminate(Termination.FAIL, cause);
+            return;
+        }
+        if (!terminalNotified.get() && hasQueued()) {
+            startDrain();
+        }
+    }
+
+    /**
+     * Serially writes and flushes outbound entries.
+     */
+    private void drain() {
+        while (!terminalNotified.get()) {
+            final OutboundEntry entry = nextEntry();
+            if (entry == null) {
+                return;
+            }
+            try {
+                final long actualBytes = writer.write(entry.frame());
+                flushOutput();
+                finishReservation(entry);
+                if (!entry.succeed()) {
+                    continue;
+                }
+                emit(ObservationMarker.WEBSOCKET_MESSAGE, actualBytes, null);
+                if (entry.kind() == EntryKind.PING || entry.kind() == EntryKind.AUTOMATIC_PING) {
+                    sentPingCount.incrementAndGet();
+                    awaitingPong.set(true);
+                }
+                if (entry.kind() == EntryKind.AUTOMATIC_PING) {
+                    automaticPingPending.set(false);
+                    schedulePing();
+                }
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "WebSocket frame sent: scheme={}, host={}, port={}, opcode={}, bytes={}",
+                        address.scheme(),
+                        address.host(),
+                        address.port(),
+                        entry.frame().opcode(),
+                        actualBytes);
+                if (entry.kind() == EntryKind.CLOSE) {
+                    closeWritten.set(true);
+                    afterCloseWritten();
+                    return;
+                }
+            } catch (final RuntimeException | Error e) {
+                finishReservation(entry);
+                entry.fail(e);
+                terminate(Termination.FAIL, e);
+                if (e instanceof Error error) {
+                    throw error;
+                }
+                return;
+            } finally {
+                activeEntry.compareAndSet(entry, null);
+            }
+        }
+    }
+
+    /**
+     * Removes and activates the next queued entry.
+     *
+     * @return active entry or null
+     */
+    private OutboundEntry nextEntry() {
+        synchronized (outboundLock) {
+            OutboundEntry entry;
+            while ((entry = outbound.pollFirst()) != null) {
+                if (entry.activate()) {
+                    activeEntry.set(entry);
+                    return entry;
+                }
+                releaseReservation(entry);
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Flushes the directly owned output after one complete entry.
+     */
+    private void flushOutput() {
+        if (output == null) {
+            return;
+        }
+        try {
+            output.flush();
+        } catch (final IOException e) {
+            throw new SocketException("Unable to flush WebSocket entry", e);
+        }
+    }
+
+    /**
+     * Releases the active entry reservation before completing its Call.
+     *
+     * @param entry active entry
+     */
+    private void finishReservation(final OutboundEntry entry) {
+        releaseReservation(entry);
+    }
+
+    /**
+     * Releases complete reserved wire bytes exactly once.
+     *
+     * @param entry entry
+     */
+    private void releaseReservation(final OutboundEntry entry) {
+        synchronized (outboundLock) {
+            if (!entry.release()) {
+                return;
+            }
+            queuedBytes -= entry.wireBytes();
+            if (queuedBytes < Normal.LONG_ZERO) {
+                queuedBytes = Normal.LONG_ZERO;
+            }
+        }
+    }
+
+    /**
+     * Cancels one outbound entry according to whether it is queued or active.
+     *
+     * @param entry entry
+     */
+    private void cancelEntry(final OutboundEntry entry) {
+        if (entry == null || entry.terminal()) {
+            return;
+        }
+        if (activeEntry.get() == entry) {
+            terminate(Termination.CANCEL, new CancellationException("Active WebSocket entry was cancelled"));
+            return;
+        }
+        synchronized (outboundLock) {
+            if (outbound.remove(entry)) {
+                releaseReservation(entry);
+                entry.cancel(new CancellationException("Queued WebSocket entry was cancelled"));
+            }
+        }
+    }
+
+    /**
+     * Waits for an entry using the shared thread utility.
+     *
+     * @param entry entry
+     */
+    private void awaitEntry(final OutboundEntry entry) {
+        while (!entry.terminal()) {
+            if (!ThreadKit.sleep(ENTRY_WAIT_MILLIS)) {
+                throw new CancellationException("Interrupted while waiting for WebSocket entry");
+            }
+        }
+        final Throwable cause = entry.cause();
+        if (entry.state() == EntryState.CANCELLED) {
+            final CancellationException cancelled = new CancellationException("WebSocket entry was cancelled");
+            if (cause != null) {
+                cancelled.initCause(cause);
+            }
+            throw cancelled;
+        }
+        if (entry.state() == EntryState.FAILED) {
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            throw new InternalException("WebSocket entry failed", cause);
+        }
+    }
+
+    /**
+     * Returns whether at least one entry is queued.
+     *
+     * @return true when queued
+     */
+    private boolean hasQueued() {
+        synchronized (outboundLock) {
+            return !outbound.isEmpty();
+        }
+    }
+
+    /**
+     * Starts the single background reader loop.
+     */
+    private void startReader() {
+        final DispatchHandle created = dispatcher.background(
+                dispatchKey + ":reader",
+                this,
+                Activity.of(Builder.WEBSOCKET_READ, this::readFrames, cancellation));
+        if (!readerHandle.compareAndSet(null, created)) {
+            created.cancel();
+            throw new StatefulException("WebSocket reader can only be started once");
+        }
+        created.future().whenComplete((ignored, cause) -> readerHandle.compareAndSet(created, null));
+    }
+
+    /**
+     * Reads frames, aggregates data messages, and handles control frames.
+     */
+    private void readFrames() {
+        Buffer fragments = null;
+        int fragmentOpcode = Normal.__1;
+        long fragmentBytes = Normal.LONG_ZERO;
+        try {
+            while (!terminalNotified.get() && !cancellation.cancelled()) {
+                final WebSocketFrame frame = reader.next();
+                emit(ObservationMarker.WEBSOCKET_MESSAGE, wireBytes(frame, role.readerExpectMasked()), null);
+                final int opcode = frame.opcode();
+                if (opcode == Normal._8) {
+                    peerClose(frame);
+                    return;
+                }
+                if (opcode == Builder.WEBSOCKET_OPCODE_PING) {
+                    receivedPingCount.incrementAndGet();
+                    enqueuePong(frame.payload());
+                    continue;
+                }
+                if (opcode == Builder.WEBSOCKET_OPCODE_PONG) {
+                    receivedPongCount.incrementAndGet();
+                    awaitingPong.set(false);
+                    continue;
+                }
+                if (opcode == Normal._1 || opcode == Builder.WEBSOCKET_OPCODE_BINARY) {
+                    if (fragments != null) {
+                        throw new ProtocolException("WebSocket fragmented message is already open");
+                    }
+                    if (frame.fin()) {
+                        deliver(opcode, frame.payload());
+                    } else {
+                        fragments = new Buffer();
+                        fragmentOpcode = opcode;
+                        fragmentBytes = appendFragment(fragments, Normal.LONG_ZERO, frame.payload());
+                    }
+                    continue;
+                }
+                if (opcode != Normal._0 || fragments == null) {
+                    throw new ProtocolException("WebSocket continuation has no initial frame");
+                }
+                fragmentBytes = appendFragment(fragments, fragmentBytes, frame.payload());
+                if (frame.fin()) {
+                    deliver(fragmentOpcode, fragments.readByteString());
+                    fragments = null;
+                    fragmentOpcode = Normal.__1;
+                    fragmentBytes = Normal.LONG_ZERO;
+                }
+            }
+        } catch (final CancellationException e) {
+            if (!terminalNotified.get()) {
+                terminate(Termination.CANCEL, e);
+            }
+        } catch (final RuntimeException | Error e) {
+            if (!terminalNotified.get()) {
+                readerFailure(e);
+            }
+            if (e instanceof Error error) {
+                throw error;
+            }
+        }
+    }
+
+    /**
+     * Appends a fragment while enforcing the complete aggregate limit.
+     *
+     * @param aggregate aggregate buffer
+     * @param current   current aggregate bytes
+     * @param fragment  fragment bytes
+     * @return updated aggregate bytes
+     */
+    private long appendFragment(final Buffer aggregate, final long current, final ByteString fragment) {
+        final long next = current + fragment.size();
+        if (next < current || next > MAX_MESSAGE_BYTES) {
+            throw new ProtocolException("WebSocket aggregated message is too large");
+        }
+        aggregate.write(fragment);
+        return next;
+    }
+
+    /**
+     * Delivers one complete data message through the inbound filter and guard.
+     *
+     * @param opcode  initial data opcode
+     * @param payload complete payload
+     */
+    private void deliver(final int opcode, final ByteString payload) {
+        if (payload.size() > MAX_MESSAGE_BYTES) {
+            throw new ProtocolException("WebSocket aggregated message is too large");
+        }
+        final Payload source;
+        if (opcode == Normal._1) {
+            source = Payload.of(decodeUtf8(payload), StandardCharsets.UTF_8);
+        } else if (opcode == Builder.WEBSOCKET_OPCODE_BINARY) {
+            source = Payload.of(payload);
+        } else {
+            throw new ProtocolException("WebSocket message opcode is invalid");
+        }
+        final Message received = filter(source, Builder.WEBSOCKET_READ);
+        checkGuard(received);
+        handler.message(this, received);
+        Logger.debug(
+                false,
+                "Fabric",
+                "WebSocket message received: scheme={}, host={}, port={}, bytes={}",
+                address.scheme(),
+                address.host(),
+                address.port(),
+                payload.size());
+    }
+
+    /**
+     * Handles a peer close and enqueues the single direct close reply when needed.
+     *
+     * @param frame peer close frame
+     */
+    private void peerClose(final WebSocketFrame frame) {
+        final WebSocketClose close = parseClose(frame);
+        peerCloseReceived.set(true);
+        beginClosing();
+        Logger.info(
+                true,
+                "Fabric",
+                "WebSocket peer close received: scheme={}, host={}, port={}, code={}",
+                address.scheme(),
+                address.host(),
+                address.port(),
+                close.code());
+        if (closeWritten.get()) {
+            terminate(Termination.CLOSE, null);
+            return;
+        }
+        try {
+            enqueueClose(new WebSocketFrame(Normal._8, true, frame.payload(), true));
+        } catch (final RuntimeException e) {
+            terminate(Termination.FAIL, e);
+        }
+    }
+
+    /**
+     * Maps a reader failure to a best-effort protocol close followed by one failure notification.
+     *
+     * @param cause reader failure
+     */
+    private void readerFailure(final Throwable cause) {
+        failureAfterClose.compareAndSet(null, cause);
+        beginClosing();
+        if (writer == null || closeWritten.get()) {
+            terminate(Termination.FAIL, cause);
+            return;
+        }
+        final int code = failureCloseCode(cause);
+        final String reason = switch (code) {
+            case CLOSE_INVALID_PAYLOAD -> "invalid payload";
+            case CLOSE_MESSAGE_TOO_LARGE -> "message too large";
+            case CLOSE_INTERNAL_ERROR -> "internal error";
+            default -> "protocol error";
+        };
+        try {
+            enqueueClose(WebSocketFrame.close(code, reason));
+        } catch (final RuntimeException e) {
+            cause.addSuppressed(e);
+            terminate(Termination.FAIL, cause);
+        }
+    }
+
+    /**
+     * Completes the terminal action selected by a flushed close entry.
+     */
+    private void afterCloseWritten() {
+        final Throwable failure = failureAfterClose.get();
+        if (failure != null) {
+            terminate(Termination.FAIL, failure);
+        } else if (peerCloseReceived.get() || reader == null) {
+            terminate(Termination.CLOSE, null);
+        } else {
+            scheduleCloseTimeout();
+        }
+    }
+
+    /**
+     * Schedules forced cancellation after the close handshake deadline.
+     */
+    private void scheduleCloseTimeout() {
+        if (dispatcher == null || terminalNotified.get()) {
+            return;
+        }
+        final DispatchHandle next = dispatcher
+                .schedule(dispatchKey + ":close-timeout", closeTimeout, Activity.of("websocket-close-timeout", () -> {
+                    if (!terminalNotified.get() && scope.state() == Status.CLOSING) {
+                        terminate(Termination.CANCEL, new TimeoutException("WebSocket close handshake timed out"));
+                    }
+                }, cancellation));
+        final DispatchHandle previous = closeTimeoutHandle.getAndSet(next);
+        if (previous != null) {
+            previous.cancel();
+        }
+    }
+
+    /**
+     * Schedules the next automatic ping tick.
+     */
+    private void schedulePing() {
+        if (pingInterval.isZero() || writer == null || dispatcher == null || terminalNotified.get()) {
+            return;
+        }
+        final DispatchHandle next = dispatcher.schedule(
+                dispatchKey + ":ping",
+                pingInterval,
+                Activity.of("websocket-ping", this::automaticPing, cancellation));
+        final DispatchHandle previous = pingHandle.getAndSet(next);
+        if (previous != null && previous != next) {
+            previous.cancel();
+        }
+    }
+
+    /**
+     * Enqueues one internal automatic ping or fails an unanswered ping deadline.
+     */
+    private void automaticPing() {
+        pingHandle.set(null);
+        if (terminalNotified.get() || scope.state() != Status.OPENED) {
+            return;
+        }
+        if (awaitingPong.get()) {
+            terminate(Termination.FAIL, new TimeoutException("WebSocket pong timeout"));
+            return;
+        }
+        if (!automaticPingPending.compareAndSet(false, true)) {
+            schedulePing();
+            return;
+        }
+        try {
+            final WebSocketFrame frame = new WebSocketFrame(Builder.WEBSOCKET_OPCODE_PING, true, ByteString.EMPTY,
+                    true);
+            enqueue(new OutboundEntry(frame, EntryKind.AUTOMATIC_PING, wireBytes(frame, role.writerMask())));
+        } catch (final RuntimeException e) {
+            automaticPingPending.set(false);
+            terminate(Termination.FAIL, e);
+        }
+    }
+
+    /**
+     * Selects and executes the unique session terminal path.
+     *
+     * @param termination terminal kind
+     * @param cause       optional cause
+     * @return true when this invocation selected the terminal path
+     */
+    private boolean terminate(final Termination termination, final Throwable cause) {
+        if (!terminalNotified.compareAndSet(false, true)) {
+            return false;
+        }
+        final Throwable terminalCause = cause == null && termination != Termination.CLOSE
+                ? new StatefulException("WebSocket session terminated")
+                : cause;
+        final Runnable unregister = cancellationRegistration.getAndSet(WebSocketSession::noop);
+        unregister.run();
+        if (!cancellation.cancelled()) {
+            cancellation.cancel(
+                    terminalCause == null ? new CancellationException("WebSocket session closed") : terminalCause);
+        }
+        awaitingPong.set(false);
+        automaticPingPending.set(false);
+        cancelHandle(closeTimeoutHandle);
+        cancelHandle(pingHandle);
+        cancelHandle(readerHandle);
+        cancelHandle(drainHandle);
+        completePending(termination, terminalCause);
+        final RuntimeException cleanupFailure = closeNativeResources();
+        final Throwable notifiedCause = combine(terminalCause, cleanupFailure);
+        switch (termination) {
+            case CLOSE -> scope.close(this);
+            case CANCEL -> scope.cancel(
+                    notifiedCause == null ? new CancellationException("WebSocket session cancelled") : notifiedCause);
+            case FAIL -> scope
+                    .fail(notifiedCause == null ? new StatefulException("WebSocket session failed") : notifiedCause);
+        }
+        notifyHandler(termination, notifiedCause);
+        Logger.info(
+                false,
+                "Fabric",
+                "WebSocket session terminated: scheme={}, host={}, port={}, state={}",
+                address.scheme(),
+                address.host(),
+                address.port(),
+                scope.state());
+        return true;
+    }
+
+    /**
+     * Completes all active and queued entries exactly once during terminal cleanup.
+     *
+     * @param termination terminal kind
+     * @param cause       terminal cause
+     */
+    private void completePending(final Termination termination, final Throwable cause) {
+        final Throwable failure = cause == null ? new StatefulException("WebSocket session closed") : cause;
+        synchronized (outboundLock) {
+            OutboundEntry entry;
+            while ((entry = outbound.pollFirst()) != null) {
+                releaseReservation(entry);
+                completeEntry(entry, termination, failure);
+            }
+            final OutboundEntry active = activeEntry.getAndSet(null);
+            if (active != null) {
+                releaseReservation(active);
+                completeEntry(active, termination, failure);
+            }
+        }
+    }
+
+    /**
+     * Completes one entry according to the selected terminal kind.
+     *
+     * @param entry       entry
+     * @param termination terminal kind
+     * @param cause       completion cause
+     */
+    private static void completeEntry(final OutboundEntry entry, final Termination termination, final Throwable cause) {
+        if (termination == Termination.CANCEL) {
+            entry.cancel(cause);
+        } else {
+            entry.fail(cause);
+        }
+    }
+
+    /**
+     * Closes all native resources once and returns the first cleanup failure.
+     *
+     * @return first cleanup failure or null
+     */
+    private RuntimeException closeNativeResources() {
+        if (!resourcesClosed.compareAndSet(false, true)) {
+            return null;
+        }
+        RuntimeException failure = null;
+        failure = closeLease(lease, failure);
+        failure = closeResource(owner, failure, "WebSocket owner");
+        if (ownsDispatcher) {
+            failure = closeResource(dispatcher, failure, "WebSocket dispatcher");
+        }
+        return failure;
+    }
+
+    /**
+     * Closes one resource while retaining the first failure.
+     *
+     * @param resource resource
+     * @param failure  current first failure
+     * @param name     resource name
+     * @return first failure
+     */
+    private static RuntimeException closeResource(
+            final AutoCloseable resource,
+            final RuntimeException failure,
+            final String name) {
+        RuntimeException current = failure;
+        if (resource == null) {
+            return current;
+        }
+        try {
+            resource.close();
+        } catch (final Exception e) {
+            final RuntimeException next = e instanceof RuntimeException runtime ? runtime
+                    : new InternalException("Unable to close " + name, e);
+            if (current == null) {
+                current = next;
+            } else if (current != next) {
+                current.addSuppressed(next);
+            }
+        }
+        return current;
+    }
+
+    /**
+     * Closes a connection lease while retaining the first cleanup failure.
+     *
+     * @param resource connection lease
+     * @param failure  current first failure
+     * @return first failure
+     */
+    private static RuntimeException closeLease(final ConnectionLease resource, final RuntimeException failure) {
+        RuntimeException current = failure;
+        if (resource == null) {
+            return current;
+        }
+        try {
+            resource.close();
+        } catch (final RuntimeException e) {
+            if (current == null) {
+                current = e;
+            } else if (current != e) {
+                current.addSuppressed(e);
+            }
+        }
+        return current;
+    }
+
+    /**
+     * Cancels and clears one dispatch handle reference.
+     *
+     * @param reference handle reference
+     */
+    private static void cancelHandle(final AtomicReference<DispatchHandle> reference) {
+        final DispatchHandle handle = reference.getAndSet(null);
+        if (handle != null) {
+            handle.cancel();
+        }
+    }
+
+    /**
+     * Notifies the user handler exactly once for the selected terminal kind.
+     *
+     * @param termination terminal kind
+     * @param cause       optional cause
+     */
+    private void notifyHandler(final Termination termination, final Throwable cause) {
+        if (handler == null) {
+            return;
+        }
+        try {
+            if (termination == Termination.CLOSE) {
+                handler.closed(this);
+            } else {
+                handler.failure(this, cause == null ? new StatefulException("WebSocket session terminated") : cause);
+            }
+        } catch (final RuntimeException e) {
             Logger.warn(
                     false,
                     "Fabric",
                     e,
-                    "WebSocket message send failed: scheme={}, host={}, port={}, bytes={}, exception={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port(),
-                    payload.length(),
+                    "WebSocket terminal handler failed: exception={}",
                     e.getClass().getSimpleName());
-            throw e;
-        }
-        return new SessionCall(future, future);
-    }
-
-    /**
-     * Writes a binary payload through the native WebSocket writer.
-     *
-     * @param payload payload
-     * @param length  payload length
-     */
-    private void writeBinary(final Payload payload, final long length) {
-        try (Source source = payload.source()) {
-            writer.binary(source, length);
-        } catch (final java.io.IOException e) {
-            throw new InternalException("Unable to write WebSocket binary payload", e);
-        }
-    }
-
-    /**
-     * Checks the optional guard.
-     *
-     * @param payload payload
-     * @param tag     direction tag
-     */
-    private void checkGuard(final Message message) {
-        if (guard != null) {
-            guard.check(message).throwIfRejected();
         }
     }
 
@@ -720,71 +1647,164 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Emits a WebSocket event.
+     * Applies the optional guard.
      *
-     * @param marker  marker
-     * @param payload payload
-     * @param cause   failure cause
+     * @param message message
      */
-    private void emit(final ObservationMarker marker, final Payload payload, final Throwable cause) {
-        scope.emit(marker, cause);
-    }
-
-    /**
-     * Enforces the outbound queue limit.
-     *
-     * @param length message length
-     */
-    private void checkQueueLimit(final long length) {
-        if (length < Normal.LONG_ZERO) {
-            return;
-        }
-        if (length > Builder.BYTES_16_MIB || queueSize() + length > Builder.BYTES_16_MIB) {
-            if (opened()) {
-                close(Builder._1001, Builder.WEBSOCKET_QUEUE_FULL_REASON);
-            }
-            throw new StatefulException("WebSocket write queue is full");
+    private void checkGuard(final Message message) {
+        if (guard != null) {
+            guard.check(message).throwIfRejected();
         }
     }
 
     /**
-     * Schedules cancel after a graceful close timeout.
-     */
-    private void scheduleCloseTimeout() {
-        final DispatchHandle next = dispatcher.schedule(
-                dispatchKey,
-                Builder.DURATION_60_SECONDS,
-                Activity.of(Builder.WEBSOCKET_ACTIVITY_CLOSE_TIMEOUT, () -> {
-                    if (scope.state() == Status.CLOSING) {
-                        cancel();
-                    }
-                }));
-        final DispatchHandle previous = closeTimeoutHandle.getAndSet(next);
-        if (previous != null) {
-            previous.cancel();
-        }
-    }
-
-    /**
-     * Materializes a payload through the configured session limit.
+     * Emits a WebSocket event with the complete physical wire byte count.
      *
-     * @param payload   payload
-     * @param operation operation name
-     * @return payload bytes
+     * @param marker marker
+     * @param bytes  complete wire bytes
+     * @param cause  optional cause
      */
-    private byte[] materialize(final Payload payload, final String operation) {
+    private void emit(final ObservationMarker marker, final long bytes, final Throwable cause) {
+        trafficBytes.set(bytes);
         try {
-            return Payload.materialize(payload, materializeMaxBytes, operation);
-        } catch (final RuntimeException e) {
-            throw new InternalException("Unable to materialize WebSocket payload for " + operation, e);
+            scope.emit(marker, cause);
+        } finally {
+            trafficBytes.remove();
         }
     }
 
     /**
-     * Validates text for send.
+     * Adds complete WebSocket wire bytes while preserving lifecycle event metadata.
+     *
+     * @param event lifecycle event
+     * @return event enriched with wire bytes when applicable
+     */
+    private FabricEvent withTrafficBytes(final FabricEvent event) {
+        final Long bytes = trafficBytes.get();
+        if (bytes == null || event.marker() != ObservationMarker.WEBSOCKET_MESSAGE) {
+            return event;
+        }
+        return new FabricEvent(event.marker(), event.time(), event.tags().with(Builder.TAG_BYTES, Long.toString(bytes)),
+                event.cause());
+    }
+
+    /**
+     * Ensures an entry is legal for the current session state.
+     *
+     * @param kind entry kind
+     */
+    private void ensureWritable(final EntryKind kind) {
+        if (writer == null) {
+            throw new StatefulException("WebSocket session has no transport");
+        }
+        if (terminalNotified.get()) {
+            throw new StatefulException("WebSocket session is terminated");
+        }
+        if (kind != EntryKind.CLOSE && scope.state() != Status.OPENED) {
+            throw new StatefulException("WebSocket session is not open");
+        }
+        cancellation.throwIfCancelled();
+    }
+
+    /**
+     * Moves the session to closing when legal.
+     *
+     * @return true when state changed
+     */
+    private boolean beginClosing() {
+        return !terminalNotified.get() && scope.closing();
+    }
+
+    /**
+     * Calculates complete frame wire bytes including header and optional mask.
+     *
+     * @param frame  frame
+     * @param masked mask flag
+     * @return complete wire bytes
+     */
+    private static long wireBytes(final WebSocketFrame frame, final boolean masked) {
+        final long payloadBytes = frame.payload().size();
+        final long lengthBytes = payloadBytes <= Builder._125 ? Normal.LONG_ZERO
+                : payloadBytes <= Normal._65535 ? Short.BYTES : Long.BYTES;
+        return Normal._2 + lengthBytes + (masked ? Normal._4 : Normal._0) + payloadBytes;
+    }
+
+    /**
+     * Parses one already validated close frame.
+     *
+     * @param frame close frame
+     * @return close description
+     */
+    private static WebSocketClose parseClose(final WebSocketFrame frame) {
+        final byte[] payload = frame.payload().toByteArray();
+        if (payload.length == Normal._0) {
+            return WebSocketClose.of(Builder._1000, Normal.EMPTY);
+        }
+        if (payload.length == Normal._1) {
+            throw new ProtocolException("Invalid WebSocket close payload");
+        }
+        final int code = (payload[Normal._0] & 0xFF) << Byte.SIZE | payload[Normal._1] & 0xFF;
+        final String reason = decodeUtf8(payload, Short.BYTES, payload.length - Short.BYTES);
+        try {
+            return WebSocketClose.of(code, reason);
+        } catch (final ValidateException e) {
+            throw new ProtocolException("Invalid WebSocket close frame", e);
+        }
+    }
+
+    /**
+     * Strictly decodes complete text message bytes.
+     *
+     * @param value bytes
+     * @return decoded text
+     */
+    private static String decodeUtf8(final ByteString value) {
+        return decodeUtf8(value.toByteArray(), Normal._0, value.size());
+    }
+
+    /**
+     * Strictly decodes a UTF-8 byte range.
+     *
+     * @param value  bytes
+     * @param offset range offset
+     * @param length range length
+     * @return decoded text
+     */
+    private static String decodeUtf8(final byte[] value, final int offset, final int length) {
+        try {
+            return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(value, offset, length))
+                    .toString();
+        } catch (final CharacterCodingException e) {
+            throw new ValidateException("WebSocket text must be valid UTF-8", e);
+        }
+    }
+
+    /**
+     * Selects a close code for a reader failure.
+     *
+     * @param cause failure
+     * @return close code
+     */
+    private static int failureCloseCode(final Throwable cause) {
+        final String message = cause.getMessage() == null ? Normal.EMPTY : cause.getMessage().toLowerCase(Locale.ROOT);
+        if (message.contains("too large") || message.contains("size")) {
+            return CLOSE_MESSAGE_TOO_LARGE;
+        }
+        if (message.contains("utf-8")) {
+            return CLOSE_INVALID_PAYLOAD;
+        }
+        if (cause instanceof ProtocolException || cause instanceof ValidateException) {
+            return CLOSE_PROTOCOL_ERROR;
+        }
+        return CLOSE_INTERNAL_ERROR;
+    }
+
+    /**
+     * Validates text accepted by the String send overload.
      *
      * @param text text
-     * @return text
+     * @return encoded text
      */
     private static ByteString validateSendText(final String text) {
         if (StringKit.isBlank(text) || StringKit.containsAny(text, Symbol.C_CR, Symbol.C_LF)) {
@@ -794,19 +1814,46 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Validates a ping interval.
+     * Validates a non-negative duration.
      *
-     * @param interval interval
-     * @return interval
+     * @param duration duration
+     * @param name     field name
+     * @return validated duration
      */
-    private static Duration validatePing(final Duration interval) {
-        final Duration checked = Assert.notNull(
-                interval,
-                () -> new ValidateException("WebSocket ping interval must be non-null and non-negative"));
-        Assert.isFalse(
-                checked.isNegative(),
-                () -> new ValidateException("WebSocket ping interval must be non-null and non-negative"));
+    private static Duration validateDuration(final Duration duration, final String name) {
+        final Duration checked = require(duration, name);
+        if (checked.isNegative()) {
+            throw new ValidateException(name + " must not be negative");
+        }
         return checked;
+    }
+
+    /**
+     * Validates a dispatch key only for sessions with native transport.
+     *
+     * @param value    dispatch key
+     * @param required whether a key is required
+     * @return validated key or null
+     */
+    private static String validateDispatchKey(final String value, final boolean required) {
+        if (!required && value == null) {
+            return null;
+        }
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("WebSocket dispatch key must be non-blank and single-line");
+        }
+        return value.trim();
+    }
+
+    /**
+     * Creates a compatibility dispatch key.
+     *
+     * @param address session address
+     * @return dispatch key
+     */
+    private static String defaultDispatchKey(final Address address) {
+        final Address checked = require(address, "WebSocket address");
+        return "websocket:" + checked.host() + Symbol.COLON + checked.port();
     }
 
     /**
@@ -820,7 +1867,7 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Copies session attributes.
+     * Copies session attributes and installs the session observer.
      *
      * @param source   source attributes
      * @param observer observer
@@ -835,324 +1882,32 @@ public final class WebSocketSession implements Session {
                 }
             });
         }
-        result.putIfAbsent(Builder.ATTRIBUTE_OBSERVER, EventObserver.safe(observer));
+        result.put(Builder.ATTRIBUTE_OBSERVER, EventObserver.safe(observer));
         return Map.copyOf(result);
     }
 
     /**
-     * Ensures the session is open.
-     */
-    private void ensureOpened() {
-        if (!opened()) {
-            throw new StatefulException("WebSocket session is not open");
-        }
-    }
-
-    /**
-     * Starts the native reader activity.
+     * Combines a terminal cause with an optional cleanup failure.
      *
-     * @param handler     handler
-     * @param dispatcher  dispatcher
-     * @param dispatchKey dispatch key
-     * @return dispatch handle
+     * @param cause   terminal cause
+     * @param cleanup cleanup failure
+     * @return combined cause
      */
-    private DispatchHandle startReader(final Handler handler, final Dispatcher dispatcher, final String dispatchKey) {
-        if (StringKit.isBlank(dispatchKey) || StringKit.containsAny(dispatchKey, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("WebSocket dispatch key must be non-blank and single-line");
+    private static Throwable combine(final Throwable cause, final RuntimeException cleanup) {
+        if (cause == null) {
+            return cleanup;
         }
-        final Activity activity = Activity.of(Builder.WEBSOCKET_READ, () -> {
-            final AtomicBoolean delivered = new AtomicBoolean();
-            try {
-                reader.readLoop(WebSocketSession.this, new Handler() {
-
-                    /**
-                     * Filters and forwards an inbound WebSocket message.
-                     *
-                     * @param session session
-                     * @param message message
-                     */
-                    @Override
-                    public void message(final Session session, final org.miaixz.bus.fabric.Message message) {
-                        delivered.set(true);
-                        final Message received = filter(message.payload(), Builder.WEBSOCKET_READ);
-                        checkGuard(received);
-                        emit(ObservationMarker.WEBSOCKET_MESSAGE, received.payload(), null);
-                        Logger.debug(
-                                false,
-                                "Fabric",
-                                "WebSocket message received: scheme={}, host={}, port={}, bytes={}",
-                                address.scheme(),
-                                address.host(),
-                                address.port(),
-                                received.payload().length());
-                        handler.message(session, received);
-                    }
-
-                    /**
-                     * Forwards the reader close callback to the user handler.
-                     *
-                     * @param session session
-                     */
-                    @Override
-                    public void closed(final Session session) {
-                        handler.closed(session);
-                    }
-
-                    /**
-                     * Forwards the reader failure callback to the user handler.
-                     *
-                     * @param session session
-                     * @param cause   failure cause
-                     */
-                    @Override
-                    public void failure(final Session session, final Throwable cause) {
-                        handler.failure(session, cause);
-                    }
-                }, new WebSocketReader.Control() {
-
-                    /**
-                     * Handles a ping control frame and writes the matching pong when open.
-                     *
-                     * @param session session
-                     * @param payload ping payload
-                     */
-                    @Override
-                    public void ping(final Session session, final ByteString payload) {
-                        receivedPingCount.incrementAndGet();
-                        Logger.debug(
-                                false,
-                                "Fabric",
-                                "WebSocket ping received: scheme={}, host={}, port={}, bytes={}",
-                                address.scheme(),
-                                address.host(),
-                                address.port(),
-                                payload.size());
-                        if (writer != null && opened()) {
-                            writer.pong(payload);
-                        }
-                    }
-
-                    /**
-                     * Handles a pong control frame and clears pending ping state.
-                     *
-                     * @param session session
-                     * @param payload pong payload
-                     */
-                    @Override
-                    public void pong(final Session session, final ByteString payload) {
-                        receivedPongCount.incrementAndGet();
-                        awaitingPong.set(false);
-                        Logger.debug(
-                                false,
-                                "Fabric",
-                                "WebSocket pong received: scheme={}, host={}, port={}, bytes={}",
-                                address.scheme(),
-                                address.host(),
-                                address.port(),
-                                payload.size());
-                    }
-
-                    /**
-                     * Handles a peer close control frame.
-                     *
-                     * @param session session
-                     * @param close   close frame
-                     */
-                    @Override
-                    public void close(final Session session, final WebSocketClose close) {
-                        closeFromPeer(close);
-                    }
-
-                });
-                completeClose(handler);
-            } catch (final RuntimeException e) {
-                if (!delivered.get() && !scope.state().terminal()) {
-                    scope.fail(e);
-                    emit(ObservationMarker.WEBSOCKET_FAILED, Payload.empty(), e);
-                    handler.failure(WebSocketSession.this, e);
-                }
-            } finally {
-                closeNative();
-            }
-        });
-        return dispatcher.enqueue(dispatchKey, activity);
+        if (cleanup != null && cleanup != cause) {
+            cause.addSuppressed(cleanup);
+        }
+        return cause;
     }
 
     /**
-     * Starts automatic ping scheduling.
-     *
-     * @param interval    ping interval
-     * @param dispatcher  runtime dispatcher
-     * @param dispatchKey dispatch key
-     * @return dispatch handle or null
+     * No-operation callback used as an idempotent cancellation-registration sentinel.
      */
-    private DispatchHandle startPing(final Duration interval, final Dispatcher dispatcher, final String dispatchKey) {
-        if (interval.isZero() || writer == null || !opened()) {
-            return null;
-        }
-        if (dispatcher == null) {
-            throw new ValidateException("Dispatcher must not be null when WebSocket ping is enabled");
-        }
-        return dispatcher.schedule(dispatchKey, interval, Activity.of(Builder.WEBSOCKET_PING, () -> {
-            scheduledPing();
-            if (opened()) {
-                final DispatchHandle current = pingHandle.get();
-                if (current != null) {
-                    final DispatchHandle next = startPing(interval, dispatcher, dispatchKey);
-                    if (!pingHandle.compareAndSet(current, next) && next != null) {
-                        next.cancel();
-                    }
-                }
-            }
-        }));
-    }
-
-    /**
-     * Sends a scheduled ping.
-     */
-    private void scheduledPing() {
-        if (!opened()) {
-            return;
-        }
-        try {
-            if (!awaitingPong.compareAndSet(false, true)) {
-                final TimeoutException timeout = new TimeoutException("WebSocket pong timeout");
-                scope.fail(timeout);
-                emit(ObservationMarker.WEBSOCKET_FAILED, Payload.empty(), timeout);
-                Logger.debug(
-                        false,
-                        "Fabric",
-                        "WebSocket scheduled ping timed out: scheme={}, host={}, port={}",
-                        address.scheme(),
-                        address.host(),
-                        address.port());
-                closeNative();
-                return;
-            }
-            Logger.debug(
-                    true,
-                    "Fabric",
-                    "WebSocket scheduled ping started: scheme={}, host={}, port={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port());
-            ping(ByteString.EMPTY);
-        } catch (final RuntimeException e) {
-            awaitingPong.set(false);
-            if (!scope.state().terminal()) {
-                scope.fail(e);
-                emit(ObservationMarker.WEBSOCKET_FAILED, Payload.empty(), e);
-            }
-            closeNative();
-        }
-    }
-
-    /**
-     * Closes native resources.
-     */
-    private void closeNative() {
-        RuntimeException failure = null;
-        awaitingPong.set(false);
-        final DispatchHandle ping = pingHandle.getAndSet(null);
-        if (ping != null) {
-            ping.cancel();
-        }
-        final DispatchHandle closeTimeout = closeTimeoutHandle.getAndSet(null);
-        if (closeTimeout != null) {
-            closeTimeout.cancel();
-        }
-        final DispatchHandle handle = readerHandle.getAndSet(null);
-        if (handle != null) {
-            handle.cancel();
-        }
-        if (reader != null) {
-            try {
-                reader.close();
-            } catch (final RuntimeException e) {
-                failure = e;
-            }
-        }
-        if (writer != null) {
-            try {
-                writer.close();
-            } catch (final RuntimeException e) {
-                failure = failure == null ? e : failure;
-            }
-        }
-        if (lease != null) {
-            try {
-                lease.close();
-            } catch (final RuntimeException e) {
-                failure = failure == null ? e : failure;
-            }
-        }
-        if (owner != null) {
-            try {
-                owner.close();
-            } catch (final Exception e) {
-                final RuntimeException runtime = e instanceof RuntimeException current ? current
-                        : new InternalException("Unable to close WebSocket owner", e);
-                failure = failure == null ? runtime : failure;
-            }
-        }
-        if (failure != null) {
-            throw failure;
-        }
-    }
-
-    /**
-     * Begins a close transition.
-     *
-     * @return true when this caller owns the close transition
-     */
-    private boolean beginClosing() {
-        final Status current = scope.state();
-        if (current == Status.CLOSING || current.terminal()) {
-            return false;
-        }
-        return scope.closing();
-    }
-
-    /**
-     * Replies to a peer close frame.
-     *
-     * @param close peer close description
-     */
-    private void closeFromPeer(final WebSocketClose close) {
-        Logger.info(
-                true,
-                "Fabric",
-                "WebSocket peer close received: scheme={}, host={}, port={}, code={}",
-                address.scheme(),
-                address.host(),
-                address.port(),
-                close.code());
-        if (beginClosing() && writer != null) {
-            writer.writeClose(close.code(), close.reason());
-        }
-        completeClose(null);
-        closeNative();
-    }
-
-    /**
-     * Completes close state and notifies observers once.
-     *
-     * @param handler optional session handler
-     */
-    private void completeClose(final Handler handler) {
-        awaitingPong.set(false);
-        if (scope.close(this) && closeNotified.compareAndSet(false, true)) {
-            if (handler != null) {
-                handler.closed(this);
-            }
-            Logger.info(
-                    false,
-                    "Fabric",
-                    "WebSocket session closed: scheme={}, host={}, port={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port());
-        }
+    private static void noop() {
+        // No operation.
     }
 
     /**
@@ -1168,163 +1923,351 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Future-backed send call.
+     * Lazy outbound Call that links Call cancellation to its owned queue entry.
      */
-    private static final class SessionCall implements Call<Void> {
+    private final class OutboundCall extends MonoCall<Void> {
 
         /**
-         * Result future.
+         * Outbound entry kind.
          */
-        private final CompletableFuture<Void> future;
+        private final EntryKind kind;
 
         /**
-         * Source future.
+         * Frame factory run only after Call start.
          */
-        private final CompletableFuture<?> source;
+        private final Supplier<WebSocketFrame> factory;
 
         /**
-         * Creates a call.
+         * Entry created by the running Call.
+         */
+        private final AtomicReference<OutboundEntry> entry;
+
+        /**
+         * Creates a lazy outbound Call.
          *
-         * @param future result future
-         * @param source source future
+         * @param name    Call name
+         * @param kind    entry kind
+         * @param factory frame factory
          */
-        private SessionCall(final CompletableFuture<Void> future, final CompletableFuture<?> source) {
-            this.future = require(future, "WebSocket send future");
-            this.source = require(source, "WebSocket source future");
+        private OutboundCall(final String name, final EntryKind kind, final Supplier<WebSocketFrame> factory) {
+            super(name, dispatcher, observer);
+            this.kind = require(kind, "WebSocket entry kind");
+            this.factory = require(factory, "WebSocket frame factory");
+            this.entry = new AtomicReference<>();
         }
 
         /**
-         * Waits for the already-started send to complete.
+         * Filters, encodes, reserves, enqueues, and waits after the Call starts.
          *
-         * @return null
+         * @return null after the entry is flushed
          */
         @Override
-        public Void execute() {
-            return await();
+        protected Void perform() {
+            ensureWritable(kind);
+            cancellation().throwIfCancelled();
+            final WebSocketFrame frame = factory.get();
+            final OutboundEntry created = new OutboundEntry(frame, kind, wireBytes(frame, role.writerMask()));
+            entry.set(created);
+            cancellation().throwIfCancelled();
+            WebSocketSession.this.enqueue(created);
+            awaitEntry(created);
+            return null;
         }
 
         /**
-         * Returns this already-started send call.
+         * Returns the outbound dispatch key.
          *
-         * @return this call
+         * @return dispatch key
          */
         @Override
-        public Call<Void> enqueue() {
-            return this;
+        protected String dispatchKey() {
+            return dispatchKey + ":call";
         }
 
         /**
-         * Waits for completion.
-         *
-         * @return null
+         * Cancels the linked queued or active entry.
          */
         @Override
-        public Void await() {
-            try {
-                return future.get();
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InternalException("Interrupted while waiting for WebSocket send", e);
-            } catch (final ExecutionException e) {
-                throw new InternalException("WebSocket send failed", e.getCause());
-            } catch (final CancellationException e) {
-                throw new InternalException("WebSocket send was cancelled", e);
+        protected void cancelRunning() {
+            cancelEntry(entry.get());
+        }
+
+    }
+
+    /**
+     * One session-owned outbound frame and its exactly-once completion state.
+     */
+    private static final class OutboundEntry {
+
+        /**
+         * Frame to encode.
+         */
+        private final WebSocketFrame frame;
+
+        /**
+         * Entry ordering kind.
+         */
+        private final EntryKind kind;
+
+        /**
+         * Complete estimated wire bytes reserved in the queue.
+         */
+        private final long wireBytes;
+
+        /**
+         * Completion state.
+         */
+        private final AtomicReference<EntryState> state;
+
+        /**
+         * Terminal cause.
+         */
+        private final AtomicReference<Throwable> cause;
+
+        /**
+         * Reservation ownership guard.
+         */
+        private final AtomicBoolean reserved;
+
+        /**
+         * Creates an outbound entry.
+         *
+         * @param frame     frame
+         * @param kind      ordering kind
+         * @param wireBytes complete wire bytes
+         */
+        private OutboundEntry(final WebSocketFrame frame, final EntryKind kind, final long wireBytes) {
+            this.frame = require(frame, "WebSocket frame");
+            this.kind = require(kind, "WebSocket entry kind");
+            if (wireBytes < Normal._2 || wireBytes > MAX_MESSAGE_BYTES + Normal._14) {
+                throw new ValidateException("WebSocket entry wire size is invalid");
             }
+            this.wireBytes = wireBytes;
+            this.state = new AtomicReference<>(EntryState.QUEUED);
+            this.cause = new AtomicReference<>();
+            this.reserved = new AtomicBoolean();
         }
 
         /**
-         * Waits for completion within a timeout.
+         * Returns the frame.
          *
-         * @param timeout timeout
-         * @return null
+         * @return frame
          */
-        @Override
-        public Void await(final Duration timeout) {
-            validateTimeout(timeout);
-            if (timeout.isZero()) {
-                if (!future.isDone()) {
-                    cancel();
-                    throw new TimeoutException("WebSocket send timed out");
-                }
-                return await();
-            }
-            try {
-                return future.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InternalException("Interrupted while waiting for WebSocket send", e);
-            } catch (final ExecutionException e) {
-                throw new InternalException("WebSocket send failed", e.getCause());
-            } catch (final CancellationException e) {
-                throw new InternalException("WebSocket send was cancelled", e);
-            } catch (final java.util.concurrent.TimeoutException e) {
-                cancel();
-                throw new TimeoutException("WebSocket send timed out", e);
-            } catch (final ArithmeticException e) {
-                throw new ValidateException("Timeout is too large");
-            }
+        private WebSocketFrame frame() {
+            return frame;
         }
 
         /**
-         * Cancels the source future and the exposed send future.
+         * Returns the ordering kind.
          *
-         * @return true when either future is cancelled
+         * @return kind
          */
-        @Override
-        public boolean cancel() {
-            final boolean cancelled = source.cancel(false);
-            future.cancel(false);
-            return cancelled || future.isCancelled();
+        private EntryKind kind() {
+            return kind;
         }
 
         /**
-         * Returns whether the send call has been cancelled.
+         * Returns complete wire bytes.
          *
-         * @return true when cancelled
+         * @return wire bytes
          */
-        @Override
-        public boolean cancelled() {
-            return future.isCancelled() || source.isCancelled();
+        private long wireBytes() {
+            return wireBytes;
         }
 
         /**
-         * Returns whether the send call is complete.
-         *
-         * @return true when complete
-         */
-        @Override
-        public boolean done() {
-            return state().terminal();
-        }
-
-        /**
-         * Returns lifecycle state.
+         * Returns current entry state.
          *
          * @return state
          */
-        @Override
-        public Status state() {
-            if (future.isCancelled() || source.isCancelled()) {
-                return Status.CANCELLED;
-            }
-            if (future.isCompletedExceptionally()) {
-                return Status.FAILED;
-            }
-            return future.isDone() ? Status.DONE : Status.RUNNING;
+        private EntryState state() {
+            return state.get();
         }
 
         /**
-         * Validates timeout.
+         * Returns the terminal cause.
          *
-         * @param timeout timeout
+         * @return cause or null
          */
-        private static void validateTimeout(final Duration timeout) {
-            final Duration checked = Assert
-                    .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
-            Assert.isFalse(
-                    checked.isNegative(),
-                    () -> new ValidateException("Timeout must be non-null and non-negative"));
+        private Throwable cause() {
+            return cause.get();
         }
+
+        /**
+         * Claims queue-byte reservation ownership.
+         *
+         * @return true when claimed
+         */
+        private boolean reserve() {
+            return reserved.compareAndSet(false, true);
+        }
+
+        /**
+         * Releases queue-byte reservation ownership.
+         *
+         * @return true when released
+         */
+        private boolean release() {
+            return reserved.compareAndSet(true, false);
+        }
+
+        /**
+         * Marks this entry active.
+         *
+         * @return true when activated
+         */
+        private boolean activate() {
+            return state.compareAndSet(EntryState.QUEUED, EntryState.ACTIVE);
+        }
+
+        /**
+         * Completes this entry successfully.
+         *
+         * @return true when completed
+         */
+        private synchronized boolean succeed() {
+            return state.compareAndSet(EntryState.ACTIVE, EntryState.SUCCEEDED);
+        }
+
+        /**
+         * Completes this entry with failure.
+         *
+         * @param failure failure
+         * @return true when completed
+         */
+        private boolean fail(final Throwable failure) {
+            return complete(EntryState.FAILED, failure);
+        }
+
+        /**
+         * Completes this entry with cancellation.
+         *
+         * @param cancellation cancellation cause
+         * @return true when completed
+         */
+        private boolean cancel(final Throwable cancellation) {
+            return complete(EntryState.CANCELLED, cancellation);
+        }
+
+        /**
+         * Completes a non-terminal entry once.
+         *
+         * @param target  terminal state
+         * @param failure terminal cause
+         * @return true when completed
+         */
+        private synchronized boolean complete(final EntryState target, final Throwable failure) {
+            if (state.get().terminal()) {
+                return false;
+            }
+            cause.set(failure);
+            state.set(target);
+            return true;
+        }
+
+        /**
+         * Returns whether this entry is terminal.
+         *
+         * @return true when terminal
+         */
+        private boolean terminal() {
+            return state.get().terminal();
+        }
+
+    }
+
+    /**
+     * Outbound ordering class.
+     */
+    private enum EntryKind {
+
+        /**
+         * User application message kept in FIFO order.
+         */
+        APPLICATION,
+
+        /**
+         * Public or automatic ping ordered before queued application messages.
+         */
+        PING,
+
+        /**
+         * Internal automatic ping ordered before queued application messages.
+         */
+        AUTOMATIC_PING,
+
+        /**
+         * Internal pong ordered before queued application messages.
+         */
+        PONG,
+
+        /**
+         * Internal close ordered immediately after the active entry.
+         */
+        CLOSE
+
+    }
+
+    /**
+     * Outbound entry completion state.
+     */
+    private enum EntryState {
+
+        /**
+         * Reserved and queued.
+         */
+        QUEUED,
+
+        /**
+         * Currently being written.
+         */
+        ACTIVE,
+
+        /**
+         * Successfully flushed.
+         */
+        SUCCEEDED,
+
+        /**
+         * Failed.
+         */
+        FAILED,
+
+        /**
+         * Cancelled.
+         */
+        CANCELLED;
+
+        /**
+         * Returns whether this state is terminal.
+         *
+         * @return true when terminal
+         */
+        private boolean terminal() {
+            return this == SUCCEEDED || this == FAILED || this == CANCELLED;
+        }
+
+    }
+
+    /**
+     * Session terminal path selected by the exactly-once guard owner.
+     */
+    private enum Termination {
+
+        /**
+         * Normal local or peer close.
+         */
+        CLOSE,
+
+        /**
+         * Explicit or deadline cancellation.
+         */
+        CANCEL,
+
+        /**
+         * Protocol, reader, writer, or handler failure.
+         */
+        FAIL
 
     }
 

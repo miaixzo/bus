@@ -69,10 +69,19 @@ public final class LimitGuard implements GuardRule {
     @Override
     public GuardResult check(final Message message) {
         final Message checkedMessage = Assert.notNull(message, () -> new ValidateException("Message must not be null"));
-        final long length = knownLength(checkedMessage);
-        Assert.isTrue(length >= Normal.__1, () -> new ProtocolException("Body length must be -1 or greater"));
-        return length > maxBytes ? GuardResult.reject("body length " + length + " exceeds max " + maxBytes)
-                : GuardResult.pass();
+        final long declaredLength = checkedMessage.headers().contentLength();
+        if (declaredLength > maxBytes) {
+            return GuardResult.reject("declared body length exceeds max " + maxBytes);
+        }
+        final long payloadLength = checkedMessage.payload().length();
+        Assert.isTrue(payloadLength >= Normal.__1, () -> new ProtocolException("Body length must be -1 or greater"));
+        if (payloadLength > maxBytes) {
+            return GuardResult.reject("actual body length exceeds max " + maxBytes);
+        }
+        if (declaredLength >= Normal._0 && payloadLength >= Normal._0 && declaredLength != payloadLength) {
+            return GuardResult.reject("declared and actual body lengths differ");
+        }
+        return GuardResult.pass();
     }
 
     /**
@@ -92,22 +101,6 @@ public final class LimitGuard implements GuardRule {
     @Override
     public String name() {
         return Builder.LIMIT_GUARD_NAME;
-    }
-
-    /**
-     * Resolves known body length from payload and headers.
-     *
-     * @param message message
-     * @return known length or -1
-     */
-    private static long knownLength(final Message message) {
-        final long payloadLength = message.payload().length();
-        Assert.isTrue(payloadLength >= Normal.__1, () -> new ProtocolException("Body length must be -1 or greater"));
-        final int headerLength = message.headers().contentLength();
-        if (payloadLength >= 0 && headerLength >= 0) {
-            return Math.max(payloadLength, headerLength);
-        }
-        return payloadLength >= 0 ? payloadLength : headerLength;
     }
 
     /**

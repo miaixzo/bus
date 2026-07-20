@@ -21,13 +21,17 @@ package org.miaixz.bus.fabric.registry;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.registry.connection.ConnectionPool;
 import org.miaixz.bus.fabric.registry.connection.ConnectionRegistry;
 import org.miaixz.bus.fabric.registry.route.Selector;
@@ -46,6 +50,21 @@ public final class Directory implements AutoCloseable {
     private final ConcurrentHashMap<String, Ledger<?>> ledgers;
 
     /**
+     * Context-scoped shared services.
+     */
+    private final ConcurrentHashMap<String, Object> services;
+
+    /**
+     * Lock serializing service creation and directory closure.
+     */
+    private final Object serviceLock;
+
+    /**
+     * Closed state.
+     */
+    private final AtomicBoolean closed;
+
+    /**
      * Shared connection registry.
      */
     private volatile ConnectionRegistry connections;
@@ -61,10 +80,16 @@ public final class Directory implements AutoCloseable {
     private volatile Selector selector;
 
     /**
-     * Creates a directory with a backing map.
+     * Creates a directory with one clock-bound connection pool.
+     *
+     * @param connectionPool clock-bound connection pool
      */
-    private Directory() {
+    private Directory(final ConnectionPool connectionPool) {
         this.ledgers = new ConcurrentHashMap<>();
+        this.services = new ConcurrentHashMap<>();
+        this.serviceLock = new Object();
+        this.closed = new AtomicBoolean();
+        this.connectionPool = require(connectionPool, "Connection pool");
     }
 
     /**
@@ -73,13 +98,33 @@ public final class Directory implements AutoCloseable {
      * @return registry directory
      */
     public static Directory create() {
-        final Directory directory = new Directory();
-        directory.register(Builder.DIRECTORY_CONNECTION, Ledger.create());
-        directory.register(Builder.ROUTE, Ledger.create());
-        directory.register(Builder.DIRECTORY_RESOLVER, Ledger.create());
-        directory.register(Builder.DIRECTORY_PROXY, Ledger.create());
-        directory.register(Builder.DIRECTORY_POLICY, Ledger.create());
-        return directory;
+        return create(Clock.system());
+    }
+
+    /**
+     * Creates a registry directory whose connection pool uses the supplied clock.
+     *
+     * @param clock unique directory clock
+     * @return registry directory
+     */
+    public static Directory create(final Clock clock) {
+        final ConnectionPool pool = ConnectionPool.create(null, require(clock, "Clock"));
+        final Directory directory = new Directory(pool);
+        try {
+            directory.register(Builder.DIRECTORY_CONNECTION, Ledger.create());
+            directory.register(Builder.ROUTE, Ledger.create());
+            directory.register(Builder.DIRECTORY_RESOLVER, Ledger.create());
+            directory.register(Builder.DIRECTORY_PROXY, Ledger.create());
+            directory.register(Builder.DIRECTORY_POLICY, Ledger.create());
+            return directory;
+        } catch (final RuntimeException | Error failure) {
+            try {
+                pool.close();
+            } catch (final Throwable closeFailure) {
+                failure.addSuppressed(closeFailure);
+            }
+            throw failure;
+        }
     }
 
     /**
@@ -90,7 +135,12 @@ public final class Directory implements AutoCloseable {
      * @param <T>    value type
      */
     public <T> void register(final String name, final Ledger<T> ledger) {
-        ledgers.put(validateName(name), require(ledger, "Registry ledger"));
+        final String key = validateName(name);
+        final Ledger<T> value = require(ledger, "Registry ledger");
+        synchronized (serviceLock) {
+            ensureOpen();
+            ledgers.put(key, value);
+        }
     }
 
     /**
@@ -101,7 +151,10 @@ public final class Directory implements AutoCloseable {
      * @return ledger or null
      */
     public <T> Ledger<T> ledger(final String name) {
-        return (Ledger<T>) ledgers.get(validateName(name));
+        synchronized (serviceLock) {
+            ensureOpen();
+            return (Ledger<T>) ledgers.get(validateName(name));
+        }
     }
 
     /**
@@ -118,11 +171,14 @@ public final class Directory implements AutoCloseable {
      *
      * @return connection registry
      */
-    public synchronized ConnectionRegistry connections() {
-        if (connections == null) {
-            connections = new ConnectionRegistry();
+    public ConnectionRegistry connections() {
+        synchronized (serviceLock) {
+            ensureOpen();
+            if (connections == null) {
+                connections = new ConnectionRegistry();
+            }
+            return connections;
         }
-        return connections;
     }
 
     /**
@@ -130,11 +186,11 @@ public final class Directory implements AutoCloseable {
      *
      * @return connection pool
      */
-    public synchronized ConnectionPool connectionPool() {
-        if (connectionPool == null) {
-            connectionPool = ConnectionPool.create(null);
+    public ConnectionPool connectionPool() {
+        synchronized (serviceLock) {
+            ensureOpen();
+            return connectionPool;
         }
-        return connectionPool;
     }
 
     /**
@@ -142,11 +198,48 @@ public final class Directory implements AutoCloseable {
      *
      * @return selector
      */
-    public synchronized Selector selector() {
-        if (selector == null) {
-            selector = new Selector();
+    public Selector selector() {
+        synchronized (serviceLock) {
+            ensureOpen();
+            if (selector == null) {
+                selector = new Selector();
+            }
+            return selector;
         }
-        return selector;
+    }
+
+    /**
+     * Returns one context-scoped service, invoking its factory at most once for a name.
+     *
+     * @param name    stable service name
+     * @param type    required service type
+     * @param factory service factory
+     * @param <T>     service type
+     * @return existing or newly created service
+     */
+    public <T> T service(final String name, final Class<T> type, final SupplierX<? extends T> factory) {
+        final String key = validateName(name);
+        final Class<T> expectedType = require(type, "Service type");
+        final SupplierX<? extends T> creator = require(factory, "Service factory");
+        synchronized (serviceLock) {
+            ensureOpen();
+            final Object existing = services.get(key);
+            if (existing != null) {
+                if (!expectedType.isInstance(existing)) {
+                    throw new ValidateException("Service " + key + " is not a " + expectedType.getName());
+                }
+                return expectedType.cast(existing);
+            }
+            final T created = creator.get();
+            if (created == null) {
+                throw new ValidateException("Service factory must not return null: " + key);
+            }
+            if (!expectedType.isInstance(created)) {
+                throw new ValidateException("Service " + key + " is not a " + expectedType.getName());
+            }
+            services.put(key, created);
+            return created;
+        }
     }
 
     /**
@@ -154,29 +247,63 @@ public final class Directory implements AutoCloseable {
      */
     @Override
     public void close() {
-        Exception failure = null;
-        final ConnectionPool pool = connectionPool;
-        if (pool != null) {
-            try {
-                pool.close();
-            } catch (final RuntimeException e) {
-                failure = e;
+        synchronized (serviceLock) {
+            if (!closed.compareAndSet(false, true)) {
+                return;
             }
-        }
-        for (final Ledger<?> ledger : ledgers.values()) {
-            if (ledger instanceof AutoCloseable closeable) {
-                try {
-                    closeable.close();
-                } catch (final Exception ignored) {
-                    if (failure == null) {
-                        failure = ignored;
-                    }
+            Throwable failure = null;
+            for (final Object service : services.values()) {
+                if (service instanceof AutoCloseable closeable) {
+                    failure = closeResource(closeable, failure);
                 }
             }
+            services.clear();
+            final ConnectionPool pool = connectionPool;
+            if (pool != null) {
+                failure = closeResource(pool, failure);
+            }
+            connectionPool = null;
+            for (final Ledger<?> ledger : ledgers.values()) {
+                if (ledger instanceof AutoCloseable closeable) {
+                    failure = closeResource(closeable, failure);
+                }
+            }
+            ledgers.clear();
+            connections = null;
+            selector = null;
+            if (failure != null) {
+                throw new InternalException("Unable to close registry directory", failure);
+            }
         }
-        ledgers.clear();
-        if (failure != null) {
-            throw new InternalException("Unable to close registry directory", failure);
+    }
+
+    /**
+     * Closes one directory-owned resource and aggregates failures without skipping later resources.
+     *
+     * @param resource resource to close
+     * @param failure  first failure, or null
+     * @return first failure with later failures suppressed
+     */
+    private static Throwable closeResource(final AutoCloseable resource, final Throwable failure) {
+        Throwable result = failure;
+        try {
+            resource.close();
+        } catch (final Throwable current) {
+            if (result == null) {
+                result = current;
+            } else {
+                result.addSuppressed(current);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Rejects access after directory ownership has ended.
+     */
+    private void ensureOpen() {
+        if (closed.get()) {
+            throw new StatefulException("Registry directory is closed");
         }
     }
 

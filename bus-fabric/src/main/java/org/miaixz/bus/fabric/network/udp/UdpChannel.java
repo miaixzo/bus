@@ -20,15 +20,15 @@
 package org.miaixz.bus.fabric.network.udp;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
+import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.buffer.NioBuffer;
 import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
 import org.miaixz.bus.core.lang.Assert;
@@ -37,11 +37,17 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Lifecycle;
+import org.miaixz.bus.fabric.Message;
+import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.network.Transport;
 import org.miaixz.bus.fabric.observe.EventObserver;
+import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
@@ -94,7 +100,7 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
         this.local = Assert.notNull(local, () -> new ValidateException("UDP local address must not be null"));
         this.channel = Assert.notNull(channel, () -> new ValidateException("UDP datagram channel must not be null"));
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("UDP dispatcher must not be null"));
-        this.buffers = NioBufferAllocator.heap((Normal._65535 - Normal._28), Normal._4);
+        this.buffers = NioBufferAllocator.heap(Normal._65535 - Normal._28, Normal._4);
         this.scope = LifecycleScope.resource(this, "udp-channel", null, EventObserver.noop());
         this.pendingSends = new AtomicInteger();
         this.scope.open(this);
@@ -103,17 +109,21 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
     /**
      * Sends a datagram.
      *
-     * @param source source buffer
-     * @param remote remote address
+     * @param source    source buffer
+     * @param byteCount exact datagram byte count
+     * @param remote    remote address
      * @return sent byte count future
      */
-    public CompletableFuture<Integer> send(final ByteBuffer source, final SocketAddress remote) {
-        final ByteBuffer checkedSource = Assert
+    public CompletableFuture<Integer> send(final Buffer source, final long byteCount, final SocketAddress remote) {
+        final Buffer checkedSource = Assert
                 .notNull(source, () -> new ValidateException("UDP source buffer must not be null"));
         final SocketAddress checkedRemote = Assert
                 .notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
         ensureOpened();
-        if (checkedSource.remaining() > (Normal._65535 - Normal._28)) {
+        if (byteCount < Normal.LONG_ZERO || byteCount > checkedSource.size()) {
+            return CompletableFuture.failedFuture(new ValidateException("UDP byte count exceeds source bytes"));
+        }
+        if (byteCount > Normal._65535 - Normal._28) {
             return CompletableFuture.failedFuture(new ProtocolException("UDP datagram exceeds maximum payload"));
         }
         final int pending = pendingSends.incrementAndGet();
@@ -123,10 +133,23 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
         }
         final AtomicBoolean released = new AtomicBoolean();
         try {
-            final CompletableFuture<Integer> future = dispatcher.supply("udp:send", () -> {
+            final CompletableFuture<Integer> future = background("udp:send", () -> {
+                final Buffer snapshot = new Buffer();
+                checkedSource.copyTo(snapshot, Normal.LONG_ZERO, byteCount);
                 try {
                     ensureOpened();
-                    return channel.send(checkedSource.asReadOnlyBuffer(), checkedRemote);
+                    try (NioBuffer lease = buffers.allocate()) {
+                        final var nio = lease.buffer();
+                        nio.limit((int) byteCount);
+                        lease.readFrom(snapshot, (int) byteCount);
+                        nio.flip();
+                        final int written = channel.send(nio, checkedRemote);
+                        if (written != byteCount || nio.hasRemaining()) {
+                            throw new SocketException("UDP datagram was not sent atomically");
+                        }
+                        checkedSource.skip(byteCount);
+                        return written;
+                    }
                 } catch (final IOException e) {
                     throw new SocketException("Unable to send UDP datagram", e);
                 } finally {
@@ -146,20 +169,26 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
      *
      * @return datagram future
      */
-    public CompletableFuture<DatagramPacket> receive() {
+    public CompletableFuture<Message> receive() {
         ensureOpened();
-        return dispatcher.supply("udp:receive", () -> {
+        return background("udp:receive", () -> {
             try (NioBuffer lease = buffers.allocate()) {
-                final ByteBuffer buffer = lease.buffer();
-                final SocketAddress remote = channel.receive(buffer);
-                buffer.flip();
-                final byte[] bytes = new byte[buffer.remaining()];
-                buffer.get(bytes);
-                final DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
-                if (remote instanceof InetSocketAddress socket) {
-                    packet.setSocketAddress(socket);
+                final var nio = lease.buffer();
+                final SocketAddress remote = channel.receive(nio);
+                if (!(remote instanceof InetSocketAddress socket)) {
+                    throw new SocketException("UDP datagram did not provide an internet remote address");
                 }
-                return packet;
+                nio.flip();
+                final Buffer payload = new Buffer();
+                lease.writeTo(payload);
+                final Address address = new Address(Transport.UDP.scheme(), socket.getHostString(), socket.getPort(),
+                        null);
+                return Message.of(
+                        Protocol.UDP,
+                        address,
+                        Headers.empty(),
+                        payload.size() == Normal.LONG_ZERO ? Payload.empty() : Payload.of(payload.readByteString()),
+                        local);
             } catch (final IOException e) {
                 throw new SocketException("Unable to receive UDP datagram", e);
             }
@@ -227,16 +256,6 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
     }
 
     /**
-     * Creates a packet payload snapshot.
-     *
-     * @param packet packet
-     * @return bytes
-     */
-    static byte[] bytes(final DatagramPacket packet) {
-        return ArrayKit.sub(packet.getData(), packet.getOffset(), packet.getOffset() + packet.getLength());
-    }
-
-    /**
      * Ensures this channel is open.
      */
     private void ensureOpened() {
@@ -254,6 +273,32 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
         if (released.compareAndSet(false, true)) {
             pendingSends.decrementAndGet();
         }
+    }
+
+    /**
+     * Runs one blocking datagram operation on the dispatcher's background executor.
+     *
+     * @param key      dispatch key
+     * @param supplier operation supplier
+     * @param <T>      result type
+     * @return operation future
+     */
+    private <T> CompletableFuture<T> background(final String key, final Supplier<T> supplier) {
+        final CompletableFuture<T> result = new CompletableFuture<>();
+        final DispatchHandle handle = dispatcher.background(key, this, Activity.of(key, () -> {
+            try {
+                result.complete(supplier.get());
+            } catch (final RuntimeException | Error e) {
+                result.completeExceptionally(e);
+                throw e;
+            }
+        }));
+        handle.future().whenComplete((ignored, cause) -> {
+            if (cause != null && !result.isDone()) {
+                result.completeExceptionally(cause);
+            }
+        });
+        return result;
     }
 
 }

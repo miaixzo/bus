@@ -19,14 +19,19 @@
 */
 package org.miaixz.bus.fabric.runtime.resource;
 
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -40,7 +45,22 @@ public final class ResourceScope implements AutoCloseable {
     /**
      * Registered resources.
      */
-    private final ConcurrentLinkedDeque<AutoCloseable> resources;
+    private final ArrayDeque<AutoCloseable> resources;
+
+    /**
+     * Identity set preventing duplicate registration and release.
+     */
+    private final Set<AutoCloseable> identities;
+
+    /**
+     * Cancellation shared with the owning lifecycle.
+     */
+    private final Cancellation cancellation;
+
+    /**
+     * Callback removing this scope from shared cancellation.
+     */
+    private final Runnable unregisterCancellation;
 
     /**
      * Closed state.
@@ -49,10 +69,15 @@ public final class ResourceScope implements AutoCloseable {
 
     /**
      * Creates an empty resource scope.
+     *
+     * @param cancellation shared cancellation
      */
-    private ResourceScope() {
-        this.resources = new ConcurrentLinkedDeque<>();
+    private ResourceScope(final Cancellation cancellation) {
+        this.resources = new ArrayDeque<>();
+        this.identities = Collections.newSetFromMap(new IdentityHashMap<>());
+        this.cancellation = Assert.notNull(cancellation, () -> new ValidateException("Cancellation must not be null"));
         this.closed = new AtomicBoolean();
+        this.unregisterCancellation = this.cancellation.onCancel(this::close);
     }
 
     /**
@@ -61,7 +86,17 @@ public final class ResourceScope implements AutoCloseable {
      * @return resource scope
      */
     public static ResourceScope create() {
-        return new ResourceScope();
+        return create(Cancellation.create());
+    }
+
+    /**
+     * Creates a resource scope sharing an existing cancellation.
+     *
+     * @param cancellation shared cancellation
+     * @return resource scope
+     */
+    public static ResourceScope create(final Cancellation cancellation) {
+        return new ResourceScope(cancellation);
     }
 
     /**
@@ -76,10 +111,13 @@ public final class ResourceScope implements AutoCloseable {
         if (closed.get()) {
             try {
                 current.close();
-            } catch (final Exception e) {
+            } catch (final Throwable e) {
                 throw new InternalException("Unable to close rejected resource", e);
             }
             throw new StatefulException("Resource scope is closed");
+        }
+        if (!identities.add(current)) {
+            return current;
         }
         resources.addLast(current);
         return current;
@@ -94,7 +132,17 @@ public final class ResourceScope implements AutoCloseable {
     public synchronized boolean remove(final AutoCloseable resource) {
         final AutoCloseable current = Assert
                 .notNull(resource, () -> new ValidateException("Resource must not be null"));
-        return resources.remove(current);
+        if (!identities.remove(current)) {
+            return false;
+        }
+        final Iterator<AutoCloseable> iterator = resources.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next() == current) {
+                iterator.remove();
+                break;
+            }
+        }
+        return true;
     }
 
     /**
@@ -103,24 +151,55 @@ public final class ResourceScope implements AutoCloseable {
      * @return resource count
      */
     public synchronized int size() {
-        return resources.size();
+        return identities.size();
+    }
+
+    /**
+     * Records cancellation and releases all resources.
+     *
+     * @param cause cancellation cause
+     * @return true when this invocation first cancelled the shared scope
+     */
+    public boolean cancel(final Throwable cause) {
+        final Throwable current = Assert
+                .notNull(cause, () -> new ValidateException("Cancellation cause must not be null"));
+        if (unregisterCancellation != null) {
+            unregisterCancellation.run();
+        }
+        final boolean changed = cancellation.cancel(current);
+        close();
+        return changed;
     }
 
     /**
      * Closes all registered resources.
      */
     @Override
-    public synchronized void close() {
+    public void close() {
         if (!closed.compareAndSet(false, true)) {
             return;
         }
-        Exception failure = null;
-        AutoCloseable resource;
-        while ((resource = resources.pollLast()) != null) {
+        if (unregisterCancellation != null) {
+            unregisterCancellation.run();
+        }
+        final List<AutoCloseable> closing = new ArrayList<>();
+        synchronized (this) {
+            AutoCloseable resource;
+            while ((resource = resources.pollLast()) != null) {
+                closing.add(resource);
+            }
+            identities.clear();
+        }
+        Throwable failure = null;
+        for (final AutoCloseable resource : closing) {
             try {
                 resource.close();
-            } catch (final Exception e) {
-                failure = ObjectKit.defaultIfNull(failure, e);
+            } catch (final Throwable e) {
+                if (failure == null) {
+                    failure = e;
+                } else if (failure != e) {
+                    failure.addSuppressed(e);
+                }
             }
         }
         if (failure != null) {

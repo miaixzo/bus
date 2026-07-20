@@ -69,23 +69,23 @@ public final class Reactor implements AutoCloseable {
     private final AtomicBoolean closed;
 
     /**
-     * Creates a reactor.
+     * Creates a reactor from fully resolved owned collaborators.
      *
-     * @param dispatcher dispatcher
      * @param clock      clock
-     * @param directory  directory
      * @param observer   observer
+     * @param dispatcher dispatcher
      * @param scope      scope
+     * @param directory  directory
      */
-    private Reactor(final Dispatcher dispatcher, final Clock clock, final Directory directory,
-            final EventObserver observer, final ResourceScope scope) {
-        this.dispatcher = require(dispatcher, "Dispatcher");
+    private Reactor(final Clock clock, final EventObserver observer, final Dispatcher dispatcher,
+            final ResourceScope scope, final Directory directory) {
         this.clock = require(clock, "Clock");
-        this.directory = require(directory, "Directory");
         this.observer = EventObserver.safe(require(observer, "Observer"));
+        this.dispatcher = require(dispatcher, "Dispatcher");
         this.scope = require(scope, "Scope");
+        this.directory = require(directory, "Directory");
         this.closed = new AtomicBoolean();
-        this.directory.connectionPool().startIdleEviction(this.dispatcher, this.clock);
+        this.directory.connectionPool().startIdleEviction(this.dispatcher);
     }
 
     /**
@@ -169,24 +169,28 @@ public final class Reactor implements AutoCloseable {
         if (!closed.compareAndSet(false, true)) {
             return;
         }
-        RuntimeException failure = null;
+        Throwable failure = null;
         try {
-            directory.close();
-        } catch (final RuntimeException e) {
+            scope.close();
+        } catch (final Throwable e) {
             failure = e;
         }
         try {
-            dispatcher.close();
-        } catch (final RuntimeException e) {
+            directory.close();
+        } catch (final Throwable e) {
             if (failure == null) {
                 failure = e;
+            } else {
+                failure.addSuppressed(e);
             }
         }
         try {
-            scope.close();
-        } catch (final RuntimeException e) {
+            dispatcher.close();
+        } catch (final Throwable e) {
             if (failure == null) {
                 failure = e;
+            } else {
+                failure.addSuppressed(e);
             }
         }
         if (failure != null) {
@@ -215,29 +219,24 @@ public final class Reactor implements AutoCloseable {
     public static final class Builder implements org.miaixz.bus.core.Builder<Reactor> {
 
         /**
-         * Dispatcher candidate.
-         */
-        private Dispatcher dispatcher = Dispatcher.create();
-
-        /**
          * Clock candidate.
          */
-        private Clock clock = Clock.system();
-
-        /**
-         * Directory candidate.
-         */
-        private Directory directory = Directory.create();
+        private Clock clock;
 
         /**
          * Observer candidate.
          */
-        private EventObserver observer = EventObserver.noop();
+        private EventObserver observer;
+
+        /**
+         * Dispatcher candidate.
+         */
+        private Dispatcher dispatcher;
 
         /**
          * Scope candidate.
          */
-        private ResourceScope scope = ResourceScope.create();
+        private ResourceScope scope;
 
         /**
          * Creates a runtime builder.
@@ -269,17 +268,6 @@ public final class Reactor implements AutoCloseable {
         }
 
         /**
-         * Sets the directory.
-         *
-         * @param directory directory
-         * @return this builder
-         */
-        public Builder directory(final Directory directory) {
-            this.directory = require(directory, "Directory");
-            return this;
-        }
-
-        /**
          * Sets the observer.
          *
          * @param observer observer
@@ -291,13 +279,68 @@ public final class Reactor implements AutoCloseable {
         }
 
         /**
-         * Builds a reactor.
+         * Sets the resource scope.
+         *
+         * @param scope resource scope
+         * @return this builder
+         */
+        public Builder scope(final ResourceScope scope) {
+            this.scope = require(scope, "Scope");
+            return this;
+        }
+
+        /**
+         * Builds a reactor, creating defaults in dependency order and transferring ownership only after success.
          *
          * @return reactor
          */
         @Override
         public Reactor build() {
-            return new Reactor(dispatcher, clock, directory, observer, scope);
+            final Clock resolvedClock = clock == null ? Clock.system() : clock;
+            final EventObserver resolvedObserver = EventObserver
+                    .safe(observer == null ? EventObserver.noop() : observer);
+            Dispatcher resolvedDispatcher = dispatcher;
+            ResourceScope resolvedScope = scope;
+            Directory resolvedDirectory = null;
+            final boolean createdDispatcher = resolvedDispatcher == null;
+            final boolean createdScope = resolvedScope == null;
+            try {
+                if (createdDispatcher) {
+                    resolvedDispatcher = Dispatcher.create(resolvedObserver);
+                }
+                if (createdScope) {
+                    resolvedScope = ResourceScope.create();
+                }
+                resolvedDirectory = Directory.create(resolvedClock);
+                return new Reactor(resolvedClock, resolvedObserver, resolvedDispatcher, resolvedScope,
+                        resolvedDirectory);
+            } catch (final RuntimeException | Error failure) {
+                closeCreated(resolvedDirectory, failure);
+                if (createdScope) {
+                    closeCreated(resolvedScope, failure);
+                }
+                if (createdDispatcher) {
+                    closeCreated(resolvedDispatcher, failure);
+                }
+                throw failure;
+            }
+        }
+
+        /**
+         * Closes one default resource created by this build and suppresses cleanup failure on the primary failure.
+         *
+         * @param resource resource created by this builder, or null
+         * @param failure  primary build failure
+         */
+        private static void closeCreated(final AutoCloseable resource, final Throwable failure) {
+            if (resource == null) {
+                return;
+            }
+            try {
+                resource.close();
+            } catch (final Throwable closeFailure) {
+                failure.addSuppressed(closeFailure);
+            }
         }
 
     }

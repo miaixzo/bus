@@ -19,8 +19,11 @@
 */
 package org.miaixz.bus.fabric.network.tls.context;
 
+import java.util.List;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
@@ -33,7 +36,7 @@ import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 
 /**
- * Reusable TLS context for creating configured client engines.
+ * Reusable TLS context for creating configured client and server engines.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -100,6 +103,39 @@ public final class TlsContext {
             return engine;
         } catch (final IllegalArgumentException e) {
             throw new ProtocolException("Unsupported TLS engine configuration", e);
+        }
+    }
+
+    /**
+     * Creates a configured server engine with peer metadata.
+     *
+     * @param address  peer address used only as engine metadata
+     * @param settings TLS settings
+     * @return configured server SSL engine
+     */
+    public SSLEngine serverEngine(final Address address, final TlsSettings settings) {
+        final Address checkedAddress = Assert
+                .notNull(address, () -> new ValidateException("TLS address must not be null"));
+        final TlsSettings checkedSettings = Assert
+                .notNull(settings, () -> new ValidateException("TLS settings must not be null"));
+        try {
+            final SSLEngine engine = context.createSSLEngine(checkedAddress.host(), checkedAddress.port());
+            engine.setUseClientMode(false);
+            engine.setEnabledProtocols(checkedSettings.versions().toArray(String[]::new));
+            engine.setEnabledCipherSuites(checkedSettings.ciphers().toArray(String[]::new));
+
+            final SSLParameters parameters = engine.getSSLParameters();
+            parameters.setServerNames(List.of());
+            parameters.setEndpointIdentificationAlgorithm(null);
+            parameters.setApplicationProtocols(
+                    checkedSettings.supportsTlsExtensions()
+                            ? checkedSettings.applicationProtocols().toArray(String[]::new)
+                            : new String[0]);
+            engine.setSSLParameters(parameters);
+            checkedSettings.clientAuthMode().apply(engine);
+            return engine;
+        } catch (final IllegalArgumentException e) {
+            throw new ProtocolException("Unsupported TLS server engine configuration", e);
         }
     }
 

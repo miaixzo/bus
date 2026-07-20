@@ -19,10 +19,13 @@
 */
 package org.miaixz.bus.fabric.runtime.dispatch;
 
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -30,12 +33,11 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.Status;
 
 /**
- * Executor wrapper for dispatched activities.
+ * Worker executor that accepts only short-task entries promoted by {@link DispatchQueue}.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -48,25 +50,24 @@ public final class DispatchWorker implements AutoCloseable {
     private final ExecutorService executor;
 
     /**
-     * Whether this worker owns the executor.
-     */
-    private final boolean ownsExecutor;
-
-    /**
      * Closed flag.
      */
     private final AtomicBoolean closed;
 
     /**
+     * Entries submitted to the executor and not yet terminated.
+     */
+    private final Set<DispatchQueue.Entry> active;
+
+    /**
      * Creates a worker.
      *
-     * @param executor     executor
-     * @param ownsExecutor true when close should stop the executor
+     * @param executor owned executor
      */
-    private DispatchWorker(final ExecutorService executor, final boolean ownsExecutor) {
+    private DispatchWorker(final ExecutorService executor) {
         this.executor = require(executor, "Executor");
-        this.ownsExecutor = ownsExecutor;
         this.closed = new AtomicBoolean();
+        this.active = ConcurrentHashMap.newKeySet();
     }
 
     /**
@@ -76,40 +77,56 @@ public final class DispatchWorker implements AutoCloseable {
      */
     public static DispatchWorker create() {
         try {
-            return new DispatchWorker(ThreadKit.newExecutor(), true);
+            return new DispatchWorker(ThreadKit.newExecutor());
         } catch (final RuntimeException e) {
             throw new InternalException("Unable to create dispatch worker", e);
         }
     }
 
     /**
-     * Wraps an external executor.
+     * Takes ownership of an external platform executor.
      *
      * @param executor executor
      * @return dispatch worker
      */
     public static DispatchWorker of(final ExecutorService executor) {
-        return new DispatchWorker(executor, false);
+        return new DispatchWorker(executor);
     }
 
     /**
-     * Executes an activity asynchronously.
+     * Executes one short-task entry asynchronously through its authoritative handle.
      *
-     * @param activity activity
-     * @return execution future
+     * @param entry queue entry
+     * @return the handle future
      */
-    public CompletableFuture<Void> execute(final Activity activity) {
-        require(activity, "Activity");
+    CompletableFuture<Void> execute(final DispatchQueue.Entry entry) {
+        final DispatchQueue.Entry current = require(entry, "Dispatch entry");
+        final DispatchHandle handle = current.handle();
         if (closed.get()) {
+            handle.cancel();
             throw new StatefulException("Dispatch worker is closed");
         }
-        final CompletableFuture<Void> future = new CompletableFuture<>();
-        try {
-            executor.execute(() -> run(activity, future));
-        } catch (final RejectedExecutionException e) {
-            throw new StatefulException("Dispatch worker rejected activity", e);
+        if (!handle.markRunning()) {
+            return handle.future();
         }
-        return future;
+        active.add(current);
+        if (closed.get()) {
+            active.remove(current);
+            handle.cancel();
+            return handle.future();
+        }
+        try {
+            executor.execute(() -> run(current));
+        } catch (final RejectedExecutionException e) {
+            active.remove(current);
+            fail(handle, e);
+            throw e;
+        } catch (final RuntimeException | Error e) {
+            active.remove(current);
+            fail(handle, e);
+            throw e;
+        }
+        return handle.future();
     }
 
     /**
@@ -117,36 +134,67 @@ public final class DispatchWorker implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (!closed.compareAndSet(false, true) || !ownsExecutor) {
+        if (!closed.compareAndSet(false, true)) {
             return;
         }
-        executor.shutdown();
-        try {
-            if (!executor.awaitTermination(Normal._5, TimeUnit.SECONDS)) {
-                executor.shutdownNow();
+        for (final DispatchQueue.Entry entry : List.copyOf(active)) {
+            entry.handle().cancel();
+        }
+        executor.shutdownNow();
+        final long deadline = System.nanoTime() + Normal._5 * 1_000_000_000L;
+        while (!executor.isTerminated()) {
+            if (System.nanoTime() >= deadline) {
+                throw new StatefulException("Dispatch worker did not stop in time");
             }
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            executor.shutdownNow();
-            throw new InternalException("Interrupted while closing dispatch worker", e);
-        } catch (final RuntimeException e) {
-            throw new InternalException("Unable to close dispatch worker", e);
+            if (!ThreadKit.sleep(Normal._1)) {
+                throw new InternalException("Interrupted while closing dispatch worker");
+            }
+        }
+        active.clear();
+    }
+
+    /**
+     * Runs one promoted entry and records exactly one handle terminal state.
+     *
+     * @param entry promoted entry
+     */
+    private void run(final DispatchQueue.Entry entry) {
+        final DispatchHandle handle = entry.handle();
+        try {
+            entry.activity().run();
+            if (entry.cancellation().cancelled()) {
+                handle.cancel();
+            } else if (handle.state() == Status.RUNNING) {
+                handle.complete();
+            }
+        } catch (final Throwable cause) {
+            final Throwable failure = entry.activity().failure();
+            final Throwable original = failure == null ? cause : failure;
+            if (handle.state() == Status.CANCELLED || entry.activity().state() == Status.CANCELLED
+                    || original instanceof CancellationException) {
+                handle.cancel();
+            } else {
+                fail(handle, original);
+            }
+        } finally {
+            active.remove(entry);
         }
     }
 
     /**
-     * Runs activity and completes the supplied future.
+     * Fails a running handle while tolerating a concurrent terminal winner.
      *
-     * @param activity activity
-     * @param future   execution future
+     * @param handle handle
+     * @param cause  original failure
      */
-    private static void run(final Activity activity, final CompletableFuture<Void> future) {
+    private static void fail(final DispatchHandle handle, final Throwable cause) {
+        if (handle.state() != Status.RUNNING) {
+            return;
+        }
         try {
-            activity.run();
-            future.complete(null);
-        } catch (final RuntimeException e) {
-            final Throwable failure = activity.failure();
-            future.completeExceptionally(ObjectKit.defaultIfNull(failure, e));
+            handle.fail(cause);
+        } catch (final StatefulException ignored) {
+            // A concurrent cancellation or completion already owns the terminal state.
         }
     }
 

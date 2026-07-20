@@ -24,17 +24,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Headers;
@@ -91,6 +94,7 @@ final class StompRunner {
      */
     StompSession open(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
+        final String operationId = ID.objectId();
         Session socket = null;
         Logger.info(
                 true,
@@ -154,8 +158,9 @@ final class StompRunner {
                 outbound.encode(prepareConnectFrame(), output);
                 awaitSend(openedSocket.send(Payload.of(output.readByteString())));
                 currentCancellation.throwIfCancelled();
-                awaitConnected(connected);
+                final StompFrame connectedFrame = awaitConnected(connected, currentCancellation);
                 currentCancellation.throwIfCancelled();
+                final Heartbeats heartbeats = negotiate(connectedFrame);
                 Logger.info(
                         false,
                         "Fabric",
@@ -167,7 +172,9 @@ final class StompRunner {
                         buffer -> openedSocket.send(Payload.of(buffer.readByteString())), openedSocket::close,
                         openedSocket::cancel, snapshot.handler(), snapshot.address(), snapshot.guard(),
                         snapshot.observer(), FilterChain.compose(snapshot.context().filter(), snapshot.filter()),
-                        snapshot.listener(), snapshot.context().options().materializeMaxBytes());
+                        snapshot.listener(), snapshot.context().options().materializeMaxBytes(),
+                        snapshot.context().reactor().dispatcher(), snapshot.context().clock(), currentCancellation,
+                        heartbeats.outbound(), heartbeats.inboundDeadline());
                 session.set(opened);
                 currentCancellation.throwIfCancelled();
                 Logger.info(
@@ -182,6 +189,7 @@ final class StompRunner {
                 unregisterCancellation.run();
             }
         } catch (final CancellationException e) {
+            emit(ObservationMarker.STOMP_CANCELLED, e, operationId);
             if (socket != null) {
                 socket.cancel();
             }
@@ -195,6 +203,7 @@ final class StompRunner {
                     snapshot.address().port());
             throw e;
         } catch (final RuntimeException e) {
+            emit(ObservationMarker.STOMP_FAILED, e, operationId);
             if (socket != null) {
                 socket.cancel();
             }
@@ -237,28 +246,168 @@ final class StompRunner {
     /**
      * Waits for CONNECTED.
      *
-     * @param connected connected future
+     * @param connected    connected future
+     * @param cancellation shared cancellation scope
+     * @return CONNECTED frame
      */
-    private void awaitConnected(final CompletableFuture<StompFrame> connected) {
+    private StompFrame awaitConnected(final CompletableFuture<StompFrame> connected, final Cancellation cancellation) {
         final Duration connectTimeout = connectTimeout();
+        final long started = snapshot.context().clock().nanos();
+        final long limit = connectTimeout.isZero() ? Long.MAX_VALUE : durationNanos(connectTimeout);
         try {
-            if (connectTimeout.isZero()) {
-                connected.get();
-            } else {
-                connected.get(connectTimeout.toNanos(), java.util.concurrent.TimeUnit.NANOSECONDS);
+            while (!connected.isDone()) {
+                cancellation.throwIfCancelled();
+                if (limit != Long.MAX_VALUE && elapsed(started, snapshot.context().clock().nanos()) >= limit) {
+                    throw new TimeoutException("STOMP CONNECT timed out");
+                }
+                if (!ThreadKit.sleep(Normal._1)) {
+                    throw new InternalException("Interrupted while waiting for STOMP CONNECTED");
+                }
             }
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new InternalException("Interrupted while waiting for STOMP CONNECTED", e);
-        } catch (final ExecutionException e) {
+            return connected.join();
+        } catch (final CompletionException e) {
             final Throwable cause = e.getCause();
             if (cause instanceof RuntimeException runtime) {
                 throw runtime;
             }
             throw new ProtocolException("STOMP CONNECT failed", cause);
-        } catch (final java.util.concurrent.TimeoutException e) {
-            throw new TimeoutException("STOMP CONNECT timed out", e);
         }
+    }
+
+    /**
+     * Strictly parses server heartbeat capabilities and calculates negotiated intervals.
+     *
+     * @param connected CONNECTED frame
+     * @return negotiated heartbeat values
+     */
+    private Heartbeats negotiate(final StompFrame connected) {
+        final Headers headers = require(connected, "STOMP CONNECTED frame").headers();
+        final List<String> values = headers.values(Builder.STOMP_HEADER_HEART_BEAT);
+        if (values.size() > Normal._1) {
+            throw new ProtocolException("STOMP CONNECTED heart-beat header must be unique");
+        }
+        final long[] server = heartbeatPair(values.isEmpty() ? null : values.getFirst());
+        final long clientSend = heartbeatMillis(snapshot.clientSendHeartbeat(), "Client send heartbeat");
+        final long clientReceive = heartbeatMillis(snapshot.clientReceiveHeartbeat(), "Client receive heartbeat");
+        final long serverSend = server[Normal._0];
+        final long serverReceive = server[Normal._1];
+        final Duration outbound = clientSend == Normal.LONG_ZERO || serverReceive == Normal.LONG_ZERO ? Duration.ZERO
+                : duration(Math.max(clientSend, serverReceive), "STOMP outbound heartbeat");
+        if (clientReceive == Normal.LONG_ZERO || serverSend == Normal.LONG_ZERO) {
+            return new Heartbeats(outbound, Duration.ZERO);
+        }
+        final long inbound = Math.max(clientReceive, serverSend);
+        final long tolerance = Math.max(Builder._1000, halfCeiling(inbound));
+        final long deadline;
+        try {
+            deadline = Math.addExact(inbound, tolerance);
+        } catch (final ArithmeticException e) {
+            throw new ProtocolException("STOMP inbound heartbeat deadline is too large", e);
+        }
+        return new Heartbeats(outbound, duration(deadline, "STOMP inbound heartbeat deadline"));
+    }
+
+    /**
+     * Parses a strict {@code sx,sy} CONNECTED heartbeat header.
+     *
+     * @param value header value, or null when the server disables heartbeats
+     * @return server send and receive values
+     */
+    private static long[] heartbeatPair(final String value) {
+        if (value == null) {
+            return new long[] { Normal.LONG_ZERO, Normal.LONG_ZERO };
+        }
+        final int comma = value.indexOf(',');
+        if (comma <= Normal._0 || comma != value.lastIndexOf(',') || comma == value.length() - Normal._1) {
+            throw new ProtocolException("Invalid STOMP CONNECTED heart-beat header");
+        }
+        return new long[] { unsignedMillis(value, Normal._0, comma),
+                unsignedMillis(value, comma + Normal._1, value.length()) };
+    }
+
+    /**
+     * Parses one non-negative decimal millisecond component.
+     *
+     * @param value value
+     * @param start start index
+     * @param end   end index
+     * @return milliseconds
+     */
+    private static long unsignedMillis(final String value, final int start, final int end) {
+        long result = Normal.LONG_ZERO;
+        for (int index = start; index < end; index++) {
+            final int digit = value.charAt(index) - '0';
+            if (digit < Normal._0 || digit > Normal._9 || result > (Long.MAX_VALUE - digit) / Normal._10) {
+                throw new ProtocolException("Invalid STOMP CONNECTED heart-beat header");
+            }
+            result = result * Normal._10 + digit;
+        }
+        return result;
+    }
+
+    /**
+     * Converts one client heartbeat Duration to milliseconds.
+     *
+     * @param value duration
+     * @param name  component name
+     * @return milliseconds
+     */
+    private static long heartbeatMillis(final Duration value, final String name) {
+        try {
+            return require(value, name).toMillis();
+        } catch (final ArithmeticException e) {
+            throw new ProtocolException(name + " is too large", e);
+        }
+    }
+
+    /**
+     * Creates a millisecond Duration while preserving protocol error semantics.
+     *
+     * @param millis milliseconds
+     * @param name   component name
+     * @return duration
+     */
+    private static Duration duration(final long millis, final String name) {
+        try {
+            return Duration.ofMillis(millis);
+        } catch (final ArithmeticException e) {
+            throw new ProtocolException(name + " is too large", e);
+        }
+    }
+
+    /**
+     * Returns half a positive value rounded up.
+     *
+     * @param value positive value
+     * @return rounded half
+     */
+    private static long halfCeiling(final long value) {
+        return value / Normal._2 + value % Normal._2;
+    }
+
+    /**
+     * Converts a Duration to nanoseconds with saturation.
+     *
+     * @param duration duration
+     * @return nanoseconds
+     */
+    private static long durationNanos(final Duration duration) {
+        try {
+            return duration.toNanos();
+        } catch (final ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    /**
+     * Calculates monotonic elapsed nanoseconds.
+     *
+     * @param started start value
+     * @param current current value
+     * @return elapsed value
+     */
+    private static long elapsed(final long started, final long current) {
+        return Math.max(Normal.LONG_ZERO, current - started);
     }
 
     /**
@@ -355,11 +504,13 @@ final class StompRunner {
     /**
      * Emits a STOMP event.
      *
-     * @param marker marker
-     * @param cause  cause
+     * @param marker      marker
+     * @param cause       cause
+     * @param operationId operation identifier
      */
-    private void emit(final ObservationMarker marker, final Throwable cause) {
-        FabricEvent.Builder event = FabricEvent.builder(marker).tag(Builder.TAG_PROTOCOL, snapshot.address().scheme())
+    private void emit(final ObservationMarker marker, final Throwable cause, final String operationId) {
+        FabricEvent.Builder event = FabricEvent.builder(marker, snapshot.context().clock())
+                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_PROTOCOL, snapshot.address().scheme())
                 .tag(Builder.HOST, snapshot.address().host())
                 .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
         if (cause != null) {
@@ -378,6 +529,16 @@ final class StompRunner {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Negotiated heartbeat settings transferred once to the Session.
+     *
+     * @param outbound        outbound heartbeat interval
+     * @param inboundDeadline inbound heartbeat deadline
+     */
+    private record Heartbeats(Duration outbound, Duration inboundDeadline) {
+
     }
 
 }

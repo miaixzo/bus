@@ -29,45 +29,38 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Immutable policy for connection pool limits and timeouts.
  *
+ * @param maxIdle                      maximum idle connections
+ * @param keepAlive                    idle keep-alive duration
+ * @param maxConnections               maximum total connections
+ * @param maxConnectionsPerDestination maximum connections per destination
+ * @param acquireTimeout               acquire timeout
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class PoolPolicy {
-
-    /**
-     * Maximum idle connections.
-     */
-    private final int maxIdle;
-
-    /**
-     * Idle keep-alive duration.
-     */
-    private final Duration keepAlive;
-
-    /**
-     * Maximum total connections.
-     */
-    private final int maxConnections;
-
-    /**
-     * Acquire timeout.
-     */
-    private final Duration acquireTimeout;
+public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, int maxConnectionsPerDestination,
+        Duration acquireTimeout) {
 
     /**
      * Creates a pool policy.
      *
-     * @param maxIdle        maximum idle connections
-     * @param keepAlive      keep-alive duration
-     * @param maxConnections maximum total connections
-     * @param acquireTimeout acquire timeout
+     * @param maxIdle                      maximum idle connections
+     * @param keepAlive                    keep-alive duration
+     * @param maxConnections               maximum total connections
+     * @param maxConnectionsPerDestination maximum connections per destination
+     * @param acquireTimeout               acquire timeout
      */
-    private PoolPolicy(final int maxIdle, final Duration keepAlive, final int maxConnections,
-            final Duration acquireTimeout) {
-        this.maxIdle = maxIdle;
-        this.keepAlive = keepAlive;
-        this.maxConnections = maxConnections;
-        this.acquireTimeout = acquireTimeout;
+    public PoolPolicy {
+        Assert.isTrue(
+                maxConnections > Normal._0,
+                () -> new ValidateException("Max connections must be greater than zero"));
+        Assert.isTrue(
+                maxIdle >= Normal._0 && maxIdle <= maxConnections,
+                () -> new ValidateException("Max idle must be between zero and max connections"));
+        Assert.isTrue(
+                maxConnectionsPerDestination >= Normal._1 && maxConnectionsPerDestination <= maxConnections,
+                () -> new ValidateException("Max connections per destination must be between one and max connections"));
+        keepAlive = Builder.validateDuration(keepAlive, "Keep alive");
+        acquireTimeout = Builder.validateDuration(acquireTimeout, "Acquire timeout");
     }
 
     /**
@@ -116,6 +109,16 @@ public final class PoolPolicy {
     }
 
     /**
+     * Returns maximum connections per destination.
+     *
+     * @return maximum connections per destination
+     */
+    @Override
+    public int maxConnectionsPerDestination() {
+        return maxConnectionsPerDestination;
+    }
+
+    /**
      * Returns acquire timeout.
      *
      * @return acquire timeout
@@ -146,6 +149,11 @@ public final class PoolPolicy {
          * Maximum connections candidate.
          */
         private int maxConnections = Normal._64;
+
+        /**
+         * Maximum connections per destination candidate.
+         */
+        private int maxConnectionsPerDestination = Math.min(Normal._16, maxConnections);
 
         /**
          * Acquire timeout candidate.
@@ -189,8 +197,24 @@ public final class PoolPolicy {
          * @return this builder
          */
         public Builder maxConnections(final int value) {
-            Assert.isFalse(value < 0, () -> new ValidateException("Max connections must not be negative"));
+            Assert.isTrue(value > Normal._0, () -> new ValidateException("Max connections must be greater than zero"));
             this.maxConnections = value;
+            this.maxConnectionsPerDestination = Math.min(maxConnectionsPerDestination, value);
+            return this;
+        }
+
+        /**
+         * Sets maximum connections per destination.
+         *
+         * @param value maximum connections per destination
+         * @return this builder
+         */
+        public Builder maxConnectionsPerDestination(final int value) {
+            Assert.isTrue(
+                    value >= Normal._1 && value <= maxConnections,
+                    () -> new ValidateException(
+                            "Max connections per destination must be between one and max connections"));
+            this.maxConnectionsPerDestination = value;
             return this;
         }
 
@@ -215,7 +239,7 @@ public final class PoolPolicy {
             Assert.isFalse(
                     maxIdle > maxConnections,
                     () -> new ValidateException("Max idle must not exceed max connections"));
-            return new PoolPolicy(maxIdle, keepAlive, maxConnections, acquireTimeout);
+            return new PoolPolicy(maxIdle, keepAlive, maxConnections, maxConnectionsPerDestination, acquireTimeout);
         }
 
         /**

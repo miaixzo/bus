@@ -51,6 +51,8 @@ import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
+import org.miaixz.bus.fabric.network.tls.TlsSettings;
+import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Demuxer;
 import org.miaixz.bus.fabric.protocol.Itinerary;
@@ -89,9 +91,12 @@ public final class SocketX {
     private SocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
+        final TlsContext tlsContext = tlsContext(current);
+        final TlsSettings tlsSettings = tlsContext == null ? null : tlsSettings(current);
         this.snapshot = new SocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, builder.frameCodec, builder.handler(), builder.guard, builder.filter, currentObserver,
-                builder.proxyHeader, builder.socketOptions, builder.listener, builder.pooled);
+                builder.timeout, tlsContext, tlsSettings, builder.frameCodec, builder.handler(), builder.guard,
+                builder.filter, currentObserver, builder.proxyHeader, builder.socketOptions, builder.listener,
+                builder.pooled);
         this.runner = new SocketRunner(snapshot);
         this.callback = builder.callback;
     }
@@ -240,6 +245,35 @@ public final class SocketX {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Resolves the socket TLS context from typed options.
+     *
+     * @param context shared context
+     * @return TLS context or null when explicitly disabled
+     */
+    private static TlsContext tlsContext(final Context context) {
+        if (context.options().contains(OPTION_SOCKET_TLS_CONTEXT)) {
+            return context.options().get(OPTION_SOCKET_TLS_CONTEXT);
+        }
+        final TlsContext configured = context.options().get(OPTION_TLS_CONTEXT);
+        return configured == null ? TlsContext.defaults() : configured;
+    }
+
+    /**
+     * Resolves socket TLS settings from typed options.
+     *
+     * @param context shared context
+     * @return TLS settings
+     */
+    private static TlsSettings tlsSettings(final Context context) {
+        if (context.options().contains(OPTION_SOCKET_TLS_SETTINGS)) {
+            final TlsSettings configured = context.options().get(OPTION_SOCKET_TLS_SETTINGS);
+            return configured == null ? TlsSettings.defaults() : configured;
+        }
+        final TlsSettings configured = context.options().get(OPTION_TLS_SETTINGS);
+        return configured == null ? TlsSettings.defaults() : configured;
     }
 
     /**
@@ -403,11 +437,10 @@ public final class SocketX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.socketOptions = hasSocketOptions(context.options()) ? SocketOptions.from(context.options())
                     : SocketOptions.defaults();
-            this.timeout = timeoutWithConnect(this.timeout, this.socketOptions.connectTimeout());
             this.frameCodec = FrameCodec.line();
             this.handler = Demuxer.noop();
             this.observer = EventObserver.noop();
@@ -542,7 +575,6 @@ public final class SocketX {
          */
         public Builder socketOptions(final SocketOptions options) {
             this.socketOptions = require(options, "Socket options");
-            this.timeout = timeoutWithConnect(this.timeout, options.connectTimeout());
             return this;
         }
 
@@ -609,16 +641,6 @@ public final class SocketX {
         }
 
         /**
-         * Sets connect timeout.
-         *
-         * @param timeout connect timeout
-         * @return this builder
-         */
-        public Builder connectTimeout(final Duration timeout) {
-            return socketOptions(copySocketOptions().connectTimeout(validateDuration(timeout)).build());
-        }
-
-        /**
          * Sets idle timeout.
          *
          * @param timeout idle timeout
@@ -626,6 +648,16 @@ public final class SocketX {
          */
         public Builder idleTimeout(final Duration timeout) {
             return socketOptions(copySocketOptions().idleTimeout(validateDuration(timeout)).build());
+        }
+
+        /**
+         * Sets the KCP wire-format version retained in the socket option snapshot.
+         *
+         * @param version wire-format version, either {@code 1} or {@code 2}
+         * @return this builder
+         */
+        public Builder kcpWireVersion(final int version) {
+            return socketOptions(copySocketOptions().kcpWireVersion(version).build());
         }
 
         /**
@@ -991,21 +1023,9 @@ public final class SocketX {
                     .writeChunkSize(socketOptions.writeChunkSize()).writeChunkCount(socketOptions.writeChunkCount())
                     .backlog(socketOptions.backlog()).ioThreads(socketOptions.ioThreads())
                     .socketOptions(socketOptions.socketOptions()).retainReadBuffer(socketOptions.retainReadBuffer())
-                    .connectTimeout(socketOptions.connectTimeout()).idleTimeout(socketOptions.idleTimeout());
+                    .idleTimeout(socketOptions.idleTimeout()).kcpWireVersion(socketOptions.kcpWireVersion());
         }
 
-    }
-
-    /**
-     * Returns a timeout policy with a replacement connect timeout.
-     *
-     * @param timeout        source timeout
-     * @param connectTimeout connect timeout
-     * @return updated timeout
-     */
-    private static Timeout timeoutWithConnect(final Timeout timeout, final Duration connectTimeout) {
-        return Timeout.builder().connect(connectTimeout).read(timeout.read()).write(timeout.write())
-                .call(timeout.call()).ping(timeout.ping()).build();
     }
 
     /**
@@ -1018,7 +1038,7 @@ public final class SocketX {
         return options.contains(OPTION_SOCKET_READ_BUFFER_SIZE) || options.contains(OPTION_SOCKET_WRITE_CHUNK_SIZE)
                 || options.contains(OPTION_SOCKET_WRITE_CHUNK_COUNT) || options.contains(OPTION_SOCKET_IO_THREADS)
                 || options.contains(OPTION_SOCKET_OPTIONS) || options.contains(OPTION_SOCKET_RETAIN_READ_BUFFER)
-                || options.contains(OPTION_SOCKET_CONNECT_TIMEOUT) || options.contains(OPTION_SOCKET_IDLE_TIMEOUT);
+                || options.contains(OPTION_SOCKET_IDLE_TIMEOUT);
     }
 
 }

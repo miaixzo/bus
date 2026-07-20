@@ -41,10 +41,12 @@ import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.Mediator.Type;
+import org.miaixz.bus.fabric.protocol.http.calls.HttpCall;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
@@ -127,10 +129,22 @@ public final class HttpDownload {
      */
     public static Builder builder(final Context context) {
         final Context current = require(context, "Context");
-        return new Builder((request, cancellation) -> Mediator.execute(
-                Type.HTTP,
-                cancellation,
-                currentCancellation -> HttpRunner.create(current, request).run(currentCancellation)));
+        return new Builder((request, cancellation) -> {
+            final Call<HttpResponse> call = HttpCall.create(
+                    request,
+                    current.reactor().dispatcher(),
+                    null,
+                    currentCancellation -> Mediator.execute(
+                            Type.HTTP,
+                            currentCancellation,
+                            routedCancellation -> HttpRunner.create(current, request).run(routedCancellation)));
+            final Runnable unregister = cancellation.onCancel(call::cancel);
+            try {
+                return call.execute();
+            } finally {
+                unregister.run();
+            }
+        });
     }
 
     /**
@@ -382,9 +396,16 @@ public final class HttpDownload {
         if (rangeTotal >= 0L) {
             return rangeTotal;
         }
-        final int length = response.headers().contentLength();
+        final long length = response.headers().contentLength();
         if (length >= 0) {
-            return append ? offset + length : length;
+            if (!append) {
+                return length;
+            }
+            try {
+                return Math.addExact(offset, length);
+            } catch (final ArithmeticException e) {
+                throw new ProtocolException("HTTP download length overflow", e);
+            }
         }
         return -1L;
     }

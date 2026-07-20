@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Status;
@@ -171,16 +172,23 @@ public final class Ingress implements Connection, Conduit {
      */
     @Override
     public CompletableFuture<Long> read(final Buffer target, final long byteCount) {
-        final Buffer checkedTarget = Assert
-                .notNull(target, () -> new ValidateException("Read target must not be null"));
-        Assert.isTrue(byteCount >= Normal._0, () -> new ValidateException("Read byte count must not be negative"));
+        if (target == null) {
+            return CompletableFuture.failedFuture(new ValidateException("Read target must not be null"));
+        }
+        if (byteCount < Normal._0) {
+            return CompletableFuture.failedFuture(new ValidateException("Read byte count must not be negative"));
+        }
         if (byteCount == Normal._0) {
             return CompletableFuture.completedFuture(0L);
         }
+        if (!opened()) {
+            return CompletableFuture.failedFuture(new SocketException("Ingress is closed"));
+        }
         try {
-            if (prefix.size() > Normal._0) {
-                return CompletableFuture
-                        .completedFuture(prefix.read(checkedTarget, Math.min(byteCount, prefix.size())));
+            synchronized (prefix) {
+                if (prefix.size() > Normal._0) {
+                    return CompletableFuture.completedFuture(prefix.read(target, Math.min(byteCount, prefix.size())));
+                }
             }
             final ByteBuffer buffer = ByteBuffer.allocate(readCapacity(byteCount));
             final int read = channel.read(buffer);
@@ -188,7 +196,7 @@ public final class Ingress implements Connection, Conduit {
                 return CompletableFuture.completedFuture((long) Normal.__1);
             }
             buffer.flip();
-            checkedTarget.write(buffer);
+            target.write(buffer);
             return CompletableFuture.completedFuture((long) read);
         } catch (final IOException e) {
             lifecycle.fail(e);
@@ -205,26 +213,53 @@ public final class Ingress implements Connection, Conduit {
      */
     @Override
     public CompletableFuture<Long> write(final Buffer source, final long byteCount) {
-        final Buffer checkedSource = Assert
-                .notNull(source, () -> new ValidateException("Write source must not be null"));
-        Assert.isTrue(byteCount >= Normal._0, () -> new ValidateException("Write byte count must not be negative"));
-        Assert.isTrue(
-                byteCount <= checkedSource.size(),
-                () -> new ValidateException("Write byte count must not exceed source size"));
+        if (source == null) {
+            return CompletableFuture.failedFuture(new ValidateException("Write source must not be null"));
+        }
+        if (byteCount < Normal._0 || byteCount > source.size()) {
+            return CompletableFuture
+                    .failedFuture(new ValidateException("Write byte count must be between zero and source size"));
+        }
+        if (byteCount == Normal._0) {
+            return CompletableFuture.completedFuture(0L);
+        }
+        if (!opened()) {
+            return CompletableFuture.failedFuture(new SocketException("Ingress is closed"));
+        }
         long written = Normal._0;
         long remaining = byteCount;
+        int zeroProgress = Normal._0;
         try {
             while (remaining > Normal._0) {
-                final ByteBuffer view = checkedSource.nioBuffer(toIntSize(remaining));
+                if (!opened()) {
+                    return CompletableFuture.failedFuture(new SocketException("Ingress closed during write"));
+                }
+                final ByteBuffer view = source.nioBuffer(toIntSize(remaining));
                 final int count = channel.write(view);
                 if (count == Normal._0) {
-                    break;
+                    zeroProgress++;
+                    if (zeroProgress >= Normal._16) {
+                        return CompletableFuture
+                                .failedFuture(new SocketException("Ingress write made no progress after 16 attempts"));
+                    }
+                    if (!ThreadKit.sleep(Normal._1)) {
+                        return CompletableFuture.failedFuture(new SocketException("Ingress write was interrupted"));
+                    }
+                    continue;
                 }
-                checkedSource.skip(count);
+                if (count < Normal._0 || count > remaining) {
+                    return CompletableFuture
+                            .failedFuture(new SocketException("Ingress channel returned invalid write count"));
+                }
+                zeroProgress = Normal._0;
+                source.skip(count);
                 written += count;
                 remaining -= count;
             }
-            return CompletableFuture.completedFuture(written);
+            if (written != byteCount) {
+                return CompletableFuture.failedFuture(new SocketException("Ingress did not fully consume write bytes"));
+            }
+            return CompletableFuture.completedFuture(byteCount);
         } catch (final IOException e) {
             lifecycle.fail(e);
             return CompletableFuture.failedFuture(new SocketException("Unable to write ingress", e));
@@ -309,7 +344,11 @@ public final class Ingress implements Connection, Conduit {
      */
     private static long await(final CompletableFuture<Long> future, final String message) throws IOException {
         try {
-            return Assert.notNull(future, () -> new ValidateException("IO future must not be null")).get();
+            final Long value = Assert.notNull(future, () -> new ValidateException("IO future must not be null")).get();
+            if (value == null) {
+                throw new SocketException("Ingress IO future returned a null byte count");
+            }
+            return value;
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new IOException(message, e);
@@ -320,6 +359,9 @@ public final class Ingress implements Connection, Conduit {
             }
             if (cause instanceof RuntimeException runtime) {
                 throw runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
             }
             throw new IOException(message, cause);
         }
@@ -340,7 +382,14 @@ public final class Ingress implements Connection, Conduit {
          */
         @Override
         public long read(final Buffer sink, final long byteCount) throws IOException {
-            return await(Ingress.this.read(sink, byteCount), "Unable to read ingress source");
+            final Buffer target = Assert.notNull(sink, () -> new ValidateException("Read target must not be null"));
+            final long before = target.size();
+            final long read = await(Ingress.this.read(target, byteCount), "Unable to read ingress source");
+            final long appended = target.size() - before;
+            if ((read == Normal.__1 && appended != Normal._0) || (read >= Normal._0 && appended != read)) {
+                throw new SocketException("Ingress source read count did not match appended bytes");
+            }
+            return read;
         }
 
         /**
@@ -377,7 +426,12 @@ public final class Ingress implements Connection, Conduit {
          */
         @Override
         public void write(final Buffer source, final long byteCount) throws IOException {
-            await(Ingress.this.write(source, byteCount), "Unable to write ingress sink");
+            final Buffer current = Assert.notNull(source, () -> new ValidateException("Write source must not be null"));
+            final long before = current.size();
+            final long written = await(Ingress.this.write(current, byteCount), "Unable to write ingress sink");
+            if (written != byteCount || before - current.size() != byteCount) {
+                throw new SocketException("Ingress sink did not fully consume requested bytes");
+            }
         }
 
         /**

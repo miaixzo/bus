@@ -20,7 +20,9 @@
 package org.miaixz.bus.fabric;
 
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -50,7 +52,12 @@ public interface Call<T> extends Lifecycle {
             /**
              * Cancellation flag.
              */
-            private volatile boolean cancelled;
+            private final AtomicBoolean cancelled = new AtomicBoolean();
+
+            /**
+             * Stable unsupported-operation failure shared by every start path.
+             */
+            private final StatefulException failure = new StatefulException(message);
 
             /**
              * Executes this unsupported call.
@@ -59,17 +66,38 @@ public interface Call<T> extends Lifecycle {
              */
             @Override
             public T execute() {
-                throw new UnsupportedOperationException(message);
+                throw failure;
             }
 
             /**
-             * Marks this unsupported call as already completed.
+             * Rejects asynchronous execution of this unsupported call.
              *
-             * @return this call
+             * @return never returns
              */
             @Override
             public Call<T> enqueue() {
-                return this;
+                throw failure;
+            }
+
+            /**
+             * Rejects waiting for this unsupported call.
+             *
+             * @return never returns
+             */
+            @Override
+            public T await() {
+                throw failure;
+            }
+
+            /**
+             * Rejects timed waiting for this unsupported call.
+             *
+             * @param timeout ignored timeout
+             * @return never returns
+             */
+            @Override
+            public T await(final Duration timeout) {
+                throw failure;
             }
 
             /**
@@ -79,11 +107,7 @@ public interface Call<T> extends Lifecycle {
              */
             @Override
             public boolean cancel() {
-                if (cancelled) {
-                    return false;
-                }
-                cancelled = true;
-                return true;
+                return cancelled.compareAndSet(false, true);
             }
 
             /**
@@ -93,23 +117,25 @@ public interface Call<T> extends Lifecycle {
              */
             @Override
             public Status state() {
-                return cancelled ? Status.CANCELLED : Status.FAILED;
+                return cancelled.get() ? Status.CANCELLED : Status.FAILED;
             }
 
         };
     }
 
     /**
-     * Executes this call synchronously.
+     * Starts and executes this call synchronously. A call may be started only once.
      *
      * @return completed result
+     * @throws StatefulException when the call has already been started
      */
     T execute();
 
     /**
-     * Enqueues this call for asynchronous execution.
+     * Starts and enqueues this call for asynchronous execution. A call may be started only once.
      *
      * @return this call
+     * @throws StatefulException when the call has already been started
      */
     Call<T> enqueue();
 
@@ -140,7 +166,7 @@ public interface Call<T> extends Lifecycle {
     }
 
     /**
-     * Waits for this call to complete.
+     * Starts a queued call when necessary and waits for its completion.
      *
      * @return completed value
      */
@@ -149,16 +175,12 @@ public interface Call<T> extends Lifecycle {
     }
 
     /**
-     * Waits for this call to complete within a timeout.
+     * Starts a queued call when necessary and waits for its completion within a timeout.
      *
-     * @param timeout timeout
+     * @param timeout non-null, non-negative timeout; zero performs an immediate completion check
      * @return completed value
+     * @throws ValidateException when timeout is null or negative
      */
-    default T await(final Duration timeout) {
-        if (timeout == null || timeout.isNegative()) {
-            throw new ValidateException("Timeout must be non-null and non-negative");
-        }
-        return await();
-    }
+    T await(Duration timeout);
 
 }

@@ -26,6 +26,7 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
+import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Listener;
@@ -153,9 +154,10 @@ final class SystemAioProvider implements AioProvider {
     @Override
     public AioChannel openChannel(final AioGroup group, final SocketOptions options) {
         final AioGroup checkedGroup = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
+        ensureOpen(checkedGroup);
         try {
             return new AioChannel(AsynchronousSocketChannel.open(checkedGroup.channelGroup), checkedGroup.dispatcher(),
-                    options == null ? SocketOptions.defaults() : options);
+                    checkedGroup.scope(), options == null ? SocketOptions.defaults() : options);
         } catch (final IOException e) {
             throw new SocketException("Unable to open AIO channel", e);
         }
@@ -192,11 +194,23 @@ final class SystemAioProvider implements AioProvider {
         final Address checkedAddress = Assert
                 .notNull(address, () -> new ValidateException("Server address must not be null"));
         final AioGroup checkedGroup = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
+        ensureOpen(checkedGroup);
         try {
             return new TcpServer(checkedAddress, listener, checkedGroup.dispatcher(),
                     options == null ? SocketOptions.defaults() : options);
         } catch (final RuntimeException e) {
             throw new InternalException("Unable to open TCP server", e);
+        }
+    }
+
+    /**
+     * Rejects resource creation after the group starts closing.
+     *
+     * @param group channel group
+     */
+    private static void ensureOpen(final AioGroup group) {
+        if (!group.opened()) {
+            throw new StatefulException("AIO group is closed");
         }
     }
 

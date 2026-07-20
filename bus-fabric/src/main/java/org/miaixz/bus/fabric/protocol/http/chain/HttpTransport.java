@@ -28,6 +28,7 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
@@ -183,13 +184,12 @@ public final class HttpTransport implements HttpStage {
         if (destination.protocol() == Protocol.HTTP_2 || destination.protocol() == Protocol.H2_PRIOR_KNOWLEDGE) {
             return true;
         }
-        final Object protocol = destination.options().get("protocol");
+        final String protocol = destination.options().get(Builder.OPTION_PROTOCOL);
         if (protocol == null) {
             return false;
         }
-        final String protocolName = protocol.toString();
-        return Protocol.HTTP_2.toString().equalsIgnoreCase(protocolName) || "http/2".equalsIgnoreCase(protocolName)
-                || Protocol.H2_PRIOR_KNOWLEDGE.toString().equalsIgnoreCase(protocolName);
+        return Protocol.HTTP_2.toString().equalsIgnoreCase(protocol) || "http/2".equalsIgnoreCase(protocol)
+                || Protocol.H2_PRIOR_KNOWLEDGE.toString().equalsIgnoreCase(protocol);
     }
 
     /**

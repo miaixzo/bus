@@ -28,13 +28,16 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @param requestCount      cache strategy request count
  * @param networkCount      network response count
  * @param hitCount          cache hit count
+ * @param missCount         cache miss count
+ * @param corruptionCount   corrupt candidate count
  * @param writeSuccessCount cache body write success count
  * @param writeAbortCount   cache body write abort count
+ * @param writeFailureCount cache write failure count
  * @author Kimi Liu
  * @since Java 21+
  */
-public record HttpCacheStats(long requestCount, long networkCount, long hitCount, long writeSuccessCount,
-        long writeAbortCount) {
+public record HttpCacheStats(long requestCount, long networkCount, long hitCount, long missCount, long corruptionCount,
+        long writeSuccessCount, long writeAbortCount, long writeFailureCount) {
 
     /**
      * Creates a validated stats snapshot.
@@ -43,8 +46,11 @@ public record HttpCacheStats(long requestCount, long networkCount, long hitCount
         requestCount = nonNegative(requestCount, "Request count");
         networkCount = nonNegative(networkCount, "Network count");
         hitCount = nonNegative(hitCount, "Hit count");
+        missCount = nonNegative(missCount, "Miss count");
+        corruptionCount = nonNegative(corruptionCount, "Corruption count");
         writeSuccessCount = nonNegative(writeSuccessCount, "Write success count");
         writeAbortCount = nonNegative(writeAbortCount, "Write abort count");
+        writeFailureCount = nonNegative(writeFailureCount, "Write failure count");
     }
 
     /**
@@ -53,17 +59,24 @@ public record HttpCacheStats(long requestCount, long networkCount, long hitCount
      * @param requestCount      request count
      * @param networkCount      network count
      * @param hitCount          hit count
+     * @param missCount         miss count
+     * @param corruptionCount   corruption count
      * @param writeSuccessCount write success count
      * @param writeAbortCount   write abort count
+     * @param writeFailureCount write failure count
      * @return stats
      */
     public static HttpCacheStats of(
             final long requestCount,
             final long networkCount,
             final long hitCount,
+            final long missCount,
+            final long corruptionCount,
             final long writeSuccessCount,
-            final long writeAbortCount) {
-        return new HttpCacheStats(requestCount, networkCount, hitCount, writeSuccessCount, writeAbortCount);
+            final long writeAbortCount,
+            final long writeFailureCount) {
+        return new HttpCacheStats(requestCount, networkCount, hitCount, missCount, corruptionCount, writeSuccessCount,
+                writeAbortCount, writeFailureCount);
     }
 
     /**

@@ -27,42 +27,50 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Immutable time policy shared by protocol builders and runtime calls.
  * <p>
- * Each value is optional. {@link Duration#ZERO} means that the protocol stage does not install an explicit timeout for
- * that field.
+ * Except for {@code close}, {@link Duration#ZERO} means that the protocol stage does not install a deadline or
+ * keep-alive interval for that field. Close coordination always has a positive deadline so native resources cannot
+ * remain indefinitely half-closed.
  * <ul>
- * <li>{@code connect}: connection establishment. Used by HTTP, SSE, WebSocket upgrade, STOMP over WebSocket, and TCP
- * socket opens.</li>
- * <li>{@code read}: blocking protocol reads. Used by HTTP response reads, HTTP proxy negotiation, SSE stream reads
- * through HTTP, and WebSocket upgrade reads. Raw socket sessions do not currently enforce this after open.</li>
- * <li>{@code write}: blocking protocol writes. Used by HTTP request writes, HTTP proxy negotiation, WebSocket upgrade
- * writes, and the initial STOMP CONNECT frame. Raw socket sessions do not currently enforce this after open.</li>
- * <li>{@code call}: logical operation wait. Currently used by STOMP while waiting for CONNECTED, falling back to
- * {@code connect} when zero. HTTP, SSE, WebSocket, and raw socket sessions do not currently use it as a global
- * watchdog, because some of them are long-lived streams.</li>
- * <li>{@code ping}: automatic keep-alive interval. Currently used by WebSocket sessions only. It is not HTTP, SSE
- * retry, raw socket keep-alive, or STOMP heartbeat configuration.</li>
+ * <li>{@code connect}: TCP establishment, TLS handshake, and HTTP-family connection or upgrade establishment used by
+ * HTTP, WebSocket, SSE, and STOMP.</li>
+ * <li>{@code read}: bounded HTTP, Socket, WebSocket, SSE, STOMP, and TLS reads.</li>
+ * <li>{@code write}: bounded network writes for HTTP, Socket, WebSocket, SSE, STOMP, and TLS.</li>
+ * <li>{@code call}: the complete logical protocol Call deadline rather than one individual read or write.</li>
+ * <li>{@code ping}: the WebSocket or Socket keep-alive interval.</li>
+ * <li>{@code close}: the TLS {@code close_notify}, WebSocket Close handshake, and bounded server/session graceful-close
+ * wait.</li>
  * </ul>
  *
- * @param connect connection establishment timeout; used by HTTP-family connects and TCP socket opens
- * @param read    read timeout for HTTP-family blocking reads; zero means no explicit read timeout
- * @param write   write timeout for HTTP-family blocking writes and STOMP CONNECT writes; zero means no explicit write
- *                timeout
- * @param call    logical operation timeout; currently used by STOMP CONNECTED wait, not as a global HTTP/SSE/socket
- *                timeout
- * @param ping    WebSocket automatic ping interval; zero disables automatic pings
+ * @param connect TCP, TLS, and HTTP-family connection establishment deadline; zero disables it
+ * @param read    HTTP, Socket, WebSocket, SSE, STOMP, and TLS read deadline; zero disables it
+ * @param write   HTTP, Socket, WebSocket, SSE, STOMP, and TLS write deadline; zero disables it
+ * @param call    complete protocol Call deadline; zero disables it
+ * @param ping    WebSocket and Socket keep-alive interval; zero disables it
+ * @param close   positive TLS close_notify, WebSocket Close, and graceful-close deadline
  * @author Kimi Liu
  * @since Java 21+
  */
-public record Timeout(Duration connect, Duration read, Duration write, Duration call, Duration ping) {
+public record Timeout(Duration connect, Duration read, Duration write, Duration call, Duration ping, Duration close) {
+
+    /**
+     * Default TCP, TLS, and HTTP connection plus network read/write deadline.
+     */
+    private static final Duration DEFAULT_NETWORK_TIMEOUT = Duration.ofSeconds(10);
+
+    /**
+     * Default TLS, WebSocket, server, and session graceful-close deadline.
+     */
+    private static final Duration DEFAULT_CLOSE_TIMEOUT = Duration.ofSeconds(60);
 
     /**
      * Creates a validated immutable time policy.
      *
-     * @param connect connection establishment timeout
-     * @param read    protocol read timeout
-     * @param write   protocol write timeout
-     * @param call    logical operation timeout
-     * @param ping    WebSocket ping interval
+     * @param connect TCP, TLS, and HTTP-family connection establishment deadline
+     * @param read    HTTP, Socket, WebSocket, SSE, STOMP, and TLS read deadline
+     * @param write   HTTP, Socket, WebSocket, SSE, STOMP, and TLS write deadline
+     * @param call    complete protocol Call deadline
+     * @param ping    WebSocket and Socket keep-alive interval
+     * @param close   positive TLS and WebSocket close deadline
      */
     public Timeout {
         connect = validate(connect, "Connect timeout");
@@ -70,6 +78,21 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         write = validate(write, "Write timeout");
         call = validate(call, "Call timeout");
         ping = validate(ping, "Ping interval");
+        close = validateClose(close);
+    }
+
+    /**
+     * Creates a compatibility policy whose close deadline is fixed at sixty seconds.
+     *
+     * @param connect TCP, TLS, and HTTP-family connection establishment deadline
+     * @param read    HTTP, Socket, WebSocket, SSE, STOMP, and TLS read deadline
+     * @param write   HTTP, Socket, WebSocket, SSE, STOMP, and TLS write deadline
+     * @param call    complete protocol Call deadline
+     * @param ping    WebSocket and Socket keep-alive interval
+     */
+    public Timeout(final Duration connect, final Duration read, final Duration write, final Duration call,
+            final Duration ping) {
+        this(connect, read, write, call, ping, DEFAULT_CLOSE_TIMEOUT);
     }
 
     /**
@@ -80,28 +103,26 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     public static Timeout defaults() {
         return Instances.get(
                 Timeout.class.getName() + ".defaults",
-                () -> new Timeout(Duration.ofSeconds(10), Duration.ofSeconds(10), Duration.ofSeconds(10), Duration.ZERO,
-                        Duration.ZERO));
+                () -> new Timeout(DEFAULT_NETWORK_TIMEOUT, DEFAULT_NETWORK_TIMEOUT, DEFAULT_NETWORK_TIMEOUT,
+                        Duration.ZERO, Duration.ZERO, DEFAULT_CLOSE_TIMEOUT));
     }
 
     /**
      * Creates a policy that applies the same timeout to connect, read, write, and call.
      * <p>
-     * The WebSocket ping interval stays disabled because a timeout and a periodic keep-alive interval are different
-     * concepts.
+     * The WebSocket or Socket ping interval stays disabled, and close coordination retains its fixed sixty-second
+     * deadline, because keep-alive and graceful close are not ordinary operation deadlines.
      *
      * @param timeout unified timeout
      * @return timeout policy
      */
     public static Timeout of(final Duration timeout) {
         final Duration validated = validate(timeout, "Timeout");
-        return new Timeout(validated, validated, validated, validated, Duration.ZERO);
+        return new Timeout(validated, validated, validated, validated, Duration.ZERO, DEFAULT_CLOSE_TIMEOUT);
     }
 
     /**
-     * Creates a time policy builder with zero values.
-     * <p>
-     * Zero values mean no explicit timeout for each corresponding field until the user sets it.
+     * Creates a time policy builder initialized to {@link #defaults()} values.
      *
      * @return time policy builder
      */
@@ -112,8 +133,8 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     /**
      * Returns the connection establishment timeout.
      * <p>
-     * Used by HTTP-family connection acquisition, SSE and WebSocket HTTP handshakes, STOMP over WebSocket opening, and
-     * TCP socket opens.
+     * Used by TCP establishment, TLS handshake, and HTTP-family connection or upgrade establishment for HTTP,
+     * WebSocket, SSE, and STOMP. Zero means no connection deadline is installed.
      *
      * @return connection establishment timeout
      */
@@ -125,8 +146,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     /**
      * Returns the protocol read timeout.
      * <p>
-     * Used by HTTP response reads, HTTP proxy negotiation, SSE reads through HTTP, and WebSocket HTTP upgrade reads.
-     * Raw socket sessions do not currently enforce this after open.
+     * Used by HTTP, Socket, WebSocket, SSE, STOMP, and TLS reads. Zero means no read deadline is installed.
      *
      * @return read timeout
      */
@@ -138,8 +158,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     /**
      * Returns the protocol write timeout.
      * <p>
-     * Used by HTTP request writes, HTTP proxy negotiation, WebSocket HTTP upgrade writes, and the initial STOMP CONNECT
-     * frame write. Raw socket sessions do not currently enforce this after open.
+     * Used by HTTP, Socket, WebSocket, SSE, STOMP, and TLS writes. Zero means no write deadline is installed.
      *
      * @return write timeout
      */
@@ -151,8 +170,8 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     /**
      * Returns the logical operation timeout.
      * <p>
-     * Currently used by STOMP while waiting for CONNECTED. HTTP, SSE, WebSocket, and raw socket sessions do not use
-     * this as a global watchdog.
+     * Covers a complete logical protocol Call rather than one read or write stage. Zero means no Call deadline is
+     * installed.
      *
      * @return logical operation timeout
      */
@@ -162,16 +181,28 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     }
 
     /**
-     * Returns the WebSocket automatic ping interval.
+     * Returns the WebSocket and Socket keep-alive interval.
      * <p>
-     * Currently used by WebSocket sessions only. This does not configure HTTP, SSE reconnects, raw socket keep-alives,
-     * or STOMP heartbeats.
+     * Zero disables protocol keep-alive scheduling. It is separate from SSE retry and STOMP heartbeat negotiation.
      *
      * @return WebSocket ping interval
      */
     @Override
     public Duration ping() {
         return ping;
+    }
+
+    /**
+     * Returns the graceful-close deadline.
+     * <p>
+     * Used by TLS close_notify, the WebSocket Close handshake, and bounded Socket/WebSocket server or session shutdown.
+     * Unlike the other components, close is always positive.
+     *
+     * @return positive close deadline
+     */
+    @Override
+    public Duration close() {
+        return close;
     }
 
     /**
@@ -189,6 +220,20 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     }
 
     /**
+     * Validates the mandatory positive close deadline.
+     *
+     * @param timeout close deadline candidate
+     * @return validated close deadline
+     */
+    private static Duration validateClose(final Duration timeout) {
+        final Duration checked = validate(timeout, "Close timeout");
+        if (checked.isZero()) {
+            throw new ValidateException("Close timeout must be positive");
+        }
+        return checked;
+    }
+
+    /**
      * Builder for immutable time policies.
      *
      * @author Kimi Liu
@@ -199,17 +244,17 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         /**
          * Candidate connection establishment timeout.
          */
-        private Duration connect = Duration.ZERO;
+        private Duration connect = DEFAULT_NETWORK_TIMEOUT;
 
         /**
          * Candidate protocol read timeout.
          */
-        private Duration read = Duration.ZERO;
+        private Duration read = DEFAULT_NETWORK_TIMEOUT;
 
         /**
          * Candidate protocol write timeout.
          */
-        private Duration write = Duration.ZERO;
+        private Duration write = DEFAULT_NETWORK_TIMEOUT;
 
         /**
          * Candidate logical operation timeout.
@@ -222,7 +267,12 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         private Duration ping = Duration.ZERO;
 
         /**
-         * Creates a builder with zero timeout semantics.
+         * Candidate TLS, WebSocket, server, and session graceful-close deadline.
+         */
+        private Duration close = DEFAULT_CLOSE_TIMEOUT;
+
+        /**
+         * Creates a builder initialized to the complete default policy.
          */
         private Builder() {
             // No initialization required.
@@ -231,7 +281,8 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         /**
          * Sets the connection establishment timeout.
          * <p>
-         * Applies to HTTP-family connects and TCP socket opens.
+         * Applies to TCP establishment, TLS handshake, and HTTP-family establishment for HTTP, WebSocket, SSE, and
+         * STOMP. Zero disables the deadline.
          *
          * @param timeout connection establishment timeout
          * @return this builder
@@ -245,7 +296,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         /**
          * Sets the protocol read timeout.
          * <p>
-         * Applies to HTTP response/proxy reads, SSE reads through HTTP, and WebSocket upgrade reads.
+         * Applies to HTTP, Socket, WebSocket, SSE, STOMP, and TLS reads. Zero disables the deadline.
          *
          * @param timeout read timeout
          * @return this builder
@@ -259,7 +310,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         /**
          * Sets the protocol write timeout.
          * <p>
-         * Applies to HTTP request/proxy writes, WebSocket upgrade writes, and the initial STOMP CONNECT frame write.
+         * Applies to HTTP, Socket, WebSocket, SSE, STOMP, and TLS writes. Zero disables the deadline.
          *
          * @param timeout write timeout
          * @return this builder
@@ -273,8 +324,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         /**
          * Sets the logical operation timeout.
          * <p>
-         * Currently used by STOMP while waiting for CONNECTED. It is not a global timeout for HTTP, SSE, WebSocket, or
-         * raw socket sessions.
+         * Covers a complete protocol Call rather than an individual read or write. Zero disables the deadline.
          *
          * @param timeout logical operation timeout
          * @return this builder
@@ -286,9 +336,9 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         }
 
         /**
-         * Sets the WebSocket automatic ping interval.
+         * Sets the WebSocket and Socket keep-alive interval.
          * <p>
-         * This does not configure HTTP, SSE reconnects, raw socket keep-alives, or STOMP heartbeats.
+         * Zero disables keep-alive scheduling. This does not configure SSE retry or STOMP heartbeat negotiation.
          *
          * @param interval WebSocket ping interval
          * @return this builder
@@ -300,12 +350,27 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         }
 
         /**
+         * Sets the mandatory graceful-close deadline.
+         * <p>
+         * Applies to TLS close_notify, the WebSocket Close handshake, and bounded Socket/WebSocket server or session
+         * shutdown. Zero is rejected.
+         *
+         * @param timeout positive close deadline
+         * @return this builder
+         */
+        public Builder close(final Duration timeout) {
+            final Duration validated = validateClose(timeout);
+            close = validated;
+            return this;
+        }
+
+        /**
          * Builds an immutable time policy.
          *
          * @return time policy
          */
         public Timeout build() {
-            return new Timeout(connect, read, write, call, ping);
+            return new Timeout(connect, read, write, call, ping, close);
         }
 
     }

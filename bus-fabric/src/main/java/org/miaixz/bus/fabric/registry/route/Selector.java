@@ -65,10 +65,15 @@ public final class Selector {
     private volatile EventObserver observer;
 
     /**
+     * Runtime clock used for route state and observation events.
+     */
+    private final Clock clock;
+
+    /**
      * Creates an empty route selector.
      */
     public Selector() {
-        this(EventObserver.noop());
+        this(EventObserver.noop(), Clock.system());
     }
 
     /**
@@ -77,10 +82,21 @@ public final class Selector {
      * @param observer observer
      */
     public Selector(final EventObserver observer) {
+        this(observer, Clock.system());
+    }
+
+    /**
+     * Creates an empty route selector with explicit runtime dependencies.
+     *
+     * @param observer observer
+     * @param clock    runtime clock
+     */
+    public Selector(final EventObserver observer, final Clock clock) {
         this.ready = new ArrayDeque<>();
         this.failed = new ArrayDeque<>();
         this.failures = new HashMap<>();
         this.observer = EventObserver.safe(require(observer, "Route observer"));
+        this.clock = require(clock, "Clock");
     }
 
     /**
@@ -110,7 +126,7 @@ public final class Selector {
      * @return next route or null
      */
     public synchronized Route next() {
-        return next(Clock.system());
+        return next(clock);
     }
 
     /**
@@ -140,7 +156,7 @@ public final class Selector {
      * @param route route
      */
     public synchronized void failed(final Route route) {
-        failed(route, Clock.system());
+        failed(route, clock);
     }
 
     /**
@@ -161,7 +177,7 @@ public final class Selector {
         if (!failed.contains(route)) {
             failed.addLast(route);
         }
-        emit(ObservationMarker.ROUTE_BACKOFF, route, failures, delay);
+        emit(ObservationMarker.ROUTE_BACKOFF, route, failures, delay, clock);
     }
 
     /**
@@ -176,7 +192,7 @@ public final class Selector {
         if (!ready.contains(route)) {
             ready.addLast(route);
         }
-        emit(ObservationMarker.ROUTE_READY, route, Normal._0, Duration.ZERO);
+        emit(ObservationMarker.ROUTE_READY, route, Normal._0, Duration.ZERO, clock);
     }
 
     /**
@@ -247,12 +263,18 @@ public final class Selector {
      * @param route    route
      * @param attempts attempt count
      * @param delay    delay
+     * @param clock    event clock
      */
-    private void emit(final ObservationMarker marker, final Route route, final int attempts, final Duration delay) {
+    private void emit(
+            final ObservationMarker marker,
+            final Route route,
+            final int attempts,
+            final Duration delay,
+            final Clock clock) {
         observer.emit(
-                FabricEvent.builder(marker).tag(Builder.TAG_KEY, route.id())
-                        .tag(Builder.TAG_ATTEMPT, Integer.toString(attempts)).tag(Builder.TAG_DELAY, delay.toString())
-                        .build());
+                FabricEvent.builder(marker, clock).tag(Builder.TAG_OPERATION_ID, route.id())
+                        .tag(Builder.TAG_KEY, route.id()).tag(Builder.TAG_ATTEMPT, Integer.toString(attempts))
+                        .tag(Builder.TAG_DELAY, delay.toString()).build());
     }
 
     /**

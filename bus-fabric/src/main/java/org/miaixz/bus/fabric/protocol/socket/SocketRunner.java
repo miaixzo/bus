@@ -24,9 +24,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
@@ -36,6 +37,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
@@ -75,12 +77,18 @@ final class SocketRunner {
     private final SocketSnapshot snapshot;
 
     /**
+     * Identifier reused by every event emitted while opening this session.
+     */
+    private final String operationId;
+
+    /**
      * Creates a runner.
      *
      * @param snapshot execution snapshot
      */
     SocketRunner(final SocketSnapshot snapshot) {
         this.snapshot = require(snapshot, "Socket exchange snapshot");
+        this.operationId = ID.objectId();
     }
 
     /**
@@ -116,10 +124,10 @@ final class SocketRunner {
             currentCancellation.throwIfCancelled();
             final Transport transport = Transport.fromScheme(snapshot.address().scheme());
             final SocketSession session = switch (transport) {
-                case TCP -> openTcp(opening);
-                case TLS -> openTls(opening);
-                case UDP -> openUdp(opening);
-                case KCP -> openKcp(opening);
+                case TCP -> openTcp(opening, currentCancellation);
+                case TLS -> openTls(opening, currentCancellation);
+                case UDP -> openUdp(opening, currentCancellation);
+                case KCP -> openKcp(opening, currentCancellation);
                 default -> throw new ProtocolException("Socket exchange does not support transport: " + transport);
             };
             final Runnable unregisterCancellation = currentCancellation.onCancel(session::cancel);
@@ -170,9 +178,9 @@ final class SocketRunner {
      * @param opening filtered opening message
      * @return session
      */
-    private SocketSession openTcp(final Message opening) {
+    private SocketSession openTcp(final Message opening, final Cancellation cancellation) {
         if (snapshot.pooled()) {
-            return openPooledTcp(opening);
+            return openPooledTcp(opening, cancellation);
         }
         Logger.debug(
                 true,
@@ -188,16 +196,14 @@ final class SocketRunner {
                     snapshot.context().reactor().dispatcher(),
                     snapshot.socketOptions());
             final TcpNetwork network = TcpNetwork.create(aio);
-            final Connection connection = await(network.connect(snapshot.address(), snapshot.timeout()));
+            final Connection connection = await(network.connect(snapshot.address(), snapshot.timeout()), cancellation);
             Logger.debug(
                     false,
                     "Fabric",
                     "Socket TCP connect completed: host={}, port={}",
                     snapshot.address().host(),
                     snapshot.address().port());
-            return new SocketSession(snapshot.address(), connection, SocketCodec.of(snapshot.frameCodec()),
-                    snapshot.handler(), attributes(opening), network, snapshot.listener(),
-                    snapshot.context().options().materializeMaxBytes(), snapshot.socketOptions());
+            return session(connection, null, null, opening, network, cancellation);
         } catch (final RuntimeException e) {
             if (aio != null) {
                 aio.close();
@@ -212,7 +218,7 @@ final class SocketRunner {
      * @param opening filtered opening message
      * @return session
      */
-    private SocketSession openTls(final Message opening) {
+    private SocketSession openTls(final Message opening, final Cancellation cancellation) {
         Logger.debug(
                 true,
                 "Fabric",
@@ -227,27 +233,28 @@ final class SocketRunner {
                     snapshot.context().reactor().dispatcher(),
                     snapshot.socketOptions());
             final TcpNetwork network = TcpNetwork.create(aio);
-            final Connection raw = await(network.connect(snapshot.address(), snapshot.timeout()));
+            final Connection raw = await(network.connect(snapshot.address(), snapshot.timeout()), cancellation);
             final TlsChannel tls = TlsChannel.wrap(
                     raw.conduit(),
                     TlsEngine.create(tlsContext(), snapshot.address(), tlsSettings()),
                     snapshot.context().listener(),
-                    snapshot.context().reactor().dispatcher());
+                    snapshot.context().reactor().dispatcher(),
+                    snapshot.timeout());
+            final Runnable unregister = cancellation.onCancel(() -> closeTls(raw, tls));
             try {
-                await(tls.handshake());
+                await(tls.handshake(), cancellation);
                 Logger.debug(
                         false,
                         "Fabric",
                         "Socket TLS handshake completed: host={}, port={}",
                         snapshot.address().host(),
                         snapshot.address().port());
-                return new SocketSession(snapshot.address(), new TlsSocketConnection(raw, tls),
-                        SocketCodec.of(snapshot.frameCodec()), snapshot.handler(), attributes(opening), network,
-                        snapshot.listener(), snapshot.context().options().materializeMaxBytes(),
-                        snapshot.socketOptions());
+                return session(new TlsSocketConnection(raw, tls), null, null, opening, network, cancellation);
             } catch (final RuntimeException e) {
-                tls.close();
+                closeTls(raw, tls);
                 throw e;
+            } finally {
+                unregister.run();
             }
         } catch (final RuntimeException e) {
             if (aio != null) {
@@ -263,7 +270,8 @@ final class SocketRunner {
      * @param opening filtered opening message
      * @return session
      */
-    private SocketSession openPooledTcp(final Message opening) {
+    private SocketSession openPooledTcp(final Message opening, final Cancellation cancellation) {
+        cancellation.throwIfCancelled();
         Logger.debug(
                 true,
                 "Fabric",
@@ -284,6 +292,7 @@ final class SocketRunner {
                 attributes(opening),
                 snapshot.listener(),
                 snapshot.context().options().materializeMaxBytes()).session();
+        cancellation.throwIfCancelled();
         Logger.debug(
                 false,
                 "Fabric",
@@ -299,7 +308,7 @@ final class SocketRunner {
      * @param opening filtered opening message
      * @return session
      */
-    private SocketSession openUdp(final Message opening) {
+    private SocketSession openUdp(final Message opening, final Cancellation cancellation) {
         Logger.debug(
                 true,
                 "Fabric",
@@ -316,9 +325,7 @@ final class SocketRunner {
                     "Socket UDP connect completed: host={}, port={}",
                     snapshot.address().host(),
                     snapshot.address().port());
-            return new SocketSession(snapshot.address(), session, null, SocketCodec.of(snapshot.frameCodec()),
-                    snapshot.handler(), attributes(opening), owner, snapshot.listener(),
-                    snapshot.context().options().materializeMaxBytes(), snapshot.socketOptions());
+            return session(null, session, null, opening, owner, cancellation);
         } catch (final RuntimeException e) {
             owner.close();
             throw e;
@@ -331,7 +338,7 @@ final class SocketRunner {
      * @param opening filtered opening message
      * @return session
      */
-    private SocketSession openKcp(final Message opening) {
+    private SocketSession openKcp(final Message opening, final Cancellation cancellation) {
         Logger.debug(
                 true,
                 "Fabric",
@@ -341,7 +348,8 @@ final class SocketRunner {
         final DatagramOwner owner = DatagramOwner
                 .open(snapshot.context().listener(), snapshot.context().reactor().dispatcher());
         try {
-            final KcpNetwork kcp = KcpNetwork.create(owner.udp());
+            final KcpNetwork kcp = KcpNetwork
+                    .create(owner.udp(), snapshot.context().clock(), snapshot.socketOptions().kcpWireVersion());
             final UdpSession session = kcp.open(snapshot.address());
             Logger.debug(
                     false,
@@ -349,9 +357,7 @@ final class SocketRunner {
                     "Socket KCP open completed: host={}, port={}",
                     snapshot.address().host(),
                     snapshot.address().port());
-            return new SocketSession(snapshot.address(), session, kcp, SocketCodec.of(snapshot.frameCodec()),
-                    snapshot.handler(), attributes(opening), owner, snapshot.listener(),
-                    snapshot.context().options().materializeMaxBytes(), snapshot.socketOptions());
+            return session(null, session, kcp, opening, owner, cancellation);
         } catch (final RuntimeException e) {
             owner.close();
             throw e;
@@ -364,20 +370,74 @@ final class SocketRunner {
      * @param future future
      * @return connection
      */
-    private <T> T await(final CompletableFuture<T> future) {
+    private <T> T await(final CompletableFuture<T> future, final Cancellation cancellation) {
+        final CompletableFuture<T> operation = require(future, "Socket operation");
+        final Cancellation scope = require(cancellation, "Cancellation");
         final Duration connectTimeout = snapshot.timeout().connect();
+        final long started = System.nanoTime();
+        final long deadline = connectTimeout.isZero() ? Long.MAX_VALUE : connectTimeout.toNanos();
+        final Runnable unregister = scope.onCancel(() -> operation.cancel(true));
         try {
-            if (connectTimeout.isZero()) {
-                return future.get();
+            while (!operation.isDone()) {
+                scope.throwIfCancelled();
+                if (System.nanoTime() - started >= deadline) {
+                    operation.cancel(true);
+                    throw new TimeoutException("Socket open timed out");
+                }
+                if (!ThreadKit.sleep(Normal._1)) {
+                    operation.cancel(true);
+                    throw new InternalException("Interrupted while opening socket");
+                }
             }
-            return future.get(connectTimeout.toNanos(), TimeUnit.NANOSECONDS);
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new InternalException("Interrupted while opening socket", e);
-        } catch (final ExecutionException e) {
-            throw new SocketException("Unable to open socket", e.getCause());
-        } catch (final java.util.concurrent.TimeoutException e) {
-            throw new TimeoutException("Socket open timed out", e);
+            scope.throwIfCancelled();
+            return operation.join();
+        } catch (final CompletionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            throw new SocketException("Unable to open socket", cause);
+        } finally {
+            unregister.run();
+        }
+    }
+
+    /**
+     * Creates a session that borrows the Context runtime and shared cancellation.
+     *
+     * @param connection   connection transport or null
+     * @param datagram     datagram transport or null
+     * @param kcp          KCP transport or null
+     * @param opening      filtered opening message
+     * @param owner        transport owner
+     * @param cancellation shared cancellation
+     * @return opened session
+     */
+    private SocketSession session(
+            final Connection connection,
+            final UdpSession datagram,
+            final KcpNetwork kcp,
+            final Message opening,
+            final AutoCloseable owner,
+            final Cancellation cancellation) {
+        return new SocketSession(snapshot.address(), connection, datagram, kcp, SocketCodec.of(snapshot.frameCodec()),
+                snapshot.handler(), attributes(opening), owner, snapshot.listener(),
+                snapshot.context().options().materializeMaxBytes(), snapshot.socketOptions(),
+                snapshot.context().reactor().dispatcher(), snapshot.context().clock(), snapshot.timeout(),
+                cancellation);
+    }
+
+    /**
+     * Closes a failed or cancelled TLS migration without masking the authoritative failure.
+     *
+     * @param raw raw connection
+     * @param tls TLS channel
+     */
+    private static void closeTls(final Connection raw, final TlsChannel tls) {
+        try {
+            tls.close();
+        } finally {
+            raw.close();
         }
     }
 
@@ -456,10 +516,10 @@ final class SocketRunner {
      */
     private TlsContext tlsContext() {
         if (snapshot.context().options().contains(Builder.OPTION_SOCKET_TLS_CONTEXT)) {
-            return snapshot.context().options().get(Builder.OPTION_SOCKET_TLS_CONTEXT, TlsContext.class);
+            return snapshot.context().options().get(Builder.OPTION_SOCKET_TLS_CONTEXT);
         }
         if (snapshot.context().options().contains(Builder.OPTION_TLS_CONTEXT)) {
-            return snapshot.context().options().get(Builder.OPTION_TLS_CONTEXT, TlsContext.class);
+            return snapshot.context().options().get(Builder.OPTION_TLS_CONTEXT);
         }
         return TlsContext.defaults();
     }
@@ -471,10 +531,10 @@ final class SocketRunner {
      */
     private TlsSettings tlsSettings() {
         if (snapshot.context().options().contains(Builder.OPTION_SOCKET_TLS_SETTINGS)) {
-            return snapshot.context().options().get(Builder.OPTION_SOCKET_TLS_SETTINGS, TlsSettings.class);
+            return snapshot.context().options().get(Builder.OPTION_SOCKET_TLS_SETTINGS);
         }
         if (snapshot.context().options().contains(Builder.OPTION_TLS_SETTINGS)) {
-            return snapshot.context().options().get(Builder.OPTION_TLS_SETTINGS, TlsSettings.class);
+            return snapshot.context().options().get(Builder.OPTION_TLS_SETTINGS);
         }
         return TlsSettings.defaults();
     }
@@ -486,8 +546,9 @@ final class SocketRunner {
      * @param cause  failure cause
      */
     private void emit(final ObservationMarker marker, final Throwable cause) {
-        final FabricEvent.Builder event = FabricEvent.builder(marker)
-                .tag(Builder.TAG_PROTOCOL, snapshot.address().scheme()).tag(Builder.HOST, snapshot.address().host())
+        final FabricEvent.Builder event = FabricEvent.builder(marker, snapshot.context().clock())
+                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_PROTOCOL, snapshot.address().scheme())
+                .tag(Builder.HOST, snapshot.address().host())
                 .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
         if (cause != null) {
             event.cause(cause);
@@ -523,6 +584,11 @@ final class SocketRunner {
         private final TlsChannel tls;
 
         /**
+         * Ensures the TLS and raw connection boundary closes once.
+         */
+        private final AtomicBoolean closed = new AtomicBoolean();
+
+        /**
          * Creates a TLS socket connection.
          *
          * @param raw raw connection
@@ -544,13 +610,13 @@ final class SocketRunner {
         }
 
         /**
-         * Returns the raw connection conduit.
+         * Returns the TLS plaintext conduit.
          *
          * @return conduit
          */
         @Override
         public org.miaixz.bus.fabric.network.Conduit conduit() {
-            return raw.conduit();
+            return tls;
         }
 
         /**
@@ -608,6 +674,9 @@ final class SocketRunner {
          */
         @Override
         public void close() {
+            if (!closed.compareAndSet(false, true)) {
+                return;
+            }
             RuntimeException failure = null;
             try {
                 tls.close();

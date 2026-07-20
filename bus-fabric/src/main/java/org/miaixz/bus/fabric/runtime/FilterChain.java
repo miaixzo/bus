@@ -42,11 +42,6 @@ public final class FilterChain implements Filter.Chain {
     private final List<Filter> filters;
 
     /**
-     * Current filter index.
-     */
-    private final int index;
-
-    /**
      * Terminal downstream chain.
      */
     private final Filter.Chain terminal;
@@ -55,12 +50,10 @@ public final class FilterChain implements Filter.Chain {
      * Creates a chain cursor.
      *
      * @param filters  filters
-     * @param index    index
      * @param terminal terminal chain
      */
-    private FilterChain(final List<Filter> filters, final int index, final Filter.Chain terminal) {
+    private FilterChain(final List<Filter> filters, final Filter.Chain terminal) {
         this.filters = List.copyOf(filters);
-        this.index = index;
         this.terminal = Assert.notNull(terminal, () -> new ValidateException("Terminal filter chain must not be null"));
     }
 
@@ -77,7 +70,7 @@ public final class FilterChain implements Filter.Chain {
         if (chain == null) {
             return current;
         }
-        return new FilterChain(chain, Normal._0, value -> value).proceed(current);
+        return new FilterChain(chain, value -> value).proceed(current);
     }
 
     /**
@@ -91,10 +84,7 @@ public final class FilterChain implements Filter.Chain {
         if (chain == null) {
             return null;
         }
-        if (chain.size() == Normal._1) {
-            return chain.get(Normal._0);
-        }
-        return (message, terminal) -> new FilterChain(chain, Normal._0, terminal).proceed(message);
+        return (message, terminal) -> new FilterChain(chain, terminal).proceed(message);
     }
 
     /**
@@ -106,10 +96,7 @@ public final class FilterChain implements Filter.Chain {
     @Override
     public Message proceed(final Message message) {
         final Message current = Assert.notNull(message, () -> new ValidateException("Message must not be null"));
-        if (index >= filters.size()) {
-            return require(terminal.proceed(current));
-        }
-        return require(filters.get(index).apply(current, new FilterChain(filters, index + Normal._1, terminal)));
+        return new Cursor(filters, Normal._0, terminal).proceed(current);
     }
 
     /**
@@ -142,6 +129,75 @@ public final class FilterChain implements Filter.Chain {
      */
     private static Message require(final Message message) {
         return Assert.notNull(message, () -> new ValidateException("Filtered message must not be null"));
+    }
+
+    /**
+     * Validates immutable routing fields across one filter boundary.
+     *
+     * @param input  boundary input
+     * @param output boundary output
+     * @return validated output
+     */
+    private static Message validateBoundary(final Message input, final Message output) {
+        final Message current = require(output);
+        if (current.protocol() != input.protocol()) {
+            throw new ValidateException("Filter must not replace message protocol");
+        }
+        if (!current.address().equals(input.address())) {
+            throw new ValidateException("Filter must not replace message address");
+        }
+        return current;
+    }
+
+    /**
+     * Lightweight cursor sharing the entry list and terminal chain.
+     */
+    private static final class Cursor implements Filter.Chain {
+
+        /**
+         * Shared ordered filters.
+         */
+        private final List<Filter> filters;
+
+        /**
+         * Current filter index.
+         */
+        private final int index;
+
+        /**
+         * Shared terminal chain.
+         */
+        private final Filter.Chain terminal;
+
+        /**
+         * Creates a cursor without copying shared state.
+         *
+         * @param filters  shared filters
+         * @param index    current index
+         * @param terminal shared terminal
+         */
+        private Cursor(final List<Filter> filters, final int index, final Filter.Chain terminal) {
+            this.filters = filters;
+            this.index = index;
+            this.terminal = terminal;
+        }
+
+        /**
+         * Proceeds through one filter boundary.
+         *
+         * @param message message
+         * @return filtered message
+         */
+        @Override
+        public Message proceed(final Message message) {
+            final Message current = require(message);
+            if (index >= filters.size()) {
+                return validateBoundary(current, terminal.proceed(current));
+            }
+            final Cursor next = new Cursor(filters, index + Normal._1, terminal);
+            return validateBoundary(current, filters.get(index).apply(current, next));
+        }
+
     }
 
 }

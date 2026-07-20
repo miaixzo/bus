@@ -19,18 +19,12 @@
 */
 package org.miaixz.bus.fabric.observe;
 
-import java.util.Map;
-import java.util.StringJoiner;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
-import org.miaixz.bus.fabric.observe.timing.StopWatch;
 import org.miaixz.bus.fabric.observe.window.RollingWindow;
 
 /**
@@ -52,26 +46,15 @@ public final class MeterEventObserver implements EventObserver {
     private final RollingWindow window;
 
     /**
-     * Clock.
-     */
-    private final Clock clock;
-
-    /**
-     * Active stopwatches keyed by marker family and event tags.
-     */
-    private final ConcurrentHashMap<String, StopWatch> stopwatches;
-
-    /**
      * Creates an observer.
      *
      * @param clock  clock
      * @param window rolling window
      */
     private MeterEventObserver(final Clock clock, final RollingWindow window) {
-        this.clock = Assert.notNull(clock, "Clock must not be null");
+        final Clock checkedClock = Assert.notNull(clock, "Clock must not be null");
         this.window = Assert.notNull(window, "Rolling window must not be null");
-        this.meter = new FabricMeter();
-        this.stopwatches = new ConcurrentHashMap<>();
+        this.meter = FabricMeter.create(checkedClock);
     }
 
     /**
@@ -136,42 +119,8 @@ public final class MeterEventObserver implements EventObserver {
      * @param event event
      */
     private void measure(final FabricEvent event) {
-        final String key = timingKey(event);
-        if (event.marker().terminal()) {
-            final StopWatch stopwatch = stopwatches.remove(key);
-            if (stopwatch != null) {
-                meter.timing(event.marker().code() + Builder.METER_EVENT_OBSERVER_DURATION, stopwatch.stop());
-            }
-            return;
-        }
-        stopwatches.putIfAbsent(key, StopWatch.start(clock));
-    }
-
-    /**
-     * Creates a stable timing key from marker family and event tags.
-     *
-     * @param event event
-     * @return key
-     */
-    private static String timingKey(final FabricEvent event) {
-        final String code = event.marker().code();
-        final int dot = code.indexOf(Symbol.C_DOT);
-        final String family = dot < 0 ? code : code.substring(0, dot);
-        final StringJoiner joiner = new StringJoiner(Symbol.AND, family + "|", Normal.EMPTY);
-        event.tags().asMap().entrySet().stream().filter(entry -> stableTimingTag(entry.getKey()))
-                .sorted(Map.Entry.comparingByKey())
-                .forEach(entry -> joiner.add(entry.getKey() + Symbol.EQUAL + entry.getValue()));
-        return joiner.toString();
-    }
-
-    /**
-     * Returns whether a tag is stable across start and terminal events.
-     *
-     * @param key tag key
-     * @return true when stable
-     */
-    private static boolean stableTimingTag(final String key) {
-        return !Builder.TAG_PHASE.equals(key) && !Builder.TAG_RESULT.equals(key) && !Builder.TAG_EXCEPTION.equals(key);
+        final ObservationMarker marker = event.marker();
+        meter.observe(marker.timing(), event.tags().get(Builder.TAG_OPERATION_ID), marker.family());
     }
 
 }

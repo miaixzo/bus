@@ -109,25 +109,31 @@ public final class CachePolicy {
         require(request, "HTTP request");
         require(response, "HTTP response");
         require(clock, "Runtime clock");
-        final HttpCacheControl requestControl = request.cacheControl();
-        final HttpCacheControl responseControl = response.cacheControl();
-        if (requestControl.noCache() || responseControl.noCache() || responseControl.noStore()) {
+        try {
+            final HttpCacheControl requestControl = request.cacheControl();
+            final HttpCacheControl responseControl = response.cacheControl();
+            if (requestControl.noCache() || responseControl.noCache() || responseControl.noStore()) {
+                return false;
+            }
+            final Instant now = clock.now();
+            final Instant date = headerInstant(response.headers(), HTTP.DATE);
+            final Instant expires = headerInstant(response.headers(), HTTP.EXPIRES);
+            final Instant lastModified = headerInstant(response.headers(), HTTP.LAST_MODIFIED);
+            final long age = currentAgeSeconds(response.headers(), date, now);
+            long lifetime = freshnessLifetime(responseControl, date, expires, lastModified);
+            if (responseControl.immutable()) {
+                return true;
+            }
+            if (requestControl.maxAgeSeconds() >= 0) {
+                lifetime = Math.min(lifetime, requestControl.maxAgeSeconds());
+            }
+            final long minFresh = Math.max(0L, requestControl.minFreshSeconds());
+            final long maxStale = responseControl.mustRevalidate() || requestControl.maxStaleSeconds() < 0 ? 0L
+                    : requestControl.maxStaleSeconds();
+            return saturatedAdd(age, minFresh) < saturatedAdd(lifetime, maxStale);
+        } catch (final ProtocolException | ArithmeticException e) {
             return false;
         }
-        final Instant now = clock.now();
-        final Instant date = headerInstant(response.headers(), HTTP.DATE);
-        final long age = currentAgeSeconds(response.headers(), date, now);
-        long lifetime = freshnessLifetime(response, responseControl, date, now);
-        if (responseControl.immutable()) {
-            return true;
-        }
-        if (requestControl.maxAgeSeconds() >= 0) {
-            lifetime = Math.min(lifetime, requestControl.maxAgeSeconds());
-        }
-        final long minFresh = Math.max(0L, requestControl.minFreshSeconds());
-        final long maxStale = responseControl.mustRevalidate() || requestControl.maxStaleSeconds() < 0 ? 0L
-                : requestControl.maxStaleSeconds();
-        return age + minFresh < lifetime + maxStale;
     }
 
     /**
@@ -145,29 +151,34 @@ public final class CachePolicy {
     /**
      * Returns response freshness lifetime.
      *
-     * @param response response
      * @param control  cache control
      * @param date     Date header instant or null
-     * @param now      current time
+     * @param expires  Expires header instant or null
+     * @param modified Last-Modified header instant or null
      * @return lifetime seconds
      */
     private static long freshnessLifetime(
-            final HttpResponse response,
             final HttpCacheControl control,
             final Instant date,
-            final Instant now) {
+            final Instant expires,
+            final Instant modified) {
         if (control.sMaxAgeSeconds() >= 0) {
             return control.sMaxAgeSeconds();
         }
         if (control.maxAgeSeconds() >= 0) {
             return control.maxAgeSeconds();
         }
-        final Instant expires = headerInstant(response.headers(), HTTP.EXPIRES);
-        if (expires == null) {
+        if (expires != null) {
+            if (date == null) {
+                return 0L;
+            }
+            return Math.max(0L, Duration.between(date, expires).getSeconds());
+        }
+        if (date == null || modified == null) {
             return 0L;
         }
-        final Instant base = date == null ? now : date;
-        return Math.max(0L, Duration.between(base, expires).getSeconds());
+        final long apparentLifetime = Math.max(0L, Duration.between(modified, date).getSeconds());
+        return Math.min(Duration.ofHours(24L).getSeconds(), apparentLifetime / 10L);
     }
 
     /**
@@ -210,12 +221,15 @@ public final class CachePolicy {
      * @return instant or null
      */
     private static Instant headerInstant(final Headers headers, final String name) {
-        final String value = headers.get(name);
-        if (value == null) {
+        final var values = headers.values(name);
+        if (values.isEmpty()) {
             return null;
         }
+        if (values.size() != 1) {
+            throw new ProtocolException("HTTP cache date must be unique");
+        }
         try {
-            return ZonedDateTime.parse(value, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant();
+            return ZonedDateTime.parse(values.getFirst(), DateTimeFormatter.RFC_1123_DATE_TIME).toInstant();
         } catch (final DateTimeParseException e) {
             throw new ProtocolException("Invalid HTTP cache date", e);
         }
@@ -228,15 +242,25 @@ public final class CachePolicy {
      * @return age seconds
      */
     private static long ageSeconds(final Headers headers) {
-        final String value = headers.get(HTTP.AGE);
-        if (value == null) {
+        final var values = headers.values(HTTP.AGE);
+        if (values.isEmpty()) {
             return 0L;
+        }
+        if (values.size() != 1) {
+            throw new ProtocolException("HTTP Age must be unique");
+        }
+        final String value = values.getFirst();
+        if (value.isEmpty()) {
+            throw new ProtocolException("Invalid HTTP Age");
+        }
+        for (int index = 0; index < value.length(); index++) {
+            final char current = value.charAt(index);
+            if (current < '0' || current > '9') {
+                throw new ProtocolException("Invalid HTTP Age");
+            }
         }
         try {
             final long seconds = Long.parseLong(value);
-            if (seconds < 0 || Duration.ofSeconds(seconds).isNegative()) {
-                throw new ProtocolException("HTTP Age must be non-negative");
-            }
             return seconds;
         } catch (final NumberFormatException e) {
             throw new ProtocolException("Invalid HTTP Age", e);
@@ -254,6 +278,17 @@ public final class CachePolicy {
     private static long currentAgeSeconds(final Headers headers, final Instant date, final Instant now) {
         final long apparentAge = date == null ? 0L : Math.max(0L, Duration.between(date, now).getSeconds());
         return Math.max(apparentAge, ageSeconds(headers));
+    }
+
+    /**
+     * Adds non-negative cache durations without wrapping.
+     *
+     * @param left  left duration
+     * @param right right duration
+     * @return saturated sum
+     */
+    private static long saturatedAdd(final long left, final long right) {
+        return left > Long.MAX_VALUE - right ? Long.MAX_VALUE : left + right;
     }
 
     /**

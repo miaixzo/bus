@@ -385,7 +385,7 @@ public final class SseX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.retry = SseRetry.defaults();
             this.autoReconnect = true;

@@ -35,6 +35,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 
@@ -67,6 +68,10 @@ public final class StompCodec {
     public void encode(final StompFrame frame, final Buffer output) {
         final StompFrame currentFrame = require(frame, "STOMP frame");
         final Buffer currentOutput = require(output, "STOMP output");
+        if (currentFrame == StompFrame.heartbeat()) {
+            currentOutput.writeByte(Symbol.C_LF);
+            return;
+        }
         writeAscii(currentOutput, currentFrame.command());
         currentOutput.writeByte(Symbol.C_LF);
         for (final Map.Entry<String, List<String>> entry : currentFrame.headers().asMap().entrySet()) {
@@ -78,7 +83,7 @@ public final class StompCodec {
             }
         }
         currentOutput.writeByte(Symbol.C_LF);
-        final int declared = contentLength(currentFrame.headers());
+        final long declared = contentLength(currentFrame.headers());
         final long bodyLength = currentFrame.body().length();
         if (declared >= Normal._0 && bodyLength >= Normal.LONG_ZERO && declared != bodyLength) {
             throw new ProtocolException("STOMP content-length does not match body length");
@@ -98,8 +103,10 @@ public final class StompCodec {
         final ArrayList<StompFrame> frames = new ArrayList<>();
         int offset = Normal._0;
         while (offset < bufferSize()) {
-            while (offset < bufferSize() && byteAt(offset) == Symbol.C_LF) {
+            if (byteAt(offset) == Symbol.C_LF) {
+                frames.add(StompFrame.heartbeat());
                 offset++;
+                continue;
             }
             final ParseResult result = parse(offset);
             if (result == null) {
@@ -142,9 +149,7 @@ public final class StompCodec {
             return null;
         }
         final String command = ascii(offset, commandEnd);
-        if (StringKit.isBlank(command)) {
-            throw new ProtocolException("STOMP command must not be blank");
-        }
+        validateCommand(command);
         int cursor = commandEnd + Normal._1;
         final Headers.Builder headers = Headers.builder();
         while (true) {
@@ -165,7 +170,8 @@ public final class StompCodec {
             cursor = lineEnd + Normal._1;
         }
         final Headers snapshot = headers.build();
-        final int length = contentLength(snapshot);
+        final long declared = contentLength(snapshot);
+        final int length = materializableLength(declared);
         final BodyResult body = length >= Normal._0 ? fixedBody(cursor, length) : nulBody(cursor);
         if (body == null) {
             return null;
@@ -197,7 +203,8 @@ public final class StompCodec {
      * @return body or null
      */
     private BodyResult fixedBody(final int cursor, final int length) {
-        if (bufferSize() < cursor + length + Normal._1) {
+        final long required = (long) cursor + length + Normal._1;
+        if (buffer.size() < required) {
             return null;
         }
         if (byteAt(cursor + length) != Normal._0) {
@@ -226,19 +233,60 @@ public final class StompCodec {
      * @param headers headers
      * @return content length or -1
      */
-    private static int contentLength(final Headers headers) {
-        final String value = headers.get(HTTP.CONTENT_LENGTH);
-        if (value == null) {
+    private static long contentLength(final Headers headers) {
+        final List<String> values = headers.values(HTTP.CONTENT_LENGTH);
+        if (values.isEmpty()) {
             return Normal.__1;
         }
-        try {
-            final int length = Integer.parseInt(value);
-            if (length < Normal._0) {
-                throw new ProtocolException("STOMP content-length must be non-negative");
+        if (values.size() != Normal._1) {
+            throw new ProtocolException("STOMP content-length must be unique");
+        }
+        final String value = values.getFirst();
+        if (value.isEmpty()) {
+            throw new ProtocolException("Invalid STOMP content-length");
+        }
+        for (int i = Normal._0; i < value.length(); i++) {
+            if (value.charAt(i) < '0' || value.charAt(i) > '9') {
+                throw new ProtocolException("Invalid STOMP content-length");
             }
-            return length;
+        }
+        try {
+            return Long.parseLong(value);
         } catch (final NumberFormatException e) {
             throw new ProtocolException("Invalid STOMP content-length", e);
+        }
+    }
+
+    /**
+     * Converts a declared body length after enforcing the materialization limit.
+     *
+     * @param length declared length, or -1
+     * @return bounded length, or -1
+     */
+    private static int materializableLength(final long length) {
+        if (length < Normal.LONG_ZERO) {
+            return Normal.__1;
+        }
+        if (length > Builder.DEFAULT_MATERIALIZE_MAX_BYTES || length > Integer.MAX_VALUE) {
+            throw new ProtocolException("STOMP content-length exceeds the materialization limit");
+        }
+        return (int) length;
+    }
+
+    /**
+     * Validates an inbound command without normalizing malformed wire data.
+     *
+     * @param command command
+     */
+    private static void validateCommand(final String command) {
+        if (StringKit.isBlank(command)) {
+            throw new ProtocolException("STOMP command must not be blank");
+        }
+        for (int i = Normal._0; i < command.length(); i++) {
+            final char current = command.charAt(i);
+            if (current < 'A' || current > 'Z') {
+                throw new ProtocolException("Invalid STOMP command");
+            }
         }
     }
 
@@ -360,6 +408,9 @@ public final class StompCodec {
                 }
                 output.write(chunk, read);
                 written += read;
+            }
+            if (source.read(chunk, Normal._1) >= Normal.LONG_ZERO) {
+                throw new ProtocolException("STOMP body exceeds content-length");
             }
         } catch (final IOException e) {
             throw new ProtocolException("Unable to write STOMP body", e);

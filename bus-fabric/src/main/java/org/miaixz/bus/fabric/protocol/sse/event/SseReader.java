@@ -34,10 +34,18 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
+import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Clock;
+import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.sse.SseEvent;
+import org.miaixz.bus.fabric.protocol.sse.SseSession;
+import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * Streaming SSE line reader.
@@ -210,7 +218,11 @@ public final class SseReader implements AutoCloseable {
     }
 
     /**
-     * Reads events until EOF or close.
+     * Reads events until EOF or close on the caller's current thread.
+     * <p>
+     * Production loops must invoke this parser through
+     * {@link #start(Context, SseSession, Cancellation, Events, EventObserver, Clock, String)} so blocking reads never
+     * occupy the short-task queue.
      *
      * @param handler event handler
      */
@@ -231,7 +243,7 @@ public final class SseReader implements AutoCloseable {
     }
 
     /**
-     * Reads events until EOF or close with low-allocation callbacks.
+     * Reads events until EOF or close with low-allocation callbacks on the caller's current thread.
      *
      * @param handler event handler
      */
@@ -245,6 +257,68 @@ public final class SseReader implements AutoCloseable {
         } catch (final RuntimeException e) {
             close();
             throw new InternalException("SSE event handler failed", e);
+        }
+    }
+
+    /**
+     * Starts the blocking reader loop on the Context background channel.
+     * <p>
+     * Runtime values are snapshots supplied by the owning runner. This reader validates them for one start but does not
+     * retain Session, Observer, Clock, or operation ownership.
+     *
+     * @param context      runtime context
+     * @param session      owning SSE session
+     * @param cancellation shared cancellation scope
+     * @param handler      event callbacks
+     * @param observer     shared observer
+     * @param clock        shared clock
+     * @param operationId  shared operation identifier
+     * @return background dispatch handle
+     */
+    public DispatchHandle start(
+            final Context context,
+            final SseSession session,
+            final Cancellation cancellation,
+            final Events handler,
+            final EventObserver observer,
+            final Clock clock,
+            final String operationId) {
+        final Context currentContext = Assert
+                .notNull(context, () -> new ValidateException("SSE Context must not be null"));
+        final SseSession currentSession = Assert
+                .notNull(session, () -> new ValidateException("SSE Session must not be null"));
+        final Cancellation currentCancellation = Assert
+                .notNull(cancellation, () -> new ValidateException("SSE Cancellation must not be null"));
+        final Events currentHandler = Assert
+                .notNull(handler, () -> new ValidateException("SSE event handler must not be null"));
+        Assert.notNull(observer, () -> new ValidateException("SSE Observer must not be null"));
+        Assert.notNull(clock, () -> new ValidateException("SSE Clock must not be null"));
+        Assert.notBlank(operationId, () -> new ValidateException("SSE operation id must not be blank"));
+        currentCancellation.throwIfCancelled();
+        if (!currentSession.opened() || !opened()) {
+            throw new StatefulException("SSE reader cannot start after Session termination");
+        }
+        final Runnable unregister = currentCancellation.onCancel(this::close);
+        try {
+            final DispatchHandle handle = currentContext.reactor().dispatcher()
+                    .background("sse:reader", currentSession, Activity.of("sse:reader", () -> {
+                        try {
+                            currentCancellation.throwIfCancelled();
+                            if (currentSession.opened()) {
+                                readEvents(currentHandler);
+                            }
+                        } finally {
+                            unregister.run();
+                        }
+                    }));
+            if (currentCancellation.cancelled() || !currentSession.opened()) {
+                handle.cancel();
+                close();
+            }
+            return handle;
+        } catch (final RuntimeException e) {
+            unregister.run();
+            throw e;
         }
     }
 

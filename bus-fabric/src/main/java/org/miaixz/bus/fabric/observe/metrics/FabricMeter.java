@@ -30,6 +30,9 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Clock;
+import org.miaixz.bus.fabric.observe.ObservationMarker;
 
 /**
  * Thread-safe fabric metric counter and timer.
@@ -38,6 +41,16 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @since Java 21+
  */
 public final class FabricMeter {
+
+    /**
+     * Invalid event counter name.
+     */
+    private static final String INVALID_EVENT = "invalidEvent";
+
+    /**
+     * Runtime clock.
+     */
+    private final Clock clock;
 
     /**
      * Counter values.
@@ -50,11 +63,46 @@ public final class FabricMeter {
     private final ConcurrentHashMap<String, Timing> timings;
 
     /**
+     * Active timers keyed by operation and marker family.
+     */
+    private final ConcurrentHashMap<TimerKey, Timer> activeTimers;
+
+    /**
      * Creates an empty meter.
      */
     public FabricMeter() {
+        this(Clock.system());
+    }
+
+    /**
+     * Creates an empty meter using an explicit runtime clock.
+     *
+     * @param clock runtime clock
+     */
+    public FabricMeter(final Clock clock) {
+        this.clock = Assert.notNull(clock, "Clock must not be null");
         this.counters = new ConcurrentHashMap<>();
         this.timings = new ConcurrentHashMap<>();
+        this.activeTimers = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * Creates a meter using the system clock.
+     *
+     * @return meter
+     */
+    public static FabricMeter create() {
+        return new FabricMeter(Clock.system());
+    }
+
+    /**
+     * Creates a meter using an explicit runtime clock.
+     *
+     * @param clock runtime clock
+     * @return meter
+     */
+    public static FabricMeter create(final Clock clock) {
+        return new FabricMeter(clock);
     }
 
     /**
@@ -106,6 +154,38 @@ public final class FabricMeter {
     }
 
     /**
+     * Applies an observation timing role for one operation and marker family.
+     *
+     * @param role        timing role
+     * @param operationId operation identifier
+     * @param family      marker family
+     */
+    public void observe(final ObservationMarker.Timing role, final String operationId, final String family) {
+        final ObservationMarker.Timing checkedRole = Assert.notNull(role, "Timing role must not be null");
+        if (ObservationMarker.Timing.NONE == checkedRole) {
+            return;
+        }
+        final TimerKey key = new TimerKey(validateName(operationId), validateName(family));
+        if (ObservationMarker.Timing.START == checkedRole) {
+            if (activeTimers.putIfAbsent(key, new Timer(clock.nanos())) != null) {
+                increment(INVALID_EVENT);
+            }
+            return;
+        }
+        final Timer timer = activeTimers.remove(key);
+        if (timer == null) {
+            increment(INVALID_EVENT);
+            return;
+        }
+        final long elapsed = clock.nanos() - timer.startNanos();
+        if (elapsed < 0L) {
+            increment(INVALID_EVENT);
+            return;
+        }
+        timing(family + Builder.METER_EVENT_OBSERVER_DURATION, Duration.ofNanos(elapsed));
+    }
+
+    /**
      * Returns an immutable metric snapshot.
      *
      * @return metric snapshot
@@ -127,6 +207,16 @@ public final class FabricMeter {
     public void reset() {
         counters.clear();
         timings.clear();
+        activeTimers.clear();
+    }
+
+    /**
+     * Returns the number of active timers for package-level verification.
+     *
+     * @return active timer count
+     */
+    int activeTimers() {
+        return activeTimers.size();
     }
 
     /**
@@ -203,6 +293,23 @@ public final class FabricMeter {
             return maxNanos.get();
         }
 
+    }
+
+    /**
+     * Immutable active timer key.
+     *
+     * @param operationId operation identifier
+     * @param family      marker family
+     */
+    private record TimerKey(String operationId, String family) {
+    }
+
+    /**
+     * Immutable active timer value.
+     *
+     * @param startNanos start time in nanoseconds
+     */
+    private record Timer(long startNanos) {
     }
 
 }

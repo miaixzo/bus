@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
+import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.NetKit;
@@ -110,10 +111,11 @@ public final class UdpNetwork implements AutoCloseable {
      * @param address local address
      * @return UDP channel
      */
-    public UdpChannel bind(final Address address) {
+    public synchronized UdpChannel bind(final Address address) {
         final Address checkedAddress = Assert
                 .notNull(address, () -> new ValidateException("UDP bind address must not be null"));
         requireUdp(checkedAddress);
+        ensureOpen();
         try {
             final DatagramChannel datagram = DatagramChannel.open();
             datagram.bind(socket(checkedAddress));
@@ -131,10 +133,11 @@ public final class UdpNetwork implements AutoCloseable {
      * @param remote remote address
      * @return UDP session
      */
-    public UdpSession connect(final Address remote) {
+    public synchronized UdpSession connect(final Address remote) {
         final Address checkedRemote = Assert
                 .notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
         requireUdp(checkedRemote);
+        ensureOpen();
         try {
             final DatagramChannel datagram = DatagramChannel.open();
             datagram.bind(null);
@@ -142,7 +145,7 @@ public final class UdpNetwork implements AutoCloseable {
             final Address localAddress = new Address(Transport.UDP.scheme(), Protocol.HOST_IPV4, local.getPort(), null);
             final UdpChannel channel = new UdpChannel(localAddress, datagram, group.dispatcher());
             channels.add(channel);
-            return new UdpSession(checkedRemote, channel, listener, () -> channels.remove(channel));
+            return new UdpSession(checkedRemote, channel, listener, group.dispatcher(), () -> channels.remove(channel));
         } catch (final IOException e) {
             if (listener != null) {
                 listener.failure(this, e);
@@ -167,6 +170,7 @@ public final class UdpNetwork implements AutoCloseable {
      * @return managed channels
      */
     public int channelCount() {
+        channels.removeIf(channel -> !channel.opened());
         return channels.size();
     }
 
@@ -174,13 +178,25 @@ public final class UdpNetwork implements AutoCloseable {
      * Closes all channels.
      */
     @Override
-    public void close() {
-        if (closed.compareAndSet(false, true)) {
-            UdpChannel channel = channels.pollLast();
-            while (channel != null) {
+    public synchronized void close() {
+        if (!closed.compareAndSet(false, true)) {
+            return;
+        }
+        RuntimeException failure = null;
+        for (final UdpChannel channel : channels) {
+            try {
                 channel.close();
-                channel = channels.pollLast();
+            } catch (final RuntimeException e) {
+                if (failure == null) {
+                    failure = e;
+                } else if (failure != e) {
+                    failure.addSuppressed(e);
+                }
             }
+        }
+        channels.clear();
+        if (failure != null) {
+            throw failure;
         }
     }
 
@@ -204,6 +220,15 @@ public final class UdpNetwork implements AutoCloseable {
      */
     private static InetSocketAddress socket(final Address address) {
         return NetKit.createAddress(address.host(), address.port());
+    }
+
+    /**
+     * Rejects channel creation after network closure.
+     */
+    private void ensureOpen() {
+        if (closed.get()) {
+            throw new StatefulException("UDP network is closed");
+        }
     }
 
 }

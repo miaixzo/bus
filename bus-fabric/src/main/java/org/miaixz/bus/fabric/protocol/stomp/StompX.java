@@ -83,9 +83,14 @@ public final class StompX {
     private StompX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        this.snapshot = new StompSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, builder.destination, builder.login, builder.passcode, builder.guard, builder.filter,
-                currentObserver, builder.handler == null ? noopHandler() : builder.handler, builder.listener);
+        final Headers connectHeaders = connectHeaders(
+                builder.headers.build(),
+                builder.clientSendHeartbeat,
+                builder.clientReceiveHeartbeat);
+        this.snapshot = new StompSnapshot(current, builder.uri, Address.from(builder.uri), connectHeaders,
+                copyTimeout(builder.timeout), builder.clientSendHeartbeat, builder.clientReceiveHeartbeat,
+                builder.destination, builder.login, builder.passcode, builder.guard, builder.filter, currentObserver,
+                builder.handler == null ? noopHandler() : builder.handler, builder.listener);
         this.runner = new StompRunner(snapshot);
         this.callback = builder.callback;
     }
@@ -295,6 +300,50 @@ public final class StompX {
     }
 
     /**
+     * Creates CONNECT headers from immutable heartbeat request components.
+     *
+     * @param headers                caller headers
+     * @param clientSendHeartbeat    client send heartbeat
+     * @param clientReceiveHeartbeat client receive heartbeat
+     * @return CONNECT headers
+     */
+    private static Headers connectHeaders(
+            final Headers headers,
+            final Duration clientSendHeartbeat,
+            final Duration clientReceiveHeartbeat) {
+        return require(headers, "Headers").with(
+                STOMP_HEADER_HEART_BEAT,
+                heartbeatMillis(clientSendHeartbeat) + "," + heartbeatMillis(clientReceiveHeartbeat));
+    }
+
+    /**
+     * Copies all six timeout components without applying compatibility defaults.
+     *
+     * @param timeout timeout policy
+     * @return copied timeout policy
+     */
+    private static Timeout copyTimeout(final Timeout timeout) {
+        final Timeout current = require(timeout, "Timeout");
+        return new Timeout(current.connect(), current.read(), current.write(), current.call(), current.ping(),
+                current.close());
+    }
+
+    /**
+     * Converts one validated heartbeat to CONNECT header milliseconds.
+     *
+     * @param duration heartbeat duration
+     * @return milliseconds
+     */
+    private static long heartbeatMillis(final Duration duration) {
+        final Duration current = validateDuration(duration, "STOMP heart-beat");
+        try {
+            return current.toMillis();
+        } catch (final ArithmeticException e) {
+            throw new ValidateException("STOMP heart-beat is too large", e);
+        }
+    }
+
+    /**
      * STOMP exchange builder.
      *
      * @author Kimi Liu
@@ -321,6 +370,16 @@ public final class StompX {
          * Timeout policy.
          */
         private Timeout timeout;
+
+        /**
+         * Heartbeat interval the client can send.
+         */
+        private Duration clientSendHeartbeat;
+
+        /**
+         * Heartbeat interval the client requests to receive.
+         */
+        private Duration clientReceiveHeartbeat;
 
         /**
          * Default destination.
@@ -385,8 +444,10 @@ public final class StompX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
-            this.timeout = configured == null ? Timeout.defaults() : configured;
+            final Timeout configured = context.options().get(OPTION_TIMEOUT);
+            this.timeout = copyTimeout(configured == null ? Timeout.defaults() : configured);
+            this.clientSendHeartbeat = Duration.ZERO;
+            this.clientReceiveHeartbeat = Duration.ZERO;
             this.observer = EventObserver.noop();
             this.callback = null;
             this.handler = noopHandler();
@@ -459,7 +520,10 @@ public final class StompX {
          * @return this builder
          */
         public Builder heartBeat(final Duration outgoing, final Duration incoming) {
-            headers.set(STOMP_HEADER_HEART_BEAT, heartbeat(outgoing) + "," + heartbeat(incoming));
+            heartbeatMillis(outgoing);
+            heartbeatMillis(incoming);
+            this.clientSendHeartbeat = outgoing;
+            this.clientReceiveHeartbeat = incoming;
             return this;
         }
 
@@ -509,7 +573,8 @@ public final class StompX {
          * @return this builder
          */
         public Builder timeout(final Duration timeout) {
-            this.timeout = Timeout.of(validateDuration(timeout));
+            final Duration current = validateDuration(timeout);
+            this.timeout = new Timeout(current, current, current, current, this.timeout.ping(), this.timeout.close());
             return this;
         }
 
@@ -520,7 +585,7 @@ public final class StompX {
          * @return this builder
          */
         public Builder timeout(final Timeout timeout) {
-            this.timeout = require(timeout, "Timeout");
+            this.timeout = copyTimeout(timeout);
             return this;
         }
 
@@ -698,21 +763,6 @@ public final class StompX {
                 }
             };
             return this;
-        }
-
-        /**
-         * Converts a heartbeat duration to milliseconds.
-         *
-         * @param duration duration
-         * @return milliseconds
-         */
-        private static long heartbeat(final Duration duration) {
-            final Duration checked = validateDuration(duration, "STOMP heart-beat");
-            try {
-                return checked.toMillis();
-            } catch (final ArithmeticException e) {
-                throw new ValidateException("STOMP heart-beat is too large", e);
-            }
         }
 
     }

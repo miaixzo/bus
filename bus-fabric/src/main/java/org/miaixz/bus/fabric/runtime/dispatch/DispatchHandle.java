@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.fabric.runtime.dispatch;
 
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -29,9 +29,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Lifecycle;
 import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.runtime.Activity;
-import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
 /**
  * Cancellable handle for a queued or running activity.
@@ -62,9 +60,9 @@ public final class DispatchHandle implements Lifecycle {
     private final CompletableFuture<Void> future;
 
     /**
-     * Handle lifecycle scope.
+     * Authoritative dispatch state shared by every dispatcher channel.
      */
-    private final LifecycleScope scope;
+    private final AtomicReference<Status> state;
 
     /**
      * Creates a dispatch handle.
@@ -78,7 +76,7 @@ public final class DispatchHandle implements Lifecycle {
         this.tag = tag;
         this.activity = require(activity, "Activity");
         this.future = new CompletableFuture<>();
-        this.scope = LifecycleScope.resource(this, this.key, null, EventObserver.noop());
+        this.state = new AtomicReference<>(Status.QUEUED);
     }
 
     /**
@@ -136,7 +134,16 @@ public final class DispatchHandle implements Lifecycle {
      */
     @Override
     public Status state() {
-        return scope.state();
+        return state.get();
+    }
+
+    /**
+     * Atomically promotes this handle before a worker invokes its activity.
+     *
+     * @return true only for the worker that changed queued to running
+     */
+    boolean markRunning() {
+        return state.compareAndSet(Status.QUEUED, Status.RUNNING);
     }
 
     /**
@@ -145,12 +152,20 @@ public final class DispatchHandle implements Lifecycle {
      * @return true when this invocation changed the state
      */
     public boolean cancel() {
-        if (scope.cancel(new CancellationException("Dispatch handle cancelled: " + key))) {
-            activity.cancel();
-            future.cancel(false);
-            return true;
+        while (true) {
+            final Status current = state.get();
+            if (current != Status.QUEUED && current != Status.RUNNING) {
+                return false;
+            }
+            if (state.compareAndSet(current, Status.CANCELLED)) {
+                try {
+                    activity.cancel();
+                } finally {
+                    future.cancel(false);
+                }
+                return true;
+            }
         }
-        return false;
     }
 
     /**
@@ -159,22 +174,25 @@ public final class DispatchHandle implements Lifecycle {
      * @return true when cancelled
      */
     public boolean cancelled() {
-        return scope.state() == Status.CANCELLED || future.isCancelled() || activity.cancelled();
+        return state.get() == Status.CANCELLED;
     }
 
     /**
      * Completes this handle successfully.
      */
     public void complete() {
-        final Status current = scope.state();
-        if (current == Status.DONE) {
-            return;
-        }
-        if (current == Status.CANCELLED || current == Status.FAILED) {
-            throw new StatefulException("Dispatch handle cannot complete from state " + current);
-        }
-        if (scope.complete()) {
-            future.complete(null);
+        while (true) {
+            final Status current = state.get();
+            if (current == Status.DONE) {
+                return;
+            }
+            if (current != Status.RUNNING) {
+                throw new StatefulException("Dispatch handle cannot complete from state " + current);
+            }
+            if (state.compareAndSet(Status.RUNNING, Status.DONE)) {
+                future.complete(null);
+                return;
+            }
         }
     }
 
@@ -184,16 +202,19 @@ public final class DispatchHandle implements Lifecycle {
      * @param cause failure cause
      */
     public void fail(final Throwable cause) {
-        require(cause, "Failure cause");
-        final Status current = scope.state();
-        if (current == Status.FAILED) {
-            return;
-        }
-        if (current == Status.DONE || current == Status.CANCELLED) {
-            throw new StatefulException("Dispatch handle cannot fail from state " + current);
-        }
-        if (scope.fail(cause)) {
-            future.completeExceptionally(cause);
+        final Throwable failure = require(cause, "Failure cause");
+        while (true) {
+            final Status current = state.get();
+            if (current == Status.FAILED) {
+                return;
+            }
+            if (current != Status.RUNNING) {
+                throw new StatefulException("Dispatch handle cannot fail from state " + current);
+            }
+            if (state.compareAndSet(Status.RUNNING, Status.FAILED)) {
+                future.completeExceptionally(failure);
+                return;
+            }
         }
     }
 

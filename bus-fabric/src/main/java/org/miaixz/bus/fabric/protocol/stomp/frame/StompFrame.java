@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol.stomp.frame;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -32,14 +33,45 @@ import org.miaixz.bus.fabric.Payload;
 /**
  * Immutable STOMP frame value.
  *
- * @param command command
- * @param headers headers
- * @param body    body
- * @param receipt whether a receipt header is present
  * @author Kimi Liu
  * @since Java 21+
  */
-public record StompFrame(String command, Headers headers, Payload body, boolean receipt) {
+public final class StompFrame {
+
+    /**
+     * Unique heartbeat frame.
+     */
+    private static final StompFrame HEARTBEAT = new StompFrame();
+
+    /**
+     * Frame command, empty only for the heartbeat singleton.
+     */
+    private final String command;
+
+    /**
+     * Immutable frame headers.
+     */
+    private final Headers headers;
+
+    /**
+     * Frame body.
+     */
+    private final Payload body;
+
+    /**
+     * Whether a receipt header is present.
+     */
+    private final boolean receipt;
+
+    /**
+     * Creates the unique heartbeat frame.
+     */
+    private StompFrame() {
+        this.command = "";
+        this.headers = Headers.empty();
+        this.body = Payload.empty();
+        this.receipt = false;
+    }
 
     /**
      * Creates a validated frame.
@@ -49,11 +81,11 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
      * @param body    body
      * @param receipt receipt flag
      */
-    public StompFrame {
-        command = validateCommand(command);
-        headers = require(headers, "STOMP headers");
-        body = require(body, "STOMP body");
-        receipt = headers.contains(Builder.STOMP_HEADER_RECEIPT);
+    public StompFrame(final String command, final Headers headers, final Payload body, final boolean receipt) {
+        this.command = validateCommand(command);
+        this.headers = require(headers, "STOMP headers");
+        this.body = require(body, "STOMP body");
+        this.receipt = this.headers.contains(Builder.STOMP_HEADER_RECEIPT);
     }
 
     /**
@@ -70,11 +102,19 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
     }
 
     /**
+     * Returns the unique heartbeat frame.
+     *
+     * @return heartbeat singleton
+     */
+    public static StompFrame heartbeat() {
+        return HEARTBEAT;
+    }
+
+    /**
      * Returns command.
      *
      * @return command
      */
-    @Override
     public String command() {
         return command;
     }
@@ -84,7 +124,6 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
      *
      * @return headers
      */
-    @Override
     public Headers headers() {
         return headers;
     }
@@ -94,7 +133,6 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
      *
      * @return body
      */
-    @Override
     public Payload body() {
         return body;
     }
@@ -104,9 +142,50 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
      *
      * @return true when a receipt header is present
      */
-    @Override
     public boolean receipt() {
         return receipt;
+    }
+
+    /**
+     * Compares normal frames by value while preserving heartbeat singleton semantics.
+     *
+     * @param other compared value
+     * @return true when equal
+     */
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof StompFrame frame) || this == HEARTBEAT || frame == HEARTBEAT) {
+            return false;
+        }
+        return receipt == frame.receipt && command.equals(frame.command) && headers.equals(frame.headers)
+                && body.equals(frame.body);
+    }
+
+    /**
+     * Returns the value hash for a normal frame or the heartbeat identity hash.
+     *
+     * @return hash code
+     */
+    @Override
+    public int hashCode() {
+        return this == HEARTBEAT ? System.identityHashCode(this) : Objects.hash(command, headers, body, receipt);
+    }
+
+    /**
+     * Returns a diagnostic frame representation.
+     *
+     * @return representation
+     */
+    @Override
+    public String toString() {
+        if (this == HEARTBEAT) {
+            return "StompFrame[heartbeat]";
+        }
+        return "StompFrame[command=" + command + ", headers=" + headers + ", body=" + body + ", receipt=" + receipt
+                + "]";
     }
 
     /**

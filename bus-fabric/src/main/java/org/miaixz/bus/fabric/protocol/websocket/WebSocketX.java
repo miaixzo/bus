@@ -347,7 +347,7 @@ public final class WebSocketX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.observer = EventObserver.noop();
             this.callback = null;

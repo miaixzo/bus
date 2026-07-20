@@ -23,25 +23,27 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Handler;
@@ -51,8 +53,10 @@ import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.network.Ingress;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
+import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
@@ -79,6 +83,16 @@ public final class TcpServer implements AutoCloseable {
     private final Queue<TcpSession> sessions;
 
     /**
+     * Server lifecycle coordination lock.
+     */
+    private final Object lifecycleLock;
+
+    /**
+     * Start guard allowing only one bind attempt.
+     */
+    private final AtomicBoolean started;
+
+    /**
      * Running flag.
      */
     private final AtomicBoolean running;
@@ -102,6 +116,11 @@ public final class TcpServer implements AutoCloseable {
      * Listen backlog.
      */
     private final int backlog;
+
+    /**
+     * Per-read buffer size for accepted sessions.
+     */
+    private final int readBufferSize;
 
     /**
      * Whether this server owns the dispatcher lifecycle.
@@ -192,12 +211,16 @@ public final class TcpServer implements AutoCloseable {
             final boolean ownsDispatcher, final SocketOptions options) {
         this.address = Assert.notNull(address, () -> new ValidateException("Server address must not be null"));
         this.sessions = new ConcurrentLinkedQueue<>();
+        this.lifecycleLock = new Object();
+        this.started = new AtomicBoolean();
         this.running = new AtomicBoolean();
         this.closed = new AtomicBoolean();
         this.listener = listener == null ? NoopListener.INSTANCE : listener;
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("TCP dispatcher must not be null"));
         this.ownsDispatcher = ownsDispatcher;
-        this.backlog = (options == null ? SocketOptions.defaults() : options).backlog();
+        final SocketOptions currentOptions = options == null ? SocketOptions.defaults() : options;
+        this.backlog = currentOptions.backlog();
+        this.readBufferSize = currentOptions.readBufferSize();
     }
 
     /**
@@ -222,27 +245,34 @@ public final class TcpServer implements AutoCloseable {
      * Starts the server.
      */
     public void start() {
-        if (closed.get()) {
-            throw new StatefulException("TCP server is closed");
-        }
-        if (running.compareAndSet(false, true)) {
+        synchronized (lifecycleLock) {
+            if (closed.get()) {
+                throw new StatefulException("TCP server is closed");
+            }
+            if (!started.compareAndSet(false, true)) {
+                throw new StatefulException("TCP server can only be started once");
+            }
+            running.set(true);
             ServerSocketChannel opened = null;
             try {
                 opened = ServerSocketChannel.open();
                 opened.bind(socket(address), backlog);
                 server = opened;
-                acceptHandle = dispatcher.enqueue(
+                acceptHandle = dispatcher.background(
                         Protocol.TCP.name + "-server" + Symbol.COLON + address.host() + Symbol.COLON + address.port(),
+                        this,
                         Activity.of(Protocol.TCP.name + "-accept", this::acceptLoop));
                 notifyOpen(this);
             } catch (final IOException e) {
                 running.set(false);
                 IoKit.closeQuietly(opened);
+                server = null;
                 notifyFailure(this, e);
                 throw new SocketException("Unable to start TCP server", e);
             } catch (final RuntimeException e) {
                 running.set(false);
                 IoKit.closeQuietly(opened);
+                server = null;
                 notifyFailure(this, e);
                 throw new InternalException("Unable to start TCP server", e);
             }
@@ -273,23 +303,47 @@ public final class TcpServer implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (closed.compareAndSet(false, true)) {
+        if (!closed.compareAndSet(false, true)) {
+            return;
+        }
+        final List<TcpSession> closing;
+        Throwable failure = null;
+        synchronized (lifecycleLock) {
             running.set(false);
-            closeServer();
+            try {
+                closeServer();
+            } catch (final RuntimeException e) {
+                failure = e;
+            }
             final DispatchHandle handle = acceptHandle;
             if (handle != null) {
-                handle.cancel();
+                try {
+                    handle.cancel();
+                } catch (final RuntimeException e) {
+                    failure = collect(failure, e);
+                }
                 acceptHandle = null;
             }
-            TcpSession session = sessions.poll();
-            while (session != null) {
+            closing = new ArrayList<>(sessions);
+        }
+        for (final TcpSession session : closing) {
+            try {
                 session.close();
-                session = sessions.poll();
+            } catch (final RuntimeException e) {
+                failure = collect(failure, e);
             }
-            if (ownsDispatcher) {
+        }
+        sessions.clear();
+        if (ownsDispatcher) {
+            try {
                 dispatcher.close();
+            } catch (final RuntimeException e) {
+                failure = collect(failure, e);
             }
-            notifyClose(this);
+        }
+        notifyClose(this);
+        if (failure != null) {
+            throw new InternalException("Unable to close TCP server", failure);
         }
     }
 
@@ -326,14 +380,27 @@ public final class TcpServer implements AutoCloseable {
             IoKit.closeQuietly(socket);
             return;
         }
-        final TcpSession session = new TcpSession(address, socket, listener, dispatcher);
-        sessions.add(session);
-        final Message message = Message.of(Protocol.TCP, address, Headers.empty(), Payload.empty(), socket);
+        final TcpSession session;
+        try {
+            session = new TcpSession(address, socket, listener, dispatcher, current, sessions, readBufferSize);
+        } catch (final RuntimeException e) {
+            IoKit.closeQuietly(socket);
+            notifyFailure(this, e);
+            return;
+        }
+        synchronized (lifecycleLock) {
+            if (closed.get() || !running.get()) {
+                session.close();
+                return;
+            }
+            sessions.add(session);
+        }
+        final Message message = Message.of(Protocol.TCP, address, Headers.empty(), Payload.empty(), session.ingress());
         try {
             current.message(session, message);
+            session.startReader();
         } catch (final RuntimeException e) {
             session.fail(e);
-            throw e;
         }
     }
 
@@ -347,8 +414,27 @@ public final class TcpServer implements AutoCloseable {
                 current.close();
             } catch (final IOException e) {
                 throw new SocketException("Unable to close TCP server", e);
+            } finally {
+                server = null;
             }
         }
+    }
+
+    /**
+     * Aggregates a cleanup failure using suppressed exceptions.
+     *
+     * @param failure current primary failure
+     * @param next    next failure
+     * @return primary failure
+     */
+    private static Throwable collect(final Throwable failure, final Throwable next) {
+        if (failure == null) {
+            return next;
+        }
+        if (failure != next) {
+            failure.addSuppressed(next);
+        }
+        return failure;
     }
 
     /**
@@ -422,9 +508,9 @@ public final class TcpServer implements AutoCloseable {
         private final Address address;
 
         /**
-         * Socket channel.
+         * Ingress owning the accepted channel and conduit contract.
          */
-        private final SocketChannel socket;
+        private final Ingress ingress;
 
         /**
          * Runtime dispatcher.
@@ -432,23 +518,59 @@ public final class TcpServer implements AutoCloseable {
         private final Dispatcher dispatcher;
 
         /**
+         * Session message handler.
+         */
+        private final Handler handler;
+
+        /**
+         * Owning server registry.
+         */
+        private final Queue<TcpSession> registry;
+
+        /**
+         * Read chunk size.
+         */
+        private final int readBufferSize;
+
+        /**
          * Lifecycle scope.
          */
         private final LifecycleScope scope;
 
         /**
+         * Background reader handle.
+         */
+        private final AtomicReference<DispatchHandle> readerHandle;
+
+        /**
          * Creates a session.
          *
-         * @param address    address
-         * @param socket     socket
-         * @param listener   lifecycle listener
-         * @param dispatcher runtime dispatcher
+         * @param address        address
+         * @param socket         socket
+         * @param listener       lifecycle listener
+         * @param dispatcher     runtime dispatcher
+         * @param handler        message handler
+         * @param registry       owning registry
+         * @param readBufferSize read chunk size
          */
         private TcpSession(final Address address, final SocketChannel socket, final Listener<Object> listener,
-                final Dispatcher dispatcher) {
-            this.address = address;
-            this.socket = Assert.notNull(socket, () -> new ValidateException("TCP session socket must not be null"));
-            this.dispatcher = dispatcher;
+                final Dispatcher dispatcher, final Handler handler, final Queue<TcpSession> registry,
+                final int readBufferSize) {
+            this.address = Assert.notNull(address, () -> new ValidateException("TCP session address must not be null"));
+            this.ingress = Ingress.of(
+                    this.address,
+                    Assert.notNull(socket, () -> new ValidateException("TCP session socket must not be null")),
+                    null);
+            this.dispatcher = Assert
+                    .notNull(dispatcher, () -> new ValidateException("TCP session dispatcher must not be null"));
+            this.handler = Assert.notNull(handler, () -> new ValidateException("TCP session handler must not be null"));
+            this.registry = Assert
+                    .notNull(registry, () -> new ValidateException("TCP session registry must not be null"));
+            Assert.isTrue(
+                    readBufferSize > Normal._0,
+                    () -> new ValidateException("TCP read buffer size must be positive"));
+            this.readBufferSize = readBufferSize;
+            this.readerHandle = new AtomicReference<>();
             this.scope = LifecycleScope.session(
                     this,
                     "tcp-session",
@@ -457,8 +579,65 @@ public final class TcpServer implements AutoCloseable {
                     ObservationMarker.SOCKET_OPEN,
                     ObservationMarker.SOCKET_CLOSED,
                     ObservationMarker.SOCKET_FAILED);
-            this.scope.own(() -> IoKit.closeQuietly(this.socket));
+            this.scope.own(this.ingress);
             this.scope.open(this);
+        }
+
+        /**
+         * Returns the accepted ingress.
+         *
+         * @return accepted ingress
+         */
+        private Ingress ingress() {
+            return ingress;
+        }
+
+        /**
+         * Starts the background session reader once.
+         */
+        private void startReader() {
+            if (!opened()) {
+                throw new StatefulException("TCP session is not open");
+            }
+            final DispatchHandle created = dispatcher
+                    .background("tcp:session:reader", this, Activity.of("tcp:session:reader", this::readLoop));
+            if (!readerHandle.compareAndSet(null, created)) {
+                created.cancel();
+                throw new StatefulException("TCP session reader can only be started once");
+            }
+            if (!opened()) {
+                cancelReader();
+            }
+        }
+
+        /**
+         * Reads peer data until EOF, cancellation, close, or failure.
+         */
+        private void readLoop() {
+            try {
+                while (opened()) {
+                    final Buffer buffer = new Buffer();
+                    final long read = await(ingress.read(buffer, readBufferSize), "Unable to read TCP session");
+                    if (read == Normal.__1) {
+                        close();
+                        return;
+                    }
+                    if (read == Normal._0) {
+                        if (!ThreadKit.sleep(Normal._1)) {
+                            cancel();
+                            return;
+                        }
+                        continue;
+                    }
+                    final Message message = Message
+                            .of(Protocol.TCP, address, Headers.empty(), Payload.of(buffer.readByteArray()), ingress);
+                    handler.message(this, message);
+                }
+            } catch (final RuntimeException e) {
+                if (opened()) {
+                    fail(e);
+                }
+            }
         }
 
         /**
@@ -488,7 +667,7 @@ public final class TcpServer implements AutoCloseable {
          */
         @Override
         public boolean opened() {
-            return scope.state() == Status.OPENED && socket.isOpen();
+            return scope.state() == Status.OPENED && ingress.opened();
         }
 
         /**
@@ -501,14 +680,33 @@ public final class TcpServer implements AutoCloseable {
         public Call<Void> send(final Payload payload) {
             final Payload checkedPayload = Assert
                     .notNull(payload, () -> new ValidateException("Payload must not be null"));
-            final CompletableFuture<Void> future = dispatcher.run("tcp:session:send", () -> {
-                try {
-                    socket.write(java.nio.ByteBuffer.wrap(checkedPayload.bytes()));
-                } catch (final IOException e) {
-                    throw new SocketException("Unable to send session payload", e);
-                }
-            });
-            return new FutureCall<>(future);
+            return MonoCall.<Void>create(
+                    "tcp-session-send",
+                    "tcp:session:send",
+                    dispatcher,
+                    EventObserver.noop(),
+                    null,
+                    () -> write(checkedPayload),
+                    this::cancel);
+        }
+
+        /**
+         * Materializes and fully writes one payload through the ingress contract.
+         *
+         * @param payload payload
+         * @return null after a complete write
+         */
+        private Void write(final Payload payload) {
+            if (!opened()) {
+                throw new StatefulException("TCP session is not open");
+            }
+            final Buffer source = new Buffer().write(payload.bytes());
+            final long requested = source.size();
+            final long written = await(ingress.write(source, requested), "Unable to write TCP session");
+            if (written != requested || source.size() != Normal._0) {
+                throw new SocketException("TCP session write did not fully consume the payload");
+            }
+            return null;
         }
 
         /**
@@ -518,7 +716,13 @@ public final class TcpServer implements AutoCloseable {
          */
         @Override
         public boolean close() {
-            return scope.close(this);
+            unregister();
+            cancelReader();
+            final boolean changed = scope.close(this);
+            if (changed) {
+                notifyHandlerClosed();
+            }
+            return changed;
         }
 
         /**
@@ -528,7 +732,13 @@ public final class TcpServer implements AutoCloseable {
          */
         @Override
         public boolean cancel() {
-            return scope.cancel(new StatefulException("TCP session was cancelled"));
+            unregister();
+            cancelReader();
+            final boolean changed = scope.cancel(new StatefulException("TCP session was cancelled"));
+            if (changed) {
+                notifyHandlerClosed();
+            }
+            return changed;
         }
 
         /**
@@ -538,7 +748,54 @@ public final class TcpServer implements AutoCloseable {
          * @return true when failed
          */
         private boolean fail(final Throwable cause) {
-            return scope.fail(cause);
+            unregister();
+            cancelReader();
+            final boolean changed = scope.fail(cause);
+            if (changed) {
+                notifyHandlerFailure(cause);
+            }
+            return changed;
+        }
+
+        /**
+         * Removes this session from its owning registry.
+         */
+        private void unregister() {
+            registry.remove(this);
+        }
+
+        /**
+         * Cancels the background reader handle.
+         */
+        private void cancelReader() {
+            final DispatchHandle current = readerHandle.getAndSet(null);
+            if (current != null) {
+                current.cancel();
+            }
+        }
+
+        /**
+         * Notifies the handler that the session closed.
+         */
+        private void notifyHandlerClosed() {
+            try {
+                handler.closed(this);
+            } catch (final RuntimeException e) {
+                Logger.warn(false, "Fabric", e, "TCP handler close callback failed");
+            }
+        }
+
+        /**
+         * Notifies the handler that the session failed.
+         *
+         * @param cause failure cause
+         */
+        private void notifyHandlerFailure(final Throwable cause) {
+            try {
+                handler.failure(this, cause);
+            } catch (final RuntimeException e) {
+                Logger.warn(false, "Fabric", e, "TCP handler failure callback failed");
+            }
         }
 
         /**
@@ -554,157 +811,27 @@ public final class TcpServer implements AutoCloseable {
     }
 
     /**
-     * Future-backed call.
+     * Awaits a conduit operation and preserves runtime failures.
      *
-     * @param <T> result type
+     * @param future  conduit operation
+     * @param message failure message
+     * @return completed byte count
      */
-    private static final class FutureCall<T> implements Call<T> {
-
-        /**
-         * Future.
-         */
-        private final CompletableFuture<T> future;
-
-        /**
-         * Creates a call.
-         *
-         * @param future future
-         */
-        private FutureCall(final CompletableFuture<T> future) {
-            this.future = Assert.notNull(future, () -> new ValidateException("TCP call future must not be null"));
-        }
-
-        /**
-         * Waits for the already-started call to complete.
-         *
-         * @return completed value
-         */
-        @Override
-        public T execute() {
-            return await();
-        }
-
-        /**
-         * Returns this already-started call.
-         *
-         * @return this call
-         */
-        @Override
-        public Call<T> enqueue() {
-            return this;
-        }
-
-        /**
-         * Waits for completion.
-         *
-         * @return completed value
-         */
-        @Override
-        public T await() {
-            try {
-                return future.get();
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InternalException("Interrupted while waiting for TCP call", e);
-            } catch (final ExecutionException e) {
-                throw new InternalException("TCP call failed", e.getCause());
-            } catch (final CancellationException e) {
-                throw new InternalException("TCP call was cancelled", e);
+    private static long await(final CompletableFuture<Long> future, final String message) {
+        try {
+            final Long result = Assert.notNull(future, () -> new ValidateException("TCP IO future must not be null"))
+                    .join();
+            return Assert.notNull(result, () -> new InternalException(message + ": missing byte count"));
+        } catch (final CompletionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
             }
-        }
-
-        /**
-         * Waits for completion within a timeout.
-         *
-         * @param timeout timeout
-         * @return completed value
-         */
-        @Override
-        public T await(final Duration timeout) {
-            validateTimeout(timeout);
-            if (timeout.isZero()) {
-                if (!future.isDone()) {
-                    cancel();
-                    throw new TimeoutException("TCP call timed out");
-                }
-                return await();
+            if (cause instanceof Error error) {
+                throw error;
             }
-            try {
-                return future.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InternalException("Interrupted while waiting for TCP call", e);
-            } catch (final ExecutionException e) {
-                throw new InternalException("TCP call failed", e.getCause());
-            } catch (final CancellationException e) {
-                throw new InternalException("TCP call was cancelled", e);
-            } catch (final java.util.concurrent.TimeoutException e) {
-                cancel();
-                throw new TimeoutException("TCP call timed out", e);
-            } catch (final ArithmeticException e) {
-                throw new ValidateException("Timeout is too large");
-            }
+            throw new InternalException(message, cause);
         }
-
-        /**
-         * Cancels the future.
-         *
-         * @return true when cancelled
-         */
-        @Override
-        public boolean cancel() {
-            return future.cancel(true);
-        }
-
-        /**
-         * Returns cancellation state.
-         *
-         * @return true when cancelled
-         */
-        @Override
-        public boolean cancelled() {
-            return future.isCancelled();
-        }
-
-        /**
-         * Returns completion state.
-         *
-         * @return true when complete
-         */
-        @Override
-        public boolean done() {
-            return future.isDone();
-        }
-
-        /**
-         * Returns lifecycle state.
-         *
-         * @return state
-         */
-        @Override
-        public Status state() {
-            if (future.isCancelled()) {
-                return Status.CANCELLED;
-            }
-            if (future.isCompletedExceptionally()) {
-                return Status.FAILED;
-            }
-            return future.isDone() ? Status.DONE : Status.RUNNING;
-        }
-
-        /**
-         * Validates timeout.
-         *
-         * @param timeout timeout
-         */
-        private static void validateTimeout(final Duration timeout) {
-            final Duration checkedTimeout = Assert
-                    .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
-            Assert.isFalse(
-                    checkedTimeout.isNegative(),
-                    () -> new ValidateException("Timeout must be non-null and non-negative"));
-        }
-
     }
 
     /**

@@ -23,9 +23,11 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.observe.EventObserver;
@@ -83,6 +85,16 @@ public final class LifecycleScope {
     private final EventObserver observer;
 
     /**
+     * Lifecycle clock.
+     */
+    private final Clock clock;
+
+    /**
+     * Identifier shared by every event in this lifecycle.
+     */
+    private final String operationId;
+
+    /**
      * Start event marker.
      */
     private final ObservationMarker startMarker;
@@ -114,6 +126,7 @@ public final class LifecycleScope {
      * @param name          lifecycle name
      * @param listener      lifecycle listener
      * @param observer      event observer
+     * @param clock         lifecycle clock
      * @param startMarker   start event marker
      * @param openMarker    open event marker
      * @param closeMarker   close event marker
@@ -121,9 +134,9 @@ public final class LifecycleScope {
      * @param failureMarker failure event marker
      */
     private LifecycleScope(final Object source, final String name, final Listener<Object> listener,
-            final EventObserver observer, final ObservationMarker startMarker, final ObservationMarker openMarker,
-            final ObservationMarker closeMarker, final ObservationMarker cancelMarker,
-            final ObservationMarker failureMarker) {
+            final EventObserver observer, final Clock clock, final ObservationMarker startMarker,
+            final ObservationMarker openMarker, final ObservationMarker closeMarker,
+            final ObservationMarker cancelMarker, final ObservationMarker failureMarker) {
         this.state = new AtomicReference<>(Status.QUEUED);
         this.cancellation = Cancellation.create();
         this.resources = ResourceScope.create();
@@ -132,6 +145,8 @@ public final class LifecycleScope {
         this.name = Assert.notBlank(name, () -> new ValidateException("Lifecycle name must not be blank"));
         this.listener = listener == null ? noopListener() : listener;
         this.observer = EventObserver.safe(observer);
+        this.clock = Assert.notNull(clock, () -> new ValidateException("Lifecycle clock must not be null"));
+        this.operationId = ID.objectId();
         this.startMarker = startMarker;
         this.openMarker = openMarker;
         this.closeMarker = closeMarker;
@@ -147,7 +162,19 @@ public final class LifecycleScope {
      * @return lifecycle scope
      */
     public static LifecycleScope call(final String name, final EventObserver observer) {
-        return new LifecycleScope(null, name, noopListener(), observer, ObservationMarker.CALL_START, null,
+        return call(name, observer, Clock.system());
+    }
+
+    /**
+     * Creates a call lifecycle scope with an explicit clock.
+     *
+     * @param name     call name
+     * @param observer event observer
+     * @param clock    lifecycle clock
+     * @return lifecycle scope
+     */
+    public static LifecycleScope call(final String name, final EventObserver observer, final Clock clock) {
+        return new LifecycleScope(null, name, noopListener(), observer, clock, ObservationMarker.CALL_START, null,
                 ObservationMarker.CALL_SUCCESS, ObservationMarker.CALL_CANCELLED, ObservationMarker.CALL_FAILED);
     }
 
@@ -172,8 +199,34 @@ public final class LifecycleScope {
             final ObservationMarker openMarker,
             final ObservationMarker closeMarker,
             final ObservationMarker failureMarker) {
-        return new LifecycleScope(source, name, cast(listener), observer, null, openMarker, closeMarker, failureMarker,
-                failureMarker);
+        return session(source, name, listener, observer, openMarker, closeMarker, failureMarker, Clock.system());
+    }
+
+    /**
+     * Creates a session lifecycle scope with an explicit clock.
+     *
+     * @param source        session source
+     * @param name          session name
+     * @param listener      session listener
+     * @param observer      event observer
+     * @param openMarker    open event marker
+     * @param closeMarker   close event marker
+     * @param failureMarker failure event marker
+     * @param clock         lifecycle clock
+     * @param <T>           source type
+     * @return lifecycle scope
+     */
+    public static <T> LifecycleScope session(
+            final T source,
+            final String name,
+            final Listener<? super T> listener,
+            final EventObserver observer,
+            final ObservationMarker openMarker,
+            final ObservationMarker closeMarker,
+            final ObservationMarker failureMarker,
+            final Clock clock) {
+        return new LifecycleScope(source, name, cast(listener), observer, clock, null, openMarker, closeMarker,
+                cancellationMarker(openMarker, failureMarker), failureMarker);
     }
 
     /**
@@ -191,7 +244,27 @@ public final class LifecycleScope {
             final String name,
             final Listener<? super T> listener,
             final EventObserver observer) {
-        return new LifecycleScope(source, name, cast(listener), observer, null, null, null, null, null);
+        return resource(source, name, listener, observer, Clock.system());
+    }
+
+    /**
+     * Creates a resource lifecycle scope with an explicit clock.
+     *
+     * @param source   resource source
+     * @param name     resource name
+     * @param listener resource listener
+     * @param observer event observer
+     * @param clock    lifecycle clock
+     * @param <T>      source type
+     * @return lifecycle scope
+     */
+    public static <T> LifecycleScope resource(
+            final T source,
+            final String name,
+            final Listener<? super T> listener,
+            final EventObserver observer,
+            final Clock clock) {
+        return new LifecycleScope(source, name, cast(listener), observer, clock, null, null, null, null, null);
     }
 
     /**
@@ -220,10 +293,7 @@ public final class LifecycleScope {
      * @return original resource
      */
     public <T extends AutoCloseable> T own(final T resource) {
-        final T current = resources
-                .add(Assert.notNull(resource, () -> new ValidateException("Resource must not be null")));
-        cancellation.closeOnCancel(current);
-        return current;
+        return resources.add(Assert.notNull(resource, () -> new ValidateException("Resource must not be null")));
     }
 
     /**
@@ -271,7 +341,7 @@ public final class LifecycleScope {
     public boolean complete() {
         final boolean changed = transit(Status.DONE);
         if (changed) {
-            terminal(closeMarker, null, false, source);
+            terminal(closeMarker, null, false, false, source);
         }
         return changed;
     }
@@ -304,7 +374,7 @@ public final class LifecycleScope {
         closing();
         final boolean changed = transit(Status.CLOSED);
         if (changed) {
-            terminal(closeMarker, null, false, select(closedSource));
+            terminal(closeMarker, null, false, false, select(closedSource));
         }
         return changed;
     }
@@ -327,10 +397,9 @@ public final class LifecycleScope {
     public boolean cancel(final Throwable cause) {
         final Throwable current = Assert
                 .notNull(cause, () -> new ValidateException("Cancellation cause must not be null"));
-        cancellation.cancel(current);
         final boolean changed = transit(Status.CANCELLED);
         if (changed) {
-            terminal(cancelMarker, current, true, source);
+            terminal(cancelMarker, current, true, false, source);
         }
         return changed;
     }
@@ -343,10 +412,9 @@ public final class LifecycleScope {
      */
     public boolean fail(final Throwable cause) {
         final Throwable current = Assert.notNull(cause, () -> new ValidateException("Failure cause must not be null"));
-        cancellation.cancel(current);
         final boolean changed = transit(Status.FAILED);
         if (changed) {
-            terminal(failureMarker, current, true, source);
+            terminal(failureMarker, current, true, true, source);
         }
         return changed;
     }
@@ -371,8 +439,9 @@ public final class LifecycleScope {
             return;
         }
         observer.emit(
-                FabricEvent.builder(marker).tag(Builder.LIFECYCLE_SCOPE_NAME, name)
-                        .tag(Builder.TAG_SOURCE, sourceName(source)).cause(cause).build());
+                FabricEvent.builder(marker, clock).tag(Builder.TAG_OPERATION_ID, operationId)
+                        .tag(Builder.LIFECYCLE_SCOPE_NAME, name).tag(Builder.TAG_SOURCE, sourceName(source))
+                        .cause(cause).build());
     }
 
     /**
@@ -398,16 +467,21 @@ public final class LifecycleScope {
      *
      * @param marker      terminal marker
      * @param cause       failure cause
-     * @param failed      failure flag
+     * @param cancelScope whether to cancel the cancellation scope
+     * @param failed      whether to notify listener failure
      * @param eventSource event source
      */
     private void terminal(
             final ObservationMarker marker,
             final Throwable cause,
+            final boolean cancelScope,
             final boolean failed,
             final Object eventSource) {
         if (!terminal.compareAndSet(false, true)) {
             return;
+        }
+        if (cancelScope) {
+            cancellation.cancel(cause);
         }
         try {
             resources.close();
@@ -470,9 +544,9 @@ public final class LifecycleScope {
      */
     private void listenerFailed(final String action, final RuntimeException cause) {
         observer.emit(
-                FabricEvent.builder(ObservationMarker.LISTENER_FAILED).tag(Builder.LIFECYCLE_SCOPE_NAME, name)
-                        .tag(Builder.TAG_ACTION, action).tag(Builder.TAG_SOURCE, sourceName(source)).cause(cause)
-                        .build());
+                FabricEvent.builder(ObservationMarker.LISTENER_FAILED, clock).tag(Builder.TAG_OPERATION_ID, operationId)
+                        .tag(Builder.LIFECYCLE_SCOPE_NAME, name).tag(Builder.TAG_ACTION, action)
+                        .tag(Builder.TAG_SOURCE, sourceName(source)).cause(cause).build());
     }
 
     /**
@@ -483,6 +557,34 @@ public final class LifecycleScope {
      */
     private Object select(final Object candidate) {
         return candidate == null ? source : candidate;
+    }
+
+    /**
+     * Selects the protocol-specific cancellation marker for a session.
+     *
+     * @param openMarker    session open marker
+     * @param failureMarker session failure marker
+     * @return cancellation marker or the failure marker when no dedicated marker exists
+     */
+    private static ObservationMarker cancellationMarker(
+            final ObservationMarker openMarker,
+            final ObservationMarker failureMarker) {
+        if (openMarker == ObservationMarker.SOCKET_OPEN || failureMarker == ObservationMarker.SOCKET_FAILED) {
+            return ObservationMarker.SOCKET_CANCELLED;
+        }
+        if (openMarker == ObservationMarker.WEBSOCKET_OPEN || failureMarker == ObservationMarker.WEBSOCKET_FAILED) {
+            return ObservationMarker.WEBSOCKET_CANCELLED;
+        }
+        if (openMarker == ObservationMarker.SSE_OPEN || failureMarker == ObservationMarker.SSE_FAILED) {
+            return ObservationMarker.SSE_CANCELLED;
+        }
+        if (openMarker == ObservationMarker.STOMP_OPEN || failureMarker == ObservationMarker.STOMP_FAILED) {
+            return ObservationMarker.STOMP_CANCELLED;
+        }
+        if (openMarker == ObservationMarker.TLS_HANDSHAKE || failureMarker == ObservationMarker.TLS_FAILED) {
+            return ObservationMarker.TLS_CANCELLED;
+        }
+        return failureMarker;
     }
 
     /**

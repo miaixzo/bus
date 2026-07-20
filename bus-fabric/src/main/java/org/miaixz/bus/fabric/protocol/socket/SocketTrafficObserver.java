@@ -19,17 +19,11 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
-import java.util.concurrent.atomic.AtomicLong;
-
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.observe.EventObserver;
-import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 
 /**
- * Socket traffic observer backed by current observation markers.
+ * Stateless socket traffic event forwarding extension.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -42,30 +36,12 @@ public final class SocketTrafficObserver implements EventObserver {
     private final EventObserver delegate;
 
     /**
-     * Total observed socket read bytes.
-     */
-    private final AtomicLong readBytes;
-
-    /**
-     * Total observed socket write bytes.
-     */
-    private final AtomicLong writtenBytes;
-
-    /**
-     * Total observed socket failures.
-     */
-    private final AtomicLong failures;
-
-    /**
-     * Creates an observer that maintains socket counters before forwarding events downstream.
+     * Creates an observer that forwards socket wire events without owning aggregation state.
      *
      * @param delegate downstream observer
      */
     private SocketTrafficObserver(final EventObserver delegate) {
         this.delegate = EventObserver.safe(delegate);
-        this.readBytes = new AtomicLong();
-        this.writtenBytes = new AtomicLong();
-        this.failures = new AtomicLong();
     }
 
     /**
@@ -88,7 +64,8 @@ public final class SocketTrafficObserver implements EventObserver {
     }
 
     /**
-     * Records socket traffic counters and forwards the event downstream.
+     * Forwards a socket event unchanged so the downstream meter remains the sole owner of byte validation and
+     * aggregation. Physical Socket and WebSocket events therefore remain distinct from logical STOMP frame events.
      *
      * @param event fabric event
      */
@@ -97,60 +74,7 @@ public final class SocketTrafficObserver implements EventObserver {
         if (event == null) {
             return;
         }
-        final long bytes = bytes(event);
-        if (event.marker() == ObservationMarker.SOCKET_READ) {
-            readBytes.addAndGet(bytes);
-        } else if (event.marker() == ObservationMarker.SOCKET_WRITE) {
-            writtenBytes.addAndGet(bytes);
-        } else if (event.marker() == ObservationMarker.SOCKET_FAILED) {
-            failures.incrementAndGet();
-        }
         delegate.emit(event);
-    }
-
-    /**
-     * Returns total observed socket read bytes.
-     *
-     * @return read bytes
-     */
-    public long readBytes() {
-        return readBytes.get();
-    }
-
-    /**
-     * Returns total observed socket write bytes.
-     *
-     * @return written bytes
-     */
-    public long writtenBytes() {
-        return writtenBytes.get();
-    }
-
-    /**
-     * Returns total observed socket failures.
-     *
-     * @return failure count
-     */
-    public long failures() {
-        return failures.get();
-    }
-
-    /**
-     * Extracts the byte count tag from a socket event without failing the observer on malformed telemetry.
-     *
-     * @param event fabric event
-     * @return byte count, or {@code 0} when absent or invalid
-     */
-    private static long bytes(final FabricEvent event) {
-        final String value = event.tags().get(Builder.TAG_BYTES);
-        if (StringKit.isBlank(value)) {
-            return Normal.LONG_ZERO;
-        }
-        try {
-            return Long.parseLong(value);
-        } catch (final NumberFormatException ignored) {
-            return Normal.LONG_ZERO;
-        }
     }
 
 }

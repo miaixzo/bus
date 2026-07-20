@@ -23,6 +23,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -41,6 +42,8 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Clock;
+import org.miaixz.bus.fabric.Context;
+import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
 import org.miaixz.bus.fabric.registry.policy.PoolPolicy;
@@ -61,6 +64,11 @@ public final class ConnectionPool implements AutoCloseable {
      * Pool policy.
      */
     private final PoolPolicy policy;
+
+    /**
+     * Pool-owned time source.
+     */
+    private final Clock clock;
 
     /**
      * Idle connections by destination.
@@ -88,6 +96,16 @@ public final class ConnectionPool implements AutoCloseable {
     private int creating;
 
     /**
+     * Reserved connection creations by destination.
+     */
+    private final Map<Destination, Integer> creatingByDestination;
+
+    /**
+     * Fair first-in-first-out acquisition waiters.
+     */
+    private final ArrayDeque<PoolWaiter> waiters;
+
+    /**
      * Closed flag.
      */
     private final AtomicBoolean closed;
@@ -108,21 +126,20 @@ public final class ConnectionPool implements AutoCloseable {
     private volatile Dispatcher evictionDispatcher;
 
     /**
-     * Clock used by idle eviction.
-     */
-    private volatile Clock evictionClock;
-
-    /**
      * Creates a pool.
      *
      * @param policy pool policy
+     * @param clock  pool time source
      */
-    private ConnectionPool(final PoolPolicy policy) {
+    private ConnectionPool(final PoolPolicy policy, final Clock clock) {
         this.policy = policy;
+        this.clock = clock;
         this.idle = new ConcurrentHashMap<>();
         this.leased = Collections.newSetFromMap(new IdentityHashMap<>());
         this.active = new IdentityHashMap<>();
         this.lock = new Object();
+        this.creatingByDestination = new LinkedHashMap<>();
+        this.waiters = new ArrayDeque<>();
         this.closed = new AtomicBoolean();
         this.evictionStarted = new AtomicBoolean();
     }
@@ -134,7 +151,18 @@ public final class ConnectionPool implements AutoCloseable {
      * @return connection pool
      */
     public static ConnectionPool create(final PoolPolicy policy) {
-        return new ConnectionPool(policy == null ? PoolPolicy.defaults() : policy);
+        return create(policy, Clock.system());
+    }
+
+    /**
+     * Creates a connection pool with an owned time source.
+     *
+     * @param policy pool policy or null for defaults
+     * @param clock  pool time source
+     * @return connection pool
+     */
+    public static ConnectionPool create(final PoolPolicy policy, final Clock clock) {
+        return new ConnectionPool(policy == null ? PoolPolicy.defaults() : policy, require(clock, "Runtime clock"));
     }
 
     /**
@@ -160,9 +188,12 @@ public final class ConnectionPool implements AutoCloseable {
             final Destination destination,
             final Supplier<Connection> factory,
             final Cancellation cancellation) {
-        require(destination, "Connection destination");
+        final Destination target = require(destination, "Connection destination");
+        validateDestination(target);
         require(factory, "Connection factory");
         final Cancellation scope = require(cancellation, "Cancellation");
+        final long deadline = deadline(policy.acquireTimeout());
+        PoolWaiter waiter = null;
         final Runnable unregister = scope.onCancel(() -> {
             synchronized (lock) {
                 lock.notifyAll();
@@ -171,22 +202,26 @@ public final class ConnectionPool implements AutoCloseable {
         try {
             while (true) {
                 scope.throwIfCancelled();
-                final ConnectionLease shared = acquireShared(destination);
+                final ConnectionLease shared = acquireShared(target, waiter);
                 if (shared != null) {
                     return shared;
                 }
                 scope.throwIfCancelled();
-                final ConnectionLease reused = acquireIdle(destination);
+                final ConnectionLease reused = acquireIdle(target, waiter);
                 if (reused != null) {
                     return reused;
                 }
                 scope.throwIfCancelled();
-                if (reserveCreate()) {
-                    return createLease(destination, factory, scope);
+                if (reserveCreate(target, waiter)) {
+                    return createLease(target, factory, scope);
                 }
-                waitForAvailability(destination, scope);
+                if (waiter == null) {
+                    waiter = new PoolWaiter(target);
+                }
+                waitForAvailability(waiter, scope, deadline);
             }
         } finally {
+            removeWaiter(waiter);
             unregister.run();
         }
     }
@@ -238,11 +273,9 @@ public final class ConnectionPool implements AutoCloseable {
     /**
      * Evicts idle connections according to policy.
      *
-     * @param clock clock
      * @return evicted count
      */
-    public int evictIdle(final Clock clock) {
-        require(clock, "Runtime clock");
+    public int evictIdle() {
         final List<Connection> evicted = new ArrayList<>();
         synchronized (lock) {
             final Instant now = clock.now();
@@ -274,16 +307,14 @@ public final class ConnectionPool implements AutoCloseable {
      * Closes leases that have stayed leased longer than the supplied age.
      *
      * @param maxAge maximum leased age
-     * @param clock  clock
      * @return leaked lease count
      */
-    public int pruneLeaked(final Duration maxAge, final Clock clock) {
+    public int pruneLeaked(final Duration maxAge) {
         final Duration currentMaxAge = Assert
                 .notNull(maxAge, () -> new ValidateException("Leak max age must be non-null and non-negative"));
         Assert.isFalse(
                 currentMaxAge.isNegative(),
                 () -> new ValidateException("Leak max age must be non-null and non-negative"));
-        require(clock, "Runtime clock");
         final List<ConnectionLease> leaked = new ArrayList<>();
         synchronized (lock) {
             final Instant now = clock.now();
@@ -303,16 +334,13 @@ public final class ConnectionPool implements AutoCloseable {
      * Starts automatic idle connection eviction.
      *
      * @param dispatcher dispatcher
-     * @param clock      clock
      */
-    public void startIdleEviction(final Dispatcher dispatcher, final Clock clock) {
+    public void startIdleEviction(final Dispatcher dispatcher) {
         require(dispatcher, "Dispatcher");
-        require(clock, "Runtime clock");
         if (!evictionStarted.compareAndSet(false, true)) {
             return;
         }
         evictionDispatcher = dispatcher;
-        evictionClock = clock;
         scheduleEvictionIfNeeded();
     }
 
@@ -344,6 +372,8 @@ public final class ConnectionPool implements AutoCloseable {
             }
             leased.clear();
             active.clear();
+            creatingByDestination.clear();
+            waiters.clear();
             lock.notifyAll();
         }
         closeAll(connections);
@@ -395,7 +425,7 @@ public final class ConnectionPool implements AutoCloseable {
             }
             if (!closed.get() && !lease.leaked() && lease.connection().healthy()) {
                 idle.computeIfAbsent(lease.destination(), ignored -> new ArrayDeque<>())
-                        .addLast(new PooledConnection(lease.connection(), Instant.now()));
+                        .addLast(new PooledConnection(lease.connection(), clock.now()));
                 scheduleEviction = true;
             } else {
                 closeable = lease.connection();
@@ -461,14 +491,18 @@ public final class ConnectionPool implements AutoCloseable {
      * Attempts to acquire an already leased multiplex-capable connection.
      *
      * @param destination connection destination
+     * @param waiter      fair waiter or null for an immediate caller
      * @return shared lease or null
      */
-    private ConnectionLease acquireShared(final Destination destination) {
+    private ConnectionLease acquireShared(final Destination destination, final PoolWaiter waiter) {
         if (!destination.multiplex()) {
             return null;
         }
         synchronized (lock) {
             ensureOpen();
+            if (!hasTurn(waiter)) {
+                return null;
+            }
             Connection candidate = null;
             for (final ConnectionLease lease : leased) {
                 final Connection connection = lease.connection();
@@ -481,9 +515,10 @@ public final class ConnectionPool implements AutoCloseable {
             if (candidate == null) {
                 return null;
             }
-            final ConnectionLease shared = new ConnectionLease(this, destination, candidate, Instant.now());
+            final ConnectionLease shared = new ConnectionLease(this, destination, candidate, clock.now());
             leased.add(shared);
             active.merge(candidate, 1, Integer::sum);
+            completeWaiter(waiter);
             return shared;
         }
     }
@@ -492,25 +527,30 @@ public final class ConnectionPool implements AutoCloseable {
      * Attempts to acquire an idle connection.
      *
      * @param destination connection destination
+     * @param waiter      fair waiter or null for an immediate caller
      * @return lease or null
      */
-    private ConnectionLease acquireIdle(final Destination destination) {
+    private ConnectionLease acquireIdle(final Destination destination, final PoolWaiter waiter) {
         final List<Connection> discarded = new ArrayList<>();
         ConnectionLease lease = null;
         boolean cancelEviction = false;
         synchronized (lock) {
             ensureOpen();
+            if (!hasTurn(waiter)) {
+                return null;
+            }
             final ArrayDeque<PooledConnection> bucket = idle.get(destination);
             while (bucket != null && !bucket.isEmpty()) {
                 final Connection connection = bucket.removeFirst().connection();
                 if (connection.healthy()) {
-                    lease = new ConnectionLease(this, destination, connection, Instant.now());
+                    lease = new ConnectionLease(this, destination, connection, clock.now());
                     leased.add(lease);
                     active.put(connection, 1);
                     if (bucket.isEmpty()) {
                         idle.remove(destination, bucket);
                     }
                     cancelEviction = idleCount() == 0;
+                    completeWaiter(waiter);
                     break;
                 }
                 discarded.add(connection);
@@ -535,17 +575,21 @@ public final class ConnectionPool implements AutoCloseable {
     }
 
     /**
-     * Returns whether another connection can be created.
+     * Reserves capacity to create another connection.
      *
+     * @param destination connection destination
+     * @param waiter      fair waiter or null for an immediate caller
      * @return true when under limit
      */
-    private boolean reserveCreate() {
+    private boolean reserveCreate(final Destination destination, final PoolWaiter waiter) {
         synchronized (lock) {
             ensureOpen();
-            if (connectionCount() + creating >= policy.maxConnections()) {
+            if (!hasTurn(waiter) || !creationAvailable(destination)) {
                 return false;
             }
             creating++;
+            creatingByDestination.merge(destination, 1, Integer::sum);
+            completeWaiter(waiter);
             return true;
         }
     }
@@ -566,22 +610,26 @@ public final class ConnectionPool implements AutoCloseable {
         final Connection connection;
         try {
             connection = require(factory.get(), "Created connection");
-        } catch (final RuntimeException e) {
-            releaseCreateReservation();
-            throw e instanceof InternalException || e instanceof ProtocolException || e instanceof SocketException
-                    || e instanceof TimeoutException || e instanceof StatefulException || e instanceof ValidateException
-                            ? e
-                            : new InternalException("Unable to create connection", e);
+        } catch (final Throwable e) {
+            releaseCreateReservation(destination);
+            if (e instanceof Error error) {
+                throw error;
+            }
+            final RuntimeException failure = (RuntimeException) e;
+            throw failure instanceof InternalException || failure instanceof ProtocolException
+                    || failure instanceof SocketException || failure instanceof TimeoutException
+                    || failure instanceof StatefulException || failure instanceof ValidateException ? failure
+                            : new InternalException("Unable to create connection", failure);
         }
         boolean closeable = false;
         boolean cancelled = false;
         synchronized (lock) {
-            creating--;
+            releaseCreateReservationLocked(destination);
             if (closed.get() || scope.cancelled()) {
                 closeable = true;
                 cancelled = scope.cancelled();
             } else {
-                final ConnectionLease lease = new ConnectionLease(this, destination, connection, Instant.now());
+                final ConnectionLease lease = new ConnectionLease(this, destination, connection, clock.now());
                 leased.add(lease);
                 active.put(connection, 1);
                 lock.notifyAll();
@@ -600,39 +648,172 @@ public final class ConnectionPool implements AutoCloseable {
 
     /**
      * Releases a reserved creation slot after factory failure.
+     *
+     * @param destination reserved destination
      */
-    private void releaseCreateReservation() {
+    private void releaseCreateReservation(final Destination destination) {
         synchronized (lock) {
-            creating--;
+            releaseCreateReservationLocked(destination);
             lock.notifyAll();
         }
     }
 
     /**
-     * Waits for either pool capacity or an existing reusable connection.
+     * Releases a reserved creation slot while holding the coordination lock.
+     *
+     * @param destination reserved destination
      */
-    private void waitForAvailability(final Destination destination, final Cancellation cancellation) {
+    private void releaseCreateReservationLocked(final Destination destination) {
+        creating--;
+        final int remaining = creatingByDestination.getOrDefault(destination, 0) - 1;
+        if (remaining <= 0) {
+            creatingByDestination.remove(destination);
+        } else {
+            creatingByDestination.put(destination, remaining);
+        }
+    }
+
+    /**
+     * Waits for the caller's fair turn and an acquisition opportunity.
+     *
+     * @param waiter       caller waiter
+     * @param cancellation cancellation scope
+     * @param deadline     monotonic acquisition deadline
+     */
+    private void waitForAvailability(final PoolWaiter waiter, final Cancellation cancellation, final long deadline) {
         final Cancellation scope = require(cancellation, "Cancellation");
-        final long timeoutNanos = policy.acquireTimeout().toNanos();
-        final long deadline = System.nanoTime() + timeoutNanos;
         synchronized (lock) {
-            while (!closed.get() && connectionCount() + creating >= policy.maxConnections()
-                    && !existingCandidateAvailable(destination)) {
+            if (!waiters.contains(waiter)) {
+                waiters.addLast(waiter);
+            }
+            while (!closed.get() && (!hasTurn(waiter) || !acquisitionAvailable(waiter.destination()))) {
                 scope.throwIfCancelled();
-                final long remaining = deadline - System.nanoTime();
+                final long remaining = remaining(deadline);
                 if (remaining <= 0L) {
+                    removeWaiterLocked(waiter);
                     throw new TimeoutException("Connection acquire timed out");
                 }
-                try {
-                    lock.wait(Math.max(1L, remaining / 1_000_000L));
-                } catch (final InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    throw new InternalException("Interrupted while waiting for connection", e);
-                }
+                waitOnPool(remaining);
             }
             scope.throwIfCancelled();
             ensureOpen();
         }
+    }
+
+    /**
+     * Waits on the coordination monitor for no longer than the remaining deadline.
+     *
+     * @param remaining remaining monotonic nanoseconds
+     */
+    private void waitOnPool(final long remaining) {
+        final long millis = Math.max(1L, Math.min(remaining / 1_000_000L, 100L));
+        try {
+            lock.wait(millis);
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new InternalException("Interrupted while waiting for connection", e);
+        }
+    }
+
+    /**
+     * Returns whether the caller owns the current acquisition turn.
+     *
+     * @param waiter caller waiter or null for a new caller
+     * @return true when the caller may attempt an acquisition
+     */
+    private boolean hasTurn(final PoolWaiter waiter) {
+        return waiter == null ? waiters.isEmpty() : waiters.peekFirst() == waiter;
+    }
+
+    /**
+     * Completes a successful waiter turn and wakes the next waiter.
+     *
+     * @param waiter completed waiter or null
+     */
+    private void completeWaiter(final PoolWaiter waiter) {
+        if (waiter != null && waiters.peekFirst() == waiter) {
+            waiters.removeFirst();
+            lock.notifyAll();
+        }
+    }
+
+    /**
+     * Removes an abandoned waiter.
+     *
+     * @param waiter abandoned waiter or null
+     */
+    private void removeWaiter(final PoolWaiter waiter) {
+        if (waiter == null) {
+            return;
+        }
+        synchronized (lock) {
+            removeWaiterLocked(waiter);
+        }
+    }
+
+    /**
+     * Removes an abandoned waiter while holding the coordination lock.
+     *
+     * @param waiter abandoned waiter
+     */
+    private void removeWaiterLocked(final PoolWaiter waiter) {
+        if (waiters.remove(waiter)) {
+            lock.notifyAll();
+        }
+    }
+
+    /**
+     * Returns whether the destination can reuse or create a connection.
+     *
+     * @param destination requested destination
+     * @return true when an acquisition attempt may succeed
+     */
+    private boolean acquisitionAvailable(final Destination destination) {
+        return existingCandidateAvailable(destination) || creationAvailable(destination);
+    }
+
+    /**
+     * Returns whether physical connection capacity is available.
+     *
+     * @param destination requested destination
+     * @return true when global and destination limits both allow creation
+     */
+    private boolean creationAvailable(final Destination destination) {
+        return connectionCount() + creating < policy.maxConnections() && connectionCount(destination)
+                + creatingByDestination.getOrDefault(destination, 0) < policy.maxConnectionsPerDestination();
+    }
+
+    /**
+     * Computes a monotonic deadline with overflow protection.
+     *
+     * @param timeout acquisition timeout
+     * @return monotonic deadline
+     */
+    private long deadline(final Duration timeout) {
+        final long started = clock.nanos();
+        final long nanos;
+        try {
+            nanos = timeout.toNanos();
+        } catch (final ArithmeticException ignored) {
+            return Long.MAX_VALUE;
+        }
+        if (nanos > 0L && started > Long.MAX_VALUE - nanos) {
+            return Long.MAX_VALUE;
+        }
+        return started + nanos;
+    }
+
+    /**
+     * Computes remaining monotonic time with overflow protection.
+     *
+     * @param deadline monotonic deadline
+     * @return remaining nanoseconds
+     */
+    private long remaining(final long deadline) {
+        if (deadline == Long.MAX_VALUE) {
+            return Long.MAX_VALUE;
+        }
+        return deadline - clock.nanos();
     }
 
     /**
@@ -682,6 +863,27 @@ public final class ConnectionPool implements AutoCloseable {
     }
 
     /**
+     * Counts physical connections tracked for one destination.
+     *
+     * @param destination destination
+     * @return physical connection count
+     */
+    private int connectionCount(final Destination destination) {
+        int count = 0;
+        final ArrayDeque<PooledConnection> bucket = idle.get(destination);
+        if (bucket != null) {
+            count += bucket.size();
+        }
+        final Set<Connection> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        for (final ConnectionLease lease : leased) {
+            if (destination.equals(lease.destination()) && seen.add(lease.connection())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Decrements an active physical connection reference count.
      *
      * @param connection connection
@@ -699,21 +901,17 @@ public final class ConnectionPool implements AutoCloseable {
 
     /**
      * Schedules the next idle eviction run.
-     *
-     * @param dispatcher dispatcher
-     * @param clock      clock
      */
     private void scheduleEvictionIfNeeded() {
         final Dispatcher dispatcher = evictionDispatcher;
-        final Clock clock = evictionClock;
-        if (dispatcher == null || clock == null || closed.get() || !evictionStarted.get()) {
+        if (dispatcher == null || closed.get() || !evictionStarted.get()) {
             return;
         }
         synchronized (lock) {
             if (evictionHandle != null) {
                 return;
             }
-            final Duration delay = evictionDelay(clock);
+            final Duration delay = evictionDelay();
             if (delay == null) {
                 return;
             }
@@ -734,22 +932,16 @@ public final class ConnectionPool implements AutoCloseable {
         if (closed.get() || !evictionStarted.get()) {
             return;
         }
-        final Clock clock = evictionClock;
-        if (clock == null) {
-            return;
-        }
-        evictIdle(clock);
+        evictIdle();
         scheduleEvictionIfNeeded();
     }
 
     /**
      * Returns next eviction delay.
      *
-     * @param clock clock
      * @return delay
      */
-    private Duration evictionDelay(final Clock clock) {
-        require(clock, "Runtime clock");
+    private Duration evictionDelay() {
         final Duration keepAlive = policy.keepAlive();
         if (keepAlive.isZero()) {
             return Duration.ZERO;
@@ -777,7 +969,6 @@ public final class ConnectionPool implements AutoCloseable {
     private void cancelEviction() {
         final Dispatcher dispatcher = evictionDispatcher;
         evictionStarted.set(false);
-        evictionClock = null;
         evictionDispatcher = null;
         cancelScheduledEviction(dispatcher);
     }
@@ -828,6 +1019,8 @@ public final class ConnectionPool implements AutoCloseable {
             } catch (final RuntimeException e) {
                 if (failure == null) {
                     failure = e;
+                } else {
+                    failure.addSuppressed(e);
                 }
             }
         }
@@ -859,6 +1052,49 @@ public final class ConnectionPool implements AutoCloseable {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Validates that destination options have stable value semantics.
+     *
+     * @param destination destination to validate
+     */
+    private static void validateDestination(final Destination destination) {
+        for (final Map.Entry<String, Object> entry : destination.options().asMap().entrySet()) {
+            if (!stableOptionValue(entry.getValue())) {
+                throw new ValidateException("Connection destination option must be a stable value: " + entry.getKey());
+            }
+        }
+    }
+
+    /**
+     * Returns whether an option value is immutable and value-comparable.
+     *
+     * @param value option value
+     * @return true when the value is safe in a destination identity
+     */
+    private static boolean stableOptionValue(final Object value) {
+        if (value == null) {
+            return true;
+        }
+        if (value instanceof Context || value instanceof Supplier<?> || value instanceof Dispatcher
+                || value instanceof Collection<?> || value instanceof Map<?, ?> || value.getClass().isArray()) {
+            return false;
+        }
+        return value instanceof String || value instanceof Boolean || value instanceof Character
+                || value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long
+                || value instanceof Float || value instanceof Double || value instanceof java.math.BigInteger
+                || value instanceof java.math.BigDecimal || value instanceof Duration || value instanceof Timeout
+                || value instanceof Enum<?>;
+    }
+
+    /**
+     * Fair acquisition waiter.
+     *
+     * @param destination requested destination
+     */
+    private record PoolWaiter(Destination destination) {
+
     }
 
     /**

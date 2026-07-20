@@ -33,6 +33,8 @@ import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
+import org.miaixz.bus.fabric.network.tls.TlsSettings;
+import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.observe.EventObserver;
 
 /**
@@ -43,6 +45,8 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param address       normalized transport address derived from the target URI
  * @param headers       handshake or first-message headers associated with the exchange
  * @param timeout       connect and session timeout policy
+ * @param tlsContext    TLS context, or {@code null} together with {@code tlsSettings}
+ * @param tlsSettings   TLS settings, or {@code null} together with {@code tlsContext}
  * @param frameCodec    codec used to delimit socket messages
  * @param handler       inbound message handler for the created session
  * @param guard         optional policy guard for socket messages
@@ -56,9 +60,9 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @since Java 21+
  */
 record SocketSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout,
-        FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter, EventObserver observer,
-        ProxyHeader proxyHeader, SocketOptions socketOptions, Listener<? super SocketSession> listener,
-        boolean pooled) {
+        TlsContext tlsContext, TlsSettings tlsSettings, FrameCodec frameCodec, Handler handler, GuardRule guard,
+        Filter filter, EventObserver observer, ProxyHeader proxyHeader, SocketOptions socketOptions,
+        Listener<? super SocketSession> listener, boolean pooled) {
 
     /**
      * Creates a validated snapshot.
@@ -68,7 +72,12 @@ record SocketSnapshot(Context context, URI uri, Address address, Headers headers
         uri = require(uri, "Target URI");
         address = require(address, "Address");
         headers = require(headers, "Headers");
-        timeout = require(timeout, "Timeout");
+        final Timeout sourceTimeout = require(timeout, "Timeout");
+        timeout = new Timeout(sourceTimeout.connect(), sourceTimeout.read(), sourceTimeout.write(),
+                sourceTimeout.call(), sourceTimeout.ping(), sourceTimeout.close());
+        if ((tlsContext == null) != (tlsSettings == null)) {
+            throw new ValidateException("TLS context and TLS settings must both be present or both be absent");
+        }
         frameCodec = require(frameCodec, "Frame codec");
         handler = require(handler, "Handler");
         observer = EventObserver.safe(require(observer, "Observer"));

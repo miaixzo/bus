@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol.stomp;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.function.Consumer;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -36,25 +37,28 @@ import org.miaixz.bus.fabric.observe.EventObserver;
 /**
  * Immutable execution snapshot for a STOMP exchange.
  *
- * @param context     runtime services used by the STOMP exchange
- * @param uri         original target URI requested by the caller
- * @param address     normalized transport address for the broker connection
- * @param headers     connect-frame headers supplied by the caller
- * @param timeout     connect and session timeout policy
- * @param destination default destination used by convenience send operations
- * @param login       login header for the opening CONNECT frame, or {@code null}
- * @param passcode    passcode header for the opening CONNECT frame, or {@code null}
- * @param guard       optional policy guard for STOMP messages
- * @param filter      optional message filter for STOMP frames and messages
- * @param observer    observer receiving STOMP lifecycle events
- * @param handler     inbound message handler
- * @param listener    session lifecycle listener
+ * @param context                runtime services used by the STOMP exchange
+ * @param uri                    original target URI requested by the caller
+ * @param address                normalized transport address for the broker connection
+ * @param headers                connect-frame headers supplied by the caller
+ * @param timeout                connect and session timeout policy
+ * @param clientSendHeartbeat    heartbeat interval the client can send
+ * @param clientReceiveHeartbeat heartbeat interval the client requests to receive
+ * @param destination            default destination used by convenience send operations
+ * @param login                  login header for the opening CONNECT frame, or {@code null}
+ * @param passcode               passcode header for the opening CONNECT frame, or {@code null}
+ * @param guard                  optional policy guard for STOMP messages
+ * @param filter                 optional message filter for STOMP frames and messages
+ * @param observer               observer receiving STOMP lifecycle events
+ * @param handler                inbound message handler
+ * @param listener               session lifecycle listener
  * @author Kimi Liu
  * @since Java 21+
  */
-record StompSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout, String destination,
-        String login, String passcode, GuardRule guard, Filter filter, EventObserver observer,
-        Consumer<StompMessage> handler, Listener<? super StompSession> listener) {
+record StompSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout,
+        Duration clientSendHeartbeat, Duration clientReceiveHeartbeat, String destination, String login,
+        String passcode, GuardRule guard, Filter filter, EventObserver observer, Consumer<StompMessage> handler,
+        Listener<? super StompSession> listener) {
 
     /**
      * Creates a validated snapshot.
@@ -64,7 +68,11 @@ record StompSnapshot(Context context, URI uri, Address address, Headers headers,
         uri = require(uri, "Target URI");
         address = require(address, "Address");
         headers = require(headers, "Headers");
-        timeout = require(timeout, "Timeout");
+        final Timeout currentTimeout = require(timeout, "Timeout");
+        timeout = new Timeout(currentTimeout.connect(), currentTimeout.read(), currentTimeout.write(),
+                currentTimeout.call(), currentTimeout.ping(), currentTimeout.close());
+        clientSendHeartbeat = heartbeat(clientSendHeartbeat, "Client send heartbeat");
+        clientReceiveHeartbeat = heartbeat(clientReceiveHeartbeat, "Client receive heartbeat");
         observer = EventObserver.safe(require(observer, "Observer"));
         handler = require(handler, "STOMP handler");
     }
@@ -79,6 +87,26 @@ record StompSnapshot(Context context, URI uri, Address address, Headers headers,
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Validates one requested heartbeat without converting the stored value.
+     *
+     * @param value heartbeat duration
+     * @param name  component name
+     * @return validated duration
+     */
+    private static Duration heartbeat(final Duration value, final String name) {
+        final Duration current = require(value, name);
+        if (current.isNegative()) {
+            throw new ValidateException(name + " must not be negative");
+        }
+        try {
+            current.toMillis();
+        } catch (final ArithmeticException e) {
+            throw new ValidateException(name + " is too large", e);
+        }
+        return current;
     }
 
 }

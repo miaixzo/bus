@@ -37,6 +37,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -56,6 +57,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
@@ -85,6 +87,8 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.registry.connection.ConnectionPool;
 import org.miaixz.bus.fabric.registry.route.Route;
+import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
@@ -460,7 +464,7 @@ public final class HttpConnect implements HttpStage {
             }
             scope.throwIfCancelled();
             if (target.secure() && (tunnel || !connector.supports(Transport.TLS))) {
-                final Connection secured = tlsConnection(destination, raw, target, scope);
+                final Connection secured = tlsConnection(destination, raw, target, timeout, scope);
                 Logger.debug(
                         false,
                         "Fabric",
@@ -498,6 +502,7 @@ public final class HttpConnect implements HttpStage {
      * @param destination  connection destination
      * @param raw          raw connection
      * @param target       target address
+     * @param timeout      request timeout policy
      * @param cancellation cancellation scope
      * @return TLS connection
      */
@@ -505,18 +510,20 @@ public final class HttpConnect implements HttpStage {
             final Destination destination,
             final Connection raw,
             final Address target,
+            final Timeout timeout,
             final Cancellation cancellation) {
         final Cancellation scope = require(cancellation, "Cancellation");
         scope.throwIfCancelled();
         final TlsEngine engine = TlsEngine
                 .create(require(tlsContext, "TLS context"), target, require(tlsSettings, "TLS settings"));
-        final TlsChannel tlsChannel = TlsChannel.wrap(raw.conduit(), engine, listener, dispatcher);
+        final Timeout currentTimeout = require(timeout, "Timeout");
+        final TlsChannel tlsChannel = TlsChannel.wrap(raw.conduit(), engine, listener, dispatcher, currentTimeout);
         final Runnable unregisterTls = scope.onCancel(tlsChannel::close);
         try {
             Logger.debug(true, "Fabric", "HTTP TLS handshake started: host={}, port={}", target.host(), target.port());
             final TlsHandshake handshake = await(
                     tlsChannel.handshake(),
-                    Duration.ZERO,
+                    currentTimeout.connect(),
                     "TLS handshake timed out",
                     scope);
             Logger.debug(
@@ -902,17 +909,11 @@ public final class HttpConnect implements HttpStage {
         final Sink current = require(sink, "Sink");
         final Buffer payload = require(source, "Write buffer");
         configureTimeout(current.timeout(), timeout);
-        while (payload.size() > Normal._0) {
-            scope.throwIfCancelled();
-            final long before = payload.size();
-            try {
-                current.write(payload, payload.size());
-            } catch (final IOException e) {
-                throw new SocketException("HTTP CONNECT write failed", e);
-            }
-            if (payload.size() == before) {
-                Thread.yield();
-            }
+        scope.throwIfCancelled();
+        try {
+            current.write(payload, payload.size());
+        } catch (final IOException e) {
+            throw new SocketException("HTTP CONNECT write failed", e);
         }
     }
 
@@ -942,7 +943,9 @@ public final class HttpConnect implements HttpStage {
                 throw new SocketException("HTTP CONNECT response reached EOF");
             }
             if (read == 0) {
-                Thread.yield();
+                if (!ThreadKit.sleep(Normal._1)) {
+                    throw new SocketException("HTTP CONNECT read was interrupted");
+                }
                 continue;
             }
             while (buffer.size() > Normal._0) {
@@ -987,7 +990,9 @@ public final class HttpConnect implements HttpStage {
                 throw new SocketException("SOCKS response reached EOF");
             }
             if (read == 0) {
-                Thread.yield();
+                if (!ThreadKit.sleep(Normal._1)) {
+                    throw new SocketException("SOCKS read was interrupted");
+                }
             }
         }
         try {
@@ -1647,6 +1652,11 @@ public final class HttpConnect implements HttpStage {
         private final TlsHandshake handshake;
 
         /**
+         * Ensures the TLS and raw connection boundary is released once.
+         */
+        private final AtomicBoolean closed = new AtomicBoolean();
+
+        /**
          * Creates a TLS routed connection.
          *
          * @param destination route destination
@@ -1669,6 +1679,16 @@ public final class HttpConnect implements HttpStage {
          */
         private TlsHandshake handshake() {
             return handshake;
+        }
+
+        /**
+         * Returns the TLS plaintext conduit.
+         *
+         * @return TLS conduit
+         */
+        @Override
+        public Conduit conduit() {
+            return tls;
         }
 
         /**
@@ -1702,6 +1722,16 @@ public final class HttpConnect implements HttpStage {
         }
 
         /**
+         * Returns whether the raw connection is idle.
+         *
+         * @return idle flag
+         */
+        @Override
+        public boolean idle() {
+            return raw.idle();
+        }
+
+        /**
          * Returns TLS lifecycle state.
          *
          * @return state
@@ -1716,6 +1746,9 @@ public final class HttpConnect implements HttpStage {
          */
         @Override
         public void close() {
+            if (!closed.compareAndSet(false, true)) {
+                return;
+            }
             tls.close();
             raw.close();
         }
@@ -1845,7 +1878,7 @@ public final class HttpConnect implements HttpStage {
                     channel.socket().connect(
                             new InetSocketAddress(candidate, address.port()),
                             timeoutMillis(timeout.connect()));
-                    final Connection connection = new SocketConnection(address, channel, listener, dispatcher);
+                    final Connection connection = new SocketConnection(address, channel, listener, dispatcher, timeout);
                     return connection;
                 } catch (final SocketTimeoutException e) {
                     IoKit.closeQuietly(channel);
@@ -1906,12 +1939,13 @@ public final class HttpConnect implements HttpStage {
          * @param socket     socket channel
          * @param listener   lifecycle listener
          * @param dispatcher runtime dispatcher
+         * @param timeout    operation timeout policy
          */
         private SocketConnection(final Address address, final SocketChannel socket, final Listener<Object> listener,
-                final Dispatcher dispatcher) {
+                final Dispatcher dispatcher, final Timeout timeout) {
             this.destination = Destination.of(address.protocol(), address, Options.empty());
             this.socket = require(socket, "Socket channel");
-            this.conduit = new SocketConduit(socket, dispatcher);
+            this.conduit = new SocketConduit(socket, dispatcher, timeout);
             this.scope = LifecycleScope.session(
                     this,
                     "http-socket-connection",
@@ -2026,6 +2060,11 @@ public final class HttpConnect implements HttpStage {
         private final Dispatcher dispatcher;
 
         /**
+         * Operation timeout policy.
+         */
+        private final Timeout timeout;
+
+        /**
          * Source view for protocol readers.
          */
         private final Source source;
@@ -2040,10 +2079,12 @@ public final class HttpConnect implements HttpStage {
          *
          * @param socket     socket
          * @param dispatcher runtime dispatcher
+         * @param timeout    operation timeout policy
          */
-        private SocketConduit(final SocketChannel socket, final Dispatcher dispatcher) {
+        private SocketConduit(final SocketChannel socket, final Dispatcher dispatcher, final Timeout timeout) {
             this.socket = require(socket, "Socket channel");
             this.dispatcher = require(dispatcher, "Dispatcher");
+            this.timeout = require(timeout, "Timeout");
             this.source = new SocketSource();
             this.sink = new SocketSink();
         }
@@ -2062,7 +2103,7 @@ public final class HttpConnect implements HttpStage {
             if (byteCount == Normal._0) {
                 return CompletableFuture.completedFuture(0L);
             }
-            return dispatcher.supply("http:socket:read", () -> {
+            return background("http:socket:read", timeout.read(), () -> {
                 try {
                     final ByteBuffer buffer = ByteBuffer.allocate(readCapacity(byteCount));
                     final int read = socket.read(buffer);
@@ -2094,16 +2135,25 @@ public final class HttpConnect implements HttpStage {
             if (byteCount == Normal._0) {
                 return CompletableFuture.completedFuture(0L);
             }
-            return dispatcher.supply("http:socket:write", () -> {
+            return background("http:socket:write", timeout.write(), () -> {
                 long written = Normal._0;
                 long remaining = byteCount;
+                int zeroProgress = Normal._0;
                 try {
                     while (remaining > Normal._0) {
                         final ByteBuffer view = checkedSource.nioBuffer(toIntSize(remaining));
                         final int count = socket.write(view);
                         if (count == Normal._0) {
-                            break;
+                            zeroProgress++;
+                            if (zeroProgress >= Normal._16) {
+                                throw new SocketException("Socket write made no progress after 16 attempts");
+                            }
+                            if (!ThreadKit.sleep(Normal._1)) {
+                                throw new SocketException("Socket write was interrupted");
+                            }
+                            continue;
                         }
+                        zeroProgress = Normal._0;
                         checkedSource.skip(count);
                         written += count;
                         remaining -= count;
@@ -2113,6 +2163,46 @@ public final class HttpConnect implements HttpStage {
                     throw new SocketException("Socket write failed", e);
                 }
             });
+        }
+
+        /**
+         * Runs a blocking socket operation on the dispatcher background channel.
+         *
+         * @param key      dispatch key
+         * @param deadline operation deadline
+         * @param supplier operation supplier
+         * @param <T>      result type
+         * @return operation future
+         */
+        private <T> CompletableFuture<T> background(
+                final String key,
+                final Duration deadline,
+                final Supplier<T> supplier) {
+            final CompletableFuture<T> result = new CompletableFuture<>();
+            final Activity activity = Activity.of(key, () -> result.complete(supplier.get()));
+            final DispatchHandle operation = dispatcher.background(key, this, activity);
+            final DispatchHandle timer = deadline.isZero() ? null
+                    : dispatcher.schedule(key + ":timeout", deadline, Activity.of(key + ":timeout", () -> {
+                        if (result.completeExceptionally(new TimeoutException(key + " timed out"))) {
+                            close();
+                        }
+                    }));
+            operation.future().whenComplete((ignored, cause) -> {
+                if (cause != null && !result.isDone()) {
+                    final Throwable failure = activity.failure();
+                    result.completeExceptionally(failure == null ? cause : failure);
+                }
+            });
+            result.whenComplete((value, cause) -> {
+                if (timer != null) {
+                    dispatcher.cancel(timer);
+                }
+                if (result.isCancelled()) {
+                    dispatcher.cancel(operation);
+                    close();
+                }
+            });
+            return result;
         }
 
         /**

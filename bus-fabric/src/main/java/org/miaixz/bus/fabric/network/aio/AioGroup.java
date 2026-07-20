@@ -24,45 +24,34 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
 /**
- * AIO channel group and worker registry.
+ * Owns a JDK asynchronous channel group and the channels opened from it.
+ * <p>
+ * The dispatcher is used only as a borrowed runtime service by channels. A group created without an explicit dispatcher
+ * owns that dispatcher and closes it after the channel group and channel lifecycle scope have closed.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class AioGroup {
+public final class AioGroup implements AutoCloseable {
 
     /**
-     * JDK channel group.
+     * JDK asynchronous channel group.
      */
     final AsynchronousChannelGroup channelGroup;
 
     /**
-     * Read workers.
-     */
-    private final AioWorker[] readWorkers;
-
-    /**
-     * Write worker.
-     */
-    private final AioWorker write;
-
-    /**
-     * Common worker.
-     */
-    private final AioWorker common;
-
-    /**
-     * Runtime dispatcher for blocking AIO future waits.
+     * Runtime dispatcher borrowed by channels opened from this group.
      */
     private final Dispatcher dispatcher;
 
@@ -72,181 +61,155 @@ public final class AioGroup {
     private final boolean ownsDispatcher;
 
     /**
-     * Next read index.
+     * Lifecycle scope owning channels opened from this group.
      */
-    private final AtomicInteger nextRead;
+    private final LifecycleScope scope;
 
     /**
-     * Started flag.
+     * Whether this group still accepts new channels.
      */
-    private final AtomicBoolean started;
+    private final AtomicBoolean opened;
 
     /**
-     * Shutdown flag.
-     */
-    private final AtomicBoolean shutdown;
-
-    /**
-     * Creates a group.
+     * Creates an active AIO group.
      *
-     * @param channelGroup   JDK group
-     * @param readWorkers    read workers
-     * @param write          write worker
-     * @param common         common worker
-     * @param dispatcher     runtime dispatcher
-     * @param ownsDispatcher true when shutdown closes dispatcher
+     * @param channelGroup   JDK asynchronous channel group
+     * @param dispatcher     runtime dispatcher borrowed by channels
+     * @param ownsDispatcher true when this group owns the dispatcher lifecycle
      */
-    private AioGroup(final AsynchronousChannelGroup channelGroup, final AioWorker[] readWorkers, final AioWorker write,
-            final AioWorker common, final Dispatcher dispatcher, final boolean ownsDispatcher) {
+    private AioGroup(final AsynchronousChannelGroup channelGroup, final Dispatcher dispatcher,
+            final boolean ownsDispatcher) {
         this.channelGroup = Assert
                 .notNull(channelGroup, () -> new ValidateException("AIO channel group must not be null"));
-        this.readWorkers = Assert.notNull(readWorkers, () -> new ValidateException("Read workers must not be null"));
-        this.write = Assert.notNull(write, () -> new ValidateException("Write worker must not be null"));
-        this.common = Assert.notNull(common, () -> new ValidateException("Common worker must not be null"));
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null"));
         this.ownsDispatcher = ownsDispatcher;
-        this.nextRead = new AtomicInteger();
-        this.started = new AtomicBoolean();
-        this.shutdown = new AtomicBoolean();
+        this.scope = LifecycleScope.resource(this, "aio-group", null, EventObserver.noop());
+        this.opened = new AtomicBoolean(true);
+        this.scope.start();
+        this.scope.open();
     }
 
     /**
-     * Creates a worker group.
+     * Creates a group with an owned dispatcher.
      *
-     * @param readWorkers read worker count
-     * @return group
+     * @param ioThreads JDK asynchronous channel group thread count
+     * @return active group
      */
-    public static AioGroup create(final int readWorkers) {
-        return create(readWorkers, Dispatcher.create(), true);
+    public static AioGroup create(final int ioThreads) {
+        return create(validateThreadCount(ioThreads), Dispatcher.create(), true);
     }
 
     /**
-     * Creates a worker group with a shared dispatcher.
+     * Creates a group with a borrowed dispatcher.
      *
-     * @param readWorkers read worker count
-     * @param dispatcher  shared dispatcher
-     * @return group
+     * @param ioThreads  JDK asynchronous channel group thread count
+     * @param dispatcher borrowed runtime dispatcher
+     * @return active group
      */
-    public static AioGroup create(final int readWorkers, final Dispatcher dispatcher) {
-        return create(readWorkers, dispatcher, false);
+    public static AioGroup create(final int ioThreads, final Dispatcher dispatcher) {
+        return create(ioThreads, dispatcher, false);
     }
 
     /**
-     * Creates a worker group.
+     * Creates a group with the requested dispatcher ownership.
      *
-     * @param readWorkers    read worker count
+     * @param ioThreads      JDK asynchronous channel group thread count
      * @param dispatcher     runtime dispatcher
-     * @param ownsDispatcher true when group owns dispatcher lifecycle
-     * @return group
+     * @param ownsDispatcher true when this group owns the dispatcher lifecycle
+     * @return active group
      */
-    private static AioGroup create(final int readWorkers, final Dispatcher dispatcher, final boolean ownsDispatcher) {
-        final int checkedReadWorkers = Assert.checkBetween(
-                readWorkers,
-                Normal._1,
-                Normal._256,
-                () -> new ValidateException("AIO read worker count out of range"));
+    private static AioGroup create(final int ioThreads, final Dispatcher dispatcher, final boolean ownsDispatcher) {
+        final int checkedThreads = validateThreadCount(ioThreads);
         final Dispatcher checkedDispatcher = Assert
                 .notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null"));
+        AsynchronousChannelGroup group = null;
         try {
-            final AsynchronousChannelGroup channelGroup = AsynchronousChannelGroup.withFixedThreadPool(
-                    checkedReadWorkers,
-                    task -> ThreadKit.newThread(task, "fabric-aio-channel", true));
-            final AioWorker[] reads = new AioWorker[checkedReadWorkers];
-            for (int i = Normal._0; i < checkedReadWorkers; i++) {
-                reads[i] = new AioWorker("fabric-aio-read-" + i);
-            }
-            return new AioGroup(channelGroup, reads, new AioWorker("fabric-aio-write"),
-                    new AioWorker("fabric-aio-common"), checkedDispatcher, ownsDispatcher);
+            group = AsynchronousChannelGroup
+                    .withFixedThreadPool(checkedThreads, task -> ThreadKit.newThread(task, "fabric-aio-channel", true));
+            return new AioGroup(group, checkedDispatcher, ownsDispatcher);
         } catch (final IOException | RuntimeException e) {
+            closeAfterCreateFailure(group, checkedDispatcher, ownsDispatcher, e);
             throw new InternalException("Unable to create AIO group", e);
         }
     }
 
     /**
-     * Returns the next read worker.
+     * Returns the runtime dispatcher borrowed by channels.
      *
-     * @return read worker
-     */
-    public AioWorker nextRead() {
-        final int index = Math.floorMod(nextRead.getAndIncrement(), readWorkers.length);
-        return readWorkers[index];
-    }
-
-    /**
-     * Returns configured read worker count.
-     *
-     * @return read worker count
-     */
-    public int readWorkerCount() {
-        return readWorkers.length;
-    }
-
-    /**
-     * Returns the write worker.
-     *
-     * @return write worker
-     */
-    public AioWorker write() {
-        return write;
-    }
-
-    /**
-     * Returns the common worker.
-     *
-     * @return common worker
-     */
-    public AioWorker common() {
-        return common;
-    }
-
-    /**
-     * Returns the runtime dispatcher.
-     *
-     * @return dispatcher
+     * @return runtime dispatcher
      */
     public Dispatcher dispatcher() {
         return dispatcher;
     }
 
     /**
-     * Starts all workers.
+     * Keeps the active group lifecycle compatible with callers that explicitly start resources.
      */
     public void start() {
-        if (started.compareAndSet(false, true)) {
-            for (final AioWorker worker : readWorkers) {
-                worker.start();
-            }
-            write.start();
-            common.start();
-        }
+        // Factory methods return an active group because providers may open channels immediately.
     }
 
     /**
-     * Shuts down all workers.
+     * Returns the lifecycle scope used to own channels opened by the package provider.
+     *
+     * @return lifecycle scope
+     */
+    LifecycleScope scope() {
+        return scope;
+    }
+
+    /**
+     * Returns whether this group accepts new channels.
+     *
+     * @return true when open
+     */
+    boolean opened() {
+        return opened.get();
+    }
+
+    /**
+     * Shuts down this group.
      */
     public void shutdown() {
-        if (shutdown.compareAndSet(false, true)) {
-            for (final AioWorker worker : readWorkers) {
-                worker.shutdown();
-            }
-            write.shutdown();
-            common.shutdown();
+        close();
+    }
+
+    /**
+     * Rejects new channels, closes the JDK group and owned channels, and then closes an owned dispatcher.
+     */
+    @Override
+    public void close() {
+        if (!opened.compareAndSet(true, false)) {
+            return;
+        }
+        RuntimeException failure = null;
+        try {
+            channelGroup.shutdownNow();
+        } catch (final IOException e) {
+            failure = new InternalException("Unable to shut down AIO channel group", e);
+        }
+        try {
+            scope.close();
+        } catch (final RuntimeException e) {
+            failure = append(failure, e);
+        }
+        if (ownsDispatcher) {
             try {
-                channelGroup.shutdownNow();
-            } catch (final IOException e) {
-                throw new InternalException("Unable to shut down AIO channel group", e);
-            }
-            if (ownsDispatcher) {
                 dispatcher.close();
+            } catch (final RuntimeException e) {
+                failure = append(failure, e);
             }
+        }
+        if (failure != null) {
+            throw failure;
         }
     }
 
     /**
-     * Waits for worker termination.
+     * Waits for JDK asynchronous channel group termination.
      *
-     * @param timeout timeout
-     * @return true when terminated
+     * @param timeout maximum wait duration
+     * @return true when terminated before the timeout
      */
     public boolean awaitTermination(final Duration timeout) {
         final Duration checkedTimeout = Assert
@@ -254,28 +217,83 @@ public final class AioGroup {
         Assert.isTrue(
                 !checkedTimeout.isNegative(),
                 () -> new ValidateException("Termination timeout must be non-null and non-negative"));
+        final long timeoutNanos;
         try {
-            final boolean groupTerminated = channelGroup
-                    .awaitTermination(checkedTimeout.toNanos(), TimeUnit.NANOSECONDS);
-            return groupTerminated && stopped();
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new InternalException("Interrupted while awaiting AIO termination", e);
+            timeoutNanos = checkedTimeout.toNanos();
+        } catch (final ArithmeticException e) {
+            throw new ValidateException("Termination timeout is out of range", e);
+        }
+        final long startedNanos = System.nanoTime();
+        while (!channelGroup.isTerminated()) {
+            final long elapsed = System.nanoTime() - startedNanos;
+            if (elapsed >= timeoutNanos) {
+                return false;
+            }
+            final long remaining = timeoutNanos - elapsed;
+            final long pause = Math.min(remaining, TimeUnit.MILLISECONDS.toNanos(Normal._1));
+            if (!ThreadKit.sleep(pause, TimeUnit.NANOSECONDS)) {
+                throw new InternalException("Interrupted while awaiting AIO termination");
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Closes partially created resources before reporting a factory failure.
+     *
+     * @param group          JDK group, when created
+     * @param dispatcher     runtime dispatcher
+     * @param ownsDispatcher true when the dispatcher was created for this group
+     * @param cause          creation failure receiving cleanup failures as suppressed exceptions
+     */
+    private static void closeAfterCreateFailure(
+            final AsynchronousChannelGroup group,
+            final Dispatcher dispatcher,
+            final boolean ownsDispatcher,
+            final Throwable cause) {
+        if (group != null) {
+            try {
+                group.shutdownNow();
+            } catch (final IOException | RuntimeException e) {
+                cause.addSuppressed(e);
+            }
+        }
+        if (ownsDispatcher) {
+            try {
+                dispatcher.close();
+            } catch (final RuntimeException e) {
+                cause.addSuppressed(e);
+            }
         }
     }
 
     /**
-     * Returns whether workers are stopped.
+     * Adds a cleanup failure to an existing failure.
      *
-     * @return true when stopped
+     * @param current current failure, when present
+     * @param next    next cleanup failure
+     * @return failure to throw
      */
-    private boolean stopped() {
-        for (final AioWorker worker : readWorkers) {
-            if (worker.running()) {
-                return false;
-            }
+    private static RuntimeException append(final RuntimeException current, final RuntimeException next) {
+        if (current == null) {
+            return next;
         }
-        return !write.running() && !common.running();
+        current.addSuppressed(next);
+        return current;
+    }
+
+    /**
+     * Validates the JDK asynchronous channel group thread count.
+     *
+     * @param ioThreads requested thread count
+     * @return validated thread count
+     */
+    private static int validateThreadCount(final int ioThreads) {
+        return Assert.checkBetween(
+                ioThreads,
+                Normal._1,
+                Normal._256,
+                () -> new ValidateException("AIO thread count out of range"));
     }
 
 }

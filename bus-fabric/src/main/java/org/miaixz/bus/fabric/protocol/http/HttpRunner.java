@@ -20,10 +20,12 @@
 package org.miaixz.bus.fabric.protocol.http;
 
 import java.io.IOException;
+import java.net.ProxySelector;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
@@ -37,6 +39,8 @@ import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.network.Connection;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
+import org.miaixz.bus.fabric.network.proxy.ProxySelectorAdapter;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.observe.EventObserver;
@@ -77,6 +81,11 @@ public final class HttpRunner {
     private final AtomicBoolean executed;
 
     /**
+     * Stable operation identifier shared by every event in this exchange.
+     */
+    private final String operationId;
+
+    /**
      * Creates an HTTP runner.
      *
      * @param snapshot execution snapshot
@@ -84,6 +93,7 @@ public final class HttpRunner {
     HttpRunner(final HttpSnapshot snapshot) {
         this.snapshot = require(snapshot, "HTTP exchange snapshot");
         this.executed = new AtomicBoolean();
+        this.operationId = ID.objectId();
     }
 
     /**
@@ -269,7 +279,7 @@ public final class HttpRunner {
      * @return prepared request
      */
     private HttpRequest prepareRequest() {
-        final HttpRequest request = snapshot.request();
+        final HttpRequest request = snapshot.request().toBuilder().proxy(proxy()).build();
         Message message = Message.of(
                 request.url().address().protocol(),
                 request.url().address(),
@@ -417,13 +427,7 @@ public final class HttpRunner {
      * @return cache or null
      */
     private HttpCache cache() {
-        if (snapshot.context().options().contains("http.cache")) {
-            return snapshot.context().options().get("http.cache", HttpCache.class);
-        }
-        if (snapshot.context().options().contains("cache")) {
-            return snapshot.context().options().get("cache", HttpCache.class);
-        }
-        return null;
+        return snapshot.context().options().get(Builder.OPTION_HTTP_CACHE);
     }
 
     /**
@@ -432,19 +436,13 @@ public final class HttpRunner {
      * @return cookie jar or null
      */
     private CookieJar cookieJar() {
-        if (snapshot.context().options().contains("http.cookieJar")) {
-            return snapshot.context().options().get("http.cookieJar", CookieJar.class);
+        if (snapshot.context().options().contains(Builder.OPTION_HTTP_COOKIE_JAR)) {
+            return snapshot.context().options().get(Builder.OPTION_HTTP_COOKIE_JAR);
         }
-        if (snapshot.context().options().contains("cookieJar")) {
-            return snapshot.context().options().get("cookieJar", CookieJar.class);
-        }
-        if (snapshot.context().options().contains("http.cookieStore")) {
-            return snapshot.context().options().get("http.cookieStore", CookieJar.class);
-        }
-        if (snapshot.context().options().contains("cookieStore")) {
-            return snapshot.context().options().get("cookieStore", CookieJar.class);
-        }
-        return null;
+        return snapshot.context().directory().service(
+                Builder.OPTION_HTTP_COOKIE_JAR.name(),
+                CookieJar.class,
+                () -> CookieJar.memory(snapshot.context().clock()));
     }
 
     /**
@@ -453,16 +451,8 @@ public final class HttpRunner {
      * @return authenticator
      */
     private HttpAuthenticator authenticator() {
-        if (snapshot.context().options().contains("http.authenticator")) {
-            final HttpAuthenticator value = snapshot.context().options()
-                    .get("http.authenticator", HttpAuthenticator.class);
-            return value == null ? HttpAuthenticator.none() : value;
-        }
-        if (snapshot.context().options().contains("authenticator")) {
-            final HttpAuthenticator value = snapshot.context().options().get("authenticator", HttpAuthenticator.class);
-            return value == null ? HttpAuthenticator.none() : value;
-        }
-        return HttpAuthenticator.none();
+        final HttpAuthenticator value = snapshot.context().options().get(Builder.OPTION_HTTP_AUTHENTICATOR);
+        return value == null ? HttpAuthenticator.none() : value;
     }
 
     /**
@@ -471,15 +461,8 @@ public final class HttpRunner {
      * @return User-Agent
      */
     private String userAgent() {
-        if (snapshot.context().options().contains("http.userAgent")) {
-            final String value = snapshot.context().options().get("http.userAgent", String.class);
-            return value == null ? HttpBridge.defaultUserAgent() : value;
-        }
-        if (snapshot.context().options().contains("userAgent")) {
-            final String value = snapshot.context().options().get("userAgent", String.class);
-            return value == null ? HttpBridge.defaultUserAgent() : value;
-        }
-        return HttpBridge.defaultUserAgent();
+        final String value = snapshot.context().options().get(Builder.OPTION_HTTP_USER_AGENT);
+        return value == null || value.isBlank() ? HttpBridge.defaultUserAgent() : value;
     }
 
     /**
@@ -488,13 +471,8 @@ public final class HttpRunner {
      * @return TLS context
      */
     private TlsContext tlsContext() {
-        if (snapshot.context().options().contains("http.tlsContext")) {
-            return snapshot.context().options().get("http.tlsContext", TlsContext.class);
-        }
-        if (snapshot.context().options().contains("tlsContext")) {
-            return snapshot.context().options().get("tlsContext", TlsContext.class);
-        }
-        return TlsContext.defaults();
+        final TlsContext value = snapshot.context().options().get(Builder.OPTION_TLS_CONTEXT);
+        return value == null ? TlsContext.defaults() : value;
     }
 
     /**
@@ -503,13 +481,26 @@ public final class HttpRunner {
      * @return TLS settings
      */
     private TlsSettings tlsSettings() {
-        if (snapshot.context().options().contains("http.tlsSettings")) {
-            return snapshot.context().options().get("http.tlsSettings", TlsSettings.class);
+        final TlsSettings value = snapshot.context().options().get(Builder.OPTION_TLS_SETTINGS);
+        return value == null ? TlsSettings.defaults() : value;
+    }
+
+    /**
+     * Resolves the configured or system-selected HTTP proxy plan.
+     *
+     * @return proxy plan
+     */
+    private ProxyPlan proxy() {
+        if (snapshot.context().options().contains(Builder.OPTION_HTTP_PROXY)) {
+            final ProxyPlan configured = snapshot.context().options().get(Builder.OPTION_HTTP_PROXY);
+            return configured == null ? ProxyPlan.direct() : configured;
         }
-        if (snapshot.context().options().contains("tlsSettings")) {
-            return snapshot.context().options().get("tlsSettings", TlsSettings.class);
+        final ProxySelector selector = ProxySelector.getDefault();
+        if (selector == null) {
+            return ProxyPlan.direct();
         }
-        return TlsSettings.defaults();
+        final List<ProxyPlan> selected = ProxySelectorAdapter.of(selector).select(snapshot.request().url());
+        return selected.isEmpty() ? ProxyPlan.direct() : selected.get(0);
     }
 
     /**
@@ -520,8 +511,8 @@ public final class HttpRunner {
      * @param cause    failure cause
      */
     private void emit(final ObservationMarker marker, final HttpResponse response, final Throwable cause) {
-        FabricEvent.Builder builder = FabricEvent.builder(marker)
-                .tag(Builder.TAG_METHOD, snapshot.request().method().value())
+        FabricEvent.Builder builder = FabricEvent.builder(marker, snapshot.context().clock())
+                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_METHOD, snapshot.request().method().value())
                 .tag(Builder.TAG_URL, snapshot.request().url().encoded());
         if (response != null) {
             builder = builder.tag(Builder.TAG_CODE, Integer.toString(response.code()));

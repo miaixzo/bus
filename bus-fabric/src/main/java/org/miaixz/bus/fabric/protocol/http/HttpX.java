@@ -388,7 +388,7 @@ public final class HttpX {
          */
         private Builder(final Context context) {
             this.context = context;
-            final Timeout configured = context.options().get("timeout", Timeout.class);
+            final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.proxy = configuredProxy();
         }
@@ -399,12 +399,8 @@ public final class HttpX {
          * @return proxy plan
          */
         private ProxyPlan configuredProxy() {
-            if (context.options().contains("http.proxy")) {
-                final ProxyPlan value = context.options().get("http.proxy", ProxyPlan.class);
-                return value == null ? ProxyPlan.direct() : value;
-            }
-            if (context.options().contains("proxy")) {
-                final ProxyPlan value = context.options().get("proxy", ProxyPlan.class);
+            if (context.options().contains(org.miaixz.bus.fabric.Builder.OPTION_HTTP_PROXY)) {
+                final ProxyPlan value = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_HTTP_PROXY);
                 return value == null ? ProxyPlan.direct() : value;
             }
             return ProxyPlan.direct();

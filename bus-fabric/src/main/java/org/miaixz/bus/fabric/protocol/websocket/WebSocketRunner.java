@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SocketException;
@@ -46,8 +47,6 @@ import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpRunner;
-import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader;
-import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketWriter;
 import org.miaixz.bus.fabric.protocol.websocket.upgrade.WebSocketUpgrade;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.runtime.FilterChain;
@@ -115,8 +114,10 @@ public final class WebSocketRunner {
      */
     public WebSocketSession open(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
+        final String operationId = ID.objectId();
         ConnectionLease lease = null;
         HttpRunner.Upgrade upgraded = null;
+        emit(ObservationMarker.WEBSOCKET_OPEN, null, operationId);
         Logger.info(
                 true,
                 "Fabric",
@@ -142,37 +143,31 @@ public final class WebSocketRunner {
             final Connection connection = upgraded.connection();
             lease = upgraded.lease();
             upgraded = null;
-            final WebSocketSession session = new WebSocketSession(snapshot.address(),
-                    new WebSocketWriter(connection.sink(), WebSocketRole.CLIENT.writerMask()),
-                    new WebSocketReader(connection.source(), WebSocketRole.CLIENT.readerExpectMasked(),
-                            snapshot.address()),
-                    lease, snapshot.handler(), snapshot.context().reactor().dispatcher(), dispatchKey(),
-                    snapshot.timeout().ping(), snapshot.guard(), WebSocketRole.CLIENT,
+            final WebSocketSession session = new WebSocketSession(snapshot.address(), connection.source(),
+                    connection.sink(), lease, snapshot.handler(), snapshot.context(), snapshot.timeout(), dispatchKey(),
+                    snapshot.guard(), WebSocketRole.CLIENT,
                     Map.of(
                             Builder.ATTRIBUTE_HEADERS,
                             opening.headers(),
                             Builder.ATTRIBUTE_OBSERVER,
-                            snapshot.observer()),
+                            snapshot.observer(),
+                            Builder.TAG_OPERATION_ID,
+                            operationId),
                     null, FilterChain.compose(snapshot.context().filter(), snapshot.filter()), snapshot.observer(),
-                    snapshot.listener(), snapshot.context().options().materializeMaxBytes());
-            final Runnable unregisterCancellation = currentCancellation.onCancel(session::cancel);
-            try {
-                currentCancellation.throwIfCancelled();
-                lease = null;
-                Logger.info(
-                        false,
-                        "Fabric",
-                        "WebSocket open completed: scheme={}, host={}, port={}",
-                        snapshot.address().scheme(),
-                        snapshot.address().host(),
-                        snapshot.address().port());
-                return session;
-            } finally {
-                unregisterCancellation.run();
-            }
+                    snapshot.listener(), currentCancellation);
+            lease = null;
+            Logger.info(
+                    false,
+                    "Fabric",
+                    "WebSocket open completed: scheme={}, host={}, port={}",
+                    snapshot.address().scheme(),
+                    snapshot.address().host(),
+                    snapshot.address().port());
+            return session;
         } catch (final CancellationException e) {
             closeUpgrade(upgraded);
             closeLease(lease);
+            emit(ObservationMarker.WEBSOCKET_CANCELLED, e, operationId);
             Logger.warn(
                     false,
                     "Fabric",
@@ -186,6 +181,7 @@ public final class WebSocketRunner {
             closeUpgrade(upgraded);
             closeLease(lease);
             final RuntimeException failure = socketFailure(e);
+            emit(ObservationMarker.WEBSOCKET_FAILED, failure, operationId);
             Logger.error(
                     false,
                     "Fabric",
@@ -238,12 +234,14 @@ public final class WebSocketRunner {
     /**
      * Emits a WebSocket exchange event.
      *
-     * @param marker marker
-     * @param cause  failure cause
+     * @param marker      marker
+     * @param cause       failure cause
+     * @param operationId stable identifier for this open lifecycle
      */
-    private void emit(final ObservationMarker marker, final Throwable cause) {
-        final FabricEvent.Builder event = FabricEvent.builder(marker)
-                .tag(Builder.TAG_PROTOCOL, snapshot.address().scheme()).tag(Builder.HOST, snapshot.address().host())
+    private void emit(final ObservationMarker marker, final Throwable cause, final String operationId) {
+        final FabricEvent.Builder event = FabricEvent.builder(marker, snapshot.context().clock())
+                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_PROTOCOL, snapshot.address().scheme())
+                .tag(Builder.HOST, snapshot.address().host())
                 .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
         if (cause != null) {
             event.cause(cause);

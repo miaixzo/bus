@@ -19,7 +19,8 @@
 */
 package org.miaixz.bus.fabric;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.DnsResolver;
 import org.miaixz.bus.fabric.registry.Directory;
@@ -31,7 +32,7 @@ import org.miaixz.bus.fabric.runtime.Reactor;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class Context {
+public final class Context implements AutoCloseable {
 
     /**
      * Shared reactor.
@@ -42,11 +43,6 @@ public final class Context {
      * Shared option snapshot.
      */
     private final Options options;
-
-    /**
-     * Shared directory.
-     */
-    private final Directory directory;
 
     /**
      * Shared DNS resolver.
@@ -64,24 +60,27 @@ public final class Context {
     private final Filter filter;
 
     /**
-     * Creates a validated context instance.
-     *
-     * @param reactor   reactor
-     * @param options   option snapshot
-     * @param directory directory
-     * @param resolver  DNS resolver
-     * @param listener  lifecycle listener
-     * @param filter    shared message filter
+     * Closed state guarding reactor ownership.
      */
-    private Context(final Reactor reactor, final Options options, final Directory directory, final DnsResolver resolver,
+    private final AtomicBoolean closed;
+
+    /**
+     * Creates a validated context after all builder resources have been resolved.
+     *
+     * @param reactor  owned reactor
+     * @param options  option snapshot
+     * @param resolver context-local DNS resolver
+     * @param listener lifecycle listener
+     * @param filter   shared message filter
+     */
+    private Context(final Reactor reactor, final Options options, final DnsResolver resolver,
             final Listener<Object> listener, final Filter filter) {
         this.reactor = require(reactor, "Reactor");
         this.options = require(options, "Options");
-        this.directory = require(directory, "Directory");
         this.resolver = require(resolver, "DNS resolver");
-        this.resolver.observer(this.reactor.observer());
         this.listener = listener;
         this.filter = filter;
+        this.closed = new AtomicBoolean();
     }
 
     /**
@@ -90,27 +89,16 @@ public final class Context {
      * @return default context
      */
     public static Context create() {
-        try {
-            final Directory directory = Directory.create();
-            final Reactor reactor = Reactor.builder().directory(directory).build();
-            return builder().reactor(reactor).options(Options.empty()).directory(directory).build();
-        } catch (final RuntimeException e) {
-            if (e instanceof InternalException) {
-                throw e;
-            }
-            throw new InternalException("Unable to create default context", e);
-        }
+        return builder().build();
     }
 
     /**
-     * Creates a context builder initialized with default collaborators.
+     * Creates an inert context builder without allocating runtime resources.
      *
      * @return context builder
      */
     public static Builder builder() {
-        final Directory directory = Directory.create();
-        final Reactor reactor = Reactor.builder().directory(directory).build();
-        return new Builder(reactor, Options.empty(), directory, DnsResolver.system(), null, null);
+        return new Builder();
     }
 
     /**
@@ -132,12 +120,21 @@ public final class Context {
     }
 
     /**
+     * Returns the reactor clock shared by all context operations.
+     *
+     * @return runtime clock
+     */
+    public Clock clock() {
+        return reactor.clock();
+    }
+
+    /**
      * Returns the shared directory.
      *
      * @return directory
      */
     public Directory directory() {
-        return directory;
+        return reactor.directory();
     }
 
     /**
@@ -168,23 +165,23 @@ public final class Context {
     }
 
     /**
-     * Creates a context with replacement options.
+     * Returns a context view sharing runtime services with a replacement filter.
      *
-     * @param options replacement options
-     * @return copied context
+     * @param filter replacement filter, or null
+     * @return context view
      */
-    public Context withOptions(final Options options) {
-        return new Context(reactor, require(options, "Options"), directory, resolver, listener, filter);
+    public Context withFilter(final Filter filter) {
+        return new Context(reactor, options, resolver, listener, filter);
     }
 
     /**
-     * Creates a context with a replacement shared filter.
-     *
-     * @param filter replacement filter
-     * @return copied context
+     * Closes the owned reactor exactly once.
      */
-    public Context withFilter(final Filter filter) {
-        return new Context(reactor, options, directory, resolver, listener, filter);
+    @Override
+    public void close() {
+        if (closed.compareAndSet(false, true)) {
+            reactor.close();
+        }
     }
 
     /**
@@ -218,12 +215,7 @@ public final class Context {
         /**
          * Options candidate.
          */
-        private Options options;
-
-        /**
-         * Directory candidate.
-         */
-        private Directory directory;
+        private Options options = Options.empty();
 
         /**
          * DNS resolver candidate.
@@ -241,23 +233,10 @@ public final class Context {
         private Filter filter;
 
         /**
-         * Creates a builder with explicit defaults.
-         *
-         * @param reactor   default reactor
-         * @param options   default options
-         * @param directory default directory
-         * @param resolver  default DNS resolver
-         * @param listener  default listener
-         * @param filter    default filter
+         * Creates an inert builder without allocating a reactor or resolver.
          */
-        private Builder(final Reactor reactor, final Options options, final Directory directory,
-                final DnsResolver resolver, final Listener<Object> listener, final Filter filter) {
-            this.reactor = require(reactor, "Reactor");
-            this.options = require(options, "Options");
-            this.directory = require(directory, "Directory");
-            this.resolver = require(resolver, "DNS resolver");
-            this.listener = listener;
-            this.filter = filter;
+        private Builder() {
+            // Defaults without resource allocation are declared on builder fields.
         }
 
         /**
@@ -279,17 +258,6 @@ public final class Context {
          */
         public Builder options(final Options options) {
             this.options = require(options, "Options");
-            return this;
-        }
-
-        /**
-         * Sets the directory.
-         *
-         * @param directory directory
-         * @return this builder
-         */
-        public Builder directory(final Directory directory) {
-            this.directory = require(directory, "Directory");
             return this;
         }
 
@@ -327,12 +295,30 @@ public final class Context {
         }
 
         /**
-         * Builds an immutable context.
+         * Builds an immutable context and transfers ownership of its final reactor only after success.
          *
          * @return context
          */
         public Context build() {
-            return new Context(reactor, options, directory, resolver, listener, filter);
+            Reactor resolvedReactor = reactor;
+            final boolean createdReactor = resolvedReactor == null;
+            if (createdReactor) {
+                resolvedReactor = Reactor.create();
+            }
+            try {
+                final DnsResolver resolvedResolver = resolver == null ? DnsResolver.system() : resolver;
+                final DnsResolver localResolver = resolvedResolver.withObserver(resolvedReactor.observer());
+                return new Context(resolvedReactor, options, localResolver, listener, filter);
+            } catch (final RuntimeException | Error failure) {
+                if (createdReactor) {
+                    try {
+                        resolvedReactor.close();
+                    } catch (final RuntimeException closeFailure) {
+                        failure.addSuppressed(closeFailure);
+                    }
+                }
+                throw failure;
+            }
         }
 
     }

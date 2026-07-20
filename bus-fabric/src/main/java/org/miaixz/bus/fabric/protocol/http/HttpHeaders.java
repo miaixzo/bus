@@ -94,6 +94,16 @@ public final class HttpHeaders {
     }
 
     /**
+     * Returns the validated Content-Length value.
+     *
+     * @param headers source headers
+     * @return content length, or -1 when absent
+     */
+    public static long contentLength(final Headers headers) {
+        return require(headers, "Headers").contentLength();
+    }
+
+    /**
      * Returns whether cached and request headers satisfy response Vary fields.
      *
      * @param cached   cached request headers

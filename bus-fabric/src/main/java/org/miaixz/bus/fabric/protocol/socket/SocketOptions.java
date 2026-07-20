@@ -44,14 +44,14 @@ import org.miaixz.bus.fabric.Options;
  * @param ioThreads        AIO read I/O thread count
  * @param socketOptions    JDK socket options passed to client channels
  * @param retainReadBuffer true to reuse one read buffer per session
- * @param connectTimeout   connection timeout
  * @param idleTimeout      operation-time idle timeout
+ * @param kcpWireVersion   KCP wire-format version, either {@code 1} or {@code 2}
  * @author Kimi Liu
  * @since Java 21+
  */
 public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChunkCount, int backlog, int ioThreads,
-        Map<SocketOption<?>, Object> socketOptions, boolean retainReadBuffer, Duration connectTimeout,
-        Duration idleTimeout) {
+        Map<SocketOption<?>, Object> socketOptions, boolean retainReadBuffer, Duration idleTimeout,
+        int kcpWireVersion) {
 
     /**
      * Creates validated options.
@@ -63,8 +63,8 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         backlog = positive(backlog, "Backlog");
         ioThreads = positive(ioThreads, "I/O thread count");
         socketOptions = snapshotSocketOptions(socketOptions);
-        connectTimeout = timeout(connectTimeout, "Connect timeout");
         idleTimeout = timeout(idleTimeout, "Idle timeout");
+        kcpWireVersion = wireVersion(kcpWireVersion);
     }
 
     /**
@@ -106,19 +106,16 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
                         checkedOptions,
                         OPTION_SOCKET_IO_THREADS,
                         Math.max(Normal._1, Runtime.getRuntime().availableProcessors())));
-        final Object rawSocketOptions = checkedOptions.get(OPTION_SOCKET_OPTIONS);
-        if (rawSocketOptions instanceof Map<?, ?> map) {
-            for (final Map.Entry<?, ?> entry : map.entrySet()) {
+        final Map<?, ?> rawSocketOptions = checkedOptions.get(OPTION_SOCKET_OPTIONS);
+        if (rawSocketOptions != null) {
+            for (final Map.Entry<?, ?> entry : rawSocketOptions.entrySet()) {
                 if (!(entry.getKey() instanceof SocketOption<?> option)) {
                     throw new ValidateException("Socket option key must be a SocketOption");
                 }
                 builder.socketOption((SocketOption<Object>) option, entry.getValue());
             }
-        } else if (rawSocketOptions != null) {
-            throw new ValidateException("Socket options value must be a map");
         }
         builder.retainReadBuffer(bool(checkedOptions, OPTION_SOCKET_RETAIN_READ_BUFFER, false));
-        builder.connectTimeout(duration(checkedOptions, OPTION_SOCKET_CONNECT_TIMEOUT, Duration.ofSeconds(Normal._10)));
         builder.idleTimeout(duration(checkedOptions, OPTION_SOCKET_IDLE_TIMEOUT, Duration.ZERO));
         return builder.build();
     }
@@ -133,8 +130,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
                 .with(OPTION_SOCKET_WRITE_CHUNK_SIZE, writeChunkSize)
                 .with(OPTION_SOCKET_WRITE_CHUNK_COUNT, writeChunkCount).with(OPTION_SOCKET_BACKLOG, backlog)
                 .with(OPTION_SOCKET_IO_THREADS, ioThreads).with(OPTION_SOCKET_OPTIONS, socketOptions)
-                .with(OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer)
-                .with(OPTION_SOCKET_CONNECT_TIMEOUT, connectTimeout).with(OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
+                .with(OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer).with(OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
     }
 
     /**
@@ -178,14 +174,14 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         private boolean retainReadBuffer;
 
         /**
-         * Mutable connection timeout candidate.
-         */
-        private Duration connectTimeout = Duration.ofSeconds(Normal._10);
-
-        /**
          * Mutable idle timeout candidate.
          */
         private Duration idleTimeout = Duration.ZERO;
+
+        /**
+         * Mutable KCP wire-format version candidate.
+         */
+        private int kcpWireVersion = Normal._1;
 
         /**
          * Creates a builder seeded with socket defaults.
@@ -296,17 +292,6 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         }
 
         /**
-         * Sets the connection timeout.
-         *
-         * @param value timeout
-         * @return this builder
-         */
-        public Builder connectTimeout(final Duration value) {
-            connectTimeout = timeout(value, "Connect timeout");
-            return this;
-        }
-
-        /**
          * Sets the operation-time idle timeout.
          *
          * @param value timeout
@@ -318,13 +303,24 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         }
 
         /**
+         * Sets the KCP wire-format version.
+         *
+         * @param value wire-format version, either {@code 1} or {@code 2}
+         * @return this builder
+         */
+        public Builder kcpWireVersion(final int value) {
+            kcpWireVersion = wireVersion(value);
+            return this;
+        }
+
+        /**
          * Builds immutable socket options.
          *
          * @return socket options
          */
         public SocketOptions build() {
             return new SocketOptions(readBufferSize, writeChunkSize, writeChunkCount, backlog, ioThreads, socketOptions,
-                    retainReadBuffer, connectTimeout, idleTimeout);
+                    retainReadBuffer, idleTimeout, kcpWireVersion);
         }
 
     }
@@ -359,6 +355,19 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     }
 
     /**
+     * Validates a KCP wire-format version.
+     *
+     * @param value wire-format version
+     * @return validated wire-format version
+     */
+    private static int wireVersion(final int value) {
+        if (value != Normal._1 && value != Normal._2) {
+            throw new ValidateException("KCP wire version must be 1 or 2");
+        }
+        return value;
+    }
+
+    /**
      * Copies caller-provided JDK socket options into an immutable map.
      *
      * @param values socket option values
@@ -386,15 +395,15 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
      * @param fallback fallback when absent
      * @return option value
      */
-    private static int number(final Options options, final String key, final int fallback) {
-        final Object value = options.get(key);
+    private static int number(final Options options, final Options.Key<Integer> key, final int fallback) {
+        final Integer value = options.get(key);
         if (value == null) {
+            if (options.contains(key)) {
+                throw new ValidateException("Numeric socket option must not be null");
+            }
             return fallback;
         }
-        if (!(value instanceof Number number)) {
-            throw new ValidateException(key + " must be numeric");
-        }
-        return number.intValue();
+        return value;
     }
 
     /**
@@ -405,15 +414,15 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
      * @param fallback fallback when absent
      * @return option value
      */
-    private static boolean bool(final Options options, final String key, final boolean fallback) {
-        final Object value = options.get(key);
+    private static boolean bool(final Options options, final Options.Key<Boolean> key, final boolean fallback) {
+        final Boolean value = options.get(key);
         if (value == null) {
+            if (options.contains(key)) {
+                throw new ValidateException("Boolean socket option must not be null");
+            }
             return fallback;
         }
-        if (!(value instanceof Boolean bool)) {
-            throw new ValidateException(key + " must be boolean");
-        }
-        return bool;
+        return value;
     }
 
     /**
@@ -424,15 +433,15 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
      * @param fallback fallback when absent
      * @return option value
      */
-    private static Duration duration(final Options options, final String key, final Duration fallback) {
-        final Object value = options.get(key);
+    private static Duration duration(final Options options, final Options.Key<Duration> key, final Duration fallback) {
+        final Duration value = options.get(key);
         if (value == null) {
+            if (options.contains(key)) {
+                throw new ValidateException("Duration socket option must not be null");
+            }
             return fallback;
         }
-        if (!(value instanceof Duration duration)) {
-            throw new ValidateException(key + " must be a Duration");
-        }
-        return duration;
+        return value;
     }
 
 }

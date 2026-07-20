@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.protocol.http.codec;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -33,7 +34,6 @@ import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -49,10 +49,8 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.http2.Http2Connection;
-import org.miaixz.bus.fabric.protocol.http.http2.Http2Frame;
 import org.miaixz.bus.fabric.protocol.http.http2.Http2Header;
 import org.miaixz.bus.fabric.protocol.http.http2.Http2Stream;
-import org.miaixz.bus.fabric.protocol.http.http2.Http2Writer;
 
 /**
  * HTTP/2 codec bound to an HTTP/2 connection.
@@ -68,14 +66,14 @@ public final class Http2Codec implements HttpCodec {
     private final Http2Connection connection;
 
     /**
-     * HTTP/2 frame writer.
-     */
-    private final Http2Writer writer;
-
-    /**
      * Request to stream map.
      */
     private final Map<HttpRequest, Http2Stream> calls;
+
+    /**
+     * Stream owned by the current codec call.
+     */
+    private final AtomicReference<Http2Stream> active;
 
     /**
      * Lifecycle state.
@@ -89,8 +87,8 @@ public final class Http2Codec implements HttpCodec {
      */
     public Http2Codec(final Http2Connection connection) {
         this.connection = require(connection, "HTTP/2 connection");
-        this.writer = new Http2Writer(this.connection);
         this.calls = Collections.synchronizedMap(new IdentityHashMap<>());
+        this.active = new AtomicReference<>();
         this.state = new AtomicReference<>(Status.OPENED);
     }
 
@@ -102,11 +100,12 @@ public final class Http2Codec implements HttpCodec {
      */
     public Http2Stream newStream(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
-        final Headers headers = pseudoHeaders(current);
-        final Http2Stream stream = connection.newStream(headers, true);
+        final List<Http2Header> headers = requestHeaders(current);
+        final Http2Stream stream = connection.newStream(Headers.empty(), true);
         calls.put(current, stream);
+        active.set(stream);
         connection.startReader();
-        writer.headers(stream.id(), headers, current.body().length() == Normal._0);
+        connection.writeHeaders(stream.id(), headers, current.body().length() == Normal._0);
         return stream;
     }
 
@@ -119,7 +118,6 @@ public final class Http2Codec implements HttpCodec {
     public void writeRequest(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
         state.set(Status.RUNNING);
-        writer.timeout(current.timeout().write());
         final Http2Stream stream = newStream(current);
         if (current.body().length() > Normal._0 && current.method() != HTTP.Method.GET
                 && current.method() != HTTP.Method.HEAD) {
@@ -142,35 +140,18 @@ public final class Http2Codec implements HttpCodec {
             throw new StatefulException("HTTP/2 stream is missing for request");
         }
         state.set(Status.RUNNING);
-        int code = Normal.__1;
-        Headers headers = Headers.empty();
-        boolean end = false;
         try {
-            while (!end || code < Normal._0) {
-                final Http2Frame frame = connection.nextFrame(stream.id(), current.timeout().read());
-                if (frame.type() == Normal._1) {
-                    headers = fromHttp2(frame.headers(), true);
-                    final String status = pseudo(frame.headers(), HTTP.RESPONSE_STATUS_UTF8);
-                    if (status == null) {
-                        throw new ProtocolException("HTTP/2 response is missing :status");
-                    }
-                    code = parseStatus(status);
-                } else if (frame.type() == Normal._3) {
-                    throw new SocketException("HTTP/2 stream was reset");
-                }
-                end = frame.endStream();
+            final Headers headers = stream.awaitResponseHeaders(current.timeout().read());
+            final String status = headers.get(HTTP.RESPONSE_STATUS_UTF8);
+            if (status == null) {
+                throw new ProtocolException("HTTP/2 response is missing :status");
             }
-            if (!(stream.source() instanceof Payload payload)) {
-                throw new InternalException("HTTP/2 stream source is not payload-backed");
-            }
+            final int code = parseStatus(status);
+            final Payload payload = stream.payload();
             return HttpResponse.builder().request(current).code(code).message(Normal.EMPTY).headers(headers)
-                    .body(PayloadBody.of(payload, media(headers))).protocol(Protocol.HTTP_2).trailers(Headers.empty())
+                    .body(PayloadBody.of(payload, media(headers))).protocol(Protocol.HTTP_2).trailers(stream::trailers)
                     .build();
         } finally {
-            if (end) {
-                connection.discardFrames(stream.id());
-                calls.remove(current);
-            }
             state.set(Status.OPENED);
         }
     }
@@ -184,12 +165,13 @@ public final class Http2Codec implements HttpCodec {
         if (previous == Status.CANCELLED || previous == Status.CLOSED) {
             return;
         }
-        synchronized (calls) {
-            for (final Http2Stream stream : calls.values()) {
-                writer.rstStream(stream.id(), Normal._0);
+        final Http2Stream stream = active.getAndSet(null);
+        if (stream != null) {
+            stream.close();
+            synchronized (calls) {
+                calls.values().removeIf(value -> value == stream);
             }
         }
-        connection.close();
     }
 
     /**
@@ -219,12 +201,12 @@ public final class Http2Codec implements HttpCodec {
                     final boolean end = declared >= Normal._0 && (remaining -= read) <= Normal._0;
                     final Buffer data = new Buffer();
                     data.write(buffer, read);
-                    writer.data(stream.id(), data, end);
+                    connection.writeData(stream.id(), data, end, request.timeout().write());
                 }
                 read = input.read(buffer, Normal._8192);
             }
             if (declared < Normal._0) {
-                writer.data(stream.id(), new Buffer(), true);
+                connection.writeData(stream.id(), new Buffer(), true, request.timeout().write());
             }
         } catch (final IOException e) {
             throw new SocketException("Unable to read HTTP/2 request body", e);
@@ -237,51 +219,23 @@ public final class Http2Codec implements HttpCodec {
      * @param request request
      * @return headers
      */
-    private static Headers pseudoHeaders(final HttpRequest request) {
+    private static List<Http2Header> requestHeaders(final HttpRequest request) {
         final UnoUrl url = request.url();
-        Headers headers = Headers.builder().add(HTTP.TARGET_METHOD_UTF8, request.method().value())
-                .add(HTTP.TARGET_SCHEME_UTF8, url.address().scheme()).add(HTTP.TARGET_AUTHORITY_UTF8, authority(url))
-                .add(HTTP.TARGET_PATH_UTF8, path(url.toUri())).build();
+        final ArrayList<Http2Header> headers = new ArrayList<>();
+        headers.add(Http2Header.of(HTTP.TARGET_METHOD_UTF8, request.method().value()));
+        headers.add(Http2Header.of(HTTP.TARGET_SCHEME_UTF8, url.address().scheme()));
+        headers.add(Http2Header.of(HTTP.TARGET_AUTHORITY_UTF8, authority(url)));
+        headers.add(Http2Header.of(HTTP.TARGET_PATH_UTF8, path(url.toUri())));
         for (final Map.Entry<String, List<String>> entry : request.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
-                headers = headers.with(entry.getKey().toLowerCase(Locale.ROOT), value);
+                final String name = entry.getKey().toLowerCase(Locale.ROOT);
+                if (HTTP.TE.equalsIgnoreCase(name) && !HTTP.TRAILERS.equalsIgnoreCase(value.trim())) {
+                    throw new ProtocolException("HTTP/2 TE header must be trailers");
+                }
+                headers.add(Http2Header.of(name, value));
             }
         }
-        return headers;
-    }
-
-    /**
-     * Converts HTTP/2 headers to root headers.
-     *
-     * @param headers    headers
-     * @param skipPseudo whether pseudo headers are skipped
-     * @return root headers
-     */
-    private static Headers fromHttp2(final List<Http2Header> headers, final boolean skipPseudo) {
-        final Headers.Builder builder = Headers.builder();
-        for (final Http2Header header : headers) {
-            if (skipPseudo && header.name().startsWith(Symbol.COLON)) {
-                continue;
-            }
-            builder.add(header.name(), header.value());
-        }
-        return builder.build();
-    }
-
-    /**
-     * Reads a pseudo header.
-     *
-     * @param headers headers
-     * @param name    name
-     * @return value or null
-     */
-    private static String pseudo(final List<Http2Header> headers, final String name) {
-        for (final Http2Header header : headers) {
-            if (name.equals(header.name())) {
-                return header.value();
-            }
-        }
-        return null;
+        return List.copyOf(headers);
     }
 
     /**

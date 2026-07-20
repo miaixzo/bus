@@ -24,8 +24,10 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -67,6 +69,11 @@ public abstract class MonoCall<T> implements Call<T> {
     private final LifecycleScope scope;
 
     /**
+     * Atomic guard allowing exactly one submission path.
+     */
+    private final AtomicBoolean submitted;
+
+    /**
      * Result future.
      */
     private final CompletableFuture<T> future;
@@ -105,9 +112,76 @@ public abstract class MonoCall<T> implements Call<T> {
         this.name = Assert.notBlank(name, () -> new ValidateException("Call name must not be blank"));
         this.dispatcher = dispatcher;
         this.scope = LifecycleScope.call(this.name, observer);
+        this.submitted = new AtomicBoolean();
         this.future = new CompletableFuture<>();
         this.handle = new AtomicReference<>();
         this.callback = safe(callback);
+    }
+
+    /**
+     * Creates a simple single-result call backed by an operation and cancellation action.
+     *
+     * @param name         call name
+     * @param dispatchKey  asynchronous dispatch key
+     * @param dispatcher   optional dispatcher used by enqueue()
+     * @param observer     event observer
+     * @param callback     optional callback
+     * @param operation    call operation
+     * @param cancelAction optional running-operation cancellation action
+     * @param <T>          result type
+     * @return simple call
+     */
+    public static <T> MonoCall<T> create(
+            final String name,
+            final String dispatchKey,
+            final Dispatcher dispatcher,
+            final EventObserver observer,
+            final Callback<? super T> callback,
+            final SupplierX<T> operation,
+            final Runnable cancelAction) {
+        final String key = Assert
+                .notBlank(dispatchKey, () -> new ValidateException("Call dispatch key must not be blank"));
+        final SupplierX<T> currentOperation = Assert
+                .notNull(operation, () -> new ValidateException("Call operation must not be null"));
+        final Runnable currentCancelAction = cancelAction == null ? () -> {
+        } : cancelAction;
+        return new MonoCall<>(name, dispatcher, observer, callback) {
+
+            /**
+             * Runs the supplied operation while preserving runtime failures and errors.
+             *
+             * @return operation result
+             */
+            @Override
+            protected T perform() {
+                try {
+                    return currentOperation.getting();
+                } catch (final RuntimeException | Error e) {
+                    throw e;
+                } catch (final Throwable e) {
+                    throw new InternalException("Call operation failed", e);
+                }
+            }
+
+            /**
+             * Returns the validated dispatch key.
+             *
+             * @return dispatch key
+             */
+            @Override
+            protected String dispatchKey() {
+                return key;
+            }
+
+            /**
+             * Runs the supplied cancellation action.
+             */
+            @Override
+            protected void cancelRunning() {
+                currentCancelAction.run();
+            }
+
+        };
     }
 
     /**
@@ -171,28 +245,8 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     @Override
     public T execute() {
-        if (!scope.start()) {
-            throw new StatefulException(name + " can only execute once");
-        }
-        try {
-            scope.cancellation().throwIfCancelled();
-            final T value = perform();
-            if (scope.state() == Status.CANCELLED || future.isCancelled()) {
-                closeAfterCancelled(value);
-                throw new CancellationException(name + " was cancelled");
-            }
-            scope.complete();
-            future.complete(value);
-            callback.success(value);
-            return value;
-        } catch (final CancellationException e) {
-            cancel();
-            callback.failure(e);
-            throw e;
-        } catch (final RuntimeException e) {
-            fail(e);
-            throw e;
-        }
+        claimSubmission("execute");
+        return runOnce();
     }
 
     /**
@@ -214,26 +268,8 @@ public abstract class MonoCall<T> implements Call<T> {
     public Call<T> enqueue(final Dispatcher dispatcher) {
         final Dispatcher target = Assert
                 .notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null"));
-        if (handle.get() != null) {
-            return this;
-        }
-        if (scope.state() != Status.QUEUED) {
-            throw new StatefulException(name + " cannot be enqueued from state " + scope.state());
-        }
-        final Activity activity = Activity.of(name, () -> {
-            try {
-                execute();
-            } catch (final CancellationException e) {
-                throw e;
-            } catch (final RuntimeException e) {
-                throw e;
-            }
-        }, scope.cancellation());
-        final DispatchHandle enqueued = target.enqueue(dispatchKey(), activity);
-        if (!handle.compareAndSet(null, enqueued)) {
-            target.cancel(enqueued);
-        }
-        return this;
+        claimSubmission("enqueue");
+        return enqueueClaimed(target);
     }
 
     /**
@@ -243,16 +279,7 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     @Override
     public boolean cancel() {
-        final boolean changed = scope.cancel(new CancellationException(name + " cancelled"));
-        if (changed) {
-            final DispatchHandle current = handle.get();
-            if (current != null) {
-                current.cancel();
-            }
-            future.cancel(false);
-            cancelRunning();
-        }
-        return changed;
+        return finishCancellation(new CancellationException(name + " cancelled"));
     }
 
     /**
@@ -293,7 +320,7 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     @Override
     public T await() {
-        startIfNeeded();
+        startForAwait();
         return awaitFuture();
     }
 
@@ -305,37 +332,185 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     @Override
     public T await(final Duration timeout) {
-        validateTimeout(timeout);
-        startIfNeeded();
-        return awaitFuture(timeout);
+        final Duration checkedTimeout = validateTimeout(timeout);
+        final long timeoutNanos = timeoutNanos(checkedTimeout);
+        startForAwait();
+        return awaitFuture(checkedTimeout, timeoutNanos);
     }
 
     /**
-     * Starts this call when await is the first terminal operation.
+     * Claims the single submission slot for an explicit start entry.
+     *
+     * @param entry start entry name
      */
-    private void startIfNeeded() {
-        if (scope.state() != Status.QUEUED || handle.get() != null) {
+    private void claimSubmission(final String entry) {
+        if (!submitted.compareAndSet(false, true)) {
+            throw new StatefulException(name + " was already submitted; cannot " + entry);
+        }
+    }
+
+    /**
+     * Starts this call once when await is the first entry.
+     */
+    private void startForAwait() {
+        if (!submitted.compareAndSet(false, true)) {
+            return;
+        }
+        if (scope.state().terminal()) {
             return;
         }
         if (dispatcher == null) {
-            execute();
+            runOnce();
         } else {
-            enqueue();
+            enqueueClaimed(dispatcher);
         }
     }
 
     /**
-     * Fails this call.
+     * Enqueues an already claimed call exactly once.
+     *
+     * @param target target dispatcher
+     * @return this call
+     */
+    private Call<T> enqueueClaimed(final Dispatcher target) {
+        final Activity activity = Activity.of(name, this::runDispatched, scope.cancellation());
+        try {
+            final DispatchHandle enqueued = Assert.notNull(
+                    target.enqueue(dispatchKey(), activity),
+                    () -> new ValidateException("Dispatcher returned a null handle"));
+            handle.set(enqueued);
+            if (scope.state() == Status.CANCELLED || future.isCancelled()) {
+                enqueued.cancel();
+            }
+            return this;
+        } catch (final RuntimeException | Error e) {
+            finishFailure(e);
+            throw e;
+        }
+    }
+
+    /**
+     * Runs a dispatched operation without re-entering a public start method.
+     */
+    private void runDispatched() {
+        runOnce();
+    }
+
+    /**
+     * Runs the claimed operation and completes its lifecycle exactly once.
+     *
+     * @return result
+     */
+    private T runOnce() {
+        try {
+            if (!scope.start()) {
+                scope.cancellation().throwIfCancelled();
+                throw new StatefulException(name + " cannot run from state " + scope.state());
+            }
+            scope.cancellation().throwIfCancelled();
+            final T value = perform();
+            if (scope.state() == Status.CANCELLED || scope.cancellation().cancelled() || future.isCancelled()) {
+                throw closeAfterCancellation(value, cancellationFailure());
+            }
+            if (!scope.complete()) {
+                throw closeAfterCancellation(value, cancellationFailure());
+            }
+            future.complete(value);
+            callback.success(value);
+            return value;
+        } catch (final CancellationException e) {
+            try {
+                finishCancellation(e);
+            } catch (final RuntimeException cleanupFailure) {
+                if (cleanupFailure != e) {
+                    e.addSuppressed(cleanupFailure);
+                }
+            }
+            throw e;
+        } catch (final RuntimeException | Error e) {
+            finishFailure(e);
+            throw e;
+        }
+    }
+
+    /**
+     * Closes a value produced after cancellation while retaining the cancellation failure.
+     *
+     * @param value produced value
+     * @param cause cancellation failure
+     * @return cancellation failure
+     */
+    private CancellationException closeAfterCancellation(final T value, final CancellationException cause) {
+        try {
+            closeAfterCancelled(value);
+        } catch (final Throwable cleanupFailure) {
+            if (cleanupFailure != cause) {
+                cause.addSuppressed(cleanupFailure);
+            }
+        }
+        return cause;
+    }
+
+    /**
+     * Creates a cancellation failure linked to the lifecycle cause.
+     *
+     * @return cancellation failure
+     */
+    private CancellationException cancellationFailure() {
+        final CancellationException failure = new CancellationException(name + " was cancelled");
+        final Throwable cause = scope.cancellation().cause();
+        if (cause != null && cause != failure) {
+            failure.initCause(cause);
+        }
+        return failure;
+    }
+
+    /**
+     * Completes cancellation, future cancellation, owned work cleanup, and callback once.
+     *
+     * @param cause cancellation cause
+     * @return true when cancellation changed the lifecycle
+     */
+    private boolean finishCancellation(final CancellationException cause) {
+        if (!scope.cancel(cause)) {
+            return false;
+        }
+        RuntimeException cleanupFailure = null;
+        final DispatchHandle current = handle.get();
+        if (current != null) {
+            try {
+                current.cancel();
+            } catch (final RuntimeException e) {
+                cleanupFailure = e;
+            }
+        }
+        future.cancel(false);
+        try {
+            cancelRunning();
+        } catch (final RuntimeException e) {
+            if (cleanupFailure == null) {
+                cleanupFailure = e;
+            } else if (cleanupFailure != e) {
+                cleanupFailure.addSuppressed(e);
+            }
+        }
+        callback.failure(cause);
+        if (cleanupFailure != null) {
+            throw cleanupFailure;
+        }
+        return true;
+    }
+
+    /**
+     * Completes failure state, future, and callback once.
      *
      * @param cause failure cause
      */
-    private void fail(final RuntimeException cause) {
-        if (scope.state() == Status.CANCELLED) {
-            return;
+    private void finishFailure(final Throwable cause) {
+        if (scope.fail(cause)) {
+            future.completeExceptionally(cause);
+            callback.failure(cause);
         }
-        scope.fail(cause);
-        future.completeExceptionally(cause);
-        callback.failure(cause);
     }
 
     /**
@@ -350,9 +525,7 @@ public abstract class MonoCall<T> implements Call<T> {
             Thread.currentThread().interrupt();
             throw new InternalException("Interrupted while waiting for " + name, e);
         } catch (final ExecutionException e) {
-            throw new InternalException(name + " failed", e.getCause());
-        } catch (final CancellationException e) {
-            throw new InternalException(name + " was cancelled", e);
+            return throwExecutionFailure(e);
         }
     }
 
@@ -360,42 +533,87 @@ public abstract class MonoCall<T> implements Call<T> {
      * Waits for the future within a timeout.
      *
      * @param timeout timeout
+     * @param nanos   timeout nanoseconds
      * @return result
      */
-    private T awaitFuture(final Duration timeout) {
+    private T awaitFuture(final Duration timeout, final long nanos) {
         if (timeout.isZero()) {
             if (!future.isDone()) {
-                cancel();
-                throw new TimeoutException(name + " timed out");
+                throw cancelForTimeout(new TimeoutException(name + " timed out"));
             }
             return awaitFuture();
         }
         try {
-            return future.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
+            return future.get(nanos, TimeUnit.NANOSECONDS);
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new InternalException("Interrupted while waiting for " + name, e);
         } catch (final ExecutionException e) {
-            throw new InternalException(name + " failed", e.getCause());
-        } catch (final CancellationException e) {
-            throw new InternalException(name + " was cancelled", e);
+            return throwExecutionFailure(e);
         } catch (final java.util.concurrent.TimeoutException e) {
-            cancel();
-            throw new TimeoutException(name + " timed out", e);
-        } catch (final ArithmeticException e) {
-            throw new ValidateException("Timeout is too large");
+            throw cancelForTimeout(new TimeoutException(name + " timed out", e));
         }
+    }
+
+    /**
+     * Cancels this call and retains cleanup failures on the timeout.
+     *
+     * @param failure timeout failure
+     * @return timeout failure
+     */
+    private TimeoutException cancelForTimeout(final TimeoutException failure) {
+        try {
+            cancel();
+        } catch (final RuntimeException cleanupFailure) {
+            if (cleanupFailure != failure) {
+                failure.addSuppressed(cleanupFailure);
+            }
+        }
+        return failure;
+    }
+
+    /**
+     * Rethrows an asynchronous failure without wrapping runtime failures or errors.
+     *
+     * @param failure execution failure
+     * @return never returns
+     */
+    private T throwExecutionFailure(final ExecutionException failure) {
+        final Throwable cause = failure.getCause();
+        if (cause instanceof RuntimeException runtime) {
+            throw runtime;
+        }
+        if (cause instanceof Error error) {
+            throw error;
+        }
+        throw new InternalException(name + " failed", cause == null ? failure : cause);
     }
 
     /**
      * Validates timeout.
      *
      * @param timeout timeout
+     * @return validated timeout
      */
-    private static void validateTimeout(final Duration timeout) {
+    private static Duration validateTimeout(final Duration timeout) {
         final Duration checked = Assert
                 .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
         Assert.isFalse(checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
+        return checked;
+    }
+
+    /**
+     * Converts a timeout to nanoseconds with a stable validation failure.
+     *
+     * @param timeout validated timeout
+     * @return timeout nanoseconds
+     */
+    private static long timeoutNanos(final Duration timeout) {
+        try {
+            return timeout.toNanos();
+        } catch (final ArithmeticException e) {
+            throw new ValidateException("Timeout is too large");
+        }
     }
 
     /**
@@ -415,6 +633,7 @@ public abstract class MonoCall<T> implements Call<T> {
      * @param <T> value type
      * @return no-operation callback
      */
+    @SuppressWarnings("unchecked")
     private static <T> Callback<T> noopCallback() {
         return (Callback<T>) NoopCallback.INSTANCE;
     }
@@ -486,7 +705,7 @@ public abstract class MonoCall<T> implements Call<T> {
         public void success(final T value) {
             try {
                 delegate.success(value);
-            } catch (final RuntimeException e) {
+            } catch (final RuntimeException | Error e) {
                 scope.emit(ObservationMarker.LISTENER_FAILED, e);
             }
         }
@@ -500,7 +719,7 @@ public abstract class MonoCall<T> implements Call<T> {
         public void failure(final Throwable cause) {
             try {
                 delegate.failure(cause);
-            } catch (final RuntimeException e) {
+            } catch (final RuntimeException | Error e) {
                 scope.emit(ObservationMarker.LISTENER_FAILED, e);
             }
         }

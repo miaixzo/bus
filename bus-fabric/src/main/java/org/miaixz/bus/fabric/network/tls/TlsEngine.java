@@ -48,11 +48,6 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 public final class TlsEngine implements AutoCloseable {
 
     /**
-     * TLS context.
-     */
-    private final TlsContext context;
-
-    /**
      * Target address.
      */
     private final Address address;
@@ -68,6 +63,11 @@ public final class TlsEngine implements AutoCloseable {
     private final SSLEngine engine;
 
     /**
+     * Whether this adapter represents a client engine.
+     */
+    private final boolean client;
+
+    /**
      * Delegated task runner.
      */
     private final Runnable task;
@@ -81,14 +81,19 @@ public final class TlsEngine implements AutoCloseable {
      * Creates a TLS engine adapter.
      *
      * @param context  TLS context
-     * @param address  target address
+     * @param address  peer address
      * @param settings TLS settings
+     * @param client   true for a client engine, false for a server engine
      */
-    private TlsEngine(final TlsContext context, final Address address, final TlsSettings settings) {
-        this.context = Assert.notNull(context, () -> new ValidateException("TLS context must not be null"));
+    private TlsEngine(final TlsContext context, final Address address, final TlsSettings settings,
+            final boolean client) {
+        final TlsContext checkedContext = Assert
+                .notNull(context, () -> new ValidateException("TLS context must not be null"));
         this.address = Assert.notNull(address, () -> new ValidateException("TLS address must not be null"));
         this.settings = Assert.notNull(settings, () -> new ValidateException("TLS settings must not be null"));
-        this.engine = this.context.engine(this.address, this.settings);
+        this.engine = client ? checkedContext.engine(this.address, this.settings)
+                : checkedContext.serverEngine(this.address, this.settings);
+        this.client = client;
         this.task = this::runDelegatedTasks;
         this.closed = new AtomicBoolean();
     }
@@ -102,7 +107,19 @@ public final class TlsEngine implements AutoCloseable {
      * @return TLS engine
      */
     public static TlsEngine create(final TlsContext context, final Address address, final TlsSettings settings) {
-        return new TlsEngine(context, address, settings);
+        return new TlsEngine(context, address, settings, true);
+    }
+
+    /**
+     * Creates a server TLS engine adapter.
+     *
+     * @param context  TLS context
+     * @param address  peer address used as engine metadata
+     * @param settings TLS settings
+     * @return server TLS engine
+     */
+    public static TlsEngine createServer(final TlsContext context, final Address address, final TlsSettings settings) {
+        return new TlsEngine(context, address, settings, false);
     }
 
     /**
@@ -125,11 +142,7 @@ public final class TlsEngine implements AutoCloseable {
         Assert.notNull(source, () -> new ValidateException("TLS wrap buffers must not be null"));
         Assert.notNull(target, () -> new ValidateException("TLS wrap buffers must not be null"));
         try {
-            final SSLEngineResult result = engine.wrap(source, target);
-            if (result.getHandshakeStatus() == SSLEngineResult.HandshakeStatus.NEED_TASK) {
-                runDelegatedTasks();
-            }
-            return result;
+            return engine.wrap(source, target);
         } catch (final SSLException e) {
             throw new SocketException("TLS wrap failed", e);
         }
@@ -146,11 +159,7 @@ public final class TlsEngine implements AutoCloseable {
         Assert.notNull(source, () -> new ValidateException("TLS unwrap buffers must not be null"));
         Assert.notNull(target, () -> new ValidateException("TLS unwrap buffers must not be null"));
         try {
-            final SSLEngineResult result = engine.unwrap(source, target);
-            if (result.getHandshakeStatus() == SSLEngineResult.HandshakeStatus.NEED_TASK) {
-                runDelegatedTasks();
-            }
-            return result;
+            return engine.unwrap(source, target);
         } catch (final SSLException e) {
             throw new SocketException("TLS unwrap failed", e);
         }
@@ -173,10 +182,46 @@ public final class TlsEngine implements AutoCloseable {
     public TlsHandshake handshake() {
         final SSLSession session = engine.getSession();
         final CertificateChain peer = CertificateChain.of(peerCertificates(session));
-        if (!peer.empty()) {
+        if (client && !peer.empty()) {
             settings.certificate().checkPeer(address.host(), peer);
         }
         return TlsHandshake.of(session.getProtocol(), session.getCipherSuite(), peer);
+    }
+
+    /**
+     * Starts outbound TLS closure.
+     */
+    public void closeOutbound() {
+        engine.closeOutbound();
+    }
+
+    /**
+     * Acknowledges inbound TLS closure.
+     */
+    public void closeInbound() {
+        try {
+            engine.closeInbound();
+        } catch (final SSLException e) {
+            throw new SocketException("TLS inbound close failed", e);
+        }
+    }
+
+    /**
+     * Returns the current TLS packet buffer size.
+     *
+     * @return packet buffer size
+     */
+    public int packetBufferSize() {
+        return engine.getSession().getPacketBufferSize();
+    }
+
+    /**
+     * Returns the current TLS application buffer size.
+     *
+     * @return application buffer size
+     */
+    public int applicationBufferSize() {
+        return engine.getSession().getApplicationBufferSize();
     }
 
     /**
@@ -185,10 +230,10 @@ public final class TlsEngine implements AutoCloseable {
     @Override
     public void close() {
         if (closed.compareAndSet(false, true)) {
-            engine.closeOutbound();
+            closeOutbound();
             try {
-                engine.closeInbound();
-            } catch (final SSLException ignored) {
+                closeInbound();
+            } catch (final SocketException ignored) {
                 // closeInbound may fail when no close_notify was received.
             }
         }

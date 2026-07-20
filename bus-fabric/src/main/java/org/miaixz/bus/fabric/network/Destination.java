@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Options;
 
 /**
@@ -45,8 +46,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     public Destination {
         protocol = Assert.notNull(protocol, () -> new ValidateException("Connection protocol must not be null"));
         address = Assert.notNull(address, () -> new ValidateException("Connection address must not be null"));
-        options = Options.from(
-                Assert.notNull(options, () -> new ValidateException("Connection options must not be null")).asMap());
+        options = stableOptions(
+                Assert.notNull(options, () -> new ValidateException("Connection options must not be null")));
     }
 
     /**
@@ -97,8 +98,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
      * @return true when secure
      */
     public boolean secure() {
-        return address.secure() || Boolean.TRUE.equals(options.get("tls"))
-                || Boolean.TRUE.equals(options.get("secure"));
+        return address.secure() || Boolean.TRUE.equals(options.get(Builder.OPTION_TLS))
+                || Boolean.TRUE.equals(options.get(Builder.OPTION_SECURE));
     }
 
     /**
@@ -107,17 +108,16 @@ public record Destination(Protocol protocol, Address address, Options options) {
      * @return true when multiplex capable
      */
     public boolean multiplex() {
-        final Object explicit = options.get("multiplex");
-        if (explicit instanceof Boolean enabled) {
-            return enabled;
+        final Boolean explicit = options.get(Builder.OPTION_MULTIPLEX);
+        if (explicit != null) {
+            return explicit;
         }
         if (protocol == Protocol.HTTP_2 || protocol == Protocol.H2_PRIOR_KNOWLEDGE) {
             return true;
         }
-        final Object selected = options.get("protocol");
-        return selected != null
-                && ("h2".equalsIgnoreCase(selected.toString()) || "http/2".equalsIgnoreCase(selected.toString())
-                        || "h2_prior_knowledge".equalsIgnoreCase(selected.toString()));
+        final String selected = options.get(Builder.OPTION_PROTOCOL);
+        return selected != null && ("h2".equalsIgnoreCase(selected) || "http/2".equalsIgnoreCase(selected)
+                || "h2_prior_knowledge".equalsIgnoreCase(selected));
     }
 
     /**
@@ -126,14 +126,42 @@ public record Destination(Protocol protocol, Address address, Options options) {
      * @return stream capacity
      */
     public int maxMultiplexStreams() {
-        final Object value = options.get("maxMultiplexStreams") == null ? options.get("maxConcurrentStreams")
-                : options.get("maxMultiplexStreams");
+        final Integer value = options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS);
         if (value == null) {
             return Normal._100;
         }
-        final int parsed = value instanceof Number number ? number.intValue() : Integer.parseInt(value.toString());
-        Assert.isTrue(parsed > Normal._0, () -> new ValidateException("Max multiplex streams must be positive"));
-        return parsed;
+        Assert.isTrue(value > Normal._0, () -> new ValidateException("Max multiplex streams must be positive"));
+        return value;
+    }
+
+    /**
+     * Builds the stable option subset used as part of a connection reuse key.
+     *
+     * @param source source options
+     * @return stable options
+     */
+    private static Options stableOptions(final Options source) {
+        Options stable = Options.empty();
+        stable = copy(source, stable, Builder.OPTION_TLS);
+        stable = copy(source, stable, Builder.OPTION_SECURE);
+        stable = copy(source, stable, Builder.OPTION_MULTIPLEX);
+        stable = copy(source, stable, Builder.OPTION_PROTOCOL);
+        stable = copy(source, stable, Builder.OPTION_MAX_MULTIPLEX_STREAMS);
+        stable = copy(source, stable, Builder.OPTION_ROUTE_PROXY);
+        return copy(source, stable, Builder.OPTION_ROUTE_TUNNEL);
+    }
+
+    /**
+     * Copies one present typed option while preserving explicit null.
+     *
+     * @param source source options
+     * @param target target options
+     * @param key    typed key
+     * @param <T>    option type
+     * @return updated target
+     */
+    private static <T> Options copy(final Options source, final Options target, final Options.Key<T> key) {
+        return source.contains(key) ? target.with(key, source.get(key)) : target;
     }
 
     /**

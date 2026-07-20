@@ -24,22 +24,28 @@ import java.net.SocketAddress;
 import java.net.SocketOption;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.CompletionHandler;
+import java.time.Duration;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.buffer.NioBuffer;
+import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
+import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
 /**
  * AIO socket channel with core.io buffer operations.
@@ -60,19 +66,24 @@ public final class AioChannel implements AutoCloseable {
     private final AtomicBoolean closed;
 
     /**
-     * Runtime dispatcher for blocking AIO waits.
+     * Borrowed runtime dispatcher used only for timeout scheduling.
      */
     private final Dispatcher dispatcher;
-
-    /**
-     * Whether this channel owns the dispatcher lifecycle.
-     */
-    private final boolean ownsDispatcher;
 
     /**
      * Socket tuning options.
      */
     private final SocketOptions options;
+
+    /**
+     * Reusable read buffer allocator.
+     */
+    private final NioBufferAllocator buffers;
+
+    /**
+     * Operations that must be failed when this channel closes.
+     */
+    private final Set<Operation<?>> pending;
 
     /**
      * Local socket address.
@@ -102,33 +113,27 @@ public final class AioChannel implements AutoCloseable {
      * @param options    socket options
      */
     AioChannel(final AsynchronousSocketChannel channel, final Dispatcher dispatcher, final SocketOptions options) {
-        this(channel, dispatcher, false, options);
-    }
-
-    /**
-     * Creates an AIO channel with a private dispatcher.
-     *
-     * @param channel JDK channel
-     */
-    AioChannel(final AsynchronousSocketChannel channel) {
-        this(channel, Dispatcher.create(), true, SocketOptions.defaults());
-    }
-
-    /**
-     * Creates an AIO channel.
-     *
-     * @param channel        JDK channel
-     * @param dispatcher     runtime dispatcher
-     * @param ownsDispatcher true when close should stop dispatcher
-     */
-    private AioChannel(final AsynchronousSocketChannel channel, final Dispatcher dispatcher,
-            final boolean ownsDispatcher, final SocketOptions options) {
         this.channel = Assert.notNull(channel, () -> new ValidateException("AIO channel must not be null"));
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("AIO dispatcher must not be null"));
-        this.ownsDispatcher = ownsDispatcher;
         this.options = options == null ? SocketOptions.defaults() : options;
+        this.buffers = NioBufferAllocator.heap(this.options.readBufferSize(), Normal._4);
+        this.pending = ConcurrentHashMap.newKeySet();
         this.closed = new AtomicBoolean();
         applySocketOptions();
+    }
+
+    /**
+     * Creates an AIO channel registered with its owning group scope.
+     *
+     * @param channel    JDK channel
+     * @param dispatcher borrowed runtime dispatcher
+     * @param scope      owning group scope
+     * @param options    socket options
+     */
+    AioChannel(final AsynchronousSocketChannel channel, final Dispatcher dispatcher, final LifecycleScope scope,
+            final SocketOptions options) {
+        this(channel, dispatcher, options);
+        Assert.notNull(scope, () -> new ValidateException("AIO lifecycle scope must not be null")).own(this);
     }
 
     /**
@@ -142,43 +147,53 @@ public final class AioChannel implements AutoCloseable {
         final SocketAddress checkedAddress = Assert
                 .notNull(address, () -> new ValidateException("Socket address must not be null"));
         final Timeout checkedTimeout = Assert.notNull(timeout, () -> new ValidateException("Timeout must not be null"));
-        final long connectNanos = checkedTimeout.connect().toNanos();
-        if (!checkedTimeout.connect().isZero() && connectNanos <= Normal._1) {
-            close();
-            return CompletableFuture.failedFuture(new TimeoutException("AIO connect timed out"));
+        final Operation<Void> operation = new Operation<>("AIO connect failed", null);
+        if (!operation.active()) {
+            return operation.future();
         }
-        final Future<Void> operation;
         try {
-            operation = channel.connect(checkedAddress);
-        } catch (final RuntimeException e) {
-            close();
-            return CompletableFuture.failedFuture(new SocketException("AIO connect failed", e));
-        }
-        return dispatcher.run("aio:connect", () -> {
-            try {
-                if (checkedTimeout.connect().isZero()) {
-                    operation.get();
-                } else {
-                    operation.get(connectNanos, TimeUnit.NANOSECONDS);
+            scheduleConnectTimeout(operation, checkedTimeout.connect());
+            channel.connect(checkedAddress, operation, new CompletionHandler<>() {
+
+                /**
+                 * Completes the connection and captures both socket addresses.
+                 *
+                 * @param ignored   unused result
+                 * @param completed completed operation
+                 */
+                @Override
+                public void completed(final Void ignored, final Operation<Void> completed) {
+                    if (!completed.active()) {
+                        return;
+                    }
+                    try {
+                        local = channel.getLocalAddress();
+                        remote = channel.getRemoteAddress();
+                        completed.complete(null);
+                    } catch (final IOException e) {
+                        completed.fail(new SocketException("Unable to read AIO channel addresses", e));
+                        closeAfterFailure();
+                    }
                 }
-                local = channel.getLocalAddress();
-                remote = channel.getRemoteAddress();
-            } catch (final java.util.concurrent.TimeoutException e) {
-                operation.cancel(true);
-                close();
-                throw new TimeoutException("AIO connect timed out", e);
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                close();
-                throw new InternalException("Interrupted while connecting AIO channel", e);
-            } catch (final ExecutionException e) {
-                close();
-                throw new SocketException("AIO connect failed", e.getCause());
-            } catch (final IOException e) {
-                close();
-                throw new SocketException("Unable to read AIO channel addresses", e);
-            }
-        });
+
+                /**
+                 * Fails the connection attempt.
+                 *
+                 * @param cause     connection failure
+                 * @param completed completed operation
+                 */
+                @Override
+                public void failed(final Throwable cause, final Operation<Void> completed) {
+                    completed.fail(socketFailure("AIO connect failed", cause));
+                    closeAfterFailure();
+                }
+
+            });
+        } catch (final RuntimeException e) {
+            operation.fail(socketFailure("AIO connect failed", e));
+            closeAfterFailure();
+        }
+        return operation.future();
     }
 
     /**
@@ -195,23 +210,60 @@ public final class AioChannel implements AutoCloseable {
         if (byteCount == Normal._0) {
             return CompletableFuture.completedFuture(0L);
         }
+        final NioBuffer lease;
         try {
-            final ByteBuffer buffer = ByteBuffer.allocate(readCapacity(byteCount));
-            final Future<Integer> operation = channel.read(buffer);
-            return longFuture(operation, "AIO read failed").thenApply(count -> {
-                if (count > Normal._0) {
-                    buffer.flip();
-                    try {
-                        checkedTarget.write(buffer);
-                    } catch (final IOException e) {
-                        throw new SocketException("AIO read failed", e);
-                    }
-                }
-                return count;
-            });
+            lease = buffers.allocate(readCapacity(byteCount));
         } catch (final RuntimeException e) {
             return CompletableFuture.failedFuture(new SocketException("AIO read failed", e));
         }
+        final Operation<Long> operation = new Operation<>("AIO read failed", lease);
+        if (!operation.active()) {
+            return operation.future();
+        }
+        try {
+            channel.read(lease.buffer(), operation, new CompletionHandler<>() {
+
+                /**
+                 * Copies completed bytes into the core buffer and releases the lease.
+                 *
+                 * @param count     native read count
+                 * @param completed completed operation
+                 */
+                @Override
+                public void completed(final Integer count, final Operation<Long> completed) {
+                    if (!completed.active()) {
+                        return;
+                    }
+                    try {
+                        if (count > Normal._0) {
+                            lease.flip();
+                            final int copied = lease.writeTo(checkedTarget, count);
+                            if (copied != count) {
+                                throw new SocketException("AIO read did not append the completed byte count");
+                            }
+                        }
+                        completed.complete(count.longValue());
+                    } catch (final RuntimeException e) {
+                        completed.fail(socketFailure("AIO read failed", e));
+                    }
+                }
+
+                /**
+                 * Fails the read operation.
+                 *
+                 * @param cause     read failure
+                 * @param completed completed operation
+                 */
+                @Override
+                public void failed(final Throwable cause, final Operation<Long> completed) {
+                    completed.fail(socketFailure("AIO read failed", cause));
+                }
+
+            });
+        } catch (final RuntimeException e) {
+            operation.fail(socketFailure("AIO read failed", e));
+        }
+        return operation.future();
     }
 
     /**
@@ -231,22 +283,11 @@ public final class AioChannel implements AutoCloseable {
         if (byteCount == Normal._0) {
             return CompletableFuture.completedFuture(0L);
         }
-        try {
-            final ByteBuffer view = checkedSource.nioBuffer(toIntSize(Math.min(byteCount, options.writeChunkSize())));
-            final Future<Integer> operation = channel.write(view);
-            return longFuture(operation, "AIO write failed").thenApply(count -> {
-                if (count > Normal._0) {
-                    try {
-                        checkedSource.skip(count);
-                    } catch (final IOException e) {
-                        throw new SocketException("AIO write failed", e);
-                    }
-                }
-                return count;
-            });
-        } catch (final RuntimeException e) {
-            return CompletableFuture.failedFuture(new SocketException("AIO write failed", e));
+        final Operation<Long> operation = new Operation<>("AIO write failed", null);
+        if (operation.active()) {
+            writeChunk(checkedSource, byteCount, Normal._0, Normal._0, operation);
         }
+        return operation.future();
     }
 
     /**
@@ -273,14 +314,20 @@ public final class AioChannel implements AutoCloseable {
     @Override
     public void close() {
         if (closed.compareAndSet(false, true)) {
+            RuntimeException failure = null;
             try {
                 channel.close();
             } catch (final IOException e) {
-                throw new SocketException("Unable to close AIO channel", e);
+                failure = new SocketException("Unable to close AIO channel", e);
             } finally {
-                if (ownsDispatcher) {
-                    dispatcher.close();
+                final SocketException closedFailure = new SocketException("AIO channel is closed");
+                for (final Operation<?> operation : Set.copyOf(pending)) {
+                    operation.fail(closedFailure);
                 }
+                buffers.close();
+            }
+            if (failure != null) {
+                throw failure;
             }
         }
     }
@@ -318,23 +365,127 @@ public final class AioChannel implements AutoCloseable {
     }
 
     /**
-     * Wraps a JDK integer future as a long byte count.
+     * Schedules the connect deadline without blocking a dispatcher worker.
      *
-     * @param operation operation
-     * @param message   failure message
-     * @return future
+     * @param operation connect operation
+     * @param timeout   connect timeout
      */
-    private CompletableFuture<Long> longFuture(final Future<Integer> operation, final String message) {
-        return dispatcher.supply("aio:operation", () -> {
-            try {
-                return operation.get().longValue();
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InternalException("Interrupted while waiting for AIO operation", e);
-            } catch (final ExecutionException e) {
-                throw new SocketException(message, e.getCause());
-            }
-        });
+    private void scheduleConnectTimeout(final Operation<Void> operation, final Duration timeout) {
+        if (timeout.isZero()) {
+            return;
+        }
+        final DispatchHandle deadline = dispatcher
+                .schedule("aio:connect:timeout", timeout, Activity.of("aio:connect:timeout", () -> {
+                    if (operation.fail(new TimeoutException("AIO connect timed out"))) {
+                        closeAfterFailure();
+                    }
+                }));
+        operation.deadline(deadline);
+    }
+
+    /**
+     * Starts or continues a complete asynchronous write.
+     *
+     * @param source       source buffer
+     * @param byteCount    requested byte count
+     * @param written      bytes already written
+     * @param zeroProgress consecutive zero-progress completions
+     * @param operation    write operation
+     */
+    private void writeChunk(
+            final Buffer source,
+            final long byteCount,
+            final long written,
+            final int zeroProgress,
+            final Operation<Long> operation) {
+        if (!operation.active()) {
+            return;
+        }
+        if (written == byteCount) {
+            operation.complete(byteCount);
+            return;
+        }
+        final int chunk = toIntSize(Math.min(byteCount - written, options.writeChunkSize()));
+        final ByteBuffer view;
+        try {
+            view = source.nioBuffer(chunk);
+        } catch (final RuntimeException e) {
+            operation.fail(socketFailure("AIO write failed", e));
+            return;
+        }
+        try {
+            channel.write(view, operation, new CompletionHandler<>() {
+
+                /**
+                 * Consumes completed bytes and submits the next chunk.
+                 *
+                 * @param count     native write count
+                 * @param completed completed operation
+                 */
+                @Override
+                public void completed(final Integer count, final Operation<Long> completed) {
+                    if (!completed.active()) {
+                        return;
+                    }
+                    if (count < Normal._0 || count > chunk) {
+                        completed.fail(new SocketException("AIO write returned an invalid byte count"));
+                        return;
+                    }
+                    if (count == Normal._0) {
+                        final int stalled = zeroProgress + Normal._1;
+                        if (stalled >= Normal._16) {
+                            completed.fail(new SocketException("AIO write made no progress after 16 attempts"));
+                        } else {
+                            writeChunk(source, byteCount, written, stalled, completed);
+                        }
+                        return;
+                    }
+                    try {
+                        source.skip(count);
+                    } catch (final IOException e) {
+                        completed.fail(new SocketException("AIO write failed", e));
+                        return;
+                    }
+                    writeChunk(source, byteCount, written + count, Normal._0, completed);
+                }
+
+                /**
+                 * Fails the write operation.
+                 *
+                 * @param cause     write failure
+                 * @param completed completed operation
+                 */
+                @Override
+                public void failed(final Throwable cause, final Operation<Long> completed) {
+                    completed.fail(socketFailure("AIO write failed", cause));
+                }
+
+            });
+        } catch (final RuntimeException e) {
+            operation.fail(socketFailure("AIO write failed", e));
+        }
+    }
+
+    /**
+     * Closes this channel after an operation failure without masking the original failure.
+     */
+    private void closeAfterFailure() {
+        try {
+            close();
+        } catch (final RuntimeException ignored) {
+            // The operation already carries the authoritative failure.
+        }
+    }
+
+    /**
+     * Maps native asynchronous failures to the Fabric socket exception contract.
+     *
+     * @param message failure message
+     * @param cause   native failure
+     * @return mapped failure
+     */
+    private static RuntimeException socketFailure(final String message, final Throwable cause) {
+        return cause instanceof RuntimeException runtime ? runtime : new SocketException(message, cause);
     }
 
     /**
@@ -355,6 +506,150 @@ public final class AioChannel implements AutoCloseable {
      */
     private static int toIntSize(final long byteCount) {
         return (int) Math.min(byteCount, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Atomic state shared by one native asynchronous operation and its terminal paths.
+     *
+     * @param <T> operation result type
+     */
+    private final class Operation<T> {
+
+        /**
+         * Result future exposed to the caller.
+         */
+        private final CompletableFuture<T> future;
+
+        /**
+         * Terminal guard for completion, failure, cancellation, timeout, and close.
+         */
+        private final AtomicBoolean terminal;
+
+        /**
+         * Scheduled timeout handle, when present.
+         */
+        private final AtomicReference<DispatchHandle> deadline;
+
+        /**
+         * Buffer lease released on every terminal path, when present.
+         */
+        private final AutoCloseable lease;
+
+        /**
+         * Failure message used when registration observes a closed channel.
+         */
+        private final String message;
+
+        /**
+         * Creates and registers an operation.
+         *
+         * @param message failure message
+         * @param lease   optional operation lease
+         */
+        private Operation(final String message, final AutoCloseable lease) {
+            this.future = new CompletableFuture<>();
+            this.terminal = new AtomicBoolean();
+            this.deadline = new AtomicReference<>();
+            this.lease = lease;
+            this.message = message;
+            pending.add(this);
+            this.future.whenComplete((value, cause) -> {
+                if (this.future.isCancelled() && terminate()) {
+                    closeAfterFailure();
+                }
+            });
+            if (closed.get()) {
+                fail(new SocketException(message + ": channel is closed"));
+            }
+        }
+
+        /**
+         * Returns the caller-visible future.
+         *
+         * @return operation future
+         */
+        private CompletableFuture<T> future() {
+            return future;
+        }
+
+        /**
+         * Returns whether the operation may still touch native or leased state.
+         *
+         * @return true while active
+         */
+        private boolean active() {
+            return !terminal.get();
+        }
+
+        /**
+         * Stores a timeout handle or cancels it when the operation already terminated.
+         *
+         * @param handle timeout handle
+         */
+        private void deadline(final DispatchHandle handle) {
+            if (!deadline.compareAndSet(null, handle)) {
+                dispatcher.cancel(handle);
+                return;
+            }
+            if (terminal.get() && deadline.compareAndSet(handle, null)) {
+                dispatcher.cancel(handle);
+            }
+        }
+
+        /**
+         * Completes this operation once.
+         *
+         * @param value result value
+         * @return true when this call completed the operation
+         */
+        private boolean complete(final T value) {
+            if (!terminate()) {
+                return false;
+            }
+            future.complete(value);
+            return true;
+        }
+
+        /**
+         * Fails this operation once.
+         *
+         * @param cause failure cause
+         * @return true when this call failed the operation
+         */
+        private boolean fail(final Throwable cause) {
+            if (!terminate()) {
+                return false;
+            }
+            future.completeExceptionally(cause);
+            return true;
+        }
+
+        /**
+         * Performs shared terminal cleanup exactly once.
+         *
+         * @return true when this call won the terminal race
+         */
+        private boolean terminate() {
+            if (!terminal.compareAndSet(false, true)) {
+                return false;
+            }
+            pending.remove(this);
+            final DispatchHandle handle = deadline.getAndSet(null);
+            if (handle != null) {
+                dispatcher.cancel(handle);
+            }
+            if (lease != null) {
+                try {
+                    lease.close();
+                } catch (final Exception e) {
+                    if (!future.isDone()) {
+                        future.completeExceptionally(new SocketException(message, e));
+                    }
+                }
+            }
+            return true;
+        }
+
     }
 
 }

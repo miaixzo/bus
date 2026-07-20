@@ -47,6 +47,11 @@ public class Headers {
     private final String[] namesAndValues;
 
     /**
+     * Lazily initialized immutable map view.
+     */
+    private volatile Map<String, List<String>> mapSnapshot;
+
+    /**
      * Creates immutable headers.
      *
      * @param namesAndValues source name/value pairs
@@ -92,9 +97,7 @@ public class Headers {
         }
         final Builder builder = builder();
         for (int i = 0; i < namesAndValues.length; i += 2) {
-            final String name = namesAndValues[i] == null ? null : namesAndValues[i].trim();
-            final String value = namesAndValues[i + 1] == null ? null : namesAndValues[i + 1].trim();
-            builder.add(name, value);
+            builder.add(namesAndValues[i], namesAndValues[i + 1]);
         }
         return builder.build();
     }
@@ -114,9 +117,7 @@ public class Headers {
         }
         final Builder builder = builder();
         for (final Map.Entry<String, String> entry : headers.entrySet()) {
-            final String name = entry.getKey() == null ? null : entry.getKey().trim();
-            final String value = entry.getValue() == null ? null : entry.getValue().trim();
-            builder.add(name, value);
+            builder.add(entry.getKey(), entry.getValue());
         }
         return builder.build();
     }
@@ -220,17 +221,26 @@ public class Headers {
      *
      * @return content length, or -1 when absent
      */
-    public int contentLength() {
-        final String value = get(HTTP.CONTENT_LENGTH);
-        if (value == null) {
-            return -1;
+    public long contentLength() {
+        final List<String> values = values(HTTP.CONTENT_LENGTH);
+        if (values.isEmpty()) {
+            return -1L;
+        }
+        if (values.size() != 1) {
+            throw new ProtocolException("Content-Length must be unique");
+        }
+        final String value = values.getFirst();
+        if (value.isEmpty()) {
+            throw new ProtocolException("Invalid Content-Length");
+        }
+        for (int i = 0; i < value.length(); i++) {
+            final char current = value.charAt(i);
+            if (current < '0' || current > '9') {
+                throw new ProtocolException("Invalid Content-Length");
+            }
         }
         try {
-            final int length = Integer.parseInt(value);
-            if (length < 0) {
-                throw new ProtocolException("Content-Length must be non-negative");
-            }
-            return length;
+            return Long.parseLong(value);
         } catch (final NumberFormatException e) {
             throw new ProtocolException("Invalid Content-Length", e);
         }
@@ -272,6 +282,26 @@ public class Headers {
      * @return immutable headers map
      */
     public Map<String, List<String>> asMap() {
+        Map<String, List<String>> snapshot = mapSnapshot;
+        if (snapshot != null) {
+            return snapshot;
+        }
+        synchronized (this) {
+            snapshot = mapSnapshot;
+            if (snapshot == null) {
+                snapshot = buildMapSnapshot();
+                mapSnapshot = snapshot;
+            }
+        }
+        return snapshot;
+    }
+
+    /**
+     * Builds the immutable map view from the immutable pair array.
+     *
+     * @return immutable map snapshot
+     */
+    private Map<String, List<String>> buildMapSnapshot() {
         final LinkedHashMap<String, String> names = new LinkedHashMap<>();
         final LinkedHashMap<String, ArrayList<String>> values = new LinkedHashMap<>();
         for (int i = 0; i < namesAndValues.length; i += 2) {
@@ -294,14 +324,30 @@ public class Headers {
      */
     private static String validateName(final String name) {
         if (name == null || name.isEmpty()) {
-            throw new ValidateException("Header name must be non-blank and single-line");
+            throw new ValidateException("Header name must be a non-empty RFC token");
         }
         for (int i = 0; i < name.length(); i++) {
-            if (name.charAt(i) <= Symbol.C_SPACE) {
-                throw new ValidateException("Header name must be non-blank and single-line");
+            if (!isTokenCharacter(name.charAt(i))) {
+                throw new ValidateException("Header name must contain only RFC token characters");
             }
         }
         return name;
+    }
+
+    /**
+     * Returns whether a character is an ASCII RFC tchar.
+     *
+     * @param value character
+     * @return true for RFC tchar
+     */
+    private static boolean isTokenCharacter(final char value) {
+        if ((value >= '0' && value <= '9') || (value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z')) {
+            return true;
+        }
+        return switch (value) {
+            case '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' -> true;
+            default -> false;
+        };
     }
 
     /**
@@ -316,8 +362,8 @@ public class Headers {
         }
         for (int i = 0; i < value.length(); i++) {
             final char current = value.charAt(i);
-            if (current == Symbol.C_CR || current == Symbol.C_LF) {
-                throw new ValidateException("Header value must be non-blank and single-line");
+            if (current == '\0' || current == '\u007f' || (current < Symbol.C_SPACE && current != Symbol.C_TAB)) {
+                throw new ValidateException("Header value contains a prohibited control character");
             }
         }
         return value;

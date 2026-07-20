@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric;
 
+import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.protocol.http.HttpX;
@@ -39,48 +40,15 @@ import org.miaixz.bus.fabric.protocol.websocket.WebSocketX;
 public final class Fabric {
 
     /**
-     * Shared context used by all protocol builders.
+     * Lock serializing default Context creation and shutdown.
      */
-    private final Context context;
+    private static final Object DEFAULT_RUNTIME_LOCK = new Object();
 
     /**
      * Creates an entry point around an already validated context.
-     *
-     * @param context shared context
      */
-    private Fabric(final Context context) {
-        this.context = context;
-    }
-
-    /**
-     * Creates an entry point using a default context.
-     *
-     * @return fabric entry point
-     */
-    public static Fabric create() {
-        return create(defaultContext());
-    }
-
-    /**
-     * Creates an entry point using the supplied context.
-     *
-     * @param context shared context
-     * @return fabric entry point
-     */
-    public static Fabric create(final Context context) {
-        if (context == null) {
-            throw new ValidateException("Context must not be null");
-        }
-        return new Fabric(context);
-    }
-
-    /**
-     * Returns the shared immutable context.
-     *
-     * @return shared context
-     */
-    public Context context() {
-        return context;
+    private Fabric() {
+        // No instances.
     }
 
     /**
@@ -259,18 +227,36 @@ public final class Fabric {
     }
 
     /**
-     * Creates a default context and wraps initialization failures.
+     * Closes and removes the shared default Context.
+     */
+    public static void shutdown() {
+        synchronized (DEFAULT_RUNTIME_LOCK) {
+            if (!Instances.exists(DefaultRuntime.class)) {
+                return;
+            }
+            try {
+                Instances.get(DefaultRuntime.class).context.close();
+            } finally {
+                Instances.remove(DefaultRuntime.class);
+            }
+        }
+    }
+
+    /**
+     * Returns the shared default Context, creating it when absent.
      *
      * @return default context
      */
     private static Context defaultContext() {
-        try {
-            return Context.create();
-        } catch (final RuntimeException e) {
-            if (e instanceof InternalException) {
-                throw e;
+        synchronized (DEFAULT_RUNTIME_LOCK) {
+            try {
+                return Instances.get(DefaultRuntime.class).context;
+            } catch (final RuntimeException e) {
+                if (e instanceof InternalException) {
+                    throw e;
+                }
+                throw new InternalException("Unable to create fabric context", e);
             }
-            throw new InternalException("Unable to create fabric context", e);
         }
     }
 
@@ -287,6 +273,28 @@ public final class Fabric {
             throw new ValidateException(name + " must not be null");
         }
         return value;
+    }
+
+    /**
+     * Holder managed by {@link Instances} for the default runtime Context.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static final class DefaultRuntime {
+
+        /**
+         * Sole default runtime Context.
+         */
+        private final Context context;
+
+        /**
+         * Creates the default runtime holder.
+         */
+        private DefaultRuntime() {
+            this.context = Context.create();
+        }
+
     }
 
 }

@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol.stomp.broker;
 
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +29,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * O(1) STOMP receipt future registry.
@@ -50,17 +53,38 @@ public final class StompReceipt {
     }
 
     /**
-     * Registers a receipt future.
+     * Registers and waits for a receipt.
      *
-     * @param receiptId receipt id
-     * @param future    future
+     * @param receiptId    receipt id
+     * @param cancellation cancellation scope
      */
-    public void waitFor(final String receiptId, final CompletableFuture<Void> future) {
+    public void await(final String receiptId, final Cancellation cancellation) {
         final String id = validate(receiptId);
-        Assert.notNull(future, () -> new ValidateException("STOMP receipt future must not be null"));
-        final CompletableFuture<Void> previous = pending.put(id, future);
+        final Cancellation scope = Assert
+                .notNull(cancellation, () -> new ValidateException("STOMP receipt cancellation must not be null"));
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+        final CompletableFuture<Void> previous = pending.putIfAbsent(id, future);
         if (previous != null) {
-            previous.completeExceptionally(new StatefulException("STOMP receipt was replaced"));
+            throw new StatefulException("STOMP receipt is already pending: " + id);
+        }
+        final Runnable unregister = scope.onCancel(() -> {
+            if (pending.remove(id, future)) {
+                final Throwable cause = scope.cause();
+                future.completeExceptionally(
+                        cause == null ? new CancellationException("STOMP receipt wait cancelled") : cause);
+            }
+        });
+        try {
+            while (!future.isDone()) {
+                scope.throwIfCancelled();
+                if (!ThreadKit.sleep(1L)) {
+                    throw new CancellationException("STOMP receipt wait interrupted");
+                }
+            }
+            future.join();
+        } finally {
+            unregister.run();
+            pending.remove(id, future);
         }
     }
 

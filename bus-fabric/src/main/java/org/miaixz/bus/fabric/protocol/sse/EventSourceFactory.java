@@ -19,11 +19,16 @@
 */
 package org.miaixz.bus.fabric.protocol.sse;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
+import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Callback;
@@ -41,7 +46,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class EventSourceFactory implements EventSource.Factory {
+public final class EventSourceFactory implements EventSource.Factory, AutoCloseable {
 
     /**
      * Runtime context.
@@ -49,12 +54,31 @@ public final class EventSourceFactory implements EventSource.Factory {
     private final Context context;
 
     /**
+     * Whether this factory owns its Context.
+     */
+    private final boolean ownsContext;
+
+    /**
+     * Active sources using identity semantics.
+     */
+    private final Set<EventSource> sources;
+
+    /**
+     * Factory close guard.
+     */
+    private final AtomicBoolean closed;
+
+    /**
      * Creates a factory.
      *
-     * @param context context
+     * @param context     context
+     * @param ownsContext whether close releases the context
      */
-    private EventSourceFactory(final Context context) {
+    private EventSourceFactory(final Context context, final boolean ownsContext) {
         this.context = require(context, "Context");
+        this.ownsContext = ownsContext;
+        this.sources = Collections.newSetFromMap(new IdentityHashMap<>());
+        this.closed = new AtomicBoolean();
     }
 
     /**
@@ -63,7 +87,7 @@ public final class EventSourceFactory implements EventSource.Factory {
      * @return factory
      */
     public static EventSourceFactory create() {
-        return create(Context.create());
+        return new EventSourceFactory(Context.create(), true);
     }
 
     /**
@@ -73,7 +97,7 @@ public final class EventSourceFactory implements EventSource.Factory {
      * @return factory
      */
     public static EventSourceFactory create(final Context context) {
-        return new EventSourceFactory(context);
+        return new EventSourceFactory(context, false);
     }
 
     /**
@@ -94,6 +118,7 @@ public final class EventSourceFactory implements EventSource.Factory {
      * @return event source
      */
     public EventSource newEventSource(final String url, final EventSourceListener listener) {
+        ensureOpen();
         return newEventSource(HttpRequest.builder().method(HTTP.Method.GET).url(UnoUrl.parse(url)).build(), listener);
     }
 
@@ -106,11 +131,83 @@ public final class EventSourceFactory implements EventSource.Factory {
      */
     @Override
     public EventSource newEventSource(final HttpRequest request, final EventSourceListener listener) {
-        final DefaultEventSource source = new DefaultEventSource(context, require(request, "Request"),
-                listener == null ? new EventSourceListener() {
-                } : listener);
-        source.connect();
-        return source;
+        final DefaultEventSource source;
+        synchronized (sources) {
+            ensureOpen();
+            source = new DefaultEventSource(context, require(request, "Request"),
+                    listener == null ? new EventSourceListener() {
+                    } : listener, this::remove);
+            sources.add(source);
+        }
+        try {
+            source.connect();
+            return source;
+        } catch (final RuntimeException e) {
+            remove(source);
+            source.cancel();
+            throw e;
+        }
+    }
+
+    /**
+     * Closes active sources before releasing an owned Context.
+     */
+    @Override
+    public void close() {
+        if (!closed.compareAndSet(false, true)) {
+            return;
+        }
+        final ArrayList<EventSource> active;
+        synchronized (sources) {
+            active = new ArrayList<>(sources);
+            sources.clear();
+        }
+        RuntimeException failure = null;
+        for (final EventSource source : active) {
+            try {
+                source.cancel();
+            } catch (final RuntimeException e) {
+                if (failure == null) {
+                    failure = e;
+                } else {
+                    failure.addSuppressed(e);
+                }
+            }
+        }
+        if (ownsContext) {
+            try {
+                context.close();
+            } catch (final RuntimeException e) {
+                if (failure == null) {
+                    failure = e;
+                } else {
+                    failure.addSuppressed(e);
+                }
+            }
+        }
+        if (failure != null) {
+            throw failure;
+        }
+    }
+
+    /**
+     * Removes a terminal source from the active identity set.
+     *
+     * @param source source
+     */
+    private void remove(final EventSource source) {
+        synchronized (sources) {
+            sources.remove(source);
+        }
+    }
+
+    /**
+     * Rejects source creation after close.
+     */
+    private void ensureOpen() {
+        if (closed.get()) {
+            throw new StatefulException("EventSourceFactory is closed");
+        }
     }
 
     /**
@@ -167,6 +264,11 @@ public final class EventSourceFactory implements EventSource.Factory {
         private final EventSourceListener listener;
 
         /**
+         * Factory removal hook.
+         */
+        private final java.util.function.Consumer<EventSource> onClose;
+
+        /**
          * Response metadata.
          */
         private final AtomicReference<ResponseMeta> response;
@@ -197,12 +299,14 @@ public final class EventSourceFactory implements EventSource.Factory {
          * @param context  context
          * @param request  request
          * @param listener listener
+         * @param onClose  factory removal hook
          */
-        private DefaultEventSource(final Context context, final HttpRequest request,
-                final EventSourceListener listener) {
+        private DefaultEventSource(final Context context, final HttpRequest request, final EventSourceListener listener,
+                final java.util.function.Consumer<EventSource> onClose) {
             this.context = require(context, "Context");
             this.request = require(request, "Request");
             this.listener = require(listener, "Listener");
+            this.onClose = require(onClose, "Close hook");
             this.response = new AtomicReference<>();
             this.call = new AtomicReference<>();
             this.session = new AtomicReference<>();
@@ -214,6 +318,10 @@ public final class EventSourceFactory implements EventSource.Factory {
          * Opens this source asynchronously.
          */
         void connect() {
+            if (cancelled.get()) {
+                finish();
+                return;
+            }
             if (request.method() != HTTP.Method.GET) {
                 throw new ProtocolException("EventSource request must use GET");
             }
@@ -231,7 +339,11 @@ public final class EventSourceFactory implements EventSource.Factory {
                         @Override
                         public void close(final SseSession source) {
                             if (terminal.compareAndSet(false, true)) {
-                                listener.onClosed(DefaultEventSource.this);
+                                try {
+                                    listener.onClosed(DefaultEventSource.this);
+                                } finally {
+                                    finish();
+                                }
                             }
                         }
 
@@ -244,7 +356,13 @@ public final class EventSourceFactory implements EventSource.Factory {
                         @Override
                         public void failure(final SseSession source, final Throwable cause) {
                             if (!cancelled.get() && terminal.compareAndSet(false, true)) {
-                                listener.onFailure(DefaultEventSource.this, cause, response());
+                                try {
+                                    listener.onFailure(DefaultEventSource.this, cause, response());
+                                } finally {
+                                    finish();
+                                }
+                            } else {
+                                finish();
                             }
                         }
                     }).callback(new Callback<>() {
@@ -257,6 +375,12 @@ public final class EventSourceFactory implements EventSource.Factory {
                         @Override
                         public void success(final SseSession value) {
                             session.set(value);
+                            value.onClose(DefaultEventSource.this::finish);
+                            if (cancelled.get()) {
+                                value.cancel();
+                                finish();
+                                return;
+                            }
                             listener.onOpen(DefaultEventSource.this, response());
                         }
 
@@ -268,12 +392,22 @@ public final class EventSourceFactory implements EventSource.Factory {
                         @Override
                         public void failure(final Throwable cause) {
                             if (!cancelled.get() && terminal.compareAndSet(false, true)) {
-                                listener.onFailure(DefaultEventSource.this, cause, response());
+                                try {
+                                    listener.onFailure(DefaultEventSource.this, cause, response());
+                                } finally {
+                                    finish();
+                                }
+                            } else {
+                                finish();
                             }
                         }
                     }).build();
             final Call<SseSession> current = exchange.call().enqueue();
             call.set(current);
+            if (cancelled.get()) {
+                current.cancel();
+                finish();
+            }
         }
 
         /**
@@ -300,6 +434,14 @@ public final class EventSourceFactory implements EventSource.Factory {
             if (currentCall != null) {
                 currentCall.cancel();
             }
+            finish();
+        }
+
+        /**
+         * Removes this terminal source from its Factory once.
+         */
+        private void finish() {
+            onClose.accept(this);
         }
 
         /**

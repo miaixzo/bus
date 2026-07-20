@@ -24,7 +24,6 @@ import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
-import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
@@ -120,9 +119,20 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      * @return empty body
      */
     public static PayloadBody empty() {
-        return Instances.get(
-                PayloadBody.class.getName() + ".empty",
-                () -> new PayloadBody(Payload.empty(), MediaType.APPLICATION_OCTET_STREAM_TYPE));
+        return EmptyHolder.INSTANCE;
+    }
+
+    /**
+     * Defers empty body construction without nesting registry updates.
+     */
+    private static final class EmptyHolder {
+
+        /**
+         * Shared empty body.
+         */
+        private static final PayloadBody INSTANCE = new PayloadBody(Payload.empty(),
+                MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
     }
 
     /**

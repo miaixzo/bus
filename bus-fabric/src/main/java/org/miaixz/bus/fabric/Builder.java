@@ -21,20 +21,25 @@ package org.miaixz.bus.fabric;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsVersion;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
+import org.miaixz.bus.fabric.network.tls.TlsSettings;
+import org.miaixz.bus.fabric.network.tls.context.TlsContext;
+import org.miaixz.bus.fabric.protocol.CookieJar;
 import org.miaixz.bus.fabric.protocol.http.agent.Browser;
 import org.miaixz.bus.fabric.protocol.http.agent.ClientOs;
 import org.miaixz.bus.fabric.protocol.http.agent.Device;
 import org.miaixz.bus.fabric.protocol.http.agent.Engine;
+import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
+import org.miaixz.bus.fabric.protocol.http.cache.HttpCache;
 
 /**
  * Module-level constants reserved for fabric builder APIs, options, attributes, tags, and protocol defaults.
@@ -157,79 +162,197 @@ public class Builder {
     public static final String ATTRIBUTE_SOCKET_OPTIONS = "socketOptions";
 
     /**
-     * Option key for the maximum bytes allowed when materializing a payload.
+     * Typed option for the positive payload materialization limit.
+     * <p>
+     * Absence uses {@link #DEFAULT_MATERIALIZE_MAX_BYTES}; explicit null is invalid.
      */
-    public static final String OPTION_MATERIALIZE_MAX_BYTES = "materialize.maxBytes";
+    public static final Options.Key<Long> OPTION_MATERIALIZE_MAX_BYTES = Options
+            .key("materialize.maxBytes", Long.class);
 
     /**
-     * Socket option key for TCP server listen backlog.
+     * Typed option for the shared protocol timeout policy.
+     * <p>
+     * Absence and explicit null both use {@link Timeout#defaults()}.
      */
-    public static final String OPTION_SOCKET_BACKLOG = "socket.backlog";
+    public static final Options.Key<Timeout> OPTION_TIMEOUT = Options.key("timeout", Timeout.class);
 
     /**
-     * Socket option key for connection timeout.
+     * Typed option for the generic TLS context.
+     * <p>
+     * Absence leaves the generic context unconfigured; explicit null disables the generic value.
      */
-    public static final String OPTION_SOCKET_CONNECT_TIMEOUT = "socket.connectTimeout";
+    public static final Options.Key<TlsContext> OPTION_TLS_CONTEXT = Options.key("tlsContext", TlsContext.class);
 
     /**
-     * Socket option key for operation-time idle timeout.
+     * Typed option for generic TLS settings.
+     * <p>
+     * Absence and explicit null both use {@link TlsSettings#defaults()}.
      */
-    public static final String OPTION_SOCKET_IDLE_TIMEOUT = "socket.idleTimeout";
+    public static final Options.Key<TlsSettings> OPTION_TLS_SETTINGS = Options.key("tlsSettings", TlsSettings.class);
 
     /**
-     * Socket option key for AIO read I/O thread count.
+     * Typed option for the HTTP proxy plan.
+     * <p>
+     * Absence selects through the system proxy selector; explicit null forces a direct route without consulting it.
      */
-    public static final String OPTION_SOCKET_IO_THREADS = "socket.ioThreads";
+    public static final Options.Key<ProxyPlan> OPTION_HTTP_PROXY = Options.key("http.proxy", ProxyPlan.class);
 
     /**
-     * Socket option key for JDK socket options applied to client channels.
+     * Typed option for the HTTP cache.
+     * <p>
+     * Absence and explicit null both disable caching.
      */
-    public static final String OPTION_SOCKET_OPTIONS = "socket.socketOptions";
+    public static final Options.Key<HttpCache> OPTION_HTTP_CACHE = Options.key("http.cache", HttpCache.class);
 
     /**
-     * Socket option key for per-session read buffer size.
+     * Typed option for the HTTP cookie jar.
+     * <p>
+     * Absence uses the Context-level memory jar; explicit null disables cookies.
      */
-    public static final String OPTION_SOCKET_READ_BUFFER_SIZE = "socket.readBufferSize";
+    public static final Options.Key<CookieJar> OPTION_HTTP_COOKIE_JAR = Options.key("http.cookieJar", CookieJar.class);
 
     /**
-     * Socket option key for retaining one reusable read buffer per session.
+     * Typed option for HTTP authentication.
+     * <p>
+     * Absence does not initiate authentication; explicit null disables authentication.
      */
-    public static final String OPTION_SOCKET_RETAIN_READ_BUFFER = "socket.retainReadBuffer";
+    public static final Options.Key<HttpAuthenticator> OPTION_HTTP_AUTHENTICATOR = Options
+            .key("http.authenticator", HttpAuthenticator.class);
 
     /**
-     * Socket context key for a socket-scoped TLS context.
+     * Typed option for the HTTP User-Agent value.
+     * <p>
+     * Absence and explicit null both use the framework default User-Agent.
      */
-    public static final String OPTION_SOCKET_TLS_CONTEXT = "socket.tlsContext";
+    public static final Options.Key<String> OPTION_HTTP_USER_AGENT = Options.key("http.userAgent", String.class);
 
     /**
-     * Socket context key for socket-scoped TLS settings.
+     * Typed option for the TCP server listen backlog.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
      */
-    public static final String OPTION_SOCKET_TLS_SETTINGS = "socket.tlsSettings";
+    public static final Options.Key<Integer> OPTION_SOCKET_BACKLOG = Options.key("socket.backlog", Integer.class);
 
     /**
-     * Socket option key for retained write chunk count hint.
+     * Typed option for operation-time Socket idle timeout.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
      */
-    public static final String OPTION_SOCKET_WRITE_CHUNK_COUNT = "socket.writeChunkCount";
+    public static final Options.Key<Duration> OPTION_SOCKET_IDLE_TIMEOUT = Options
+            .key("socket.idleTimeout", Duration.class);
 
     /**
-     * Socket option key for maximum bytes submitted in one low-level write chunk.
+     * Typed option for Socket I/O thread count.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
      */
-    public static final String OPTION_SOCKET_WRITE_CHUNK_SIZE = "socket.writeChunkSize";
+    public static final Options.Key<Integer> OPTION_SOCKET_IO_THREADS = Options.key("socket.ioThreads", Integer.class);
 
     /**
-     * Option key for protocol timeout settings.
+     * Typed option for immutable JDK Socket channel options.
+     * <p>
+     * Absence and explicit null both mean an empty Map.
      */
-    public static final String OPTION_TIMEOUT = "timeout";
+    @SuppressWarnings("rawtypes")
+    public static final Options.Key<Map> OPTION_SOCKET_OPTIONS = Options.key("socket.socketOptions", Map.class);
 
     /**
-     * Socket context key for a generic TLS context.
+     * Typed option for per-session Socket read buffer size.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
      */
-    public static final String OPTION_TLS_CONTEXT = "tlsContext";
+    public static final Options.Key<Integer> OPTION_SOCKET_READ_BUFFER_SIZE = Options
+            .key("socket.readBufferSize", Integer.class);
 
     /**
-     * Socket context key for generic TLS settings.
+     * Typed option for retaining one reusable Socket read buffer.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
      */
-    public static final String OPTION_TLS_SETTINGS = "tlsSettings";
+    public static final Options.Key<Boolean> OPTION_SOCKET_RETAIN_READ_BUFFER = Options
+            .key("socket.retainReadBuffer", Boolean.class);
+
+    /**
+     * Typed option for a Socket-scoped TLS context.
+     * <p>
+     * Absence falls back to {@link #OPTION_TLS_CONTEXT}; explicit null disables the Socket TLS context.
+     */
+    public static final Options.Key<TlsContext> OPTION_SOCKET_TLS_CONTEXT = Options
+            .key("socket.tlsContext", TlsContext.class);
+
+    /**
+     * Typed option for Socket-scoped TLS settings.
+     * <p>
+     * Absence falls back to {@link #OPTION_TLS_SETTINGS}; explicit null uses default TLS settings.
+     */
+    public static final Options.Key<TlsSettings> OPTION_SOCKET_TLS_SETTINGS = Options
+            .key("socket.tlsSettings", TlsSettings.class);
+
+    /**
+     * Typed option for retained Socket write chunk count.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
+     */
+    public static final Options.Key<Integer> OPTION_SOCKET_WRITE_CHUNK_COUNT = Options
+            .key("socket.writeChunkCount", Integer.class);
+
+    /**
+     * Typed option for maximum bytes in one low-level Socket write chunk.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
+     */
+    public static final Options.Key<Integer> OPTION_SOCKET_WRITE_CHUNK_SIZE = Options
+            .key("socket.writeChunkSize", Integer.class);
+
+    /**
+     * Typed stable Destination option indicating TLS use.
+     * <p>
+     * Absence and explicit null both mean false.
+     */
+    public static final Options.Key<Boolean> OPTION_TLS = Options.key("tls", Boolean.class);
+
+    /**
+     * Typed stable Destination option indicating secure transport.
+     * <p>
+     * Absence and explicit null are derived from the Address.
+     */
+    public static final Options.Key<Boolean> OPTION_SECURE = Options.key("secure", Boolean.class);
+
+    /**
+     * Typed stable Destination option indicating multiplex capability.
+     * <p>
+     * Absence and explicit null are derived from the Protocol.
+     */
+    public static final Options.Key<Boolean> OPTION_MULTIPLEX = Options.key("multiplex", Boolean.class);
+
+    /**
+     * Typed stable Destination option carrying the request protocol name.
+     * <p>
+     * Absence and explicit null both use the request Protocol.
+     */
+    public static final Options.Key<String> OPTION_PROTOCOL = Options.key("protocol", String.class);
+
+    /**
+     * Typed stable Destination option for maximum multiplex streams.
+     * <p>
+     * Absence means one; explicit null is invalid.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_MULTIPLEX_STREAMS = Options
+            .key("maxMultiplexStreams", Integer.class);
+
+    /**
+     * Typed stable Destination option carrying a normalized proxy URI.
+     * <p>
+     * Absence and explicit null both mean a direct route.
+     */
+    public static final Options.Key<String> OPTION_ROUTE_PROXY = Options.key("route.proxy", String.class);
+
+    /**
+     * Typed stable Destination option indicating an HTTP proxy tunnel.
+     * <p>
+     * Absence and explicit null both mean false.
+     */
+    public static final Options.Key<Boolean> OPTION_ROUTE_TUNNEL = Options.key("route.tunnel", Boolean.class);
 
     /**
      * Listener action tag key.
@@ -280,6 +403,11 @@ public class Builder {
      * Module tag key.
      */
     public static final String TAG_MODULE = "module";
+
+    /**
+     * Stable operation identifier tag key shared by one logical lifecycle.
+     */
+    public static final String TAG_OPERATION_ID = "operationId";
 
     /**
      * Phase tag key.
@@ -408,16 +536,6 @@ public class Builder {
     public static final String TLS_GUARD_NAME = "tls";
 
     /**
-     * Aio worker idle park nanos value.
-     */
-    public static final long AIO_WORKER_IDLE_PARK_NANOS = TimeUnit.MILLISECONDS.toNanos(Normal._1);
-
-    /**
-     * Aio worker shutdown wait millis value.
-     */
-    public static final long AIO_WORKER_SHUTDOWN_WAIT_MILLIS = TimeUnit.SECONDS.toMillis(Normal._1);
-
-    /**
      * DNS no-TTL marker.
      */
     public static final Duration DNS_NO_TTL = Duration.ZERO;
@@ -433,15 +551,76 @@ public class Builder {
     public static final long KCP_NETWORK_HALF_SEQUENCE_SPACE = (UNSIGNED_INT_MASK + Normal._1) / Normal._2;
 
     /**
-     * Kcp packet header bytes value.
+     * Legacy KCP packet header bytes.
      */
-    public static final int KCP_PACKET_HEADER_BYTES = Byte.BYTES + Byte.BYTES + Integer.BYTES + Integer.BYTES
+    public static final int KCP_PACKET_LEGACY_HEADER_BYTES = Long.BYTES;
+
+    /**
+     * KCP V1 packet header bytes.
+     */
+    public static final int KCP_PACKET_V1_HEADER_BYTES = Byte.BYTES + Byte.BYTES + Integer.BYTES + Integer.BYTES
             + Short.BYTES + Long.BYTES;
 
     /**
-     * Kcp packet max payload value.
+     * KCP V2 packet header bytes.
      */
-    public static final int KCP_PACKET_MAX_PAYLOAD = Normal._65535 - Normal._28 - KCP_PACKET_HEADER_BYTES;
+    public static final int KCP_PACKET_V2_HEADER_BYTES = KCP_PACKET_V1_HEADER_BYTES + Integer.BYTES + Short.BYTES
+            + Short.BYTES;
+
+    /**
+     * Maximum KCP V1 payload within one legal UDP datagram.
+     */
+    public static final int KCP_PACKET_V1_MAX_PAYLOAD = Normal._65535 - Normal._28 - KCP_PACKET_V1_HEADER_BYTES;
+
+    /**
+     * Maximum KCP V2 fragment payload within one legal UDP datagram.
+     */
+    public static final int KCP_PACKET_V2_MAX_PAYLOAD = Normal._65535 - Normal._28 - KCP_PACKET_V2_HEADER_BYTES;
+
+    /**
+     * Compatibility alias for the V1 packet header size.
+     */
+    public static final int KCP_PACKET_HEADER_BYTES = KCP_PACKET_V1_HEADER_BYTES;
+
+    /**
+     * Compatibility alias for the V1 maximum packet payload.
+     */
+    public static final int KCP_PACKET_MAX_PAYLOAD = KCP_PACKET_V1_MAX_PAYLOAD;
+
+    /**
+     * Maximum complete KCP logical message bytes.
+     */
+    public static final long KCP_NETWORK_MAX_MESSAGE_BYTES = BYTES_16_MIB;
+
+    /**
+     * Maximum complete logical bytes retained by the KCP outbound queue.
+     */
+    public static final long KCP_NETWORK_MAX_OUTBOUND_QUEUE_BYTES = Normal._64 * Normal.MEBI;
+
+    /**
+     * Maximum active KCP V2 message reassemblies.
+     */
+    public static final int KCP_NETWORK_MAX_ACTIVE_REASSEMBLIES = Normal._64;
+
+    /**
+     * Maximum total bytes retained by all KCP V2 reassemblies.
+     */
+    public static final long KCP_NETWORK_MAX_REASSEMBLY_BYTES = Normal._64 * Normal.MEBI;
+
+    /**
+     * Maximum KCP V2 reassembly bytes retained for one source.
+     */
+    public static final long KCP_NETWORK_MAX_SOURCE_REASSEMBLY_BYTES = Normal._32 * Normal.MEBI;
+
+    /**
+     * KCP V2 incomplete-message reassembly deadline.
+     */
+    public static final Duration KCP_NETWORK_REASSEMBLY_TIMEOUT = Duration.ofSeconds(Normal._30);
+
+    /**
+     * Maximum retransmissions allowed for one KCP packet.
+     */
+    public static final int KCP_NETWORK_MAX_RETRANSMISSIONS = Normal._8;
 
     /**
      * Proxy header command proxy value.
@@ -485,6 +664,11 @@ public class Builder {
             .of(TlsVersion.TLSv1_3.javaName(), TlsVersion.TLSv1_2.javaName());
 
     /**
+     * Maximum encrypted or plaintext bytes retained by one TLS staging buffer.
+     */
+    public static final long TLS_MAX_STAGING_BUFFER_BYTES = Normal.MEBI;
+
+    /**
      * Meter event observer duration value.
      */
     public static final String METER_EVENT_OBSERVER_DURATION = ".duration";
@@ -515,11 +699,6 @@ public class Builder {
     public static final long HTTP2_CONNECTION_WINDOW_UPDATE_THRESHOLD = HTTP.DEFAULT_INITIAL_WINDOW_SIZE / Normal._2;
 
     /**
-     * HTTP/2 default writer timeout.
-     */
-    public static final Duration HTTP2_DEFAULT_WRITE_TIMEOUT = Duration.ofSeconds(Normal._5);
-
-    /**
      * Http2 priority exclusive mask value.
      */
     public static final int HTTP2_PRIORITY_EXCLUSIVE_MASK = Integer.MIN_VALUE;
@@ -537,69 +716,58 @@ public class Builder {
     /**
      * Unknown browser.
      */
-    public static final Browser HTTP_AGENT_BROWSER_UNKNOWN = Instances
-            .get(Browser.class.getName() + Symbol.DOT + Normal.UNKNOWN, () -> new Browser(Normal.UNKNOWN, null, null));
+    public static final Browser HTTP_AGENT_BROWSER_UNKNOWN = new Browser(Normal.UNKNOWN, null, null);
 
     /**
      * Unknown client operating system.
      */
-    public static final ClientOs HTTP_AGENT_CLIENT_OS_UNKNOWN = Instances
-            .get(ClientOs.class.getName() + Symbol.DOT + Normal.UNKNOWN, () -> new ClientOs(Normal.UNKNOWN, null));
+    public static final ClientOs HTTP_AGENT_CLIENT_OS_UNKNOWN = new ClientOs(Normal.UNKNOWN, null);
 
     /**
      * Android device classifier.
      */
-    public static final Device HTTP_AGENT_DEVICE_ANDROID = Instances
-            .get(Device.class.getName() + ".android", () -> new Device("Android", "android"));
+    public static final Device HTTP_AGENT_DEVICE_ANDROID = new Device("Android", "android");
 
     /**
      * Google TV device classifier.
      */
-    public static final Device HTTP_AGENT_DEVICE_GOOGLE_TV = Instances
-            .get(Device.class.getName() + ".googleTv", () -> new Device("GoogleTV", "googletv"));
+    public static final Device HTTP_AGENT_DEVICE_GOOGLE_TV = new Device("GoogleTV", "googletv");
 
     /**
      * HarmonyOS device classifier.
      */
-    public static final Device HTTP_AGENT_DEVICE_HARMONY = Instances
-            .get(Device.class.getName() + ".harmony", () -> new Device("Harmony", "OpenHarmony"));
+    public static final Device HTTP_AGENT_DEVICE_HARMONY = new Device("Harmony", "OpenHarmony");
 
     /**
      * iPad device classifier.
      */
-    public static final Device HTTP_AGENT_DEVICE_IPAD = Instances
-            .get(Device.class.getName() + ".ipad", () -> new Device("iPad", "ipad"));
+    public static final Device HTTP_AGENT_DEVICE_IPAD = new Device("iPad", "ipad");
 
     /**
      * iPhone device classifier.
      */
-    public static final Device HTTP_AGENT_DEVICE_IPHONE = Instances
-            .get(Device.class.getName() + ".iphone", () -> new Device("iPhone", "iphone"));
+    public static final Device HTTP_AGENT_DEVICE_IPHONE = new Device("iPhone", "iphone");
 
     /**
      * iPod device classifier.
      */
-    public static final Device HTTP_AGENT_DEVICE_IPOD = Instances
-            .get(Device.class.getName() + ".ipod", () -> new Device("iPod", "ipod"));
+    public static final Device HTTP_AGENT_DEVICE_IPOD = new Device("iPod", "ipod");
 
     /**
      * Unknown device.
      */
-    public static final Device HTTP_AGENT_DEVICE_UNKNOWN = Instances
-            .get(Device.class.getName() + Symbol.DOT + Normal.UNKNOWN, () -> new Device(Normal.UNKNOWN, null));
+    public static final Device HTTP_AGENT_DEVICE_UNKNOWN = new Device(Normal.UNKNOWN, null);
 
     /**
      * Windows Phone device classifier.
      */
-    public static final Device HTTP_AGENT_DEVICE_WINDOWS_PHONE = Instances.get(
-            Device.class.getName() + ".windowsPhone",
-            () -> new Device("Windows Phone", "windows (ce|phone|mobile)( os)?"));
+    public static final Device HTTP_AGENT_DEVICE_WINDOWS_PHONE = new Device("Windows Phone",
+            "windows (ce|phone|mobile)( os)?");
 
     /**
      * Unknown browser engine.
      */
-    public static final Engine HTTP_AGENT_ENGINE_UNKNOWN = Instances
-            .get(Engine.class.getName() + Symbol.DOT + Normal.UNKNOWN, () -> new Engine(Normal.UNKNOWN, null));
+    public static final Engine HTTP_AGENT_ENGINE_UNKNOWN = new Engine(Normal.UNKNOWN, null);
 
     /**
      * Http auth basic value.

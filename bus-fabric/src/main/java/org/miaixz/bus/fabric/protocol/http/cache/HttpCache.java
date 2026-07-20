@@ -19,13 +19,17 @@
 */
 package org.miaixz.bus.fabric.protocol.http.cache;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.io.sink.Sink;
+import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -72,6 +76,11 @@ public final class HttpCache implements AutoCloseable {
     private final EventObserver observer;
 
     /**
+     * Runtime clock used for cache observations, or null for legacy event-disabled construction.
+     */
+    private final Clock clock;
+
+    /**
      * Lifecycle state.
      */
     private final AtomicReference<Status> state;
@@ -92,6 +101,16 @@ public final class HttpCache implements AutoCloseable {
     private final AtomicLong hitCount;
 
     /**
+     * Cache miss count.
+     */
+    private final AtomicLong missCount;
+
+    /**
+     * Corrupt candidate count.
+     */
+    private final AtomicLong corruptionCount;
+
+    /**
      * Cache write success count.
      */
     private final AtomicLong writeSuccessCount;
@@ -102,22 +121,32 @@ public final class HttpCache implements AutoCloseable {
     private final AtomicLong writeAbortCount;
 
     /**
+     * Cache write failure count.
+     */
+    private final AtomicLong writeFailureCount;
+
+    /**
      * Creates a cache.
      *
      * @param store    store
      * @param policy   policy
      * @param observer observer
      */
-    private HttpCache(final CacheStore store, final CachePolicy policy, final EventObserver observer) {
+    private HttpCache(final CacheStore store, final CachePolicy policy, final EventObserver observer,
+            final Clock clock) {
         this.store = require(store, "Cache store");
         this.policy = require(policy, "Cache policy");
         this.observer = EventObserver.safe(require(observer, "Event observer"));
+        this.clock = clock;
         this.state = new AtomicReference<>(Status.OPENED);
         this.requestCount = new AtomicLong();
         this.networkCount = new AtomicLong();
         this.hitCount = new AtomicLong();
+        this.missCount = new AtomicLong();
+        this.corruptionCount = new AtomicLong();
         this.writeSuccessCount = new AtomicLong();
         this.writeAbortCount = new AtomicLong();
+        this.writeFailureCount = new AtomicLong();
     }
 
     /**
@@ -129,7 +158,35 @@ public final class HttpCache implements AutoCloseable {
      * @return cache
      */
     public static HttpCache create(final CacheStore store, final CachePolicy policy, final EventObserver observer) {
-        final HttpCache cache = new HttpCache(store, policy, observer);
+        return created(new HttpCache(store, policy, observer, null), store, policy);
+    }
+
+    /**
+     * Creates a cache with an explicit runtime clock for observations.
+     *
+     * @param store    store
+     * @param policy   policy
+     * @param observer observer
+     * @param clock    runtime clock
+     * @return cache
+     */
+    public static HttpCache create(
+            final CacheStore store,
+            final CachePolicy policy,
+            final EventObserver observer,
+            final Clock clock) {
+        return created(new HttpCache(store, policy, observer, require(clock, "Clock")), store, policy);
+    }
+
+    /**
+     * Logs one completed cache construction.
+     *
+     * @param cache  cache
+     * @param store  store
+     * @param policy policy
+     * @return cache
+     */
+    private static HttpCache created(final HttpCache cache, final CacheStore store, final CachePolicy policy) {
         Logger.info(
                 false,
                 "Fabric",
@@ -212,8 +269,11 @@ public final class HttpCache implements AutoCloseable {
                 requestCount.get(),
                 networkCount.get(),
                 hitCount.get(),
+                missCount.get(),
+                corruptionCount.get(),
                 writeSuccessCount.get(),
-                writeAbortCount.get());
+                writeAbortCount.get(),
+                writeFailureCount.get());
     }
 
     /**
@@ -244,6 +304,24 @@ public final class HttpCache implements AutoCloseable {
     }
 
     /**
+     * Returns cache miss count.
+     *
+     * @return miss count
+     */
+    public long missCount() {
+        return missCount.get();
+    }
+
+    /**
+     * Returns corrupt candidate count.
+     *
+     * @return corruption count
+     */
+    public long corruptionCount() {
+        return corruptionCount.get();
+    }
+
+    /**
      * Returns write success count.
      *
      * @return write success count
@@ -262,6 +340,15 @@ public final class HttpCache implements AutoCloseable {
     }
 
     /**
+     * Returns cache write failure count.
+     *
+     * @return write failure count
+     */
+    public long writeFailureCount() {
+        return writeFailureCount.get();
+    }
+
+    /**
      * Gets a cached response.
      *
      * @param request request
@@ -269,16 +356,27 @@ public final class HttpCache implements AutoCloseable {
      */
     public HttpResponse get(final HttpRequest request) {
         require(request, "HTTP request");
+        ensureOpen();
         final String prefix = HttpCacheKey.baseKey(request);
         final var keys = store.keys();
+        boolean missRecorded = false;
         while (keys.hasNext()) {
             final String key = keys.next();
             if (!key.startsWith(prefix)) {
                 continue;
             }
-            final CacheEntry entry = store.get(key);
-            final HttpResponse cached = entry == null ? null : HttpCacheCodec.fromEntry(entry);
-            if (cached != null && HttpCacheKey.varyMatches(cached, request)) {
+            HttpResponse cached = null;
+            try {
+                final CacheEntry entry = store.get(key);
+                if (entry == null) {
+                    continue;
+                }
+                cached = readCandidate(entry);
+                if (!HttpCacheKey.varyMatches(cached, request)) {
+                    cached.close();
+                    continue;
+                }
+                final HttpResponse result = HttpCacheCodec.copyResponse(request, cached);
                 emit("hit", key);
                 Logger.info(
                         false,
@@ -290,11 +388,27 @@ public final class HttpCache implements AutoCloseable {
                         request.url().host(),
                         request.url().port(),
                         request.url().path());
-                return HttpCacheCodec.copyResponse(request, cached);
+                return result;
+            } catch (final RuntimeException e) {
+                closeQuietly(cached);
+                recordCorruption();
+                if (!missRecorded) {
+                    recordMiss();
+                    missRecorded = true;
+                }
+                removeCorrupt(key);
+                emit("corruption", key);
+                Logger.warn(
+                        false,
+                        "Fabric",
+                        e,
+                        "HTTP cache candidate discarded: key={}, exception={}",
+                        keyHash(key),
+                        e.getClass().getSimpleName());
             }
-            if (cached != null) {
-                cached.close();
-            }
+        }
+        if (!missRecorded) {
+            recordMiss();
         }
         emit("miss", prefix);
         Logger.info(
@@ -335,10 +449,16 @@ public final class HttpCache implements AutoCloseable {
             return;
         }
         final String key = HttpCacheKey.key(request, response.headers().get(HTTP.VARY));
-        store.put(key, HttpCacheCodec.toEntry(request, response));
-        recordWriteSuccess();
-        emit("write", key);
-        Logger.info(false, "Fabric", "HTTP cache stored: key={}, code={}", keyHash(key), response.code());
+        try {
+            store.put(key, HttpCacheCodec.toEntry(request, response));
+            recordWriteSuccess();
+            emit("write", key);
+            Logger.info(false, "Fabric", "HTTP cache stored: key={}, code={}", keyHash(key), response.code());
+        } catch (final RuntimeException e) {
+            recordWriteFailure();
+            emit("write-failure", key);
+            Logger.warn(false, "Fabric", e, "HTTP cache store failed: key={}", keyHash(key));
+        }
     }
 
     /**
@@ -368,20 +488,36 @@ public final class HttpCache implements AutoCloseable {
         }
         final String key = HttpCacheKey.key(request, response.headers().get(HTTP.VARY));
         if (response.body().payload().repeatable()) {
-            store.put(key, HttpCacheCodec.toEntry(request, response));
-            recordWriteSuccess();
-            emit("write", key);
-            Logger.info(
-                    false,
-                    "Fabric",
-                    "HTTP cache stored: key={}, code={}, repeatable={}",
-                    keyHash(key),
-                    response.code(),
-                    true);
+            try {
+                store.put(key, HttpCacheCodec.toEntry(request, response));
+                recordWriteSuccess();
+                emit("write", key);
+                Logger.info(
+                        false,
+                        "Fabric",
+                        "HTTP cache stored: key={}, code={}, repeatable={}",
+                        keyHash(key),
+                        response.code(),
+                        true);
+            } catch (final RuntimeException e) {
+                recordWriteFailure();
+                emit("write-failure", key);
+                Logger.warn(false, "Fabric", e, "HTTP cache repeatable write failed: key={}", keyHash(key));
+            }
             return response;
         }
-        final CacheWriter writer = store.writer(key, HttpCacheCodec.toEntry(request, response, Payload.empty()));
+        final CacheWriter writer;
+        try {
+            writer = store.writer(key, HttpCacheCodec.toEntry(request, response, Payload.empty()));
+        } catch (final RuntimeException e) {
+            recordWriteFailure();
+            emit("write-failure", key);
+            Logger.warn(false, "Fabric", e, "HTTP cache writer creation failed: key={}", keyHash(key));
+            return response;
+        }
         if (writer == null) {
+            recordWriteFailure();
+            emit("write-failure", key);
             Logger.warn(
                     false,
                     "Fabric",
@@ -390,26 +526,39 @@ public final class HttpCache implements AutoCloseable {
                     response.code());
             return response;
         }
-        final PayloadBody body = PayloadBody.of(new HttpCacheWriter(response.body().payload(), writer, () -> {
-            recordWriteSuccess();
-            emit("write", key);
-            Logger.info(
-                    false,
-                    "Fabric",
-                    "HTTP cache streamed body stored: key={}, code={}",
-                    keyHash(key),
-                    response.code());
-        }, () -> {
-            recordWriteAbort();
-            emit("abort", key);
-            Logger.warn(
-                    false,
-                    "Fabric",
-                    "HTTP cache streamed body aborted: key={}, code={}",
-                    keyHash(key),
-                    response.code());
-        }), response.body().media());
-        return HttpCacheCodec.copyResponse(request, response, body);
+        final IsolatedCacheWriter isolated = new IsolatedCacheWriter(writer, () -> {
+            recordWriteFailure();
+            emit("write-failure", key);
+        });
+        try {
+            final PayloadBody body = PayloadBody.of(new HttpCacheWriter(response.body().payload(), isolated, () -> {
+                if (!isolated.failed()) {
+                    recordWriteSuccess();
+                    emit("write", key);
+                    Logger.info(
+                            false,
+                            "Fabric",
+                            "HTTP cache streamed body stored: key={}, code={}",
+                            keyHash(key),
+                            response.code());
+                }
+            }, () -> {
+                if (!isolated.failed()) {
+                    recordWriteAbort();
+                    emit("abort", key);
+                    Logger.warn(
+                            false,
+                            "Fabric",
+                            "HTTP cache streamed body aborted: key={}, code={}",
+                            keyHash(key),
+                            response.code());
+                }
+            }), response.body().media());
+            return HttpCacheCodec.copyResponse(request, response, body);
+        } catch (final RuntimeException e) {
+            isolated.fail(e);
+            return response;
+        }
     }
 
     /**
@@ -431,7 +580,11 @@ public final class HttpCache implements AutoCloseable {
      * @return true when fresh
      */
     public boolean fresh(final HttpResponse response, final Clock clock) {
-        return policy.fresh(require(response, "HTTP response"), require(clock, "Runtime clock"));
+        final boolean fresh = policy.fresh(require(response, "HTTP response"), require(clock, "Runtime clock"));
+        if (!fresh) {
+            recordMiss();
+        }
+        return fresh;
     }
 
     /**
@@ -443,10 +596,14 @@ public final class HttpCache implements AutoCloseable {
      * @return true when fresh
      */
     public boolean fresh(final HttpRequest request, final HttpResponse response, final Clock clock) {
-        return policy.fresh(
+        final boolean fresh = policy.fresh(
                 require(request, "HTTP request"),
                 require(response, "HTTP response"),
                 require(clock, "Runtime clock"));
+        if (!fresh) {
+            recordMiss();
+        }
+        return fresh;
     }
 
     /**
@@ -596,9 +753,12 @@ public final class HttpCache implements AutoCloseable {
      * @param key    key
      */
     private void emit(final String action, final String key) {
+        if (clock == null) {
+            return;
+        }
         observer.emit(
-                FabricEvent.builder(cacheMarker(action)).tag(Builder.TAG_CACHE, action)
-                        .tag(Builder.TAG_KEY, keyHash(key)).build());
+                FabricEvent.builder(cacheMarker(action), clock).tag(Builder.TAG_OPERATION_ID, keyHash(key))
+                        .tag(Builder.TAG_CACHE, action).tag(Builder.TAG_KEY, keyHash(key)).build());
     }
 
     /**
@@ -648,6 +808,20 @@ public final class HttpCache implements AutoCloseable {
     }
 
     /**
+     * Records a cache miss.
+     */
+    public void recordMiss() {
+        missCount.incrementAndGet();
+    }
+
+    /**
+     * Records one corrupt cache candidate.
+     */
+    public void recordCorruption() {
+        corruptionCount.incrementAndGet();
+    }
+
+    /**
      * Records a successful cache write.
      */
     public void recordWriteSuccess() {
@@ -662,12 +836,333 @@ public final class HttpCache implements AutoCloseable {
     }
 
     /**
+     * Records a cache write failure.
+     */
+    public void recordWriteFailure() {
+        writeFailureCount.incrementAndGet();
+    }
+
+    /**
+     * Opens and validates a cache candidate while preserving snapshot ownership in the returned body.
+     *
+     * @param entry cache entry
+     * @return decoded response
+     */
+    private static HttpResponse readCandidate(final CacheEntry entry) {
+        final CacheEntry current = require(entry, "Cache entry");
+        OpenedPayload opened = null;
+        try {
+            final Payload payload = require(current.payload(), "Cache payload");
+            final long actualLength = payload.length();
+            if (actualLength < -1L) {
+                throw new StatefulException("Cached payload length is invalid");
+            }
+            final Source source = require(payload.source(), "Cache body source");
+            opened = new OpenedPayload(source, actualLength, payload instanceof AutoCloseable owner ? owner : source);
+            final HttpResponse response = HttpCacheCodec.fromEntry(CacheEntry.of(current.metadata(), opened));
+            final long declaredLength = response.headers().contentLength();
+            if (declaredLength >= 0L && actualLength >= 0L && declaredLength != actualLength) {
+                response.close();
+                throw new StatefulException("Cached body length does not match Content-Length");
+            }
+            return response;
+        } catch (final RuntimeException e) {
+            if (opened != null) {
+                closeQuietly(opened);
+            } else if (current.payload() instanceof AutoCloseable owner) {
+                closeQuietly(owner);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Removes one corrupt key without letting cleanup hide the original candidate failure.
+     *
+     * @param key corrupt key
+     */
+    private void removeCorrupt(final String key) {
+        try {
+            store.remove(key);
+        } catch (final RuntimeException e) {
+            Logger.warn(false, "Fabric", e, "HTTP corrupt cache removal failed: key={}", keyHash(key));
+        }
+    }
+
+    /**
+     * Closes a response without allowing cleanup failure to escape candidate isolation.
+     *
+     * @param response response or null
+     */
+    private static void closeQuietly(final HttpResponse response) {
+        closeQuietly((AutoCloseable) response);
+    }
+
+    /**
+     * Closes a resource without allowing cleanup failure to escape candidate isolation.
+     *
+     * @param closeable resource or null
+     */
+    private static void closeQuietly(final AutoCloseable closeable) {
+        if (closeable == null) {
+            return;
+        }
+        try {
+            closeable.close();
+        } catch (final Exception ignored) {
+            // Candidate isolation keeps cleanup failure local to the corrupt entry.
+        }
+    }
+
+    /**
      * Ensures this cache is open.
      */
     private void ensureOpen() {
         if (state.get() == Status.CLOSED) {
             throw new StatefulException("HTTP cache is closed");
         }
+    }
+
+    /**
+     * Open cache payload that closes the source and its owning snapshot together.
+     */
+    private static final class OpenedPayload implements Payload, AutoCloseable {
+
+        /**
+         * Open body source.
+         */
+        private final Source source;
+
+        /**
+         * Declared stored body length.
+         */
+        private final long length;
+
+        /**
+         * Source or snapshot owner.
+         */
+        private final AutoCloseable owner;
+
+        /**
+         * Source-open guard.
+         */
+        private final AtomicBoolean opened;
+
+        /**
+         * Close guard.
+         */
+        private final AtomicBoolean closed;
+
+        /**
+         * Creates an opened cache payload.
+         *
+         * @param source open source
+         * @param length body length
+         * @param owner  source or snapshot owner
+         */
+        private OpenedPayload(final Source source, final long length, final AutoCloseable owner) {
+            this.source = require(source, "Cache body source");
+            this.length = length;
+            this.owner = require(owner, "Cache body owner");
+            this.opened = new AtomicBoolean();
+            this.closed = new AtomicBoolean();
+        }
+
+        /**
+         * Returns stored body length.
+         *
+         * @return body length
+         */
+        @Override
+        public long length() {
+            return length;
+        }
+
+        /**
+         * Transfers the already-open source once.
+         *
+         * @return source
+         */
+        @Override
+        public Source source() {
+            if (!opened.compareAndSet(false, true)) {
+                throw new StatefulException("Cached body source can only be opened once");
+            }
+            return source;
+        }
+
+        /**
+         * Returns whether this payload can be reopened.
+         *
+         * @return false
+         */
+        @Override
+        public boolean repeatable() {
+            return false;
+        }
+
+        /**
+         * Closes the source owner exactly once.
+         */
+        @Override
+        public void close() {
+            if (!closed.compareAndSet(false, true)) {
+                return;
+            }
+            try {
+                owner.close();
+            } catch (final IOException e) {
+                throw new InternalException("Unable to close cached body", e);
+            } catch (final RuntimeException e) {
+                throw e;
+            } catch (final Exception e) {
+                throw new InternalException("Unable to close cached body", e);
+            }
+        }
+
+    }
+
+    /**
+     * Cache writer facade that prevents cache I/O failures from breaking the network response body.
+     */
+    private static final class IsolatedCacheWriter implements CacheWriter {
+
+        /**
+         * Store writer.
+         */
+        private final CacheWriter delegate;
+
+        /**
+         * Failure callback.
+         */
+        private final Runnable failureCallback;
+
+        /**
+         * Failure guard.
+         */
+        private final AtomicBoolean failed;
+
+        /**
+         * Creates an isolated writer.
+         *
+         * @param delegate        store writer
+         * @param failureCallback failure callback
+         */
+        private IsolatedCacheWriter(final CacheWriter delegate, final Runnable failureCallback) {
+            this.delegate = require(delegate, "Cache writer");
+            this.failureCallback = require(failureCallback, "Cache writer failure callback");
+            this.failed = new AtomicBoolean();
+        }
+
+        /**
+         * Returns the delegate body or an in-memory discard sink after failure.
+         *
+         * @return writable sink
+         */
+        @Override
+        public Sink body() {
+            if (failed.get()) {
+                return new org.miaixz.bus.core.io.buffer.Buffer();
+            }
+            try {
+                return delegate.body();
+            } catch (final RuntimeException e) {
+                fail(e);
+                return new org.miaixz.bus.core.io.buffer.Buffer();
+            }
+        }
+
+        /**
+         * Writes cache bytes while isolating store failure.
+         *
+         * @param source    source buffer
+         * @param byteCount byte count
+         */
+        @Override
+        public void write(final org.miaixz.bus.core.io.buffer.Buffer source, final long byteCount) {
+            if (failed.get()) {
+                try {
+                    source.skip(byteCount);
+                } catch (final IOException e) {
+                    throw new InternalException("Unable to discard failed cache bytes", e);
+                }
+                return;
+            }
+            try {
+                delegate.write(source, byteCount);
+            } catch (final IOException | RuntimeException e) {
+                fail(e);
+                try {
+                    source.clear();
+                } catch (final RuntimeException ignored) {
+                    // The network body remains authoritative after a cache failure.
+                }
+            }
+        }
+
+        /**
+         * Commits the delegate unless a prior write failed.
+         */
+        @Override
+        public void commit() {
+            if (failed.get()) {
+                return;
+            }
+            try {
+                delegate.commit();
+            } catch (final RuntimeException e) {
+                fail(e);
+            }
+        }
+
+        /**
+         * Aborts the delegate best-effort.
+         */
+        @Override
+        public void abort() {
+            try {
+                delegate.abort();
+            } catch (final RuntimeException e) {
+                fail(e);
+            }
+        }
+
+        /**
+         * Aborts this writer.
+         */
+        @Override
+        public void close() {
+            abort();
+        }
+
+        /**
+         * Returns whether the cache writer failed.
+         *
+         * @return true when failed
+         */
+        private boolean failed() {
+            return failed.get();
+        }
+
+        /**
+         * Records the first cache writer failure and aborts the delegate.
+         *
+         * @param cause failure cause
+         */
+        private void fail(final Throwable cause) {
+            if (!failed.compareAndSet(false, true)) {
+                return;
+            }
+            try {
+                delegate.abort();
+            } catch (final RuntimeException abortFailure) {
+                if (cause != abortFailure) {
+                    cause.addSuppressed(abortFailure);
+                }
+            }
+            failureCallback.run();
+        }
+
     }
 
     /**

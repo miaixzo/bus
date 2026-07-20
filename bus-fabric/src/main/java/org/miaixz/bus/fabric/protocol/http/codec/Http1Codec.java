@@ -159,6 +159,7 @@ public final class Http1Codec implements HttpCodec {
      */
     public void writeHeaders(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
+        validateFraming(current.headers());
         writeText(HttpLine.request(current) + Symbol.CRLF);
         for (final Map.Entry<String, List<String>> entry : current.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
@@ -176,6 +177,7 @@ public final class Http1Codec implements HttpCodec {
      */
     public Sink createRequestBody(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
+        validateFraming(current.headers());
         final long declared = declaredLength(current.headers());
         if (chunked(current.headers())) {
             return new ChunkedSink(this);
@@ -389,7 +391,7 @@ public final class Http1Codec implements HttpCodec {
             }
             line = reader.readLine(readTimeout);
         }
-        return builder.build();
+        return normalizedFraming(builder.build());
     }
 
     /**
@@ -412,6 +414,7 @@ public final class Http1Codec implements HttpCodec {
      * @return length, or -1 for unknown
      */
     private static long responseLength(final HttpRequest request, final HttpResponse response) {
+        validateFraming(response.headers());
         if (request.method() == HTTP.Method.HEAD || response.code() == HTTP.HTTP_NO_CONTENT
                 || response.code() == HTTP.HTTP_NOT_MODIFIED
                 || (response.code() >= HTTP.HTTP_CONTINUE && response.code() < HTTP.HTTP_OK)) {
@@ -430,19 +433,47 @@ public final class Http1Codec implements HttpCodec {
      * @return length or -1
      */
     private static long declaredLength(final Headers headers) {
-        final String value = headers.get(HTTP.CONTENT_LENGTH);
-        if (value == null) {
+        final List<String> values = headers.values(HTTP.CONTENT_LENGTH);
+        if (values.isEmpty()) {
             return Normal.__1;
         }
-        try {
-            final long length = Long.parseLong(value);
-            if (length < Normal._0) {
-                throw new ProtocolException("Content-Length must be non-negative");
+        long normalized = Normal.__1;
+        for (final String value : values) {
+            final long current = Headers.of(HTTP.CONTENT_LENGTH, value).contentLength();
+            if (normalized == Normal.__1) {
+                normalized = current;
+            } else if (normalized != current) {
+                throw new ProtocolException("Conflicting Content-Length values");
             }
-            return length;
-        } catch (final NumberFormatException e) {
-            throw new ProtocolException("Invalid Content-Length", e);
         }
+        return normalized;
+    }
+
+    /**
+     * Rejects ambiguous HTTP/1 framing before any body framing is selected.
+     *
+     * @param headers headers
+     */
+    private static void validateFraming(final Headers headers) {
+        require(headers, "Headers");
+        if (headers.contains(HTTP.CONTENT_LENGTH) && headers.contains(HTTP.TRANSFER_ENCODING)) {
+            throw new ProtocolException("HTTP/1 cannot combine Content-Length and Transfer-Encoding");
+        }
+        declaredLength(headers);
+    }
+
+    /**
+     * Collapses equivalent repeated Content-Length fields to one canonical decimal value.
+     *
+     * @param headers parsed headers
+     * @return normalized headers
+     */
+    private static Headers normalizedFraming(final Headers headers) {
+        validateFraming(headers);
+        if (headers.values(HTTP.CONTENT_LENGTH).size() <= Normal._1) {
+            return headers;
+        }
+        return headers.with(HTTP.CONTENT_LENGTH, Long.toString(declaredLength(headers)));
     }
 
     /**
@@ -749,7 +780,7 @@ public final class Http1Codec implements HttpCodec {
             if (byteCount < Normal._0) {
                 throw new ProtocolException("HTTP fixed body byte count is negative");
             }
-            if (written + byteCount > expected) {
+            if (byteCount > expected - written) {
                 throw new ProtocolException("HTTP fixed body exceeds Content-Length");
             }
             writeToConnection(source, byteCount);

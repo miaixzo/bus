@@ -19,24 +19,21 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.core.io.buffer.SlabBufferAllocator;
-import org.miaixz.bus.core.io.buffer.SliceBuffer;
-import org.miaixz.bus.core.io.buffer.WriteBuffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -45,9 +42,11 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Call;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Headers;
@@ -56,6 +55,7 @@ import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.codec.frame.Frame;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.Connection;
@@ -64,13 +64,19 @@ import org.miaixz.bus.fabric.network.kcp.KcpPacket;
 import org.miaixz.bus.fabric.network.udp.UdpSession;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
+import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.protocol.Demuxer;
+import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.socket.body.SocketBody;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketFrame;
 import org.miaixz.bus.fabric.protocol.socket.session.SocketLease;
+import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.FilterChain;
+import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
+import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -114,7 +120,7 @@ public final class SocketSession implements Session {
     /**
      * Decoded frames waiting for receive calls.
      */
-    private final ArrayDeque<SocketFrame> pendingFrames;
+    private final ArrayDeque<PendingFrame> pendingFrames;
 
     /**
      * Attributes.
@@ -137,24 +143,59 @@ public final class SocketSession implements Session {
     private final SocketOptions socketOptions;
 
     /**
-     * Slab allocator for connection write slices.
+     * Dispatcher used by Calls, idle checks, and KCP work.
      */
-    private final SlabBufferAllocator writeAllocator;
+    private final Dispatcher dispatcher;
 
     /**
-     * Core write queue for stream connections.
+     * Session clock.
      */
-    private final WriteBuffer writeBuffer;
+    private final Clock clock;
 
     /**
-     * Tail future used to serialize stream writes.
+     * Session timeout policy.
      */
-    private final AtomicReference<CompletableFuture<Void>> writeTail;
+    private final Timeout timeout;
 
     /**
-     * Active write future currently bound to the physical write queue.
+     * Cancellation shared by background session work.
      */
-    private final AtomicReference<CompletableFuture<Void>> activeWrite;
+    private final Cancellation cancellation;
+
+    /**
+     * Event observer reused by session Calls.
+     */
+    private final EventObserver observer;
+
+    /**
+     * Per-emission wire byte count consumed by the observer decorator.
+     */
+    private final ThreadLocal<Long> trafficBytes;
+
+    /**
+     * Whether this session owns the dispatcher lifecycle.
+     */
+    private final boolean ownsDispatcher;
+
+    /**
+     * Active idle timeout handle.
+     */
+    private final AtomicReference<DispatchHandle> idleHandle;
+
+    /**
+     * Single KCP receive Pump handle.
+     */
+    private final AtomicReference<DispatchHandle> kcpHandle;
+
+    /**
+     * Active KCP retransmission handle.
+     */
+    private final AtomicReference<DispatchHandle> retransmitHandle;
+
+    /**
+     * Guard ensuring one terminal path owns cleanup and notification.
+     */
+    private final AtomicBoolean terminating;
 
     /**
      * Last activity time.
@@ -403,6 +444,63 @@ public final class SocketSession implements Session {
             final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
             final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
             final SocketOptions socketOptions) {
+        this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
+                socketOptions, Dispatcher.create(), Clock.system(), Timeout.defaults(), Cancellation.create(), true);
+    }
+
+    /**
+     * Creates an opened session with a shared runtime.
+     *
+     * @param address             address
+     * @param connection          connection or null for datagram
+     * @param datagram            datagram session or null for connection
+     * @param kcp                 KCP packet endpoint or null
+     * @param codec               codec
+     * @param handler             handler
+     * @param attributes          attributes
+     * @param owner               owner
+     * @param listener            lifecycle listener
+     * @param materializeMaxBytes materialize byte threshold
+     * @param socketOptions       socket options
+     * @param dispatcher          shared dispatcher
+     * @param clock               shared clock
+     * @param timeout             timeout policy
+     * @param cancellation        shared cancellation
+     */
+    SocketSession(final Address address, final Connection connection, final UdpSession datagram, final KcpNetwork kcp,
+            final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
+            final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
+            final SocketOptions socketOptions, final Dispatcher dispatcher, final Clock clock, final Timeout timeout,
+            final Cancellation cancellation) {
+        this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
+                socketOptions, dispatcher, clock, timeout, cancellation, false);
+    }
+
+    /**
+     * Creates an opened session.
+     *
+     * @param address             address
+     * @param connection          connection or null for datagram
+     * @param datagram            datagram session or null for connection
+     * @param kcp                 KCP packet endpoint or null
+     * @param codec               codec
+     * @param handler             handler
+     * @param attributes          attributes
+     * @param owner               owner
+     * @param listener            lifecycle listener
+     * @param materializeMaxBytes materialize byte threshold
+     * @param socketOptions       socket options
+     * @param dispatcher          runtime dispatcher
+     * @param clock               session clock
+     * @param timeout             timeout policy
+     * @param cancellation        shared cancellation
+     * @param ownsDispatcher      true when cleanup closes the dispatcher
+     */
+    private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
+            final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
+            final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
+            final SocketOptions socketOptions, final Dispatcher dispatcher, final Clock clock, final Timeout timeout,
+            final Cancellation cancellation, final boolean ownsDispatcher) {
         this.address = require(address, "Socket address");
         if (connection == null && datagram == null) {
             throw new ValidateException("Socket transport must not be null");
@@ -415,29 +513,36 @@ public final class SocketSession implements Session {
         this.pendingFrames = new ArrayDeque<>();
         this.attributes = new LinkedHashMap<>(attributes == null ? Map.of() : attributes);
         this.owner = owner;
-        final Object observer = this.attributes.get(Builder.ATTRIBUTE_OBSERVER);
-        final EventObserver currentObserver = observer instanceof EventObserver current ? EventObserver.safe(current)
+        final Object configuredObserver = this.attributes.get(Builder.ATTRIBUTE_OBSERVER);
+        final EventObserver sink = configuredObserver instanceof EventObserver current ? EventObserver.safe(current)
                 : EventObserver.noop();
+        this.trafficBytes = new ThreadLocal<>();
+        this.observer = event -> sink.emit(withTrafficBytes(event));
+        this.dispatcher = require(dispatcher, "Socket dispatcher");
+        this.clock = require(clock, "Socket clock");
+        this.timeout = require(timeout, "Socket timeout");
+        this.cancellation = require(cancellation, "Socket cancellation");
+        this.ownsDispatcher = ownsDispatcher;
         this.scope = LifecycleScope.session(
                 this,
                 "socket-session",
                 listener,
-                currentObserver,
+                this.observer,
                 ObservationMarker.SOCKET_OPEN,
                 ObservationMarker.SOCKET_CLOSED,
-                ObservationMarker.SOCKET_FAILED);
+                ObservationMarker.SOCKET_FAILED,
+                this.clock);
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
         this.socketOptions = socketOptions == null ? SocketOptions.defaults() : socketOptions;
-        this.writeAllocator = connection == null ? null
-                : new SlabBufferAllocator(writeSlabSize(this.socketOptions), 1, false);
-        this.writeBuffer = connection == null ? null
-                : new WriteBuffer(writeAllocator.allocate(), this::writeSlice, this.socketOptions.writeChunkSize(),
-                        this.socketOptions.writeChunkCount());
-        this.writeTail = new AtomicReference<>(CompletableFuture.completedFuture(null));
-        this.activeWrite = new AtomicReference<>();
-        this.lastActivityNanos = System.nanoTime();
+        this.idleHandle = new AtomicReference<>();
+        this.kcpHandle = new AtomicReference<>();
+        this.retransmitHandle = new AtomicReference<>();
+        this.terminating = new AtomicBoolean();
+        this.lastActivityNanos = this.clock.nanos();
         this.scope.open(this);
+        scheduleIdle();
+        startKcpPump();
     }
 
     /**
@@ -465,8 +570,15 @@ public final class SocketSession implements Session {
      * @return send call
      */
     public Call<Void> send(final Payload payload) {
-        require(payload, "Socket payload");
-        return send(SocketFrame.of(ByteString.of(materialize(payload, "SocketSession.send(Payload)"))));
+        final Payload current = require(payload, "Socket payload");
+        return MonoCall.<Void>create(
+                "socket-session-send",
+                "socket:session:send",
+                dispatcher,
+                observer,
+                null,
+                () -> sendNow(current),
+                this::cancel);
     }
 
     /**
@@ -476,8 +588,7 @@ public final class SocketSession implements Session {
      * @return send call
      */
     public Call<Void> send(final SocketBody body) {
-        require(body, "Socket body");
-        return send(body.payload());
+        return send(require(body, "Socket body").payload());
     }
 
     /**
@@ -487,99 +598,23 @@ public final class SocketSession implements Session {
      * @return send call
      */
     public Call<Void> send(final Frame frame) {
-        require(frame, "Frame");
-        return send(SocketFrame.of(frame.payload()));
-    }
-
-    /**
-     * Sends a socket frame.
-     *
-     * @param frame frame
-     * @return send call
-     */
-    private Call<Void> send(final SocketFrame frame) {
-        ensureOpen();
-        final Message outgoing = filter(Payload.of(frame.payload()), "socket-write");
-        checkGuard(outgoing);
-        final Payload payload = outgoing.payload();
-        final SocketFrame filteredFrame = SocketFrame.of(ByteString.of(materialize(payload, "SocketSession.send")));
-        final Buffer output = new Buffer();
-        codec.encode(filteredFrame, output);
-        final long byteCount = output.size();
-        Logger.debug(
-                true,
-                "Fabric",
-                "Socket send scheduled: scheme={}, host={}, port={}, bytes={}",
-                address.scheme(),
-                address.host(),
-                address.port(),
-                byteCount);
-        final CompletableFuture<Void> future;
-        if (connection == null) {
-            final ByteBuffer encoded = ByteBuffer.wrap(output.clone().readByteArray()).asReadOnlyBuffer();
-            future = sendDatagram(encoded).thenAccept(written -> {
-                if (written == null || written < Normal._0) {
-                    throw new SocketException("Socket write failed");
-                }
-            });
-        } else {
-            future = writeConnection(output);
-        }
-        future.whenComplete((ignored, cause) -> {
-            final Throwable failure = unwrap(cause);
-            if (cause == null) {
-                touch();
-            }
-            emit(cause == null ? ObservationMarker.SOCKET_WRITE : ObservationMarker.SOCKET_FAILED, byteCount, failure);
-            if (failure != null) {
-                Logger.warn(
-                        false,
-                        "Fabric",
-                        failure,
-                        "Socket send failed: scheme={}, host={}, port={}, bytes={}, exception={}",
-                        address.scheme(),
-                        address.host(),
-                        address.port(),
-                        byteCount,
-                        failure.getClass().getSimpleName());
-                notifyFailure(failure);
-            } else {
-                Logger.debug(
-                        false,
-                        "Fabric",
-                        "Socket send completed: scheme={}, host={}, port={}, bytes={}",
-                        address.scheme(),
-                        address.host(),
-                        address.port(),
-                        byteCount);
-            }
-        });
-        return new FutureCall(future);
+        return send(Payload.of(require(frame, "Frame").payload()));
     }
 
     /**
      * Receives the next message.
      *
-     * @return message future
+     * @return receive call
      */
-    public CompletableFuture<Message> receive() {
-        ensureOpen();
-        Logger.debug(
-                true,
-                "Fabric",
-                "Socket receive requested: scheme={}, host={}, port={}",
-                address.scheme(),
-                address.host(),
-                address.port());
-        final CompletableFuture<Message> future = new CompletableFuture<>();
-        if (connection == null) {
-            readDatagram(future);
-        } else if (!completePendingFrame(future)) {
-            readUntilFrame(future);
-        } else {
-            return future;
-        }
-        return future;
+    public Call<Message> receive() {
+        return MonoCall.create(
+                "socket-session-receive",
+                "socket:session:receive",
+                dispatcher,
+                observer,
+                null,
+                this::receiveNow,
+                this::cancel);
     }
 
     /**
@@ -588,33 +623,7 @@ public final class SocketSession implements Session {
      * @return true when state changed
      */
     public boolean close() {
-        final Status current = scope.state();
-        if (current != Status.OPENED && current != Status.RUNNING && current != Status.CLOSING) {
-            return false;
-        }
-        if (current != Status.CLOSING) {
-            scope.closing();
-        }
-        Logger.info(
-                true,
-                "Fabric",
-                "Socket session close started: scheme={}, host={}, port={}",
-                address.scheme(),
-                address.host(),
-                address.port());
-        closeResources(true);
-        final boolean changed = scope.close(this);
-        if (changed) {
-            handler.closed(this);
-            Logger.info(
-                    false,
-                    "Fabric",
-                    "Socket session closed: scheme={}, host={}, port={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port());
-        }
-        return changed;
+        return terminate(Termination.CLOSE, null);
     }
 
     /**
@@ -623,31 +632,7 @@ public final class SocketSession implements Session {
      * @return true when state changed
      */
     public boolean cancel() {
-        final Status current = scope.state();
-        if (current == Status.CANCELLED || current == Status.CLOSED || current == Status.DONE) {
-            return false;
-        }
-        final StatefulException cancelled = new StatefulException("Socket session was cancelled");
-        Logger.info(
-                true,
-                "Fabric",
-                "Socket session cancel started: scheme={}, host={}, port={}",
-                address.scheme(),
-                address.host(),
-                address.port());
-        closeResources(false);
-        final boolean changed = scope.cancel(cancelled);
-        if (changed) {
-            notifyFailure(cancelled);
-            Logger.info(
-                    false,
-                    "Fabric",
-                    "Socket session cancelled: scheme={}, host={}, port={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port());
-        }
-        return changed;
+        return terminate(Termination.CANCEL, new StatefulException("Socket session was cancelled"));
     }
 
     /**
@@ -669,309 +654,312 @@ public final class SocketSession implements Session {
     }
 
     /**
-     * Reads until one frame is decoded.
+     * Runs one complete outbound socket pipeline.
      *
-     * @param future target future
+     * @param source application payload
+     * @return null after a complete write
      */
-    private void readUntilFrame(final CompletableFuture<Message> future) {
-        final Buffer buffer = new Buffer();
-        connection.conduit().read(buffer, socketOptions.readBufferSize()).whenComplete((read, cause) -> {
-            if (cause != null) {
-                final SocketException failure = new SocketException("Unable to read socket message", cause);
-                emit(ObservationMarker.SOCKET_FAILED, Payload.empty(), failure);
-                notifyFailure(failure);
-                future.completeExceptionally(failure);
-                close();
-                return;
+    private Void sendNow(final Payload source) {
+        try {
+            ensureOpen();
+            final Message outgoing = filter(source, "socket-write");
+            checkGuard(outgoing);
+            final byte[] bytes = materialize(outgoing.payload(), "SocketSession.send(Payload)");
+            final Buffer encoded = new Buffer();
+            synchronized (codec) {
+                codec.encode(SocketFrame.of(ByteString.of(bytes)), encoded);
             }
-            if (read == null || read < Normal._0) {
-                final SocketException failure = new SocketException("Socket stream closed");
-                emit(ObservationMarker.SOCKET_FAILED, Payload.empty(), failure);
-                notifyFailure(failure);
-                future.completeExceptionally(failure);
-                close();
-                return;
-            }
-            emit(ObservationMarker.SOCKET_READ, read, null);
+            final long wireBytes = encoded.size();
             Logger.debug(
-                    false,
+                    true,
                     "Fabric",
-                    "Socket stream read completed: scheme={}, host={}, port={}, bytes={}",
+                    "Socket send started: scheme={}, host={}, port={}, bytes={}",
                     address.scheme(),
                     address.host(),
                     address.port(),
-                    read);
-            final java.util.List<SocketFrame> frames;
-            try {
-                frames = codec.decode(buffer);
-            } catch (final RuntimeException e) {
-                emit(ObservationMarker.SOCKET_FAILED, read, e);
-                notifyFailure(e);
-                future.completeExceptionally(e);
-                close();
-                return;
+                    wireBytes);
+            if (connection != null) {
+                writeStream(encoded, wireBytes);
+            } else {
+                final byte[] datagramBytes = encoded.readByteArray();
+                if (kcp == null) {
+                    sendPacket(Payload.of(datagramBytes));
+                } else {
+                    sendKcpPackets(kcp.encode(Payload.of(datagramBytes)));
+                    scheduleRetransmission();
+                }
             }
-            if (frames.isEmpty()) {
-                readUntilFrame(future);
-                return;
-            }
-            enqueuePending(frames, Normal._1);
-            completeFrame(future, frames.get(Normal._0), null);
-        });
-    }
-
-    /**
-     * Writes all encoded bytes to a stream connection.
-     *
-     * @param encoded encoded bytes
-     * @return completion
-     */
-    private CompletableFuture<Void> writeConnection(final Buffer encoded) {
-        final CompletableFuture<Void> future = new CompletableFuture<>();
-        CompletableFuture<Void> previous;
-        do {
-            previous = writeTail.get();
-        } while (!writeTail.compareAndSet(previous, future));
-        previous.whenComplete((ignored, cause) -> {
-            if (cause != null) {
-                future.completeExceptionally(unwrap(cause));
-                return;
-            }
-            activeWrite.set(future);
-            try {
-                writeBuffer.write(encoded, current -> {
-                    activeWrite.compareAndSet(future, null);
-                    future.complete(null);
-                });
-            } catch (final IOException | RuntimeException e) {
-                activeWrite.compareAndSet(future, null);
-                future.completeExceptionally(e);
-            }
-        });
-        return future;
-    }
-
-    /**
-     * Starts a physical write for a queued slice.
-     *
-     * @param slice write slice
-     */
-    private void writeSlice(final SliceBuffer slice) {
-        writeSlice(slice, coreBuffer(slice.buffer()));
-    }
-
-    /**
-     * Continues a physical slice write until all slice bytes are sent.
-     *
-     * @param slice  write slice
-     * @param source slice source
-     */
-    private void writeSlice(final SliceBuffer slice, final Buffer source) {
-        if (source.size() == Normal._0) {
-            completeSlice(slice);
-            return;
-        }
-        final long byteCount = Math.min(source.size(), socketOptions.writeChunkSize());
-        connection.conduit().write(source, byteCount).whenComplete((written, cause) -> {
-            if (cause != null) {
-                failSlice(slice, new SocketException("Socket write failed", cause));
-                return;
-            }
-            if (written == null || written <= Normal._0) {
-                failSlice(slice, new SocketException("Socket write made no progress"));
-                return;
-            }
-            writeSlice(slice, source);
-        });
-    }
-
-    /**
-     * Completes a physical slice write and flushes the next queued slice.
-     *
-     * @param slice completed slice
-     */
-    private void completeSlice(final SliceBuffer slice) {
-        slice.release();
-        writeBuffer.finishWrite();
-        try {
-            writeBuffer.flush();
-        } catch (final RuntimeException e) {
-            failActiveWrite(e);
-        }
-    }
-
-    /**
-     * Fails the active physical write.
-     *
-     * @param slice write slice
-     * @param cause failure
-     */
-    private void failSlice(final SliceBuffer slice, final RuntimeException cause) {
-        try {
-            slice.release();
-        } catch (final RuntimeException ignored) {
-            // Preserve the write failure.
-        } finally {
-            writeBuffer.finishWrite();
-        }
-        failActiveWrite(cause);
-    }
-
-    /**
-     * Fails the active write future.
-     *
-     * @param cause failure
-     */
-    private void failActiveWrite(final Throwable cause) {
-        final Throwable failure = unwrap(cause);
-        final CompletableFuture<Void> future = activeWrite.getAndSet(null);
-        if (future != null) {
-            future.completeExceptionally(failure);
-        }
-    }
-
-    /**
-     * Completes a receive from already decoded frames.
-     *
-     * @param future target future
-     * @return true when a pending frame was delivered
-     */
-    private boolean completePendingFrame(final CompletableFuture<Message> future) {
-        final SocketFrame frame;
-        synchronized (pendingFrames) {
-            frame = pendingFrames.pollFirst();
-        }
-        if (frame == null) {
-            return false;
-        }
-        completeFrame(future, frame, null);
-        return true;
-    }
-
-    /**
-     * Sends a UDP or KCP datagram.
-     *
-     * @param encoded encoded socket frame
-     * @return write future
-     */
-    private CompletableFuture<Integer> sendDatagram(final ByteBuffer encoded) {
-        final byte[] payload = bytes(encoded);
-        final Payload outgoing = kcp == null ? Payload.of(payload)
-                : Payload.of(kcp.pack(kcp.encode(Payload.of(payload))));
-        return datagram.sendDatagram(outgoing);
-    }
-
-    /**
-     * Reads one UDP or KCP datagram.
-     *
-     * @param future target future
-     */
-    private void readDatagram(final CompletableFuture<Message> future) {
-        datagram.receive().whenComplete((message, cause) -> {
-            if (cause != null) {
-                final SocketException failure = new SocketException("Unable to read socket datagram", cause);
-                emit(ObservationMarker.SOCKET_FAILED, Payload.empty(), failure);
-                notifyFailure(failure);
-                future.completeExceptionally(failure);
-                close();
-                return;
-            }
-            if (kcp != null) {
-                readKcpDatagram(future, message);
-                return;
-            }
-            // Datagram payloads are bounded by UDP/KCP packet limits before this materialization point.
-            final ByteString payload = ByteString.of(
-                    Payload.materialize(
-                            message.payload(),
-                            materializeMaxBytes,
-                            "SocketSession.readKcpDatagram(Payload)"));
-            emit(ObservationMarker.SOCKET_READ, payload.size(), null);
-            completeDatagram(future, payload, message.tag());
-        });
-    }
-
-    /**
-     * Reads one KCP datagram and skips ACK-only packets.
-     *
-     * @param future  target future
-     * @param message UDP message
-     */
-    private void readKcpDatagram(final CompletableFuture<Message> future, final Message message) {
-        final KcpPacket packet;
-        try {
-            emit(ObservationMarker.SOCKET_READ, message.payload().length(), null);
-            packet = kcp.unpack(message.payload(), materializeMaxBytes);
-        } catch (final RuntimeException e) {
-            emit(ObservationMarker.SOCKET_FAILED, message.payload(), e);
-            notifyFailure(e);
-            future.completeExceptionally(e);
-            return;
-        }
-        final KcpNetwork.Inbound inbound = kcp.receive(packet);
-        if (inbound.ack() != null) {
-            datagram.send(Payload.of(kcp.pack(inbound.ack())));
-        }
-        if (inbound.payloads().isEmpty()) {
-            readDatagram(future);
-            return;
-        }
-        completeDatagram(future, inbound.payloads().get(Normal._0), message.tag());
-    }
-
-    /**
-     * Decodes one datagram payload into a socket message.
-     *
-     * @param future  target future
-     * @param payload payload
-     * @param tag     message tag
-     */
-    private void completeDatagram(final CompletableFuture<Message> future, final ByteString payload, final Object tag) {
-        final java.util.List<SocketFrame> frames;
-        try {
-            frames = codec.decode(new Buffer().write(payload));
-        } catch (final RuntimeException e) {
-            emit(ObservationMarker.SOCKET_FAILED, payload.size(), e);
-            notifyFailure(e);
-            future.completeExceptionally(e);
-            return;
-        }
-        if (frames.isEmpty()) {
-            final SocketException failure = new SocketException("Socket datagram did not contain a complete frame");
-            emit(ObservationMarker.SOCKET_FAILED, payload.size(), failure);
-            notifyFailure(failure);
-            future.completeExceptionally(failure);
-            return;
-        }
-        completeFrame(future, frames.get(Normal._0), tag);
-    }
-
-    /**
-     * Completes a receive future from a decoded socket frame.
-     *
-     * @param future target future
-     * @param frame  decoded frame
-     * @param tag    message tag
-     */
-    private void completeFrame(final CompletableFuture<Message> future, final SocketFrame frame, final Object tag) {
-        final Message received = filter(Payload.of(frame.payload()), tag == null ? "socket-read" : tag);
-        try {
-            checkGuard(received);
-            handler.message(this, received);
+            emit(ObservationMarker.SOCKET_WRITE, wireBytes, null);
             touch();
-            future.complete(received);
             Logger.debug(
                     false,
                     "Fabric",
-                    "Socket receive completed: scheme={}, host={}, port={}, bytes={}",
+                    "Socket send completed: scheme={}, host={}, port={}, bytes={}",
                     address.scheme(),
                     address.host(),
                     address.port(),
-                    received.payload().length());
+                    wireBytes);
+            return null;
         } catch (final RuntimeException e) {
-            emit(ObservationMarker.SOCKET_FAILED, received.payload(), e);
-            notifyFailure(e);
-            future.completeExceptionally(e);
+            operationFailed(e);
+            throw e;
+        } catch (final Error e) {
+            operationFailed(e);
+            throw e;
+        }
+    }
+
+    /**
+     * Writes one encoded frame through the complete Conduit contract.
+     *
+     * @param encoded   encoded frame
+     * @param byteCount encoded byte count
+     */
+    private void writeStream(final Buffer encoded, final long byteCount) {
+        final long written = await(
+                connection.conduit().write(encoded, byteCount),
+                timeout.write(),
+                "Unable to write socket frame");
+        if (written != byteCount || encoded.size() != Normal._0) {
+            throw new SocketException("Socket Conduit did not fully consume the encoded frame");
+        }
+    }
+
+    /**
+     * Sends one UDP datagram Call and verifies the accepted byte count.
+     *
+     * @param payload datagram payload
+     */
+    private void sendPacket(final Payload payload) {
+        final int expected = Math.toIntExact(payload.length());
+        final int written = datagram.sendDatagram(payload).execute();
+        if (written != expected) {
+            throw new SocketException("UDP session did not accept the complete socket datagram");
+        }
+    }
+
+    /**
+     * Sends all KCP packets currently released by the congestion window.
+     *
+     * @param packets outbound packets
+     */
+    private void sendKcpPackets(final List<KcpPacket> packets) {
+        for (final KcpPacket packet : packets) {
+            sendPacket(Payload.of(kcp.pack(packet)));
+        }
+    }
+
+    /**
+     * Runs one complete inbound socket pipeline.
+     *
+     * @return received message
+     */
+    private Message receiveNow() {
+        try {
+            ensureOpen();
+            PendingFrame pending = pollPending();
+            if (pending == null) {
+                if (connection != null) {
+                    readStreamFrames();
+                } else if (kcp == null) {
+                    readPlainDatagram();
+                } else {
+                    awaitKcpFrame();
+                }
+                pending = pollPending();
+            }
+            if (pending == null) {
+                throw new SocketException("Socket receive completed without a frame");
+            }
+            return deliver(pending);
+        } catch (final RuntimeException e) {
+            operationFailed(e);
+            throw e;
+        } catch (final Error e) {
+            operationFailed(e);
+            throw e;
+        }
+    }
+
+    /**
+     * Reads stream chunks until the stateful codec produces at least one frame.
+     */
+    private void readStreamFrames() {
+        long wireBytes = Normal._0;
+        while (opened()) {
+            final Buffer input = new Buffer();
+            final long read = await(
+                    connection.conduit().read(input, socketOptions.readBufferSize()),
+                    timeout.read(),
+                    "Unable to read socket frame");
+            if (read < Normal._0) {
+                throw new SocketException("Socket stream closed");
+            }
+            if (read == Normal._0) {
+                if (!ThreadKit.sleep(Normal._1)) {
+                    throw new CancellationException("Socket stream read interrupted");
+                }
+                continue;
+            }
+            wireBytes += read;
+            final List<SocketFrame> frames = decode(input);
+            if (!frames.isEmpty()) {
+                enqueuePending(frames, null, wireBytes);
+                return;
+            }
+        }
+        throw new StatefulException("Socket session closed while reading");
+    }
+
+    /**
+     * Reads and decodes one plain UDP datagram.
+     */
+    private void readPlainDatagram() {
+        final Message packet = datagram.receive().execute();
+        final byte[] bytes = materialize(packet.payload(), "SocketSession.receive(UDP)");
+        final List<SocketFrame> frames = decode(new Buffer().write(bytes));
+        if (frames.isEmpty()) {
+            throw new SocketException("Socket datagram did not contain a complete frame");
+        }
+        enqueuePending(frames, packet.tag(), bytes.length);
+    }
+
+    /**
+     * Waits for the KCP Pump to publish a complete decoded frame.
+     */
+    private void awaitKcpFrame() {
+        while (opened()) {
+            if (hasPending()) {
+                return;
+            }
+            cancellation.throwIfCancelled();
+            if (!ThreadKit.sleep(Normal._1)) {
+                throw new CancellationException("KCP receive interrupted");
+            }
+        }
+        throw new StatefulException("Socket session closed while waiting for KCP");
+    }
+
+    /**
+     * Decodes one input buffer under the stateful codec lock.
+     *
+     * @param input encoded input
+     * @return decoded frames
+     */
+    private List<SocketFrame> decode(final Buffer input) {
+        synchronized (codec) {
+            return codec.decode(input);
+        }
+    }
+
+    /**
+     * Delivers one decoded frame through the inbound Filter and Handler once.
+     *
+     * @param pending pending frame
+     * @return delivered message
+     */
+    private Message deliver(final PendingFrame pending) {
+        final Object tag = pending.tag() == null ? "socket-read" : pending.tag();
+        final Message received = filter(Payload.of(pending.frame().payload()), tag);
+        checkGuard(received);
+        handler.message(this, received);
+        if (pending.wireBytes() > Normal._0) {
+            emit(ObservationMarker.SOCKET_READ, pending.wireBytes(), null);
+        }
+        touch();
+        Logger.debug(
+                false,
+                "Fabric",
+                "Socket receive completed: scheme={}, host={}, port={}, bytes={}",
+                address.scheme(),
+                address.host(),
+                address.port(),
+                pending.wireBytes());
+        return received;
+    }
+
+    /**
+     * Starts the single KCP receive Pump.
+     */
+    private void startKcpPump() {
+        if (kcp == null) {
+            return;
+        }
+        final DispatchHandle created = dispatcher
+                .background("socket:kcp:pump", this, Activity.of("socket:kcp:pump", this::pumpKcp));
+        if (!kcpHandle.compareAndSet(null, created)) {
+            created.cancel();
+            throw new StatefulException("KCP Pump can only be started once");
+        }
+        created.future().whenComplete((ignored, cause) -> kcpHandle.compareAndSet(created, null));
+    }
+
+    /**
+     * Receives KCP datagrams, sends protocol outbound packets, and publishes complete frames.
+     */
+    private void pumpKcp() {
+        try {
+            while (opened() && !cancellation.cancelled()) {
+                final Message packetMessage = datagram.receive().execute();
+                final KcpPacket packet = kcp.unpack(packetMessage.payload(), materializeMaxBytes);
+                final KcpNetwork.Inbound inbound = kcp.receive(packet);
+                sendKcpPackets(inbound.outbound());
+                for (final Payload delivered : inbound.delivered()) {
+                    final byte[] bytes = materialize(delivered, "SocketSession.kcpPump(Payload)");
+                    final List<SocketFrame> frames = decode(new Buffer().write(bytes));
+                    if (frames.isEmpty()) {
+                        throw new SocketException("KCP payload did not contain a complete socket frame");
+                    }
+                    enqueuePending(frames, packetMessage.tag(), bytes.length);
+                }
+                touch();
+                scheduleRetransmission();
+            }
+        } catch (final RuntimeException e) {
+            if (opened()) {
+                operationFailed(e);
+            }
+        } catch (final Error e) {
+            if (opened()) {
+                operationFailed(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Schedules one KCP retransmission pass while packets remain pending.
+     */
+    private void scheduleRetransmission() {
+        if (kcp == null || kcp.pending() == Normal._0 || !opened() || retransmitHandle.get() != null) {
+            return;
+        }
+        final DispatchHandle created = dispatcher.schedule(
+                "socket:kcp:retransmit",
+                Builder.KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY,
+                Activity.of("socket:kcp:retransmit", this::retransmitKcp));
+        if (!retransmitHandle.compareAndSet(null, created)) {
+            created.cancel();
+            return;
+        }
+        created.future().whenComplete((ignored, cause) -> retransmitHandle.compareAndSet(created, null));
+    }
+
+    /**
+     * Sends due KCP packets and reschedules while the send window is non-empty.
+     */
+    private void retransmitKcp() {
+        retransmitHandle.set(null);
+        try {
+            if (opened()) {
+                sendKcpPackets(kcp.retransmitDue());
+                scheduleRetransmission();
+            }
+        } catch (final RuntimeException e) {
+            operationFailed(e);
+        } catch (final Error e) {
+            operationFailed(e);
+            throw e;
         }
     }
 
@@ -988,10 +976,9 @@ public final class SocketSession implements Session {
     }
 
     /**
-     * Checks the optional session guard against a socket payload.
+     * Checks the optional session guard against a socket message.
      *
-     * @param payload payload
-     * @param tag     direction tag
+     * @param message message
      */
     private void checkGuard(final Message message) {
         final Object value = attributes.get(Builder.ATTRIBUTE_GUARD);
@@ -1014,17 +1001,6 @@ public final class SocketSession implements Session {
     }
 
     /**
-     * Emits a session observation event.
-     *
-     * @param marker  marker
-     * @param payload payload
-     * @param cause   failure cause
-     */
-    private void emit(final ObservationMarker marker, final Payload payload, final Throwable cause) {
-        emit(marker, payload == null ? Normal.__1 : payload.length(), cause);
-    }
-
-    /**
      * Emits a session observation event with a measured byte count.
      *
      * @param marker marker
@@ -1032,17 +1008,32 @@ public final class SocketSession implements Session {
      * @param cause  failure cause
      */
     private void emit(final ObservationMarker marker, final long bytes, final Throwable cause) {
-        scope.emit(marker, cause);
+        if (bytes < Normal._0) {
+            scope.emit(marker, cause);
+            return;
+        }
+        trafficBytes.set(bytes);
+        try {
+            scope.emit(marker, cause);
+        } finally {
+            trafficBytes.remove();
+        }
     }
 
     /**
-     * Notifies handler and listener about a session failure.
+     * Adds the current encoded-wire byte count without replacing lifecycle tags or timestamps.
      *
-     * @param cause failure cause
+     * @param event lifecycle event
+     * @return event carrying the current wire byte count when present
      */
-    private void notifyFailure(final Throwable cause) {
-        final Throwable current = cause == null ? new StatefulException("Socket session failed") : cause;
-        handler.failure(this, current);
+    private FabricEvent withTrafficBytes(final FabricEvent event) {
+        final Long bytes = trafficBytes.get();
+        if (bytes == null || (event.marker() != ObservationMarker.SOCKET_READ
+                && event.marker() != ObservationMarker.SOCKET_WRITE)) {
+            return event;
+        }
+        return new FabricEvent(event.marker(), event.time(), event.tags().with(Builder.TAG_BYTES, Long.toString(bytes)),
+                event.cause());
     }
 
     /**
@@ -1052,76 +1043,278 @@ public final class SocketSession implements Session {
         if (!opened()) {
             throw new StatefulException("Socket session is not open");
         }
-        if (!socketOptions.idleTimeout().isZero()
-                && System.nanoTime() - lastActivityNanos > socketOptions.idleTimeout().toNanos()) {
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "Socket idle timeout reached: scheme={}, host={}, port={}, idleTimeout={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port(),
-                    socketOptions.idleTimeout());
-            close();
-            throw new TimeoutException("Socket session idle timeout");
-        }
+        cancellation.throwIfCancelled();
     }
 
     /**
      * Records socket activity.
      */
     private void touch() {
-        lastActivityNanos = System.nanoTime();
+        lastActivityNanos = clock.nanos();
+        scheduleIdle();
+    }
+
+    /**
+     * Replaces the active idle deadline with one measured from the latest successful traffic.
+     */
+    private void scheduleIdle() {
+        final Duration idle = socketOptions.idleTimeout();
+        if (idle.isZero() || terminating.get() || !opened()) {
+            return;
+        }
+        scheduleIdle(idle, lastActivityNanos);
+    }
+
+    /**
+     * Installs one idle deadline for an activity timestamp.
+     *
+     * @param delay         delay before checking
+     * @param activityNanos activity timestamp guarded by the deadline
+     */
+    private void scheduleIdle(final Duration delay, final long activityNanos) {
+        final DispatchHandle created = dispatcher.schedule(
+                "socket:session:idle",
+                delay,
+                Activity.of("socket:session:idle", () -> idleExpired(activityNanos)));
+        final DispatchHandle previous = idleHandle.getAndSet(created);
+        if (previous != null) {
+            previous.cancel();
+        }
+        created.future().whenComplete((ignored, cause) -> idleHandle.compareAndSet(created, null));
+        if (terminating.get() || !opened()) {
+            cancelHandle(idleHandle);
+        }
+    }
+
+    /**
+     * Actively closes an idle session or rechecks a deadline reached early by a custom clock.
+     *
+     * @param activityNanos activity timestamp guarded by this check
+     */
+    private void idleExpired(final long activityNanos) {
+        if (!opened() || activityNanos != lastActivityNanos) {
+            return;
+        }
+        final long idleNanos = durationNanos(socketOptions.idleTimeout());
+        final long elapsed = Math.max(Normal.LONG_ZERO, clock.nanos() - activityNanos);
+        if (elapsed < idleNanos) {
+            scheduleIdle(Duration.ofNanos(idleNanos - elapsed), activityNanos);
+            return;
+        }
+        Logger.debug(
+                false,
+                "Fabric",
+                "Socket idle timeout reached: scheme={}, host={}, port={}, idleTimeout={}",
+                address.scheme(),
+                address.host(),
+                address.port(),
+                socketOptions.idleTimeout());
+        terminate(Termination.CLOSE, null);
+    }
+
+    /**
+     * Waits for one bottom-level operation using the configured stage timeout.
+     *
+     * @param future  bottom-level future
+     * @param limit   timeout limit; zero means no explicit deadline
+     * @param message failure context
+     * @param <T>     result type
+     * @return operation result
+     */
+    private <T> T await(final CompletableFuture<T> future, final Duration limit, final String message) {
+        cancellation.throwIfCancelled();
+        try {
+            return limit.isZero() ? future.get() : future.get(limit.toNanos(), TimeUnit.NANOSECONDS);
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new InternalException(message + ": interrupted", e);
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            throw new InternalException(message, cause);
+        } catch (final CancellationException e) {
+            throw e;
+        } catch (final java.util.concurrent.TimeoutException e) {
+            throw new TimeoutException(message + ": timed out", e);
+        } catch (final ArithmeticException e) {
+            throw new ValidateException("Socket timeout is too large");
+        }
+    }
+
+    /**
+     * Terminates the session after cancelling background work and unblocking the active transport operation.
+     *
+     * @param termination requested terminal state
+     * @param cause       terminal cause when cancelling or failing
+     * @return true when this invocation owned termination
+     */
+    private boolean terminate(final Termination termination, final Throwable cause) {
+        if (!terminating.compareAndSet(false, true)) {
+            return false;
+        }
+        scope.closing();
+        final Throwable terminalCause = cause == null ? new CancellationException("Socket session closed") : cause;
+        cancellation.cancel(terminalCause);
+        cancelHandle(kcpHandle);
+        cancelHandle(retransmitHandle);
+        cancelHandle(idleHandle);
+
+        RuntimeException cleanupFailure = null;
+        try {
+            closeResources(termination == Termination.CLOSE);
+        } catch (final RuntimeException e) {
+            cleanupFailure = e;
+        }
+        if (ownsDispatcher) {
+            try {
+                ThreadKit.execute(this::closeDispatcher);
+            } catch (final RuntimeException e) {
+                cleanupFailure = append(cleanupFailure, e);
+            }
+        }
+
+        final Termination effective = cleanupFailure != null && termination == Termination.CLOSE ? Termination.FAIL
+                : termination;
+        final Throwable effectiveCause = cause == null && cleanupFailure != null ? cleanupFailure : terminalCause;
+        final boolean changed;
+        if (effective == Termination.CLOSE) {
+            changed = scope.close(this);
+            notifyClosed();
+        } else if (effective == Termination.CANCEL) {
+            changed = scope.cancel(effectiveCause);
+            notifyFailure(effectiveCause);
+        } else {
+            changed = scope.fail(effectiveCause);
+            notifyFailure(effectiveCause);
+        }
+        if (cleanupFailure != null && cleanupFailure != effectiveCause) {
+            effectiveCause.addSuppressed(cleanupFailure);
+        }
+        return changed;
+    }
+
+    /**
+     * Fails the session without allowing cleanup errors to replace the operation failure.
+     *
+     * @param cause operation failure
+     */
+    private void operationFailed(final Throwable cause) {
+        try {
+            terminate(Termination.FAIL, cause);
+        } catch (final RuntimeException cleanup) {
+            cause.addSuppressed(cleanup);
+        }
+    }
+
+    /**
+     * Notifies the message handler about a terminal failure without destabilizing cleanup.
+     *
+     * @param cause terminal failure
+     */
+    private void notifyFailure(final Throwable cause) {
+        try {
+            handler.failure(this, cause);
+        } catch (final RuntimeException e) {
+            scope.emit(ObservationMarker.LISTENER_FAILED, e);
+        }
+    }
+
+    /**
+     * Notifies the message handler about normal close without destabilizing cleanup.
+     */
+    private void notifyClosed() {
+        try {
+            handler.closed(this);
+        } catch (final RuntimeException e) {
+            scope.emit(ObservationMarker.LISTENER_FAILED, e);
+        }
+    }
+
+    /**
+     * Closes an internally created dispatcher outside its currently completing activity.
+     */
+    private void closeDispatcher() {
+        try {
+            dispatcher.close();
+        } catch (final RuntimeException e) {
+            Logger.warn(
+                    false,
+                    "Fabric",
+                    e,
+                    "Socket dispatcher close failed: scheme={}, host={}, port={}, exception={}",
+                    address.scheme(),
+                    address.host(),
+                    address.port(),
+                    e.getClass().getSimpleName());
+        }
+    }
+
+    /**
+     * Cancels and clears one owned dispatch handle.
+     *
+     * @param reference handle reference
+     */
+    private static void cancelHandle(final AtomicReference<DispatchHandle> reference) {
+        final DispatchHandle handle = reference.getAndSet(null);
+        if (handle != null) {
+            handle.cancel();
+        }
     }
 
     /**
      * Closes owned resources.
+     *
+     * @param reusable true when a connection lease may be returned to its pool
      */
     private void closeResources(final boolean reusable) {
         clearPendingFrames();
-        codec.reset();
-        if (writeBuffer != null) {
-            try {
-                writeBuffer.close();
-            } catch (final RuntimeException ignored) {
-                // Best-effort cleanup keeps the original close path.
-            }
-        }
-        if (writeAllocator != null) {
-            writeAllocator.release();
+        RuntimeException failure = null;
+        try {
+            codec.reset();
+        } catch (final RuntimeException e) {
+            failure = e;
         }
         if (owner instanceof SocketLease.Owner lease) {
-            if (reusable) {
-                lease.release();
-            } else {
-                lease.close();
+            try {
+                if (reusable) {
+                    lease.release();
+                } else {
+                    lease.close();
+                }
+            } catch (final RuntimeException e) {
+                failure = append(failure, e);
             }
-            return;
-        }
-        RuntimeException failure = null;
-        if (connection != null) {
+        } else if (connection != null) {
             try {
                 connection.close();
             } catch (final RuntimeException e) {
-                failure = e;
+                failure = append(failure, e);
             }
         }
         if (datagram != null) {
             try {
                 datagram.close();
             } catch (final RuntimeException e) {
-                if (failure == null) {
-                    failure = e;
-                }
+                failure = append(failure, e);
             }
         }
-        if (owner != null) {
+        if (kcp != null) {
+            try {
+                kcp.close();
+            } catch (final RuntimeException e) {
+                failure = append(failure, e);
+            }
+        }
+        if (owner != null && !(owner instanceof SocketLease.Owner)) {
             try {
                 owner.close();
             } catch (final Exception e) {
-                if (failure == null) {
-                    failure = new InternalException("Unable to close socket owner", e);
-                }
+                failure = append(failure, new InternalException("Unable to close socket owner", e));
             }
         }
         if (failure != null) {
@@ -1140,18 +1333,18 @@ public final class SocketSession implements Session {
     }
 
     /**
-     * Caches decoded frames that did not have a matching receive call yet.
+     * Caches decoded frames that do not yet have a matching receive Call.
      *
-     * @param frames decoded frames
-     * @param offset first frame to cache
+     * @param frames    decoded frames
+     * @param tag       source tag
+     * @param wireBytes encoded bytes consumed to produce the frames
      */
-    private void enqueuePending(final java.util.List<SocketFrame> frames, final int offset) {
-        if (frames.size() <= offset) {
-            return;
-        }
+    private void enqueuePending(final List<SocketFrame> frames, final Object tag, final long wireBytes) {
         synchronized (pendingFrames) {
-            for (int i = offset; i < frames.size(); i++) {
-                pendingFrames.addLast(frames.get(i));
+            boolean first = true;
+            for (final SocketFrame frame : frames) {
+                pendingFrames.addLast(new PendingFrame(frame, tag, first ? wireBytes : Normal.LONG_ZERO));
+                first = false;
             }
             Logger.debug(
                     false,
@@ -1165,41 +1358,34 @@ public final class SocketSession implements Session {
     }
 
     /**
+     * Removes the next decoded frame.
+     *
+     * @return pending frame or null
+     */
+    private PendingFrame pollPending() {
+        synchronized (pendingFrames) {
+            return pendingFrames.pollFirst();
+        }
+    }
+
+    /**
+     * Returns whether the KCP Pump has published a decoded frame.
+     *
+     * @return true when at least one frame is pending
+     */
+    private boolean hasPending() {
+        synchronized (pendingFrames) {
+            return !pendingFrames.isEmpty();
+        }
+    }
+
+    /**
      * Clears locally decoded but undelivered frames.
      */
     private void clearPendingFrames() {
         synchronized (pendingFrames) {
             pendingFrames.clear();
         }
-    }
-
-    /**
-     * Copies buffer bytes.
-     *
-     * @param buffer buffer
-     * @return bytes
-     */
-    private static byte[] bytes(final ByteBuffer buffer) {
-        final ByteBuffer duplicate = buffer.duplicate();
-        final byte[] data = new byte[duplicate.remaining()];
-        duplicate.get(data);
-        return data;
-    }
-
-    /**
-     * Adapts remaining NIO bytes to a core buffer.
-     *
-     * @param source source buffer
-     * @return core buffer
-     */
-    private static Buffer coreBuffer(final ByteBuffer source) {
-        final Buffer target = new Buffer();
-        try {
-            target.write(source.duplicate());
-        } catch (final IOException e) {
-            throw new InternalException("Unable to adapt socket buffer", e);
-        }
-        return target;
     }
 
     /**
@@ -1218,24 +1404,34 @@ public final class SocketSession implements Session {
     }
 
     /**
-     * Computes the slab size for connection write buffering.
+     * Converts a duration to nanoseconds while treating an overflowing positive duration as effectively unbounded.
      *
-     * @param options socket options
-     * @return slab size
+     * @param duration duration
+     * @return duration nanoseconds
      */
-    private static int writeSlabSize(final SocketOptions options) {
-        final long size = (long) options.writeChunkSize() * options.writeChunkCount();
-        return size > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) size;
+    private static long durationNanos(final Duration duration) {
+        try {
+            return duration.toNanos();
+        } catch (final ArithmeticException ignored) {
+            return Long.MAX_VALUE;
+        }
     }
 
     /**
-     * Unwraps completion causes.
+     * Appends a cleanup failure without discarding the first failure.
      *
-     * @param cause completion cause
-     * @return unwrapped cause
+     * @param current current failure or null
+     * @param next    next failure
+     * @return aggregate failure
      */
-    private static Throwable unwrap(final Throwable cause) {
-        return cause instanceof java.util.concurrent.CompletionException completion ? completion.getCause() : cause;
+    private static RuntimeException append(final RuntimeException current, final RuntimeException next) {
+        if (current == null) {
+            return next;
+        }
+        if (current != next) {
+            current.addSuppressed(next);
+        }
+        return current;
     }
 
     /**
@@ -1251,153 +1447,49 @@ public final class SocketSession implements Session {
     }
 
     /**
-     * Future-backed send call.
+     * Decoded frame plus its original transport metadata and encoded byte count.
+     *
+     * @param frame     decoded frame
+     * @param tag       transport tag
+     * @param wireBytes encoded bytes attributed to this frame
      */
-    private static final class FutureCall implements Call<Void> {
+    private record PendingFrame(SocketFrame frame, Object tag, long wireBytes) {
 
         /**
-         * Future.
-         */
-        private final CompletableFuture<Void> future;
-
-        /**
-         * Creates a call.
+         * Creates a validated pending frame.
          *
-         * @param future future
+         * @param frame     decoded frame
+         * @param tag       transport tag
+         * @param wireBytes encoded bytes attributed to this frame
          */
-        private FutureCall(final CompletableFuture<Void> future) {
-            this.future = future;
-        }
-
-        /**
-         * Waits for the already-started send to complete.
-         *
-         * @return null
-         */
-        @Override
-        public Void execute() {
-            return await();
-        }
-
-        /**
-         * Returns this already-started send call.
-         *
-         * @return this call
-         */
-        @Override
-        public Call<Void> enqueue() {
-            return this;
-        }
-
-        /**
-         * Waits for completion.
-         *
-         * @return null
-         */
-        @Override
-        public Void await() {
-            try {
-                return future.get();
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InternalException("Interrupted while waiting for socket send", e);
-            } catch (final ExecutionException e) {
-                throw new InternalException("Socket send failed", e.getCause());
-            } catch (final CancellationException e) {
-                throw new InternalException("Socket send was cancelled", e);
+        private PendingFrame {
+            frame = require(frame, "Pending socket frame");
+            if (wireBytes < Normal.LONG_ZERO) {
+                throw new ValidateException("Pending socket wire bytes must be non-negative");
             }
         }
 
-        /**
-         * Waits for completion within a timeout.
-         *
-         * @param timeout timeout
-         * @return null
-         */
-        @Override
-        public Void await(final Duration timeout) {
-            validateTimeout(timeout);
-            if (timeout.isZero()) {
-                if (!future.isDone()) {
-                    cancel();
-                    throw new TimeoutException("Socket send timed out");
-                }
-                return await();
-            }
-            try {
-                return future.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InternalException("Interrupted while waiting for socket send", e);
-            } catch (final ExecutionException e) {
-                throw new InternalException("Socket send failed", e.getCause());
-            } catch (final CancellationException e) {
-                throw new InternalException("Socket send was cancelled", e);
-            } catch (final java.util.concurrent.TimeoutException e) {
-                cancel();
-                throw new TimeoutException("Socket send timed out", e);
-            } catch (final ArithmeticException e) {
-                throw new ValidateException("Timeout is too large");
-            }
-        }
+    }
+
+    /**
+     * Session terminal path selected by the owner of the termination guard.
+     */
+    private enum Termination {
 
         /**
-         * Cancels the asynchronous socket send future.
-         *
-         * @return true when cancelled
+         * Normal close with reusable connection ownership.
          */
-        @Override
-        public boolean cancel() {
-            return future.cancel(false);
-        }
+        CLOSE,
 
         /**
-         * Returns whether the socket send future is cancelled.
-         *
-         * @return true when cancelled
+         * Explicit cancellation with non-reusable ownership.
          */
-        @Override
-        public boolean cancelled() {
-            return future.isCancelled();
-        }
+        CANCEL,
 
         /**
-         * Returns whether the socket send future is complete.
-         *
-         * @return true when complete
+         * Failure with non-reusable ownership.
          */
-        @Override
-        public boolean done() {
-            return state().terminal();
-        }
-
-        /**
-         * Returns lifecycle state.
-         *
-         * @return state
-         */
-        @Override
-        public Status state() {
-            if (future.isCancelled()) {
-                return Status.CANCELLED;
-            }
-            if (future.isCompletedExceptionally()) {
-                return Status.FAILED;
-            }
-            return future.isDone() ? Status.DONE : Status.RUNNING;
-        }
-
-        /**
-         * Validates timeout.
-         *
-         * @param timeout timeout
-         */
-        private static void validateTimeout(final Duration timeout) {
-            Assert.notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
-            Assert.isTrue(
-                    !timeout.isNegative(),
-                    () -> new ValidateException("Timeout must be non-null and non-negative"));
-        }
+        FAIL
 
     }
 

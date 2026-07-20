@@ -79,11 +79,6 @@
         <url>https://github.com/818000/bus/issues</url>
     </issueManagement>
 
-    <properties>
-        <fabric.baseline.scope>new</fabric.baseline.scope>
-        <fabric.baseline.reportDir>${project.build.directory}/baseline-reports</fabric.baseline.reportDir>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>

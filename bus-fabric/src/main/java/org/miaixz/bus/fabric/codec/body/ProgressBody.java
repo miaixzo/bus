@@ -307,12 +307,16 @@ public interface ProgressBody extends Body {
             if (count <= 0) {
                 return;
             }
-            final long current = transferred.addAndGet(count);
+            final long current = addTransferred(count);
             final long total = original.length();
             long lastNotified = -1L;
             long threshold = nextStep.get();
             while (current >= threshold) {
-                if (nextStep.compareAndSet(threshold, threshold + stepBytes.get())) {
+                if (threshold == Long.MAX_VALUE) {
+                    break;
+                }
+                final long next = saturatedAdd(threshold, stepBytes.get());
+                if (nextStep.compareAndSet(threshold, next)) {
                     notifyListener(threshold, total);
                     lastNotified = threshold;
                     threshold = nextStep.get();
@@ -349,7 +353,36 @@ public interface ProgressBody extends Body {
          * @return next threshold
          */
         private static long nextThreshold(final long current, final long step) {
-            return (current / step + 1) * step;
+            final long remainder = current % step;
+            final long delta = remainder == 0L ? step : step - remainder;
+            return saturatedAdd(current, delta);
+        }
+
+        /**
+         * Adds transferred bytes with saturation at {@link Long#MAX_VALUE}.
+         *
+         * @param count positive byte count
+         * @return updated transferred count
+         */
+        private long addTransferred(final long count) {
+            while (true) {
+                final long current = transferred.get();
+                final long next = saturatedAdd(current, count);
+                if (transferred.compareAndSet(current, next)) {
+                    return next;
+                }
+            }
+        }
+
+        /**
+         * Adds two non-negative values with saturation.
+         *
+         * @param first  first value
+         * @param second second value
+         * @return saturated sum
+         */
+        private static long saturatedAdd(final long first, final long second) {
+            return first > Long.MAX_VALUE - second ? Long.MAX_VALUE : first + second;
         }
 
         /**

@@ -19,9 +19,12 @@
 */
 package org.miaixz.bus.fabric.protocol.http.http2;
 
-import java.nio.charset.Charset;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.LongConsumer;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -32,16 +35,16 @@ import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.ProtocolException;
+import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
 
 /**
- * HTTP/2 stream state with buffered body source and sink.
+ * Lock-based state machine for one HTTP/2 stream.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -54,250 +57,527 @@ public final class Http2Stream implements AutoCloseable {
     private final int id;
 
     /**
-     * Body source.
+     * Initial local headers retained until final response headers arrive.
      */
-    private final StreamBody source;
+    private final Headers initialHeaders;
 
     /**
-     * Body sink.
+     * Lock protecting all mutable stream state.
      */
-    private final StreamBody sink;
+    private final ReentrantLock lock;
 
     /**
-     * State.
+     * Condition for headers, body data and terminal changes.
      */
-    private final AtomicReference<Status> state;
+    private final Condition changed;
 
     /**
-     * Inbound flow-control window.
+     * Buffered inbound body bytes.
      */
-    private final AtomicLong receiveWindow;
+    private final Buffer body;
 
     /**
-     * Headers.
+     * Callback for body bytes actually consumed by the application.
      */
-    private volatile Headers headers;
+    private final LongConsumer consumedCallback;
 
     /**
-     * Priority metadata.
+     * Callback removing this stream from its owning connection.
      */
-    private volatile Http2Priority priority;
+    private final Runnable terminalCallback;
 
     /**
-     * Creates a stream.
+     * Callback sending RST_STREAM CANCEL after an early body close.
+     */
+    private final Runnable cancelCallback;
+
+    /**
+     * One-shot stream payload.
+     */
+    private final StreamPayload payload;
+
+    /**
+     * Compatibility sink used by parser-side tests and adapters.
+     */
+    private final InboundSink sink;
+
+    /**
+     * Informational response header snapshots.
+     */
+    private final ArrayList<Headers> informationalHeaders;
+
+    /**
+     * First non-informational response headers.
+     */
+    private Headers finalHeaders;
+
+    /**
+     * End-of-stream trailer headers.
+     */
+    private Headers trailers;
+
+    /**
+     * Latest priority metadata.
+     */
+    private Http2Priority priority;
+
+    /**
+     * Terminal failure delivered to header and body waiters.
+     */
+    private RuntimeException failure;
+
+    /**
+     * True after the peer sends END_STREAM.
+     */
+    private boolean remoteEnd;
+
+    /**
+     * True after the payload source is opened.
+     */
+    private boolean sourceOpened;
+
+    /**
+     * True after the payload source is closed.
+     */
+    private boolean sourceClosed;
+
+    /**
+     * True after the terminal callback is delivered.
+     */
+    private boolean terminalNotified;
+
+    /**
+     * Creates a stream with no-op ownership callbacks.
      *
-     * @param id      id
-     * @param headers headers
+     * @param id      stream id
+     * @param headers initial headers
      */
     Http2Stream(final int id, final Headers headers) {
         this(id, headers, ignored -> {
+        }, () -> {
+        }, () -> {
         });
     }
 
     /**
-     * Creates a stream.
+     * Creates a stream with a consumption callback.
      *
-     * @param id              id
-     * @param headers         headers
-     * @param inboundConsumed inbound body bytes consumed by the application
+     * @param id              stream id
+     * @param headers         initial headers
+     * @param inboundConsumed consumed-byte callback
      */
     Http2Stream(final int id, final Headers headers, final LongConsumer inboundConsumed) {
+        this(id, headers, inboundConsumed, () -> {
+        }, () -> {
+        });
+    }
+
+    /**
+     * Creates a connection-owned stream.
+     *
+     * @param id              stream id
+     * @param headers         initial headers
+     * @param inboundConsumed consumed-byte callback
+     * @param terminal        terminal ownership callback
+     * @param cancel          early-close cancellation callback
+     */
+    Http2Stream(final int id, final Headers headers, final LongConsumer inboundConsumed, final Runnable terminal,
+            final Runnable cancel) {
         if (id <= Normal._0) {
             throw new ValidateException("HTTP/2 stream id must be positive");
         }
         this.id = id;
-        this.headers = require(headers, "HTTP/2 stream headers");
-        this.source = new StreamBody(require(inboundConsumed, "HTTP/2 inbound consumed callback"));
-        this.sink = new StreamBody(ignored -> {
-        });
-        this.state = new AtomicReference<>(Status.OPENED);
-        this.receiveWindow = new AtomicLong(Builder.HTTP2_STREAM_DEFAULT_WINDOW);
+        this.initialHeaders = require(headers, "HTTP/2 stream headers");
+        this.lock = new ReentrantLock();
+        this.changed = lock.newCondition();
+        this.body = new Buffer();
+        this.consumedCallback = require(inboundConsumed, "HTTP/2 consumed callback");
+        this.terminalCallback = require(terminal, "HTTP/2 terminal callback");
+        this.cancelCallback = require(cancel, "HTTP/2 cancel callback");
+        this.payload = new StreamPayload();
+        this.sink = new InboundSink();
+        this.informationalHeaders = new ArrayList<>();
+        this.trailers = Headers.empty();
     }
 
     /**
-     * Returns stream id.
-     *
-     * @return id
+     * @return stream id
      */
     public int id() {
         return id;
     }
 
     /**
-     * Returns header snapshot.
+     * Returns final response headers when available, otherwise the initial local header snapshot.
      *
-     * @return headers
+     * @return header snapshot
      */
     public Headers headers() {
-        return headers;
+        lock.lock();
+        try {
+            return finalHeaders == null ? initialHeaders : finalHeaders;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
-     * Returns priority metadata.
-     *
-     * @return priority or null
+     * @return priority metadata or null
      */
     public Http2Priority priority() {
-        return priority;
+        lock.lock();
+        try {
+            return priority;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
-     * Receives headers.
+     * Receives a header block without END_STREAM.
      *
-     * @param headers headers
+     * @param headers header block
      */
     public void receiveHeaders(final Headers headers) {
-        ensureOpen();
-        this.headers = require(headers, "HTTP/2 headers");
+        receiveHeaders(headers, false);
     }
 
     /**
-     * Receives priority metadata.
+     * Receives informational, final or trailer headers.
      *
-     * @param priority priority metadata
+     * @param headers   header block
+     * @param endStream whether this block ends the remote stream
      */
-    void priority(final Http2Priority priority) {
-        ensureOpen();
-        this.priority = require(priority, "HTTP/2 priority");
+    public void receiveHeaders(final Headers headers, final boolean endStream) {
+        final Headers checked = require(headers, "HTTP/2 headers");
+        Runnable terminal = null;
+        lock.lock();
+        try {
+            throwIfFailed();
+            final String status = checked.get(HTTP.RESPONSE_STATUS_UTF8);
+            if (finalHeaders == null) {
+                if (informational(status)) {
+                    informationalHeaders.add(checked);
+                } else {
+                    finalHeaders = checked;
+                }
+            } else {
+                if (status != null) {
+                    throw new StatefulException("HTTP/2 response headers were already received");
+                }
+                if (!endStream) {
+                    throw new StatefulException("HTTP/2 trailers must end the stream");
+                }
+                trailers = checked;
+            }
+            if (endStream) {
+                remoteEnd = true;
+                terminal = terminalIfCompleteLocked();
+            }
+            changed.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        run(terminal);
     }
 
     /**
-     * Receives body data.
+     * Receives body data without END_STREAM.
      *
-     * @param data data
+     * @param data data bytes
      */
     public void receiveData(final ByteString data) {
-        final ByteString payload = require(data, "HTTP/2 data");
-        if (!opened()) {
-            throw new ProtocolException("HTTP/2 closed stream received data");
-        }
-        consumeReceiveWindow(payload.size());
-        final Buffer buffer = new Buffer().write(payload);
-        source.write(buffer, buffer.size());
+        receiveData(data, false);
     }
 
     /**
-     * Restores inbound flow-control window after a WINDOW_UPDATE is sent.
+     * Appends body data and wakes the streaming consumer.
      *
-     * @param delta restored byte count
+     * @param data      data bytes
+     * @param endStream whether this data ends the remote stream
      */
-    void updateReceiveWindow(final long delta) {
-        if (delta <= Normal._0 || delta > Integer.MAX_VALUE) {
-            throw new ProtocolException("Invalid HTTP/2 stream window update");
-        }
-        long current;
-        long next;
-        do {
-            current = receiveWindow.get();
-            next = current + delta;
-            if (next > Integer.MAX_VALUE || next < current) {
-                throw new ProtocolException("HTTP/2 stream flow-control window overflow");
+    public void receiveData(final ByteString data, final boolean endStream) {
+        final ByteString checked = require(data, "HTTP/2 data");
+        Runnable terminal = null;
+        lock.lock();
+        try {
+            throwIfFailed();
+            if (remoteEnd) {
+                throw new StatefulException("HTTP/2 stream already reached remote end");
             }
-        } while (!receiveWindow.compareAndSet(current, next));
+            body.write(checked);
+            if (endStream) {
+                remoteEnd = true;
+                terminal = terminalIfCompleteLocked();
+            }
+            changed.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        run(terminal);
     }
 
     /**
-     * Returns source.
+     * Waits only for final non-1xx headers, failure or timeout.
      *
-     * @return source
+     * @param timeout wait duration; zero waits without a deadline
+     * @return final response headers
+     */
+    public Headers awaitResponseHeaders(final Duration timeout) {
+        final Duration checked = require(timeout, "HTTP/2 header timeout");
+        if (checked.isNegative()) {
+            throw new ValidateException("HTTP/2 header timeout must not be negative");
+        }
+        long remaining = checked.isZero() ? Long.MAX_VALUE : nanos(checked);
+        lock.lock();
+        try {
+            while (finalHeaders == null) {
+                throwIfFailed();
+                if (remoteEnd) {
+                    throw new SocketException("HTTP/2 stream ended before final response headers");
+                }
+                remaining = await(remaining, "HTTP/2 response headers");
+            }
+            return finalHeaders;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @return immutable informational header snapshots
+     */
+    List<Headers> informationalHeaders() {
+        lock.lock();
+        try {
+            return List.copyOf(informationalHeaders);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @return trailer snapshot, empty until received
+     */
+    public Headers trailers() {
+        lock.lock();
+        try {
+            throwIfFailed();
+            return trailers;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @return one-shot streaming payload
+     */
+    public Payload payload() {
+        return payload;
+    }
+
+    /**
+     * @return one-shot streaming source
      */
     public Source source() {
-        return source;
+        return payload.source();
     }
 
     /**
-     * Returns sink.
-     *
-     * @return sink
+     * @return parser-side inbound sink
      */
     public Sink sink() {
         return sink;
     }
 
     /**
-     * Closes stream.
+     * Stores priority metadata.
+     *
+     * @param value priority metadata
+     */
+    void priority(final Http2Priority value) {
+        lock.lock();
+        try {
+            priority = require(value, "HTTP/2 priority");
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Fails the stream and wakes every waiter.
+     *
+     * @param cause terminal failure
+     */
+    void fail(final RuntimeException cause) {
+        final RuntimeException checked = require(cause, "HTTP/2 stream failure");
+        Runnable terminal;
+        lock.lock();
+        try {
+            if (failure == null) {
+                failure = checked;
+            }
+            remoteEnd = true;
+            sourceClosed = true;
+            terminal = terminalLocked();
+            changed.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        run(terminal);
+    }
+
+    /**
+     * Closes the response body; an early close sends CANCEL exactly once.
      */
     @Override
-    public synchronized void close() {
-        final Status current = state.get();
-        if (current == Status.CLOSED) {
-            return;
-        }
-        if (!current.canTransit(Status.CLOSING)) {
-            throw new StatefulException("HTTP/2 stream cannot close from state " + current);
-        }
-        state.set(Status.CLOSING);
-        RuntimeException failure = null;
-        try {
-            source.close();
-        } catch (final RuntimeException e) {
-            failure = e;
-        }
-        try {
-            sink.close();
-        } catch (final RuntimeException e) {
-            if (failure == null) {
-                failure = e;
-            }
-        }
-        state.set(Status.CLOSED);
-        if (failure != null) {
-            throw closeFailure(failure);
-        }
+    public void close() {
+        closeSource();
     }
 
     /**
-     * Returns whether stream is opened.
-     *
-     * @return true when opened
+     * @return true while no failure occurred and the source is not closed
      */
     public boolean opened() {
-        return state.get() == Status.OPENED;
-    }
-
-    /**
-     * Ensures stream is open.
-     */
-    private void ensureOpen() {
-        if (!opened()) {
-            throw new StatefulException("HTTP/2 stream is closed");
+        lock.lock();
+        try {
+            return failure == null && !sourceClosed;
+        } finally {
+            lock.unlock();
         }
     }
 
     /**
-     * Consumes inbound flow-control window.
-     *
-     * @param length length
+     * Closes the source and chooses normal completion or early cancellation.
      */
-    private void consumeReceiveWindow(final int length) {
-        long current;
-        do {
-            current = receiveWindow.get();
-            if (length > current) {
-                throw new ProtocolException("HTTP/2 stream flow-control window is exhausted");
+    private void closeSource() {
+        Runnable cancel = null;
+        Runnable terminal;
+        lock.lock();
+        try {
+            if (sourceClosed) {
+                return;
             }
-        } while (!receiveWindow.compareAndSet(current, current - length));
-    }
-
-    /**
-     * Classifies close failure.
-     *
-     * @param failure failure
-     * @return runtime failure
-     */
-    private static RuntimeException closeFailure(final RuntimeException failure) {
-        if (failure instanceof InternalException || failure instanceof StatefulException) {
-            return failure;
+            sourceClosed = true;
+            if (!remoteEnd || body.size() > Normal.LONG_ZERO) {
+                cancel = cancelCallback;
+            }
+            terminal = terminalLocked();
+            changed.signalAll();
+        } finally {
+            lock.unlock();
         }
-        return new InternalException("Unable to close stream", failure);
+        run(cancel);
+        run(terminal);
     }
 
     /**
-     * Validates required value.
+     * Returns the terminal callback when remote completion is fully consumed.
+     *
+     * @return callback or null
+     */
+    private Runnable terminalIfCompleteLocked() {
+        return remoteEnd && body.size() == Normal.LONG_ZERO ? terminalLocked() : null;
+    }
+
+    /**
+     * Claims the terminal callback exactly once.
+     *
+     * @return callback or null
+     */
+    private Runnable terminalLocked() {
+        if (terminalNotified) {
+            return null;
+        }
+        terminalNotified = true;
+        return terminalCallback;
+    }
+
+    /**
+     * Waits on the stream condition.
+     *
+     * @param remaining remaining nanoseconds or Long.MAX_VALUE
+     * @param operation operation name
+     * @return updated remaining nanoseconds
+     */
+    private long await(final long remaining, final String operation) {
+        try {
+            if (remaining == Long.MAX_VALUE) {
+                changed.await();
+                return Long.MAX_VALUE;
+            }
+            if (remaining <= Normal.LONG_ZERO) {
+                throw new org.miaixz.bus.core.lang.exception.TimeoutException("Timed out waiting for " + operation);
+            }
+            final long next = changed.awaitNanos(remaining);
+            if (next <= Normal.LONG_ZERO) {
+                throw new org.miaixz.bus.core.lang.exception.TimeoutException("Timed out waiting for " + operation);
+            }
+            return next;
+        } catch (final InterruptedException e) {
+            ThreadKit.interrupt(Thread.currentThread(), false);
+            throw new InternalException("Interrupted while waiting for " + operation, e);
+        }
+    }
+
+    /**
+     * Throws the stored failure.
+     */
+    private void throwIfFailed() {
+        if (failure != null) {
+            throw failure;
+        }
+    }
+
+    /**
+     * Tests whether a status header is informational.
+     *
+     * @param status status value or null
+     * @return true for 100 through 199
+     */
+    private static boolean informational(final String status) {
+        if (status == null) {
+            return false;
+        }
+        try {
+            final int code = Integer.parseInt(status);
+            return code >= HTTP.HTTP_CONTINUE && code < HTTP.HTTP_OK;
+        } catch (final NumberFormatException e) {
+            throw new SocketException("Invalid HTTP/2 response status", e);
+        }
+    }
+
+    /**
+     * Converts a duration to a saturated nanosecond count.
+     *
+     * @param duration duration
+     * @return nanoseconds
+     */
+    private static long nanos(final Duration duration) {
+        try {
+            return Math.max(Normal._1, duration.toNanos());
+        } catch (final ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    /**
+     * Runs an optional ownership callback.
+     *
+     * @param callback callback or null
+     */
+    private static void run(final Runnable callback) {
+        if (callback != null) {
+            callback.run();
+        }
+    }
+
+    /**
+     * Validates a required value.
      *
      * @param value value
-     * @param name  name
-     * @param <T>   type
+     * @param name  field name
+     * @param <T>   value type
      * @return value
      */
     private static <T> T require(final T value, final String name) {
@@ -305,97 +585,91 @@ public final class Http2Stream implements AutoCloseable {
     }
 
     /**
-     * Buffered stream body.
+     * One-shot payload whose source waits for incremental DATA frames.
      */
-    private static final class StreamBody implements Source, Sink, Payload {
+    private final class StreamPayload implements Payload, Source {
 
         /**
-         * Buffer.
-         */
-        private final Buffer buffer = new Buffer();
-
-        /**
-         * Callback for newly consumed bytes.
-         */
-        private final LongConsumer consumed;
-
-        /**
-         * Read cursor.
-         */
-        private int readIndex;
-
-        /**
-         * Highest absolute buffer index already credited to flow-control.
-         */
-        private int creditedIndex;
-
-        /**
-         * Closed flag.
-         */
-        private boolean closed;
-
-        /**
-         * Creates a body.
-         *
-         * @param consumed consumed byte callback
-         */
-        private StreamBody(final LongConsumer consumed) {
-            this.consumed = require(consumed, "HTTP/2 consumed callback");
-        }
-
-        /**
-         * Returns length.
-         *
-         * @return length
+         * @return unknown streaming length
          */
         @Override
-        public synchronized long length() {
-            return buffer.size();
+        public long length() {
+            return Normal.__1;
         }
 
         /**
-         * Opens a bounded source view over the buffered HTTP/2 body.
-         *
-         * @return body source view
+         * @return this source on the first invocation
          */
         @Override
-        public synchronized Source source() {
-            ensureOpen();
-            return new BufferSourceView(bufferSize());
+        public Source source() {
+            lock.lock();
+            try {
+                if (sourceOpened) {
+                    throw new StatefulException("HTTP/2 body source can only be opened once");
+                }
+                sourceOpened = true;
+                return this;
+            } finally {
+                lock.unlock();
+            }
         }
 
         /**
-         * Reads from the buffered body and reports consumed flow-control bytes.
-         *
-         * @param target    destination buffer
-         * @param byteCount maximum bytes to read
-         * @return bytes read, or -1 at end of buffer
+         * @return false
          */
         @Override
-        public synchronized long read(final Buffer target, final long byteCount) {
-            final Buffer checkedTarget = require(target, "HTTP/2 body target");
-            if (byteCount < Normal._0) {
-                throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-            }
-            ensureOpen();
-            if (byteCount == Normal._0) {
-                return Normal._0;
-            }
-            final long size = buffer.size();
-            if (readIndex >= size) {
-                return Normal.__1;
-            }
-            final int count = (int) Math.min(Math.min(byteCount, size - readIndex), Integer.MAX_VALUE);
-            buffer.copyTo(checkedTarget, readIndex, count);
-            readIndex += count;
-            creditConsumed(readIndex);
-            return count;
+        public boolean repeatable() {
+            return false;
         }
 
         /**
-         * Returns source and sink timeout.
+         * Reads available body bytes or waits for DATA, failure or remote end.
          *
-         * @return timeout
+         * @param target    target buffer
+         * @param byteCount maximum bytes
+         * @return bytes read or -1 at EOF
+         */
+        @Override
+        public long read(final Buffer target, final long byteCount) {
+            final Buffer checked = require(target, "HTTP/2 body target");
+            if (byteCount < Normal.LONG_ZERO) {
+                throw new ValidateException("HTTP/2 body byte count must not be negative");
+            }
+            if (byteCount == Normal.LONG_ZERO) {
+                return Normal.LONG_ZERO;
+            }
+            long consumed = Normal.LONG_ZERO;
+            Runnable terminal = null;
+            lock.lock();
+            try {
+                while (body.size() == Normal.LONG_ZERO && !remoteEnd) {
+                    throwIfFailed();
+                    if (sourceClosed) {
+                        throw new StatefulException("HTTP/2 body source is closed");
+                    }
+                    await(Long.MAX_VALUE, "HTTP/2 body data");
+                }
+                throwIfFailed();
+                if (body.size() == Normal.LONG_ZERO && remoteEnd) {
+                    sourceClosed = true;
+                    terminal = terminalLocked();
+                    return Normal.__1;
+                }
+                consumed = Math.min(byteCount, body.size());
+                checked.write(body, consumed);
+                terminal = terminalIfCompleteLocked();
+                return consumed;
+            } finally {
+                lock.unlock();
+                if (consumed > Normal.LONG_ZERO) {
+                    consumedCallback.accept(consumed);
+                }
+                run(terminal);
+            }
+        }
+
+        /**
+         * @return no per-source timeout
          */
         @Override
         public Timeout timeout() {
@@ -403,223 +677,57 @@ public final class Http2Stream implements AutoCloseable {
         }
 
         /**
-         * Reads all bytes.
-         *
-         * @return bytes
+         * Closes the body source.
          */
         @Override
-        public synchronized byte[] bytes() {
-            return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        public void close() {
+            closeSource();
         }
 
-        /**
-         * Materializes buffered bytes and marks the buffer as consumed.
-         *
-         * @param maxBytes maximum bytes to materialize
-         * @return materialized bytes
-         */
-        @Override
-        public synchronized byte[] bytes(final long maxBytes) {
-            ensureOpen();
-            Payload.validateMaterializeMaxBytes(maxBytes);
-            if (buffer.size() > maxBytes) {
-                throw Payload.materializeExceeded(buffer.size(), maxBytes, "Http2Stream.StreamBody.bytes(long)");
-            }
-            creditConsumed(bufferSize());
-            return snapshot();
-        }
+    }
+
+    /**
+     * Parser-side sink adapting byte writes to stream DATA transitions.
+     */
+    private final class InboundSink implements Sink {
 
         /**
-         * Reads text.
-         *
-         * @param charset charset
-         * @return text
-         */
-        @Override
-        public String text(final Charset charset) {
-            return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
-        }
-
-        /**
-         * Materializes and decodes the buffered body with an explicit threshold.
-         *
-         * @param charset  charset
-         * @param maxBytes maximum bytes to materialize
-         * @return decoded text
-         */
-        @Override
-        public String text(final Charset charset, final long maxBytes) {
-            return new String(bytes(maxBytes), require(charset, "Charset"));
-        }
-
-        /**
-         * Returns whether this buffered body is repeatable.
-         *
-         * @return true
-         */
-        @Override
-        public boolean repeatable() {
-            return true;
-        }
-
-        /**
-         * Writes buffered bytes.
+         * Appends inbound bytes.
          *
          * @param source    source buffer
          * @param byteCount byte count
          */
         @Override
-        public synchronized void write(final Buffer source, final long byteCount) {
-            final Buffer checkedSource = require(source, "HTTP/2 body source");
-            if (byteCount < Normal._0) {
-                throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        public void write(final Buffer source, final long byteCount) throws IOException {
+            final Buffer checked = require(source, "HTTP/2 inbound source");
+            if (byteCount < Normal.LONG_ZERO || byteCount > checked.size()) {
+                throw new ValidateException("HTTP/2 inbound byte count is invalid");
             }
-            ensureOpen();
-            buffer.write(checkedSource, byteCount);
+            receiveData(checked.readByteString(byteCount), false);
         }
 
         /**
-         * Returns written count.
-         *
-         * @return written
-         */
-        public synchronized long written() {
-            return buffer.size();
-        }
-
-        /**
-         * Flushes body.
+         * Flush is unnecessary for an in-memory stream buffer.
          */
         @Override
-        public synchronized void flush() {
-            ensureOpen();
+        public void flush() {
+            // DATA is visible immediately after write.
         }
 
         /**
-         * Closes body.
+         * @return no per-sink timeout
          */
         @Override
-        public synchronized void close() {
-            closed = true;
+        public Timeout timeout() {
+            return Timeout.NONE;
         }
 
         /**
-         * Ensures this body is open.
+         * Marks the parser-side stream as remotely ended.
          */
-        private void ensureOpen() {
-            if (closed) {
-                throw new StatefulException("HTTP/2 body is closed");
-            }
-        }
-
-        /**
-         * Returns a snapshot without consuming the backing buffer.
-         *
-         * @return snapshot bytes
-         */
-        private byte[] snapshot() {
-            final Buffer copy = new Buffer();
-            buffer.copyTo(copy, Normal._0, buffer.size());
-            return copy.readByteArray();
-        }
-
-        /**
-         * Credits newly consumed bytes once, even across multiple source views.
-         *
-         * @param absoluteIndex consumed absolute buffer index
-         */
-        private void creditConsumed(final int absoluteIndex) {
-            if (absoluteIndex <= creditedIndex) {
-                return;
-            }
-            final int delta = absoluteIndex - creditedIndex;
-            creditedIndex = absoluteIndex;
-            consumed.accept(delta);
-        }
-
-        /**
-         * Returns the backing buffer size as an int.
-         *
-         * @return buffer size
-         */
-        private int bufferSize() {
-            final long size = buffer.size();
-            if (size > Integer.MAX_VALUE) {
-                throw new ProtocolException("HTTP/2 body buffer is too large");
-            }
-            return (int) size;
-        }
-
-        /**
-         * Source view over the buffered segments.
-         */
-        private final class BufferSourceView implements Source {
-
-            /**
-             * Read limit captured when the source is opened.
-             */
-            private final int limit;
-
-            /**
-             * Read cursor.
-             */
-            private int cursor;
-
-            /**
-             * Creates a source view.
-             *
-             * @param limit readable limit
-             */
-            private BufferSourceView(final int limit) {
-                this.limit = limit;
-            }
-
-            /**
-             * Reads from this bounded buffer view and reports consumed bytes.
-             *
-             * @param target    destination buffer
-             * @param byteCount maximum bytes to read
-             * @return bytes read, or -1 at end of view
-             */
-            @Override
-            public long read(final Buffer target, final long byteCount) {
-                final Buffer checkedTarget = require(target, "HTTP/2 body target");
-                if (byteCount < Normal._0) {
-                    throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-                }
-                if (byteCount == Normal._0) {
-                    return Normal._0;
-                }
-                synchronized (StreamBody.this) {
-                    if (cursor >= limit) {
-                        return Normal.__1;
-                    }
-                    final int count = (int) Math.min(Math.min(byteCount, limit - cursor), Integer.MAX_VALUE);
-                    buffer.copyTo(checkedTarget, cursor, count);
-                    cursor += count;
-                    creditConsumed(cursor);
-                    return count;
-                }
-            }
-
-            /**
-             * Returns the source view timeout policy.
-             *
-             * @return timeout
-             */
-            @Override
-            public Timeout timeout() {
-                return Timeout.NONE;
-            }
-
-            /**
-             * Leaves buffer lifecycle to the owning stream body.
-             */
-            @Override
-            public void close() {
-                // The backing stream body owns the buffer lifecycle.
-            }
-
+        @Override
+        public void close() {
+            receiveData(ByteString.EMPTY, true);
         }
 
     }

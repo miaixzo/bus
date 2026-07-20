@@ -21,6 +21,9 @@ package org.miaixz.bus.fabric.observe.window;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.locks.StampedLock;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -48,7 +51,12 @@ public final class RollingWindow {
     /**
      * Ring buckets.
      */
-    private final Bucket[] buckets;
+    private final AtomicReferenceArray<BucketState> buckets;
+
+    /**
+     * Lifecycle lock separating ordinary access from reset.
+     */
+    private final StampedLock lock;
 
     /**
      * Creates a rolling window.
@@ -59,10 +67,8 @@ public final class RollingWindow {
     private RollingWindow(final long windowNanos, final long bucketNanos) {
         this.windowNanos = windowNanos;
         this.bucketNanos = bucketNanos;
-        this.buckets = new Bucket[(int) (windowNanos / bucketNanos)];
-        for (int i = 0; i < buckets.length; i++) {
-            buckets[i] = new Bucket();
-        }
+        this.buckets = new AtomicReferenceArray<>((int) (windowNanos / bucketNanos));
+        this.lock = new StampedLock();
     }
 
     /**
@@ -87,15 +93,38 @@ public final class RollingWindow {
      * @param value value
      * @param time  sample time
      */
-    public synchronized void add(final long value, final Instant time) {
+    public void add(final long value, final Instant time) {
         Assert.isTrue(value >= 0, () -> new ValidateException("Window value must be non-negative"));
         final long key = bucketKey(time);
-        final Bucket bucket = buckets[index(key)];
-        if (bucket.key != key) {
-            bucket.reset(key);
+        final int index = index(key);
+        final long stamp = lock.readLock();
+        try {
+            while (true) {
+                final BucketState state = buckets.get(index);
+                if (state == null) {
+                    final BucketState installed = new BucketState(key);
+                    if (buckets.compareAndSet(index, null, installed)) {
+                        installed.add(value);
+                        return;
+                    }
+                    continue;
+                }
+                if (state.key == key) {
+                    state.add(value);
+                    return;
+                }
+                if (state.key > key) {
+                    return;
+                }
+                final BucketState installed = new BucketState(key);
+                if (buckets.compareAndSet(index, state, installed)) {
+                    installed.add(value);
+                    return;
+                }
+            }
+        } finally {
+            lock.unlockRead(stamp);
         }
-        bucket.sum += value;
-        bucket.count++;
     }
 
     /**
@@ -104,15 +133,18 @@ public final class RollingWindow {
      * @param now current time
      * @return sum
      */
-    public synchronized long sum(final Instant now) {
+    public long sum(final Instant now) {
         final long current = bucketKey(now);
-        long sum = 0;
-        for (final Bucket bucket : buckets) {
-            if (active(bucket, current)) {
-                sum += bucket.sum;
+        final long stamp = lock.readLock();
+        try {
+            long sum = 0L;
+            for (int i = 0; i < buckets.length(); i++) {
+                sum += value(i, current, true);
             }
+            return sum;
+        } finally {
+            lock.unlockRead(stamp);
         }
-        return sum;
     }
 
     /**
@@ -121,15 +153,18 @@ public final class RollingWindow {
      * @param now current time
      * @return count
      */
-    public synchronized long count(final Instant now) {
+    public long count(final Instant now) {
         final long current = bucketKey(now);
-        long count = 0;
-        for (final Bucket bucket : buckets) {
-            if (active(bucket, current)) {
-                count += bucket.count;
+        final long stamp = lock.readLock();
+        try {
+            long count = 0L;
+            for (int i = 0; i < buckets.length(); i++) {
+                count += value(i, current, false);
             }
+            return count;
+        } finally {
+            lock.unlockRead(stamp);
         }
-        return count;
     }
 
     /**
@@ -138,17 +173,31 @@ public final class RollingWindow {
      * @param now current time
      * @return rate
      */
-    public synchronized double rate(final Instant now) {
-        final long total = sum(now);
-        return total == 0 ? 0D : total / (windowNanos / Builder.ROLLING_WINDOW_NANOS_PER_SECOND);
+    public double rate(final Instant now) {
+        final long current = bucketKey(now);
+        final long stamp = lock.readLock();
+        try {
+            long total = 0L;
+            for (int i = 0; i < buckets.length(); i++) {
+                total += value(i, current, true);
+            }
+            return total == 0L ? 0D : total / (windowNanos / Builder.ROLLING_WINDOW_NANOS_PER_SECOND);
+        } finally {
+            lock.unlockRead(stamp);
+        }
     }
 
     /**
      * Resets all buckets.
      */
-    public synchronized void reset() {
-        for (final Bucket bucket : buckets) {
-            bucket.clear();
+    public void reset() {
+        final long stamp = lock.writeLock();
+        try {
+            for (int i = 0; i < buckets.length(); i++) {
+                buckets.set(i, null);
+            }
+        } finally {
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -159,16 +208,34 @@ public final class RollingWindow {
      * @param current current key
      * @return true when active
      */
-    private boolean active(final Bucket bucket, final long current) {
-        if (bucket.empty()) {
+    private boolean active(final BucketState bucket, final long current) {
+        if (bucket == null) {
             return false;
         }
-        final long oldest = current - buckets.length + 1L;
+        final long oldest = current - buckets.length() + 1L;
         if (bucket.key < oldest) {
-            bucket.clear();
             return false;
         }
         return bucket.key <= current;
+    }
+
+    /**
+     * Reads one stable bucket slot, retrying once if its reference changes.
+     *
+     * @param index   bucket index
+     * @param current current bucket key
+     * @param sum     true for sum, false for count
+     * @return selected bucket value
+     */
+    private long value(final int index, final long current, final boolean sum) {
+        BucketState state = buckets.get(index);
+        long value = active(state, current) ? state.value(sum) : 0L;
+        final BucketState after = buckets.get(index);
+        if (after != state) {
+            state = after;
+            value = active(state, current) ? state.value(sum) : 0L;
+        }
+        return value;
     }
 
     /**
@@ -178,7 +245,7 @@ public final class RollingWindow {
      * @return index
      */
     private int index(final long key) {
-        return Math.floorMod(key, buckets.length);
+        return Math.floorMod(key, buckets.length());
     }
 
     /**
@@ -221,50 +288,52 @@ public final class RollingWindow {
     /**
      * Rolling bucket state.
      */
-    private static final class Bucket {
+    private static final class BucketState {
 
         /**
          * Bucket key.
          */
-        private long key = Long.MIN_VALUE;
+        private final long key;
 
         /**
          * Sum value.
          */
-        private long sum;
+        private final LongAdder sum;
 
         /**
          * Sample count.
          */
-        private long count;
+        private final LongAdder count;
 
         /**
-         * Resets bucket to a key.
+         * Creates bucket state for a fixed key.
          *
          * @param key bucket key
          */
-        private void reset(final long key) {
+        private BucketState(final long key) {
             this.key = key;
-            this.sum = 0;
-            this.count = 0;
+            this.sum = new LongAdder();
+            this.count = new LongAdder();
         }
 
         /**
-         * Clears bucket state.
-         */
-        private void clear() {
-            this.key = Long.MIN_VALUE;
-            this.sum = 0;
-            this.count = 0;
-        }
-
-        /**
-         * Returns whether the bucket is empty.
+         * Adds one sample.
          *
-         * @return true when empty
+         * @param value sample value
          */
-        private boolean empty() {
-            return key == Long.MIN_VALUE;
+        private void add(final long value) {
+            sum.add(value);
+            count.increment();
+        }
+
+        /**
+         * Returns the selected aggregate.
+         *
+         * @param selectSum true for sum, false for count
+         * @return aggregate value
+         */
+        private long value(final boolean selectSum) {
+            return selectSum ? sum.sum() : count.sum();
         }
 
     }
