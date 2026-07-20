@@ -42,7 +42,7 @@ public final class CFKit {
     }
 
     /**
-     * /** Convert a pointer to a CFString into a String.
+     * Convert a pointer to a CFString into a String.
      *
      * @param result Pointer to the CFString
      * @return a CFString or "unknown" if it has no value
