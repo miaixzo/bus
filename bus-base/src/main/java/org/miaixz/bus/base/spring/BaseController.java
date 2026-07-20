@@ -73,14 +73,14 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
                 "Base",
                 "CRUD add request received: entityType={}",
                 entity == null ? null : entity.getClass().getSimpleName());
-        T t = (T) service.insertSelective(entity);
-        if (ObjectKit.isNotEmpty(t)) {
+        Object result = service.insertSelective(entity);
+        if (ObjectKit.isNotEmpty(result)) {
             Logger.info(
                     false,
                     "Base",
                     "CRUD add completed: entityType={}, success=true",
                     entity == null ? null : entity.getClass().getSimpleName());
-            return write(t);
+            return write(result);
         }
         Logger.warn(
                 false,
@@ -169,14 +169,14 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
                 "Base",
                 "CRUD update request received: entityType={}",
                 entity == null ? null : entity.getClass().getSimpleName());
-        T t = (T) service.updateSelective(entity);
-        if (ObjectKit.isNotEmpty(t)) {
+        Object result = service.updateSelective(entity);
+        if (ObjectKit.isNotEmpty(result)) {
             Logger.info(
                     false,
                     "Base",
                     "CRUD update completed: entityType={}, success=true",
                     entity == null ? null : entity.getClass().getSimpleName());
-            return write(t);
+            return write(result);
         }
         Logger.warn(
                 false,

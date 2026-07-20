@@ -104,10 +104,10 @@ public class Controller {
      */
     public Object write(Errors errors, Object data) {
         if (null == errors || !Errors.contains(errors.getKey())) {
-            return write(ErrorCode._FAILURE);
+            return Message.failure(ErrorCode._FAILURE);
         }
         if (ErrorCode._SUCCESS.getKey().equals(errors.getKey())) {
-            return Message.builder().errcode(errors.getKey()).errmsg(errors.getValue()).data(data).build();
+            return Message.success(errors, data);
         }
         return write(errors.getKey(), errors.getValue());
     }
@@ -121,9 +121,9 @@ public class Controller {
      */
     public Object write(String errcode, String errmsg) {
         if (Errors.contains(errcode) && StringKit.isNotEmpty(errmsg)) {
-            return Message.builder().errcode(errcode).errmsg(errmsg).build();
+            return Message.failure(errcode, errmsg);
         }
-        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+        return Message.failure(ErrorCode._FAILURE);
     }
 
     /**
@@ -136,9 +136,9 @@ public class Controller {
      */
     public Object write(String errcode, String errmsg, String format) {
         if (StringKit.isNotEmpty(errcode) && StringKit.isNotEmpty(format)) {
-            return Message.builder().errcode(errcode).errmsg(StringKit.format(format, errmsg)).build();
+            return Message.failure(errcode, StringKit.format(format, errmsg));
         }
-        return write(ErrorCode._FAILURE);
+        return Message.failure(ErrorCode._FAILURE);
     }
 
 }

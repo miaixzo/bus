@@ -28,9 +28,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
+
 /**
  * Represents a standard response message.
  *
+ * @param <T> the response payload type
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -39,7 +43,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message implements Serializable {
+public class Message<T> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852291039238L;
@@ -57,6 +61,50 @@ public class Message implements Serializable {
     /**
      * The data payload of the response.
      */
-    public Object data;
+    public T data;
+
+    /**
+     * Creates a successful response while preserving the framework's existing response contract.
+     *
+     * @param data the response payload
+     * @param <T>  the payload type
+     * @return a successful response
+     */
+    public static <T> Message<T> success(T data) {
+        return success(ErrorCode._SUCCESS, data);
+    }
+
+    /**
+     * Creates a successful response from the supplied registered success descriptor.
+     *
+     * @param errors the registered success descriptor
+     * @param data   the response payload
+     * @param <T>    the payload type
+     * @return a successful response
+     */
+    public static <T> Message<T> success(Errors errors, T data) {
+        return Message.<T>builder().errcode(errors.getKey()).errmsg(errors.getValue()).data(data).build();
+    }
+
+    /**
+     * Creates an error response from a registered error descriptor.
+     *
+     * @param errors the registered error descriptor
+     * @return an error response
+     */
+    public static Message<Void> failure(Errors errors) {
+        return Message.<Void>builder().errcode(errors.getKey()).errmsg(errors.getValue()).build();
+    }
+
+    /**
+     * Creates an error response with an explicit code and message.
+     *
+     * @param errcode the response code
+     * @param errmsg  the response message
+     * @return an error response
+     */
+    public static Message<Void> failure(String errcode, String errmsg) {
+        return Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
+    }
 
 }

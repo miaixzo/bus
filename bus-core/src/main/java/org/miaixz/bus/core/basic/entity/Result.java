@@ -68,12 +68,28 @@ public class Result<T> implements Serializable {
     protected transient Integer pageSize;
 
     /**
+     * Creates a paginated result using the framework's existing {@code total}/{@code rows} response structure.
+     *
+     * @param rows  the result rows
+     * @param total the total number of matching records
+     * @param <T>   the row type
+     * @return a paginated result
+     */
+    public static <T> Result<T> of(List<T> rows, long total) {
+        return Result.<T>builder().rows(rows).total(total).build();
+    }
+
+    /**
      * Retrieves a sublist of data for a specific page number.
      *
      * @param pageNo The page number to retrieve.
      * @return A list of data for the specified page, or an empty list if the page is out of bounds.
      */
     public List<T> get(int pageNo) {
+        if (pageNo < 1 || this.pageSize == null || this.pageSize < 1 || this.rows == null || this.rows.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         // Calculate the starting index for the sublist.
         int fromIndex = (pageNo - 1) * this.pageSize;
         // If the starting index is beyond the list size, return an empty list.
@@ -82,11 +98,7 @@ public class Result<T> implements Serializable {
         }
 
         // Calculate the ending index for the sublist.
-        int toIndex = pageNo * this.pageSize;
-        // If the ending index is beyond the list size, adjust it to the end of the list.
-        if (toIndex >= this.rows.size()) {
-            toIndex = this.rows.size();
-        }
+        int toIndex = (int) Math.min((long) pageNo * this.pageSize, this.rows.size());
         // Return the sublist for the requested page.
         return this.rows.subList(fromIndex, toIndex);
     }
