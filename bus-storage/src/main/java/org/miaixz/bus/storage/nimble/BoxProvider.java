@@ -110,7 +110,7 @@ public class BoxProvider extends AbstractProvider {
      *         successful.
      */
     @Override
-    public Message download(String fileName) {
+    public Message<byte[]> download(String fileName) {
         return download(this.context.getBucket(), fileName);
     }
 
@@ -121,7 +121,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message stat(String fileName) {
+    public Message<Blob> stat(String fileName) {
         return stat(this.context.getBucket(), fileName);
     }
 
@@ -133,7 +133,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message stat(String bucket, String fileName) {
+    public Message<Blob> stat(String bucket, String fileName) {
         return statKey(bucket, fileName);
     }
 
@@ -145,18 +145,18 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message statKey(String bucket, String objectKey) {
+    public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
             Map<String, Object> metadata = resolveFileMetadata(bucket, objectKey);
             if (metadata == null) {
-                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                         .build();
             }
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(toBlob(bucket, objectKey, metadata, null)).build();
         } catch (Exception e) {
             Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
@@ -170,7 +170,7 @@ public class BoxProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
         }
     }
 
@@ -181,7 +181,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message stream(String fileName) {
+    public Message<Blob> stream(String fileName) {
         return stream(this.context.getBucket(), fileName);
     }
 
@@ -193,7 +193,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message stream(String bucket, String fileName) {
+    public Message<Blob> stream(String bucket, String fileName) {
         return streamKey(bucket, fileName);
     }
 
@@ -205,15 +205,15 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message streamKey(String bucket, String objectKey) {
+    public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
             Map<String, Object> metadata = resolveFileMetadata(bucket, objectKey);
             if (metadata == null) {
-                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                         .build();
             }
 
@@ -223,10 +223,10 @@ public class BoxProvider extends AbstractProvider {
             if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
-                return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+                return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(toBlob(bucket, objectKey, metadata, stream(response))).build();
         } catch (Exception e) {
             Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
@@ -240,7 +240,7 @@ public class BoxProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
         }
     }
 
@@ -253,12 +253,12 @@ public class BoxProvider extends AbstractProvider {
      *         content as a byte array; otherwise, it contains error information.
      */
     @Override
-    public Message download(String bucket, String fileName) {
+    public Message<byte[]> download(String bucket, String fileName) {
         try {
             String fileId = findFileByName(fileName, bucket);
             if (fileId == null) {
-                return Message.builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
-                        .build();
+                return Message.<byte[]>builder().errcode(ErrorCode._113003.getKey())
+                        .errmsg(ErrorCode._113003.getValue()).build();
             }
 
             String url = API_BASE + "/files/" + fileId + "/content";
@@ -269,8 +269,8 @@ public class BoxProvider extends AbstractProvider {
                 }
 
                 byte[] content = response.bytes();
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .data(content).build();
+                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -282,7 +282,8 @@ public class BoxProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -294,7 +295,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message download(String fileName, File file) {
+    public Message<Void> download(String fileName, File file) {
         return download(this.context.getBucket(), fileName, file);
     }
 
@@ -307,11 +308,11 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message download(String bucket, String fileName, File file) {
+    public Message<Void> download(String bucket, String fileName, File file) {
         try {
             String fileId = findFileByName(fileName, bucket);
             if (fileId == null) {
-                return Message.builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
                         .build();
             }
 
@@ -327,8 +328,8 @@ public class BoxProvider extends AbstractProvider {
                     inputStream.transferTo(outputStream);
                 }
 
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .build();
+                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -341,7 +342,8 @@ public class BoxProvider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -352,7 +354,7 @@ public class BoxProvider extends AbstractProvider {
      *         successful.
      */
     @Override
-    public Message list() {
+    public Message<List<Blob>> list() {
         try {
             String folderId = context.getBucket();
             String url = API_BASE + "/folders/" + folderId + "/items?fields=id,name,size,modified_at,type";
@@ -380,8 +382,8 @@ public class BoxProvider extends AbstractProvider {
                     }
                 }
 
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .data(blobs).build();
+                return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).data(blobs).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -392,7 +394,8 @@ public class BoxProvider extends AbstractProvider {
                     this.context.getBucket(),
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
+                    .errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -404,7 +407,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String oldName, String newName) {
+    public Message<Void> rename(String oldName, String newName) {
         return rename(this.context.getBucket(), Normal.EMPTY, oldName, newName);
     }
 
@@ -417,7 +420,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String path, String oldName, String newName) {
+    public Message<Void> rename(String path, String oldName, String newName) {
         return rename(this.context.getBucket(), path, oldName, newName);
     }
 
@@ -431,11 +434,11 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String bucket, String path, String oldName, String newName) {
+    public Message<Void> rename(String bucket, String path, String oldName, String newName) {
         try {
             String fileId = findFileByName(oldName, bucket);
             if (fileId == null) {
-                return Message.builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
                         .build();
             }
 
@@ -453,8 +456,8 @@ public class BoxProvider extends AbstractProvider {
                     throw new IOException("Rename failed: " + response.code());
                 }
 
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .build();
+                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -467,7 +470,8 @@ public class BoxProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -479,7 +483,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String fileName, byte[] content) {
+    public Message<Blob> upload(String fileName, byte[] content) {
         return upload(this.context.getBucket(), Normal.EMPTY, fileName, content);
     }
 
@@ -492,7 +496,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String bucket, String fileName, byte[] content) {
+    public Message<Blob> upload(String bucket, String fileName, byte[] content) {
         return upload(bucket, Normal.EMPTY, fileName, content);
     }
 
@@ -506,7 +510,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String bucket, String path, String fileName, byte[] content) {
+    public Message<Blob> upload(String bucket, String path, String fileName, byte[] content) {
         try {
             String url = UPLOAD_BASE + "/files/content";
 
@@ -544,8 +548,9 @@ public class BoxProvider extends AbstractProvider {
                 List<Map<String, Object>> entries = (List<Map<String, Object>>) jsonMap.get("entries");
                 String fileId = entries != null && !entries.isEmpty() ? (String) entries.get(0).get("id") : null;
 
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .data(Blob.builder().name(fileName).path(fileId).build()).build();
+                return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).data(Blob.builder().name(fileName).path(fileId).build())
+                        .build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -557,7 +562,8 @@ public class BoxProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -569,7 +575,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String fileName, InputStream content) {
+    public Message<Blob> upload(String fileName, InputStream content) {
         return upload(this.context.getBucket(), Normal.EMPTY, fileName, content);
     }
 
@@ -582,7 +588,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String path, String fileName, InputStream content) {
+    public Message<Blob> upload(String path, String fileName, InputStream content) {
         return upload(this.context.getBucket(), path, fileName, content);
     }
 
@@ -596,7 +602,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String bucket, String path, String fileName, InputStream content) {
+    public Message<Blob> upload(String bucket, String path, String fileName, InputStream content) {
         try {
             byte[] contentBytes = content.readAllBytes();
             return upload(bucket, path, fileName, contentBytes);
@@ -610,7 +616,8 @@ public class BoxProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -621,7 +628,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String fileName) {
+    public Message<Void> remove(String fileName) {
         return remove(this.context.getBucket(), Normal.EMPTY, fileName);
     }
 
@@ -633,7 +640,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String bucket, String fileName) {
+    public Message<Void> remove(String bucket, String fileName) {
         return remove(bucket, Normal.EMPTY, fileName);
     }
 
@@ -646,11 +653,11 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String bucket, String path, String fileName) {
+    public Message<Void> remove(String bucket, String path, String fileName) {
         try {
             String fileId = findFileByName(fileName, bucket);
             if (fileId == null) {
-                return Message.builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
                         .build();
             }
 
@@ -661,8 +668,8 @@ public class BoxProvider extends AbstractProvider {
                     throw new IOException("Delete failed: " + response.code());
                 }
 
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .build();
+                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -674,7 +681,8 @@ public class BoxProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -686,7 +694,7 @@ public class BoxProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String bucket, Path path) {
+    public Message<Void> remove(String bucket, Path path) {
         return remove(bucket, path.toString(), Normal.EMPTY);
     }
 

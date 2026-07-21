@@ -90,10 +90,11 @@ public class Message<T> implements Serializable {
      * Creates an error response from a registered error descriptor.
      *
      * @param errors the registered error descriptor
+     * @param <T>    the expected response payload type
      * @return an error response
      */
-    public static Message<Void> failure(Errors errors) {
-        return Message.<Void>builder().errcode(errors.getKey()).errmsg(errors.getValue()).build();
+    public static <T> Message<T> failure(Errors errors) {
+        return Message.<T>builder().errcode(errors.getKey()).errmsg(errors.getValue()).build();
     }
 
     /**
@@ -101,10 +102,11 @@ public class Message<T> implements Serializable {
      *
      * @param errcode the response code
      * @param errmsg  the response message
+     * @param <T>     the expected response payload type
      * @return an error response
      */
-    public static Message<Void> failure(String errcode, String errmsg) {
-        return Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
+    public static <T> Message<T> failure(String errcode, String errmsg) {
+        return Message.<T>builder().errcode(errcode).errmsg(errmsg).build();
     }
 
 }

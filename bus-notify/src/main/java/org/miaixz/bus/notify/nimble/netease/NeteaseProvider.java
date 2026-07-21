@@ -125,7 +125,7 @@ public abstract class NeteaseProvider<T extends Notice, K extends Context> exten
      * @param map       The request body parameters.
      * @return A {@link Message} indicating the result of the sending operation.
      */
-    public Message post(String routerUrl, Map<String, String> map) {
+    public Message<Void> post(String routerUrl, Map<String, String> map) {
         Map<String, String> header = getPostHeader();
         Logger.debug(
                 true,
@@ -136,7 +136,7 @@ public abstract class NeteaseProvider<T extends Notice, K extends Context> exten
                 header == null ? 0 : header.size());
         String response = FabricX.post(routerUrl, map, header);
         String code = JsonKit.getValue(response, "Code");
-        Message result = Message.builder()
+        Message<Void> result = Message.<Void>builder()
                 .errcode(String.valueOf(HTTP.HTTP_OK).equals(code) ? ErrorCode._SUCCESS.getKey() : code)
                 .errmsg(JsonKit.getValue(response, "desc")).build();
         Logger.debug(

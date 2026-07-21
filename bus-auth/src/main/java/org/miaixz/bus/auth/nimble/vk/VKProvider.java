@@ -74,7 +74,7 @@ public class VKProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
+    public Message<String> build(String state) {
         String realState = getRealState(state);
 
         Builder builder = Builder.fromUrl((String) super.build(state).getData())
@@ -90,7 +90,7 @@ public class VKProvider extends AbstractProvider {
             this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(builder.build()).build();
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(builder.build()).build();
     }
 
     /**
@@ -100,7 +100,7 @@ public class VKProvider extends AbstractProvider {
      * @return the access token object
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         // Use the authorization code to get the access_token
         String response = doPostAuthorizationCode(callback);
         Map<String, String> object = JsonKit.toMap(response);
@@ -108,7 +108,7 @@ public class VKProvider extends AbstractProvider {
         this.checkResponse(object);
 
         // Return token
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().idToken(object.get("id_token")).token(object.get("access_token"))
                                 .refresh(object.get("refresh_token")).token_type(object.get("token_type"))
@@ -125,7 +125,7 @@ public class VKProvider extends AbstractProvider {
      * @throws IllegalArgumentException if parsing user information fails
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String body = doGetUserInfo(authorization);
         Map<String, String> object = JsonKit.toMap(body);
 
@@ -136,7 +136,7 @@ public class VKProvider extends AbstractProvider {
         Map<String, String> userObj = JsonKit.toMap(object.get("user"));
 
         // Extract user information
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Claims.builder().uuid(userObj.get("user_id")).username(userObj.get("first_name"))
                                 .nickname(userObj.get("first_name") + " " + userObj.get("last_name"))
@@ -152,7 +152,7 @@ public class VKProvider extends AbstractProvider {
      * @return a message containing the new access token
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(7);
         form.put("grant_type", "refresh_token");
         form.put("refresh_token", authorization.getRefresh());
@@ -160,8 +160,8 @@ public class VKProvider extends AbstractProvider {
         form.put("device_id", authorization.getDeviceId());
         form.put("client_id", this.context.getClientId());
         form.put("ip", "10.10.10.10");
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getToken(form, this.complex.refresh()))
-                .build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(getToken(form, this.complex.refresh())).build();
 
     }
 
@@ -172,14 +172,14 @@ public class VKProvider extends AbstractProvider {
      * @return a message indicating the result of the revocation
      */
     @Override
-    public Message revoke(Authorization authorization) {
+    public Message<Void> revoke(Authorization authorization) {
         String response = doPostRevoke(authorization);
         Map<String, String> object = JsonKit.toMap(response);
         this.checkResponse(object);
         // Return 1 indicates successful authorization cancellation, otherwise failed
 
         Errors errors = object.get("response").equals("1") ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
-        return Message.builder().errcode(errors.getKey()).errmsg(errors.getValue()).build();
+        return Message.<Void>builder().errcode(errors.getKey()).errmsg(errors.getValue()).build();
     }
 
     /**

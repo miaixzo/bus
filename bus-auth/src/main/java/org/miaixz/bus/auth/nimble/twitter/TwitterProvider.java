@@ -127,9 +127,9 @@ public class TwitterProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
+    public Message<String> build(String state) {
         Authorization token = this.getRequestToken();
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl(this.complex.authorize()).queryParam("oauth_token", token.getOauthToken()).build())
                 .build();
     }
@@ -167,7 +167,7 @@ public class TwitterProvider extends AbstractProvider {
      * @return the access token object
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> headerMap = buildOauthParams();
         headerMap.put("oauth_token", callback.getOauth_token());
         headerMap.put("oauth_verifier", callback.getOauth_verifier());
@@ -185,7 +185,7 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> requestToken = Builder.parseStringToMap(response);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Authorization.builder().oauthToken(requestToken.get("oauth_token"))
                         .oauthTokenSecret(requestToken.get("oauth_token_secret")).userId(requestToken.get("user_id"))
                         .screenName(requestToken.get("screen_name")).build())
@@ -200,7 +200,7 @@ public class TwitterProvider extends AbstractProvider {
      * @throws IllegalArgumentException if parsing user information fails
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> form = buildOauthParams();
         form.put("oauth_token", authorization.getOauthToken());
 
@@ -233,7 +233,7 @@ public class TwitterProvider extends AbstractProvider {
         String rawJson = JsonKit.toJsonString(userInfo);
 
         // Build user information object
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Claims.builder().rawJson(rawJson).uuid((String) userInfo.get("id_str"))
                         .username((String) userInfo.get("screen_name")).nickname((String) userInfo.get("name"))
                         .remark((String) userInfo.get("description"))

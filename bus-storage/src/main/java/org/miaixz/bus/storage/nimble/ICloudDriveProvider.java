@@ -117,7 +117,7 @@ public class ICloudDriveProvider extends AbstractProvider {
     }
 
     @Override
-    public Message download(String fileName) {
+    public Message<byte[]> download(String fileName) {
         return download(this.context.getBucket(), fileName);
     }
 
@@ -128,7 +128,7 @@ public class ICloudDriveProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message stat(String fileName) {
+    public Message<Blob> stat(String fileName) {
         return stat(this.context.getBucket(), fileName);
     }
 
@@ -140,7 +140,7 @@ public class ICloudDriveProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message stat(String bucket, String fileName) {
+    public Message<Blob> stat(String bucket, String fileName) {
         return statKey(bucket, normalizeObjectPath(bucket, fileName));
     }
 
@@ -152,19 +152,19 @@ public class ICloudDriveProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message statKey(String bucket, String objectKey) {
+    public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
             String path = normalizeObjectPath(bucket, objectKey);
             Map<String, Object> record = queryFileRecord(path);
             if (record == null) {
-                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                         .build();
             }
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(toBlob(bucket, path, record, null)).build();
         } catch (Exception e) {
             Logger.error(
@@ -177,7 +177,8 @@ public class ICloudDriveProvider extends AbstractProvider {
                     objectKey,
                     ErrorCode._113012.getKey(),
                     e.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                    .build();
         }
     }
 
@@ -188,7 +189,7 @@ public class ICloudDriveProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message stream(String fileName) {
+    public Message<Blob> stream(String fileName) {
         return stream(this.context.getBucket(), fileName);
     }
 
@@ -200,7 +201,7 @@ public class ICloudDriveProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message stream(String bucket, String fileName) {
+    public Message<Blob> stream(String bucket, String fileName) {
         return streamKey(bucket, normalizeObjectPath(bucket, fileName));
     }
 
@@ -212,22 +213,22 @@ public class ICloudDriveProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message streamKey(String bucket, String objectKey) {
+    public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
             String path = normalizeObjectPath(bucket, objectKey);
             Map<String, Object> record = queryFileRecord(path);
             if (record == null) {
-                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                         .build();
             }
 
             String downloadUrl = getAssetDownloadUrl(record);
             if (StringKit.isBlank(downloadUrl)) {
-                return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
                         .build();
             }
 
@@ -235,9 +236,9 @@ public class ICloudDriveProvider extends AbstractProvider {
             if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
-                return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+                return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
             }
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(toBlob(bucket, path, record, stream(response))).build();
         } catch (Exception e) {
             Logger.error(
@@ -250,24 +251,25 @@ public class ICloudDriveProvider extends AbstractProvider {
                     objectKey,
                     ErrorCode._113012.getKey(),
                     e.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                    .build();
         }
     }
 
     @Override
-    public Message download(String bucket, String fileName) {
+    public Message<byte[]> download(String bucket, String fileName) {
         try {
             String path = buildPath(bucket, fileName);
             Map<String, Object> record = queryFileRecord(path);
             if (record == null) {
-                return Message.builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
-                        .build();
+                return Message.<byte[]>builder().errcode(ErrorCode._113003.getKey())
+                        .errmsg(ErrorCode._113003.getValue()).build();
             }
 
             String downloadUrl = getAssetDownloadUrl(record);
             if (StringKit.isBlank(downloadUrl)) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to get download URL")
-                        .build();
+                return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey())
+                        .errmsg("Failed to get download URL").build();
             }
 
             try (Response response = get(downloadUrl)) {
@@ -275,8 +277,8 @@ public class ICloudDriveProvider extends AbstractProvider {
                     throw new IOException("Download failed: " + response.code());
                 }
                 byte[] content = response.bytes();
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .data(content).build();
+                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -288,24 +290,25 @@ public class ICloudDriveProvider extends AbstractProvider {
                     bucket,
                     fileName,
                     e.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
     @Override
-    public Message download(String fileName, File file) {
+    public Message<Void> download(String fileName, File file) {
         return download(this.context.getBucket(), fileName, file);
     }
 
     @Override
-    public Message download(String bucket, String fileName, File file) {
-        Message result = download(bucket, fileName);
+    public Message<Void> download(String bucket, String fileName, File file) {
+        Message<byte[]> result = download(bucket, fileName);
         if (ErrorCode._SUCCESS.getKey().equals(result.getErrcode())) {
             try {
-                byte[] content = (byte[]) result.getData();
+                byte[] content = result.getData();
                 Files.write(file.toPath(), content);
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .build();
+                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
             } catch (IOException e) {
                 Logger.error(
                         false,
@@ -317,15 +320,15 @@ public class ICloudDriveProvider extends AbstractProvider {
                         fileName,
                         file != null,
                         e.getClass().getSimpleName());
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
-                        .build();
+                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey())
+                        .errmsg(ErrorCode._FAILURE.getValue()).build();
             }
         }
-        return result;
+        return Message.<Void>builder().errcode(result.getErrcode()).errmsg(result.getErrmsg()).build();
     }
 
     @Override
-    public Message list() {
+    public Message<List<Blob>> list() {
         try {
             List<Map<String, Object>> records = queryFolderRecords(this.context.getBucket());
             List<Blob> blobs = new ArrayList<>();
@@ -335,8 +338,8 @@ public class ICloudDriveProvider extends AbstractProvider {
                     blobs.add(blob);
                 }
             }
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(blobs).build();
+            return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .errmsg(ErrorCode._SUCCESS.getValue()).data(blobs).build();
         } catch (Exception e) {
             Logger.error(
                     false,
@@ -346,38 +349,40 @@ public class ICloudDriveProvider extends AbstractProvider {
                     this.getClass().getSimpleName(),
                     this.context.getBucket(),
                     e.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
+                    .errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
     @Override
-    public Message rename(String oldName, String newName) {
+    public Message<Void> rename(String oldName, String newName) {
         return rename(this.context.getBucket(), Normal.EMPTY, oldName, newName);
     }
 
     @Override
-    public Message rename(String path, String oldName, String newName) {
+    public Message<Void> rename(String path, String oldName, String newName) {
         return rename(this.context.getBucket(), path, oldName, newName);
     }
 
     @Override
-    public Message rename(String bucket, String path, String oldName, String newName) {
+    public Message<Void> rename(String bucket, String path, String oldName, String newName) {
         try {
             String oldPath = buildPath(bucket, oldName);
             String newPath = buildPath(bucket, newName);
 
             Map<String, Object> record = queryFileRecord(oldPath);
             if (record == null) {
-                return Message.builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
                         .build();
             }
 
             boolean success = updateFileRecord(record, newPath);
             if (success) {
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .build();
+                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
             } else {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to rename file").build();
+                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to rename file")
+                        .build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -390,43 +395,45 @@ public class ICloudDriveProvider extends AbstractProvider {
                     oldName,
                     newName,
                     e.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
     @Override
-    public Message upload(String fileName, byte[] content) {
+    public Message<Blob> upload(String fileName, byte[] content) {
         return upload(this.context.getBucket(), Normal.EMPTY, fileName, content);
     }
 
     @Override
-    public Message upload(String path, String fileName, byte[] content) {
+    public Message<Blob> upload(String path, String fileName, byte[] content) {
         return upload(this.context.getBucket(), path, fileName, content);
     }
 
     @Override
-    public Message upload(String bucket, String path, String fileName, byte[] content) {
+    public Message<Blob> upload(String bucket, String path, String fileName, byte[] content) {
         try {
             String filePath = buildPath(bucket, fileName);
 
             String uploadUrl = requestAssetUpload(content.length);
             if (StringKit.isBlank(uploadUrl)) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to get upload URL")
+                return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to get upload URL")
                         .build();
             }
 
             boolean uploaded = uploadAsset(uploadUrl, content);
             if (!uploaded) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to upload asset").build();
+                return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to upload asset")
+                        .build();
             }
 
             boolean created = createFileRecord(filePath, uploadUrl, content.length);
             if (created) {
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .build();
+                return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
             } else {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to create file record")
-                        .build();
+                return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey())
+                        .errmsg("Failed to create file record").build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -438,22 +445,23 @@ public class ICloudDriveProvider extends AbstractProvider {
                     bucket,
                     fileName,
                     e.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
     @Override
-    public Message upload(String fileName, InputStream content) {
+    public Message<Blob> upload(String fileName, InputStream content) {
         return upload(this.context.getBucket(), Normal.EMPTY, fileName, content);
     }
 
     @Override
-    public Message upload(String path, String fileName, InputStream content) {
+    public Message<Blob> upload(String path, String fileName, InputStream content) {
         return upload(this.context.getBucket(), path, fileName, content);
     }
 
     @Override
-    public Message upload(String bucket, String path, String fileName, InputStream content) {
+    public Message<Blob> upload(String bucket, String path, String fileName, InputStream content) {
         try {
             byte[] bytes = IoKit.readBytes(content);
             return upload(bucket, path, fileName, bytes);
@@ -467,36 +475,38 @@ public class ICloudDriveProvider extends AbstractProvider {
                     bucket,
                     fileName,
                     e.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
     @Override
-    public Message remove(String fileName) {
+    public Message<Void> remove(String fileName) {
         return remove(this.context.getBucket(), Normal.EMPTY, fileName);
     }
 
     @Override
-    public Message remove(String path, String fileName) {
+    public Message<Void> remove(String path, String fileName) {
         return remove(this.context.getBucket(), path, fileName);
     }
 
     @Override
-    public Message remove(String bucket, String path, String fileName) {
+    public Message<Void> remove(String bucket, String path, String fileName) {
         try {
             String filePath = buildPath(bucket, fileName);
             Map<String, Object> record = queryFileRecord(filePath);
             if (record == null) {
-                return Message.builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
                         .build();
             }
 
             boolean deleted = deleteFileRecord(record);
             if (deleted) {
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .build();
+                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
             } else {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to delete file").build();
+                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to delete file")
+                        .build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -508,13 +518,14 @@ public class ICloudDriveProvider extends AbstractProvider {
                     bucket,
                     fileName,
                     e.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
     @Override
-    public Message remove(String bucket, Path path) {
-        return Message.builder().errcode(ErrorCode._FAILURE.getKey())
+    public Message<Void> remove(String bucket, Path path) {
+        return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey())
                 .errmsg("Remove by Path not supported for iCloud Drive").build();
     }
 

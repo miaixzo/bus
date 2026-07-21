@@ -75,7 +75,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(tokenUrl(null));
         Map<String, Object> object = this.checkResponse(response);
 
@@ -86,7 +86,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         Object expiresInObj = object.get("expires_in");
         int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(Authorization.builder().token(token).expireIn(expiresIn).code(callback.getCode()).build())
                 .build();
     }
@@ -99,7 +99,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String response = doGetUserInfo(authorization);
         Map<String, Object> object = this.checkResponse(response);
 
@@ -118,7 +118,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         String email = (String) data.get("email");
         String gender = (String) data.get("gender");
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Claims.builder().rawJson(JsonKit.toJsonString(data)).username(name).nickname(alias).avatar(avatar)
                         .location(address).email(email).uuid(userId).gender(getWechatRealGender(gender))
                         .token(authorization).source(complex.toString()).build())

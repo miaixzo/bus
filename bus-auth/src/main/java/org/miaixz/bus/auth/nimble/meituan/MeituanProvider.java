@@ -72,7 +72,7 @@ public class MeituanProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_id", context.getClientId());
         form.put("secret", context.getClientSecret());
@@ -96,7 +96,7 @@ public class MeituanProvider extends AbstractProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).build()).build();
         } catch (Exception e) {
             Logger.warn(
@@ -120,7 +120,7 @@ public class MeituanProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> form = new HashMap<>(5);
         form.put("app_id", context.getClientId());
         form.put("secret", context.getClientSecret());
@@ -142,7 +142,7 @@ public class MeituanProvider extends AbstractProvider {
             String nickname = (String) object.get("nickname");
             String avatar = (String) object.get("avatar");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(openid).username(nickname)
                                     .nickname(nickname).avatar(avatar).gender(Gender.UNKNOWN).token(authorization)
@@ -170,7 +170,7 @@ public class MeituanProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_id", context.getClientId());
         form.put("secret", context.getClientSecret());
@@ -194,7 +194,7 @@ public class MeituanProvider extends AbstractProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).build()).build();
         } catch (Exception e) {
             Logger.warn(
@@ -231,8 +231,8 @@ public class MeituanProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(Builder.fromUrl((String) super.build(state).getData()).queryParam("scope", "").build()).build();
     }
 

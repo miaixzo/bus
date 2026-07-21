@@ -76,7 +76,7 @@ public class PinterestProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(callback.getCode());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -92,7 +92,7 @@ public class PinterestProvider extends AbstractProvider {
             }
             String tokenType = (String) object.get("token_type");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).token_type(tokenType).build()).build();
         } catch (Exception e) {
             Logger.warn(
@@ -116,7 +116,7 @@ public class PinterestProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String userinfoUrl = userInfoUrl(authorization);
         // TODO: Check if .setFollowRedirects(true) is needed
         String response = get(userinfoUrl);
@@ -143,7 +143,7 @@ public class PinterestProvider extends AbstractProvider {
             String bio = (String) userObj.get("bio");
             String avatar = getAvatarUrl(userObj);
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Claims.builder().rawJson(JsonKit.toJsonString(userObj)).uuid(id).avatar(avatar).username(username)
                             .nickname(firstName + Symbol.SPACE + lastName).gender(Gender.UNKNOWN).remark(bio)
                             .token(authorization).source(complex.toString()).build())
@@ -186,8 +186,8 @@ public class PinterestProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam(
                                 "scope",

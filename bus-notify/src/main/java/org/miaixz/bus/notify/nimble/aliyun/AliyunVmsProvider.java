@@ -57,7 +57,7 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunNotice, Context> {
      * @return A {@link Message} indicating the result of the VMS sending operation.
      */
     @Override
-    public Message send(AliyunNotice entity) {
+    public Message<Void> send(AliyunNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -103,7 +103,7 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunNotice, Context> {
         for (String text : bodys.keySet()) {
             map.put(specialUrlEncode(text), specialUrlEncode(bodys.get(text)));
         }
-        Message result = checkResponse(get(this.getUrl(entity), map));
+        Message<Void> result = checkResponse(get(this.getUrl(entity), map));
         Logger.info(
                 false,
                 "Notify",

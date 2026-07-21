@@ -99,7 +99,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message stat(String fileName) {
+    public Message<Blob> stat(String fileName) {
         return stat(Normal.EMPTY, fileName);
     }
 
@@ -111,7 +111,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message stat(String bucket, String fileName) {
+    public Message<Blob> stat(String bucket, String fileName) {
         return statKey(this.context.getBucket(), getAbsolutePath(bucket, Normal.EMPTY, fileName));
     }
 
@@ -123,22 +123,24 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message statKey(String bucket, String objectKey) {
+    public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
             FtpEntry entry = client.entry(objectKey);
             if (entry == null || entry.isDirectory()) {
-                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                         .build();
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).data(
-                    Blob.builder().bucket(this.context.getBucket()).key(objectKey).name(entry.getName()).path(objectKey)
-                            .size(StringKit.toString(entry.getSize())).extend(toExtend(entry)).build())
+            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .data(
+                            Blob.builder().bucket(this.context.getBucket()).key(objectKey).name(entry.getName())
+                                    .path(objectKey).size(StringKit.toString(entry.getSize())).extend(toExtend(entry))
+                                    .build())
                     .build();
         } catch (Exception e) {
             Errors error = ErrorCode._113012;
@@ -158,7 +160,7 @@ public class SftpFileProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
         }
     }
 
@@ -169,7 +171,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message stream(String fileName) {
+    public Message<Blob> stream(String fileName) {
         return stream(Normal.EMPTY, fileName);
     }
 
@@ -181,7 +183,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message stream(String bucket, String fileName) {
+    public Message<Blob> stream(String bucket, String fileName) {
         return streamKey(this.context.getBucket(), getAbsolutePath(bucket, Normal.EMPTY, fileName));
     }
 
@@ -193,26 +195,26 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message streamKey(String bucket, String objectKey) {
+    public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
             FtpEntry entry = client.entry(objectKey);
             if (entry == null || entry.isDirectory()) {
-                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                         .build();
             }
 
             InputStream inputStream = client.getFileStream(objectKey);
             if (inputStream == null) {
-                return Message.builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                         .build();
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(inputStream).bucket(this.context.getBucket()).key(objectKey)
                                     .name(entry.getName()).path(objectKey).size(StringKit.toString(entry.getSize()))
@@ -236,7 +238,7 @@ public class SftpFileProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
         }
     }
 
@@ -248,7 +250,7 @@ public class SftpFileProvider extends AbstractProvider {
      *         successful.
      */
     @Override
-    public Message download(String fileName) {
+    public Message<byte[]> download(String fileName) {
         return download(Normal.EMPTY, fileName);
     }
 
@@ -270,20 +272,20 @@ public class SftpFileProvider extends AbstractProvider {
      *         content as a byte array; otherwise, it contains error information.
      */
     @Override
-    public Message download(String bucket, String fileName) {
+    public Message<byte[]> download(String bucket, String fileName) {
         try {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             InputStream inputStream = client.getFileStream(objectKey);
             if (inputStream == null) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
+                return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
             }
 
             // Use try-with-resources to automatically close the InputStream and prevent resource leaks
             try (inputStream) {
                 byte[] content = inputStream.readAllBytes();
 
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .data(content).build();
+                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
             }
         } catch (InternalException | IOException e) {
             Logger.error(
@@ -295,7 +297,8 @@ public class SftpFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -307,7 +310,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message download(String fileName, File file) {
+    public Message<Void> download(String fileName, File file) {
         return download(Normal.EMPTY, fileName, file);
     }
 
@@ -329,11 +332,12 @@ public class SftpFileProvider extends AbstractProvider {
      *         specified location; otherwise, error information is returned.
      */
     @Override
-    public Message download(String bucket, String fileName, File file) {
+    public Message<Void> download(String bucket, String fileName, File file) {
         try {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             client.download(objectKey, file);
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .build();
         } catch (InternalException e) {
             Logger.error(
                     false,
@@ -345,7 +349,8 @@ public class SftpFileProvider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -356,12 +361,12 @@ public class SftpFileProvider extends AbstractProvider {
      *         successful.
      */
     @Override
-    public Message list() {
+    public Message<List<Blob>> list() {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             List<String> files = client.lsFiles(prefix);
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(files.stream().map(fileName -> {
+            return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .errmsg(ErrorCode._SUCCESS.getValue()).data(files.stream().map(fileName -> {
                         Map<String, Object> extend = new HashMap<>();
                         return Blob.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
@@ -375,7 +380,8 @@ public class SftpFileProvider extends AbstractProvider {
                     context.getPrefix(),
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
+                    .errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -387,7 +393,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String oldName, String newName) {
+    public Message<Void> rename(String oldName, String newName) {
         return rename(Normal.EMPTY, oldName, newName);
     }
 
@@ -400,7 +406,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String path, String oldName, String newName) {
+    public Message<Void> rename(String path, String oldName, String newName) {
         return rename(Normal.EMPTY, path, oldName, newName);
     }
 
@@ -414,16 +420,17 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String bucket, String path, String oldName, String newName) {
+    public Message<Void> rename(String bucket, String path, String oldName, String newName) {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String oldObjectKey = Builder.buildObjectKey(prefix, path, oldName);
             String newObjectKey = Builder.buildObjectKey(prefix, path, newName);
             if (!isExist(oldObjectKey)) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
+                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
             }
             client.rename(oldObjectKey, newObjectKey);
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .build();
         } catch (InternalException e) {
             Logger.error(
                     false,
@@ -436,7 +443,8 @@ public class SftpFileProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -448,7 +456,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String fileName, byte[] content) {
+    public Message<Blob> upload(String fileName, byte[] content) {
         return upload(Normal.EMPTY, fileName, content);
     }
 
@@ -461,7 +469,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String path, String fileName, byte[] content) {
+    public Message<Blob> upload(String path, String fileName, byte[] content) {
         return upload(Normal.EMPTY, path, fileName, content);
     }
 
@@ -475,7 +483,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String bucket, String path, String fileName, byte[] content) {
+    public Message<Blob> upload(String bucket, String path, String fileName, byte[] content) {
         return upload(bucket, path, fileName, new ByteArrayInputStream(content));
     }
 
@@ -487,7 +495,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String fileName, InputStream content) {
+    public Message<Blob> upload(String fileName, InputStream content) {
         return upload(Normal.EMPTY, fileName, content);
     }
 
@@ -500,7 +508,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String path, String fileName, InputStream content) {
+    public Message<Blob> upload(String path, String fileName, InputStream content) {
         return upload(Normal.EMPTY, path, fileName, content);
     }
 
@@ -514,7 +522,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation, including blob details if successful.
      */
     @Override
-    public Message upload(String bucket, String path, String fileName, InputStream content) {
+    public Message<Blob> upload(String bucket, String path, String fileName, InputStream content) {
         try {
             String objectKey = getAbsolutePath(bucket, path, fileName);
             String dirPath = objectKey.substring(0, objectKey.lastIndexOf(Symbol.SLASH));
@@ -522,7 +530,7 @@ public class SftpFileProvider extends AbstractProvider {
                 client.mkdir(dirPath);
             }
             client.put(content, objectKey, JschSftp.Mode.OVERWRITE);
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException e) {
             Logger.error(
@@ -535,7 +543,8 @@ public class SftpFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -546,7 +555,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String fileName) {
+    public Message<Void> remove(String fileName) {
         return remove(Normal.EMPTY, fileName);
     }
 
@@ -558,7 +567,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String path, String fileName) {
+    public Message<Void> remove(String path, String fileName) {
         return remove(Normal.EMPTY, path, fileName);
     }
 
@@ -571,13 +580,14 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String bucket, String path, String fileName) {
+    public Message<Void> remove(String bucket, String path, String fileName) {
         try {
             String objectKey = getAbsolutePath(bucket, path, fileName);
             if (isExist(objectKey)) {
                 client.delFile(objectKey);
             }
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .build();
         } catch (InternalException e) {
             Logger.error(
                     false,
@@ -589,7 +599,8 @@ public class SftpFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -601,7 +612,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String bucket, Path path) {
+    public Message<Void> remove(String bucket, Path path) {
         return remove(bucket, path.toString(), Normal.EMPTY);
     }
 

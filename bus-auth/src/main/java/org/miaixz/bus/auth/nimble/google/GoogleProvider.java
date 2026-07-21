@@ -74,7 +74,7 @@ public class GoogleProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(callback.getCode());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -95,7 +95,7 @@ public class GoogleProvider extends AbstractProvider {
             String refresh_token = (String) object.get("refresh_token");
             int refresh_token_expires_in = (int) object.get("refresh_token_expires_in");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Authorization.builder().token(token).expireIn(expiresIn).scope(scope).token_type(tokenType)
                             .refresh(refresh_token).refreshExpireIn(refresh_token_expires_in).idToken(idToken).build())
                     .build();
@@ -121,7 +121,7 @@ public class GoogleProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
         String userInfo = post(userInfoUrl(authorization), null, header);
@@ -141,7 +141,7 @@ public class GoogleProvider extends AbstractProvider {
             String name = (String) object.get("name");
             String locale = (String) object.get("locale");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(email)
                                     .avatar(picture).nickname(name).location(locale).email(email).gender(Gender.UNKNOWN)
@@ -169,8 +169,8 @@ public class GoogleProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData()).queryParam("access_type", "offline")
                         .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getScopes(GoogleScope.values())))
                         .queryParam("prompt", "select_account").build())

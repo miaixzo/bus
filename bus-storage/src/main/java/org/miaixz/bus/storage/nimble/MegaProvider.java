@@ -214,7 +214,7 @@ public class MegaProvider extends AbstractProvider {
      *         successful.
      */
     @Override
-    public Message download(String fileName) {
+    public Message<byte[]> download(String fileName) {
         return download(this.context.getBucket(), fileName);
     }
 
@@ -227,18 +227,18 @@ public class MegaProvider extends AbstractProvider {
      *         content as a byte array; otherwise, it contains error information.
      */
     @Override
-    public Message download(String bucket, String fileName) {
+    public Message<byte[]> download(String bucket, String fileName) {
         try {
             if (StringKit.isBlank(sessionId)) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey())
+                return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey())
                         .errmsg("Not authenticated. Please provide a valid session ID.").build();
             }
 
             // Find file by name
             String fileHandle = findFileByName(fileName, bucket);
             if (fileHandle == null) {
-                return Message.builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
-                        .build();
+                return Message.<byte[]>builder().errcode(ErrorCode._113003.getKey())
+                        .errmsg(ErrorCode._113003.getValue()).build();
             }
 
             // Get download URL
@@ -267,8 +267,8 @@ public class MegaProvider extends AbstractProvider {
 
                 byte[] content = response.bytes();
                 // Note: Content is encrypted and would need to be decrypted with file key
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .data(content).build();
+                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -280,7 +280,7 @@ public class MegaProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
+            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
 
@@ -292,7 +292,7 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message download(String fileName, File file) {
+    public Message<Void> download(String fileName, File file) {
         return download(this.context.getBucket(), fileName, file);
     }
 
@@ -305,16 +305,16 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message download(String bucket, String fileName, File file) {
-        Message result = download(bucket, fileName);
+    public Message<Void> download(String bucket, String fileName, File file) {
+        Message<byte[]> result = download(bucket, fileName);
         if (ErrorCode._SUCCESS.getKey().equals(result.getErrcode())) {
             try {
-                byte[] content = (byte[]) result.getData();
+                byte[] content = result.getData();
                 try (FileOutputStream fos = new FileOutputStream(file)) {
                     fos.write(content);
                 }
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .build();
+                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
             } catch (IOException e) {
                 Logger.error(
                         false,
@@ -326,10 +326,10 @@ public class MegaProvider extends AbstractProvider {
                         file != null,
                         e.getMessage(),
                         e);
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
+                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
             }
         }
-        return result;
+        return Message.<Void>builder().errcode(result.getErrcode()).errmsg(result.getErrmsg()).build();
     }
 
     /**
@@ -339,7 +339,7 @@ public class MegaProvider extends AbstractProvider {
      *         successful.
      */
     @Override
-    public Message list() {
+    public Message<List<Blob>> list() {
         return list(this.context.getBucket());
     }
 
@@ -351,10 +351,10 @@ public class MegaProvider extends AbstractProvider {
      *         successful.
      */
     @Override
-    public Message list(String bucket) {
+    public Message<List<Blob>> list(String bucket) {
         try {
             if (StringKit.isBlank(sessionId)) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey())
+                return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
                         .errmsg("Not authenticated. Please provide a valid session ID.").build();
             }
 
@@ -391,8 +391,8 @@ public class MegaProvider extends AbstractProvider {
                 }
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(blobs).build();
+            return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .errmsg(ErrorCode._SUCCESS.getValue()).data(blobs).build();
         } catch (Exception e) {
             Logger.error(
                     false,
@@ -402,7 +402,7 @@ public class MegaProvider extends AbstractProvider {
                     bucket,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
+            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
 
@@ -414,7 +414,7 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String oldName, String newName) {
+    public Message<Void> rename(String oldName, String newName) {
         return rename(this.context.getBucket(), Normal.EMPTY, oldName, newName);
     }
 
@@ -427,7 +427,7 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String path, String oldName, String newName) {
+    public Message<Void> rename(String path, String oldName, String newName) {
         return rename(this.context.getBucket(), path, oldName, newName);
     }
 
@@ -441,16 +441,16 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String bucket, String path, String oldName, String newName) {
+    public Message<Void> rename(String bucket, String path, String oldName, String newName) {
         try {
             if (StringKit.isBlank(sessionId)) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey())
+                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey())
                         .errmsg("Not authenticated. Please provide a valid session ID.").build();
             }
 
             String fileHandle = findFileByName(oldName, bucket);
             if (fileHandle == null) {
-                return Message.builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
                         .build();
             }
 
@@ -467,7 +467,8 @@ public class MegaProvider extends AbstractProvider {
                 throw new IOException("Failed to rename file: " + result.get("error"));
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .build();
         } catch (Exception e) {
             Logger.error(
                     false,
@@ -479,7 +480,7 @@ public class MegaProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
 
@@ -491,7 +492,7 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String fileName, byte[] content) {
+    public Message<Blob> upload(String fileName, byte[] content) {
         return upload(this.context.getBucket(), Normal.EMPTY, fileName, content);
     }
 
@@ -504,7 +505,7 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String path, String fileName, byte[] content) {
+    public Message<Blob> upload(String path, String fileName, byte[] content) {
         return upload(this.context.getBucket(), path, fileName, content);
     }
 
@@ -520,10 +521,10 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String bucket, String path, String fileName, byte[] content) {
+    public Message<Blob> upload(String bucket, String path, String fileName, byte[] content) {
         try {
             if (StringKit.isBlank(sessionId)) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey())
+                return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey())
                         .errmsg("Not authenticated. Please provide a valid session ID.").build();
             }
 
@@ -569,7 +570,7 @@ public class MegaProvider extends AbstractProvider {
                 throw new IOException("Failed to complete upload: " + completeResult.get("error"));
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).build()).build();
         } catch (Exception e) {
             Logger.error(
@@ -581,7 +582,7 @@ public class MegaProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
 
@@ -593,7 +594,7 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String fileName, InputStream content) {
+    public Message<Blob> upload(String fileName, InputStream content) {
         return upload(this.context.getBucket(), Normal.EMPTY, fileName, content);
     }
 
@@ -606,7 +607,7 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String path, String fileName, InputStream content) {
+    public Message<Blob> upload(String path, String fileName, InputStream content) {
         return upload(this.context.getBucket(), path, fileName, content);
     }
 
@@ -621,7 +622,7 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String bucket, String path, String fileName, InputStream content) {
+    public Message<Blob> upload(String bucket, String path, String fileName, InputStream content) {
         try {
             byte[] bytes = IoKit.readBytes(content);
             return upload(bucket, path, fileName, bytes);
@@ -635,7 +636,7 @@ public class MegaProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
 
@@ -646,7 +647,7 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String fileName) {
+    public Message<Void> remove(String fileName) {
         return remove(this.context.getBucket(), Normal.EMPTY, fileName);
     }
 
@@ -658,7 +659,7 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String path, String fileName) {
+    public Message<Void> remove(String path, String fileName) {
         return remove(this.context.getBucket(), path, fileName);
     }
 
@@ -671,16 +672,16 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String bucket, String path, String fileName) {
+    public Message<Void> remove(String bucket, String path, String fileName) {
         try {
             if (StringKit.isBlank(sessionId)) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey())
+                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey())
                         .errmsg("Not authenticated. Please provide a valid session ID.").build();
             }
 
             String fileHandle = findFileByName(fileName, bucket);
             if (fileHandle == null) {
-                return Message.builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
                         .build();
             }
 
@@ -696,7 +697,8 @@ public class MegaProvider extends AbstractProvider {
                 throw new IOException("Failed to delete file: " + result.get("error"));
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .build();
         } catch (Exception e) {
             Logger.error(
                     false,
@@ -707,7 +709,7 @@ public class MegaProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
 
@@ -719,9 +721,9 @@ public class MegaProvider extends AbstractProvider {
      * @return A {@link Message} containing an error indicating this operation is not supported.
      */
     @Override
-    public Message remove(String bucket, Path path) {
-        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Remove by Path not supported for Mega")
-                .build();
+    public Message<Void> remove(String bucket, Path path) {
+        return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey())
+                .errmsg("Remove by Path not supported for Mega").build();
     }
 
     /**

@@ -56,9 +56,9 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * Persists a new entity, saving all fields (including nulls).
      *
      * @param entity the entity to insert
-     * @return the persisted entity (typically with populated ID)
+     * @return the number of affected rows
      */
-    Object insert(T entity);
+    Integer insert(T entity);
 
     /**
      * Persists a new entity, saving only non-null fields.
@@ -66,9 +66,9 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * Fields with null values will rely on the database's default values.
      *
      * @param entity the entity to insert
-     * @return the persisted entity
+     * @return the number of affected rows
      */
-    Object insertSelective(T entity);
+    Integer insertSelective(T entity);
 
     /**
      * Persists a list of entities using list-oriented batch insertion semantics.
@@ -78,17 +78,17 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * </p>
      *
      * @param list the list of entities to insert
-     * @return the batch insert result
+     * @return the number of affected rows
      */
-    Object insertList(List<T> list);
+    Integer insertList(List<T> list);
 
     /**
      * Persists a batch of entities using native batch SQL, saving all fields for each entity.
      *
      * @param list the list of entities to insert
-     * @return the batch insert result
+     * @return the number of affected rows
      */
-    Object insertBatch(List<T> list);
+    Integer insertBatch(List<T> list);
 
     /**
      * Batch insert or update (Upsert) operation using database-native batch SQL.
@@ -98,51 +98,51 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * </p>
      *
      * @param list the list of entities to insert or update
-     * @return the result of the batch operation
+     * @return the number of affected rows
      */
-    Object insertUpBatch(List<T> list);
+    Integer insertUpBatch(List<T> list);
 
     /**
      * Persists a batch of entities using native selective batch SQL, saving only non-null fields for each entity.
      *
      * @param list the list of entities to insert
-     * @return the batch insert result
+     * @return the number of affected rows
      */
-    Object insertSelectiveBatch(List<T> list);
+    Integer insertSelectiveBatch(List<T> list);
 
     /**
      * Updates an existing entity, overwriting all fields (including setting fields to null).
      *
      * @param entity the entity to update
-     * @return the updated entity or operation result
+     * @return the number of affected rows
      */
-    Object update(T entity);
+    Integer update(T entity);
 
     /**
      * Updates a list of entities using list-oriented batch update semantics, overwriting all mapped fields for each
      * entity.
      *
      * @param list the list of entities to update
-     * @return the batch update result
+     * @return the number of affected rows
      */
-    Object update(List<T> list);
+    Integer update(List<T> list);
 
     /**
      * Updates an existing entity, forcing updates on the specific fields provided.
      *
      * @param entity the entity to update
      * @param fields the specific fields to force update
-     * @return the updated entity or operation result
+     * @return the number of affected rows
      */
-    Object update(T entity, Fn<T, Object>... fields);
+    Integer update(T entity, Fn<T, Object>... fields);
 
     /**
      * Updates an existing entity, only modifying fields that are non-null.
      *
      * @param entity the entity to update
-     * @return the updated entity or operation result
+     * @return the number of affected rows
      */
-    Object updateSelective(T entity);
+    Integer updateSelective(T entity);
 
     /**
      * Updates an existing entity, only modifying non-null fields, while forcing updates on the additional specified
@@ -150,34 +150,34 @@ public interface SharedService<T, I extends Serializable> extends Service {
      *
      * @param entity the entity to update
      * @param fields the additional fields to force update (even if they are null in the entity)
-     * @return the updated entity or operation result
+     * @return the number of affected rows
      */
-    Object updateSelective(T entity, Fn<T, Object>... fields);
+    Integer updateSelective(T entity, Fn<T, Object>... fields);
 
     /**
      * Updates a list of entities using list-oriented selective batch update semantics, modifying only the non-null
      * fields of each entity.
      *
      * @param list the list of entities to update
-     * @return the batch selective update result
+     * @return the number of affected rows
      */
-    Object updateListSelective(List<T> list);
+    Integer updateListSelective(List<T> list);
 
     /**
      * Saves the entity: inserts if it's new, or updates if it already exists (based on all fields).
      *
      * @param entity the entity to save
-     * @return the saved entity
+     * @return the number of affected rows
      */
-    Object insertOrUpdate(T entity);
+    Integer insertOrUpdate(T entity);
 
     /**
      * Saves the entity: inserts if it's new, or updates if it already exists (based on non-null fields).
      *
      * @param entity the entity to save
-     * @return the saved entity
+     * @return the number of affected rows
      */
-    Object insertOrUpdateSelective(T entity);
+    Integer insertOrUpdateSelective(T entity);
 
     /**
      * Performs a logical deletion of the entity.
@@ -187,7 +187,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param entity the entity to logically delete
      * @return the number of affected rows
      */
-    long remove(T entity);
+    Integer remove(T entity);
 
     /**
      * Performs a physical deletion of the entity from the database.
@@ -195,7 +195,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param entity the entity to delete
      * @return the number of deleted records (usually 1 if successful)
      */
-    long delete(T entity);
+    Integer delete(T entity);
 
     /**
      * Physically deletes an entity by its primary key.
@@ -203,7 +203,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param id the primary key of the entity to delete
      * @return the number of deleted records
      */
-    long deleteById(I id);
+    Integer deleteById(I id);
 
     /**
      * Physically deletes multiple entities by a collection of primary keys.
@@ -211,7 +211,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param ids the collection of primary keys
      * @return the number of deleted records
      */
-    long deleteByIds(Collection<I> ids);
+    Integer deleteByIds(Collection<I> ids);
 
     /**
      * Physically deletes entities that match a list of values for a specific field.
@@ -221,7 +221,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param <F>            the type of the field value
      * @return the number of deleted records
      */
-    <F> long deleteByFieldList(Fn<T, F> field, Collection<F> fieldValueList);
+    <F> Integer deleteByFieldList(Fn<T, F> field, Collection<F> fieldValueList);
 
     /**
      * Retrieves a single entity by its primary key.
@@ -229,7 +229,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param id the primary key
      * @return the found entity, or null if not found
      */
-    Object selectById(I id);
+    T selectById(I id);
 
     /**
      * Retrieves a single entity matching the properties set in the provided entity object.
@@ -237,7 +237,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param entity the entity acting as a query prototype
      * @return the found entity, or null if not found
      */
-    Object selectOne(T entity);
+    T selectOne(T entity);
 
     /**
      * Retrieves a list of entities matching the properties set in the provided entity object.
@@ -287,7 +287,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param condition the complex query condition
      * @return the number of deleted records
      */
-    long delete(Condition<T> condition);
+    Integer delete(Condition<T> condition);
 
     /**
      * Updates records matching the {@link Condition} with values from the provided entity (updates all fields).
@@ -296,7 +296,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param condition the condition defining which records to update
      * @return the number of updated records
      */
-    long update(T entity, Condition<T> condition);
+    Integer update(T entity, Condition<T> condition);
 
     /**
      * Updates records matching the {@link Condition} with values from the provided entity (updates only non-null
@@ -306,7 +306,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param condition the condition defining which records to update
      * @return the number of updated records
      */
-    long updateSelective(T entity, Condition<T> condition);
+    Integer updateSelective(T entity, Condition<T> condition);
 
     /**
      * Retrieves a single entity matching the provided {@link Condition}.
@@ -317,7 +317,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param condition the query condition
      * @return the found entity, or null if not found
      */
-    Object selectOne(Condition<T> condition);
+    T selectOne(Condition<T> condition);
 
     /**
      * Retrieves the first entity matching the provided {@link Condition}.
@@ -327,7 +327,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @param condition the query condition
      * @return the first matching entity, or null if none found
      */
-    Object selectFirst(Condition<T> condition);
+    T selectFirst(Condition<T> condition);
 
     /**
      * Retrieves a list of entities matching the provided {@link Condition}.

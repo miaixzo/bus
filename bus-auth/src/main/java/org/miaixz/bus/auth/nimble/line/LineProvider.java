@@ -76,7 +76,7 @@ public class LineProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("code", callback.getCode());
@@ -101,7 +101,7 @@ public class LineProvider extends AbstractProvider {
             String scope = (String) object.get("scope");
             String tokenType = (String) object.get("token_type");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).idToken(idToken)
                                     .scope(scope).token_type(tokenType).build())
@@ -128,7 +128,7 @@ public class LineProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER.concat(authorization.getToken()));
@@ -148,7 +148,7 @@ public class LineProvider extends AbstractProvider {
             String pictureUrl = (String) object.get("pictureUrl");
             String statusMessage = (String) object.get("statusMessage");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(userId).username(displayName)
                                     .nickname(displayName).avatar(pictureUrl).remark(statusMessage)
@@ -176,7 +176,7 @@ public class LineProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during revocation
      */
     @Override
-    public Message revoke(Authorization authorization) {
+    public Message<Void> revoke(Authorization authorization) {
         Map<String, String> form = new HashMap<>(5);
         form.put("access_token", authorization.getToken());
         form.put("client_id", context.getClientId());
@@ -191,7 +191,7 @@ public class LineProvider extends AbstractProvider {
             Boolean revoked = (Boolean) object.get("revoked");
             // Return 1 indicates successful authorization cancellation, otherwise failed
             Errors status = (revoked != null && revoked) ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
-            return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
+            return Message.<Void>builder().errcode(status.getKey()).errmsg(status.getValue()).build();
         } catch (Exception e) {
             Logger.warn(
                     false,
@@ -214,7 +214,7 @@ public class LineProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>();
         form.put("grant_type", "refresh_token");
         form.put("refresh_token", authorization.getRefresh());
@@ -238,7 +238,7 @@ public class LineProvider extends AbstractProvider {
             String scope = (String) object.get("scope");
             String tokenType = (String) object.get("token_type");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).idToken(idToken)
                                     .scope(scope).token_type(tokenType).build())
@@ -276,8 +276,8 @@ public class LineProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData()).queryParam("nonce", state)
                         .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(LineScope.values())))
                         .build())

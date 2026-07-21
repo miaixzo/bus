@@ -74,7 +74,7 @@ public class DouyinMiniProvider extends AbstractProvider {
      * @throws AuthorizedException if the response indicates an error or is missing required token information
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         // See https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
         // documentation
         // Use the code to get the corresponding openId, unionId, etc.
@@ -84,7 +84,7 @@ public class DouyinMiniProvider extends AbstractProvider {
         this.checkResponse(object);
 
         // Assemble the result
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Authorization.builder().openId((String) object.get("openid")).unionId((String) object.get("unionid"))
                         .token((String) object.get("session_key")).build())
                 .build();
@@ -100,11 +100,11 @@ public class DouyinMiniProvider extends AbstractProvider {
      * @return {@link Claims} containing the user's information
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         // See https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserProfile.html
         // documentation
         // If user information is required, it needs to be passed to the backend after the Mini Program calls a function
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Claims.builder().username(Normal.EMPTY).nickname(Normal.EMPTY).avatar(Normal.EMPTY)
                         .uuid(authorization.getOpenId()).token(authorization).source(complex.toString()).build())
                 .build();

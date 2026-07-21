@@ -79,9 +79,9 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getToken(tokenUrl(callback.getCode())))
-                .build();
+    public Message<Authorization> token(Callback callback) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(getToken(tokenUrl(callback.getCode()))).build();
     }
 
     /**
@@ -151,7 +151,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, authorization.getToken_type() + Symbol.SPACE + authorization.getToken());
 
@@ -173,7 +173,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
             String officeLocation = (String) object.get("officeLocation");
             String mail = (String) object.get("mail");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(userPrincipalName)
                                     .nickname(displayName).location(officeLocation).email(mail).gender(Gender.UNKNOWN)
@@ -200,8 +200,8 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<Authorization> refresh(Authorization authorization) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(getToken(refreshUrl(authorization.getRefresh()))).build();
     }
 
@@ -213,10 +213,10 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
+    public Message<String> build(String state) {
         // Compatible with Microsoft Entra ID login (formerly Microsoft AAD)
         String tenantId = StringKit.isEmpty(context.getUnionId()) ? "common" : context.getUnionId();
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl(String.format(complex.authorize(), tenantId)).queryParam("response_type", "code")
                         .queryParam("client_id", context.getClientId())
                         .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state))

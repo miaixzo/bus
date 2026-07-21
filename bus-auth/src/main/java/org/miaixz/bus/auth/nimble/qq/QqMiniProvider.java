@@ -74,7 +74,7 @@ public class QqMiniProvider extends AbstractProvider {
      * @throws AuthorizedException if the response indicates an error or is missing required token information
      */
     @Override
-    public Message token(Callback authCallback) {
+    public Message<Authorization> token(Callback authCallback) {
         // Use the code to get the corresponding openId, unionId, etc.
         String response = get(tokenUrl(authCallback.getCode()));
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -82,7 +82,7 @@ public class QqMiniProvider extends AbstractProvider {
         this.checkResponse(object);
 
         // Assemble the result
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Authorization.builder().openId((String) object.get("openid")).unionId((String) object.get("unionid"))
                         .token((String) object.get("session_key")).build())
                 .build();
@@ -96,9 +96,9 @@ public class QqMiniProvider extends AbstractProvider {
      * @return {@link Claims} containing the user's information
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         // If user information is required, it needs to be passed to the backend after the Mini Program calls a function
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Claims.builder().rawJson(JsonKit.toJsonString(authorization)).username("").nickname("").avatar("")
                         .uuid(authorization.getOpenId()).token(authorization).source(complex.toString()).build())
                 .build();

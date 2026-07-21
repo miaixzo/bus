@@ -20,6 +20,7 @@
 package org.miaixz.bus.base.spring;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.miaixz.bus.base.service.BaseService;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.spring.Controller;
@@ -63,17 +65,17 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      * Adds a new entity to the database.
      *
      * @param entity the entity to be added
-     * @return the operation result, containing the added entity if successful, or an error code otherwise
+     * @return the operation result, containing the number of affected rows if successful, or an error code otherwise
      */
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Object add(T entity) {
+    public Message<Integer> add(T entity) {
         Logger.info(
                 true,
                 "Base",
                 "CRUD add request received: entityType={}",
                 entity == null ? null : entity.getClass().getSimpleName());
-        Object result = service.insertSelective(entity);
+        Integer result = service.insertSelective(entity);
         if (ObjectKit.isNotEmpty(result)) {
             Logger.info(
                     false,
@@ -99,13 +101,13 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      */
     @ResponseBody
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
-    public Object remove(T entity) {
+    public Message<Map<String, Integer>> remove(T entity) {
         Logger.info(
                 true,
                 "Base",
                 "CRUD remove request received: entityType={}",
                 entity == null ? null : entity.getClass().getSimpleName());
-        long total = service.remove(entity);
+        Integer total = service.remove(entity);
         if (total >= 0) {
             Logger.info(
                     false,
@@ -113,7 +115,8 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
                     "CRUD remove completed: entityType={}, affectedRows={}",
                     entity == null ? null : entity.getClass().getSimpleName(),
                     total);
-            return write(MapKit.of("total", total));
+            Map<String, Integer> result = MapKit.of("total", total);
+            return write(result);
         }
         Logger.warn(
                 false,
@@ -131,13 +134,13 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      */
     @ResponseBody
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public Object delete(T entity) {
+    public Message<Map<String, Integer>> delete(T entity) {
         Logger.info(
                 true,
                 "Base",
                 "CRUD delete request received: entityType={}",
                 entity == null ? null : entity.getClass().getSimpleName());
-        long total = service.delete(entity);
+        Integer total = service.delete(entity);
         if (total >= 0) {
             Logger.info(
                     false,
@@ -145,7 +148,8 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
                     "CRUD delete completed: entityType={}, affectedRows={}",
                     entity == null ? null : entity.getClass().getSimpleName(),
                     total);
-            return write(MapKit.of("total", total));
+            Map<String, Integer> result = MapKit.of("total", total);
+            return write(result);
         }
         Logger.warn(
                 false,
@@ -159,17 +163,17 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      * Updates an existing entity based on its primary key.
      *
      * @param entity the entity with updated information
-     * @return the operation result, containing the updated entity if successful, or an error code otherwise
+     * @return the operation result, containing the number of affected rows if successful, or an error code otherwise
      */
     @ResponseBody
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public Object update(T entity) {
+    public Message<Integer> update(T entity) {
         Logger.info(
                 true,
                 "Base",
                 "CRUD update request received: entityType={}",
                 entity == null ? null : entity.getClass().getSimpleName());
-        Object result = service.updateSelective(entity);
+        Integer result = service.updateSelective(entity);
         if (ObjectKit.isNotEmpty(result)) {
             Logger.info(
                     false,
@@ -194,13 +198,13 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      */
     @ResponseBody
     @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public Object get(T entity) {
+    public Message<T> get(T entity) {
         Logger.info(
                 true,
                 "Base",
                 "CRUD get request received: entityType={}",
                 entity == null ? null : entity.getClass().getSimpleName());
-        Object result = service.selectOne(entity);
+        T result = service.selectOne(entity);
         Logger.info(
                 false,
                 "Base",
@@ -219,7 +223,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      */
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public Object list(T entity) {
+    public Message<List<T>> list(T entity) {
         Logger.info(
                 true,
                 "Base",
@@ -243,7 +247,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      */
     @ResponseBody
     @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public Object page(@Valid({ "pageSize", "pageNo" }) T entity) {
+    public Message<Result<T>> page(@Valid({ "pageSize", "pageNo" }) T entity) {
         Logger.info(
                 true,
                 "Base",

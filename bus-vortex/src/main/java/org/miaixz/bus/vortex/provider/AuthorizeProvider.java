@@ -74,7 +74,7 @@ public interface AuthorizeProvider {
             return Mono.just(
                     Delegate.builder()
                             .message(
-                                    Message.builder().errcode(ErrorCode._116002.getKey())
+                                    Message.<Void>builder().errcode(ErrorCode._116002.getKey())
                                             .errmsg("Unsupported policy: " + policy).build())
                             .build());
         }
@@ -103,7 +103,7 @@ public interface AuthorizeProvider {
         return Mono.just(
                 Delegate.builder()
                         .message(
-                                Message.builder().errcode(ErrorCode._116002.getKey())
+                                Message.<Void>builder().errcode(ErrorCode._116002.getKey())
                                         .errmsg("Unsupported credential type: " + principal.getType()).build())
                         .build());
     }
@@ -128,7 +128,7 @@ public interface AuthorizeProvider {
         return Mono.just(
                 Delegate.builder()
                         .message(
-                                Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                                Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
                                         .errmsg(ErrorCode._SUCCESS.getValue()).build())
                         .authorize(Authorize.builder().build()).build());
     }
@@ -153,7 +153,7 @@ public interface AuthorizeProvider {
         return Mono.just(
                 Delegate.builder()
                         .message(
-                                Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                                Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
                                         .errmsg(ErrorCode._SUCCESS.getValue()).build())
                         .authorize(Authorize.builder().build()).build());
     }
@@ -178,7 +178,7 @@ public interface AuthorizeProvider {
         return Mono.just(
                 Delegate.builder()
                         .message(
-                                Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                                Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
                                         .errmsg(ErrorCode._SUCCESS.getValue()).build())
                         .authorize(Authorize.builder().build()).build());
     }

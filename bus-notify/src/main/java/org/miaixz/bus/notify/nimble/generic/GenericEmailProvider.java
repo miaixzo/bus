@@ -68,7 +68,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
      * @return A {@link Message} indicating the result of the email sending operation.
      */
     @Override
-    public Message send(GenericNotice entity) {
+    public Message<Void> send(GenericNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -98,8 +98,8 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
                     e.getClass().getSimpleName(),
                     message);
         }
-        Message result = Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                .build();
+        Message<Void> result = Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .errmsg(ErrorCode._SUCCESS.getValue()).build();
         Logger.info(
                 false,
                 "Notify",

@@ -102,7 +102,7 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(CtyunNotice entity) {
+    public Message<Void> send(CtyunNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -128,7 +128,8 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
                 signHeader(JsonKit.toJsonString(bodys), this.context.getAppKey(), this.context.getAppSecret()));
 
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        Message result = Message.builder().errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
+        Message<Void> result = Message.<Void>builder()
+                .errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
         Logger.info(
                 false,

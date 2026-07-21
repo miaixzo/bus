@@ -55,7 +55,7 @@ public class NeteaseSmsProvider extends NeteaseProvider<NeteaseNotice, Context> 
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(NeteaseNotice entity) {
+    public Message<Void> send(NeteaseNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -66,7 +66,7 @@ public class NeteaseSmsProvider extends NeteaseProvider<NeteaseNotice, Context> 
         bodys.put("templateid", entity.getTemplate());
         bodys.put("mobiles", JsonKit.toJsonString(new String[] { entity.getReceive() }));
         bodys.put("params", JsonKit.toJsonString(entity.getParams()));
-        Message result = post(this.getUrl(entity), bodys);
+        Message<Void> result = post(this.getUrl(entity), bodys);
         Logger.info(
                 false,
                 "Notify",

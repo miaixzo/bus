@@ -19,11 +19,14 @@
 */
 package org.miaixz.bus.starter.health;
 
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.spring.Controller;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.ContextBuilder;
@@ -63,7 +66,7 @@ public class HealthController extends Controller {
      */
     @ResponseBody
     @RequestMapping(value = "/healthz", method = { RequestMethod.POST, RequestMethod.GET })
-    public Object healthz(@RequestParam(value = "tid", required = false) String tid) {
+    public Message<Map<String, Object>> healthz(@RequestParam(value = "tid", required = false) String tid) {
         Logger.debug(true, "Starter", "request header snapshot: endpoint=/healthz");
         Logger.debug(true, "Starter", "Request headers: headers={}", ContextBuilder.getHeaders());
         Logger.debug(true, "Starter", "Request parameters: parameters={}", ContextBuilder.getParameters());
@@ -77,7 +80,7 @@ public class HealthController extends Controller {
      */
     @ResponseBody
     @RequestMapping(value = "/broken", method = { RequestMethod.POST, RequestMethod.GET })
-    public Object broken() {
+    public Message<Map<String, Object>> broken() {
         Logger.debug(true, "Starter", "request header snapshot: endpoint=/broken");
         Logger.debug(true, "Starter", "Request headers: headers={}", ContextBuilder.getHeaders());
         Logger.debug(true, "Starter", "Request parameters: parameters={}", ContextBuilder.getParameters());
@@ -91,7 +94,7 @@ public class HealthController extends Controller {
      */
     @ResponseBody
     @RequestMapping(value = "/correct", method = { RequestMethod.POST, RequestMethod.GET })
-    public Object correct() {
+    public Message<Map<String, Object>> correct() {
         Logger.debug(true, "Starter", "request header snapshot: endpoint=/correct");
         Logger.debug(true, "Starter", "Request headers: headers={}", ContextBuilder.getHeaders());
         Logger.debug(true, "Starter", "Request parameters: parameters={}", ContextBuilder.getParameters());
@@ -105,7 +108,7 @@ public class HealthController extends Controller {
      */
     @ResponseBody
     @RequestMapping(value = "/accept", method = { RequestMethod.POST, RequestMethod.GET })
-    public Object accept() {
+    public Message<Map<String, Object>> accept() {
         Logger.debug(true, "Starter", "request header snapshot: endpoint=/accept");
         Logger.debug(true, "Starter", "Request headers: headers={}", ContextBuilder.getHeaders());
         Logger.debug(true, "Starter", "Request parameters: parameters={}", ContextBuilder.getParameters());
@@ -119,7 +122,7 @@ public class HealthController extends Controller {
      */
     @ResponseBody
     @RequestMapping(value = "/refuse", method = { RequestMethod.POST, RequestMethod.GET })
-    public Object refuse() {
+    public Message<Map<String, Object>> refuse() {
         Logger.debug(true, "Starter", "request header snapshot: endpoint=/refuse");
         Logger.debug(true, "Starter", "Request headers: headers={}", ContextBuilder.getHeaders());
         Logger.debug(true, "Starter", "Request parameters: parameters={}", ContextBuilder.getParameters());

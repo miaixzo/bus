@@ -138,7 +138,7 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
      * @param response The raw JSON response string from Alibaba Cloud.
      * @return A {@link Message} indicating the success or failure of the operation.
      */
-    protected Message checkResponse(String response) {
+    protected Message<Void> checkResponse(String response) {
         String code = JsonKit.getValue(response, "Code");
         Logger.info(
                 false,
@@ -146,8 +146,8 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
                 "Aliyun notify response received: code={}, responseBytes={}",
                 code,
                 response == null ? 0 : response.getBytes(Charset.UTF_8).length);
-        return Message.builder().errcode(SUCCESS_RESULT.equals(code) ? ErrorCode._SUCCESS.getKey() : code).errmsg(code)
-                .build();
+        return Message.<Void>builder().errcode(SUCCESS_RESULT.equals(code) ? ErrorCode._SUCCESS.getKey() : code)
+                .errmsg(code).build();
     }
 
 }

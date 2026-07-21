@@ -70,9 +70,9 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
      * @return all information
      */
     @Override
-    public Message token(Callback callback) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getToken(tokenUrl(callback.getCode())))
-                .build();
+    public Message<Authorization> token(Callback callback) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(this.getToken(tokenUrl(callback.getCode()))).build();
     }
 
     /**
@@ -83,7 +83,7 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String openId = authorization.getOpenId();
         String response = doGetUserInfo(authorization);
         try {
@@ -108,7 +108,7 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
             String headimgurl = (String) object.get("headimgurl");
             String sex = (String) object.get("sex");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).username(nickname).nickname(nickname)
                                     .avatar(headimgurl).location(location).uuid(openId).gender(getWechatRealGender(sex))
@@ -135,8 +135,8 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<Authorization> refresh(Authorization authorization) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(this.getToken(refreshUrl(authorization.getRefresh()))).build();
     }
 
@@ -203,8 +203,8 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
                         .queryParam("appid", context.getClientId()).queryParam("redirect_uri", context.getRedirectUri())
                         .queryParam("scope", "snsapi_login").queryParam("state", getRealState(state)).build())

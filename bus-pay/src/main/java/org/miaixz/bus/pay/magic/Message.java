@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message extends org.miaixz.bus.core.basic.entity.Message {
+public class Message extends org.miaixz.bus.core.basic.entity.Message<Void> {
 
     @Serial
     private static final long serialVersionUID = 2852292670363L;

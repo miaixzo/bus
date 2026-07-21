@@ -43,7 +43,7 @@ public interface Provider<T extends Notice> extends org.miaixz.bus.core.Provider
      * @param entity The notification content or notice.
      * @return The result of the sending operation.
      */
-    Message send(T entity);
+    Message<Void> send(T entity);
 
     /**
      * Sends a notification to a list of mobile numbers.
@@ -52,7 +52,7 @@ public interface Provider<T extends Notice> extends org.miaixz.bus.core.Provider
      * @param mobile A list of mobile numbers to send the notification to.
      * @return The result of the sending operation.
      */
-    Message send(T entity, List<String> mobile);
+    Message<Void> send(T entity, List<String> mobile);
 
     /**
      * Sends a notification to a single mobile number.
@@ -61,7 +61,7 @@ public interface Provider<T extends Notice> extends org.miaixz.bus.core.Provider
      * @param mobile The mobile number to send the notification to.
      * @return The result of the sending operation.
      */
-    default Message send(T entity, String mobile) {
+    default Message<Void> send(T entity, String mobile) {
         return send(entity, Collections.singletonList(mobile));
     }
 
@@ -72,7 +72,7 @@ public interface Provider<T extends Notice> extends org.miaixz.bus.core.Provider
      * @param mobile An array of mobile numbers to send the notification to.
      * @return The result of the sending operation.
      */
-    default Message send(T entity, String... mobile) {
+    default Message<Void> send(T entity, String... mobile) {
         return send(entity, ListKit.of(mobile));
     }
 

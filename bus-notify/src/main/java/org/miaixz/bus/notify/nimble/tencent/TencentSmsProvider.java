@@ -56,7 +56,7 @@ public class TencentSmsProvider extends AbstractProvider<TencentNotice, Context>
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(TencentNotice entity) {
+    public Message<Void> send(TencentNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -78,7 +78,7 @@ public class TencentSmsProvider extends AbstractProvider<TencentNotice, Context>
         String errmsg = (status != null && status == 200) ? ErrorCode._SUCCESS.getValue()
                 : ErrorCode._FAILURE.getValue();
 
-        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
         Logger.info(
                 false,
                 "Notify",

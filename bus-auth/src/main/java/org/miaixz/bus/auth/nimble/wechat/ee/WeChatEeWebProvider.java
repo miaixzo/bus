@@ -63,8 +63,8 @@ public class WeChatEeWebProvider extends AbstractWeChatEeProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(complex.authorize()).queryParam("appid", context.getClientId())
                                 .queryParam("agentid", context.getUnionId())

@@ -72,8 +72,8 @@ public class TaobaoProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<Authorization> token(Callback callback) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(Authorization.builder().token(callback.getCode()).build()).build();
     }
 
@@ -113,7 +113,7 @@ public class TaobaoProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String response = doPostToken(authorization.getToken());
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
         if (object.containsKey("error")) {
@@ -122,7 +122,7 @@ public class TaobaoProvider extends AbstractProvider {
         authorization = this.getAuthToken(object);
         String nick = UrlDecoder.decode((String) object.get("taobao_user_nick"));
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(
                         StringKit.isEmpty(authorization.getUid()) ? authorization.getOpenId() : authorization.getUid())
                         .username(nick).nickname(nick).gender(Gender.UNKNOWN).token(authorization)
@@ -137,11 +137,12 @@ public class TaobaoProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         String tokenUrl = refreshUrl(authorization.getRefresh());
         String response = post(tokenUrl);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(object)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(object))
+                .build();
     }
 
     /**
@@ -152,8 +153,8 @@ public class TaobaoProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
                                 .queryParam("client_id", context.getClientId())

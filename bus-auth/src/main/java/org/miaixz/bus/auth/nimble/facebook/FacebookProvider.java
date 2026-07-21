@@ -74,7 +74,7 @@ public class FacebookProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doGetToken(callback.getCode());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -91,7 +91,7 @@ public class FacebookProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
             String tokenType = (String) object.get("token_type");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).expireIn(expiresIn).token_type(tokenType).build())
                     .build();
         } catch (Exception e) {
@@ -116,7 +116,7 @@ public class FacebookProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String userInfo = doGetUserInfo(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
@@ -135,7 +135,7 @@ public class FacebookProvider extends AbstractProvider {
             String email = (String) object.get("email");
             String gender = (String) object.get("gender");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name).nickname(name)
                             .blog(link).avatar(getUserPicture(object)).location(locale).email(email)
                             .gender(Gender.of(gender)).token(authorization).source(complex.toString()).build())
@@ -190,8 +190,8 @@ public class FacebookProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam(
                                 "scope",

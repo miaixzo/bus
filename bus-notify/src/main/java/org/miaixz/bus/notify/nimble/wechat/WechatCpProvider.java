@@ -49,7 +49,7 @@ public class WechatCpProvider extends AbstractProvider<WechatNotice, Context> {
      * @return A {@link Message} indicating the result of the sending operation, or {@code null} if not implemented.
      */
     @Override
-    public Message send(WechatNotice entity) {
+    public Message<Void> send(WechatNotice entity) {
         Logger.warn(
                 false,
                 "Notify",

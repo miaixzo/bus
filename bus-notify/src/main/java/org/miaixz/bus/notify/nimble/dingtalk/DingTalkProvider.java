@@ -79,7 +79,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
      * @return A {@link Message} indicating the result of the sending operation.
      */
     @Override
-    public Message send(DingTalkNotice entity) {
+    public Message<Void> send(DingTalkNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -101,7 +101,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
         bodys.put("to_all_user", String.valueOf(entity.isToAllUser()));
         String response = post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        Message result = Message.builder()
+        Message<Void> result = Message.<Void>builder()
                 .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
         Logger.info(

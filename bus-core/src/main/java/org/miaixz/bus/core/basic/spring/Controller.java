@@ -44,9 +44,10 @@ public class Controller {
      * Creates a success response with the given data.
      *
      * @param data The data to be included in the response.
-     * @return A response object.
+     * @param <T>  the response payload type
+     * @return A typed response message.
      */
-    public Object write(Object data) {
+    public <T> Message<T> write(T data) {
         return write(ErrorCode._SUCCESS, data);
     }
 
@@ -55,9 +56,9 @@ public class Controller {
      *
      * @param data The data object.
      * @param id   If true, extracts the "id" field from the data as the response data.
-     * @return A response object.
+     * @return A response message whose payload is either the original data or its identifier.
      */
-    public Object write(Object data, boolean id) {
+    public Message<Object> write(Object data, boolean id) {
         if (id) {
             return write(FieldKit.getFieldValue(data, "id"));
         }
@@ -68,9 +69,10 @@ public class Controller {
      * Creates an error response using an error code string.
      *
      * @param errcode The error code.
-     * @return A response object.
+     * @param <T>     the expected response payload type
+     * @return A typed error response message.
      */
-    public Object write(String errcode) {
+    public <T> Message<T> write(String errcode) {
         return write(Errors.require(errcode));
     }
 
@@ -78,9 +80,10 @@ public class Controller {
      * Creates an error response using an {@link Errors} object.
      *
      * @param errors The error object.
-     * @return A response object.
+     * @param <T>    the expected response payload type
+     * @return A typed error response message.
      */
-    public Object write(Errors errors) {
+    public <T> Message<T> write(Errors errors) {
         return write(errors, null);
     }
 
@@ -89,9 +92,10 @@ public class Controller {
      *
      * @param errcode The error code.
      * @param data    The data to be included in the response.
-     * @return A response object.
+     * @param <T>     the response payload type
+     * @return A typed response message.
      */
-    public Object write(String errcode, Object data) {
+    public <T> Message<T> write(String errcode, T data) {
         return write(Errors.require(errcode), data);
     }
 
@@ -100,9 +104,10 @@ public class Controller {
      *
      * @param errors The error object.
      * @param data   The data to be included in the response.
-     * @return A response object.
+     * @param <T>    the response payload type
+     * @return A typed response message.
      */
-    public Object write(Errors errors, Object data) {
+    public <T> Message<T> write(Errors errors, T data) {
         if (null == errors || !Errors.contains(errors.getKey())) {
             return Message.failure(ErrorCode._FAILURE);
         }
@@ -117,9 +122,10 @@ public class Controller {
      *
      * @param errcode The error code.
      * @param errmsg  The error message.
-     * @return A response object.
+     * @param <T>     the expected response payload type
+     * @return A typed error response message.
      */
-    public Object write(String errcode, String errmsg) {
+    public <T> Message<T> write(String errcode, String errmsg) {
         if (Errors.contains(errcode) && StringKit.isNotEmpty(errmsg)) {
             return Message.failure(errcode, errmsg);
         }
@@ -132,9 +138,10 @@ public class Controller {
      * @param errcode The error code.
      * @param errmsg  The error message content to be formatted.
      * @param format  The format string.
-     * @return A response object.
+     * @param <T>     the expected response payload type
+     * @return A typed error response message.
      */
-    public Object write(String errcode, String errmsg, String format) {
+    public <T> Message<T> write(String errcode, String errmsg, String format) {
         if (StringKit.isNotEmpty(errcode) && StringKit.isNotEmpty(format)) {
             return Message.failure(errcode, StringKit.format(format, errmsg));
         }

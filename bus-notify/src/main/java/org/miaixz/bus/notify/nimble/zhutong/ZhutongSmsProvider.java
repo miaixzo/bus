@@ -68,7 +68,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context>
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(ZhutongNotice entity) {
+    public Message<Void> send(ZhutongNotice entity) {
         // If template ID or template variable name is empty, use custom SMS sending without a template
         if (ArrayKit.hasBlank(entity.getSignature(), entity.getTemplate(), entity.getTemplateName())) {
             return sendForCustom(entity);
@@ -84,7 +84,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context>
      * @return A {@link Message} indicating the result of the SMS sending operation.
      * @throws ValidateException if requestUrl, username, password, mobile, or content is invalid.
      */
-    protected Message sendForCustom(ZhutongNotice entity) {
+    protected Message<Void> sendForCustom(ZhutongNotice entity) {
         String requestUrl = this.getUrl(entity);
         String username = this.context.getAppKey();
         String password = this.context.getAppSecret();
@@ -130,7 +130,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context>
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
 
-        return Message.builder().errcode(errcode).errmsg(errmsg).build();
+        return Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
     }
 
     /**
@@ -140,7 +140,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context>
      * @return A {@link Message} indicating the result of the SMS sending operation.
      * @throws InternalException if the signature or template ID is empty.
      */
-    protected Message sendForTemplate(ZhutongNotice entity) {
+    protected Message<Void> sendForTemplate(ZhutongNotice entity) {
         validator(this.getUrl(entity), this.context.getAppKey(), this.context.getAppSecret());
         if (StringKit.isBlank(entity.getSignature())) {
             throw new InternalException("Zhutong SMS: The reported signature in template SMS cannot be empty!");
@@ -190,7 +190,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context>
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
 
-        return Message.builder().errcode(errcode).errmsg(errmsg).build();
+        return Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
     }
 
     /**

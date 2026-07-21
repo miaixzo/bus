@@ -77,7 +77,7 @@ public class WeiboProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(callback.getCode());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -97,7 +97,7 @@ public class WeiboProvider extends AbstractProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).uid(uid).openId(uid).expireIn(expiresIn).build())
                     .build();
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class WeiboProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String token = authorization.getToken();
         String uid = authorization.getUid();
         String oauthParam = String.format("uid=%s&access_token=%s", uid, token);
@@ -154,7 +154,7 @@ public class WeiboProvider extends AbstractProvider {
             String description = (String) object.get("description");
             String gender = (String) object.get("gender");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name)
                                     .avatar(profileImageUrl)
@@ -196,8 +196,8 @@ public class WeiboProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getScopes(WeiboScope.values())))
                         .build())
@@ -212,7 +212,7 @@ public class WeiboProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during revocation
      */
     @Override
-    public Message revoke(Authorization authorization) {
+    public Message<Void> revoke(Authorization authorization) {
         String response = doGetRevoke(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -221,14 +221,14 @@ public class WeiboProvider extends AbstractProvider {
             }
             if (object.containsKey("error")) {
                 String error = (String) object.get("error");
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey())
+                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey())
                         .errmsg(error != null ? error : "Unknown error").build();
             }
 
             Object resultObj = object.get("result");
             boolean result = resultObj instanceof Boolean ? (Boolean) resultObj : false;
             Errors status = result ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
-            return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
+            return Message.<Void>builder().errcode(status.getKey()).errmsg(status.getValue()).build();
         } catch (Exception e) {
             Logger.warn(
                     false,

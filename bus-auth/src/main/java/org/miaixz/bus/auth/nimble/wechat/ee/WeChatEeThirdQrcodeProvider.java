@@ -69,8 +69,8 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl(complex.authorize()).queryParam("appid", context.getClientId())
                         .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state))
                         .queryParam("usertype", context.getType()).build())
@@ -84,7 +84,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
      * @return a {@link Message} object containing user information or an error message
      */
     @Override
-    public Message authorize(Callback callback) {
+    public Message<Claims> authorize(Callback callback) {
         if (!context.isIgnoreState()) {
             Checker.check(callback.getState(), complex, cache);
         }
@@ -101,7 +101,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         try {
             String response = doGetToken(tokenUrl());
             Map<String, Object> object = this.checkResponse(response);
@@ -112,7 +112,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).expireIn(expiresIn).build()).build();
         } catch (Exception e) {
             throw new AuthorizedException("企业微信获取token失败", e);
@@ -149,9 +149,9 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
      * @return {@link Claims} containing the user's information
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, Object> response = this.checkResponse(doGetUserInfo(authorization));
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(Claims.builder().rawJson(JsonKit.toJsonString(response)).build()).build();
     }
 

@@ -94,10 +94,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * </p>
      *
      * @param entity the entity to insert
-     * @return the inserted entity
+     * @return the number of affected rows
      */
     @Override
-    public Object insert(T entity) {
+    public Integer insert(T entity) {
         Logger.debug(
                 true,
                 "Base",
@@ -105,14 +105,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName());
         this.setInsert(entity);
-        Object result = mapper.insert(entity);
+        int result = mapper.insert(entity);
         Logger.debug(
                 false,
                 "Base",
-                "Service insert completed: serviceType={}, entityType={}, resultType={}",
+                "Service insert completed: serviceType={}, entityType={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName(),
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -123,10 +123,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * </p>
      *
      * @param entity the entity to insert
-     * @return the inserted entity
+     * @return the number of affected rows
      */
     @Override
-    public Object insertSelective(T entity) {
+    public Integer insertSelective(T entity) {
         Logger.debug(
                 true,
                 "Base",
@@ -134,14 +134,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName());
         this.setInsert(entity);
-        Object result = mapper.insertSelective(entity);
+        int result = mapper.insertSelective(entity);
         Logger.debug(
                 false,
                 "Base",
-                "Service selective insert completed: serviceType={}, entityType={}, resultType={}",
+                "Service selective insert completed: serviceType={}, entityType={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName(),
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -152,10 +152,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * </p>
      *
      * @param list the list of entities to insert
-     * @return the list-oriented batch insert result
+     * @return the number of affected rows
      */
     @Override
-    public Object insertList(List<T> list) {
+    public Integer insertList(List<T> list) {
         Logger.debug(
                 true,
                 "Base",
@@ -166,14 +166,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         if (list != null && !list.isEmpty()) {
             list.forEach(this::setInsert);
         }
-        Object result = mapper.insertList(list);
+        int result = mapper.insertList(list);
         Logger.debug(
                 false,
                 "Base",
-                "Service list insert completed: serviceType={}, batchSize={}, resultType={}",
+                "Service list insert completed: serviceType={}, batchSize={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 list == null ? 0 : list.size(),
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -184,10 +184,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * </p>
      *
      * @param list the list of entities to insert
-     * @return the list of inserted entities or operation result
+     * @return the number of affected rows
      */
     @Override
-    public Object insertBatch(List<T> list) {
+    public Integer insertBatch(List<T> list) {
         Logger.debug(
                 true,
                 "Base",
@@ -198,14 +198,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         if (list != null && !list.isEmpty()) {
             list.forEach(this::setInsert);
         }
-        Object result = mapper.insertBatch(list);
+        int result = mapper.insertBatch(list);
         Logger.debug(
                 false,
                 "Base",
-                "Service batch insert completed: serviceType={}, batchSize={}, resultType={}",
+                "Service batch insert completed: serviceType={}, batchSize={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 list == null ? 0 : list.size(),
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -216,10 +216,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * </p>
      *
      * @param list the list of entities to insert or update
-     * @return the result of the batch operation
+     * @return the number of affected rows
      */
     @Override
-    public Object insertUpBatch(List<T> list) {
+    public Integer insertUpBatch(List<T> list) {
         Logger.debug(
                 true,
                 "Base",
@@ -230,14 +230,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         if (list != null && !list.isEmpty()) {
             list.forEach(this::setInsert);
         }
-        Object result = mapper.insertUpBatch(list);
+        int result = mapper.insertUpBatch(list);
         Logger.debug(
                 false,
                 "Base",
-                "Service batch upsert completed: serviceType={}, batchSize={}, resultType={}",
+                "Service batch upsert completed: serviceType={}, batchSize={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 list == null ? 0 : list.size(),
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -248,10 +248,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * </p>
      *
      * @param list the list of entities to insert
-     * @return the list of inserted entities or operation result
+     * @return the number of affected rows
      */
     @Override
-    public Object insertSelectiveBatch(List<T> list) {
+    public Integer insertSelectiveBatch(List<T> list) {
         Logger.debug(
                 true,
                 "Base",
@@ -262,14 +262,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         if (list != null && !list.isEmpty()) {
             list.forEach(this::setInsert);
         }
-        Object result = mapper.insertSelectiveBatch(list);
+        int result = mapper.insertSelectiveBatch(list);
         Logger.debug(
                 false,
                 "Base",
-                "Service selective batch insert completed: serviceType={}, batchSize={}, resultType={}",
+                "Service selective batch insert completed: serviceType={}, batchSize={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 list == null ? 0 : list.size(),
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -280,10 +280,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * </p>
      *
      * @param entity the entity to update
-     * @return the updated entity or operation result
+     * @return the number of affected rows
      */
     @Override
-    public Object update(T entity) {
+    public Integer update(T entity) {
         Logger.debug(
                 true,
                 "Base",
@@ -291,14 +291,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName());
         this.setUpdate(entity);
-        Object result = mapper.updateByPrimaryKey(entity);
+        int result = mapper.updateByPrimaryKey(entity);
         Logger.debug(
                 false,
                 "Base",
-                "Service update completed: serviceType={}, entityType={}, resultType={}",
+                "Service update completed: serviceType={}, entityType={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName(),
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -309,10 +309,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * </p>
      *
      * @param list the list of entities to update
-     * @return the list-oriented batch update result
+     * @return the number of affected rows
      */
     @Override
-    public Object update(List<T> list) {
+    public Integer update(List<T> list) {
         Logger.debug(
                 true,
                 "Base",
@@ -323,14 +323,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         if (list != null && !list.isEmpty()) {
             list.forEach(this::setUpdate);
         }
-        Object result = mapper.updateList(list);
+        int result = mapper.updateList(list);
         Logger.debug(
                 false,
                 "Base",
-                "Service list update completed: serviceType={}, batchSize={}, resultType={}",
+                "Service list update completed: serviceType={}, batchSize={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 list == null ? 0 : list.size(),
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -342,10 +342,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      *
      * @param entity the entity to update
      * @param fields the specific fields to force update
-     * @return the updated entity or operation result
+     * @return the number of affected rows
      */
     @Override
-    public Object update(T entity, Fn<T, Object>... fields) {
+    public Integer update(T entity, Fn<T, Object>... fields) {
         Logger.debug(
                 true,
                 "Base",
@@ -354,15 +354,15 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 entity == null ? null : entity.getClass().getSimpleName(),
                 fields == null ? 0 : fields.length);
         this.setUpdate(entity);
-        Object result = mapper.updateForFieldListByPrimaryKey(entity, Fn.of(fields));
+        int result = mapper.updateForFieldListByPrimaryKey(entity, Fn.of(fields));
         Logger.debug(
                 false,
                 "Base",
-                "Service forced-field update completed: serviceType={}, entityType={}, fieldCount={}, resultType={}",
+                "Service forced-field update completed: serviceType={}, entityType={}, fieldCount={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName(),
                 fields == null ? 0 : fields.length,
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -373,10 +373,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * </p>
      *
      * @param entity the entity to update
-     * @return the updated entity or operation result
+     * @return the number of affected rows
      */
     @Override
-    public Object updateSelective(T entity) {
+    public Integer updateSelective(T entity) {
         Logger.debug(
                 true,
                 "Base",
@@ -384,14 +384,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName());
         this.setUpdate(entity);
-        Object result = mapper.updateByPrimaryKeySelective(entity);
+        int result = mapper.updateByPrimaryKeySelective(entity);
         Logger.debug(
                 false,
                 "Base",
-                "Service selective update completed: serviceType={}, entityType={}, resultType={}",
+                "Service selective update completed: serviceType={}, entityType={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName(),
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -403,10 +403,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      *
      * @param entity the entity to update
      * @param fields the additional fields to force update
-     * @return the updated entity or operation result
+     * @return the number of affected rows
      */
     @Override
-    public Object updateSelective(T entity, Fn<T, Object>... fields) {
+    public Integer updateSelective(T entity, Fn<T, Object>... fields) {
         Logger.debug(
                 true,
                 "Base",
@@ -415,15 +415,15 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 entity == null ? null : entity.getClass().getSimpleName(),
                 fields == null ? 0 : fields.length);
         this.setUpdate(entity);
-        Object result = mapper.updateByPrimaryKeySelectiveWithForceFields(entity, Fn.of(fields));
+        int result = mapper.updateByPrimaryKeySelectiveWithForceFields(entity, Fn.of(fields));
         Logger.debug(
                 false,
                 "Base",
-                "Service selective forced-field update completed: serviceType={}, entityType={}, fieldCount={}, resultType={}",
+                "Service selective forced-field update completed: serviceType={}, entityType={}, fieldCount={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName(),
                 fields == null ? 0 : fields.length,
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -434,10 +434,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * </p>
      *
      * @param list the list of entities to update
-     * @return the list-oriented selective batch update result
+     * @return the number of affected rows
      */
     @Override
-    public Object updateListSelective(List<T> list) {
+    public Integer updateListSelective(List<T> list) {
         Logger.debug(
                 true,
                 "Base",
@@ -448,14 +448,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         if (list != null && !list.isEmpty()) {
             list.forEach(this::setUpdate);
         }
-        Object result = mapper.updateListSelective(list);
+        int result = mapper.updateListSelective(list);
         Logger.debug(
                 false,
                 "Base",
-                "Service selective list update completed: serviceType={}, batchSize={}, resultType={}",
+                "Service selective list update completed: serviceType={}, batchSize={}, affectedRows={}",
                 this.getClass().getSimpleName(),
                 list == null ? 0 : list.size(),
-                result == null ? null : result.getClass().getSimpleName());
+                result);
         return result;
     }
 
@@ -463,10 +463,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * Saves the entity: inserts if primary key is missing, otherwise updates (all fields).
      *
      * @param entity the entity to insert or update
-     * @return the saved entity
+     * @return the number of affected rows
      */
     @Override
-    public Object insertOrUpdate(T entity) {
+    public Integer insertOrUpdate(T entity) {
         if (this.pkHasValue(entity)) {
             return this.update(entity);
         } else {
@@ -478,10 +478,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * Saves the entity: inserts if primary key is missing, otherwise updates (selective fields).
      *
      * @param entity the entity to insert or update
-     * @return the saved entity
+     * @return the number of affected rows
      */
     @Override
-    public Object insertOrUpdateSelective(T entity) {
+    public Integer insertOrUpdateSelective(T entity) {
         if (this.pkHasValue(entity)) {
             return this.updateSelective(entity);
         } else {
@@ -500,7 +500,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the number of affected rows
      */
     @Override
-    public long remove(T entity) {
+    public Integer remove(T entity) {
         Logger.debug(
                 true,
                 "Base",
@@ -508,7 +508,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName());
         this.setRemove(entity);
-        long total = mapper.updateByPrimaryKeySelective(entity);
+        int total = mapper.updateByPrimaryKeySelective(entity);
         Logger.debug(
                 false,
                 "Base",
@@ -526,14 +526,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the number of deleted records
      */
     @Override
-    public long delete(T entity) {
+    public Integer delete(T entity) {
         Logger.debug(
                 true,
                 "Base",
                 "Service delete request received: serviceType={}, entityType={}",
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName());
-        long total = mapper.delete(entity);
+        int total = mapper.delete(entity);
         Logger.debug(
                 false,
                 "Base",
@@ -551,14 +551,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the number of deleted records
      */
     @Override
-    public long deleteById(I id) {
+    public Integer deleteById(I id) {
         Logger.debug(
                 true,
                 "Base",
                 "Service delete-by-id request received: serviceType={}, idProvided={}",
                 this.getClass().getSimpleName(),
                 id != null);
-        long total = mapper.deleteByPrimaryKey(id);
+        int total = mapper.deleteByPrimaryKey(id);
         Logger.debug(
                 false,
                 "Base",
@@ -578,14 +578,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the number of deleted records
      */
     @Override
-    public long deleteByIds(Collection<I> ids) {
+    public Integer deleteByIds(Collection<I> ids) {
         Logger.debug(
                 true,
                 "Base",
                 "Service batch delete-by-ids request received: serviceType={}, batchSize={}",
                 this.getClass().getSimpleName(),
                 ids == null ? 0 : ids.size());
-        long total = this.deleteByFieldList(entity -> CastKit.cast(getFieldValue(entity, "id")), ids);
+        int total = this.deleteByFieldList(entity -> CastKit.cast(getFieldValue(entity, "id")), ids);
         Logger.debug(
                 false,
                 "Base",
@@ -605,14 +605,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the number of deleted records
      */
     @Override
-    public <F> long deleteByFieldList(Fn<T, F> field, Collection<F> fieldValueList) {
+    public <F> Integer deleteByFieldList(Fn<T, F> field, Collection<F> fieldValueList) {
         Logger.debug(
                 true,
                 "Base",
                 "Service field-list delete request received: serviceType={}, batchSize={}",
                 this.getClass().getSimpleName(),
                 fieldValueList == null ? 0 : fieldValueList.size());
-        long total = mapper.deleteByFieldList(field, fieldValueList);
+        int total = mapper.deleteByFieldList(field, fieldValueList);
         Logger.debug(
                 false,
                 "Base",
@@ -630,14 +630,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the found entity, or null if not found
      */
     @Override
-    public Object selectById(I id) {
+    public T selectById(I id) {
         Logger.debug(
                 true,
                 "Base",
                 "Service select-by-id request received: serviceType={}, idProvided={}",
                 this.getClass().getSimpleName(),
                 id != null);
-        Object result = mapper.selectByPrimaryKey(id);
+        T result = mapper.selectByPrimaryKey(id);
         Logger.debug(
                 false,
                 "Base",
@@ -655,14 +655,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the found entity, or null if not found
      */
     @Override
-    public Object selectOne(T entity) {
+    public T selectOne(T entity) {
         Logger.debug(
                 true,
                 "Base",
                 "Service select-one request received: serviceType={}, entityType={}",
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName());
-        Object result = mapper.selectOne(entity);
+        T result = mapper.selectOne(entity);
         Logger.debug(
                 false,
                 "Base",
@@ -790,14 +790,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the number of deleted records
      */
     @Override
-    public long delete(Condition<T> condition) {
+    public Integer delete(Condition<T> condition) {
         Logger.debug(
                 true,
                 "Base",
                 "Service conditional delete request received: serviceType={}, conditionProvided={}",
                 this.getClass().getSimpleName(),
                 condition != null);
-        long total = mapper.deleteByCondition(condition);
+        int total = mapper.deleteByCondition(condition);
         Logger.debug(
                 false,
                 "Base",
@@ -815,7 +815,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the number of updated records
      */
     @Override
-    public long update(T entity, Condition<T> condition) {
+    public Integer update(T entity, Condition<T> condition) {
         Logger.debug(
                 true,
                 "Base",
@@ -823,7 +823,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName(),
                 condition != null);
-        long total = mapper.updateByCondition(entity, condition);
+        int total = mapper.updateByCondition(entity, condition);
         Logger.debug(
                 false,
                 "Base",
@@ -842,7 +842,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the number of updated records
      */
     @Override
-    public long updateSelective(T entity, Condition<T> condition) {
+    public Integer updateSelective(T entity, Condition<T> condition) {
         Logger.debug(
                 true,
                 "Base",
@@ -850,7 +850,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName(),
                 condition != null);
-        long total = mapper.updateByConditionSelective(entity, condition);
+        int total = mapper.updateByConditionSelective(entity, condition);
         Logger.debug(
                 false,
                 "Base",
@@ -867,14 +867,14 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the found entity, or null if not found
      */
     @Override
-    public Object selectOne(Condition<T> condition) {
+    public T selectOne(Condition<T> condition) {
         Logger.debug(
                 true,
                 "Base",
                 "Service conditional select-one request received: serviceType={}, conditionProvided={}",
                 this.getClass().getSimpleName(),
                 condition != null);
-        Object result = mapper.selectOneByCondition(condition);
+        T result = mapper.selectOneByCondition(condition);
         Logger.debug(
                 false,
                 "Base",
@@ -892,7 +892,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      * @return the first matching entity, or null if none found
      */
     @Override
-    public Object selectFirst(Condition<T> condition) {
+    public T selectFirst(Condition<T> condition) {
         Logger.debug(
                 true,
                 "Base",
@@ -900,7 +900,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 condition != null);
         List<T> list = PageContext.of(1, 1, false).doSelect(() -> mapper.selectByCondition(condition));
-        Object result = (list == null || list.isEmpty()) ? null : list.get(0);
+        T result = (list == null || list.isEmpty()) ? null : list.get(0);
         Logger.debug(
                 false,
                 "Base",

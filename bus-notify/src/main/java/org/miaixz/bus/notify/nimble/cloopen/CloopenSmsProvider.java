@@ -57,7 +57,7 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenNotice, Context>
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(CloopenNotice entity) {
+    public Message<Void> send(CloopenNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -78,7 +78,8 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenNotice, Context>
 
         String response = post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        Message result = Message.builder().errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
+        Message<Void> result = Message.<Void>builder()
+                .errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
         Logger.info(
                 false,

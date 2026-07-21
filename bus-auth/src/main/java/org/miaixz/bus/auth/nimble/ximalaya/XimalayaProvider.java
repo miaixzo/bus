@@ -108,7 +108,7 @@ public class XimalayaProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> map = new HashMap<>(9);
         map.put("code", callback.getCode());
         map.put("client_id", context.getClientId());
@@ -133,7 +133,7 @@ public class XimalayaProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
             String uid = (String) object.get("uid");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).uid(uid).build())
                     .build();
         } catch (Exception e) {
@@ -158,8 +158,8 @@ public class XimalayaProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
                         .queryParam("client_id", context.getClientId())
                         .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state))
@@ -190,7 +190,7 @@ public class XimalayaProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> map = new TreeMap<>();
         map.put("app_key", context.getClientId());
         map.put("client_os_type", (String) ObjectKit.defaultIfNull(context.getType(), Normal._3));
@@ -213,7 +213,7 @@ public class XimalayaProvider extends AbstractProvider {
             String nickname = (String) object.get("nickname");
             String avatarUrl = (String) object.get("avatar_url");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Claims.builder().uuid(id).nickname(nickname).avatar(avatarUrl).rawJson(JsonKit.toJsonString(object))
                             .source(complex.toString()).token(authorization).gender(Gender.UNKNOWN).build())
                     .build();

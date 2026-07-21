@@ -74,9 +74,9 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      * @return all information
      */
     @Override
-    public Message token(Callback callback) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getToken(tokenUrl(callback.getCode())))
-                .build();
+    public Message<Authorization> token(Callback callback) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(this.getToken(tokenUrl(callback.getCode()))).build();
     }
 
     /**
@@ -87,7 +87,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String openId = authorization.getOpenId();
         String scope = authorization.getScope();
         if (!StringKit.isEmpty(scope) && !scope.contains("snsapi_userinfo")) {
@@ -99,7 +99,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
             tokenMap.put("scope", authorization.getScope());
             tokenMap.put("is_snapshotuser", authorization.isSnapshotUser() ? 1 : 0);
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(tokenMap)).uuid(openId)
                                     .snapshotUser(authorization.isSnapshotUser()).token(authorization)
@@ -130,7 +130,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
             String headimgurl = (String) object.get("headimgurl");
             String sex = (String) object.get("sex");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).username(nickname).nickname(nickname)
                                     .avatar(headimgurl).location(location).uuid(openId)
@@ -158,8 +158,8 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<Authorization> refresh(Authorization authorization) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(this.getToken(refreshUrl(authorization.getRefresh()))).build();
     }
 
@@ -230,8 +230,8 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(complex.authorize()).queryParam("appid", context.getClientId())
                                 .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))

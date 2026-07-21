@@ -77,7 +77,7 @@ public class StackOverflowProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String tokenUrl = tokenUrl(callback.getCode());
         Map<String, String> form = new HashMap<>();
         UrlDecoder.decodeMap(tokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
@@ -89,7 +89,7 @@ public class StackOverflowProvider extends AbstractProvider {
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
         this.checkResponse(object);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().token((String) object.get("access_token"))
                                 .expireIn(((Number) object.get("expires")).intValue()).build())
@@ -104,7 +104,7 @@ public class StackOverflowProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String userInfoUrl = Builder.fromUrl(this.complex.userinfo())
                 .queryParam("access_token", authorization.getToken()).queryParam("site", "stackoverflow")
                 .queryParam("key", this.context.getUnionId()).build();
@@ -113,7 +113,7 @@ public class StackOverflowProvider extends AbstractProvider {
         this.checkResponse(object);
         Map<String, Object> userObj = (Map<String, Object>) ((List<Object>) object.get("items")).get(0);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Claims.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("user_id"))
                         .avatar((String) userObj.get("profile_image")).location((String) userObj.get("location"))
                         .nickname((String) userObj.get("display_name")).blog((String) userObj.get("website_url"))
@@ -129,8 +129,8 @@ public class StackOverflowProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam(
                                 "scope",

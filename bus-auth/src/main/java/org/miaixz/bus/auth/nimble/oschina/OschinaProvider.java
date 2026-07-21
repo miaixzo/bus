@@ -71,7 +71,7 @@ public class OschinaProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doGetToken(callback.getCode());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -90,7 +90,7 @@ public class OschinaProvider extends AbstractProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).refresh(refresh).uid(uid).expireIn(expiresIn).build())
                     .build();
         } catch (Exception e) {
@@ -115,7 +115,7 @@ public class OschinaProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String response = doGetUserInfo(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -136,7 +136,7 @@ public class OschinaProvider extends AbstractProvider {
             String gender = (String) object.get("gender");
             String email = (String) object.get("email");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name).nickname(name)
                             .avatar(avatar).blog(url).location(location).gender(Gender.of(gender)).email(email)
                             .token(authorization).source(complex.toString()).build())

@@ -127,7 +127,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
      * @return a {@link Claims} object containing user information or an error message
      */
     @Override
-    public Message authorize(Callback callback) {
+    public Message<Claims> authorize(Callback callback) {
         try {
             Logger.info(
                     true,
@@ -145,7 +145,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
             }
 
             // Obtain access token
-            Message message = this.token(callback);
+            Message<Authorization> message = this.token(callback);
             Logger.debug(
                     false,
                     "Auth",
@@ -156,7 +156,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
 
             Authorization token = JsonKit.toPojo(JsonKit.toJsonString(message.getData()), Authorization.class);
             // Retrieve user information
-            Message result = this.userInfo(token);
+            Message<Claims> result = this.userInfo(token);
             Logger.info(
                     false,
                     "Auth",
@@ -187,7 +187,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
      * @return the authorization URL, or null for protocols like LDAP that do not use an authorization URL
      */
     @Override
-    public Message build(String state) {
+    public Message<String> build(String state) {
         Logger.info(
                 true,
                 "Auth",
@@ -198,7 +198,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
                 StringKit.isNotEmpty(state));
         if (Protocol.OIDC == this.complex.getProtocol()) {
             // Build OAuth2 authorization URL
-            Message result = Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            Message<String> result = Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Builder.fromUrl(getEndpoint(Endpoint.AUTHORIZE)).queryParam("response_type", "code")
                                     .queryParam("client_id", this.context.getClientId())
@@ -217,7 +217,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
             return result;
         } else if (Protocol.SAML == this.complex.getProtocol()) {
             // Build SAML single sign-on URL
-            Message result = Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            Message<String> result = Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Builder.fromUrl(getEndpoint(Endpoint.AUTHORIZE))
                                     .queryParam("RelayState", getRealState(state)).build())

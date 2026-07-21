@@ -78,7 +78,7 @@ public class HuaweiProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> form = new HashMap<>(8);
         form.put("grant_type", "authorization_code");
         form.put("code", callback.getCode());
@@ -97,7 +97,8 @@ public class HuaweiProvider extends AbstractProvider {
 
         String response = post(this.complex.token(), form, header);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response))
+                .build();
     }
 
     /**
@@ -108,7 +109,7 @@ public class HuaweiProvider extends AbstractProvider {
      * @see AbstractProvider#token(Callback)
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String idToken = authorization.getIdToken();
         if (StringKit.isEmpty(idToken)) {
             Map<String, String> form = new HashMap<>(7);
@@ -133,7 +134,7 @@ public class HuaweiProvider extends AbstractProvider {
                 String displayName = (String) object.get("displayName");
                 String headPictureURL = (String) object.get("headPictureURL");
 
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                         .data(
                                 Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionID)
                                         .username(displayName).nickname(displayName).gender(Gender.UNKNOWN)
@@ -167,7 +168,7 @@ public class HuaweiProvider extends AbstractProvider {
             String nickname = (String) object.get("nickname");
             String picture = (String) object.get("picture");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(name)
                                     .nickname(nickname).gender(Gender.UNKNOWN).avatar(picture).token(authorization)
@@ -185,7 +186,7 @@ public class HuaweiProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getClientId());
         form.put("client_secret", context.getClientSecret());
@@ -196,7 +197,8 @@ public class HuaweiProvider extends AbstractProvider {
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         String response = post(this.complex.refresh(), form, header);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response))
+                .build();
     }
 
     /**
@@ -246,7 +248,7 @@ public class HuaweiProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
+    public Message<String> build(String state) {
         String realState = getRealState(state);
 
         Builder builder = Builder.fromUrl((String) super.build(state).getData()).queryParam("access_type", "offline")
@@ -262,7 +264,7 @@ public class HuaweiProvider extends AbstractProvider {
             // Cache codeVerifier for ten minutes
             this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(builder.build()).build();
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(builder.build()).build();
     }
 
     /**

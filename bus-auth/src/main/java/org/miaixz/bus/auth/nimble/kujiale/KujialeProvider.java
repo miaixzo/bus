@@ -71,8 +71,8 @@ public class KujialeProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getScopes(KujialeScope.values())))
                         .build())
@@ -86,9 +86,10 @@ public class KujialeProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(callback.getCode());
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response))
+                .build();
     }
 
     /**
@@ -148,7 +149,7 @@ public class KujialeProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String openId = this.getOpenId(authorization);
         String response = get(
                 Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authorization.getToken())
@@ -176,7 +177,7 @@ public class KujialeProvider extends AbstractProvider {
             String avatar = (String) resultObject.get("avatar");
             String openIdFromResponse = (String) resultObject.get("openId");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(resultObject)).username(userName)
                                     .nickname(userName).avatar(avatar).uuid(openIdFromResponse).token(authorization)
@@ -222,9 +223,10 @@ public class KujialeProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         String response = post(refreshUrl(authorization.getRefresh()));
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response))
+                .build();
     }
 
 }

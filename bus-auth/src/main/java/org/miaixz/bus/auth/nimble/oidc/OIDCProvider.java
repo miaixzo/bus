@@ -70,8 +70,8 @@ public class OIDCProvider extends AbstractProvider {
      * @return a message containing the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(getEndpoint(Endpoint.AUTHORIZE)).queryParam("response_type", "code")
                                 .queryParam("client_id", this.context.getClientId())
@@ -88,14 +88,14 @@ public class OIDCProvider extends AbstractProvider {
      * @return a message containing the access token and related information
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String tokenUrl = getEndpoint(Endpoint.TOKEN);
         String response = post(tokenUrl, this.tokenParams(callback));
         Map<String, Object> object = JsonKit.toMap(response);
 
         this.checkResponse(object);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().token((String) object.get("access_token"))
                                 .token_type((String) object.get("token_type")).idToken((String) object.get("id_token"))
@@ -110,7 +110,7 @@ public class OIDCProvider extends AbstractProvider {
      * @return a message containing user claims and information
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String userInfoUrl = getEndpoint(Endpoint.USERINFO);
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
@@ -119,7 +119,7 @@ public class OIDCProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("sub"))
                         .username((String) object.get("preferred_username")).nickname((String) object.get("nickname"))
                         .avatar((String) object.get("picture")).blog((String) object.get("website"))

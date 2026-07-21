@@ -109,7 +109,7 @@ public class ElemeProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getClientId());
         form.put("redirect_uri", context.getRedirectUri());
@@ -136,7 +136,7 @@ public class ElemeProvider extends AbstractProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Authorization.builder().token(token).refresh(refresh).token_type(tokenType)
                                     .expireIn(expiresIn).build())
@@ -163,7 +163,7 @@ public class ElemeProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(4);
         form.put("refresh_token", authorization.getRefresh());
         form.put("grant_type", "refresh_token");
@@ -188,7 +188,7 @@ public class ElemeProvider extends AbstractProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Authorization.builder().token(token).refresh(refresh).token_type(tokenType)
                                     .expireIn(expiresIn).build())
@@ -215,7 +215,7 @@ public class ElemeProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, Object> parameters = new HashMap<>(4);
         // API method name for getting merchant account information
         String action = "eleme.user.getUser";
@@ -279,7 +279,7 @@ public class ElemeProvider extends AbstractProvider {
             }
             String userName = (String) result.get("userName");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(result)).uuid(userId).username(userName)
                                     .nickname(userName).gender(Gender.UNKNOWN).token(authorization)
@@ -365,8 +365,8 @@ public class ElemeProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(Builder.fromUrl((String) super.build(state).getData()).queryParam("scope", "all").build())
                 .build();
     }

@@ -75,9 +75,9 @@ public class LinkedinProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getToken(tokenUrl(callback.getCode())))
-                .build();
+    public Message<Authorization> token(Callback callback) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(this.getToken(tokenUrl(callback.getCode()))).build();
     }
 
     /**
@@ -88,7 +88,7 @@ public class LinkedinProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String token = authorization.getToken();
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.HOST, "api.linkedin.com");
@@ -112,7 +112,7 @@ public class LinkedinProvider extends AbstractProvider {
             String avatar = this.getAvatar(data);
             String email = this.getUserEmail(token);
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(userName)
                                     .nickname(userName).avatar(avatar).email(email).token(authorization)
@@ -324,8 +324,8 @@ public class LinkedinProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam(
                                 "scope",

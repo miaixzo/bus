@@ -62,7 +62,7 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(JpushNotice entity) {
+    public Message<Void> send(JpushNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -101,7 +101,7 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "error.message");
 
-        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
         Logger.info(
                 false,
                 "Notify",

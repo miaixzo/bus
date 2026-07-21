@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -745,7 +746,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @return A {@link Mono} emitting the error {@link ServerResponse}.
      */
     private Mono<ServerResponse> buildErrorResponse(HttpStatus status, String errcode, String errmsg) {
-        Map<String, String> body = Map.of("errcode", errcode, "errmsg", errmsg);
+        Map<String, String> body = Map.of(Consts.ERRCODE, errcode, Consts.ERRMSG, errmsg);
         return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(JsonKit.toJsonString(body));
     }

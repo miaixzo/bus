@@ -71,13 +71,13 @@ public class ToutiaoProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(callback.getCode());
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(object);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().token((String) object.get("access_token"))
                                 .expireIn(((Number) object.get("expires_in")).intValue())
@@ -93,7 +93,7 @@ public class ToutiaoProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String userResponse = doGetUserInfo(authorization);
         Map<String, Object> userProfile = JsonKit.toPojo(userResponse, Map.class);
 
@@ -104,7 +104,7 @@ public class ToutiaoProvider extends AbstractProvider {
         boolean isAnonymousUser = "14".equals(user.get("uid_type"));
         String anonymousUserName = "Anonymous User";
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Claims.builder().rawJson(JsonKit.toJsonString(userProfile)).uuid((String) user.get("uid"))
                                 .username(isAnonymousUser ? anonymousUserName : (String) user.get("screen_name"))
@@ -123,8 +123,8 @@ public class ToutiaoProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
                                 .queryParam("client_key", context.getClientId())

@@ -61,7 +61,7 @@ public abstract class AbstractProvider<T extends Notice, K extends Context> impl
      * @return The result of the sending operation, or {@code null} if not implemented.
      */
     @Override
-    public Message send(T entity) {
+    public Message<Void> send(T entity) {
         Logger.warn(
                 false,
                 "Notify",
@@ -80,7 +80,7 @@ public abstract class AbstractProvider<T extends Notice, K extends Context> impl
      * @return The result of the sending operation, or {@code null} if not implemented.
      */
     @Override
-    public Message send(T entity, List<String> mobile) {
+    public Message<Void> send(T entity, List<String> mobile) {
         Logger.warn(
                 false,
                 "Notify",

@@ -86,7 +86,7 @@ public class EmaySmsProvider extends AbstractProvider<EmayNotice, Context> {
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(EmayNotice entity) {
+    public Message<Void> send(EmayNotice entity) {
         Map<String, String> bodys = getParamsMap(
                 context.getAppKey(),
                 context.getAppSecret(),
@@ -97,7 +97,7 @@ public class EmaySmsProvider extends AbstractProvider<EmayNotice, Context> {
 
         String response = post(this.getUrl(entity), bodys, headers);
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        return Message.builder()
+        return Message.<Void>builder()
                 .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
     }

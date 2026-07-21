@@ -76,7 +76,7 @@ public class SlackProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         String response = get(tokenUrl(callback.getCode()), null, header);
@@ -84,7 +84,7 @@ public class SlackProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().token((String) object.get("access_token"))
                                 .scope((String) object.get("scope")).token_type((String) object.get("token_type"))
@@ -100,7 +100,7 @@ public class SlackProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER.concat(authorization.getToken()));
@@ -110,7 +110,7 @@ public class SlackProvider extends AbstractProvider {
         Map<String, Object> user = (Map<String, Object>) object.get("user");
         Map<String, Object> profile = (Map<String, Object>) user.get("profile");
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Claims.builder().rawJson(JsonKit.toJsonString(user)).uuid((String) user.get("id"))
                                 .username((String) user.get("name")).nickname((String) user.get("real_name"))
@@ -127,7 +127,7 @@ public class SlackProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during revocation
      */
     @Override
-    public Message revoke(Authorization authorization) {
+    public Message<Void> revoke(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER.concat(authorization.getToken()));
@@ -136,7 +136,7 @@ public class SlackProvider extends AbstractProvider {
         this.checkResponse(object);
         // Returns true for successful authorization cancellation, otherwise false
         Errors status = (Boolean) object.get("revoked") ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
-        return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
+        return Message.<Void>builder().errcode(status.getKey()).errmsg(status.getValue()).build();
     }
 
     /**
@@ -180,8 +180,8 @@ public class SlackProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl(complex.authorize()).queryParam("client_id", context.getClientId())
                         .queryParam("state", getRealState(state)).queryParam("redirect_uri", context.getRedirectUri())
                         .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getScopes(SlackScope.values())))

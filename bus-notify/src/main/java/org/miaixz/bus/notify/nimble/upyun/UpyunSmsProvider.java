@@ -61,7 +61,7 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(UpyunNotice entity) {
+    public Message<Void> send(UpyunNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -90,13 +90,14 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
                     "Upyun SMS response empty: template={}, responseBytes={}",
                     entity == null ? null : entity.getTemplate(),
                     response == null ? 0 : response.length());
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
         boolean succeed = list.stream().filter(Objects::nonNull).anyMatch(UpyunNotice.MessageId::succeed);
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
-        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
         Logger.info(
                 false,
                 "Notify",

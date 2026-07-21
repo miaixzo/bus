@@ -99,7 +99,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(HuaweiNotice entity) {
+    public Message<Void> send(HuaweiNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -126,7 +126,8 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
 
         String response = post(this.getUrl(entity), bodys, headers);
         String errcode = JsonKit.getValue(response, "code");
-        Message result = Message.builder().errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
+        Message<Void> result = Message.<Void>builder()
+                .errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, "description")).build();
         Logger.info(
                 false,

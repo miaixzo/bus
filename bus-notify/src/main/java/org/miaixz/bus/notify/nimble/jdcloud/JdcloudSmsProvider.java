@@ -58,7 +58,7 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context>
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(JdcloudNotice entity) {
+    public Message<Void> send(JdcloudNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -102,7 +102,7 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context>
         String errcode = status == HTTP.HTTP_OK ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
         String errmsg = status == HTTP.HTTP_OK ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
-        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
         Logger.info(
                 false,
                 "Notify",

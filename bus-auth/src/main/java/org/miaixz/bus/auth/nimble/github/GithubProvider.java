@@ -74,7 +74,7 @@ public class GithubProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doGetToken(callback.getCode());
         Map<String, String> res = Builder.parseStringToMap(response);
 
@@ -85,7 +85,7 @@ public class GithubProvider extends AbstractProvider {
             throw new AuthorizedException("Missing access_token in response");
         }
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Authorization.builder().token(token).scope(res.get("scope")).token_type(res.get("token_type")).build())
                 .build();
     }
@@ -98,7 +98,7 @@ public class GithubProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, "token " + authorization.getToken());
         String response = get(Builder.fromUrl(this.complex.userinfo()).build(), null, header);
@@ -123,7 +123,7 @@ public class GithubProvider extends AbstractProvider {
             String email = (String) object.get("email");
             String bio = (String) object.get("bio");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(login).avatar(avatarUrl)
                             .blog(blog).nickname(name).company(company).location(location).email(email).remark(bio)
                             .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
@@ -163,8 +163,8 @@ public class GithubProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(GithubScope.values())))
                         .build())
