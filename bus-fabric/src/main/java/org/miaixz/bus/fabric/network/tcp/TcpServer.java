@@ -498,6 +498,30 @@ public final class TcpServer implements AutoCloseable {
     }
 
     /**
+     * Awaits a conduit operation and preserves runtime failures.
+     *
+     * @param future  conduit operation
+     * @param message failure message
+     * @return completed byte count
+     */
+    private static long await(final CompletableFuture<Long> future, final String message) {
+        try {
+            final Long result = Assert.notNull(future, () -> new ValidateException("TCP IO future must not be null"))
+                    .join();
+            return Assert.notNull(result, () -> new InternalException(message + ": missing byte count"));
+        } catch (final CompletionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            throw new InternalException(message, cause);
+        }
+    }
+
+    /**
      * Accepted TCP session.
      */
     private static final class TcpSession implements Session {
@@ -808,30 +832,6 @@ public final class TcpServer implements AutoCloseable {
             return Map.of();
         }
 
-    }
-
-    /**
-     * Awaits a conduit operation and preserves runtime failures.
-     *
-     * @param future  conduit operation
-     * @param message failure message
-     * @return completed byte count
-     */
-    private static long await(final CompletableFuture<Long> future, final String message) {
-        try {
-            final Long result = Assert.notNull(future, () -> new ValidateException("TCP IO future must not be null"))
-                    .join();
-            return Assert.notNull(result, () -> new InternalException(message + ": missing byte count"));
-        } catch (final CompletionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
-            }
-            if (cause instanceof Error error) {
-                throw error;
-            }
-            throw new InternalException(message, cause);
-        }
     }
 
     /**

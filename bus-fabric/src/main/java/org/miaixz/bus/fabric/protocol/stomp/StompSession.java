@@ -386,7 +386,7 @@ public final class StompSession implements Session {
      */
     @Override
     public Map<String, Object> attributes() {
-        return Map.of("observer", observer);
+        return Map.of(Builder.ATTRIBUTE_OBSERVER, observer);
     }
 
     /**

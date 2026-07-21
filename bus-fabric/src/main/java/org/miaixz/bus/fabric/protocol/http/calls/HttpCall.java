@@ -44,12 +44,12 @@ public final class HttpCall extends MonoCall<HttpResponse> {
     /**
      * HTTP protocol operation.
      */
-    private final Function<Cancellation, HttpResponse> operation;
+    private Function<Cancellation, HttpResponse> operation;
 
     /**
      * Request snapshot used to build the dispatch key.
      */
-    private final HttpRequest request;
+    private final String dispatchKey;
 
     /**
      * Creates an HTTP call.
@@ -62,7 +62,10 @@ public final class HttpCall extends MonoCall<HttpResponse> {
     private HttpCall(final HttpRequest request, final Dispatcher dispatcher,
             final Callback<? super HttpResponse> callback, final Function<Cancellation, HttpResponse> operation) {
         super("http-call", dispatcher, EventObserver.noop(), callback);
-        this.request = require(request, "HTTP request");
+        final HttpRequest current = require(request, "HTTP request");
+        final Address address = current.url().address();
+        this.dispatchKey = address.scheme() + Symbol.COLON + Symbol.FORWARDSLASH + address.host() + Symbol.C_COLON
+                + address.port();
         this.operation = require(operation, "HTTP operation");
     }
 
@@ -90,7 +93,9 @@ public final class HttpCall extends MonoCall<HttpResponse> {
      */
     @Override
     protected HttpResponse perform() {
-        return operation.apply(cancellation());
+        final Function<Cancellation, HttpResponse> current = operation;
+        operation = null;
+        return current.apply(cancellation());
     }
 
     /**
@@ -112,8 +117,7 @@ public final class HttpCall extends MonoCall<HttpResponse> {
      */
     @Override
     protected String dispatchKey() {
-        final Address address = request.url().address();
-        return address.scheme() + Symbol.COLON + Symbol.FORWARDSLASH + address.host() + Symbol.C_COLON + address.port();
+        return dispatchKey;
     }
 
     /**

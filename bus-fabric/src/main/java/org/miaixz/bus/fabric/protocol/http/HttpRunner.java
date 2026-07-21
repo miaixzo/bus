@@ -60,7 +60,6 @@ import org.miaixz.bus.fabric.protocol.http.codec.Http1Codec;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * Executes an immutable HTTP exchange snapshot through the HTTP chain.
@@ -86,14 +85,99 @@ public final class HttpRunner {
     private final String operationId;
 
     /**
+     * Immutable request/response filter captured from the execution snapshot.
+     */
+    private final Filter filter;
+
+    /**
+     * Optional HTTP cache used for lookup, validation, and response persistence.
+     */
+    private final HttpCache cache;
+
+    /**
+     * Cookie jar used to load request cookies and retain response cookies.
+     */
+    private final CookieJar cookies;
+
+    /**
+     * Optional authenticator invoked for origin or proxy challenges.
+     */
+    private final HttpAuthenticator authenticator;
+
+    /**
+     * User-Agent header value applied when the request does not provide one.
+     */
+    private final String userAgent;
+
+    /**
+     * Optional TLS context used when the selected route requires a secure connection.
+     */
+    private final TlsContext tlsContext;
+
+    /**
+     * TLS protocol and cipher policy captured for this exchange.
+     */
+    private final TlsSettings tlsSettings;
+
+    /**
+     * Proxy routing plan resolved before the exchange starts.
+     */
+    private final ProxyPlan proxy;
+
+    /**
+     * Maximum bytes allowed when materializing a request or response payload.
+     */
+    private final long materializeMaxBytes;
+
+    /**
+     * Ordered immutable HTTP stage snapshot executed for this exchange.
+     */
+    private final List<org.miaixz.bus.fabric.protocol.http.chain.HttpStage> stages;
+
+    /**
+     * Whether lifecycle events have a non-noop observer and therefore require publication.
+     */
+    private final boolean observed;
+
+    /**
      * Creates an HTTP runner.
      *
      * @param snapshot execution snapshot
      */
     HttpRunner(final HttpSnapshot snapshot) {
+        this(snapshot, true);
+    }
+
+    /**
+     * Creates an HTTP runner and records whether lifecycle events have a real consumer. The public factory supplies the
+     * known no-op observer directly, while builder-created snapshots retain their configured observer.
+     *
+     * @param snapshot execution snapshot
+     * @param observed whether events have a consumer
+     */
+    private HttpRunner(final HttpSnapshot snapshot, final boolean observed) {
         this.snapshot = require(snapshot, "HTTP exchange snapshot");
         this.executed = new AtomicBoolean();
-        this.operationId = ID.objectId();
+        this.observed = observed;
+        this.operationId = observed ? ID.objectId() : null;
+        this.filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
+        this.cache = cache();
+        this.cookies = cookieJar();
+        this.authenticator = authenticator();
+        this.userAgent = userAgent();
+        this.tlsContext = tlsContext();
+        this.tlsSettings = tlsSettings();
+        this.proxy = proxy();
+        this.materializeMaxBytes = snapshot.context().options().materializeMaxBytes();
+        this.stages = List.of(
+                new HttpRetry(this.authenticator),
+                new HttpBridge(this.cookies, this.userAgent),
+                this.cache == null ? HttpCoordinator.disabled(snapshot.context().reactor().clock())
+                        : HttpCoordinator.create(this.cache, snapshot.context().reactor().clock()),
+                new HttpConnect(snapshot.context().directory().connectionPool(), this.tlsContext, this.tlsSettings,
+                        snapshot.context().listener(), snapshot.context().resolver(),
+                        snapshot.context().reactor().dispatcher()),
+                new HttpTransport(snapshot.context().reactor().dispatcher()));
     }
 
     /**
@@ -105,7 +189,7 @@ public final class HttpRunner {
      */
     public static HttpRunner create(final Context context, final HttpRequest request) {
         return new HttpRunner(new HttpSnapshot(require(context, "Context"), require(request, "HTTP request"),
-                EventObserver.noop(), null, null));
+                EventObserver.noop(), null, null), false);
     }
 
     /**
@@ -173,15 +257,6 @@ public final class HttpRunner {
     public HttpResponse run(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         markExecuted();
-        Logger.info(
-                true,
-                "Fabric",
-                "HTTP exchange started: method={}, scheme={}, host={}, port={}, path={}",
-                snapshot.request().method().value(),
-                snapshot.request().url().scheme(),
-                snapshot.request().url().host(),
-                snapshot.request().url().port(),
-                snapshot.request().url().path());
         try {
             currentCancellation.throwIfCancelled();
             final HttpRequest current = prepareRequest();
@@ -190,43 +265,12 @@ public final class HttpRunner {
             final HttpResponse response = exchange(current, currentCancellation);
             currentCancellation.throwIfCancelled();
             emit(ObservationMarker.HTTP_RESPONSE, response, null);
-            Logger.info(
-                    false,
-                    "Fabric",
-                    "HTTP exchange completed: method={}, scheme={}, host={}, port={}, path={}, code={}",
-                    current.method().value(),
-                    current.url().scheme(),
-                    current.url().host(),
-                    current.url().port(),
-                    current.url().path(),
-                    response.code());
             return response;
         } catch (final CancellationException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
-            Logger.warn(
-                    false,
-                    "Fabric",
-                    e,
-                    "HTTP exchange cancelled: method={}, scheme={}, host={}, port={}, path={}",
-                    snapshot.request().method().value(),
-                    snapshot.request().url().scheme(),
-                    snapshot.request().url().host(),
-                    snapshot.request().url().port(),
-                    snapshot.request().url().path());
             throw e;
         } catch (final RuntimeException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
-            Logger.error(
-                    false,
-                    "Fabric",
-                    e,
-                    "HTTP exchange failed: method={}, scheme={}, host={}, port={}, path={}, exception={}",
-                    snapshot.request().method().value(),
-                    snapshot.request().url().scheme(),
-                    snapshot.request().url().host(),
-                    snapshot.request().url().port(),
-                    snapshot.request().url().path(),
-                    e.getClass().getSimpleName());
             throw e;
         }
     }
@@ -241,10 +285,9 @@ public final class HttpRunner {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         markExecuted();
         currentCancellation.throwIfCancelled();
-        final CookieJar cookies = cookieJar();
-        final HttpRequest request = new HttpBridge(cookies, userAgent()).prepare(snapshot.request());
-        final HttpConnect connect = new HttpConnect(snapshot.context().directory().connectionPool(), tlsContext(),
-                tlsSettings(), snapshot.context().listener(), snapshot.context().resolver(),
+        final HttpRequest request = new HttpBridge(cookies, userAgent).prepare(snapshot.request());
+        final HttpConnect connect = new HttpConnect(snapshot.context().directory().connectionPool(), tlsContext,
+                tlsSettings, snapshot.context().listener(), snapshot.context().resolver(),
                 snapshot.context().reactor().dispatcher());
         final ConnectionLease lease = connect.acquire(request, currentCancellation);
         try {
@@ -279,61 +322,24 @@ public final class HttpRunner {
      * @return prepared request
      */
     private HttpRequest prepareRequest() {
-        final HttpRequest request = snapshot.request().toBuilder().proxy(proxy()).build();
+        final HttpRequest source = snapshot.request();
+        final HttpRequest request = source.proxy() == proxy ? source : source.toBuilder().proxy(proxy).build();
         Message message = Message.of(
                 request.url().address().protocol(),
                 request.url().address(),
                 request.headers(),
                 request.body().payload(),
                 request.tag() == null ? Builder.HTTP_TAG_REQUEST : request.tag());
-        final Filter filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
         if (filter != null) {
-            Logger.debug(
-                    true,
-                    "Fabric",
-                    "HTTP filter started: method={}, scheme={}, host={}, port={}, path={}",
-                    request.method().value(),
-                    request.url().scheme(),
-                    request.url().host(),
-                    request.url().port(),
-                    request.url().path());
             message = FilterChain.apply(message, filter);
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "HTTP filter completed: method={}, scheme={}, host={}, port={}, path={}",
-                    request.method().value(),
-                    request.url().scheme(),
-                    request.url().host(),
-                    request.url().port(),
-                    request.url().path());
         }
         if (snapshot.guard() != null) {
-            Logger.debug(
-                    true,
-                    "Fabric",
-                    "HTTP guard check started: method={}, scheme={}, host={}, port={}, path={}",
-                    request.method().value(),
-                    request.url().scheme(),
-                    request.url().host(),
-                    request.url().port(),
-                    request.url().path());
             snapshot.guard().check(message).throwIfRejected();
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "HTTP guard check accepted: method={}, scheme={}, host={}, port={}, path={}",
-                    request.method().value(),
-                    request.url().scheme(),
-                    request.url().host(),
-                    request.url().port(),
-                    request.url().path());
         }
         if (filter == null) {
             return request;
         }
-        final PayloadBody body = PayloadBody
-                .of(message.payload(), request.body().media(), snapshot.context().options().materializeMaxBytes());
+        final PayloadBody body = PayloadBody.of(message.payload(), request.body().media(), materializeMaxBytes);
         return request.toBuilder().headers(message.headers()).body(body).tag(message.tag()).build();
     }
 
@@ -344,32 +350,7 @@ public final class HttpRunner {
      * @return response
      */
     private HttpResponse exchange(final HttpRequest current, final Cancellation cancellation) {
-        final HttpCache cache = cache();
-        final CookieJar currentCookieJar = cookieJar();
-        final HttpAuthenticator currentAuthenticator = authenticator();
-        final String currentUserAgent = userAgent();
-        final TlsContext currentTlsContext = tlsContext();
-        final TlsSettings currentTlsSettings = tlsSettings();
-        Logger.debug(
-                true,
-                "Fabric",
-                "HTTP chain prepared: cacheEnabled={}, cookieJarEnabled={}, authenticator={}, tlsContext={}, tlsSettings={}",
-                cache != null,
-                currentCookieJar != null,
-                currentAuthenticator.getClass().getName(),
-                currentTlsContext.getClass().getName(),
-                currentTlsSettings.getClass().getName());
-        final HttpResponse response = HttpChain.create(
-                List.of(
-                        new HttpRetry(currentAuthenticator),
-                        new HttpBridge(currentCookieJar, currentUserAgent),
-                        cache == null ? HttpCoordinator.disabled(snapshot.context().reactor().clock())
-                                : HttpCoordinator.create(cache, snapshot.context().reactor().clock()),
-                        new HttpConnect(snapshot.context().directory().connectionPool(), currentTlsContext,
-                                currentTlsSettings, snapshot.context().listener(), snapshot.context().resolver(),
-                                snapshot.context().reactor().dispatcher()),
-                        new HttpTransport(snapshot.context().reactor().dispatcher())),
-                cancellation).proceed(current);
+        final HttpResponse response = HttpChain.create(stages, cancellation).proceed(current);
         return filterResponse(materializeLimited(response));
     }
 
@@ -381,7 +362,10 @@ public final class HttpRunner {
      */
     private HttpResponse materializeLimited(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
-        final PayloadBody body = current.body().materializeMaxBytes(snapshot.context().options().materializeMaxBytes());
+        if (current.body().materializeMaxBytes() == materializeMaxBytes) {
+            return current;
+        }
+        final PayloadBody body = current.body().materializeMaxBytes(materializeMaxBytes);
         return current.toBuilder().body(body).build();
     }
 
@@ -393,7 +377,6 @@ public final class HttpRunner {
      */
     private HttpResponse filterResponse(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
-        final Filter filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
         if (filter == null) {
             return current;
         }
@@ -405,8 +388,7 @@ public final class HttpRunner {
                         current.body().payload(),
                         responseTag(current.request())),
                 filter);
-        final PayloadBody body = PayloadBody
-                .of(filtered.payload(), current.body().media(), snapshot.context().options().materializeMaxBytes());
+        final PayloadBody body = PayloadBody.of(filtered.payload(), current.body().media(), materializeMaxBytes);
         return current.toBuilder().headers(filtered.headers()).body(body).build();
     }
 
@@ -511,6 +493,9 @@ public final class HttpRunner {
      * @param cause    failure cause
      */
     private void emit(final ObservationMarker marker, final HttpResponse response, final Throwable cause) {
+        if (!observed) {
+            return;
+        }
         FabricEvent.Builder builder = FabricEvent.builder(marker, snapshot.context().clock())
                 .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_METHOD, snapshot.request().method().value())
                 .tag(Builder.TAG_URL, snapshot.request().url().encoded());

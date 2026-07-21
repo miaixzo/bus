@@ -20,7 +20,9 @@
 package org.miaixz.bus.fabric.protocol.http.codec;
 
 import java.net.URI;
-import java.util.Locale;
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -56,8 +58,8 @@ public final class HttpLine {
     public static String request(final HttpRequest request) {
         final HttpRequest current = Assert
                 .notNull(request, () -> new ValidateException("HTTP request must not be null"));
-        final String method = token(current.method().value(), "HTTP method").toUpperCase(Locale.ROOT);
-        return method + Symbol.SPACE + target(current.url().toUri()) + Symbol.SPACE + Protocol.HTTP_1_1;
+        final String method = token(current.methodText(), "HTTP method");
+        return method + Symbol.SPACE + current.requestTarget() + Symbol.SPACE + Protocol.HTTP_1_1;
     }
 
     /**
@@ -72,21 +74,22 @@ public final class HttpLine {
         if (first <= Normal._0 || !value.substring(Normal._0, first).startsWith("HTTP/")) {
             throw new ValidateException("Invalid HTTP status line");
         }
-        final int second = value.indexOf(Symbol.SPACE, first + Normal._1);
-        final String codeText = second < Normal._0 ? value.substring(first + Normal._1)
-                : value.substring(first + Normal._1, second);
-        if (codeText.length() != Normal._3) {
+        final int codeStart = first + Normal._1;
+        if (value.length() < codeStart + Normal._3
+                || value.length() > codeStart + Normal._3 && value.charAt(codeStart + Normal._3) != Symbol.C_SPACE) {
             throw new ProtocolException("Invalid HTTP status code");
         }
-        try {
-            final int code = Integer.parseInt(codeText);
-            if (code < HTTP.HTTP_CONTINUE || code >= Normal.KILO) {
-                throw new ProtocolException("HTTP status code out of range");
-            }
-            return code;
-        } catch (final NumberFormatException e) {
-            throw new ProtocolException("Invalid HTTP status code", e);
+        final char hundreds = value.charAt(codeStart);
+        final char tens = value.charAt(codeStart + Normal._1);
+        final char units = value.charAt(codeStart + Normal._2);
+        if (hundreds < '0' || hundreds > '9' || tens < '0' || tens > '9' || units < '0' || units > '9') {
+            throw new ProtocolException("Invalid HTTP status code");
         }
+        final int code = (hundreds - '0') * 100 + (tens - '0') * Normal._10 + units - '0';
+        if (code < HTTP.HTTP_CONTINUE || code >= Normal.KILO) {
+            throw new ProtocolException("HTTP status code out of range");
+        }
+        return code;
     }
 
     /**
@@ -98,6 +101,49 @@ public final class HttpLine {
      */
     public static String header(final String name, final String value) {
         return token(name, "HTTP header name") + Symbol.COLON + Symbol.SPACE + headerValue(value);
+    }
+
+    /**
+     * Writes a request line directly to a target buffer without an intermediate encoded byte array.
+     *
+     * @param request request
+     * @param target  target buffer
+     * @return bytes written
+     */
+    public static int writeRequest(final HttpRequest request, final ByteBuffer target) {
+        final HttpRequest current = Assert
+                .notNull(request, () -> new ValidateException("HTTP request must not be null"));
+        final String method = token(current.methodText(), "HTTP method");
+        final String requestTarget = current.requestTarget();
+        final String protocol = Protocol.HTTP_1_1.name;
+        final int required = method.length() + requestTarget.length() + protocol.length() + Normal._2;
+        requireRemaining(target, required);
+        writeAscii(method, target);
+        target.put((byte) Symbol.C_SPACE);
+        writeAscii(requestTarget, target);
+        target.put((byte) Symbol.C_SPACE);
+        writeAscii(protocol, target);
+        return required;
+    }
+
+    /**
+     * Writes a header line directly to a target buffer without an intermediate encoded byte array.
+     *
+     * @param name   header name
+     * @param value  header value
+     * @param target target buffer
+     * @return bytes written
+     */
+    public static int writeHeader(final String name, final String value, final ByteBuffer target) {
+        final String checkedName = token(name, "HTTP header name");
+        final String checkedValue = headerValue(value);
+        final int required = checkedName.length() + checkedValue.length() + Normal._2;
+        requireRemaining(target, required);
+        writeAscii(checkedName, target);
+        target.put((byte) Symbol.C_COLON);
+        target.put((byte) Symbol.C_SPACE);
+        writeAscii(checkedValue, target);
+        return required;
     }
 
     /**
@@ -169,10 +215,111 @@ public final class HttpLine {
      * @return true when valid
      */
     private static boolean tchar(final char c) {
-        return Character.isLetterOrDigit(c) || c == Symbol.C_NOT || c == Symbol.C_HASH || c == Symbol.C_DOLLAR
-                || c == Symbol.C_PERCENT || c == Symbol.C_AND || c == Symbol.C_SINGLE_QUOTE || c == Symbol.C_STAR
-                || c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_DOT || c == Symbol.C_CARET
-                || c == Symbol.C_UNDERLINE || c == '`' || c == Symbol.C_OR || c == Symbol.C_TILDE;
+        return c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || c == Symbol.C_NOT
+                || c == Symbol.C_HASH || c == Symbol.C_DOLLAR || c == Symbol.C_PERCENT || c == Symbol.C_AND
+                || c == Symbol.C_SINGLE_QUOTE || c == Symbol.C_STAR || c == Symbol.C_PLUS || c == Symbol.C_MINUS
+                || c == Symbol.C_DOT || c == Symbol.C_CARET || c == Symbol.C_UNDERLINE || c == '`' || c == Symbol.C_OR
+                || c == Symbol.C_TILDE;
+    }
+
+    /**
+     * Writes validated ASCII characters directly to the destination.
+     */
+    private static void writeAscii(final String value, final ByteBuffer target) {
+        for (int i = Normal._0; i < value.length(); i++) {
+            final char c = value.charAt(i);
+            if (c > 0x7f) {
+                throw new ProtocolException("HTTP line contains non-ASCII characters");
+            }
+            target.put((byte) c);
+        }
+    }
+
+    /**
+     * Ensures an atomic direct write can fit.
+     */
+    private static void requireRemaining(final ByteBuffer target, final int required) {
+        Assert.notNull(target, () -> new ValidateException("HTTP line target must not be null"));
+        if (target.remaining() < required) {
+            throw new BufferOverflowException();
+        }
+    }
+
+    /**
+     * Bounded incremental CRLF line parser. A parser instance is reusable and retains only the unfinished line.
+     */
+    public static final class Parser {
+
+        /**
+         * Fixed-capacity storage for the current line, excluding its CRLF terminator.
+         */
+        private final byte[] line;
+
+        /**
+         * Number of line bytes currently retained in {@link #line}.
+         */
+        private int length;
+
+        /**
+         * Whether the previous consumed byte was a carriage return awaiting line feed.
+         */
+        private boolean carriageReturn;
+
+        /**
+         * Creates a parser with a strict maximum line size.
+         *
+         * @param maxLineBytes maximum bytes excluding CRLF
+         */
+        public Parser(final int maxLineBytes) {
+            if (maxLineBytes <= Normal._0) {
+                throw new ValidateException("HTTP maximum line bytes must be positive");
+            }
+            this.line = new byte[maxLineBytes];
+        }
+
+        /**
+         * Consumes available bytes and returns one completed line, or {@code null} when more bytes are required.
+         *
+         * @param source source buffer
+         * @return completed ASCII line or null
+         */
+        public String accept(final ByteBuffer source) {
+            Assert.notNull(source, () -> new ValidateException("HTTP line source must not be null"));
+            while (source.hasRemaining()) {
+                final int value = source.get() & 0xff;
+                if (carriageReturn) {
+                    if (value != Symbol.C_LF) {
+                        reset();
+                        throw new ProtocolException("HTTP line contains a bare carriage return");
+                    }
+                    final String completed = new String(line, Normal._0, length, StandardCharsets.US_ASCII);
+                    reset();
+                    return completed;
+                }
+                if (value == Symbol.C_CR) {
+                    carriageReturn = true;
+                } else {
+                    if (value == Symbol.C_LF || value > 0x7f) {
+                        reset();
+                        throw new ProtocolException("HTTP line contains invalid ASCII framing");
+                    }
+                    if (length == line.length) {
+                        reset();
+                        throw new ProtocolException("HTTP line exceeds configured maximum");
+                    }
+                    line[length++] = (byte) value;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Resets unfinished parsing state.
+         */
+        public void reset() {
+            length = Normal._0;
+            carriageReturn = false;
+        }
     }
 
 }

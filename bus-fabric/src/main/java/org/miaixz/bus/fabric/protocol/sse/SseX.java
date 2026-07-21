@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.sse;
 
-import static org.miaixz.bus.fabric.Builder.*;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -385,7 +383,7 @@ public final class SseX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(OPTION_TIMEOUT);
+            final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.retry = SseRetry.defaults();
             this.autoReconnect = true;

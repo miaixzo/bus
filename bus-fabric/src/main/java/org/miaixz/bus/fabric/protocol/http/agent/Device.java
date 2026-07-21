@@ -40,33 +40,35 @@ public final class Device {
     /**
      * Mobile classifiers.
      */
-    private static final List<Device> MOBILE_DEVICES = Instances.get(
-            Device.class.getName() + ".mobileDevices",
-            () -> new CopyOnWriteArrayList<>(List.of(
-                    new Device("Windows Phone", "windows (ce|phone|mobile)( os)?"),
-                    new Device("iPad", "ipad"),
-                    new Device("iPod", "ipod"),
-                    new Device("iPhone", "iphone"),
-                    new Device("Android", "XiaoMi|MI\\s+"),
-                    new Device("Android", "android"),
-                    new Device("Harmony", "OpenHarmony"),
-                    new Device("GoogleTV", "googletv"),
-                    new Device("htcFlyer", "htc_flyer"),
-                    new Device("Symbian", "symbian(os)?"),
-                    new Device("Blackberry", "blackberry"))));
+    private static final class Registry {
 
-    /**
-     * Desktop classifiers.
-     */
-    private static final List<Device> DESKTOP_DEVICES = Instances.get(
-            Device.class.getName() + ".desktopDevices",
-            () -> new CopyOnWriteArrayList<>(List.of(
-                    new Device("Windows", "windows"),
-                    new Device("Mac", "(macintosh|darwin)"),
-                    new Device("Linux", "linux"),
-                    new Device("Wii", "wii"),
-                    new Device("Playstation", "playstation"),
-                    new Device("Java", "java"))));
+        /** Mobile classifiers initialized only after Builder device constants are complete. */
+        private static final List<Device> MOBILE = Instances.get(
+                Device.class.getName() + ".mobileDevices",
+                () -> new CopyOnWriteArrayList<>(List.of(
+                        Builder.HTTP_AGENT_DEVICE_WINDOWS_PHONE,
+                        Builder.HTTP_AGENT_DEVICE_IPAD,
+                        Builder.HTTP_AGENT_DEVICE_IPOD,
+                        Builder.HTTP_AGENT_DEVICE_IPHONE,
+                        new Device("Android", "XiaoMi|MI\\s+"),
+                        Builder.HTTP_AGENT_DEVICE_ANDROID,
+                        Builder.HTTP_AGENT_DEVICE_HARMONY,
+                        Builder.HTTP_AGENT_DEVICE_GOOGLE_TV,
+                        new Device("htcFlyer", "htc_flyer"),
+                        new Device("Symbian", "symbian(os)?"),
+                        new Device("Blackberry", "blackberry"))));
+
+        /** Desktop classifiers. */
+        private static final List<Device> DESKTOP = Instances.get(
+                Device.class.getName() + ".desktopDevices",
+                () -> new CopyOnWriteArrayList<>(List.of(
+                        new Device("Windows", "windows"),
+                        new Device("Mac", "(macintosh|darwin)"),
+                        new Device("Linux", "linux"),
+                        new Device("Wii", "wii"),
+                        new Device("Playstation", "playstation"),
+                        new Device("Java", "java"))));
+    }
 
     /**
      * Device name.
@@ -96,12 +98,12 @@ public final class Device {
      * @return device
      */
     public static Device parse(final String text) {
-        for (final Device device : MOBILE_DEVICES) {
+        for (final Device device : Registry.MOBILE) {
             if (device.matches(text)) {
                 return device;
             }
         }
-        for (final Device device : DESKTOP_DEVICES) {
+        for (final Device device : Registry.DESKTOP) {
             if (device.matches(text)) {
                 return device;
             }
@@ -116,7 +118,7 @@ public final class Device {
      * @param rule match rule
      */
     public static void addMobileDevice(final String name, final String rule) {
-        MOBILE_DEVICES.add(new Device(name, rule));
+        Registry.MOBILE.add(new Device(name, rule));
     }
 
     /**
@@ -126,7 +128,7 @@ public final class Device {
      * @param rule match rule
      */
     public static void addDesktopDevice(final String name, final String rule) {
-        DESKTOP_DEVICES.add(new Device(name, rule));
+        Registry.DESKTOP.add(new Device(name, rule));
     }
 
     /**
@@ -135,8 +137,8 @@ public final class Device {
      * @return devices
      */
     public static List<Device> devices() {
-        final ArrayList<Device> devices = new ArrayList<>(MOBILE_DEVICES);
-        devices.addAll(DESKTOP_DEVICES);
+        final ArrayList<Device> devices = new ArrayList<>(Registry.MOBILE);
+        devices.addAll(Registry.DESKTOP);
         return List.copyOf(devices);
     }
 
@@ -165,7 +167,7 @@ public final class Device {
      * @return true when mobile
      */
     public boolean mobile() {
-        return MOBILE_DEVICES.contains(this);
+        return Registry.MOBILE.contains(this);
     }
 
     /**

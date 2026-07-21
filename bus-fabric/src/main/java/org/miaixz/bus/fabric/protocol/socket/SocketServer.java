@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
-import static org.miaixz.bus.fabric.Builder.*;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -279,9 +277,9 @@ public final class SocketServer implements Lifecycle {
                 lifecycle.open(this);
                 acceptHandle = track(
                         dispatcher.background(
-                                SOCKET_ACTIVITY_ACCEPT,
+                                org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_ACCEPT,
                                 this,
-                                Activity.of(SOCKET_ACTIVITY_ACCEPT, this::acceptLoop)));
+                                Activity.of(org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_ACCEPT, this::acceptLoop)));
                 return this;
             } catch (final IOException e) {
                 closeServerChannel(opened);
@@ -361,7 +359,11 @@ public final class SocketServer implements Lifecycle {
      * @return immutable attributes
      */
     public Map<String, Object> attributes() {
-        return Map.of(ATTRIBUTE_OBSERVER, observer, ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
+        return Map.of(
+                org.miaixz.bus.fabric.Builder.ATTRIBUTE_OBSERVER,
+                observer,
+                org.miaixz.bus.fabric.Builder.ATTRIBUTE_SOCKET_OPTIONS,
+                socketOptions);
     }
 
     /**
@@ -383,9 +385,11 @@ public final class SocketServer implements Lifecycle {
                 try {
                     track(
                             dispatcher.background(
-                                    SOCKET_ACTIVITY_ACCEPT,
+                                    org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_ACCEPT,
                                     channel,
-                                    Activity.of(SOCKET_ACTIVITY_ACCEPT, () -> handleAccepted(channel))));
+                                    Activity.of(
+                                            org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_ACCEPT,
+                                            () -> handleAccepted(channel))));
                 } catch (final RuntimeException e) {
                     acceptedChannels.remove(channel);
                     closeAcceptedChannel(channel);
@@ -443,8 +447,12 @@ public final class SocketServer implements Lifecycle {
                 connection.close();
                 return;
             }
-            Message opening = Message
-                    .of(peerAddress.protocol(), peerAddress, Headers.empty(), Payload.empty(), SOCKET_TAG_OPEN);
+            Message opening = Message.of(
+                    peerAddress.protocol(),
+                    peerAddress,
+                    Headers.empty(),
+                    Payload.empty(),
+                    org.miaixz.bus.fabric.Builder.SOCKET_TAG_OPEN);
             opening = FilterChain.apply(opening, context.filter(), filter);
             if (guard != null) {
                 guard.check(opening).throwIfRejected();
@@ -488,9 +496,9 @@ public final class SocketServer implements Lifecycle {
     private void startReader(final SocketSession session) {
         track(
                 dispatcher.background(
-                        SOCKET_ACTIVITY_READ,
+                        org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_READ,
                         session,
-                        Activity.of(SOCKET_ACTIVITY_READ, () -> readLoop(session))));
+                        Activity.of(org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_READ, () -> readLoop(session))));
     }
 
     /**
@@ -523,18 +531,27 @@ public final class SocketServer implements Lifecycle {
     private Listener<SocketSession> registryListener(final AcceptedConnection connection) {
         return new Listener<>() {
 
+            /**
+             * Registers the opened session before forwarding the lifecycle callback.
+             */
             @Override
             public void open(final SocketSession source) {
                 sessions.add(source);
                 notifySessionOpen(source);
             }
 
+            /**
+             * Removes terminal ownership before forwarding the normal-close callback.
+             */
             @Override
             public void close(final SocketSession source) {
                 remove(source);
                 notifySessionClose(source);
             }
 
+            /**
+             * Removes terminal ownership before forwarding the failure callback.
+             */
             @Override
             public void failure(final SocketSession source, final Throwable cause) {
                 remove(source);
@@ -844,16 +861,16 @@ public final class SocketServer implements Lifecycle {
      */
     private Map<String, Object> attributes(final ProxyHeader proxyHeader, final Filter sessionFilter) {
         final java.util.LinkedHashMap<String, Object> values = new java.util.LinkedHashMap<>();
-        values.put(ATTRIBUTE_OBSERVER, observer);
-        values.put(ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
+        values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_OBSERVER, observer);
+        values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
         if (sessionFilter != null) {
-            values.put(ATTRIBUTE_FILTER, sessionFilter);
+            values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_FILTER, sessionFilter);
         }
         if (guard != null) {
-            values.put(ATTRIBUTE_GUARD, guard);
+            values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_GUARD, guard);
         }
         if (proxyHeader != null) {
-            values.put(ATTRIBUTE_PROXY_HEADER, proxyHeader);
+            values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_PROXY_HEADER, proxyHeader);
         }
         return Map.copyOf(values);
     }
@@ -1635,11 +1652,17 @@ public final class SocketServer implements Lifecycle {
         private Builder composeSessionListener() {
             this.sessionListener = new Listener<>() {
 
+                /**
+                 * Forwards an opened session to the configured consumer.
+                 */
                 @Override
                 public void open(final SocketSession source) {
                     openHandler.accept(source);
                 }
 
+                /**
+                 * Forwards a session failure to the configured error consumer.
+                 */
                 @Override
                 public void failure(final SocketSession source, final Throwable cause) {
                     errorHandler.accept(cause);

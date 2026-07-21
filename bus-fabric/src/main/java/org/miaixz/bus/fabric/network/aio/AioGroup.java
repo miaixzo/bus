@@ -184,14 +184,25 @@ public final class AioGroup implements AutoCloseable {
         }
         RuntimeException failure = null;
         try {
-            channelGroup.shutdownNow();
-        } catch (final IOException e) {
-            failure = new InternalException("Unable to shut down AIO channel group", e);
-        }
-        try {
             scope.close();
         } catch (final RuntimeException e) {
             failure = append(failure, e);
+        }
+        channelGroup.shutdown();
+        try {
+            if (!channelGroup.awaitTermination(Normal._5, TimeUnit.SECONDS)) {
+                channelGroup.shutdownNow();
+            }
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            try {
+                channelGroup.shutdownNow();
+            } catch (final IOException closeFailure) {
+                e.addSuppressed(closeFailure);
+            }
+            failure = append(failure, new InternalException("Interrupted while shutting down AIO group", e));
+        } catch (final IOException e) {
+            failure = append(failure, new InternalException("Unable to shut down AIO channel group", e));
         }
         if (ownsDispatcher) {
             try {
@@ -223,19 +234,12 @@ public final class AioGroup implements AutoCloseable {
         } catch (final ArithmeticException e) {
             throw new ValidateException("Termination timeout is out of range", e);
         }
-        final long startedNanos = System.nanoTime();
-        while (!channelGroup.isTerminated()) {
-            final long elapsed = System.nanoTime() - startedNanos;
-            if (elapsed >= timeoutNanos) {
-                return false;
-            }
-            final long remaining = timeoutNanos - elapsed;
-            final long pause = Math.min(remaining, TimeUnit.MILLISECONDS.toNanos(Normal._1));
-            if (!ThreadKit.sleep(pause, TimeUnit.NANOSECONDS)) {
-                throw new InternalException("Interrupted while awaiting AIO termination");
-            }
+        try {
+            return channelGroup.awaitTermination(timeoutNanos, TimeUnit.NANOSECONDS);
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new InternalException("Interrupted while awaiting AIO termination", e);
         }
-        return true;
     }
 
     /**

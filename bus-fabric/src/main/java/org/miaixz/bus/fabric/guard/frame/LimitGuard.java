@@ -69,7 +69,7 @@ public final class LimitGuard {
         final Frame checkedFrame = Assert.notNull(frame, () -> new ValidateException("Frame must not be null"));
         final int length = checkedFrame.length();
         Assert.isTrue(
-                length >= Normal._0 && length <= Normal._16 * Normal.MEBI,
+                length >= Normal._0 && length <= Builder.BYTES_16_MIB,
                 () -> new ProtocolException("Frame length must be between 0 and 16777216"));
         return length > maxBytes ? GuardResult.reject("frame length " + length + " exceeds max " + maxBytes)
                 : GuardResult.pass();
@@ -113,7 +113,7 @@ public final class LimitGuard {
      */
     private static long validateMaxBytes(final long maxBytes) {
         Assert.isTrue(
-                maxBytes > Normal._0 && maxBytes <= Normal._16 * Normal.MEBI,
+                maxBytes > Normal._0 && maxBytes <= Builder.BYTES_16_MIB,
                 () -> new ValidateException("Frame limit must be between 1 and 16777216"));
         return maxBytes;
     }

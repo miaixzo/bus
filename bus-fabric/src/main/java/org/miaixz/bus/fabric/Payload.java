@@ -21,7 +21,6 @@ package org.miaixz.bus.fabric;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.io.ByteString;
@@ -47,7 +46,7 @@ public interface Payload {
      * @return empty payload
      */
     static Payload empty() {
-        return Instances.get(Payload.class.getName() + ".empty", () -> Payload.of(Normal.EMPTY_BYTE_ARRAY));
+        return Instances.get(Payload.class.getName() + ".empty", () -> Payload.owned(ByteString.EMPTY));
     }
 
     /**
@@ -60,7 +59,7 @@ public interface Payload {
         if (bytes == null) {
             throw new ValidateException("Payload bytes must not be null");
         }
-        return repeatable(ByteString.of(bytes));
+        return bytes.length == 0 ? empty() : repeatable(ByteString.of(bytes));
     }
 
     /**
@@ -74,6 +73,19 @@ public interface Payload {
             throw new ValidateException("Payload bytes must not be null");
         }
         return repeatable(ByteString.of(bytes.toByteArray()));
+    }
+
+    /**
+     * Creates a repeatable payload from an already immutable owned snapshot without copying it.
+     *
+     * @param snapshot immutable owned bytes
+     * @return repeatable payload
+     */
+    static Payload owned(final ByteString snapshot) {
+        if (snapshot == null) {
+            throw new ValidateException("Payload snapshot must not be null");
+        }
+        return repeatable(snapshot);
     }
 
     /**
@@ -106,6 +118,14 @@ public interface Payload {
             }
 
             /**
+             * Returns the immutable owner without copying.
+             */
+            @Override
+            public ByteString ownedBytes() {
+                return snapshot;
+            }
+
+            /**
              * Returns the repeatable snapshot bytes using the default threshold.
              *
              * @return snapshot bytes
@@ -127,7 +147,7 @@ public interface Payload {
                 if (snapshot.size() > maxBytes) {
                     throw materializeExceeded(snapshot.size(), maxBytes, "Payload.bytes(long)");
                 }
-                return snapshot.toByteArray();
+                return snapshot.size() == 0 ? Normal.EMPTY_BYTE_ARRAY : snapshot.toByteArray();
             }
 
             /**
@@ -151,7 +171,11 @@ public interface Payload {
             @Override
             public String text(final Charset charset, final long maxBytes) {
                 validateCharset(charset);
-                return new String(bytes(maxBytes), charset);
+                validateMaterializeMaxBytes(maxBytes);
+                if (snapshot.size() > maxBytes) {
+                    throw materializeExceeded(snapshot.size(), maxBytes, "Payload.text(Charset,long)");
+                }
+                return snapshot.string(charset);
             }
 
             /**
@@ -178,7 +202,7 @@ public interface Payload {
             throw new ValidateException("Payload text must not be null");
         }
         validateCharset(charset);
-        return of(ByteString.encodeString(text, charset));
+        return owned(ByteString.encodeString(text, charset));
     }
 
     /**
@@ -195,8 +219,12 @@ public interface Payload {
         if (length < -1) {
             throw new ValidateException("Payload length must be -1 or greater");
         }
-        final AtomicBoolean opened = new AtomicBoolean();
         return new Payload() {
+
+            /**
+             * Guarded one-shot state without a separate atomic allocation.
+             */
+            private boolean opened;
 
             /**
              * Returns the declared one-shot stream length.
@@ -214,10 +242,11 @@ public interface Payload {
              * @return one-shot source
              */
             @Override
-            public Source source() {
-                if (!opened.compareAndSet(false, true)) {
+            public synchronized Source source() {
+                if (opened) {
                     throw new StatefulException("Streaming payload can only be opened once");
                 }
+                opened = true;
                 return input;
             }
 
@@ -339,6 +368,22 @@ public interface Payload {
      * @return true when repeatable
      */
     boolean repeatable();
+
+    /**
+     * Returns immutable owned bytes for copy-free protocol consumers.
+     *
+     * <p>
+     * Streaming implementations retain their one-shot semantics and therefore reject this operation.
+     * </p>
+     *
+     * @return immutable byte owner
+     */
+    default ByteString ownedBytes() {
+        if (!repeatable()) {
+            throw new StatefulException("Streaming payload has no repeatable byte owner");
+        }
+        return ByteString.of(bytes());
+    }
 
     /**
      * Reads a payload stream into memory while enforcing a threshold.

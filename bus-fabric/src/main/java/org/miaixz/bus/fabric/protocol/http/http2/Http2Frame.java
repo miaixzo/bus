@@ -19,7 +19,9 @@
 */
 package org.miaixz.bus.fabric.protocol.http.http2;
 
+import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -34,7 +36,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class Http2Frame {
+public final class Http2Frame implements AutoCloseable {
 
     /**
      * Frame type.
@@ -54,7 +56,12 @@ public final class Http2Frame {
     /**
      * Payload.
      */
-    private final ByteString payload;
+    private volatile ByteString payload;
+
+    /**
+     * Optional internal zero-copy payload owner.
+     */
+    private final PayloadLease payloadLease;
 
     /**
      * Headers.
@@ -97,6 +104,16 @@ public final class Http2Frame {
     private final Http2AlternateService alternateService;
 
     /**
+     * Unsigned eight-byte PING payload encoded in a Java {@code long}.
+     */
+    private final long pingPayload;
+
+    /**
+     * Last processed stream identifier carried by a GOAWAY frame.
+     */
+    private final int lastStreamId;
+
+    /**
      * Creates a frame.
      *
      * @param type             type
@@ -112,7 +129,8 @@ public final class Http2Frame {
     private Http2Frame(final int type, final int streamId, final int flags, final ByteString payload,
             final List<Http2Header> headers, final Http2Settings settings, final long windowDelta, final int errorCode,
             final int promisedStreamId) {
-        this(type, streamId, flags, payload, headers, settings, windowDelta, errorCode, promisedStreamId, null, null);
+        this(type, streamId, flags, payload, headers, settings, windowDelta, errorCode, promisedStreamId, null, null,
+                null);
     }
 
     /**
@@ -133,10 +151,22 @@ public final class Http2Frame {
     private Http2Frame(final int type, final int streamId, final int flags, final ByteString payload,
             final List<Http2Header> headers, final Http2Settings settings, final long windowDelta, final int errorCode,
             final int promisedStreamId, final Http2Priority priority, final Http2AlternateService alternateService) {
+        this(type, streamId, flags, payload, headers, settings, windowDelta, errorCode, promisedStreamId, priority,
+                alternateService, null);
+    }
+
+    /**
+     * Full constructor including an internal leased payload.
+     */
+    private Http2Frame(final int type, final int streamId, final int flags, final ByteString payload,
+            final List<Http2Header> headers, final Http2Settings settings, final long windowDelta, final int errorCode,
+            final int promisedStreamId, final Http2Priority priority, final Http2AlternateService alternateService,
+            final PayloadLease payloadLease) {
         this.type = type;
         this.streamId = streamId;
         this.flags = flags;
         this.payload = payload == null ? ByteString.EMPTY : payload;
+        this.payloadLease = payloadLease;
         this.headers = headers == null ? List.of() : List.copyOf(headers);
         this.settings = settings == null ? null : settings.copy();
         this.windowDelta = windowDelta;
@@ -145,6 +175,11 @@ public final class Http2Frame {
         this.endStream = (flags & Normal._1) != Normal._0;
         this.priority = priority;
         this.alternateService = alternateService;
+        this.pingPayload = type == Normal._6 && this.payload.size() == Normal._8 ? longAt(this.payload, Normal._0)
+                : Normal._0;
+        this.lastStreamId = type == Normal._7 && this.payload.size() >= Normal._8
+                ? intAt(this.payload, Normal._0) & Integer.MAX_VALUE
+                : Normal._0;
     }
 
     /**
@@ -406,6 +441,7 @@ public final class Http2Frame {
             final List<Http2Header> headers,
             final Http2Priority priority,
             final Http2AlternateService alternateService) {
+        validateDecoded(type, streamId, flags, payload);
         final Http2Priority decodedPriority = priority == null ? decodedPriority(type, streamId, payload) : priority;
         final Http2AlternateService decodedAlternateService = alternateService == null
                 ? decodedAlternateService(type, streamId, payload)
@@ -466,7 +502,18 @@ public final class Http2Frame {
      * @return payload bytes
      */
     public ByteString payloadBytes() {
-        return payload;
+        ByteString current = payload;
+        if (current.size() == Normal._0 && payloadLease != null && payloadLease.remaining() != Normal._0) {
+            synchronized (this) {
+                current = payload;
+                if (current.size() == Normal._0) {
+                    current = payloadLease.bytes();
+                    payload = current;
+                    payloadLease.close();
+                }
+            }
+        }
+        return current;
     }
 
     /**
@@ -511,10 +558,7 @@ public final class Http2Frame {
      * @return ping payload
      */
     public long pingPayload() {
-        if (type != Normal._6 || payload.size() != Normal._8) {
-            return Normal._0;
-        }
-        return new Buffer().write(payload).readLong();
+        return pingPayload;
     }
 
     /**
@@ -523,10 +567,7 @@ public final class Http2Frame {
      * @return last stream id
      */
     public int lastStreamId() {
-        if (type != Normal._7 || payload.size() < Normal._4 * Normal._2) {
-            return Normal._0;
-        }
-        return new Buffer().write(payload).readInt() & Integer.MAX_VALUE;
+        return lastStreamId;
     }
 
     /**
@@ -569,6 +610,49 @@ public final class Http2Frame {
     }
 
     /**
+     * Releases an internal payload lease at most once.
+     */
+    @Override
+    public void close() {
+        if (payloadLease != null) {
+            payloadLease.close();
+        }
+    }
+
+    /**
+     * Returns an internal read-only payload slice without materializing ByteString.
+     */
+    ByteBuffer payloadBuffer() {
+        return payloadLease == null ? ByteBuffer.wrap(payload.toByteArray()).asReadOnlyBuffer() : payloadLease.buffer();
+    }
+
+    /**
+     * Creates a DATA/header-fragment frame backed by an internal bounded lease.
+     */
+    static Http2Frame decodedLeased(
+            final int type,
+            final int streamId,
+            final int flags,
+            final ByteBuffer payload,
+            final Runnable releaser) {
+        final PayloadLease lease = new PayloadLease(payload, releaser);
+        final int length = lease.remaining();
+        if (length > 64 * 1024 || payload.capacity() > Math.max(64 * 1024, length << Normal._2)) {
+            final ByteString bytes = lease.bytes();
+            lease.close();
+            return decoded(type, streamId, flags, bytes, List.of());
+        }
+        if (type != Normal._0 && type != Normal._1 && type != Normal._9) {
+            final ByteString bytes = lease.bytes();
+            lease.close();
+            return decoded(type, streamId, flags, bytes, List.of());
+        }
+        validateDecodedLength(type, streamId, flags, length);
+        return new Http2Frame(type, streamId, flags, ByteString.EMPTY, List.of(), null, Normal._0, Normal._0, Normal._0,
+                null, null, lease);
+    }
+
+    /**
      * Validates positive stream id.
      *
      * @param streamId stream id
@@ -577,6 +661,82 @@ public final class Http2Frame {
         if (streamId <= Normal._0) {
             throw new ValidateException("HTTP/2 stream id must be positive");
         }
+    }
+
+    /**
+     * Validates known decoded frame invariants before interpreting payload bytes.
+     */
+    private static void validateDecoded(final int type, final int streamId, final int flags, final ByteString payload) {
+        if (payload == null) {
+            throw new ProtocolException("HTTP/2 frame payload must not be null");
+        }
+        validateDecodedLength(type, streamId, flags, payload.size());
+        if (type == Normal._8 && (intAt(payload, Normal._0) & Integer.MAX_VALUE) == Normal._0) {
+            throw new ProtocolException("HTTP/2 WINDOW_UPDATE increment must be non-zero");
+        }
+    }
+
+    /**
+     * Validates frame type/stream/length combinations without allocating.
+     */
+    private static void validateDecodedLength(final int type, final int streamId, final int flags, final int length) {
+        if (streamId < Normal._0 || length < Normal._0) {
+            throw new ProtocolException("Invalid HTTP/2 frame metadata");
+        }
+        final boolean streamRequired = type == Normal._0 || type == Normal._1 || type == Normal._2 || type == Normal._3
+                || type == Normal._5 || type == Normal._9;
+        final boolean connectionRequired = type == Normal._4 || type == Normal._6 || type == Normal._7;
+        if ((streamRequired && streamId == Normal._0) || (connectionRequired && streamId != Normal._0)) {
+            throw new ProtocolException("Invalid HTTP/2 frame stream id for type " + type);
+        }
+        switch (type) {
+            case Normal._2 -> exactLength(length, Normal._5, "PRIORITY");
+            case Normal._3 -> exactLength(length, Normal._4, "RST_STREAM");
+            case Normal._4 -> {
+                if ((flags & Normal._1) != Normal._0 ? length != Normal._0 : length % Normal._6 != Normal._0) {
+                    throw new ProtocolException("Invalid HTTP/2 SETTINGS payload length");
+                }
+            }
+            case Normal._5 -> {
+                if (length < Normal._4) {
+                    throw new ProtocolException("Invalid HTTP/2 PUSH_PROMISE payload length");
+                }
+            }
+            case Normal._6 -> exactLength(length, Normal._8, "PING");
+            case Normal._7 -> {
+                if (length < Normal._8) {
+                    throw new ProtocolException("Invalid HTTP/2 GOAWAY payload length");
+                }
+            }
+            case Normal._8 -> exactLength(length, Normal._4, "WINDOW_UPDATE");
+            default -> {
+                // DATA, HEADERS, CONTINUATION and unknown extension frames are variable length.
+            }
+        }
+    }
+
+    /**
+     * Requires an exact control-frame payload length.
+     */
+    private static void exactLength(final int actual, final int expected, final String type) {
+        if (actual != expected) {
+            throw new ProtocolException("Invalid HTTP/2 " + type + " payload length");
+        }
+    }
+
+    /**
+     * Reads a network-order int directly from immutable bytes.
+     */
+    private static int intAt(final ByteString bytes, final int offset) {
+        return ((bytes.getByte(offset) & 0xff) << 24) | ((bytes.getByte(offset + 1) & 0xff) << 16)
+                | ((bytes.getByte(offset + 2) & 0xff) << 8) | (bytes.getByte(offset + 3) & 0xff);
+    }
+
+    /**
+     * Reads a network-order long directly from immutable bytes.
+     */
+    private static long longAt(final ByteString bytes, final int offset) {
+        return ((long) intAt(bytes, offset) << 32) | Integer.toUnsignedLong(intAt(bytes, offset + Normal._4));
     }
 
     /**
@@ -617,7 +777,7 @@ public final class Http2Frame {
         final Buffer payload = new Buffer();
         for (final int id : ids) {
             payload.writeShort(id);
-            payload.writeInt(settings.get(id));
+            payload.writeInt((int) settings.getLong(id));
         }
         return payload.readByteString();
     }
@@ -637,7 +797,11 @@ public final class Http2Frame {
         final Buffer view = new Buffer().write(payload);
         final Http2Settings settings = Http2Settings.defaults();
         while (view.size() > Normal._0) {
-            settings.set(view.readShort() & Normal._65535, view.readInt());
+            final int id = view.readShort() & Normal._65535;
+            final long value = Integer.toUnsignedLong(view.readInt());
+            if (id >= Normal._1 && id <= Normal._6) {
+                settings.set(id, value);
+            }
         }
         return settings;
     }
@@ -727,6 +891,86 @@ public final class Http2Frame {
             return null;
         }
         return Http2AlternateService.decode(payload, streamId);
+    }
+
+    /**
+     * Internal read-only payload slice with an idempotent parent-buffer release. It never exposes a writable view and
+     * is bounded by the frame retention policy.
+     */
+    static final class PayloadLease implements AutoCloseable {
+
+        /**
+         * Read-only payload slice whose position is private to this lease.
+         */
+        private final ByteBuffer payload;
+
+        /**
+         * Parent-buffer release callback invoked at most once.
+         */
+        private final Runnable releaser;
+
+        /**
+         * Idempotent close guard shared by all lease access paths.
+         */
+        private final AtomicBoolean closed = new AtomicBoolean();
+
+        /**
+         * Creates a lease over a bounded payload slice.
+         *
+         * @param payload  payload slice retained from the reader
+         * @param releaser callback returning parent-buffer ownership
+         */
+        private PayloadLease(final ByteBuffer payload, final Runnable releaser) {
+            if (payload == null || releaser == null) {
+                throw new ValidateException("HTTP/2 payload lease requires payload and releaser");
+            }
+            this.payload = payload.slice().asReadOnlyBuffer();
+            this.releaser = releaser;
+        }
+
+        /**
+         * Returns the number of payload bytes visible to this lease.
+         *
+         * @return remaining payload bytes
+         */
+        private int remaining() {
+            return payload.remaining();
+        }
+
+        /**
+         * Returns an independent read-only view of the retained payload.
+         *
+         * @return read-only payload view
+         * @throws IllegalStateException if this lease is closed
+         */
+        private ByteBuffer buffer() {
+            if (closed.get()) {
+                throw new IllegalStateException("HTTP/2 payload lease is closed");
+            }
+            return payload.asReadOnlyBuffer();
+        }
+
+        /**
+         * Copies the retained payload into an independently owned byte string.
+         *
+         * @return copied payload bytes
+         */
+        private ByteString bytes() {
+            final ByteBuffer view = buffer();
+            final byte[] copy = new byte[view.remaining()];
+            view.get(copy);
+            return ByteString.of(copy);
+        }
+
+        /**
+         * Releases parent-buffer ownership exactly once.
+         */
+        @Override
+        public void close() {
+            if (closed.compareAndSet(false, true)) {
+                releaser.run();
+            }
+        }
     }
 
 }

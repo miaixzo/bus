@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Immutable socket frame payload.
@@ -48,7 +49,7 @@ public record SocketFrame(ByteString payload, int length) {
         final ByteString checkedPayload = Assert
                 .notNull(payload, () -> new ValidateException("Socket frame payload must not be null"));
         Assert.isTrue(
-                length >= Normal._0 && length <= Normal._16 * Normal.MEBI,
+                length >= Normal._0 && length <= Builder.BYTES_16_MIB,
                 () -> new ProtocolException("Socket frame length exceeds maximum"));
         Assert.isTrue(
                 length == checkedPayload.size(),

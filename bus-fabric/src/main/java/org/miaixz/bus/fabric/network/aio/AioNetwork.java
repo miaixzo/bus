@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
@@ -41,6 +42,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Status;
@@ -54,6 +56,8 @@ import org.miaixz.bus.fabric.network.tcp.TcpServer;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
+import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
@@ -329,92 +333,9 @@ public final class AioNetwork implements AutoCloseable {
             return CompletableFuture
                     .failedFuture(new SocketException("Unable to resolve host " + checkedAddress.host()));
         }
-        return connectCandidate(checkedAddress, checkedTimeout, current, result.addresses(), Normal._0, null);
-    }
-
-    /**
-     * Connects to ordered DNS candidates.
-     *
-     * @param address   target address
-     * @param timeout   timeout policy
-     * @param listener  lifecycle listener
-     * @param addresses ordered candidates
-     * @param index     current candidate index
-     * @param failure   previous failure
-     * @return connection future
-     */
-    private CompletableFuture<Connection> connectCandidate(
-            final Address address,
-            final Timeout timeout,
-            final Listener<Object> listener,
-            final List<InetAddress> addresses,
-            final int index,
-            final Throwable failure) {
-        if (index >= addresses.size()) {
-            final Throwable root = ExceptionKit.unwrap(failure);
-            if (root instanceof TimeoutException timedOut) {
-                listener.failure(this, timedOut);
-                return CompletableFuture.failedFuture(timedOut);
-            }
-            final SocketException failed = new SocketException("Unable to connect to resolved host " + address.host(),
-                    root);
-            listener.failure(this, failed);
-            return CompletableFuture.failedFuture(failed);
-        }
-        final AioChannel channel = provider.openChannel(group, socketOptions);
-        managed.add(channel);
-        final InetSocketAddress socket = new InetSocketAddress(addresses.get(index), address.port());
-        final CompletableFuture<Connection> opened = new CompletableFuture<>();
-        final CompletableFuture<Void> operation = channel.connect(socket, timeout);
-        opened.whenComplete((connection, cause) -> {
-            if (opened.isCancelled()) {
-                operation.cancel(true);
-                managed.remove(channel);
-                IoKit.closeQuietly(channel);
-            }
-        });
-        operation.whenComplete((ignored, cause) -> {
-            if (opened.isCancelled()) {
-                managed.remove(channel);
-                IoKit.closeQuietly(channel);
-                return;
-            }
-            if (cause != null) {
-                managed.remove(channel);
-                IoKit.closeQuietly(channel);
-                final CompletableFuture<Connection> nextAttempt = connectCandidate(
-                        address,
-                        timeout,
-                        listener,
-                        addresses,
-                        index + Normal._1,
-                        ExceptionKit.unwrap(cause));
-                if (opened.isCancelled()) {
-                    nextAttempt.cancel(true);
-                    return;
-                }
-                opened.whenComplete((connection, nextCause) -> {
-                    if (opened.isCancelled()) {
-                        nextAttempt.cancel(true);
-                    }
-                });
-                nextAttempt.whenComplete((connection, next) -> {
-                    if (opened.isCancelled()) {
-                        return;
-                    }
-                    if (next == null) {
-                        opened.complete(connection);
-                    } else {
-                        opened.completeExceptionally(ExceptionKit.unwrap(next));
-                    }
-                });
-                return;
-            }
-            final Connection connection = new AioConnection(
-                    Destination.of(address.protocol(), address, socketOptions.toOptions()), channel, listener);
-            opened.complete(connection);
-        });
-        return opened;
+        final ConnectRace race = new ConnectRace(checkedAddress, checkedTimeout, current, result.addresses());
+        race.startPair(Normal._0, null);
+        return race.result;
     }
 
     /**
@@ -498,6 +419,242 @@ public final class AioNetwork implements AutoCloseable {
      */
     private static Listener<Object> safe(final Listener<Object> listener) {
         return listener == null ? NoopListener.INSTANCE : new SafeListener(listener);
+    }
+
+    /**
+     * Runs a bounded, deterministic Happy Eyeballs race. At most two channels are pending at once; later address pairs
+     * are considered only after the current pair has failed.
+     */
+    private final class ConnectRace {
+
+        /**
+         * Logical destination whose resolved addresses are being raced.
+         */
+        private final Address address;
+
+        /**
+         * Connection timeout policy applied independently to each channel attempt.
+         */
+        private final Timeout timeout;
+
+        /**
+         * Listener attached to the winning connection.
+         */
+        private final Listener<Object> listener;
+
+        /**
+         * Stable resolver-order address snapshot partitioned into pairs.
+         */
+        private final List<InetAddress> addresses;
+
+        /**
+         * Future completed by the first successful connection or the terminal aggregate failure.
+         */
+        private final CompletableFuture<Connection> result = new CompletableFuture<>();
+
+        /**
+         * Attempts that still own an open channel or pending connect operation.
+         */
+        private final ConcurrentLinkedDeque<Attempt> attempts = new ConcurrentLinkedDeque<>();
+
+        /**
+         * Ensures that exactly one winner, failure, or cancellation becomes terminal.
+         */
+        private final AtomicBoolean terminal = new AtomicBoolean();
+
+        /**
+         * Delayed second attempt for the current pair, or {@code null} when none is scheduled.
+         */
+        private volatile DispatchHandle delayed;
+
+        /**
+         * Creates a deterministic connection race over a resolved address snapshot.
+         *
+         * @param address   logical destination
+         * @param timeout   connection timeout policy
+         * @param listener  listener attached to the winning connection
+         * @param addresses resolved addresses in stable resolver order
+         */
+        private ConnectRace(final Address address, final Timeout timeout, final Listener<Object> listener,
+                final List<InetAddress> addresses) {
+            this.address = address;
+            this.timeout = timeout;
+            this.listener = listener;
+            this.addresses = List.copyOf(addresses);
+            result.whenComplete((connection, cause) -> {
+                if (result.isCancelled()) {
+                    terminal.set(true);
+                    cancelRemaining(null);
+                }
+            });
+        }
+
+        /**
+         * Starts the next pair and schedules its second address after the Happy Eyeballs delay.
+         *
+         * @param index           first address index in the pair
+         * @param previousFailure failure accumulated from earlier pairs, or {@code null}
+         */
+        private void startPair(final int index, final Throwable previousFailure) {
+            if (terminal.get()) {
+                return;
+            }
+            if (index >= addresses.size()) {
+                fail(previousFailure);
+                return;
+            }
+            final int count = Math.min(Normal._2, addresses.size() - index);
+            final AtomicInteger remaining = new AtomicInteger(count);
+            final Throwable[] failures = new Throwable[] { previousFailure };
+            startAttempt(index, index + count, remaining, failures);
+            if (count == Normal._2 && !terminal.get()) {
+                delayed = group.dispatcher().schedule(
+                        "aio-happy-eyeballs",
+                        Builder.HAPPY_EYEBALLS_DELAY,
+                        Activity.of(
+                                "aio-happy-eyeballs",
+                                () -> startAttempt(index + Normal._1, index + count, remaining, failures)));
+            }
+        }
+
+        /**
+         * Opens and starts one native channel connection attempt.
+         *
+         * @param index     address index to connect
+         * @param nextPair  first index of the next pair
+         * @param remaining attempts in the current pair that have not failed
+         * @param failures  synchronized single-slot aggregate failure holder
+         */
+        private void startAttempt(
+                final int index,
+                final int nextPair,
+                final AtomicInteger remaining,
+                final Throwable[] failures) {
+            if (terminal.get()) {
+                return;
+            }
+            final AioChannel channel;
+            try {
+                channel = provider.openChannel(group, socketOptions);
+            } catch (final RuntimeException failure) {
+                attemptFailed(nextPair, remaining, failures, failure);
+                return;
+            }
+            managed.add(channel);
+            final InetSocketAddress socket = new InetSocketAddress(addresses.get(index), address.port());
+            final CompletableFuture<Void> operation = channel.connect(socket, timeout);
+            final Attempt attempt = new Attempt(channel, operation);
+            attempts.add(attempt);
+            operation.whenComplete((ignored, cause) -> {
+                if (cause != null) {
+                    closeAttempt(attempt);
+                    attemptFailed(nextPair, remaining, failures, cause);
+                    return;
+                }
+                final Connection connection = new AioConnection(
+                        Destination.of(address.protocol(), address, socketOptions.toOptions()), channel, listener);
+                if (terminal.compareAndSet(false, true)) {
+                    attempts.remove(attempt);
+                    cancelRemaining(channel);
+                    result.complete(connection);
+                } else {
+                    closeAttempt(attempt);
+                }
+            });
+        }
+
+        /**
+         * Aggregates an attempt failure and advances after every attempt in the pair has failed.
+         *
+         * @param nextPair  first index of the next address pair
+         * @param remaining attempts in the current pair that have not failed
+         * @param failures  synchronized aggregate failure holder
+         * @param cause     current attempt failure
+         */
+        private void attemptFailed(
+                final int nextPair,
+                final AtomicInteger remaining,
+                final Throwable[] failures,
+                final Throwable cause) {
+            synchronized (failures) {
+                final Throwable current = ExceptionKit.unwrap(cause);
+                if (failures[0] != null && failures[0] != current) {
+                    current.addSuppressed(ExceptionKit.unwrap(failures[0]));
+                }
+                failures[0] = current;
+            }
+            if (remaining.decrementAndGet() == Normal._0 && !terminal.get()) {
+                final DispatchHandle pending = delayed;
+                if (pending != null) {
+                    group.dispatcher().cancel(pending);
+                    delayed = null;
+                }
+                startPair(nextPair, failures[0]);
+            }
+        }
+
+        /**
+         * Publishes the terminal aggregate failure and closes all remaining attempts.
+         *
+         * @param failure final connection failure
+         */
+        private void fail(final Throwable failure) {
+            if (!terminal.compareAndSet(false, true)) {
+                return;
+            }
+            final Throwable root = ExceptionKit.unwrap(failure);
+            final RuntimeException terminalFailure;
+            if (root instanceof TimeoutException timedOut) {
+                terminalFailure = timedOut;
+            } else {
+                terminalFailure = new SocketException("Unable to connect to resolved host " + address.host(), root);
+            }
+            listener.failure(AioNetwork.this, terminalFailure);
+            cancelRemaining(null);
+            result.completeExceptionally(terminalFailure);
+        }
+
+        /**
+         * Cancels every pending attempt except the channel selected as the winner.
+         *
+         * @param winner winning channel, or {@code null} when no attempt succeeded
+         */
+        private void cancelRemaining(final AioChannel winner) {
+            final DispatchHandle pending = delayed;
+            if (pending != null) {
+                group.dispatcher().cancel(pending);
+                delayed = null;
+            }
+            Attempt attempt = attempts.poll();
+            while (attempt != null) {
+                if (attempt.channel != winner) {
+                    attempt.operation.cancel(true);
+                    managed.remove(attempt.channel);
+                    IoKit.closeQuietly(attempt.channel);
+                }
+                attempt = attempts.poll();
+            }
+        }
+
+        /**
+         * Removes and closes one failed or losing attempt.
+         *
+         * @param attempt attempt to close
+         */
+        private void closeAttempt(final Attempt attempt) {
+            attempts.remove(attempt);
+            managed.remove(attempt.channel);
+            IoKit.closeQuietly(attempt.channel);
+        }
+    }
+
+    /**
+     * Pending native connect operation and the channel it exclusively owns.
+     *
+     * @param channel   channel opened for this attempt
+     * @param operation asynchronous connect completion
+     */
+    private record Attempt(AioChannel channel, CompletableFuture<Void> operation) {
     }
 
     /**

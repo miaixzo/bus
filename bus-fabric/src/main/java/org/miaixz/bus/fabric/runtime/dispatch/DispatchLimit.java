@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.runtime.dispatch;
 
 import org.miaixz.bus.core.instance.Instances;
-import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -39,10 +38,12 @@ public record DispatchLimit(int max, int perKey) {
      * Creates a dispatch limit.
      */
     public DispatchLimit {
-        Assert.isTrue(max > Normal._0, () -> new ValidateException("Dispatch max must be greater than zero"));
-        Assert.isTrue(
-                perKey > Normal._0 && perKey <= max,
-                () -> new ValidateException("Dispatch per-key limit must be between one and max"));
+        if (max <= Normal._0) {
+            throw new ValidateException("Dispatch max must be greater than zero");
+        }
+        if (perKey <= Normal._0 || perKey > max) {
+            throw new ValidateException("Dispatch per-key limit must be between one and max");
+        }
     }
 
     /**
@@ -95,9 +96,9 @@ public record DispatchLimit(int max, int perKey) {
      * @return true when promotion is allowed
      */
     public boolean canPromote(final int runningTotal, final int runningForKey) {
-        Assert.isFalse(
-                runningTotal < Normal._0 || runningForKey < Normal._0,
-                () -> new ValidateException("Running counts must not be negative"));
+        if (runningTotal < Normal._0 || runningForKey < Normal._0) {
+            throw new ValidateException("Running counts must not be negative");
+        }
         return runningTotal < max && runningForKey < perKey;
     }
 

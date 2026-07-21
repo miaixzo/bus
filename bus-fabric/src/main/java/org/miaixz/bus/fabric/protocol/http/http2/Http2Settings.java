@@ -36,7 +36,7 @@ public final class Http2Settings {
     /**
      * Setting values.
      */
-    private final int[] values;
+    private final long[] values;
 
     /**
      * Bitset of explicitly set values.
@@ -47,7 +47,7 @@ public final class Http2Settings {
      * Creates default settings.
      */
     private Http2Settings() {
-        this.values = new int[Normal._7];
+        this.values = new long[Normal._7];
     }
 
     /**
@@ -66,6 +66,16 @@ public final class Http2Settings {
      * @param value value
      */
     public void set(final int id, final int value) {
+        set(id, (long) value);
+    }
+
+    /**
+     * Sets an unsigned 32-bit wire value without signed truncation.
+     *
+     * @param id    setting id
+     * @param value unsigned wire value
+     */
+    public void set(final int id, final long value) {
         validateId(id);
         validateValue(id, value);
         values[id] = value;
@@ -79,6 +89,16 @@ public final class Http2Settings {
      * @return value
      */
     public int get(final int id) {
+        return (int) Math.min(getLong(id), Integer.MAX_VALUE);
+    }
+
+    /**
+     * Gets the exact unsigned 32-bit setting value.
+     *
+     * @param id setting id
+     * @return unsigned value
+     */
+    public long getLong(final int id) {
         validateId(id);
         return isSet(id) ? values[id] : defaultValue(id);
     }
@@ -102,11 +122,13 @@ public final class Http2Settings {
     public void merge(final Http2Settings other) {
         final Http2Settings checkedOther = Assert
                 .notNull(other, () -> new ValidateException("HTTP/2 settings must not be null"));
+        final int present = checkedOther.set;
         for (int id = Normal._1; id < Normal._7; id++) {
-            if (checkedOther.isSet(id)) {
-                set(id, checkedOther.get(id));
+            if ((present & (Normal._1 << id)) != 0) {
+                values[id] = checkedOther.values[id];
             }
         }
+        set |= present;
     }
 
     /**
@@ -137,6 +159,13 @@ public final class Http2Settings {
     }
 
     /**
+     * Returns the peer stream limit as an exact uint32 fact.
+     */
+    public long maxConcurrentStreamsUnsigned() {
+        return getLong(HTTP.MAX_CONCURRENT_STREAMS);
+    }
+
+    /**
      * Returns the maximum frame payload size.
      *
      * @return max frame size
@@ -152,6 +181,13 @@ public final class Http2Settings {
      */
     public int maxHeaderListSize() {
         return get(HTTP.MAX_HEADER_LIST_SIZE);
+    }
+
+    /**
+     * Returns the maximum header-list size as an exact uint32 fact.
+     */
+    public long maxHeaderListSizeUnsigned() {
+        return getLong(HTTP.MAX_HEADER_LIST_SIZE);
     }
 
     /**
@@ -175,7 +211,7 @@ public final class Http2Settings {
         final int[] ids = new int[Integer.bitCount(set)];
         int index = Normal._0;
         for (int id = Normal._1; id < Normal._7; id++) {
-            if (isSet(id)) {
+            if ((set & (Normal._1 << id)) != Normal._0) {
                 ids[index++] = id;
             }
         }
@@ -199,21 +235,17 @@ public final class Http2Settings {
      * @param id    id
      * @param value value
      */
-    private static void validateValue(final int id, final int value) {
-        if (value < Normal._0) {
-            throw new ValidateException("HTTP/2 setting value must be non-negative");
+    private static void validateValue(final int id, final long value) {
+        if (value < Normal._0 || value > Builder.UNSIGNED_INT_MASK) {
+            throw new ValidateException("HTTP/2 setting value must be an unsigned 32-bit integer");
         }
         if (id == HTTP.ENABLE_PUSH && value != Normal._0 && value != Normal._1) {
             throw new ValidateException("HTTP/2 enable push must be 0 or 1");
         }
-        if (id == HTTP.HEADER_TABLE_SIZE && value > Builder.BYTES_64_KIB) {
-            throw new ValidateException("HTTP/2 header table size is too large");
-        }
         if (id == HTTP.INITIAL_WINDOW_SIZE && value > Integer.MAX_VALUE) {
             throw new ValidateException("HTTP/2 initial window is too large");
         }
-        if (id == HTTP.MAX_FRAME_SIZE
-                && (value < Normal._16384 || value > (int) (Normal._16 * Normal.MEBI - Normal._1))) {
+        if (id == HTTP.MAX_FRAME_SIZE && (value < Normal._16384 || value > (int) (Builder.BYTES_16_MIB - Normal._1))) {
             throw new ValidateException("HTTP/2 max frame size is out of range");
         }
     }
@@ -224,11 +256,11 @@ public final class Http2Settings {
      * @param id id
      * @return default value
      */
-    private static int defaultValue(final int id) {
+    private static long defaultValue(final int id) {
         return switch (id) {
             case HTTP.HEADER_TABLE_SIZE -> Normal._4096;
             case HTTP.ENABLE_PUSH -> Normal._1;
-            case HTTP.MAX_CONCURRENT_STREAMS, HTTP.MAX_HEADER_LIST_SIZE -> Integer.MAX_VALUE;
+            case HTTP.MAX_CONCURRENT_STREAMS, HTTP.MAX_HEADER_LIST_SIZE -> Builder.UNSIGNED_INT_MASK;
             case HTTP.INITIAL_WINDOW_SIZE -> (int) HTTP.DEFAULT_INITIAL_WINDOW_SIZE;
             case HTTP.MAX_FRAME_SIZE -> Normal._16384;
             default -> throw new ValidateException("HTTP/2 setting id must be between 1 and 6");

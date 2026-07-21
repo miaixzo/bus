@@ -28,9 +28,7 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.network.Connection;
-import org.miaixz.bus.fabric.network.Destination;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.codec.Http1Codec;
@@ -99,10 +97,23 @@ public final class HttpTransport implements HttpStage {
         cancellation.throwIfCancelled();
         final HttpCodec codec = require(codecs.apply(context), "HTTP codec");
         cancellation.onCancel(codec::cancel);
-        writeRequest(current, codec);
+        try {
+            writeRequest(current, codec);
+        } catch (final HttpChain.ExchangeFailure e) {
+            throw e;
+        } catch (final RuntimeException e) {
+            throw failure(cancellation, HttpChain.FailureScope.REQUEST, e);
+        }
         final long sentRequestAtMillis = System.currentTimeMillis();
         cancellation.throwIfCancelled();
-        final HttpResponse response = readResponse(current, codec);
+        final HttpResponse response;
+        try {
+            response = readResponse(current, codec);
+        } catch (final HttpChain.ExchangeFailure e) {
+            throw e;
+        } catch (final RuntimeException e) {
+            throw failure(cancellation, connectionScope(codec), e);
+        }
         final long receivedResponseAtMillis = System.currentTimeMillis();
         return response.toBuilder().timing(sentRequestAtMillis, receivedResponseAtMillis).build();
     }
@@ -148,8 +159,8 @@ public final class HttpTransport implements HttpStage {
         final Connection connection = Assert.notNull(
                 chain.connection(),
                 () -> new StatefulException("HTTP chain does not contain a network connection"));
-        if (http2(connection.destination())) {
-            return new Http2Codec(Http2Connection.create(connection));
+        if (http2(connection)) {
+            return new Http2Codec(http2Session(connection, null));
         }
         return new Http1Codec(connection);
     }
@@ -165,8 +176,8 @@ public final class HttpTransport implements HttpStage {
         final Connection connection = Assert.notNull(
                 chain.connection(),
                 () -> new StatefulException("HTTP chain does not contain a network connection"));
-        if (http2(connection.destination())) {
-            return new Http2Codec(Http2Connection.create(connection, dispatcher));
+        if (http2(connection)) {
+            return new Http2Codec(http2Session(connection, dispatcher));
         }
         return new Http1Codec(connection);
     }
@@ -177,19 +188,54 @@ public final class HttpTransport implements HttpStage {
      * @param destination connection destination
      * @return true when HTTP/2 should be used
      */
-    private static boolean http2(final Destination destination) {
-        if (destination == null) {
-            return false;
+    private static boolean http2(final Connection connection) {
+        final Protocol protocol = require(connection, "Network connection").protocol();
+        return protocol == Protocol.HTTP_2 || protocol == Protocol.H2_PRIOR_KNOWLEDGE;
+    }
+
+    /**
+     * Atomically initializes and reuses one HTTP/2 connection session per physical connection.
+     */
+    private static Http2Connection http2Session(final Connection connection, final Dispatcher dispatcher) {
+        final Connection.MultiplexAttachment attachment = Assert.notNull(
+                connection.multiplexAttachment(),
+                () -> new StatefulException("HTTP/2 connection does not expose a multiplex attachment"));
+        synchronized (attachment) {
+            final Object existing = attachment.session();
+            if (existing != null) {
+                if (existing instanceof Http2Connection session) {
+                    return session;
+                }
+                throw new StatefulException("HTTP/2 multiplex attachment contains an incompatible session");
+            }
+            final Http2Connection created = dispatcher == null ? Http2Connection.create(connection)
+                    : Http2Connection.create(connection, dispatcher);
+            if (!attachment.compareAndSetSession(null, created)) {
+                throw new StatefulException("HTTP/2 session initialization was not linearizable");
+            }
+            return created;
         }
-        if (destination.protocol() == Protocol.HTTP_2 || destination.protocol() == Protocol.H2_PRIOR_KNOWLEDGE) {
-            return true;
-        }
-        final String protocol = destination.options().get(Builder.OPTION_PROTOCOL);
-        if (protocol == null) {
-            return false;
-        }
-        return Protocol.HTTP_2.toString().equalsIgnoreCase(protocol) || "http/2".equalsIgnoreCase(protocol)
-                || Protocol.H2_PRIOR_KNOWLEDGE.toString().equalsIgnoreCase(protocol);
+    }
+
+    /**
+     * Wraps an unstructured transport failure with conservative authoritative facts.
+     */
+    private static HttpChain.ExchangeFailure failure(
+            final Cancellation cancellation,
+            final HttpChain.FailureScope scope,
+            final RuntimeException cause) {
+        final HttpChain.FailureReason reason = cancellation.cancelled() ? HttpChain.FailureReason.CANCELLED
+                : cause instanceof org.miaixz.bus.core.lang.exception.ProtocolException
+                        ? HttpChain.FailureReason.PROTOCOL
+                        : HttpChain.FailureReason.IO;
+        return new HttpChain.ExchangeFailure(HttpChain.DeliveryState.MAYBE_PROCESSED, scope, reason, cause);
+    }
+
+    /**
+     * HTTP/2 failures are stream-scoped unless the session owner reports a connection failure later.
+     */
+    private static HttpChain.FailureScope connectionScope(final HttpCodec codec) {
+        return codec instanceof Http2Codec ? HttpChain.FailureScope.STREAM : HttpChain.FailureScope.CONNECTION;
     }
 
     /**

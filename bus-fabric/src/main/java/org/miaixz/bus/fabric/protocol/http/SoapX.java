@@ -617,8 +617,8 @@ public final class SoapX {
      * @return HTTP exchange
      */
     private HttpX exchange() {
-        return HttpX.builder(context).post(url.encoded()).headers(headers()).body(body()).tag("soap-request")
-                .filter(filter).build();
+        return HttpX.builder(context).post(url.encoded()).headers(headers()).body(body())
+                .tag(Builder.HTTP_TAG_SOAP_REQUEST).filter(filter).build();
     }
 
     /**

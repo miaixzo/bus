@@ -24,10 +24,10 @@ import java.util.List;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Fixed-length frame codec.
@@ -120,7 +120,7 @@ public final class FixedCodec implements FrameCodec {
      */
     private static int validateLength(final int length) {
         Assert.isTrue(
-                length > 0 && length <= Normal._16 * Normal.MEBI,
+                length > 0 && length <= Builder.BYTES_16_MIB,
                 () -> new ValidateException("Frame length must be between 1 and 16777216"));
         return length;
     }

@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.UrlKit;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Transport families used by fabric network implementations.
@@ -53,7 +54,7 @@ public enum Transport {
     /**
      * KCP transport over UDP.
      */
-    KCP("kcp", false, false, Protocol.UDP);
+    KCP(Builder.SOCKET_X_KCP_SCHEME, false, false, Protocol.UDP);
 
     /**
      * Scheme lookup table.
@@ -61,7 +62,7 @@ public enum Transport {
     private static final Map<String, Transport> BY_SCHEME = Map.ofEntries(
             Map.entry(TCP.scheme, TCP),
             Map.entry(Protocol.SOCKET.name, TCP),
-            Map.entry("aio", TCP),
+            Map.entry(Builder.AIO_SCHEME, TCP),
             Map.entry(Protocol.HTTP.name, TCP),
             Map.entry(Protocol.WS.name, TCP),
             Map.entry(UDP.scheme, UDP),

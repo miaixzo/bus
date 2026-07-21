@@ -28,6 +28,8 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.network.tls.TlsSettings;
+import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 
 /**
  * Immutable destination for grouping reusable network connections.
@@ -142,13 +144,15 @@ public record Destination(Protocol protocol, Address address, Options options) {
      */
     private static Options stableOptions(final Options source) {
         Options stable = Options.empty();
-        stable = copy(source, stable, Builder.OPTION_TLS);
-        stable = copy(source, stable, Builder.OPTION_SECURE);
-        stable = copy(source, stable, Builder.OPTION_MULTIPLEX);
+        stable = copyBoolean(source, stable, Builder.OPTION_TLS, Builder.OPTION_TLS.name());
+        stable = copyBoolean(source, stable, Builder.OPTION_SECURE, null);
+        stable = copyBoolean(source, stable, Builder.OPTION_MULTIPLEX, null);
         stable = copy(source, stable, Builder.OPTION_PROTOCOL);
         stable = copy(source, stable, Builder.OPTION_MAX_MULTIPLEX_STREAMS);
-        stable = copy(source, stable, Builder.OPTION_ROUTE_PROXY);
-        return copy(source, stable, Builder.OPTION_ROUTE_TUNNEL);
+        stable = copyContext(source, stable);
+        stable = copySettings(source, stable);
+        stable = copyProxy(source, stable);
+        return copyBoolean(source, stable, Builder.OPTION_ROUTE_TUNNEL, "tunnel");
     }
 
     /**
@@ -161,7 +165,85 @@ public record Destination(Protocol protocol, Address address, Options options) {
      * @return updated target
      */
     private static <T> Options copy(final Options source, final Options target, final Options.Key<T> key) {
-        return source.contains(key) ? target.with(key, source.get(key)) : target;
+        if (!source.contains(key)) {
+            return target;
+        }
+        final T value = source.get(key);
+        return value == null ? target : target.with(key, value);
+    }
+
+    /**
+     * Copies a canonical true boolean from a typed key or legacy string key.
+     *
+     * @param source    source options
+     * @param target    target options
+     * @param key       typed key
+     * @param legacyKey legacy key or null
+     * @return updated target
+     */
+    private static Options copyBoolean(
+            final Options source,
+            final Options target,
+            final Options.Key<Boolean> key,
+            final String legacyKey) {
+        final Object value = source.contains(key) ? source.get(key)
+                : legacyKey != null && source.contains(legacyKey) ? source.get(legacyKey) : null;
+        if (value == null || Boolean.FALSE.equals(value)) {
+            return target;
+        }
+        if (!(value instanceof Boolean current)) {
+            throw new ValidateException("Connection option " + key.name() + " must be boolean");
+        }
+        return current ? target.with(key, Boolean.TRUE) : target;
+    }
+
+    /**
+     * Copies TLS context presence while preserving explicit disablement.
+     *
+     * @param source source options
+     * @param target target options
+     * @return updated target
+     */
+    private static Options copyContext(final Options source, final Options target) {
+        if (!source.contains(Builder.OPTION_TLS_CONTEXT)) {
+            return target;
+        }
+        return target.with(Builder.OPTION_TLS_CONTEXT, source.get(Builder.OPTION_TLS_CONTEXT));
+    }
+
+    /**
+     * Copies a non-null immutable TLS settings identity.
+     *
+     * @param source source options
+     * @param target target options
+     * @return updated target
+     */
+    private static Options copySettings(final Options source, final Options target) {
+        final TlsSettings settings = source.get(Builder.OPTION_TLS_SETTINGS);
+        return settings == null ? target : target.with(Builder.OPTION_TLS_SETTINGS, settings);
+    }
+
+    /**
+     * Copies and normalizes typed or legacy proxy identity.
+     *
+     * @param source source options
+     * @param target target options
+     * @return updated target
+     */
+    private static Options copyProxy(final Options source, final Options target) {
+        final Object value = source.contains(Builder.OPTION_ROUTE_PROXY) ? source.get(Builder.OPTION_ROUTE_PROXY)
+                : source.contains("proxy") ? source.get("proxy") : null;
+        if (value == null) {
+            return target;
+        }
+        if (!(value instanceof String proxy)) {
+            throw new ValidateException("Connection route proxy must be a string");
+        }
+        final String normalized = proxy.trim();
+        if (normalized.isEmpty() || Builder.PROXY_PLAN_DIRECT_ID.equalsIgnoreCase(normalized)) {
+            return target;
+        }
+        return target.with(Builder.OPTION_ROUTE_PROXY, normalized);
     }
 
     /**
@@ -179,7 +261,20 @@ public record Destination(Protocol protocol, Address address, Options options) {
             return false;
         }
         return protocol == that.protocol && address.equals(that.address)
-                && options.asMap().equals(that.options.asMap());
+                && Objects.equals(options.get(Builder.OPTION_TLS), that.options.get(Builder.OPTION_TLS))
+                && Objects.equals(options.get(Builder.OPTION_SECURE), that.options.get(Builder.OPTION_SECURE))
+                && Objects.equals(options.get(Builder.OPTION_MULTIPLEX), that.options.get(Builder.OPTION_MULTIPLEX))
+                && Objects.equals(options.get(Builder.OPTION_PROTOCOL), that.options.get(Builder.OPTION_PROTOCOL))
+                && Objects.equals(
+                        options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS),
+                        that.options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS))
+                && sameContext(that)
+                && Objects
+                        .equals(options.get(Builder.OPTION_TLS_SETTINGS), that.options.get(Builder.OPTION_TLS_SETTINGS))
+                && Objects.equals(options.get(Builder.OPTION_ROUTE_PROXY), that.options.get(Builder.OPTION_ROUTE_PROXY))
+                && Objects.equals(
+                        options.get(Builder.OPTION_ROUTE_TUNNEL),
+                        that.options.get(Builder.OPTION_ROUTE_TUNNEL));
     }
 
     /**
@@ -189,7 +284,39 @@ public record Destination(Protocol protocol, Address address, Options options) {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(protocol, address, options.asMap());
+        int result = 31 * protocol.hashCode() + address.hashCode();
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_TLS));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_SECURE));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_MULTIPLEX));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_PROTOCOL));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS));
+        result = 31 * result + Boolean.hashCode(options.contains(Builder.OPTION_TLS_CONTEXT));
+        result = 31 * result + System.identityHashCode(contextIdentity(options));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_TLS_SETTINGS));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_ROUTE_PROXY));
+        return 31 * result + Objects.hashCode(options.get(Builder.OPTION_ROUTE_TUNNEL));
+    }
+
+    /**
+     * Compares TLS context presence and stable wrapped-context identity.
+     *
+     * @param other other destination
+     * @return true when context identity is equivalent
+     */
+    private boolean sameContext(final Destination other) {
+        return options.contains(Builder.OPTION_TLS_CONTEXT) == other.options.contains(Builder.OPTION_TLS_CONTEXT)
+                && contextIdentity(options) == contextIdentity(other.options);
+    }
+
+    /**
+     * Returns stable wrapped SSL context identity without materializing an option map.
+     *
+     * @param source options
+     * @return context identity or null
+     */
+    private static Object contextIdentity(final Options source) {
+        final TlsContext context = source.get(Builder.OPTION_TLS_CONTEXT);
+        return context == null ? null : context.identity();
     }
 
 }

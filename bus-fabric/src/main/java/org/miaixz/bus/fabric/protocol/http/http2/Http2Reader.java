@@ -28,7 +28,6 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -43,14 +42,7 @@ import org.miaixz.bus.fabric.network.Connection;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class Http2Reader {
-
-    /**
-     * HTTP/2 client connection preface bytes.
-     */
-    private static final byte[] CONNECTION_PREFACE = { 'P', 'R', 'I', Symbol.C_SPACE, Symbol.C_STAR, Symbol.C_SPACE,
-            'H', 'T', 'T', 'P', Symbol.C_SLASH, Symbol.C_TWO, Symbol.C_DOT, Symbol.C_ZERO, Symbol.C_CR, Symbol.C_LF,
-            Symbol.C_CR, Symbol.C_LF, 'S', 'M', Symbol.C_CR, Symbol.C_LF, Symbol.C_CR, Symbol.C_LF };
+public final class Http2Reader implements AutoCloseable {
 
     /**
      * Buffered network source borrowed from the owning connection.
@@ -61,6 +53,26 @@ public final class Http2Reader {
      * Connection-owned HPACK decoder callback.
      */
     private final Function<Buffer, List<Http2Header>> headerDecoder;
+
+    /**
+     * Incremental bytes retained when the network cannot provide a complete frame yet.
+     */
+    private final Buffer input = new Buffer();
+
+    /**
+     * Reusable decoded frame-header holder; never escapes this reader.
+     */
+    private final FrameHeader frameHeader = new FrameHeader();
+
+    /**
+     * Current peer-advertised maximum frame payload size in bytes.
+     */
+    private int maxFrameSize = Normal._16384;
+
+    /**
+     * Whether the reader has released its borrowed source and rejects further parsing.
+     */
+    private boolean closed;
 
     /**
      * True after the connection preface is parsed.
@@ -96,49 +108,45 @@ public final class Http2Reader {
      * @return parsed frame
      */
     public Http2Frame nextFrame() {
+        ensureOpen();
         while (true) {
             final FrameHeader header = readHeader();
             if (!recognized(header.type())) {
-                readFully(header.length());
+                readPayload(header.length());
                 continue;
             }
             validateFrame(header);
-            ByteString payload = readFully(header.length()).readByteString();
-            if (header.type() == Normal._0 || header.type() == Normal._1 || header.type() == Normal._5) {
-                payload = removePadding(header.type(), header.flags(), payload);
+            final int type = header.type();
+            final int streamId = header.streamId();
+            final int headerFlags = header.flags();
+            ByteString payload = readPayload(header.length());
+            if (type == Normal._0 || type == Normal._1 || type == Normal._5) {
+                payload = removePadding(type, headerFlags, payload);
             }
             Http2Priority priority = null;
             Http2AlternateService alternateService = null;
-            final List<Http2Header> headers = switch (header.type()) {
+            final List<Http2Header> headers = switch (type) {
                 case Normal._1 -> {
-                    priority = decodeHeaderPriority(header.streamId(), header.flags(), payload);
-                    final ByteString block = headerBlock(
-                            header.streamId(),
-                            header.flags(),
-                            headerFragment(header.flags(), payload));
+                    priority = decodeHeaderPriority(streamId, headerFlags, payload);
+                    final ByteString block = headerBlock(streamId, headerFlags, headerFragment(headerFlags, payload));
                     yield headerDecoder.apply(new Buffer().write(block));
                 }
                 case Normal._5 -> {
-                    final ByteString block = headerBlock(
-                            header.streamId(),
-                            header.flags(),
-                            pushHeaderFragment(payload));
+                    final ByteString block = headerBlock(streamId, headerFlags, pushHeaderFragment(payload));
                     yield headerDecoder.apply(new Buffer().write(block));
                 }
                 case Normal._2 -> {
-                    priority = Http2Priority.decode(payload, header.streamId());
+                    priority = Http2Priority.decode(payload, streamId);
                     yield List.of();
                 }
                 case Normal._10 -> {
-                    alternateService = Http2AlternateService.decode(payload, header.streamId());
+                    alternateService = Http2AlternateService.decode(payload, streamId);
                     yield List.of();
                 }
                 default -> List.of();
             };
-            final int flags = header.type() == Normal._1 || header.type() == Normal._5 ? header.flags() | Normal._4
-                    : header.flags();
-            return Http2Frame
-                    .decoded(header.type(), header.streamId(), flags, payload, headers, priority, alternateService);
+            final int flags = type == Normal._1 || type == Normal._5 ? headerFlags | Normal._4 : headerFlags;
+            return Http2Frame.decoded(type, streamId, flags, payload, headers, priority, alternateService);
         }
     }
 
@@ -146,12 +154,13 @@ public final class Http2Reader {
      * Parses the fixed client connection preface once.
      */
     public void readConnectionPreface() {
+        ensureOpen();
         if (prefaceRead) {
             throw new StatefulException("HTTP/2 connection preface has already been read");
         }
-        final Buffer actual = readFully(CONNECTION_PREFACE.length);
-        for (final byte expected : CONNECTION_PREFACE) {
-            if (actual.readByte() != expected) {
+        ensureAvailable(Builder.HTTP2_CONNECTION_PREFACE.length());
+        for (int index = Normal._0; index < Builder.HTTP2_CONNECTION_PREFACE.length(); index++) {
+            if (input.readByte() != (byte) Builder.HTTP2_CONNECTION_PREFACE.charAt(index)) {
                 throw new ProtocolException("Invalid HTTP/2 connection preface");
             }
         }
@@ -164,15 +173,15 @@ public final class Http2Reader {
      * @return header value
      */
     private FrameHeader readHeader() {
-        final Buffer header = readFully(Normal._9);
-        final int length = readMedium(header);
-        final int type = header.readByte() & Builder.UNSIGNED_BYTE_MASK;
-        final int flags = header.readByte() & Builder.UNSIGNED_BYTE_MASK;
-        final int streamId = header.readInt() & Integer.MAX_VALUE;
-        if (length > Normal._16384) {
+        ensureAvailable(Normal._9);
+        final int length = readMedium(input);
+        final int type = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
+        final int flags = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
+        final int streamId = input.readInt() & Integer.MAX_VALUE;
+        if (length > maxFrameSize) {
             throw new ProtocolException("HTTP/2 frame exceeds the local maximum frame size");
         }
-        return new FrameHeader(length, type, flags, streamId);
+        return frameHeader.set(length, type, flags, streamId);
     }
 
     /**
@@ -181,21 +190,34 @@ public final class Http2Reader {
      * @param length byte count
      * @return buffer
      */
-    private Buffer readFully(final int length) {
-        final Buffer buffer = new Buffer();
-        while (buffer.size() < length) {
-            final long remaining = Math.min(length - buffer.size(), Normal._16384);
+    private void ensureAvailable(final int length) {
+        while (input.size() < length) {
+            final long remaining = Math.min(length - input.size(), maxFrameSize);
             final long read;
             try {
-                read = source.read(buffer, remaining);
+                read = source.read(input, remaining);
             } catch (final IOException e) {
                 throw new SocketException("HTTP/2 frame read failed", e);
             }
             if (read < Normal.LONG_ZERO) {
                 throw new SocketException("HTTP/2 frame is truncated");
             }
+            if (read == Normal.LONG_ZERO) {
+                throw new SocketException("HTTP/2 frame source made no progress");
+            }
         }
-        return buffer;
+    }
+
+    /**
+     * Reads one payload from the reusable incremental buffer.
+     */
+    private ByteString readPayload(final int length) {
+        ensureAvailable(length);
+        try {
+            return input.readByteString(length);
+        } catch (final IOException e) {
+            throw new SocketException("HTTP/2 frame payload is truncated", e);
+        }
     }
 
     /**
@@ -330,7 +352,7 @@ public final class Http2Reader {
             }
             validateFlags(continuation.flags(), Normal._4);
             currentFlags = continuation.flags();
-            total = appendHeaderFragment(fragments, readFully(continuation.length()).readByteString(), total);
+            total = appendHeaderFragment(fragments, readPayload(continuation.length()), total);
         }
         return fragments.readByteString();
     }
@@ -420,6 +442,36 @@ public final class Http2Reader {
     }
 
     /**
+     * Applies the currently effective peer-advertised frame limit.
+     */
+    void maxFrameSize(final int size) {
+        if (size < Normal._16384 || size > Builder.BYTES_16_MIB - Normal._1) {
+            throw new ValidateException("HTTP/2 max frame size is out of range");
+        }
+        maxFrameSize = size;
+    }
+
+    /**
+     * Releases parser-owned buffered bytes without closing the borrowed connection.
+     */
+    @Override
+    public void close() {
+        if (!closed) {
+            closed = true;
+            input.clear();
+        }
+    }
+
+    /**
+     * Rejects reads after parser termination.
+     */
+    private void ensureOpen() {
+        if (closed) {
+            throw new StatefulException("HTTP/2 reader is closed");
+        }
+    }
+
+    /**
      * Validates a required reference.
      *
      * @param value value
@@ -432,14 +484,85 @@ public final class Http2Reader {
     }
 
     /**
-     * Immutable parsed frame header.
-     *
-     * @param length   payload length
-     * @param type     frame type
-     * @param flags    frame flags
-     * @param streamId stream id
+     * Reusable decoded representation of the fixed nine-byte HTTP/2 frame header.
+     * <p>
+     * One instance is mutated for each frame and remains private to the single-threaded reader path.
+     * </p>
      */
-    private record FrameHeader(int length, int type, int flags, int streamId) {
+    private static final class FrameHeader {
+
+        /**
+         * Declared frame payload length in bytes.
+         */
+        private int length;
+
+        /**
+         * Unsigned frame type byte.
+         */
+        private int type;
+
+        /**
+         * Unsigned frame flags byte.
+         */
+        private int flags;
+
+        /**
+         * Reserved-bit-free 31-bit stream identifier.
+         */
+        private int streamId;
+
+        /**
+         * Replaces all decoded header fields for the next frame.
+         *
+         * @param length   payload length in bytes
+         * @param type     unsigned frame type
+         * @param flags    unsigned frame flags
+         * @param streamId stream identifier
+         * @return this reusable holder
+         */
+        private FrameHeader set(final int length, final int type, final int flags, final int streamId) {
+            this.length = length;
+            this.type = type;
+            this.flags = flags;
+            this.streamId = streamId;
+            return this;
+        }
+
+        /**
+         * Returns the declared payload length.
+         *
+         * @return payload length in bytes
+         */
+        private int length() {
+            return length;
+        }
+
+        /**
+         * Returns the decoded frame type.
+         *
+         * @return unsigned frame type
+         */
+        private int type() {
+            return type;
+        }
+
+        /**
+         * Returns the decoded frame flags.
+         *
+         * @return unsigned frame flags
+         */
+        private int flags() {
+            return flags;
+        }
+
+        /**
+         * Returns the decoded stream identifier.
+         *
+         * @return 31-bit stream identifier
+         */
+        private int streamId() {
+            return streamId;
+        }
 
     }
 

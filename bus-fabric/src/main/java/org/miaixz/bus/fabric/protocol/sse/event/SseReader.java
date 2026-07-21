@@ -101,31 +101,6 @@ public final class SseReader implements AutoCloseable {
     private int pushed = Normal.__1;
 
     /**
-     * Callback for low-allocation SSE field delivery.
-     */
-    public interface Events {
-
-        /**
-         * Receives an event.
-         *
-         * @param id    event identifier
-         * @param event event type
-         * @param data  event data
-         */
-        void event(String id, String event, String data);
-
-        /**
-         * Receives a retry directive.
-         *
-         * @param retry retry directive
-         */
-        default void retry(final Duration retry) {
-            // No initialization required.
-        }
-
-    }
-
-    /**
      * Creates a reader over a UTF-8 SSE source.
      *
      * @param input input source
@@ -734,6 +709,31 @@ public final class SseReader implements AutoCloseable {
             millis = millis * Normal._10 + digit;
         }
         return Duration.ofMillis(millis);
+    }
+
+    /**
+     * Callback for low-allocation SSE field delivery.
+     */
+    public interface Events {
+
+        /**
+         * Receives an event.
+         *
+         * @param id    event identifier
+         * @param event event type
+         * @param data  event data
+         */
+        void event(String id, String event, String data);
+
+        /**
+         * Receives a retry directive.
+         *
+         * @param retry retry directive
+         */
+        default void retry(final Duration retry) {
+            // No initialization required.
+        }
+
     }
 
 }

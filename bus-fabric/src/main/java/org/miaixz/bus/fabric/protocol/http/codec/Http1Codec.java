@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.fabric.protocol.http.codec;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -138,8 +138,7 @@ public final class Http1Codec implements HttpCodec {
         writeTimeout = current.timeout().write();
         state.set(Status.RUNNING);
         writeHeaders(current);
-        if (current.body().length() == Normal._0 || current.method() == HTTP.Method.GET
-                || current.method() == HTTP.Method.HEAD) {
+        if (current.body().length() == Normal._0) {
             state.set(Status.OPENED);
             return;
         }
@@ -160,13 +159,14 @@ public final class Http1Codec implements HttpCodec {
     public void writeHeaders(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
         validateFraming(current.headers());
-        writeText(HttpLine.request(current) + Symbol.CRLF);
-        for (final Map.Entry<String, List<String>> entry : current.headers().asMap().entrySet()) {
-            for (final String value : entry.getValue()) {
-                writeText(HttpLine.header(entry.getKey(), value) + Symbol.CRLF);
-            }
+        final Buffer encoded = new Buffer();
+        encoded.writeUtf8(HttpLine.request(current)).writeUtf8(Symbol.CRLF);
+        for (int index = Normal._0; index < current.headers().size(); index++) {
+            encoded.writeUtf8(HttpLine.header(current.headers().name(index), current.headers().value(index)))
+                    .writeUtf8(Symbol.CRLF);
         }
-        writeText(Symbol.CRLF);
+        encoded.writeUtf8(Symbol.CRLF);
+        write(encoded);
     }
 
     /**
@@ -206,7 +206,7 @@ public final class Http1Codec implements HttpCodec {
         String line = reader.readLine(readTimeout);
         int code = HttpLine.status(line);
         Headers headers = readHeaders();
-        while (code == HTTP.HTTP_CONTINUE) {
+        while (code >= HTTP.HTTP_CONTINUE && code < HTTP.HTTP_OK && code != HTTP.HTTP_SWITCHING_PROTOCOL) {
             line = reader.readLine(readTimeout);
             code = HttpLine.status(line);
             headers = readHeaders();
@@ -310,9 +310,7 @@ public final class Http1Codec implements HttpCodec {
      * @param value value
      */
     private void writeText(final String value) {
-        write(
-                new Buffer().write(
-                        ByteString.encodeString(value, org.miaixz.bus.core.lang.Charset.US_ASCII).toByteArray()));
+        write(new Buffer().write(ByteString.encodeString(value, org.miaixz.bus.core.lang.Charset.US_ASCII)));
     }
 
     /**
@@ -415,8 +413,9 @@ public final class Http1Codec implements HttpCodec {
      */
     private static long responseLength(final HttpRequest request, final HttpResponse response) {
         validateFraming(response.headers());
-        if (request.method() == HTTP.Method.HEAD || response.code() == HTTP.HTTP_NO_CONTENT
-                || response.code() == HTTP.HTTP_NOT_MODIFIED
+        if (request.method() == HTTP.Method.HEAD
+                || request.method() == HTTP.Method.CONNECT && response.code() >= HTTP.HTTP_OK && response.code() < 300
+                || response.code() == HTTP.HTTP_NO_CONTENT || response.code() == HTTP.HTTP_NOT_MODIFIED
                 || (response.code() >= HTTP.HTTP_CONTINUE && response.code() < HTTP.HTTP_OK)) {
             return Normal._0;
         }
@@ -531,6 +530,16 @@ public final class Http1Codec implements HttpCodec {
     }
 
     /**
+     * Chooses the bounded timeout used by an early-close drain.
+     */
+    private static Duration drainTimeout(final Duration configured) {
+        return configured == null || configured.isZero() || configured.isNegative()
+                || configured.compareTo(Builder.HTTP1_CODEC_MAX_DRAIN_DURATION) > Normal._0
+                        ? Builder.HTTP1_CODEC_MAX_DRAIN_DURATION
+                        : configured;
+    }
+
+    /**
      * Validates required references.
      *
      * @param value value
@@ -570,21 +579,13 @@ public final class Http1Codec implements HttpCodec {
         private int read(final Duration timeout) {
             while (true) {
                 configureTimeout(source.timeout(), timeout);
-                final Buffer buffer = new Buffer();
-                final long read;
                 try {
-                    read = source.read(buffer, Normal._1);
+                    return source.readByte() & Builder.UNSIGNED_BYTE_MASK;
+                } catch (final EOFException e) {
+                    return Normal.__1;
                 } catch (final IOException e) {
                     throw new SocketException("HTTP read failed", e);
                 }
-                if (read < Normal._0) {
-                    return Normal.__1;
-                }
-                if (read == Normal._0) {
-                    Thread.yield();
-                    continue;
-                }
-                return buffer.readByte() & Builder.UNSIGNED_BYTE_MASK;
             }
         }
 
@@ -603,10 +604,9 @@ public final class Http1Codec implements HttpCodec {
             }
             while (true) {
                 configureTimeout(source.timeout(), timeout);
-                final Buffer buffer = new Buffer();
-                final long read;
+                final int read;
                 try {
-                    read = source.read(buffer, length);
+                    read = source.read(target, offset, length);
                 } catch (final IOException e) {
                     throw new SocketException("HTTP read failed", e);
                 }
@@ -617,7 +617,7 @@ public final class Http1Codec implements HttpCodec {
                     Thread.yield();
                     continue;
                 }
-                return buffer.read(target, offset, (int) read);
+                return read;
             }
         }
 
@@ -1034,6 +1034,11 @@ public final class Http1Codec implements HttpCodec {
         private final Http1Codec codec;
 
         /**
+         * Reused transfer scratch; avoids allocating one array per body read.
+         */
+        private final byte[] scratch;
+
+        /**
          * Open flag.
          */
         private final AtomicBoolean opened;
@@ -1058,6 +1063,7 @@ public final class Http1Codec implements HttpCodec {
             require(media, "MediaType");
             this.codec = require(codec, "HTTP codec");
             this.opened = new AtomicBoolean();
+            this.scratch = new byte[Normal._8192];
         }
 
         /**
@@ -1098,11 +1104,11 @@ public final class Http1Codec implements HttpCodec {
                 return Normal._0;
             }
             final InputStream source = current == null ? open() : current;
-            final byte[] buffer = new byte[(int) Math.min(byteCount, Normal._8192)];
+            final int requested = (int) Math.min(byteCount, scratch.length);
             try {
-                final int read = source.read(buffer);
+                final int read = source.read(scratch, Normal._0, requested);
                 if (read > Normal._0) {
-                    sink.write(buffer, Normal._0, read);
+                    sink.write(scratch, Normal._0, read);
                 }
                 return read;
             } catch (final IOException e) {
@@ -1193,10 +1199,19 @@ public final class Http1Codec implements HttpCodec {
          */
         @Override
         public void close() {
+            boolean drained = false;
+            if (input instanceof FixedInputStream fixed) {
+                drained = fixed.drain();
+            } else if (input instanceof ChunkedInputStream chunked) {
+                drained = chunked.drain();
+            }
             try {
                 input.close();
             } catch (final IOException e) {
                 throw new SocketException("Unable to close HTTP response body", e);
+            }
+            if (!drained) {
+                codec.abandonBody();
             }
         }
 
@@ -1256,9 +1271,21 @@ public final class Http1Codec implements HttpCodec {
          */
         @Override
         public int read() throws IOException {
-            final byte[] one = new byte[Normal._1];
-            final int read = read(one, Normal._0, Normal._1);
-            return read < Normal._0 ? Normal.__1 : one[Normal._0] & Builder.UNSIGNED_BYTE_MASK;
+            if (closed || remaining == Normal._0) {
+                if (remaining == Normal._0) {
+                    codec.completeBody();
+                }
+                return Normal.__1;
+            }
+            final int value = reader.read(timeout);
+            if (value < Normal._0) {
+                throw new SocketException("HTTP fixed body reached EOF");
+            }
+            remaining--;
+            if (remaining == Normal._0) {
+                codec.completeBody();
+            }
+            return value;
         }
 
         /**
@@ -1302,6 +1329,29 @@ public final class Http1Codec implements HttpCodec {
             if (remaining > Normal._0) {
                 codec.abandonBody();
             }
+        }
+
+        /**
+         * Drains a small fixed body under the strict early-close byte/time bounds.
+         */
+        private boolean drain() {
+            if (remaining == Normal._0) {
+                return true;
+            }
+            if (remaining > Builder.HTTP1_CODEC_MAX_DRAIN_BYTES) {
+                return false;
+            }
+            final byte[] buffer = new byte[(int) Math.min(remaining, Normal._8192)];
+            final Duration bounded = drainTimeout(timeout);
+            while (remaining > Normal._0) {
+                final int read = reader.read(buffer, Normal._0, (int) Math.min(buffer.length, remaining), bounded);
+                if (read < Normal._0) {
+                    return false;
+                }
+                remaining -= read;
+            }
+            codec.completeBody();
+            return true;
         }
 
     }
@@ -1362,9 +1412,23 @@ public final class Http1Codec implements HttpCodec {
          */
         @Override
         public int read() throws IOException {
-            final byte[] one = new byte[Normal._1];
-            final int read = read(one, Normal._0, Normal._1);
-            return read < Normal._0 ? Normal.__1 : one[Normal._0] & Builder.UNSIGNED_BYTE_MASK;
+            if (closed || done) {
+                return Normal.__1;
+            }
+            if (remaining == Normal._0) {
+                readChunkSize();
+                if (done) {
+                    return Normal.__1;
+                }
+            }
+            final int value = reader.read(timeout);
+            if (value < Normal._0) {
+                throw new SocketException("HTTP chunked body reached EOF");
+            }
+            if (--remaining == Normal._0) {
+                reader.expectCrlf(timeout);
+            }
+            return value;
         }
 
         /**
@@ -1448,6 +1512,57 @@ public final class Http1Codec implements HttpCodec {
             codec.trailers(builder.build());
         }
 
+        /**
+         * Drains at most 64 KiB of chunked framing before deciding reuse.
+         */
+        private boolean drain() {
+            if (done) {
+                return true;
+            }
+            final byte[] buffer = new byte[Normal._8192];
+            int drained = Normal._0;
+            final Duration original = timeout;
+            while (drained < Builder.HTTP1_CODEC_MAX_DRAIN_BYTES) {
+                final int limit = Math.min(buffer.length, Builder.HTTP1_CODEC_MAX_DRAIN_BYTES - drained);
+                final int read;
+                try {
+                    read = readBounded(buffer, Normal._0, limit, drainTimeout(original));
+                } catch (final RuntimeException e) {
+                    return false;
+                }
+                if (read < Normal._0) {
+                    return done;
+                }
+                drained += read;
+            }
+            return done;
+        }
+
+        /**
+         * Reads chunk data using an explicit timeout for bounded draining.
+         */
+        private int readBounded(final byte[] bytes, final int offset, final int length, final Duration activeTimeout) {
+            if (done) {
+                return Normal.__1;
+            }
+            if (remaining == Normal._0) {
+                readChunkSize();
+                if (done) {
+                    return Normal.__1;
+                }
+            }
+            final int limit = Math.min(length, remaining);
+            final int read = reader.read(bytes, offset, limit, activeTimeout);
+            if (read < Normal._0) {
+                throw new SocketException("HTTP chunked body reached EOF");
+            }
+            remaining -= read;
+            if (remaining == Normal._0) {
+                reader.expectCrlf(activeTimeout);
+            }
+            return read;
+        }
+
     }
 
     /**
@@ -1496,9 +1611,15 @@ public final class Http1Codec implements HttpCodec {
          */
         @Override
         public int read() throws IOException {
-            final byte[] one = new byte[Normal._1];
-            final int read = read(one, Normal._0, Normal._1);
-            return read < Normal._0 ? Normal.__1 : one[Normal._0] & Builder.UNSIGNED_BYTE_MASK;
+            if (done) {
+                return Normal.__1;
+            }
+            final int value = reader.read(timeout);
+            if (value < Normal._0) {
+                done = true;
+                codec.completeBody();
+            }
+            return value;
         }
 
         /**

@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.LockSupport;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -46,6 +47,10 @@ import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
+import org.miaixz.bus.fabric.network.tls.TlsSettings;
+import org.miaixz.bus.fabric.network.tls.context.TlsContext;
+import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
+import org.miaixz.bus.fabric.observe.metrics.FabricMeter.Counter;
 import org.miaixz.bus.fabric.registry.policy.PoolPolicy;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
@@ -86,6 +91,31 @@ public final class ConnectionPool implements AutoCloseable {
     private final Map<Connection, Integer> active;
 
     /**
+     * Physical connection count by destination.
+     */
+    private final Map<Destination, Integer> physicalByDestination;
+
+    /**
+     * Multiplex-capable active connections by destination.
+     */
+    private final Map<Destination, ArrayDeque<Connection>> multiplex;
+
+    /**
+     * Multiplex capacity listener registrations.
+     */
+    private final Map<Connection, Connection.Registration> capacityRegistrations;
+
+    /**
+     * O(1) total physical connection count.
+     */
+    private int physicalCount;
+
+    /**
+     * O(1) total idle connection count.
+     */
+    private int idleCount;
+
+    /**
      * Coordination lock.
      */
     private final Object lock;
@@ -116,6 +146,21 @@ public final class ConnectionPool implements AutoCloseable {
     private final AtomicBoolean evictionStarted;
 
     /**
+     * Borrowed metric owner.
+     */
+    private final FabricMeter meter;
+
+    /**
+     * Runtime dispatcher, borrowed when supplied and lazily owned otherwise.
+     */
+    private volatile Dispatcher runtimeDispatcher;
+
+    /**
+     * True only when this pool created the runtime dispatcher.
+     */
+    private volatile boolean ownsRuntimeDispatcher;
+
+    /**
      * Current scheduled eviction handle.
      */
     private volatile DispatchHandle evictionHandle;
@@ -131,12 +176,18 @@ public final class ConnectionPool implements AutoCloseable {
      * @param policy pool policy
      * @param clock  pool time source
      */
-    private ConnectionPool(final PoolPolicy policy, final Clock clock) {
+    private ConnectionPool(final PoolPolicy policy, final Clock clock, final FabricMeter meter,
+            final Dispatcher dispatcher) {
         this.policy = policy;
         this.clock = clock;
+        this.meter = meter;
+        this.runtimeDispatcher = dispatcher;
         this.idle = new ConcurrentHashMap<>();
         this.leased = Collections.newSetFromMap(new IdentityHashMap<>());
         this.active = new IdentityHashMap<>();
+        this.physicalByDestination = new LinkedHashMap<>();
+        this.multiplex = new LinkedHashMap<>();
+        this.capacityRegistrations = new IdentityHashMap<>();
         this.lock = new Object();
         this.creatingByDestination = new LinkedHashMap<>();
         this.waiters = new ArrayDeque<>();
@@ -162,7 +213,61 @@ public final class ConnectionPool implements AutoCloseable {
      * @return connection pool
      */
     public static ConnectionPool create(final PoolPolicy policy, final Clock clock) {
-        return new ConnectionPool(policy == null ? PoolPolicy.defaults() : policy, require(clock, "Runtime clock"));
+        return new ConnectionPool(policy == null ? PoolPolicy.defaults() : policy, require(clock, "Runtime clock"),
+                FabricMeter.create(clock), null);
+    }
+
+    /**
+     * Creates a compatibility pool that borrows a meter and lazily owns its runtime dispatcher.
+     *
+     * @param policy pool policy, or null to use the defaults
+     * @param clock  pool time source
+     * @param meter  meter borrowed by the pool
+     * @return connection pool with a lazily created dispatcher
+     */
+    public static ConnectionPool create(final PoolPolicy policy, final Clock clock, final FabricMeter meter) {
+        return new ConnectionPool(policy == null ? PoolPolicy.defaults() : policy, require(clock, "Runtime clock"),
+                require(meter, "Fabric meter"), null);
+    }
+
+    /**
+     * Creates a pool that borrows both the runtime meter and dispatcher.
+     *
+     * @param policy     pool policy, or null to use the defaults
+     * @param clock      pool time source
+     * @param meter      meter borrowed by the pool
+     * @param dispatcher dispatcher borrowed by the pool
+     * @return connection pool using the supplied runtime services
+     */
+    public static ConnectionPool create(
+            final PoolPolicy policy,
+            final Clock clock,
+            final FabricMeter meter,
+            final Dispatcher dispatcher) {
+        return new ConnectionPool(policy == null ? PoolPolicy.defaults() : policy, require(clock, "Runtime clock"),
+                require(meter, "Fabric meter"), require(dispatcher, "Runtime dispatcher"));
+    }
+
+    /**
+     * Returns the pool runtime dispatcher, lazily creating exactly one owned instance for compatibility pools.
+     *
+     * @return runtime dispatcher
+     */
+    public Dispatcher runtimeDispatcher() {
+        Dispatcher current = runtimeDispatcher;
+        if (current != null) {
+            return current;
+        }
+        synchronized (lock) {
+            ensureOpen();
+            current = runtimeDispatcher;
+            if (current == null) {
+                current = Dispatcher.create();
+                runtimeDispatcher = current;
+                ownsRuntimeDispatcher = true;
+            }
+            return current;
+        }
     }
 
     /**
@@ -196,7 +301,7 @@ public final class ConnectionPool implements AutoCloseable {
         PoolWaiter waiter = null;
         final Runnable unregister = scope.onCancel(() -> {
             synchronized (lock) {
-                lock.notifyAll();
+                signalAllWaiters();
             }
         });
         try {
@@ -244,7 +349,7 @@ public final class ConnectionPool implements AutoCloseable {
      */
     public int idle() {
         synchronized (lock) {
-            return idleCount();
+            return idleCount;
         }
     }
 
@@ -266,7 +371,7 @@ public final class ConnectionPool implements AutoCloseable {
      */
     public int active() {
         synchronized (lock) {
-            return active.size();
+            return physicalCount;
         }
     }
 
@@ -284,17 +389,22 @@ public final class ConnectionPool implements AutoCloseable {
                 final ArrayDeque<PooledConnection> retained = new ArrayDeque<>();
                 while (!bucket.isEmpty()) {
                     final PooledConnection pooled = bucket.removeFirst();
+                    idleCount--;
                     final boolean expired = Duration.between(pooled.lastUsed(), now).compareTo(policy.keepAlive()) > 0;
                     if (expired || kept >= policy.maxIdle()) {
                         evicted.add(pooled.connection());
                     } else {
                         retained.addLast(pooled);
+                        idleCount++;
                         kept++;
                     }
                 }
                 bucket.addAll(retained);
             }
             idle.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+            for (final Connection connection : evicted) {
+                removePhysical(connection);
+            }
         }
         closeAll(evicted);
         if (idle() == 0) {
@@ -336,11 +446,14 @@ public final class ConnectionPool implements AutoCloseable {
      * @param dispatcher dispatcher
      */
     public void startIdleEviction(final Dispatcher dispatcher) {
-        require(dispatcher, "Dispatcher");
+        final Dispatcher current = require(dispatcher, "Dispatcher");
         if (!evictionStarted.compareAndSet(false, true)) {
             return;
         }
-        evictionDispatcher = dispatcher;
+        evictionDispatcher = current;
+        if (runtimeDispatcher == null) {
+            runtimeDispatcher = current;
+        }
         scheduleEvictionIfNeeded();
     }
 
@@ -354,6 +467,7 @@ public final class ConnectionPool implements AutoCloseable {
         }
         final List<Connection> connections = new ArrayList<>();
         final Set<Connection> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        final Dispatcher ownedDispatcher;
         synchronized (lock) {
             cancelEviction();
             for (final ArrayDeque<PooledConnection> bucket : idle.values()) {
@@ -369,14 +483,37 @@ public final class ConnectionPool implements AutoCloseable {
                 if (seen.add(lease.connection())) {
                     connections.add(lease.connection());
                 }
+                if (lease.markClosed()) {
+                    logicalReleased();
+                }
             }
             leased.clear();
             active.clear();
+            physicalByDestination.clear();
+            multiplex.clear();
+            for (final Connection.Registration registration : capacityRegistrations.values()) {
+                registration.close();
+            }
+            capacityRegistrations.clear();
+            physicalCount = 0;
+            idleCount = 0;
             creatingByDestination.clear();
+            signalAllWaiters();
+            if (!waiters.isEmpty()) {
+                meter.addCounter(Counter.ACTIVE_WAITERS, -waiters.size());
+            }
             waiters.clear();
-            lock.notifyAll();
+            meter.addCounter(Counter.ACTIVE_LOGICAL_LEASES, -meter.counterValue(Counter.ACTIVE_LOGICAL_LEASES));
+            ownedDispatcher = ownsRuntimeDispatcher ? runtimeDispatcher : null;
+            runtimeDispatcher = null;
         }
-        closeAll(connections);
+        try {
+            closeAll(connections);
+        } finally {
+            if (ownedDispatcher != null) {
+                ownedDispatcher.close();
+            }
+        }
     }
 
     /**
@@ -418,19 +555,23 @@ public final class ConnectionPool implements AutoCloseable {
                 return false;
             }
             leased.remove(lease);
+            logicalReleased();
             final int remaining = decrementActive(lease.connection());
             if (remaining > 0) {
-                lock.notifyAll();
+                signalHead();
                 return true;
             }
             if (!closed.get() && !lease.leaked() && lease.connection().healthy()) {
                 idle.computeIfAbsent(lease.destination(), ignored -> new ArrayDeque<>())
                         .addLast(new PooledConnection(lease.connection(), clock.now()));
+                idleCount++;
+                removeMultiplex(lease.destination(), lease.connection());
                 scheduleEviction = true;
             } else {
                 closeable = lease.connection();
+                removePhysical(lease.connection());
             }
-            lock.notifyAll();
+            signalHead();
         }
         if (closeable != null) {
             closeOne(closeable);
@@ -461,11 +602,13 @@ public final class ConnectionPool implements AutoCloseable {
                 return false;
             }
             leased.remove(lease);
+            logicalReleased();
             final int remaining = decrementActive(lease.connection());
             if (remaining == 0) {
                 closeable = lease.connection();
+                removePhysical(lease.connection());
             }
-            lock.notifyAll();
+            signalHead();
         }
         if (closeable != null) {
             closeOne(closeable);
@@ -481,9 +624,12 @@ public final class ConnectionPool implements AutoCloseable {
     void detach(final ConnectionLease lease) {
         synchronized (lock) {
             if (leased.remove(lease)) {
-                decrementActive(lease.connection());
+                if (decrementActive(lease.connection()) == 0) {
+                    removePhysical(lease.connection());
+                }
+                logicalReleased();
             }
-            lock.notifyAll();
+            signalHead();
         }
     }
 
@@ -495,21 +641,19 @@ public final class ConnectionPool implements AutoCloseable {
      * @return shared lease or null
      */
     private ConnectionLease acquireShared(final Destination destination, final PoolWaiter waiter) {
-        if (!destination.multiplex()) {
-            return null;
-        }
         synchronized (lock) {
             ensureOpen();
             if (!hasTurn(waiter)) {
                 return null;
             }
             Connection candidate = null;
-            for (final ConnectionLease lease : leased) {
-                final Connection connection = lease.connection();
-                if (destination.equals(lease.destination()) && connection.healthy()
-                        && active.getOrDefault(connection, 0) < destination.maxMultiplexStreams()) {
-                    candidate = connection;
-                    break;
+            final ArrayDeque<Connection> candidates = multiplex.get(destination);
+            if (candidates != null) {
+                for (final Connection connection : candidates) {
+                    if (usableCapacity(connection) > active.getOrDefault(connection, 0)) {
+                        candidate = connection;
+                        break;
+                    }
                 }
             }
             if (candidate == null) {
@@ -518,6 +662,7 @@ public final class ConnectionPool implements AutoCloseable {
             final ConnectionLease shared = new ConnectionLease(this, destination, candidate, clock.now());
             leased.add(shared);
             active.merge(candidate, 1, Integer::sum);
+            logicalAcquired();
             completeWaiter(waiter);
             return shared;
         }
@@ -542,18 +687,22 @@ public final class ConnectionPool implements AutoCloseable {
             final ArrayDeque<PooledConnection> bucket = idle.get(destination);
             while (bucket != null && !bucket.isEmpty()) {
                 final Connection connection = bucket.removeFirst().connection();
+                idleCount--;
                 if (connection.healthy()) {
                     lease = new ConnectionLease(this, destination, connection, clock.now());
                     leased.add(lease);
                     active.put(connection, 1);
+                    addMultiplex(destination, connection);
+                    logicalAcquired();
                     if (bucket.isEmpty()) {
                         idle.remove(destination, bucket);
                     }
-                    cancelEviction = idleCount() == 0;
+                    cancelEviction = idleCount == 0;
                     completeWaiter(waiter);
                     break;
                 }
                 discarded.add(connection);
+                removePhysical(connection);
             }
         }
         if (cancelEviction) {
@@ -621,6 +770,10 @@ public final class ConnectionPool implements AutoCloseable {
                     || failure instanceof StatefulException || failure instanceof ValidateException ? failure
                             : new InternalException("Unable to create connection", failure);
         }
+        final boolean multiplexCapable = connection.multiplex();
+        final Connection.MultiplexAttachment attachment = multiplexCapable ? connection.multiplexAttachment() : null;
+        final Connection.Registration registration = attachment == null ? null
+                : attachment.listen((capacity, draining) -> capacityChanged(connection));
         boolean closeable = false;
         boolean cancelled = false;
         synchronized (lock) {
@@ -632,12 +785,24 @@ public final class ConnectionPool implements AutoCloseable {
                 final ConnectionLease lease = new ConnectionLease(this, destination, connection, clock.now());
                 leased.add(lease);
                 active.put(connection, 1);
-                lock.notifyAll();
+                physicalCount++;
+                physicalByDestination.merge(destination, 1, Integer::sum);
+                if (multiplexCapable) {
+                    addMultiplex(destination, connection);
+                }
+                if (registration != null) {
+                    capacityRegistrations.put(connection, registration);
+                }
+                logicalAcquired();
+                signalHead();
                 return lease;
             }
-            lock.notifyAll();
+            signalHead();
         }
         if (closeable) {
+            if (registration != null) {
+                registration.close();
+            }
             closeOne(connection);
         }
         if (cancelled) {
@@ -654,7 +819,7 @@ public final class ConnectionPool implements AutoCloseable {
     private void releaseCreateReservation(final Destination destination) {
         synchronized (lock) {
             releaseCreateReservationLocked(destination);
-            lock.notifyAll();
+            signalHead();
         }
     }
 
@@ -682,21 +847,27 @@ public final class ConnectionPool implements AutoCloseable {
      */
     private void waitForAvailability(final PoolWaiter waiter, final Cancellation cancellation, final long deadline) {
         final Cancellation scope = require(cancellation, "Cancellation");
-        synchronized (lock) {
-            if (!waiters.contains(waiter)) {
-                waiters.addLast(waiter);
-            }
-            while (!closed.get() && (!hasTurn(waiter) || !acquisitionAvailable(waiter.destination()))) {
+        while (true) {
+            final long remaining;
+            synchronized (lock) {
+                if (!waiter.queued) {
+                    waiter.queued = true;
+                    waiters.addLast(waiter);
+                    meter.incrementCounter(Counter.WAITERS_ENQUEUED);
+                    meter.incrementCounter(Counter.ACTIVE_WAITERS);
+                }
                 scope.throwIfCancelled();
-                final long remaining = remaining(deadline);
+                ensureOpen();
+                if (hasTurn(waiter) && acquisitionAvailable(waiter.destination)) {
+                    return;
+                }
+                remaining = remaining(deadline);
                 if (remaining <= 0L) {
                     removeWaiterLocked(waiter);
                     throw new TimeoutException("Connection acquire timed out");
                 }
-                waitOnPool(remaining);
             }
-            scope.throwIfCancelled();
-            ensureOpen();
+            waitOnPool(waiter, remaining);
         }
     }
 
@@ -705,13 +876,11 @@ public final class ConnectionPool implements AutoCloseable {
      *
      * @param remaining remaining monotonic nanoseconds
      */
-    private void waitOnPool(final long remaining) {
-        final long millis = Math.max(1L, Math.min(remaining / 1_000_000L, 100L));
-        try {
-            lock.wait(millis);
-        } catch (final InterruptedException e) {
+    private void waitOnPool(final PoolWaiter waiter, final long remaining) {
+        LockSupport.parkNanos(this, Math.max(1L, Math.min(remaining, 100_000_000L)));
+        if (Thread.interrupted()) {
             Thread.currentThread().interrupt();
-            throw new InternalException("Interrupted while waiting for connection", e);
+            throw new InternalException("Interrupted while waiting for connection");
         }
     }
 
@@ -733,7 +902,9 @@ public final class ConnectionPool implements AutoCloseable {
     private void completeWaiter(final PoolWaiter waiter) {
         if (waiter != null && waiters.peekFirst() == waiter) {
             waiters.removeFirst();
-            lock.notifyAll();
+            waiter.queued = false;
+            meter.addCounter(Counter.ACTIVE_WAITERS, -1L);
+            signalHead();
         }
     }
 
@@ -758,7 +929,9 @@ public final class ConnectionPool implements AutoCloseable {
      */
     private void removeWaiterLocked(final PoolWaiter waiter) {
         if (waiters.remove(waiter)) {
-            lock.notifyAll();
+            waiter.queued = false;
+            meter.addCounter(Counter.ACTIVE_WAITERS, -1L);
+            signalHead();
         }
     }
 
@@ -779,7 +952,10 @@ public final class ConnectionPool implements AutoCloseable {
      * @return true when global and destination limits both allow creation
      */
     private boolean creationAvailable(final Destination destination) {
-        return connectionCount() + creating < policy.maxConnections() && connectionCount(destination)
+        if (destination.multiplex() && creatingByDestination.getOrDefault(destination, 0) > 0) {
+            return false;
+        }
+        return physicalCount + creating < policy.maxConnections() && physicalByDestination.getOrDefault(destination, 0)
                 + creatingByDestination.getOrDefault(destination, 0) < policy.maxConnectionsPerDestination();
     }
 
@@ -827,60 +1003,16 @@ public final class ConnectionPool implements AutoCloseable {
         if (bucket != null && !bucket.isEmpty()) {
             return true;
         }
-        if (!destination.multiplex()) {
+        final ArrayDeque<Connection> candidates = multiplex.get(destination);
+        if (candidates == null) {
             return false;
         }
-        for (final ConnectionLease lease : leased) {
-            final Connection connection = lease.connection();
-            if (destination.equals(lease.destination()) && connection.healthy()
-                    && active.getOrDefault(connection, 0) < destination.maxMultiplexStreams()) {
+        for (final Connection connection : candidates) {
+            if (usableCapacity(connection) > active.getOrDefault(connection, 0)) {
                 return true;
             }
         }
         return false;
-    }
-
-    /**
-     * Counts idle connections.
-     *
-     * @return idle count
-     */
-    private int idleCount() {
-        int count = 0;
-        for (final ArrayDeque<PooledConnection> bucket : idle.values()) {
-            count += bucket.size();
-        }
-        return count;
-    }
-
-    /**
-     * Counts physical connections tracked by the pool.
-     *
-     * @return physical connection count
-     */
-    private int connectionCount() {
-        return idleCount() + active.size();
-    }
-
-    /**
-     * Counts physical connections tracked for one destination.
-     *
-     * @param destination destination
-     * @return physical connection count
-     */
-    private int connectionCount(final Destination destination) {
-        int count = 0;
-        final ArrayDeque<PooledConnection> bucket = idle.get(destination);
-        if (bucket != null) {
-            count += bucket.size();
-        }
-        final Set<Connection> seen = Collections.newSetFromMap(new IdentityHashMap<>());
-        for (final ConnectionLease lease : leased) {
-            if (destination.equals(lease.destination()) && seen.add(lease.connection())) {
-                count++;
-            }
-        }
-        return count;
     }
 
     /**
@@ -897,6 +1029,121 @@ public final class ConnectionPool implements AutoCloseable {
         }
         active.put(connection, count - 1);
         return count - 1;
+    }
+
+    /**
+     * Records one logical lease acquisition on the fixed meter path.
+     */
+    private void logicalAcquired() {
+        meter.incrementCounter(Counter.LOGICAL_LEASES_ACQUIRED);
+        meter.incrementCounter(Counter.ACTIVE_LOGICAL_LEASES);
+    }
+
+    /**
+     * Records one logical lease terminal transition on the fixed meter path.
+     */
+    private void logicalReleased() {
+        meter.incrementCounter(Counter.LOGICAL_LEASES_RELEASED);
+        meter.addCounter(Counter.ACTIVE_LOGICAL_LEASES, -1L);
+    }
+
+    /**
+     * Adds a multiplex connection once to its destination candidate queue.
+     */
+    private void addMultiplex(final Destination destination, final Connection connection) {
+        if (!connection.multiplex() || connection.draining()) {
+            return;
+        }
+        final ArrayDeque<Connection> candidates = multiplex.computeIfAbsent(destination, ignored -> new ArrayDeque<>());
+        if (!candidates.contains(connection)) {
+            candidates.addLast(connection);
+        }
+    }
+
+    /**
+     * Removes a multiplex candidate.
+     */
+    private void removeMultiplex(final Destination destination, final Connection connection) {
+        final ArrayDeque<Connection> candidates = multiplex.get(destination);
+        if (candidates != null) {
+            candidates.remove(connection);
+            if (candidates.isEmpty()) {
+                multiplex.remove(destination);
+            }
+        }
+    }
+
+    /**
+     * Returns current protocol-owned logical capacity, or zero when unavailable.
+     */
+    private int usableCapacity(final Connection connection) {
+        if (!connection.healthy() || connection.draining()) {
+            return 0;
+        }
+        final Connection.MultiplexAttachment attachment = connection.multiplexAttachment();
+        if (attachment != null) {
+            return attachment.draining() ? 0 : Math.max(0, attachment.capacity());
+        }
+        return connection.multiplex() ? Math.max(0, connection.capacity()) : 0;
+    }
+
+    /**
+     * Reacts to a protocol capacity publication with one precise waiter signal.
+     */
+    private void capacityChanged(final Connection connection) {
+        synchronized (lock) {
+            if (!active.containsKey(connection)) {
+                return;
+            }
+            final Destination destination = connection.destination();
+            if (usableCapacity(connection) > active.getOrDefault(connection, 0)) {
+                addMultiplex(destination, connection);
+            } else if (connection.draining()) {
+                removeMultiplex(destination, connection);
+            }
+            signalHead();
+        }
+    }
+
+    /**
+     * Removes final physical ownership and listener state.
+     */
+    private void removePhysical(final Connection connection) {
+        if (physicalCount <= 0) {
+            return;
+        }
+        final Destination destination = connection.destination();
+        physicalCount--;
+        final int remaining = physicalByDestination.getOrDefault(destination, 0) - 1;
+        if (remaining <= 0) {
+            physicalByDestination.remove(destination);
+        } else {
+            physicalByDestination.put(destination, remaining);
+        }
+        removeMultiplex(destination, connection);
+        final Connection.Registration registration = capacityRegistrations.remove(connection);
+        if (registration != null) {
+            registration.close();
+        }
+    }
+
+    /**
+     * Unparks only the oldest eligible waiter.
+     */
+    private void signalHead() {
+        final PoolWaiter waiter = waiters.peekFirst();
+        if (waiter != null) {
+            LockSupport.unpark(waiter.thread);
+        }
+    }
+
+    /**
+     * Unparks every waiter for terminal close or cancellation checks.
+     */
+    private void signalAllWaiters() {
+        for (final PoolWaiter waiter : waiters) {
+            LockSupport.unpark(waiter.thread);
+        }
     }
 
     /**
@@ -1081,9 +1328,10 @@ public final class ConnectionPool implements AutoCloseable {
                 || value instanceof Collection<?> || value instanceof Map<?, ?> || value.getClass().isArray()) {
             return false;
         }
-        return value instanceof String || value instanceof Boolean || value instanceof Character
-                || value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long
-                || value instanceof Float || value instanceof Double || value instanceof java.math.BigInteger
+        return value instanceof TlsContext || value instanceof TlsSettings || value instanceof String
+                || value instanceof Boolean || value instanceof Character || value instanceof Byte
+                || value instanceof Short || value instanceof Integer || value instanceof Long || value instanceof Float
+                || value instanceof Double || value instanceof java.math.BigInteger
                 || value instanceof java.math.BigDecimal || value instanceof Duration || value instanceof Timeout
                 || value instanceof Enum<?>;
     }
@@ -1093,7 +1341,32 @@ public final class ConnectionPool implements AutoCloseable {
      *
      * @param destination requested destination
      */
-    private record PoolWaiter(Destination destination) {
+    private static final class PoolWaiter {
+
+        /**
+         * Requested destination.
+         */
+        private final Destination destination;
+
+        /**
+         * Exact thread to unpark.
+         */
+        private final Thread thread;
+
+        /**
+         * Queue membership guard.
+         */
+        private boolean queued;
+
+        /**
+         * Captures the requesting thread and destination before the waiter enters the fair queue.
+         *
+         * @param destination requested destination
+         */
+        private PoolWaiter(final Destination destination) {
+            this.destination = destination;
+            this.thread = Thread.currentThread();
+        }
 
     }
 

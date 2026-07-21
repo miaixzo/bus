@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.registry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,9 +34,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
+import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
 import org.miaixz.bus.fabric.registry.connection.ConnectionPool;
 import org.miaixz.bus.fabric.registry.connection.ConnectionRegistry;
+import org.miaixz.bus.fabric.registry.policy.PoolPolicy;
 import org.miaixz.bus.fabric.registry.route.Selector;
+import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 
 /**
  * Registry directory keyed by stable registry names.
@@ -67,12 +72,12 @@ public final class Directory implements AutoCloseable {
     /**
      * Shared connection registry.
      */
-    private volatile ConnectionRegistry connections;
+    private final ConnectionRegistry connections;
 
     /**
      * Shared connection pool.
      */
-    private volatile ConnectionPool connectionPool;
+    private final ConnectionPool connectionPool;
 
     /**
      * Shared selector.
@@ -84,12 +89,13 @@ public final class Directory implements AutoCloseable {
      *
      * @param connectionPool clock-bound connection pool
      */
-    private Directory(final ConnectionPool connectionPool) {
+    private Directory(final ConnectionPool connectionPool, final ConnectionRegistry connections) {
         this.ledgers = new ConcurrentHashMap<>();
         this.services = new ConcurrentHashMap<>();
         this.serviceLock = new Object();
         this.closed = new AtomicBoolean();
         this.connectionPool = require(connectionPool, "Connection pool");
+        this.connections = require(connections, "Connection registry");
     }
 
     /**
@@ -108,8 +114,31 @@ public final class Directory implements AutoCloseable {
      * @return registry directory
      */
     public static Directory create(final Clock clock) {
-        final ConnectionPool pool = ConnectionPool.create(null, require(clock, "Clock"));
-        final Directory directory = new Directory(pool);
+        final Clock currentClock = require(clock, "Clock");
+        final FabricMeter meter = FabricMeter.create(currentClock);
+        return create(currentClock, PoolPolicy.defaults(), meter, null);
+    }
+
+    /**
+     * Creates a directory whose registries share the supplied runtime services.
+     *
+     * @param clock      directory and connection-pool time source
+     * @param policy     connection-pool policy, or null to use the defaults
+     * @param meter      meter borrowed by the directory and its registries
+     * @param dispatcher dispatcher borrowed by the connection pool, or null for lazy ownership
+     * @return initialized registry directory
+     */
+    public static Directory create(
+            final Clock clock,
+            final PoolPolicy policy,
+            final FabricMeter meter,
+            final Dispatcher dispatcher) {
+        final Clock currentClock = require(clock, "Clock");
+        final FabricMeter currentMeter = require(meter, "Fabric meter");
+        final ConnectionPool pool = dispatcher == null ? ConnectionPool.create(policy, currentClock, currentMeter)
+                : ConnectionPool.create(policy, currentClock, currentMeter, dispatcher);
+        final ConnectionRegistry registry = new ConnectionRegistry(currentMeter);
+        final Directory directory = new Directory(pool, registry);
         try {
             directory.register(Builder.DIRECTORY_CONNECTION, Ledger.create());
             directory.register(Builder.ROUTE, Ledger.create());
@@ -119,6 +148,7 @@ public final class Directory implements AutoCloseable {
             return directory;
         } catch (final RuntimeException | Error failure) {
             try {
+                registry.close();
                 pool.close();
             } catch (final Throwable closeFailure) {
                 failure.addSuppressed(closeFailure);
@@ -151,10 +181,8 @@ public final class Directory implements AutoCloseable {
      * @return ledger or null
      */
     public <T> Ledger<T> ledger(final String name) {
-        synchronized (serviceLock) {
-            ensureOpen();
-            return (Ledger<T>) ledgers.get(validateName(name));
-        }
+        ensureOpen();
+        return (Ledger<T>) ledgers.get(validateName(name));
     }
 
     /**
@@ -172,13 +200,8 @@ public final class Directory implements AutoCloseable {
      * @return connection registry
      */
     public ConnectionRegistry connections() {
-        synchronized (serviceLock) {
-            ensureOpen();
-            if (connections == null) {
-                connections = new ConnectionRegistry();
-            }
-            return connections;
-        }
+        ensureOpen();
+        return connections;
     }
 
     /**
@@ -187,10 +210,8 @@ public final class Directory implements AutoCloseable {
      * @return connection pool
      */
     public ConnectionPool connectionPool() {
-        synchronized (serviceLock) {
-            ensureOpen();
-            return connectionPool;
-        }
+        ensureOpen();
+        return connectionPool;
     }
 
     /**
@@ -199,13 +220,19 @@ public final class Directory implements AutoCloseable {
      * @return selector
      */
     public Selector selector() {
-        synchronized (serviceLock) {
-            ensureOpen();
-            if (selector == null) {
-                selector = new Selector();
+        ensureOpen();
+        Selector current = selector;
+        if (current == null) {
+            synchronized (serviceLock) {
+                ensureOpen();
+                current = selector;
+                if (current == null) {
+                    current = new Selector();
+                    selector = current;
+                }
             }
-            return selector;
         }
+        return current;
     }
 
     /**
@@ -247,33 +274,33 @@ public final class Directory implements AutoCloseable {
      */
     @Override
     public void close() {
+        final List<AutoCloseable> resources = new ArrayList<>();
         synchronized (serviceLock) {
             if (!closed.compareAndSet(false, true)) {
                 return;
             }
-            Throwable failure = null;
             for (final Object service : services.values()) {
                 if (service instanceof AutoCloseable closeable) {
-                    failure = closeResource(closeable, failure);
+                    resources.add(closeable);
                 }
             }
             services.clear();
-            final ConnectionPool pool = connectionPool;
-            if (pool != null) {
-                failure = closeResource(pool, failure);
-            }
-            connectionPool = null;
+            resources.add(connectionPool);
+            resources.add(connections);
             for (final Ledger<?> ledger : ledgers.values()) {
                 if (ledger instanceof AutoCloseable closeable) {
-                    failure = closeResource(closeable, failure);
+                    resources.add(closeable);
                 }
             }
             ledgers.clear();
-            connections = null;
             selector = null;
-            if (failure != null) {
-                throw new InternalException("Unable to close registry directory", failure);
-            }
+        }
+        Throwable failure = null;
+        for (final AutoCloseable resource : resources) {
+            failure = closeResource(resource, failure);
+        }
+        if (failure != null) {
+            throw new InternalException("Unable to close registry directory", failure);
         }
     }
 

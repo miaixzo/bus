@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric.network;
 
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Lifecycle;
 
 /**
@@ -74,9 +75,147 @@ public interface Connection extends AutoCloseable, Lifecycle {
     boolean idle();
 
     /**
+     * Returns the protocol established on this physical connection.
+     *
+     * <p>
+     * Legacy implementations are single-lease HTTP/1.1 connections. Implementations that negotiate another protocol
+     * override this method only after the established protocol is known.
+     * </p>
+     *
+     * @return established protocol
+     */
+    default Protocol protocol() {
+        return Protocol.HTTP_1_1;
+    }
+
+    /**
+     * Returns whether this physical connection supports concurrent logical leases.
+     *
+     * @return true when multiplex capable
+     */
+    default boolean multiplex() {
+        return false;
+    }
+
+    /**
+     * Returns the maximum number of concurrent logical leases currently supported.
+     *
+     * @return logical lease capacity
+     */
+    default int capacity() {
+        return 1;
+    }
+
+    /**
+     * Returns whether this connection refuses new logical leases while existing work drains.
+     *
+     * @return true when draining
+     */
+    default boolean draining() {
+        return false;
+    }
+
+    /**
+     * Returns the multiplex state bridge, if supported.
+     *
+     * @return multiplex attachment or null
+     */
+    default MultiplexAttachment multiplexAttachment() {
+        return null;
+    }
+
+    /**
      * Closes this connection.
      */
     @Override
     void close();
+
+    /**
+     * Listener for changes to multiplex stream capacity or draining state.
+     */
+    @FunctionalInterface
+    interface CapacityListener {
+
+        /**
+         * Receives the latest usable logical capacity and draining state.
+         *
+         * @param capacity usable logical capacity
+         * @param draining true when no new streams may be opened
+         */
+        void changed(int capacity, boolean draining);
+
+    }
+
+    /**
+     * Closeable listener registration.
+     */
+    @FunctionalInterface
+    interface Registration extends AutoCloseable {
+
+        /**
+         * Unregisters the listener without throwing checked exceptions.
+         */
+        @Override
+        void close();
+
+    }
+
+    /**
+     * State bridge owned by a concrete multiplex-capable connection.
+     *
+     * <p>
+     * The session remains protocol-neutral at this layer. Its concrete type is agreed by the HTTP transport and HTTP/2
+     * owner; the connection pool only observes capacity and draining changes.
+     * </p>
+     */
+    interface MultiplexAttachment {
+
+        /**
+         * Returns the currently attached protocol session, or {@code null} before installation.
+         *
+         * @return attached session or null
+         */
+        Object session();
+
+        /**
+         * Atomically changes the attached protocol session.
+         *
+         * @param expected expected session
+         * @param update   replacement session
+         * @return true when the session was changed
+         */
+        boolean compareAndSetSession(Object expected, Object update);
+
+        /**
+         * Returns the latest usable logical stream capacity.
+         *
+         * @return usable stream capacity
+         */
+        int capacity();
+
+        /**
+         * Returns whether the protocol session is draining.
+         *
+         * @return true when draining
+         */
+        boolean draining();
+
+        /**
+         * Registers a capacity listener.
+         *
+         * @param listener listener
+         * @return closeable registration
+         */
+        Registration listen(CapacityListener listener);
+
+        /**
+         * Publishes a protocol-owned capacity snapshot.
+         *
+         * @param capacity usable stream capacity
+         * @param draining true when draining
+         */
+        void publish(int capacity, boolean draining);
+
+    }
 
 }

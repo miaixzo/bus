@@ -20,10 +20,14 @@
 package org.miaixz.bus.fabric;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.DnsResolver;
+import org.miaixz.bus.fabric.network.tls.TlsSettings;
+import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.registry.Directory;
+import org.miaixz.bus.fabric.registry.policy.PoolPolicy;
 import org.miaixz.bus.fabric.runtime.Reactor;
 
 /**
@@ -38,6 +42,11 @@ public final class Context implements AutoCloseable {
      * Shared reactor.
      */
     private final Reactor reactor;
+
+    /**
+     * Shared runtime reference count for Context views.
+     */
+    private final RuntimeLease runtime;
 
     /**
      * Shared option snapshot.
@@ -73,9 +82,10 @@ public final class Context implements AutoCloseable {
      * @param listener lifecycle listener
      * @param filter   shared message filter
      */
-    private Context(final Reactor reactor, final Options options, final DnsResolver resolver,
+    private Context(final RuntimeLease runtime, final Options options, final DnsResolver resolver,
             final Listener<Object> listener, final Filter filter) {
-        this.reactor = require(reactor, "Reactor");
+        this.runtime = require(runtime, "Runtime lease");
+        this.reactor = runtime.reactor;
         this.options = require(options, "Options");
         this.resolver = require(resolver, "DNS resolver");
         this.listener = listener;
@@ -171,7 +181,7 @@ public final class Context implements AutoCloseable {
      * @return context view
      */
     public Context withFilter(final Filter filter) {
-        return new Context(reactor, options, resolver, listener, filter);
+        return new Context(runtime.retain(), options, resolver, listener, filter);
     }
 
     /**
@@ -180,7 +190,7 @@ public final class Context implements AutoCloseable {
     @Override
     public void close() {
         if (closed.compareAndSet(false, true)) {
-            reactor.close();
+            runtime.release();
         }
     }
 
@@ -211,6 +221,11 @@ public final class Context implements AutoCloseable {
          * Reactor candidate.
          */
         private Reactor reactor;
+
+        /**
+         * Connection pool policy used when this builder creates the reactor.
+         */
+        private PoolPolicy poolPolicy;
 
         /**
          * Options candidate.
@@ -251,6 +266,17 @@ public final class Context implements AutoCloseable {
         }
 
         /**
+         * Sets the connection pool policy used by a context-owned reactor.
+         *
+         * @param poolPolicy connection pool policy
+         * @return this builder
+         */
+        public Builder poolPolicy(final PoolPolicy poolPolicy) {
+            this.poolPolicy = require(poolPolicy, "Pool policy");
+            return this;
+        }
+
+        /**
          * Sets the options.
          *
          * @param options options
@@ -258,6 +284,30 @@ public final class Context implements AutoCloseable {
          */
         public Builder options(final Options options) {
             this.options = require(options, "Options");
+            return this;
+        }
+
+        /**
+         * Sets the shared TLS context without allocating another runtime owner.
+         *
+         * @param tlsContext TLS context
+         * @return this builder
+         */
+        public Builder tlsContext(final TlsContext tlsContext) {
+            this.options = options
+                    .with(org.miaixz.bus.fabric.Builder.OPTION_TLS_CONTEXT, require(tlsContext, "TLS context"));
+            return this;
+        }
+
+        /**
+         * Sets the immutable TLS settings snapshot.
+         *
+         * @param tlsSettings TLS settings
+         * @return this builder
+         */
+        public Builder tlsSettings(final TlsSettings tlsSettings) {
+            this.options = options
+                    .with(org.miaixz.bus.fabric.Builder.OPTION_TLS_SETTINGS, require(tlsSettings, "TLS settings"));
             return this;
         }
 
@@ -303,12 +353,17 @@ public final class Context implements AutoCloseable {
             Reactor resolvedReactor = reactor;
             final boolean createdReactor = resolvedReactor == null;
             if (createdReactor) {
-                resolvedReactor = Reactor.create();
+                final Reactor.Builder reactorBuilder = Reactor.builder();
+                if (poolPolicy != null) {
+                    reactorBuilder.poolPolicy(poolPolicy);
+                }
+                resolvedReactor = reactorBuilder.build();
             }
             try {
                 final DnsResolver resolvedResolver = resolver == null ? DnsResolver.system() : resolver;
-                final DnsResolver localResolver = resolvedResolver.withObserver(resolvedReactor.observer());
-                return new Context(resolvedReactor, options, localResolver, listener, filter);
+                final DnsResolver localResolver = resolvedResolver.withObserver(resolvedReactor.observer())
+                        .withRuntime(resolvedReactor.clock(), resolvedReactor.dispatcher());
+                return new Context(new RuntimeLease(resolvedReactor), options, localResolver, listener, filter);
             } catch (final RuntimeException | Error failure) {
                 if (createdReactor) {
                     try {
@@ -321,6 +376,68 @@ public final class Context implements AutoCloseable {
             }
         }
 
+    }
+
+    /**
+     * Reference-counted ownership shared by context views that borrow the same reactor.
+     * <p>
+     * The final view to release the lease closes the reactor. Retaining a lease after its reference count reaches zero
+     * is rejected so a closed runtime cannot be resurrected.
+     * </p>
+     */
+    private static final class RuntimeLease {
+
+        /**
+         * Reactor closed when the final context view releases this lease.
+         */
+        private final Reactor reactor;
+
+        /**
+         * Number of context views that currently own the reactor.
+         */
+        private final AtomicInteger references = new AtomicInteger(1);
+
+        /**
+         * Creates the initial lease for a reactor.
+         *
+         * @param reactor owned reactor
+         */
+        private RuntimeLease(final Reactor reactor) {
+            this.reactor = require(reactor, "Reactor");
+        }
+
+        /**
+         * Adds one context view to the shared ownership count.
+         *
+         * @return this lease
+         * @throws ValidateException if the reactor has already been released
+         */
+        private RuntimeLease retain() {
+            while (true) {
+                final int current = references.get();
+                if (current == 0) {
+                    throw new ValidateException("Context runtime is closed");
+                }
+                if (references.compareAndSet(current, current + 1)) {
+                    return this;
+                }
+            }
+        }
+
+        /**
+         * Releases one context view and closes the reactor when the count reaches zero.
+         *
+         * @throws IllegalStateException if releases outnumber successful retains
+         */
+        private void release() {
+            final int remaining = references.decrementAndGet();
+            if (remaining < 0) {
+                throw new IllegalStateException("Context runtime reference underflow");
+            }
+            if (remaining == 0) {
+                reactor.close();
+            }
+        }
     }
 
 }

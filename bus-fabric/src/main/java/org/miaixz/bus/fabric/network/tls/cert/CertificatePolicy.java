@@ -79,6 +79,11 @@ public final class CertificatePolicy {
     private final CertificateChainCleaner chainCleaner;
 
     /**
+     * Stable, non-sensitive TLS context reuse identity.
+     */
+    private final ReuseIdentity explicitReuseIdentity;
+
+    /**
      * Creates a certificate policy.
      *
      * @param trustManager   trust manager
@@ -88,12 +93,14 @@ public final class CertificatePolicy {
      * @param chainCleaner   chain cleaner
      */
     private CertificatePolicy(final X509TrustManager trustManager, final boolean hostnameVerify,
-            final Map<String, Set<String>> pins, final boolean trustAll, final CertificateChainCleaner chainCleaner) {
+            final Map<String, Set<String>> pins, final boolean trustAll, final CertificateChainCleaner chainCleaner,
+            final ReuseIdentity reuseIdentity) {
         this.trustManager = Assert.notNull(trustManager, () -> new ValidateException("Trust manager must not be null"));
         this.hostnameVerify = hostnameVerify;
         this.pins = copyPins(pins);
         this.trustAll = trustAll;
         this.chainCleaner = chainCleaner;
+        this.explicitReuseIdentity = reuseIdentity;
     }
 
     /**
@@ -112,6 +119,15 @@ public final class CertificatePolicy {
      */
     public static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Creates an opaque token that can be shared by explicitly equivalent policy builders.
+     *
+     * @return new reuse identity
+     */
+    public static ReuseIdentity newReuseIdentity() {
+        return new ReuseIdentity();
     }
 
     /**
@@ -215,6 +231,15 @@ public final class CertificatePolicy {
      */
     public Map<String, Set<String>> pins() {
         return pins;
+    }
+
+    /**
+     * Returns this policy's stable, non-sensitive TLS context reuse identity.
+     *
+     * @return reuse identity
+     */
+    public Object reuseIdentity() {
+        return explicitReuseIdentity == null ? this : explicitReuseIdentity;
     }
 
     /**
@@ -520,6 +545,11 @@ public final class CertificatePolicy {
         private CertificateChainCleaner chainCleaner;
 
         /**
+         * Explicit reuse identity, or null to isolate every built policy.
+         */
+        private ReuseIdentity reuseIdentity;
+
+        /**
          * Creates a builder with defaults.
          */
         private Builder() {
@@ -528,6 +558,7 @@ public final class CertificatePolicy {
             this.pins = new LinkedHashMap<>();
             this.trustAll = false;
             this.chainCleaner = null;
+            this.reuseIdentity = null;
         }
 
         /**
@@ -595,6 +626,18 @@ public final class CertificatePolicy {
         }
 
         /**
+         * Explicitly declares this policy equivalent to other policies built with the same opaque token.
+         *
+         * @param reuseIdentity shared reuse identity
+         * @return this builder
+         */
+        public Builder reuseIdentity(final ReuseIdentity reuseIdentity) {
+            this.reuseIdentity = Assert
+                    .notNull(reuseIdentity, () -> new ValidateException("Reuse identity must not be null"));
+            return this;
+        }
+
+        /**
          * Uses custom trust roots and the current chain cleaner.
          *
          * @param caCerts CA certificates
@@ -615,7 +658,7 @@ public final class CertificatePolicy {
             if (trustAll && (!pins.isEmpty() || hostnameVerify)) {
                 throw new ValidateException("Trust-all policy cannot be combined with hostname verification or pins");
             }
-            return new CertificatePolicy(trustManager, hostnameVerify, pins, trustAll, chainCleaner);
+            return new CertificatePolicy(trustManager, hostnameVerify, pins, trustAll, chainCleaner, reuseIdentity);
         }
 
     }
@@ -696,6 +739,24 @@ public final class CertificatePolicy {
             } catch (final RuntimeException e) {
                 throw new CertificateException("Certificate chain is not trusted by configured roots", e);
             }
+        }
+
+    }
+
+    /**
+     * Opaque capability used to declare that separately built policies are safe to reuse together.
+     *
+     * <p>
+     * Identity equality is deliberately based on the token instance. The token contains no certificate, key, hostname,
+     * pin, trust-manager text, or other sensitive material.
+     * </p>
+     */
+    public static final class ReuseIdentity {
+
+        /**
+         * Creates an opaque identity token.
+         */
+        private ReuseIdentity() {
         }
 
     }

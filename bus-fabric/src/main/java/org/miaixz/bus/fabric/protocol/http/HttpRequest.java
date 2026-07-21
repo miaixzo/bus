@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol.http;
 
 import java.io.File;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -92,6 +93,26 @@ public final class HttpRequest {
     private volatile HttpCacheControl cacheControl;
 
     /**
+     * Lazily encoded request authority.
+     */
+    private volatile String authority;
+
+    /**
+     * Lazily encoded origin-form request target.
+     */
+    private volatile String requestTarget;
+
+    /**
+     * Stable body length used by codecs and retry policy.
+     */
+    private final long bodyLength;
+
+    /**
+     * Stable replay eligibility used by retry policy.
+     */
+    private final boolean replayable;
+
+    /**
      * Creates an HTTP request.
      *
      * @param method  method
@@ -104,13 +125,23 @@ public final class HttpRequest {
      */
     private HttpRequest(final HTTP.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
             final Map<Class<?>, Object> tags, final ProxyPlan proxy, final Timeout timeout) {
+        this(method, url, headers, body, tags, false, proxy, timeout);
+    }
+
+    /**
+     * Creates a request, optionally accepting an immutable tag snapshot from another request.
+     */
+    private HttpRequest(final HTTP.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
+            final Map<Class<?>, Object> tags, final boolean trustedTags, final ProxyPlan proxy, final Timeout timeout) {
         this.method = require(method, "HTTP method");
         this.url = require(url, "URL");
         this.headers = require(headers, "Headers");
         this.body = require(body, "Body");
-        this.tags = immutableTags(tags);
+        this.tags = trustedTags ? tags : immutableTags(tags);
         this.proxy = require(proxy, "Proxy plan");
         this.timeout = require(timeout, "Timeout");
+        this.bodyLength = this.body.length();
+        this.replayable = this.body.repeatable();
         validateBodyPolicy(this.method, this.body);
     }
 
@@ -140,7 +171,8 @@ public final class HttpRequest {
     public Builder newBuilder() {
         final Builder builder = builder().method(method).url(url).headers(headers).body(body).proxy(proxy)
                 .timeout(timeout);
-        builder.tags = new LinkedHashMap<>(tags);
+        builder.tags = tags;
+        builder.tagsSnapshot = true;
         return builder;
     }
 
@@ -187,6 +219,64 @@ public final class HttpRequest {
      */
     public PayloadBody body() {
         return body;
+    }
+
+    /**
+     * Returns the stable method text consumed by HTTP codecs.
+     *
+     * @return canonical request-method text
+     */
+    public String methodText() {
+        return method.value();
+    }
+
+    /**
+     * Returns the stable authority including the effective port.
+     *
+     * @return host and effective port in authority form
+     */
+    public String authority() {
+        String current = authority;
+        if (current == null) {
+            current = url.host() + Symbol.C_COLON + url.port();
+            authority = current;
+        }
+        return current;
+    }
+
+    /**
+     * Returns the encoded origin-form path and query consumed by HTTP/1.1 and HTTP/2.
+     *
+     * @return encoded path followed by the query when present
+     */
+    public String requestTarget() {
+        String current = requestTarget;
+        if (current == null) {
+            final URI uri = url.toUri();
+            final String path = uri.getRawPath() == null || uri.getRawPath().isEmpty() ? Symbol.SLASH
+                    : uri.getRawPath();
+            current = uri.getRawQuery() == null ? path : path + Symbol.C_QUESTION_MARK + uri.getRawQuery();
+            requestTarget = current;
+        }
+        return current;
+    }
+
+    /**
+     * Returns the stable body length metadata.
+     *
+     * @return body length, or a negative value when unknown
+     */
+    public long bodyLength() {
+        return bodyLength;
+    }
+
+    /**
+     * Returns whether the body may be replayed by a retry or follow-up.
+     *
+     * @return true when another transmission can consume the body safely
+     */
+    public boolean replayable() {
+        return replayable;
     }
 
     /**
@@ -327,6 +417,11 @@ public final class HttpRequest {
          * Candidate tags keyed by type.
          */
         private Map<Class<?>, Object> tags = Map.of();
+
+        /**
+         * True when tags already belong to an immutable request snapshot.
+         */
+        private boolean tagsSnapshot = true;
 
         /**
          * Candidate proxy plan.
@@ -532,7 +627,7 @@ public final class HttpRequest {
          * @return HTTP request
          */
         public HttpRequest build() {
-            return new HttpRequest(method, url, headers, body, tags, proxy, timeout);
+            return new HttpRequest(method, url, headers, body, tags, tagsSnapshot, proxy, timeout);
         }
 
         /**
@@ -543,6 +638,7 @@ public final class HttpRequest {
         private Map<Class<?>, Object> mutableTags() {
             if (!(tags instanceof LinkedHashMap)) {
                 tags = new LinkedHashMap<>(tags);
+                tagsSnapshot = false;
             }
             return tags;
         }

@@ -19,17 +19,14 @@
 */
 package org.miaixz.bus.fabric.network.dns;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.fabric.Builder;
@@ -180,18 +177,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
                 normalized.add(checkedAddress);
             }
         }
-        normalized.sort(Comparator.comparingInt(DnsResult::family).thenComparing(InetAddress::getHostAddress));
         return List.copyOf(normalized);
-    }
-
-    /**
-     * Returns address family order.
-     *
-     * @param address address
-     * @return family order
-     */
-    private static int family(final InetAddress address) {
-        return address instanceof Inet4Address ? Normal._0 : Normal._1;
     }
 
 }

@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
-import static org.miaixz.bus.fabric.Builder.*;
-
 import java.net.SocketOption;
 import java.time.Duration;
 import java.util.Collections;
@@ -97,16 +95,23 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     public static SocketOptions from(final Options options) {
         final Options checkedOptions = Assert.notNull(options, () -> new ValidateException("Options must not be null"));
         final Builder builder = builder();
-        builder.readBufferSize(number(checkedOptions, OPTION_SOCKET_READ_BUFFER_SIZE, Normal._8192));
-        builder.writeChunkSize(number(checkedOptions, OPTION_SOCKET_WRITE_CHUNK_SIZE, Normal._8192));
-        builder.writeChunkCount(number(checkedOptions, OPTION_SOCKET_WRITE_CHUNK_COUNT, Normal._16));
-        builder.backlog(number(checkedOptions, OPTION_SOCKET_BACKLOG, _1000));
+        builder.readBufferSize(
+                number(checkedOptions, org.miaixz.bus.fabric.Builder.OPTION_SOCKET_READ_BUFFER_SIZE, Normal._8192));
+        builder.writeChunkSize(
+                number(checkedOptions, org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_SIZE, Normal._8192));
+        builder.writeChunkCount(
+                number(checkedOptions, org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_COUNT, Normal._16));
+        builder.backlog(
+                number(
+                        checkedOptions,
+                        org.miaixz.bus.fabric.Builder.OPTION_SOCKET_BACKLOG,
+                        org.miaixz.bus.fabric.Builder._1000));
         builder.ioThreads(
                 number(
                         checkedOptions,
-                        OPTION_SOCKET_IO_THREADS,
+                        org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IO_THREADS,
                         Math.max(Normal._1, Runtime.getRuntime().availableProcessors())));
-        final Map<?, ?> rawSocketOptions = checkedOptions.get(OPTION_SOCKET_OPTIONS);
+        final Map<?, ?> rawSocketOptions = checkedOptions.get(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_OPTIONS);
         if (rawSocketOptions != null) {
             for (final Map.Entry<?, ?> entry : rawSocketOptions.entrySet()) {
                 if (!(entry.getKey() instanceof SocketOption<?> option)) {
@@ -115,8 +120,10 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
                 builder.socketOption((SocketOption<Object>) option, entry.getValue());
             }
         }
-        builder.retainReadBuffer(bool(checkedOptions, OPTION_SOCKET_RETAIN_READ_BUFFER, false));
-        builder.idleTimeout(duration(checkedOptions, OPTION_SOCKET_IDLE_TIMEOUT, Duration.ZERO));
+        builder.retainReadBuffer(
+                bool(checkedOptions, org.miaixz.bus.fabric.Builder.OPTION_SOCKET_RETAIN_READ_BUFFER, false));
+        builder.idleTimeout(
+                duration(checkedOptions, org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IDLE_TIMEOUT, Duration.ZERO));
         return builder.build();
     }
 
@@ -126,11 +133,133 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
      * @return options
      */
     public Options toOptions() {
-        return Options.empty().with(OPTION_SOCKET_READ_BUFFER_SIZE, readBufferSize)
-                .with(OPTION_SOCKET_WRITE_CHUNK_SIZE, writeChunkSize)
-                .with(OPTION_SOCKET_WRITE_CHUNK_COUNT, writeChunkCount).with(OPTION_SOCKET_BACKLOG, backlog)
-                .with(OPTION_SOCKET_IO_THREADS, ioThreads).with(OPTION_SOCKET_OPTIONS, socketOptions)
-                .with(OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer).with(OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
+        return Options.empty().with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_READ_BUFFER_SIZE, readBufferSize)
+                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_SIZE, writeChunkSize)
+                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_COUNT, writeChunkCount)
+                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_BACKLOG, backlog)
+                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IO_THREADS, ioThreads)
+                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_OPTIONS, socketOptions)
+                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer)
+                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
+    }
+
+    /**
+     * Validates strictly positive numeric socket options.
+     *
+     * @param value option value
+     * @param name  option name used in validation messages
+     * @return validated value
+     */
+    private static int positive(final int value, final String name) {
+        if (value <= Normal._0) {
+            throw new ValidateException(name + " must be positive");
+        }
+        return value;
+    }
+
+    /**
+     * Validates timeout options while allowing zero to disable idle enforcement.
+     *
+     * @param value timeout value
+     * @param name  option name used in validation messages
+     * @return validated timeout
+     */
+    private static Duration timeout(final Duration value, final String name) {
+        final Duration checkedValue = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (checkedValue.isNegative()) {
+            throw new ValidateException(name + " must be non-negative");
+        }
+        return checkedValue;
+    }
+
+    /**
+     * Validates a KCP wire-format version.
+     *
+     * @param value wire-format version
+     * @return validated wire-format version
+     */
+    private static int wireVersion(final int value) {
+        if (value != Normal._1 && value != Normal._2) {
+            throw new ValidateException("KCP wire version must be 1 or 2");
+        }
+        return value;
+    }
+
+    /**
+     * Copies caller-provided JDK socket options into an immutable map.
+     *
+     * @param values socket option values
+     * @return immutable option snapshot
+     */
+    private static Map<SocketOption<?>, Object> snapshotSocketOptions(final Map<SocketOption<?>, Object> values) {
+        if (values == null) {
+            return Map.of();
+        }
+        final LinkedHashMap<SocketOption<?>, Object> copy = new LinkedHashMap<>();
+        values.forEach((option, value) -> {
+            if (option == null || value == null) {
+                throw new ValidateException("Socket option and value must not be null");
+            }
+            copy.put(option, value);
+        });
+        return Collections.unmodifiableMap(copy);
+    }
+
+    /**
+     * Reads an integer socket option from a generic fabric option map.
+     *
+     * @param options  option map
+     * @param key      option key
+     * @param fallback fallback when absent
+     * @return option value
+     */
+    private static int number(final Options options, final Options.Key<Integer> key, final int fallback) {
+        final Integer value = options.get(key);
+        if (value == null) {
+            if (options.contains(key)) {
+                throw new ValidateException("Numeric socket option must not be null");
+            }
+            return fallback;
+        }
+        return value;
+    }
+
+    /**
+     * Reads a boolean socket option from a generic fabric option map.
+     *
+     * @param options  option map
+     * @param key      option key
+     * @param fallback fallback when absent
+     * @return option value
+     */
+    private static boolean bool(final Options options, final Options.Key<Boolean> key, final boolean fallback) {
+        final Boolean value = options.get(key);
+        if (value == null) {
+            if (options.contains(key)) {
+                throw new ValidateException("Boolean socket option must not be null");
+            }
+            return fallback;
+        }
+        return value;
+    }
+
+    /**
+     * Reads a duration socket option from a generic fabric option map.
+     *
+     * @param options  option map
+     * @param key      option key
+     * @param fallback fallback when absent
+     * @return option value
+     */
+    private static Duration duration(final Options options, final Options.Key<Duration> key, final Duration fallback) {
+        final Duration value = options.get(key);
+        if (value == null) {
+            if (options.contains(key)) {
+                throw new ValidateException("Duration socket option must not be null");
+            }
+            return fallback;
+        }
+        return value;
     }
 
     /**
@@ -156,7 +285,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Mutable TCP server backlog candidate.
          */
-        private int backlog = _1000;
+        private int backlog = org.miaixz.bus.fabric.Builder._1000;
 
         /**
          * Mutable AIO I/O thread count candidate.
@@ -323,125 +452,6 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
                     retainReadBuffer, idleTimeout, kcpWireVersion);
         }
 
-    }
-
-    /**
-     * Validates strictly positive numeric socket options.
-     *
-     * @param value option value
-     * @param name  option name used in validation messages
-     * @return validated value
-     */
-    private static int positive(final int value, final String name) {
-        if (value <= Normal._0) {
-            throw new ValidateException(name + " must be positive");
-        }
-        return value;
-    }
-
-    /**
-     * Validates timeout options while allowing zero to disable idle enforcement.
-     *
-     * @param value timeout value
-     * @param name  option name used in validation messages
-     * @return validated timeout
-     */
-    private static Duration timeout(final Duration value, final String name) {
-        final Duration checkedValue = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-        if (checkedValue.isNegative()) {
-            throw new ValidateException(name + " must be non-negative");
-        }
-        return checkedValue;
-    }
-
-    /**
-     * Validates a KCP wire-format version.
-     *
-     * @param value wire-format version
-     * @return validated wire-format version
-     */
-    private static int wireVersion(final int value) {
-        if (value != Normal._1 && value != Normal._2) {
-            throw new ValidateException("KCP wire version must be 1 or 2");
-        }
-        return value;
-    }
-
-    /**
-     * Copies caller-provided JDK socket options into an immutable map.
-     *
-     * @param values socket option values
-     * @return immutable option snapshot
-     */
-    private static Map<SocketOption<?>, Object> snapshotSocketOptions(final Map<SocketOption<?>, Object> values) {
-        if (values == null) {
-            return Map.of();
-        }
-        final LinkedHashMap<SocketOption<?>, Object> copy = new LinkedHashMap<>();
-        values.forEach((option, value) -> {
-            if (option == null || value == null) {
-                throw new ValidateException("Socket option and value must not be null");
-            }
-            copy.put(option, value);
-        });
-        return Collections.unmodifiableMap(copy);
-    }
-
-    /**
-     * Reads an integer socket option from a generic fabric option map.
-     *
-     * @param options  option map
-     * @param key      option key
-     * @param fallback fallback when absent
-     * @return option value
-     */
-    private static int number(final Options options, final Options.Key<Integer> key, final int fallback) {
-        final Integer value = options.get(key);
-        if (value == null) {
-            if (options.contains(key)) {
-                throw new ValidateException("Numeric socket option must not be null");
-            }
-            return fallback;
-        }
-        return value;
-    }
-
-    /**
-     * Reads a boolean socket option from a generic fabric option map.
-     *
-     * @param options  option map
-     * @param key      option key
-     * @param fallback fallback when absent
-     * @return option value
-     */
-    private static boolean bool(final Options options, final Options.Key<Boolean> key, final boolean fallback) {
-        final Boolean value = options.get(key);
-        if (value == null) {
-            if (options.contains(key)) {
-                throw new ValidateException("Boolean socket option must not be null");
-            }
-            return fallback;
-        }
-        return value;
-    }
-
-    /**
-     * Reads a duration socket option from a generic fabric option map.
-     *
-     * @param options  option map
-     * @param key      option key
-     * @param fallback fallback when absent
-     * @return option value
-     */
-    private static Duration duration(final Options options, final Options.Key<Duration> key, final Duration fallback) {
-        final Duration value = options.get(key);
-        if (value == null) {
-            if (options.contains(key)) {
-                throw new ValidateException("Duration socket option must not be null");
-            }
-            return fallback;
-        }
-        return value;
     }
 
 }

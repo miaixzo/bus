@@ -48,6 +48,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.network.Ingress;
 
@@ -58,16 +59,6 @@ import org.miaixz.bus.fabric.network.Ingress;
  * @since Java 21+
  */
 public final class WebSocketUpgrade {
-
-    /**
-     * Maximum accepted HTTP upgrade line length.
-     */
-    private static final long MAX_LINE_BYTES = 8192L;
-
-    /**
-     * Maximum aggregate HTTP upgrade header bytes.
-     */
-    private static final long MAX_HEADER_BYTES = 65536L;
 
     /**
      * Handshake random source.
@@ -281,7 +272,7 @@ public final class WebSocketUpgrade {
     private static Request readRequest(final BufferSource source) {
         try {
             long total = Normal.LONG_ZERO;
-            final String requestLine = source.readUtf8LineStrict(MAX_LINE_BYTES);
+            final String requestLine = source.readUtf8LineStrict(Builder.WEBSOCKET_UPGRADE_MAX_LINE_BYTES);
             total += requestLine.length() + Normal._2;
             final String[] parts = requestLine.split(" ", Normal._3);
             if (parts.length != Normal._3) {
@@ -289,9 +280,9 @@ public final class WebSocketUpgrade {
             }
             final Headers.Builder headers = Headers.builder();
             while (true) {
-                final String line = source.readUtf8LineStrict(MAX_LINE_BYTES);
+                final String line = source.readUtf8LineStrict(Builder.WEBSOCKET_UPGRADE_MAX_LINE_BYTES);
                 total += line.length() + Normal._2;
-                if (total > MAX_HEADER_BYTES) {
+                if (total > Builder.WEBSOCKET_UPGRADE_MAX_HEADER_BYTES) {
                     throw new ProtocolException("WebSocket upgrade headers exceed 64 KiB");
                 }
                 if (line.isEmpty()) {

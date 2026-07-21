@@ -101,24 +101,15 @@ public final class HttpCoordinator implements HttpStage {
         final HttpRequest current = require(request, "HTTP request");
         final HttpChain next = require(chain, "HTTP chain");
         if (cache == null) {
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "HTTP cache coordinator disabled: method={}, host={}, port={}, path={}",
-                    current.method().value(),
-                    current.url().host(),
-                    current.url().port(),
-                    current.url().path());
+            if (!current.headers().contains(HTTP.CACHE_CONTROL) && !current.headers().contains(HTTP.PRAGMA)) {
+                return next.proceed(current);
+            }
             if (current.cacheControl().onlyIfCached()) {
-                Logger.debug(
-                        false,
-                        "Fabric",
-                        "HTTP cache coordinator returning unsatisfiable response: "
-                                + "reason=cache-disabled-only-if-cached");
                 return unsatisfiable(current);
             }
             return next.proceed(current);
         }
+        final var cacheControl = current.cacheControl();
         cache.recordRequest();
         Logger.debug(
                 true,
@@ -141,7 +132,7 @@ public final class HttpCoordinator implements HttpStage {
                     current.url().port());
             return cached.toBuilder().request(current).cacheResponse(cached).build();
         }
-        if (current.cacheControl().onlyIfCached()) {
+        if (cacheControl.onlyIfCached()) {
             if (cached != null) {
                 cached.close();
             }
@@ -151,7 +142,7 @@ public final class HttpCoordinator implements HttpStage {
                     "HTTP cache coordinator returning unsatisfiable response: reason=only-if-cached-miss");
             return unsatisfiable(current);
         }
-        final HttpRequest networkRequest = cached == null || current.cacheControl().noCache() ? current
+        final HttpRequest networkRequest = cached == null || cacheControl.noCache() ? current
                 : cache.conditional(current, cached);
         Logger.debug(
                 false,
@@ -160,7 +151,7 @@ public final class HttpCoordinator implements HttpStage {
                         + "method={}, host={}, port={}",
                 cached != null,
                 networkRequest != current,
-                current.cacheControl().noCache(),
+                cacheControl.noCache(),
                 current.method().value(),
                 current.url().host(),
                 current.url().port());
@@ -173,8 +164,9 @@ public final class HttpCoordinator implements HttpStage {
                 network.code(),
                 networkRequest != current);
         if (cached != null && network.code() == HTTP.HTTP_NOT_MODIFIED) {
-            final HttpResponse updated = cache.update(cached, network).toBuilder().request(current)
-                    .cacheResponse(cached).networkResponse(network).build();
+            final HttpResponse merged = cache.update(cached, network);
+            final HttpResponse updated = merged.request() == current ? merged
+                    : merged.toBuilder().request(current).build();
             network.close();
             Logger.debug(
                     false,

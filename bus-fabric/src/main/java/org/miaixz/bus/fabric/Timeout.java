@@ -53,16 +53,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public record Timeout(Duration connect, Duration read, Duration write, Duration call, Duration ping, Duration close) {
 
     /**
-     * Default TCP, TLS, and HTTP connection plus network read/write deadline.
-     */
-    private static final Duration DEFAULT_NETWORK_TIMEOUT = Duration.ofSeconds(10);
-
-    /**
-     * Default TLS, WebSocket, server, and session graceful-close deadline.
-     */
-    private static final Duration DEFAULT_CLOSE_TIMEOUT = Duration.ofSeconds(60);
-
-    /**
      * Creates a validated immutable time policy.
      *
      * @param connect TCP, TLS, and HTTP-family connection establishment deadline
@@ -92,7 +82,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
      */
     public Timeout(final Duration connect, final Duration read, final Duration write, final Duration call,
             final Duration ping) {
-        this(connect, read, write, call, ping, DEFAULT_CLOSE_TIMEOUT);
+        this(connect, read, write, call, ping, org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_CLOSE);
     }
 
     /**
@@ -103,8 +93,10 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     public static Timeout defaults() {
         return Instances.get(
                 Timeout.class.getName() + ".defaults",
-                () -> new Timeout(DEFAULT_NETWORK_TIMEOUT, DEFAULT_NETWORK_TIMEOUT, DEFAULT_NETWORK_TIMEOUT,
-                        Duration.ZERO, Duration.ZERO, DEFAULT_CLOSE_TIMEOUT));
+                () -> new Timeout(org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK,
+                        org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK,
+                        org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK, Duration.ZERO, Duration.ZERO,
+                        org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_CLOSE));
     }
 
     /**
@@ -118,7 +110,8 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
      */
     public static Timeout of(final Duration timeout) {
         final Duration validated = validate(timeout, "Timeout");
-        return new Timeout(validated, validated, validated, validated, Duration.ZERO, DEFAULT_CLOSE_TIMEOUT);
+        return new Timeout(validated, validated, validated, validated, Duration.ZERO,
+                org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_CLOSE);
     }
 
     /**
@@ -244,17 +237,17 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         /**
          * Candidate connection establishment timeout.
          */
-        private Duration connect = DEFAULT_NETWORK_TIMEOUT;
+        private Duration connect = org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK;
 
         /**
          * Candidate protocol read timeout.
          */
-        private Duration read = DEFAULT_NETWORK_TIMEOUT;
+        private Duration read = org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK;
 
         /**
          * Candidate protocol write timeout.
          */
-        private Duration write = DEFAULT_NETWORK_TIMEOUT;
+        private Duration write = org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK;
 
         /**
          * Candidate logical operation timeout.
@@ -269,7 +262,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         /**
          * Candidate TLS, WebSocket, server, and session graceful-close deadline.
          */
-        private Duration close = DEFAULT_CLOSE_TIMEOUT;
+        private Duration close = org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_CLOSE;
 
         /**
          * Creates a builder initialized to the complete default policy.

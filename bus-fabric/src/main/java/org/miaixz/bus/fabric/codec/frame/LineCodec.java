@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Delimiter-based line frame codec.
@@ -101,12 +102,12 @@ public final class LineCodec implements FrameCodec {
         while (buffer.size() > 0) {
             final int index = indexOf(buffer, delimiter);
             if (index < 0) {
-                if (buffer.size() > Normal._16 * Normal.MEBI) {
+                if (buffer.size() > Builder.BYTES_16_MIB) {
                     throw new ProtocolException("Line frame exceeds maximum length");
                 }
                 break;
             }
-            if (index > Normal._16 * Normal.MEBI) {
+            if (index > Builder.BYTES_16_MIB) {
                 throw new ProtocolException("Line frame exceeds maximum length");
             }
             try {

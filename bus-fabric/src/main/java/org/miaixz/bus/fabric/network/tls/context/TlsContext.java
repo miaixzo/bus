@@ -19,11 +19,13 @@
 */
 package org.miaixz.bus.fabric.network.tls.context;
 
+import java.security.Provider;
 import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSessionContext;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
@@ -88,7 +90,7 @@ public final class TlsContext {
                 .notNull(address, () -> new ValidateException("TLS address must not be null"));
         final TlsSettings checkedSettings = Assert
                 .notNull(settings, () -> new ValidateException("TLS settings must not be null"));
-        final SSLEngine engine = context.createSSLEngine(checkedAddress.host(), checkedAddress.port());
+        final SSLEngine engine = createEngine(checkedAddress.host(), checkedAddress.port());
         try {
             engine.setUseClientMode(true);
             TlsParameters.applyClient(
@@ -119,7 +121,7 @@ public final class TlsContext {
         final TlsSettings checkedSettings = Assert
                 .notNull(settings, () -> new ValidateException("TLS settings must not be null"));
         try {
-            final SSLEngine engine = context.createSSLEngine(checkedAddress.host(), checkedAddress.port());
+            final SSLEngine engine = createEngine(checkedAddress.host(), checkedAddress.port());
             engine.setUseClientMode(false);
             engine.setEnabledProtocols(checkedSettings.versions().toArray(String[]::new));
             engine.setEnabledCipherSuites(checkedSettings.ciphers().toArray(String[]::new));
@@ -146,6 +148,67 @@ public final class TlsContext {
      */
     public SSLContext context() {
         return context;
+    }
+
+    /**
+     * Returns the stable identity of the wrapped SSL context.
+     *
+     * <p>
+     * The identity is the caller-provided context itself; no certificate, key, session, or derived text is
+     * materialized.
+     * </p>
+     *
+     * @return stable context identity
+     */
+    public Object identity() {
+        return context;
+    }
+
+    /**
+     * Returns the provider of the wrapped SSL context.
+     *
+     * @return SSL provider
+     */
+    public Provider provider() {
+        return context.getProvider();
+    }
+
+    /**
+     * Returns the existing client session context without modifying its global configuration.
+     *
+     * @return client session context
+     */
+    public SSLSessionContext clientSessionContext() {
+        return context.getClientSessionContext();
+    }
+
+    /**
+     * Returns the current client session cache capacity.
+     *
+     * @return session cache capacity
+     */
+    public int clientSessionCacheSize() {
+        return clientSessionContext().getSessionCacheSize();
+    }
+
+    /**
+     * Returns the current client session timeout in seconds.
+     *
+     * @return session timeout seconds
+     */
+    public int clientSessionTimeout() {
+        return clientSessionContext().getSessionTimeout();
+    }
+
+    /**
+     * Creates an unconfigured engine directly from the existing SSL context.
+     *
+     * @param peerHost peer host metadata
+     * @param peerPort peer port metadata
+     * @return new SSL engine
+     */
+    public SSLEngine createEngine(final String peerHost, final int peerPort) {
+        return context.createSSLEngine(peerHost, peerPort);
     }
 
     /**

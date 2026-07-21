@@ -82,6 +82,11 @@ public class Builder {
     public static final String AIO_SCHEME = "aio";
 
     /**
+     * Delay before starting the second address in one AIO Happy Eyeballs pair.
+     */
+    public static final Duration HAPPY_EYEBALLS_DELAY = Duration.ofMillis(250L);
+
+    /**
      * Common 16 MiB byte count.
      */
     public static final long BYTES_16_MIB = Normal._16 * Normal.MEBI;
@@ -105,6 +110,16 @@ public class Builder {
      * Duration of sixty seconds.
      */
     public static final Duration DURATION_60_SECONDS = Duration.ofSeconds(Normal._60);
+
+    /**
+     * Default TCP, TLS, and HTTP connection plus network read/write deadline.
+     */
+    public static final Duration TIMEOUT_DEFAULT_NETWORK = Duration.ofSeconds(Normal._10);
+
+    /**
+     * Default TLS, WebSocket, server, and session graceful-close deadline.
+     */
+    public static final Duration TIMEOUT_DEFAULT_CLOSE = DURATION_60_SECONDS;
 
     /**
      * Host field value.
@@ -541,6 +556,21 @@ public class Builder {
     public static final Duration DNS_NO_TTL = Duration.ZERO;
 
     /**
+     * Maximum hosts retained by one DNS resolver cache.
+     */
+    public static final int DNS_RESOLVER_MAX_CACHE_ENTRIES = Normal._1024;
+
+    /**
+     * Fallback lifetime in nanoseconds for successful DNS results without TTL metadata.
+     */
+    public static final long DNS_RESOLVER_DEFAULT_POSITIVE_TTL_NANOS = DURATION_60_SECONDS.toNanos();
+
+    /**
+     * Lifetime in nanoseconds for an authoritative empty DNS result.
+     */
+    public static final long DNS_RESOLVER_NEGATIVE_TTL_NANOS = DURATION_1_SECOND.toNanos();
+
+    /**
      * Kcp network default retransmit delay value.
      */
     public static final Duration KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY = Duration.ofMillis(Normal._200);
@@ -669,6 +699,11 @@ public class Builder {
     public static final long TLS_MAX_STAGING_BUFFER_BYTES = Normal.MEBI;
 
     /**
+     * Maximum provider-reported TLS buffer hint accepted by channel allocators.
+     */
+    public static final int TLS_ENGINE_MAX_BUFFER_HINT = 1 << Normal._20;
+
+    /**
      * Meter event observer duration value.
      */
     public static final String METER_EVENT_OBSERVER_DURATION = ".duration";
@@ -677,6 +712,11 @@ public class Builder {
      * Meter event observer failure value.
      */
     public static final String METER_EVENT_OBSERVER_FAILURE = "failure";
+
+    /**
+     * Fabric meter invalid event counter name.
+     */
+    public static final String FABRIC_METER_INVALID_EVENT = "invalidEvent";
 
     /**
      * Rolling window nanos per second value.
@@ -694,6 +734,26 @@ public class Builder {
     public static final String DEMUXER_DEFAULT_CHANNEL_HEADER = "X-Fabric-Channel";
 
     /**
+     * Maximum bytes drained from a reusable HTTP/1 response body.
+     */
+    public static final int HTTP1_CODEC_MAX_DRAIN_BYTES = BYTES_64_KIB;
+
+    /**
+     * Maximum time spent draining a reusable HTTP/1 response body.
+     */
+    public static final Duration HTTP1_CODEC_MAX_DRAIN_DURATION = Duration.ofMillis(Normal._100);
+
+    /**
+     * HTTP/2 client connection preface.
+     */
+    public static final String HTTP2_CONNECTION_PREFACE = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
+
+    /**
+     * Default aggregate queued DATA safety budget for one HTTP/2 connection.
+     */
+    public static final long HTTP2_CONNECTION_DEFAULT_MAX_QUEUED_DATA = BYTES_16_MIB;
+
+    /**
      * Http2 connection window update threshold value.
      */
     public static final long HTTP2_CONNECTION_WINDOW_UPDATE_THRESHOLD = HTTP.DEFAULT_INITIAL_WINDOW_SIZE / Normal._2;
@@ -707,6 +767,11 @@ public class Builder {
      * Http2 stream default window value.
      */
     public static final long HTTP2_STREAM_DEFAULT_WINDOW = HTTP.DEFAULT_INITIAL_WINDOW_SIZE;
+
+    /**
+     * Default queued DATA safety budget for one HTTP/2 stream.
+     */
+    public static final long HTTP2_STREAM_DEFAULT_MAX_QUEUED_BYTES = Normal.MEBI;
 
     /**
      * Default browser version pattern suffix.
@@ -1165,6 +1230,26 @@ public class Builder {
     public static final String WEBSOCKET_ACTIVITY_CLOSE_TIMEOUT = "websocket-close-timeout";
 
     /**
+     * WebSocket protocol-error close code.
+     */
+    public static final int WEBSOCKET_CLOSE_PROTOCOL_ERROR = 1002;
+
+    /**
+     * WebSocket invalid-payload close code.
+     */
+    public static final int WEBSOCKET_CLOSE_INVALID_PAYLOAD = 1007;
+
+    /**
+     * WebSocket message-too-large close code.
+     */
+    public static final int WEBSOCKET_CLOSE_MESSAGE_TOO_LARGE = 1009;
+
+    /**
+     * WebSocket internal-error close code.
+     */
+    public static final int WEBSOCKET_CLOSE_INTERNAL_ERROR = 1011;
+
+    /**
      * WebSocket unsigned 16-bit payload length marker.
      */
     public static final int WEBSOCKET_LENGTH_16_MARKER = 126;
@@ -1243,6 +1328,26 @@ public class Builder {
      * WebSocket RSV bit mask.
      */
     public static final int WEBSOCKET_RSV_MASK = 0x70;
+
+    /**
+     * Maximum complete outbound wire bytes retained by one WebSocket session.
+     */
+    public static final long WEB_SOCKET_SESSION_MAX_QUEUED_BYTES = Normal._64 * Normal.MEBI;
+
+    /**
+     * Maximum payload bytes in one complete WebSocket message.
+     */
+    public static final long WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES = BYTES_16_MIB;
+
+    /**
+     * Maximum accepted HTTP upgrade line length.
+     */
+    public static final long WEBSOCKET_UPGRADE_MAX_LINE_BYTES = Normal._8 * Normal._1024;
+
+    /**
+     * Maximum aggregate HTTP upgrade header bytes.
+     */
+    public static final long WEBSOCKET_UPGRADE_MAX_HEADER_BYTES = BYTES_64_KIB;
 
     /**
      * WebSocket write tag.

@@ -128,6 +128,24 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
     }
 
     /**
+     * Returns the idle keep-alive duration as primitive nanoseconds.
+     *
+     * @return keep-alive nanoseconds, including zero for immediate expiry
+     */
+    public long keepAliveNanos() {
+        return keepAlive.toNanos();
+    }
+
+    /**
+     * Returns the acquire timeout as primitive nanoseconds.
+     *
+     * @return acquire timeout nanoseconds, including zero for an immediate timeout
+     */
+    public long acquireTimeoutNanos() {
+        return acquireTimeout.toNanos();
+    }
+
+    /**
      * Builder for pool policies.
      *
      * @author Kimi Liu
@@ -255,6 +273,11 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
             Assert.isFalse(
                     current.isNegative(),
                     () -> new ValidateException(name + " must be non-null and non-negative"));
+            try {
+                current.toNanos();
+            } catch (final ArithmeticException e) {
+                throw new ValidateException(name + " must fit in signed nanoseconds");
+            }
             return current;
         }
 

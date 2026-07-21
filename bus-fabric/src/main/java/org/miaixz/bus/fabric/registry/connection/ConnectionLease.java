@@ -20,9 +20,8 @@
 package org.miaixz.bus.fabric.registry.connection;
 
 import java.time.Instant;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -36,6 +35,21 @@ import org.miaixz.bus.fabric.network.Destination;
  * @since Java 21+
  */
 public final class ConnectionLease {
+
+    /**
+     * Lease is active.
+     */
+    private static final int LEASED = 0;
+
+    /**
+     * Lease was returned for reuse.
+     */
+    private static final int RELEASED = 1;
+
+    /**
+     * Lease was terminally closed.
+     */
+    private static final int CLOSED = 2;
 
     /**
      * Lease id sequence.
@@ -60,7 +74,12 @@ public final class ConnectionLease {
     /**
      * Lightweight lease trace id.
      */
-    private final String id;
+    private final long sequence;
+
+    /**
+     * Lazily materialized diagnostic identifier.
+     */
+    private volatile String id;
 
     /**
      * Acquisition time.
@@ -70,12 +89,12 @@ public final class ConnectionLease {
     /**
      * Lease state.
      */
-    private final AtomicReference<State> state;
+    private final AtomicInteger state;
 
     /**
      * Leak flag.
      */
-    private final AtomicBoolean leaked;
+    private volatile boolean leaked;
 
     /**
      * Creates a connection lease.
@@ -91,9 +110,8 @@ public final class ConnectionLease {
         this.destination = require(destination, "Connection destination");
         this.connection = require(connection, "Connection");
         this.acquiredAt = require(acquiredAt, "Acquired time");
-        this.id = "lease-" + IDS.incrementAndGet();
-        this.state = new AtomicReference<>(State.LEASED);
-        this.leaked = new AtomicBoolean();
+        this.sequence = IDS.incrementAndGet();
+        this.state = new AtomicInteger(LEASED);
     }
 
     /**
@@ -129,7 +147,12 @@ public final class ConnectionLease {
      * @return id
      */
     public String id() {
-        return id;
+        String current = id;
+        if (current == null) {
+            current = "lease-" + sequence;
+            id = current;
+        }
+        return current;
     }
 
     /**
@@ -156,17 +179,16 @@ public final class ConnectionLease {
      * @return true when released
      */
     public boolean released() {
-        return state.get() == State.RELEASED;
+        return state.get() == RELEASED;
     }
 
     /**
      * Marks this lease as leaked and closes the connection when needed.
      */
     public void leak() {
-        if (!leaked.compareAndSet(false, true)) {
-            return;
+        if (pool.closeLease(this)) {
+            leaked = true;
         }
-        pool.closeLease(this);
     }
 
     /**
@@ -175,7 +197,7 @@ public final class ConnectionLease {
      * @return true when state changed
      */
     boolean markReleased() {
-        return state.compareAndSet(State.LEASED, State.RELEASED);
+        return state.compareAndSet(LEASED, RELEASED);
     }
 
     /**
@@ -184,7 +206,7 @@ public final class ConnectionLease {
      * @return true when state changed
      */
     boolean markClosed() {
-        return state.compareAndSet(State.LEASED, State.CLOSED);
+        return state.compareAndSet(LEASED, CLOSED);
     }
 
     /**
@@ -193,7 +215,7 @@ public final class ConnectionLease {
      * @return true when leaked
      */
     boolean leaked() {
-        return leaked.get();
+        return leaked;
     }
 
     /**
@@ -215,28 +237,6 @@ public final class ConnectionLease {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Lease state.
-     */
-    private enum State {
-
-        /**
-         * Borrowed from pool.
-         */
-        LEASED,
-
-        /**
-         * Released to pool.
-         */
-        RELEASED,
-
-        /**
-         * Closed and not reusable.
-         */
-        CLOSED
-
     }
 
 }

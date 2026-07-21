@@ -20,10 +20,12 @@
 package org.miaixz.bus.fabric.protocol.http.body;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.nio.charset.Charset;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
+import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
@@ -42,6 +44,19 @@ import org.miaixz.bus.fabric.codec.body.ResponseBody;
  * @since Java 21+
  */
 public final class PayloadBody implements RequestBody, ResponseBody, ProgressBody {
+
+    /**
+     * Closed-state updater without allocating an AtomicBoolean per body.
+     */
+    private static final VarHandle CLOSED;
+
+    static {
+        try {
+            CLOSED = MethodHandles.lookup().findVarHandle(PayloadBody.class, "closed", int.class);
+        } catch (final ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     /**
      * Payload reference.
@@ -71,7 +86,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     /**
      * Closed state.
      */
-    private final AtomicBoolean closed;
+    private volatile int closed;
 
     /**
      * Creates a payload body.
@@ -110,7 +125,6 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
         this.progress = progress;
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
-        this.closed = new AtomicBoolean();
     }
 
     /**
@@ -120,19 +134,6 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      */
     public static PayloadBody empty() {
         return EmptyHolder.INSTANCE;
-    }
-
-    /**
-     * Defers empty body construction without nesting registry updates.
-     */
-    private static final class EmptyHolder {
-
-        /**
-         * Shared empty body.
-         */
-        private static final PayloadBody INSTANCE = new PayloadBody(Payload.empty(),
-                MediaType.APPLICATION_OCTET_STREAM_TYPE);
-
     }
 
     /**
@@ -185,6 +186,24 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      */
     public Payload payload() {
         return progress == null ? payload : progress.payload();
+    }
+
+    /**
+     * Returns the immutable owned bytes when this body is repeatable.
+     *
+     * <p>
+     * The returned value is immutable and can therefore be passed directly to an encoder without an intermediate
+     * {@code byte[]} copy. Progress-aware bodies retain their tracking path.
+     * </p>
+     *
+     * @return immutable body bytes
+     * @throws IllegalStateException when the payload is not repeatable
+     */
+    public ByteString ownedBytes() {
+        if (progress != null) {
+            return progress.payload().ownedBytes();
+        }
+        return payload.ownedBytes();
     }
 
     /**
@@ -272,7 +291,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      */
     @Override
     public void close() {
-        if (closed.compareAndSet(false, true) && payload instanceof AutoCloseable closeable) {
+        if ((boolean) CLOSED.compareAndSet(this, 0, 1) && payload instanceof AutoCloseable closeable) {
             try {
                 closeable.close();
             } catch (final IOException e) {
@@ -344,6 +363,19 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     private static long validateLength(final long length) {
         Assert.isFalse(length < -1, () -> new ValidateException("Body length must be -1 or greater"));
         return length;
+    }
+
+    /**
+     * Defers empty body construction without nesting registry updates.
+     */
+    private static final class EmptyHolder {
+
+        /**
+         * Shared empty body.
+         */
+        private static final PayloadBody INSTANCE = new PayloadBody(Payload.empty(),
+                MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
     }
 
 }

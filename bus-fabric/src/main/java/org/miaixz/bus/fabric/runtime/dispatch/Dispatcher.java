@@ -81,7 +81,9 @@ public interface Dispatcher extends AutoCloseable {
      * @param runnable runnable task
      * @return completion future
      */
-    CompletableFuture<Void> run(String key, Runnable runnable);
+    default CompletableFuture<Void> run(final String key, final Runnable runnable) {
+        return submit(key, Activity.of(key, runnable)).future();
+    }
 
     /**
      * Supplies a value asynchronously as a short task.
@@ -91,7 +93,36 @@ public interface Dispatcher extends AutoCloseable {
      * @param <T>      result type
      * @return result future
      */
-    <T> CompletableFuture<T> supply(String key, Supplier<T> supplier);
+    default <T> CompletableFuture<T> supply(final String key, final Supplier<T> supplier) {
+        final CompletableFuture<T> result = new CompletableFuture<>();
+        final DispatchHandle handle = submit(key, Activity.of(key, () -> result.complete(supplier.get())));
+        handle.future().whenComplete((ignored, cause) -> {
+            if (cause != null && !result.isDone()) {
+                result.completeExceptionally(cause);
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Supplies a value on the separately bounded blocking-background channel.
+     *
+     * @param key      dispatch key
+     * @param tag      cancellation tag
+     * @param supplier blocking framework supplier
+     * @param <T>      result type
+     * @return independently cancellable result
+     */
+    default <T> CompletableFuture<T> backgroundSupply(final String key, final Object tag, final Supplier<T> supplier) {
+        final CompletableFuture<T> result = new CompletableFuture<>();
+        final DispatchHandle handle = background(key, tag, Activity.of(key, () -> result.complete(supplier.get())));
+        handle.future().whenComplete((ignored, cause) -> {
+            if (cause != null && !result.isDone()) {
+                result.completeExceptionally(cause);
+            }
+        });
+        return result;
+    }
 
     /**
      * Enqueues a short activity using its name as cancellation tag.
@@ -100,7 +131,20 @@ public interface Dispatcher extends AutoCloseable {
      * @param activity activity
      * @return dispatch handle
      */
-    DispatchHandle enqueue(String key, Activity activity);
+    default DispatchHandle enqueue(final String key, final Activity activity) {
+        return submit(key, activity);
+    }
+
+    /**
+     * Submits a short activity using its name as the cancellation tag.
+     *
+     * @param key      dispatch key
+     * @param activity activity to submit
+     * @return handle used to observe or cancel the submitted activity
+     */
+    default DispatchHandle submit(final String key, final Activity activity) {
+        return enqueue(key, activity);
+    }
 
     /**
      * Enqueues a tagged short activity.
@@ -110,7 +154,9 @@ public interface Dispatcher extends AutoCloseable {
      * @param activity activity
      * @return dispatch handle
      */
-    DispatchHandle enqueue(String key, Object tag, Activity activity);
+    default DispatchHandle enqueue(final String key, final Object tag, final Activity activity) {
+        return submit(key, activity);
+    }
 
     /**
      * Starts a tagged long-running activity outside the short-task queue.
@@ -120,7 +166,9 @@ public interface Dispatcher extends AutoCloseable {
      * @param activity activity
      * @return dispatch handle
      */
-    DispatchHandle background(String key, Object tag, Activity activity);
+    default DispatchHandle background(final String key, final Object tag, final Activity activity) {
+        return enqueue(key, tag, activity);
+    }
 
     /**
      * Schedules a short activity after a delay.
@@ -130,7 +178,9 @@ public interface Dispatcher extends AutoCloseable {
      * @param activity activity
      * @return dispatch handle
      */
-    DispatchHandle schedule(String key, Duration delay, Activity activity);
+    default DispatchHandle schedule(final String key, final Duration delay, final Activity activity) {
+        return enqueue(key, activity);
+    }
 
     /**
      * Cancels one known handle.
@@ -333,6 +383,29 @@ final class DefaultDispatcher implements Dispatcher {
         final Supplier<T> current = require(supplier, "Supplier");
         final CompletableFuture<T> result = new CompletableFuture<>();
         final DispatchHandle handle = enqueue(key, Activity.of(key, () -> result.complete(current.get())));
+        handle.future().whenComplete((ignored, cause) -> {
+            if (handle.cancelled()) {
+                result.cancel(false);
+            } else if (cause != null && !result.isDone()) {
+                result.completeExceptionally(unwrap(cause));
+            }
+        });
+        result.whenComplete((value, cause) -> {
+            if (result.isCancelled()) {
+                cancel(handle);
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Runs one framework-owned blocking supplier on the background channel.
+     */
+    @Override
+    public <T> CompletableFuture<T> backgroundSupply(final String key, final Object tag, final Supplier<T> supplier) {
+        final Supplier<T> current = require(supplier, "Background supplier");
+        final CompletableFuture<T> result = new CompletableFuture<>();
+        final DispatchHandle handle = background(key, tag, Activity.of(key, () -> result.complete(current.get())));
         handle.future().whenComplete((ignored, cause) -> {
             if (handle.cancelled()) {
                 result.cancel(false);
@@ -589,7 +662,12 @@ final class DefaultDispatcher implements Dispatcher {
      * Promotes all short tasks currently allowed by queue limits.
      */
     private void promoteQueued() {
-        for (final DispatchQueue.Entry entry : queue.promoteEntries()) {
+        final List<DispatchQueue.Entry> entries = queue.promoteEntries();
+        if (entries.size() > 1) {
+            worker.executeBatch(entries);
+            return;
+        }
+        for (final DispatchQueue.Entry entry : entries) {
             try {
                 worker.execute(entry);
             } catch (final RuntimeException | Error ignored) {

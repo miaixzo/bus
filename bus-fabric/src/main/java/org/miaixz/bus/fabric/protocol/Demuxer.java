@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol;
 
-import static org.miaixz.bus.fabric.Builder.DEMUXER_DEFAULT_CHANNEL_HEADER;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -247,7 +245,7 @@ public final class Demuxer implements Handler {
         /**
          * Channel header name.
          */
-        private String channelHeader = DEMUXER_DEFAULT_CHANNEL_HEADER;
+        private String channelHeader = org.miaixz.bus.fabric.Builder.DEMUXER_DEFAULT_CHANNEL_HEADER;
 
         /**
          * Custom channel resolver.

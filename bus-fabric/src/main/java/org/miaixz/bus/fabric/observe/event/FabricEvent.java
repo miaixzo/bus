@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.observe.event;
 
-import static org.miaixz.bus.fabric.Builder.*;
-
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -82,6 +80,43 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     }
 
     /**
+     * Returns the marker module from its stable code prefix.
+     *
+     * @param marker marker
+     * @return module
+     */
+    private static String module(final ObservationMarker marker) {
+        final String code = marker.code();
+        final int dot = code.indexOf(Symbol.C_DOT);
+        return dot < 0 ? code : code.substring(0, dot);
+    }
+
+    /**
+     * Returns the marker phase from its stable code suffix.
+     *
+     * @param marker marker
+     * @return phase
+     */
+    private static String phase(final ObservationMarker marker) {
+        final String code = marker.code();
+        final int dot = code.indexOf(Symbol.C_DOT);
+        return dot < 0 || dot == code.length() - 1 ? code : code.substring(dot + 1);
+    }
+
+    /**
+     * Returns the normalized marker result.
+     *
+     * @param marker marker
+     * @return result
+     */
+    private static String result(final ObservationMarker marker) {
+        if (marker.failure()) {
+            return org.miaixz.bus.fabric.Builder.METER_EVENT_OBSERVER_FAILURE;
+        }
+        return marker.terminal() ? "success" : "active";
+    }
+
+    /**
      * Builder for fabric events.
      *
      * @author Kimi Liu
@@ -119,11 +154,11 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
             this.marker = marker;
             this.clock = clock;
             this.tags = new LinkedHashMap<>();
-            tag(TAG_MODULE, module(marker));
-            tag(TAG_PROTOCOL, module(marker));
-            tag(TAG_PHASE, phase(marker));
-            tag(TAG_RESULT, result(marker));
-            tag(TAG_OPERATION_ID, ID.objectId());
+            tag(org.miaixz.bus.fabric.Builder.TAG_MODULE, module(marker));
+            tag(org.miaixz.bus.fabric.Builder.TAG_PROTOCOL, module(marker));
+            tag(org.miaixz.bus.fabric.Builder.TAG_PHASE, phase(marker));
+            tag(org.miaixz.bus.fabric.Builder.TAG_RESULT, result(marker));
+            tag(org.miaixz.bus.fabric.Builder.TAG_OPERATION_ID, ID.objectId());
         }
 
         /**
@@ -157,48 +192,11 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
          */
         public FabricEvent build() {
             if (cause != null) {
-                tags.putIfAbsent(TAG_EXCEPTION, cause.getClass().getName());
+                tags.putIfAbsent(org.miaixz.bus.fabric.Builder.TAG_EXCEPTION, cause.getClass().getName());
             }
             return new FabricEvent(marker, clock.now(), Tags.of(tags), cause);
         }
 
-    }
-
-    /**
-     * Returns the marker module from its stable code prefix.
-     *
-     * @param marker marker
-     * @return module
-     */
-    private static String module(final ObservationMarker marker) {
-        final String code = marker.code();
-        final int dot = code.indexOf(Symbol.C_DOT);
-        return dot < 0 ? code : code.substring(0, dot);
-    }
-
-    /**
-     * Returns the marker phase from its stable code suffix.
-     *
-     * @param marker marker
-     * @return phase
-     */
-    private static String phase(final ObservationMarker marker) {
-        final String code = marker.code();
-        final int dot = code.indexOf(Symbol.C_DOT);
-        return dot < 0 || dot == code.length() - 1 ? code : code.substring(dot + 1);
-    }
-
-    /**
-     * Returns the normalized marker result.
-     *
-     * @param marker marker
-     * @return result
-     */
-    private static String result(final ObservationMarker marker) {
-        if (marker.failure()) {
-            return "failure";
-        }
-        return marker.terminal() ? "success" : "active";
     }
 
 }

@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol;
 
-import static org.miaixz.bus.fabric.Builder.COOKIE_MAX_DATE_MILLIS;
-
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -241,7 +239,7 @@ public final class Cookie {
      * @return expiration time in milliseconds, or a far-future value for session cookies
      */
     public long expiresAt() {
-        return expires == null ? COOKIE_MAX_DATE_MILLIS : expires.toEpochMilli();
+        return expires == null ? org.miaixz.bus.fabric.Builder.COOKIE_MAX_DATE_MILLIS : expires.toEpochMilli();
     }
 
     /**
@@ -596,7 +594,7 @@ public final class Cookie {
          */
         public Builder expiresAt(final long expiresAt) {
             this.expires = expiresAt <= 0 ? Instant.EPOCH
-                    : Instant.ofEpochMilli(Math.min(expiresAt, COOKIE_MAX_DATE_MILLIS));
+                    : Instant.ofEpochMilli(Math.min(expiresAt, org.miaixz.bus.fabric.Builder.COOKIE_MAX_DATE_MILLIS));
             return this;
         }
 

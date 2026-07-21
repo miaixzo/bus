@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
 
 /**
  * Length-based frame codec for binary protocols that prefix payloads with a length value.
@@ -299,7 +298,7 @@ public final class LengthCodec implements FrameCodec {
         /**
          * Maximum payload length.
          */
-        private int maxPayloadLength = (int) (Normal._16 * Normal.MEBI);
+        private int maxPayloadLength = (int) org.miaixz.bus.fabric.Builder.BYTES_16_MIB;
 
         /**
          * Creates a builder.

@@ -91,39 +91,9 @@ import org.miaixz.bus.logger.Logger;
 public final class WebSocketSession implements Session {
 
     /**
-     * Maximum complete outbound wire bytes retained by one session.
-     */
-    private static final long MAX_QUEUED_BYTES = 64L * Normal._1024 * Normal._1024;
-
-    /**
-     * Maximum payload bytes in one complete inbound or outbound message.
-     */
-    private static final long MAX_MESSAGE_BYTES = 16L * Normal._1024 * Normal._1024;
-
-    /**
      * Milliseconds between non-blocking completion checks.
      */
     private static final long ENTRY_WAIT_MILLIS = Normal._1;
-
-    /**
-     * Protocol error close code.
-     */
-    private static final int CLOSE_PROTOCOL_ERROR = 1002;
-
-    /**
-     * Invalid payload close code.
-     */
-    private static final int CLOSE_INVALID_PAYLOAD = 1007;
-
-    /**
-     * Message too large close code.
-     */
-    private static final int CLOSE_MESSAGE_TOO_LARGE = 1009;
-
-    /**
-     * Internal error close code.
-     */
-    private static final int CLOSE_INTERNAL_ERROR = 1011;
 
     /**
      * Session address.
@@ -729,7 +699,7 @@ public final class WebSocketSession implements Session {
      */
     public Call<Void> ping(final ByteString payload) {
         final ByteString checked = require(payload, "WebSocket ping payload");
-        return outboundCall("websocket-ping", EntryKind.PING, () -> pingFrame(checked));
+        return outboundCall(Builder.WEBSOCKET_PING, EntryKind.PING, () -> pingFrame(checked));
     }
 
     /**
@@ -815,7 +785,8 @@ public final class WebSocketSession implements Session {
     private WebSocketFrame binaryFrame(final Payload payload) {
         final Message outgoing = filter(payload, Builder.WEBSOCKET_WRITE);
         checkGuard(outgoing);
-        return WebSocketFrame.binary(materialize(outgoing.payload(), "WebSocketSession.send(Payload)"));
+        return WebSocketFrame
+                .binary(materialize(outgoing.payload(), Builder.WEB_SOCKET_SESSION_MATERIALIZE_SEND_PAYLOAD));
     }
 
     /**
@@ -872,10 +843,10 @@ public final class WebSocketSession implements Session {
      */
     private ByteString materialize(final Payload payload, final String operation) {
         final long declared = payload.length();
-        if (declared > MAX_MESSAGE_BYTES) {
+        if (declared > Builder.WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES) {
             throw new ValidateException("WebSocket message is too large");
         }
-        final long limit = Math.min(materializeMaxBytes, MAX_MESSAGE_BYTES);
+        final long limit = Math.min(materializeMaxBytes, Builder.WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES);
         try {
             return ByteString.of(Payload.materialize(payload, limit, operation));
         } catch (final RuntimeException e) {
@@ -895,7 +866,7 @@ public final class WebSocketSession implements Session {
                 throw new StatefulException("WebSocket session is terminated");
             }
             final long next = queuedBytes + entry.wireBytes();
-            if (next < queuedBytes || next > MAX_QUEUED_BYTES) {
+            if (next < queuedBytes || next > Builder.WEB_SOCKET_SESSION_MAX_QUEUED_BYTES) {
                 throw new StatefulException("WebSocket write queue is full");
             }
             if (!entry.reserve()) {
@@ -1270,7 +1241,7 @@ public final class WebSocketSession implements Session {
      */
     private long appendFragment(final Buffer aggregate, final long current, final ByteString fragment) {
         final long next = current + fragment.size();
-        if (next < current || next > MAX_MESSAGE_BYTES) {
+        if (next < current || next > Builder.WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES) {
             throw new ProtocolException("WebSocket aggregated message is too large");
         }
         aggregate.write(fragment);
@@ -1284,7 +1255,7 @@ public final class WebSocketSession implements Session {
      * @param payload complete payload
      */
     private void deliver(final int opcode, final ByteString payload) {
-        if (payload.size() > MAX_MESSAGE_BYTES) {
+        if (payload.size() > Builder.WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES) {
             throw new ProtocolException("WebSocket aggregated message is too large");
         }
         final Payload source;
@@ -1350,9 +1321,9 @@ public final class WebSocketSession implements Session {
         }
         final int code = failureCloseCode(cause);
         final String reason = switch (code) {
-            case CLOSE_INVALID_PAYLOAD -> "invalid payload";
-            case CLOSE_MESSAGE_TOO_LARGE -> "message too large";
-            case CLOSE_INTERNAL_ERROR -> "internal error";
+            case Builder.WEBSOCKET_CLOSE_INVALID_PAYLOAD -> "invalid payload";
+            case Builder.WEBSOCKET_CLOSE_MESSAGE_TOO_LARGE -> "message too large";
+            case Builder.WEBSOCKET_CLOSE_INTERNAL_ERROR -> "internal error";
             default -> "protocol error";
         };
         try {
@@ -1384,8 +1355,10 @@ public final class WebSocketSession implements Session {
         if (dispatcher == null || terminalNotified.get()) {
             return;
         }
-        final DispatchHandle next = dispatcher
-                .schedule(dispatchKey + ":close-timeout", closeTimeout, Activity.of("websocket-close-timeout", () -> {
+        final DispatchHandle next = dispatcher.schedule(
+                dispatchKey + ":close-timeout",
+                closeTimeout,
+                Activity.of(Builder.WEBSOCKET_ACTIVITY_CLOSE_TIMEOUT, () -> {
                     if (!terminalNotified.get() && scope.state() == Status.CLOSING) {
                         terminate(Termination.CANCEL, new TimeoutException("WebSocket close handshake timed out"));
                     }
@@ -1406,7 +1379,7 @@ public final class WebSocketSession implements Session {
         final DispatchHandle next = dispatcher.schedule(
                 dispatchKey + ":ping",
                 pingInterval,
-                Activity.of("websocket-ping", this::automaticPing, cancellation));
+                Activity.of(Builder.WEBSOCKET_PING, this::automaticPing, cancellation));
         final DispatchHandle previous = pingHandle.getAndSet(next);
         if (previous != null && previous != next) {
             previous.cancel();
@@ -1743,7 +1716,8 @@ public final class WebSocketSession implements Session {
         if (payload.length == Normal._1) {
             throw new ProtocolException("Invalid WebSocket close payload");
         }
-        final int code = (payload[Normal._0] & 0xFF) << Byte.SIZE | payload[Normal._1] & 0xFF;
+        final int code = (payload[Normal._0] & Builder.UNSIGNED_BYTE_MASK) << Byte.SIZE
+                | payload[Normal._1] & Builder.UNSIGNED_BYTE_MASK;
         final String reason = decodeUtf8(payload, Short.BYTES, payload.length - Short.BYTES);
         try {
             return WebSocketClose.of(code, reason);
@@ -1789,15 +1763,15 @@ public final class WebSocketSession implements Session {
     private static int failureCloseCode(final Throwable cause) {
         final String message = cause.getMessage() == null ? Normal.EMPTY : cause.getMessage().toLowerCase(Locale.ROOT);
         if (message.contains("too large") || message.contains("size")) {
-            return CLOSE_MESSAGE_TOO_LARGE;
+            return Builder.WEBSOCKET_CLOSE_MESSAGE_TOO_LARGE;
         }
         if (message.contains("utf-8")) {
-            return CLOSE_INVALID_PAYLOAD;
+            return Builder.WEBSOCKET_CLOSE_INVALID_PAYLOAD;
         }
         if (cause instanceof ProtocolException || cause instanceof ValidateException) {
-            return CLOSE_PROTOCOL_ERROR;
+            return Builder.WEBSOCKET_CLOSE_PROTOCOL_ERROR;
         }
-        return CLOSE_INTERNAL_ERROR;
+        return Builder.WEBSOCKET_CLOSE_INTERNAL_ERROR;
     }
 
     /**
@@ -2039,7 +2013,7 @@ public final class WebSocketSession implements Session {
         private OutboundEntry(final WebSocketFrame frame, final EntryKind kind, final long wireBytes) {
             this.frame = require(frame, "WebSocket frame");
             this.kind = require(kind, "WebSocket entry kind");
-            if (wireBytes < Normal._2 || wireBytes > MAX_MESSAGE_BYTES + Normal._14) {
+            if (wireBytes < Normal._2 || wireBytes > Builder.WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES + Normal._14) {
                 throw new ValidateException("WebSocket entry wire size is invalid");
             }
             this.wireBytes = wireBytes;

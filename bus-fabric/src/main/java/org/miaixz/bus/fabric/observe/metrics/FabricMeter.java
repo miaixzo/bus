@@ -43,9 +43,9 @@ import org.miaixz.bus.fabric.observe.ObservationMarker;
 public final class FabricMeter {
 
     /**
-     * Invalid event counter name.
+     * Fixed counter descriptors in ordinal order.
      */
-    private static final String INVALID_EVENT = "invalidEvent";
+    private static final Counter[] FIXED_COUNTERS = Counter.values();
 
     /**
      * Runtime clock.
@@ -56,6 +56,11 @@ public final class FabricMeter {
      * Counter values.
      */
     private final ConcurrentHashMap<String, LongAdder> counters;
+
+    /**
+     * Preallocated fixed counter values indexed by {@link Counter#ordinal()}.
+     */
+    private final LongAdder[] fixedCounters;
 
     /**
      * Timing values.
@@ -82,6 +87,10 @@ public final class FabricMeter {
     public FabricMeter(final Clock clock) {
         this.clock = Assert.notNull(clock, "Clock must not be null");
         this.counters = new ConcurrentHashMap<>();
+        this.fixedCounters = new LongAdder[FIXED_COUNTERS.length];
+        for (int index = 0; index < fixedCounters.length; index++) {
+            fixedCounters[index] = new LongAdder();
+        }
         this.timings = new ConcurrentHashMap<>();
         this.activeTimers = new ConcurrentHashMap<>();
     }
@@ -125,6 +134,25 @@ public final class FabricMeter {
     }
 
     /**
+     * Increments a preallocated fixed counter by one without a map lookup or update-path allocation.
+     *
+     * @param counter fixed counter
+     */
+    public void incrementCounter(final Counter counter) {
+        addCounter(counter, 1L);
+    }
+
+    /**
+     * Adds a delta to a preallocated fixed counter without a map lookup or update-path allocation.
+     *
+     * @param counter fixed counter
+     * @param delta   delta
+     */
+    public void addCounter(final Counter counter, final long delta) {
+        fixedCounters[Assert.notNull(counter, "Counter must not be null").ordinal()].add(delta);
+    }
+
+    /**
      * Returns a counter value.
      *
      * @param name metric name
@@ -138,6 +166,16 @@ public final class FabricMeter {
         }
         final Timing timing = timings.get(checked);
         return timing == null ? 0L : timing.count();
+    }
+
+    /**
+     * Returns a fixed counter value.
+     *
+     * @param counter fixed counter
+     * @return counter value
+     */
+    public long counterValue(final Counter counter) {
+        return fixedCounters[Assert.notNull(counter, "Counter must not be null").ordinal()].sum();
     }
 
     /**
@@ -168,18 +206,18 @@ public final class FabricMeter {
         final TimerKey key = new TimerKey(validateName(operationId), validateName(family));
         if (ObservationMarker.Timing.START == checkedRole) {
             if (activeTimers.putIfAbsent(key, new Timer(clock.nanos())) != null) {
-                increment(INVALID_EVENT);
+                increment(Builder.FABRIC_METER_INVALID_EVENT);
             }
             return;
         }
         final Timer timer = activeTimers.remove(key);
         if (timer == null) {
-            increment(INVALID_EVENT);
+            increment(Builder.FABRIC_METER_INVALID_EVENT);
             return;
         }
         final long elapsed = clock.nanos() - timer.startNanos();
         if (elapsed < 0L) {
-            increment(INVALID_EVENT);
+            increment(Builder.FABRIC_METER_INVALID_EVENT);
             return;
         }
         timing(family + Builder.METER_EVENT_OBSERVER_DURATION, Duration.ofNanos(elapsed));
@@ -191,8 +229,15 @@ public final class FabricMeter {
      * @return metric snapshot
      */
     public Map<String, Long> snapshot() {
-        final Map<String, Long> snapshot = MapKit.newHashMap(counters.size() + timings.size() * 3, true);
+        final Map<String, Long> snapshot = MapKit
+                .newHashMap(counters.size() + FIXED_COUNTERS.length + timings.size() * 3, true);
         counters.forEach((name, value) -> snapshot.put(name, value.sum()));
+        for (final Counter counter : FIXED_COUNTERS) {
+            final long value = fixedCounters[counter.ordinal()].sum();
+            if (value != 0L) {
+                snapshot.put(counter.metricName(), value);
+            }
+        }
         timings.forEach((name, timing) -> {
             snapshot.put(name + ".count", timing.count());
             snapshot.put(name + ".totalNanos", timing.totalNanos());
@@ -206,6 +251,9 @@ public final class FabricMeter {
      */
     public void reset() {
         counters.clear();
+        for (final LongAdder counter : fixedCounters) {
+            counter.reset();
+        }
         timings.clear();
         activeTimers.clear();
     }
@@ -232,6 +280,116 @@ public final class FabricMeter {
                 StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
                 () -> new ValidateException("Metric name must be non-blank and single-line"));
         return checked;
+    }
+
+    /**
+     * Fixed low-cardinality counters used by runtime resource owners.
+     *
+     * <p>
+     * The declaration order is the stable in-process index used by the meter. Callers must use the enum value rather
+     * than persist its ordinal.
+     * </p>
+     */
+    public enum Counter {
+
+        /**
+         * Physical connections created during this meter lifetime.
+         */
+        PHYSICAL_CONNECTIONS_CREATED("physicalConnectionsCreated"),
+
+        /**
+         * Physical connections that are currently active.
+         */
+        ACTIVE_PHYSICAL_CONNECTIONS("activePhysicalConnections"),
+
+        /**
+         * Logical connection leases acquired.
+         */
+        LOGICAL_LEASES_ACQUIRED("logicalLeasesAcquired"),
+
+        /**
+         * Logical connection leases released.
+         */
+        LOGICAL_LEASES_RELEASED("logicalLeasesReleased"),
+
+        /**
+         * Logical connection leases that are currently active.
+         */
+        ACTIVE_LOGICAL_LEASES("activeLogicalLeases"),
+
+        /**
+         * TLS handshakes classified as full handshakes.
+         */
+        TLS_FULL_HANDSHAKES("tlsFullHandshakes"),
+
+        /**
+         * TLS handshakes classified as resumed sessions.
+         */
+        TLS_RESUMED_HANDSHAKES("tlsResumedHandshakes"),
+
+        /**
+         * TLS handshakes whose session reuse cannot be classified safely.
+         */
+        TLS_UNKNOWN_HANDSHAKES("tlsUnknownHandshakes"),
+
+        /**
+         * Failed TLS handshakes.
+         */
+        TLS_HANDSHAKE_FAILURES("tlsHandshakeFailures"),
+
+        /**
+         * HTTP/2 streams created.
+         */
+        HTTP2_STREAMS_CREATED("http2StreamsCreated"),
+
+        /**
+         * HTTP/2 streams that are currently active.
+         */
+        ACTIVE_HTTP2_STREAMS("activeHttp2Streams"),
+
+        /**
+         * Pool waiters enqueued.
+         */
+        WAITERS_ENQUEUED("waitersEnqueued"),
+
+        /**
+         * Pool waiters that are currently active.
+         */
+        ACTIVE_WAITERS("activeWaiters"),
+
+        /**
+         * Transport bytes read from the network.
+         */
+        BYTES_READ("bytesRead"),
+
+        /**
+         * Transport bytes written to the network.
+         */
+        BYTES_WRITTEN("bytesWritten");
+
+        /**
+         * Snapshot metric name.
+         */
+        private final String metricName;
+
+        /**
+         * Creates a fixed counter descriptor.
+         *
+         * @param metricName snapshot metric name
+         */
+        Counter(final String metricName) {
+            this.metricName = metricName;
+        }
+
+        /**
+         * Returns the stable snapshot metric name.
+         *
+         * @return snapshot metric name
+         */
+        public String metricName() {
+            return metricName;
+        }
+
     }
 
     /**

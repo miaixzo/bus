@@ -26,7 +26,6 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
@@ -52,6 +51,8 @@ import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.network.Conduit;
+import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
+import org.miaixz.bus.fabric.observe.metrics.FabricMeter.Counter;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
@@ -88,6 +89,11 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * Operation timeout policy.
      */
     private final Timeout timeout;
+
+    /**
+     * Borrowed runtime meter, or null when metrics are disabled.
+     */
+    private final FabricMeter meter;
 
     /**
      * Optional lifecycle listener.
@@ -204,7 +210,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * @param timeout    operation timeouts
      */
     private TlsChannel(final Conduit conduit, final TlsEngine engine, final Listener<Object> listener,
-            final Dispatcher dispatcher, final Timeout timeout) {
+            final Dispatcher dispatcher, final Timeout timeout, final FabricMeter meter) {
         if (conduit == null) {
             throw new ValidateException("Network conduit must not be null");
         }
@@ -222,12 +228,13 @@ public final class TlsChannel implements Conduit, Lifecycle {
         this.listener = listener;
         this.dispatcher = dispatcher;
         this.timeout = timeout;
+        this.meter = meter;
         this.handshakeLock = new ReentrantLock();
         this.readLock = new ReentrantLock();
         this.writeLock = new ReentrantLock();
         this.stateLock = new ReentrantLock();
-        final int packetSize = checkedInitialSize(engine.engine().getSession().getPacketBufferSize());
-        final int applicationSize = checkedInitialSize(engine.engine().getSession().getApplicationBufferSize());
+        final int packetSize = checkedInitialSize(engine.packetBufferSize());
+        final int applicationSize = checkedInitialSize(engine.applicationBufferSize());
         this.packetBuffers = NioBufferAllocator.heap(packetSize, Normal._4);
         this.applicationBuffers = NioBufferAllocator.heap(applicationSize, Normal._2);
         this.encryptedInputLease = packetBuffers.allocate();
@@ -259,7 +266,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
             final TlsEngine engine,
             final Listener<Object> listener,
             final Dispatcher dispatcher) {
-        return wrap(conduit, engine, listener, dispatcher, Timeout.defaults());
+        return wrap(conduit, engine, listener, dispatcher, Timeout.defaults(), null);
     }
 
     /**
@@ -278,7 +285,28 @@ public final class TlsChannel implements Conduit, Lifecycle {
             final Listener<Object> listener,
             final Dispatcher dispatcher,
             final Timeout timeout) {
-        return new TlsChannel(conduit, engine, listener, dispatcher, timeout);
+        return wrap(conduit, engine, listener, dispatcher, timeout, null);
+    }
+
+    /**
+     * Wraps a conduit while borrowing the owning Reactor meter.
+     *
+     * @param conduit    encrypted conduit
+     * @param engine     TLS engine
+     * @param listener   lifecycle listener
+     * @param dispatcher borrowed dispatcher
+     * @param timeout    operation timeouts
+     * @param meter      borrowed runtime meter, or null
+     * @return TLS channel
+     */
+    public static TlsChannel wrap(
+            final Conduit conduit,
+            final TlsEngine engine,
+            final Listener<Object> listener,
+            final Dispatcher dispatcher,
+            final Timeout timeout,
+            final FabricMeter meter) {
+        return new TlsChannel(conduit, engine, listener, dispatcher, timeout, meter);
     }
 
     /**
@@ -534,6 +562,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
                 };
             }
             transition(TlsState.OPEN);
+            recordHandshake(engine.sessionReuse());
             notifyOpen();
             return engine.handshake();
         } catch (final IOException e) {
@@ -580,7 +609,9 @@ public final class TlsChannel implements Conduit, Lifecycle {
         readLock.lock();
         try {
             if (requested != HandshakeStatus.NEED_UNWRAP_AGAIN && !encryptedInput.hasRemaining()) {
-                readEncryptedInput(timeout.connect(), "TLS handshake read timed out");
+                if (readEncryptedInput(timeout.connect(), "TLS handshake read timed out") == Normal.__1) {
+                    throw new TlsException("TLS peer closed during handshake");
+                }
             }
             while (true) {
                 preparePendingPlaintextForAppend();
@@ -592,7 +623,9 @@ public final class TlsChannel implements Conduit, Lifecycle {
                 }
                 if (result.getStatus() == SSLEngineResult.Status.BUFFER_UNDERFLOW) {
                     ensureEncryptedInputCapacity();
-                    readEncryptedInput(timeout.connect(), "TLS handshake read timed out");
+                    if (readEncryptedInput(timeout.connect(), "TLS handshake read timed out") == Normal.__1) {
+                        throw new TlsException("TLS peer closed during handshake");
+                    }
                     continue;
                 }
                 if (result.getStatus() == SSLEngineResult.Status.CLOSED) {
@@ -740,13 +773,13 @@ public final class TlsChannel implements Conduit, Lifecycle {
             growEncryptedInput();
             encryptedInput.compact();
         }
-        final Buffer payload = new Buffer();
-        final long read = await(conduit.read(payload, encryptedInput.remaining()), duration, message);
+        final int writable = encryptedInput.remaining();
+        final long read = await(conduit.read(encryptedInput), duration, message);
         if (read > Normal._0) {
-            if (read > encryptedInput.remaining() || payload.size() != read) {
+            if (read > writable) {
                 throw new InternalException("Encrypted conduit returned an invalid read count");
             }
-            transfer(payload, encryptedInput, read);
+            addBytes(Counter.BYTES_READ, read);
         }
         encryptedInput.flip();
         return read;
@@ -769,6 +802,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         if (written != bytes || payload.size() != Normal._0) {
             throw new InternalException("Encrypted conduit did not completely consume TLS output");
         }
+        addBytes(Counter.BYTES_WRITTEN, written);
         encryptedOutput.clear();
         encryptedOutput.flip();
     }
@@ -811,7 +845,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
      */
     private void ensureEncryptedInputCapacity() {
         if (encryptedInput.limit() == encryptedInput.capacity()
-                || encryptedInput.capacity() < engine.engine().getSession().getPacketBufferSize()) {
+                || encryptedInput.capacity() < engine.packetBufferSize()) {
             growEncryptedInput();
         }
     }
@@ -820,10 +854,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * Expands encrypted input while preserving its read-mode contents.
      */
     private void growEncryptedInput() {
-        final int capacity = grownCapacity(
-                encryptedInput.capacity(),
-                engine.engine().getSession().getPacketBufferSize(),
-                "encrypted input");
+        final int capacity = grownCapacity(encryptedInput.capacity(), engine.packetBufferSize(), "encrypted input");
         final NioBuffer replacementLease = packetBuffers.allocate(capacity);
         final ByteBuffer replacement = replacementLease.buffer();
         replacement.put(encryptedInput);
@@ -846,7 +877,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
     private void growPendingPlaintext() {
         final int capacity = grownCapacity(
                 pendingPlaintext.capacity(),
-                engine.engine().getSession().getApplicationBufferSize(),
+                engine.applicationBufferSize(),
                 "pending plaintext");
         final NioBuffer replacementLease = applicationBuffers.allocate(capacity);
         final ByteBuffer replacement = replacementLease.buffer();
@@ -869,10 +900,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
      */
     private void growEncryptedOutput() {
         encryptedOutput.flip();
-        final int capacity = grownCapacity(
-                encryptedOutput.capacity(),
-                engine.engine().getSession().getPacketBufferSize(),
-                "encrypted output");
+        final int capacity = grownCapacity(encryptedOutput.capacity(), engine.packetBufferSize(), "encrypted output");
         final NioBuffer replacementLease = packetBuffers.allocate(capacity);
         final ByteBuffer replacement = replacementLease.buffer();
         replacement.put(encryptedOutput);
@@ -913,7 +941,10 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * @param message  timeout message
      * @return operation byte count
      */
-    private long await(final CompletableFuture<Long> future, final Duration duration, final String message) {
+    private long await(
+            final CompletableFuture<? extends Number> future,
+            final Duration duration,
+            final String message) {
         if (future == null) {
             throw new InternalException("TLS conduit returned a null future");
         }
@@ -928,11 +959,11 @@ public final class TlsChannel implements Conduit, Lifecycle {
                     }
                 }));
             }
-            final Long value = future.get();
+            final Number value = future.get();
             if (value == null) {
                 throw new InternalException("TLS conduit returned a null byte count");
             }
-            return value;
+            return value.longValue();
         } catch (final InterruptedException e) {
             future.cancel(true);
             Thread.currentThread().interrupt();
@@ -972,7 +1003,6 @@ public final class TlsChannel implements Conduit, Lifecycle {
      */
     private <T> CompletableFuture<T> background(final String name, final Supplier<T> operation) {
         final CompletableFuture<T> result = new CompletableFuture<>();
-        final AtomicReference<DispatchHandle> handle = new AtomicReference<>();
         final Activity activity = Activity.of(name, () -> {
             if (result.isCancelled()) {
                 return;
@@ -983,18 +1013,16 @@ public final class TlsChannel implements Conduit, Lifecycle {
                 result.completeExceptionally(e);
             }
         });
+        final DispatchHandle handle;
         try {
-            handle.set(dispatcher.background(name, this, activity));
+            handle = dispatcher.background(name, this, activity);
         } catch (final RuntimeException e) {
             result.completeExceptionally(e);
             return result;
         }
         result.whenComplete((value, cause) -> {
             if (result.isCancelled()) {
-                final DispatchHandle current = handle.get();
-                if (current != null) {
-                    dispatcher.cancel(current);
-                }
+                dispatcher.cancel(handle);
                 final SocketException cancelled = new SocketException("TLS operation was cancelled",
                         new CancellationException(name));
                 fail(cancelled);
@@ -1010,9 +1038,11 @@ public final class TlsChannel implements Conduit, Lifecycle {
      */
     private void fail(final RuntimeException cause) {
         boolean changed = false;
+        boolean handshakeFailure = false;
         stateLock.lock();
         try {
             if (tlsState != TlsState.CLOSED && tlsState != TlsState.FAILED) {
+                handshakeFailure = tlsState == TlsState.HANDSHAKING;
                 tlsState = TlsState.FAILED;
                 failure = cause;
                 changed = true;
@@ -1022,6 +1052,9 @@ public final class TlsChannel implements Conduit, Lifecycle {
         }
         if (!changed) {
             return;
+        }
+        if (handshakeFailure && meter != null) {
+            meter.incrementCounter(Counter.TLS_HANDSHAKE_FAILURES);
         }
         closeConduit(cause);
         readLock.lock();
@@ -1197,6 +1230,29 @@ public final class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
+     * Records the single successful handshake classification.
+     */
+    private void recordHandshake(final TlsEngine.SessionReuse reuse) {
+        if (meter == null) {
+            return;
+        }
+        meter.incrementCounter(switch (reuse) {
+            case FULL -> Counter.TLS_FULL_HANDSHAKES;
+            case RESUMED -> Counter.TLS_RESUMED_HANDSHAKES;
+            case UNKNOWN -> Counter.TLS_UNKNOWN_HANDSHAKES;
+        });
+    }
+
+    /**
+     * Adds encrypted transport bytes to the borrowed meter.
+     */
+    private void addBytes(final Counter counter, final long bytes) {
+        if (meter != null && bytes > 0L) {
+            meter.addCounter(counter, bytes);
+        }
+    }
+
+    /**
      * Notifies the listener of the open transition once.
      */
     private void notifyOpen() {
@@ -1311,6 +1367,39 @@ public final class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
+     * Waits for an adapter-view future and preserves checked IO semantics.
+     *
+     * @param future  operation future
+     * @param message failure message
+     * @return byte count
+     * @throws IOException when the operation fails
+     */
+    private static long awaitView(final CompletableFuture<Long> future, final String message) throws IOException {
+        try {
+            final Long result = future.get();
+            if (result == null) {
+                throw new IOException(message + ": null result");
+            }
+            return result;
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException(message, e);
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof IOException io) {
+                throw io;
+            }
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            throw new IOException(message, cause);
+        }
+    }
+
+    /**
      * Plaintext source backed by the enclosing TLS state machine.
      */
     private final class TlsSource implements Source {
@@ -1395,39 +1484,6 @@ public final class TlsChannel implements Conduit, Lifecycle {
             TlsChannel.this.close();
         }
 
-    }
-
-    /**
-     * Waits for an adapter-view future and preserves checked IO semantics.
-     *
-     * @param future  operation future
-     * @param message failure message
-     * @return byte count
-     * @throws IOException when the operation fails
-     */
-    private static long awaitView(final CompletableFuture<Long> future, final String message) throws IOException {
-        try {
-            final Long result = future.get();
-            if (result == null) {
-                throw new IOException(message + ": null result");
-            }
-            return result;
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException(message, e);
-        } catch (final ExecutionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof IOException io) {
-                throw io;
-            }
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
-            }
-            if (cause instanceof Error error) {
-                throw error;
-            }
-            throw new IOException(message, cause);
-        }
     }
 
     /**

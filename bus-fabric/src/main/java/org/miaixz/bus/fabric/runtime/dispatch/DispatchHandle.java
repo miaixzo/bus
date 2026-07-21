@@ -20,7 +20,7 @@
 package org.miaixz.bus.fabric.runtime.dispatch;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -38,6 +38,31 @@ import org.miaixz.bus.fabric.runtime.Activity;
  * @since Java 21+
  */
 public final class DispatchHandle implements Lifecycle {
+
+    /**
+     * Handle is queued and may still be cancelled before execution.
+     */
+    private static final int QUEUED = 0;
+
+    /**
+     * Handle activity is currently running.
+     */
+    private static final int RUNNING = 1;
+
+    /**
+     * Handle activity completed successfully.
+     */
+    private static final int DONE = 2;
+
+    /**
+     * Handle activity completed with a failure.
+     */
+    private static final int FAILED = 3;
+
+    /**
+     * Handle was cancelled before a successful terminal transition.
+     */
+    private static final int CANCELLED = 4;
 
     /**
      * Dispatch key.
@@ -62,7 +87,7 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Authoritative dispatch state shared by every dispatcher channel.
      */
-    private final AtomicReference<Status> state;
+    private final AtomicInteger state;
 
     /**
      * Creates a dispatch handle.
@@ -76,7 +101,7 @@ public final class DispatchHandle implements Lifecycle {
         this.tag = tag;
         this.activity = require(activity, "Activity");
         this.future = new CompletableFuture<>();
-        this.state = new AtomicReference<>(Status.QUEUED);
+        this.state = new AtomicInteger(QUEUED);
     }
 
     /**
@@ -134,7 +159,14 @@ public final class DispatchHandle implements Lifecycle {
      */
     @Override
     public Status state() {
-        return state.get();
+        return switch (state.get()) {
+            case QUEUED -> Status.QUEUED;
+            case RUNNING -> Status.RUNNING;
+            case DONE -> Status.DONE;
+            case FAILED -> Status.FAILED;
+            case CANCELLED -> Status.CANCELLED;
+            default -> throw new IllegalStateException("Unknown dispatch state");
+        };
     }
 
     /**
@@ -143,7 +175,7 @@ public final class DispatchHandle implements Lifecycle {
      * @return true only for the worker that changed queued to running
      */
     boolean markRunning() {
-        return state.compareAndSet(Status.QUEUED, Status.RUNNING);
+        return state.compareAndSet(QUEUED, RUNNING);
     }
 
     /**
@@ -153,11 +185,11 @@ public final class DispatchHandle implements Lifecycle {
      */
     public boolean cancel() {
         while (true) {
-            final Status current = state.get();
-            if (current != Status.QUEUED && current != Status.RUNNING) {
+            final int current = state.get();
+            if (current != QUEUED && current != RUNNING) {
                 return false;
             }
-            if (state.compareAndSet(current, Status.CANCELLED)) {
+            if (state.compareAndSet(current, CANCELLED)) {
                 try {
                     activity.cancel();
                 } finally {
@@ -174,7 +206,7 @@ public final class DispatchHandle implements Lifecycle {
      * @return true when cancelled
      */
     public boolean cancelled() {
-        return state.get() == Status.CANCELLED;
+        return state.get() == CANCELLED;
     }
 
     /**
@@ -182,14 +214,14 @@ public final class DispatchHandle implements Lifecycle {
      */
     public void complete() {
         while (true) {
-            final Status current = state.get();
-            if (current == Status.DONE) {
+            final int current = state.get();
+            if (current == DONE) {
                 return;
             }
-            if (current != Status.RUNNING) {
-                throw new StatefulException("Dispatch handle cannot complete from state " + current);
+            if (current != QUEUED && current != RUNNING) {
+                throw new StatefulException("Dispatch handle cannot complete from state " + state());
             }
-            if (state.compareAndSet(Status.RUNNING, Status.DONE)) {
+            if (state.compareAndSet(current, DONE)) {
                 future.complete(null);
                 return;
             }
@@ -204,14 +236,14 @@ public final class DispatchHandle implements Lifecycle {
     public void fail(final Throwable cause) {
         final Throwable failure = require(cause, "Failure cause");
         while (true) {
-            final Status current = state.get();
-            if (current == Status.FAILED) {
+            final int current = state.get();
+            if (current == FAILED) {
                 return;
             }
-            if (current != Status.RUNNING) {
-                throw new StatefulException("Dispatch handle cannot fail from state " + current);
+            if (current != QUEUED && current != RUNNING) {
+                throw new StatefulException("Dispatch handle cannot fail from state " + state());
             }
-            if (state.compareAndSet(Status.RUNNING, Status.FAILED)) {
+            if (state.compareAndSet(current, FAILED)) {
                 future.completeExceptionally(failure);
                 return;
             }

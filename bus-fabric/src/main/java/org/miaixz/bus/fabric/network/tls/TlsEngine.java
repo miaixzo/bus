@@ -37,6 +37,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.crypto.builtin.CertificateChain;
 import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 
 /**
@@ -175,6 +176,39 @@ public final class TlsEngine implements AutoCloseable {
     }
 
     /**
+     * Returns the engine's current handshake status without materializing a result object.
+     *
+     * @return handshake status
+     */
+    public SSLEngineResult.HandshakeStatus handshakeStatus() {
+        return engine.getHandshakeStatus();
+    }
+
+    /**
+     * Returns the protocol actually negotiated by the engine.
+     *
+     * @return negotiated ALPN value, or an empty string when none was negotiated
+     */
+    public String applicationProtocol() {
+        final String protocol = engine.getApplicationProtocol();
+        return protocol == null ? "" : protocol;
+    }
+
+    /**
+     * Classifies portable TLS 1.2 session reuse without treating a non-empty session as proof.
+     *
+     * @return reuse classification
+     */
+    public SessionReuse sessionReuse() {
+        final SSLSession session = engine.getSession();
+        if (!client || !"TLSv1.2".equals(session.getProtocol())) {
+            return SessionReuse.UNKNOWN;
+        }
+        // Portable JSSE exposes no pre-handshake session provenance. Do not turn a non-empty ID into a false hit.
+        return SessionReuse.UNKNOWN;
+    }
+
+    /**
      * Returns current handshake metadata.
      *
      * @return handshake metadata
@@ -212,7 +246,7 @@ public final class TlsEngine implements AutoCloseable {
      * @return packet buffer size
      */
     public int packetBufferSize() {
-        return engine.getSession().getPacketBufferSize();
+        return bufferHint(engine.getSession().getPacketBufferSize());
     }
 
     /**
@@ -221,7 +255,7 @@ public final class TlsEngine implements AutoCloseable {
      * @return application buffer size
      */
     public int applicationBufferSize() {
-        return engine.getSession().getApplicationBufferSize();
+        return bufferHint(engine.getSession().getApplicationBufferSize());
     }
 
     /**
@@ -251,6 +285,16 @@ public final class TlsEngine implements AutoCloseable {
     }
 
     /**
+     * Bounds provider size hints before they reach buffer allocators.
+     */
+    private static int bufferHint(final int providerHint) {
+        if (providerHint <= 0) {
+            throw new SocketException("TLS provider returned an invalid buffer size");
+        }
+        return Math.min(providerHint, Builder.TLS_ENGINE_MAX_BUFFER_HINT);
+    }
+
+    /**
      * Returns peer certificates or an empty chain.
      *
      * @param session SSL session
@@ -262,6 +306,24 @@ public final class TlsEngine implements AutoCloseable {
         } catch (final SSLPeerUnverifiedException e) {
             return List.of();
         }
+    }
+
+    /**
+     * Portable session reuse classification.
+     */
+    public enum SessionReuse {
+        /**
+         * A full handshake proven by a provider-specific classifier.
+         */
+        FULL,
+        /**
+         * The negotiated TLS 1.2 session ID existed before this engine was created.
+         */
+        RESUMED,
+        /**
+         * Reuse cannot be established without guessing.
+         */
+        UNKNOWN
     }
 
 }

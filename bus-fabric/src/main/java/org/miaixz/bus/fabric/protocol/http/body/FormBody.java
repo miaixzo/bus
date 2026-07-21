@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
-import static org.miaixz.bus.fabric.Builder.*;
-
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -229,7 +227,7 @@ public final class FormBody implements RequestBody {
          */
         @Override
         public byte[] bytes() {
-            return bytes(DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(org.miaixz.bus.fabric.Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**
@@ -256,7 +254,7 @@ public final class FormBody implements RequestBody {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, org.miaixz.bus.fabric.Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**

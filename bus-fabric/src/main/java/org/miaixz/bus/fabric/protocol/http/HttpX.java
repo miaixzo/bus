@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.source.Source;
@@ -69,6 +70,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.body.SoapBody;
 import org.miaixz.bus.fabric.protocol.http.body.TextBody;
 import org.miaixz.bus.fabric.protocol.http.calls.HttpCall;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * Immutable HTTP exchange.
@@ -94,6 +96,11 @@ public final class HttpX {
     private final Callback<HttpResponse> callback;
 
     /**
+     * Single frozen operation shared by lightweight call adapters.
+     */
+    private final Function<Cancellation, HttpResponse> operation;
+
+    /**
      * Creates an HTTP exchange.
      *
      * @param context  shared context
@@ -108,6 +115,7 @@ public final class HttpX {
         this.snapshot = new HttpSnapshot(context, request, observer, filter, guard);
         this.runner = new HttpRunner(snapshot);
         this.callback = callback;
+        this.operation = cancellation -> Mediator.execute(Type.HTTP, cancellation, runner::run);
     }
 
     /**
@@ -144,11 +152,7 @@ public final class HttpX {
      * @return response call
      */
     public Call<HttpResponse> call() {
-        return HttpCall.create(
-                snapshot.request(),
-                snapshot.context().reactor().dispatcher(),
-                callback,
-                cancellation -> Mediator.execute(Type.HTTP, cancellation, runner::run));
+        return HttpCall.create(snapshot.request(), snapshot.context().reactor().dispatcher(), callback, operation);
     }
 
     /**
@@ -382,6 +386,11 @@ public final class HttpX {
         private Callback<HttpResponse> callback;
 
         /**
+         * Materialization limit frozen with the builder's shared context.
+         */
+        private final long materializeMaxBytes;
+
+        /**
          * Creates a builder.
          *
          * @param context shared context
@@ -391,6 +400,7 @@ public final class HttpX {
             final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.proxy = configuredProxy();
+            this.materializeMaxBytes = context.options().materializeMaxBytes();
         }
 
         /**
@@ -1537,12 +1547,17 @@ public final class HttpX {
          */
         private Headers buildHeaders(final PayloadBody body) {
             final Headers current = headers.build();
-            final Headers.Builder builder = Headers.builder();
-            current.asMap().forEach((name, values) -> values.forEach(value -> builder.add(name, value)));
-            if (body.length() > 0 && !current.contains(HTTP.CONTENT_LENGTH)) {
+            final long length = body.length();
+            final boolean needsLength = length > 0 && !current.contains(HTTP.CONTENT_LENGTH);
+            final boolean needsType = length != 0 && !current.contains(HTTP.CONTENT_TYPE);
+            if (!needsLength && !needsType) {
+                return current;
+            }
+            final Headers.Builder builder = current.newBuilder();
+            if (needsLength) {
                 builder.set(HTTP.CONTENT_LENGTH, Long.toString(body.length()));
             }
-            if (!current.contains(HTTP.CONTENT_TYPE) && body.length() != 0) {
+            if (needsType) {
                 builder.set(HTTP.CONTENT_TYPE, body.media().value());
             }
             return builder.build();
@@ -1572,8 +1587,7 @@ public final class HttpX {
             if (codec != null && bodyMode == BodyMode.NONE) {
                 selectedMedia = codec.media();
             }
-            final PayloadBody payloadBody = PayloadBody
-                    .of(payload, selectedMedia, context.options().materializeMaxBytes());
+            final PayloadBody payloadBody = PayloadBody.of(payload, selectedMedia, materializeMaxBytes);
             return progress == null ? payloadBody : payloadBody.progress(progress);
         }
 

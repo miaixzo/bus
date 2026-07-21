@@ -210,10 +210,10 @@ public final class DiskStore implements CacheStore {
         Assert.notNull(payload, () -> new ValidateException("Cache payload must not be null"));
         final Buffer buffer = new Buffer();
         try (Source input = payload.source()) {
-            long read = input.read(buffer, Normal._64 * Normal._1024);
+            long read = input.read(buffer, Builder.BYTES_64_KIB);
             while (read != -1L) {
                 writer.write(buffer, read);
-                read = input.read(buffer, Normal._64 * Normal._1024);
+                read = input.read(buffer, Builder.BYTES_64_KIB);
             }
         }
     }

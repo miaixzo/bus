@@ -111,7 +111,7 @@ public final class LimitGuard implements GuardRule {
      */
     private static long validateMaxBytes(final long maxBytes) {
         Assert.isTrue(
-                maxBytes > 0 && maxBytes <= Normal._16 * Normal.MEBI,
+                maxBytes > 0 && maxBytes <= Builder.BYTES_16_MIB,
                 () -> new ValidateException("Body limit must be between 1 and 16777216"));
         return maxBytes;
     }

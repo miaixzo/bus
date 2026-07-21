@@ -26,7 +26,9 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.observe.EventObserver;
+import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
 import org.miaixz.bus.fabric.registry.Directory;
+import org.miaixz.bus.fabric.registry.policy.PoolPolicy;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.resource.ResourceScope;
 
@@ -59,6 +61,11 @@ public final class Reactor implements AutoCloseable {
     private final EventObserver observer;
 
     /**
+     * Single runtime metric owner borrowed by Directory, Registry and Pool.
+     */
+    private final FabricMeter meter;
+
+    /**
      * Resource scope.
      */
     private final ResourceScope scope;
@@ -77,10 +84,12 @@ public final class Reactor implements AutoCloseable {
      * @param scope      scope
      * @param directory  directory
      */
-    private Reactor(final Clock clock, final EventObserver observer, final Dispatcher dispatcher,
-            final ResourceScope scope, final Directory directory) {
+    private Reactor(final Clock clock, final EventObserver observer, final FabricMeter meter,
+            final Dispatcher dispatcher, final ResourceScope scope, final Directory directory) {
         this.clock = require(clock, "Clock");
-        this.observer = EventObserver.safe(require(observer, "Observer"));
+        final EventObserver currentObserver = require(observer, "Observer");
+        this.observer = currentObserver;
+        this.meter = require(meter, "Fabric meter");
         this.dispatcher = require(dispatcher, "Dispatcher");
         this.scope = require(scope, "Scope");
         this.directory = require(directory, "Directory");
@@ -140,6 +149,15 @@ public final class Reactor implements AutoCloseable {
      */
     public EventObserver observer() {
         return observer;
+    }
+
+    /**
+     * Returns the unique runtime meter.
+     *
+     * @return meter shared by reactor-owned components
+     */
+    public FabricMeter meter() {
+        return meter;
     }
 
     /**
@@ -239,6 +257,16 @@ public final class Reactor implements AutoCloseable {
         private ResourceScope scope;
 
         /**
+         * Optional compatibility directory.
+         */
+        private Directory directory;
+
+        /**
+         * Connection pool policy.
+         */
+        private PoolPolicy poolPolicy;
+
+        /**
          * Creates a runtime builder.
          */
         private Builder() {
@@ -290,6 +318,28 @@ public final class Reactor implements AutoCloseable {
         }
 
         /**
+         * Sets an existing directory for compatibility injection.
+         *
+         * @param directory directory borrowed by the reactor
+         * @return this builder
+         */
+        public Builder directory(final Directory directory) {
+            this.directory = require(directory, "Directory");
+            return this;
+        }
+
+        /**
+         * Sets the connection-pool policy used by the runtime-owned directory.
+         *
+         * @param poolPolicy connection-pool policy
+         * @return this builder
+         */
+        public Builder poolPolicy(final PoolPolicy poolPolicy) {
+            this.poolPolicy = require(poolPolicy, "Pool policy");
+            return this;
+        }
+
+        /**
          * Builds a reactor, creating defaults in dependency order and transferring ownership only after success.
          *
          * @return reactor
@@ -297,11 +347,11 @@ public final class Reactor implements AutoCloseable {
         @Override
         public Reactor build() {
             final Clock resolvedClock = clock == null ? Clock.system() : clock;
-            final EventObserver resolvedObserver = EventObserver
-                    .safe(observer == null ? EventObserver.noop() : observer);
+            final EventObserver resolvedObserver = observer == null ? EventObserver.noop() : observer;
+            final FabricMeter resolvedMeter = FabricMeter.create(resolvedClock);
             Dispatcher resolvedDispatcher = dispatcher;
             ResourceScope resolvedScope = scope;
-            Directory resolvedDirectory = null;
+            Directory resolvedDirectory = directory;
             final boolean createdDispatcher = resolvedDispatcher == null;
             final boolean createdScope = resolvedScope == null;
             try {
@@ -311,11 +361,19 @@ public final class Reactor implements AutoCloseable {
                 if (createdScope) {
                     resolvedScope = ResourceScope.create();
                 }
-                resolvedDirectory = Directory.create(resolvedClock);
-                return new Reactor(resolvedClock, resolvedObserver, resolvedDispatcher, resolvedScope,
+                if (resolvedDirectory == null) {
+                    resolvedDirectory = Directory.create(
+                            resolvedClock,
+                            poolPolicy == null ? PoolPolicy.defaults() : poolPolicy,
+                            resolvedMeter,
+                            resolvedDispatcher);
+                }
+                return new Reactor(resolvedClock, resolvedObserver, resolvedMeter, resolvedDispatcher, resolvedScope,
                         resolvedDirectory);
             } catch (final RuntimeException | Error failure) {
-                closeCreated(resolvedDirectory, failure);
+                if (directory == null) {
+                    closeCreated(resolvedDirectory, failure);
+                }
                 if (createdScope) {
                     closeCreated(resolvedScope, failure);
                 }

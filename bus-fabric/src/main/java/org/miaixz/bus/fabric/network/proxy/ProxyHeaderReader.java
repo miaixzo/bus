@@ -56,23 +56,6 @@ public final class ProxyHeaderReader {
     }
 
     /**
-     * PROXY header read result.
-     *
-     * @param header  parsed PROXY header
-     * @param payload prefetched application payload
-     */
-    public record Result(ProxyHeader header, Buffer payload) {
-
-        /**
-         * Creates a result.
-         */
-        public Result {
-            payload = payload == null ? new Buffer() : payload;
-        }
-
-    }
-
-    /**
      * Reads an optional PROXY protocol v1 header.
      *
      * @param channel socket channel
@@ -161,6 +144,23 @@ public final class ProxyHeaderReader {
      */
     private static Buffer payload(final ByteArrayOutputStream consumed) {
         return new Buffer().write(consumed.toByteArray());
+    }
+
+    /**
+     * PROXY header read result.
+     *
+     * @param header  parsed PROXY header
+     * @param payload prefetched application payload
+     */
+    public record Result(ProxyHeader header, Buffer payload) {
+
+        /**
+         * Creates a result.
+         */
+        public Result {
+            payload = payload == null ? new Buffer() : payload;
+        }
+
     }
 
 }

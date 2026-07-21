@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket;
 
-import static org.miaixz.bus.fabric.Builder.*;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -283,9 +281,11 @@ public final class WebSocketServer implements Lifecycle {
                 lifecycle.open(this);
                 acceptHandle = track(
                         dispatcher.background(
-                                WEBSOCKET_ACTIVITY_ACCEPT,
+                                org.miaixz.bus.fabric.Builder.WEBSOCKET_ACTIVITY_ACCEPT,
                                 this,
-                                Activity.of(WEBSOCKET_ACTIVITY_ACCEPT, this::acceptLoop)));
+                                Activity.of(
+                                        org.miaixz.bus.fabric.Builder.WEBSOCKET_ACTIVITY_ACCEPT,
+                                        this::acceptLoop)));
                 return this;
             } catch (final IOException e) {
                 closeServerChannel(opened);
@@ -365,7 +365,11 @@ public final class WebSocketServer implements Lifecycle {
      * @return attributes
      */
     public Map<String, Object> attributes() {
-        return Map.of(ATTRIBUTE_OBSERVER, observer, ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
+        return Map.of(
+                org.miaixz.bus.fabric.Builder.ATTRIBUTE_OBSERVER,
+                observer,
+                org.miaixz.bus.fabric.Builder.ATTRIBUTE_SOCKET_OPTIONS,
+                socketOptions);
     }
 
     /**
@@ -387,9 +391,11 @@ public final class WebSocketServer implements Lifecycle {
                 try {
                     track(
                             dispatcher.background(
-                                    WEBSOCKET_ACTIVITY_ACCEPT,
+                                    org.miaixz.bus.fabric.Builder.WEBSOCKET_ACTIVITY_ACCEPT,
                                     channel,
-                                    Activity.of(WEBSOCKET_ACTIVITY_ACCEPT, () -> handleAccepted(channel))));
+                                    Activity.of(
+                                            org.miaixz.bus.fabric.Builder.WEBSOCKET_ACTIVITY_ACCEPT,
+                                            () -> handleAccepted(channel))));
                 } catch (final RuntimeException e) {
                     acceptedChannels.remove(channel);
                     closeAcceptedChannel(channel);
@@ -463,7 +469,7 @@ public final class WebSocketServer implements Lifecycle {
                     sessionAttributes(upgrade.requestHeaders(), proxy.header()), transport, sessionFilter, observer,
                     registryListener(transport), Cancellation.create());
             if (shuttingDown.get()) {
-                session.close(_1001, "Server shutting down");
+                session.close(org.miaixz.bus.fabric.Builder._1001, "Server shutting down");
                 return;
             }
             transferred = true;
@@ -494,7 +500,12 @@ public final class WebSocketServer implements Lifecycle {
      * @param headers     request headers
      */
     private void validateOpening(final Address peerAddress, final Headers headers) {
-        Message opening = Message.of(peerAddress.protocol(), peerAddress, headers, Payload.empty(), WEBSOCKET_OPEN);
+        Message opening = Message.of(
+                peerAddress.protocol(),
+                peerAddress,
+                headers,
+                Payload.empty(),
+                org.miaixz.bus.fabric.Builder.WEBSOCKET_OPEN);
         opening = FilterChain.apply(opening, context.filter(), filter);
         if (guard != null) {
             guard.check(opening).throwIfRejected();
@@ -510,18 +521,27 @@ public final class WebSocketServer implements Lifecycle {
     private Listener<WebSocketSession> registryListener(final AcceptedTransport transport) {
         return new Listener<>() {
 
+            /**
+             * Registers the opened session before forwarding the lifecycle callback.
+             */
             @Override
             public void open(final WebSocketSession source) {
                 sessions.add(source);
                 notifySessionOpen(source);
             }
 
+            /**
+             * Removes terminal ownership before forwarding the normal-close callback.
+             */
             @Override
             public void close(final WebSocketSession source) {
                 remove(source);
                 notifySessionClose(source);
             }
 
+            /**
+             * Removes terminal ownership before forwarding the failure callback.
+             */
             @Override
             public void failure(final WebSocketSession source, final Throwable cause) {
                 remove(source);
@@ -635,7 +655,7 @@ public final class WebSocketServer implements Lifecycle {
         for (final WebSocketSession session : new ArrayList<>(sessions)) {
             try {
                 if (graceful) {
-                    session.close(_1001, "Server shutting down");
+                    session.close(org.miaixz.bus.fabric.Builder._1001, "Server shutting down");
                 } else {
                     session.cancel();
                 }
@@ -743,11 +763,11 @@ public final class WebSocketServer implements Lifecycle {
      */
     private Map<String, Object> sessionAttributes(final Headers headers, final ProxyHeader proxyHeader) {
         final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
-        values.put(ATTRIBUTE_HEADERS, headers);
-        values.put(ATTRIBUTE_OBSERVER, observer);
-        values.put(ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
+        values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_HEADERS, headers);
+        values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_OBSERVER, observer);
+        values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
         if (proxyHeader != null) {
-            values.put(ATTRIBUTE_PROXY_HEADER, proxyHeader);
+            values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_PROXY_HEADER, proxyHeader);
         }
         return Map.copyOf(values);
     }
@@ -1515,11 +1535,17 @@ public final class WebSocketServer implements Lifecycle {
         private Builder composeSessionListener() {
             this.sessionListener = new Listener<>() {
 
+                /**
+                 * Forwards an opened session to the configured consumer.
+                 */
                 @Override
                 public void open(final WebSocketSession source) {
                     openHandler.accept(source);
                 }
 
+                /**
+                 * Forwards a session failure to the configured error consumer.
+                 */
                 @Override
                 public void failure(final WebSocketSession source, final Throwable cause) {
                     errorHandler.accept(cause);

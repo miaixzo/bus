@@ -22,7 +22,7 @@ package org.miaixz.bus.fabric.runtime.dispatch;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +44,11 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class DispatchQueue implements AutoCloseable {
 
     /**
+     * Hard safety bound for retained short tasks.
+     */
+    private static final int MAX_QUEUED = 65_536;
+
+    /**
      * Dispatch limit.
      */
     private final DispatchLimit limit;
@@ -51,7 +56,22 @@ public final class DispatchQueue implements AutoCloseable {
     /**
      * Ready handles.
      */
-    private final ArrayDeque<Entry> queued;
+    private final Map<String, ReadyBucket> buckets;
+
+    /**
+     * Round-robin keys that currently have queued work.
+     */
+    private final ArrayDeque<ReadyBucket> ready;
+
+    /**
+     * O(1) queued membership by handle identity.
+     */
+    private final Map<DispatchHandle, Entry> queuedEntries;
+
+    /**
+     * Stable enqueue sequence used only by diagnostic snapshots.
+     */
+    private long sequence;
 
     /**
      * Running handles.
@@ -75,7 +95,9 @@ public final class DispatchQueue implements AutoCloseable {
      */
     DispatchQueue(final DispatchLimit limit) {
         this.limit = require(limit, "Dispatch limit");
-        this.queued = new ArrayDeque<>();
+        this.buckets = new HashMap<>();
+        this.ready = new ArrayDeque<>();
+        this.queuedEntries = new IdentityHashMap<>();
         this.running = new LinkedHashMap<>();
         this.runningByKey = new HashMap<>();
     }
@@ -107,12 +129,15 @@ public final class DispatchQueue implements AutoCloseable {
             final Activity activity,
             final Cancellation cancellation,
             final DispatchHandle handle) {
-        final Entry entry = new Entry(tag, owner, activity, cancellation, handle);
+        final Entry entry = new Entry(tag, owner, activity, cancellation, handle, ++sequence);
         if (closed || entry.handle().state() != Status.QUEUED || entry.handle().future().isDone()
-                || contains(entry.handle())) {
+                || contains(entry.handle()) || queuedEntries.size() >= MAX_QUEUED) {
             return false;
         }
-        queued.addLast(entry);
+        final ReadyBucket bucket = buckets.computeIfAbsent(handle.key(), ReadyBucket::new);
+        bucket.entries.addLast(entry);
+        queuedEntries.put(handle, entry);
+        publish(bucket);
         return true;
     }
 
@@ -122,7 +147,12 @@ public final class DispatchQueue implements AutoCloseable {
      * @return promoted handles
      */
     public synchronized List<DispatchHandle> promote() {
-        return promoteEntries().stream().map(Entry::handle).toList();
+        final List<Entry> entries = reserveEntries();
+        final ArrayList<DispatchHandle> handles = new ArrayList<>(entries.size());
+        for (final Entry entry : entries) {
+            handles.add(entry.handle());
+        }
+        return List.copyOf(handles);
     }
 
     /**
@@ -134,25 +164,42 @@ public final class DispatchQueue implements AutoCloseable {
      * @return promoted task entries
      */
     synchronized List<Entry> promoteEntries() {
+        return List.copyOf(reserveEntries());
+    }
+
+    /**
+     * Performs one bounded ready-bucket reservation pass while the queue monitor is held.
+     */
+    private List<Entry> reserveEntries() {
         final List<Entry> promoted = new ArrayList<>();
-        final Iterator<Entry> iterator = queued.iterator();
-        while (iterator.hasNext() && running.size() < limit.max()) {
-            final Entry entry = iterator.next();
+        int budget = ready.size() + Math.max(0, limit.max() - running.size());
+        while (budget-- > 0 && !ready.isEmpty() && running.size() < limit.max()) {
+            final ReadyBucket bucket = ready.removeFirst();
+            bucket.ready = false;
+            final Entry entry = bucket.entries.pollFirst();
+            if (entry == null) {
+                buckets.remove(bucket.key, bucket);
+                continue;
+            }
             final DispatchHandle handle = entry.handle();
             if (handle.state() != Status.QUEUED || handle.future().isDone()) {
-                iterator.remove();
+                queuedEntries.remove(handle);
+                publishOrRemove(bucket);
                 continue;
             }
             final int countForKey = runningByKey.getOrDefault(handle.key(), Normal._0);
             if (!limit.canPromote(running.size(), countForKey)) {
+                bucket.entries.addFirst(entry);
+                publish(bucket);
                 continue;
             }
-            iterator.remove();
+            queuedEntries.remove(handle);
             running.put(handle, entry);
             runningByKey.put(handle.key(), countForKey + Normal._1);
             promoted.add(entry);
+            publishOrRemove(bucket);
         }
-        return List.copyOf(promoted);
+        return promoted;
     }
 
     /**
@@ -199,7 +246,13 @@ public final class DispatchQueue implements AutoCloseable {
      * @return ready snapshot
      */
     public synchronized List<DispatchHandle> queued() {
-        return queued.stream().map(Entry::handle).toList();
+        final ArrayList<Entry> entries = new ArrayList<>(queuedEntries.values());
+        entries.sort((left, right) -> Long.compare(left.sequence, right.sequence));
+        final ArrayList<DispatchHandle> handles = new ArrayList<>(entries.size());
+        for (final Entry entry : entries) {
+            handles.add(entry.handle());
+        }
+        return List.copyOf(handles);
     }
 
     /**
@@ -217,7 +270,7 @@ public final class DispatchQueue implements AutoCloseable {
      * @return true when no ready or running handles remain
      */
     public synchronized boolean idle() {
-        return queued.isEmpty() && running.isEmpty();
+        return queuedEntries.isEmpty() && running.isEmpty();
     }
 
     /**
@@ -231,10 +284,12 @@ public final class DispatchQueue implements AutoCloseable {
                 return;
             }
             closed = true;
-            handles = new ArrayList<>(queued.size() + running.size());
-            queued.stream().map(Entry::handle).forEach(handles::add);
+            handles = new ArrayList<>(queuedEntries.size() + running.size());
+            handles.addAll(queuedEntries.keySet());
             handles.addAll(running.keySet());
-            queued.clear();
+            queuedEntries.clear();
+            buckets.clear();
+            ready.clear();
             running.clear();
             runningByKey.clear();
         }
@@ -250,10 +305,7 @@ public final class DispatchQueue implements AutoCloseable {
      * @return true when retained
      */
     private boolean contains(final DispatchHandle handle) {
-        if (running.containsKey(handle)) {
-            return true;
-        }
-        return queued.stream().anyMatch(entry -> entry.handle() == handle);
+        return running.containsKey(handle) || queuedEntries.containsKey(handle);
     }
 
     /**
@@ -263,14 +315,43 @@ public final class DispatchQueue implements AutoCloseable {
      * @return true when removed
      */
     private boolean removeQueued(final DispatchHandle handle) {
-        final Iterator<Entry> iterator = queued.iterator();
-        while (iterator.hasNext()) {
-            if (iterator.next().handle() == handle) {
-                iterator.remove();
-                return true;
+        final Entry entry = queuedEntries.remove(handle);
+        if (entry == null) {
+            return false;
+        }
+        final ReadyBucket bucket = buckets.get(handle.key());
+        if (bucket != null) {
+            bucket.entries.remove(entry);
+            if (bucket.entries.isEmpty()) {
+                buckets.remove(bucket.key, bucket);
+                if (bucket.ready) {
+                    ready.remove(bucket);
+                    bucket.ready = false;
+                }
             }
         }
-        return false;
+        return true;
+    }
+
+    /**
+     * Publishes a non-empty bucket once.
+     */
+    private void publish(final ReadyBucket bucket) {
+        if (!bucket.ready && !bucket.entries.isEmpty()) {
+            bucket.ready = true;
+            ready.addLast(bucket);
+        }
+    }
+
+    /**
+     * Republishes non-empty work or removes an empty bucket.
+     */
+    private void publishOrRemove(final ReadyBucket bucket) {
+        if (bucket.entries.isEmpty()) {
+            buckets.remove(bucket.key, bucket);
+        } else {
+            publish(bucket);
+        }
     }
 
     /**
@@ -330,6 +411,11 @@ public final class DispatchQueue implements AutoCloseable {
         private final DispatchHandle handle;
 
         /**
+         * Stable diagnostic ordering.
+         */
+        private final long sequence;
+
+        /**
          * Creates a validated short-task snapshot.
          *
          * @param tag          cancellation tag
@@ -339,12 +425,13 @@ public final class DispatchQueue implements AutoCloseable {
          * @param handle       unique handle
          */
         private Entry(final Object tag, final Object owner, final Activity activity, final Cancellation cancellation,
-                final DispatchHandle handle) {
+                final DispatchHandle handle, final long sequence) {
             this.tag = tag;
             this.owner = require(owner, "Dispatch owner");
             this.activity = require(activity, "Dispatch activity");
             this.cancellation = require(cancellation, "Dispatch cancellation");
             this.handle = require(handle, "Dispatch handle");
+            this.sequence = sequence;
             Assert.isTrue(
                     this.activity == this.handle.activity(),
                     () -> new ValidateException("Dispatch entry activity must belong to its handle"));
@@ -401,6 +488,40 @@ public final class DispatchQueue implements AutoCloseable {
             return handle;
         }
 
+    }
+
+    /**
+     * FIFO work bucket for one dispatch key.
+     * <p>
+     * Queue methods access instances only while holding the enclosing queue monitor. The {@code ready} flag records
+     * whether the key is already published in the round-robin ready-key deque.
+     * </p>
+     */
+    private static final class ReadyBucket {
+
+        /**
+         * Dispatch key shared by every entry in this bucket.
+         */
+        private final String key;
+
+        /**
+         * Entries awaiting reservation in FIFO order.
+         */
+        private final ArrayDeque<Entry> entries = new ArrayDeque<>();
+
+        /**
+         * Whether this bucket currently has a token in the ready-key deque.
+         */
+        private boolean ready;
+
+        /**
+         * Creates an empty bucket for a dispatch key.
+         *
+         * @param key dispatch key
+         */
+        private ReadyBucket(final String key) {
+            this.key = key;
+        }
     }
 
 }

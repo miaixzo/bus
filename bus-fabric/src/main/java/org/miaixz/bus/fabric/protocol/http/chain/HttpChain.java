@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.http.chain;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -48,7 +48,7 @@ public final class HttpChain {
     /**
      * Ordered stages.
      */
-    private final List<HttpStage> stages;
+    private final HttpStage[] stages;
 
     /**
      * Current stage index.
@@ -71,6 +71,11 @@ public final class HttpChain {
     private final Cancellation cancellation;
 
     /**
+     * One-shot cursor state; cursors are exchange-local and synchronously consumed.
+     */
+    private boolean proceeded;
+
+    /**
      * Creates a chain.
      *
      * @param stages     stages
@@ -78,10 +83,10 @@ public final class HttpChain {
      * @param lease      leased connection
      * @param connection network connection
      */
-    private HttpChain(final List<HttpStage> stages, final int index, final ConnectionLease lease,
+    private HttpChain(final HttpStage[] stages, final int index, final ConnectionLease lease,
             final Connection connection, final Cancellation cancellation) {
-        this.stages = List.copyOf(validateStages(stages));
-        this.index = validateIndex(index, this.stages.size());
+        this.stages = stages;
+        this.index = validateIndex(index, this.stages.length);
         this.lease = lease;
         this.connection = connection;
         this.cancellation = require(cancellation, "Cancellation");
@@ -105,7 +110,7 @@ public final class HttpChain {
      * @return chain
      */
     public static HttpChain create(final List<HttpStage> stages, final Cancellation cancellation) {
-        return new HttpChain(stages, Normal._0, null, null, cancellation);
+        return new HttpChain(snapshot(stages), Normal._0, null, null, cancellation);
     }
 
     /**
@@ -117,11 +122,15 @@ public final class HttpChain {
     public HttpResponse proceed(final HttpRequest request) {
         final HttpRequest current = Assert
                 .notNull(request, () -> new ValidateException("HTTP request must not be null"));
-        if (index >= stages.size()) {
+        if (proceeded) {
+            throw new StatefulException("HTTP chain cursor has already proceeded");
+        }
+        proceeded = true;
+        if (index >= stages.length) {
             throw new StatefulException("HTTP chain is exhausted");
         }
         cancellation.throwIfCancelled();
-        final HttpStage stage = stages.get(index);
+        final HttpStage stage = stages[index];
         return stage.execute(current, new HttpChain(stages, index + 1, lease, connection, cancellation));
     }
 
@@ -133,8 +142,8 @@ public final class HttpChain {
      */
     public HttpChain add(final HttpStage stage) {
         validateStage(stage);
-        final ArrayList<HttpStage> copy = new ArrayList<>(stages);
-        copy.add(stage);
+        final HttpStage[] copy = Arrays.copyOf(stages, stages.length + Normal._1);
+        copy[stages.length] = stage;
         return new HttpChain(copy, index, lease, connection, cancellation);
     }
 
@@ -153,7 +162,16 @@ public final class HttpChain {
      * @return stages
      */
     public List<HttpStage> stages() {
-        return List.copyOf(stages);
+        return List.of(stages);
+    }
+
+    /**
+     * Creates a fresh one-shot cursor at the same downstream position for an explicit retry or follow-up attempt.
+     *
+     * @return fresh replay cursor
+     */
+    HttpChain replayFromCurrent() {
+        return new HttpChain(stages, index, lease, connection, cancellation);
     }
 
     /**
@@ -204,13 +222,13 @@ public final class HttpChain {
      * @param stages stages
      * @return stages
      */
-    private static List<HttpStage> validateStages(final List<HttpStage> stages) {
+    private static HttpStage[] snapshot(final List<HttpStage> stages) {
         final List<HttpStage> source = Assert
                 .notNull(stages, () -> new ValidateException("HTTP stages must not be null"));
         for (final HttpStage stage : source) {
             validateStage(stage);
         }
-        return source;
+        return source.toArray(HttpStage[]::new);
     }
 
     /**
@@ -246,6 +264,152 @@ public final class HttpChain {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Delivery state supplied by the network owner, never inferred from an exception class.
+     */
+    public enum DeliveryState {
+        /**
+         * No request bytes reached the peer.
+         */
+        NOT_SENT,
+        /**
+         * The peer may have received or processed part of the request.
+         */
+        MAYBE_PROCESSED,
+        /**
+         * The peer explicitly confirmed that the request was not processed.
+         */
+        PEER_CONFIRMED_UNPROCESSED
+    }
+
+    /**
+     * Failure ownership scope.
+     */
+    public enum FailureScope {
+        /**
+         * Failure is isolated to the logical request.
+         */
+        REQUEST,
+        /**
+         * Failure terminates one multiplexed stream.
+         */
+        STREAM,
+        /**
+         * Failure invalidates the underlying physical connection.
+         */
+        CONNECTION
+    }
+
+    /**
+     * Structured retry-relevant failure reason.
+     */
+    public enum FailureReason {
+        /**
+         * DNS resolution failed.
+         */
+        DNS,
+        /**
+         * Transport connection establishment failed.
+         */
+        CONNECT,
+        /**
+         * TLS negotiation or validation failed.
+         */
+        TLS,
+        /**
+         * A configured deadline expired.
+         */
+        TIMEOUT,
+        /**
+         * The caller or runtime cancelled the exchange.
+         */
+        CANCELLED,
+        /**
+         * The peer refused an HTTP/2 stream before processing it.
+         */
+        REFUSED_STREAM,
+        /**
+         * Peer GOAWAY confirmed that the stream was not processed.
+         */
+        GOAWAY_UNPROCESSED,
+        /**
+         * Network input or output failed.
+         */
+        IO,
+        /**
+         * The peer violated the active protocol.
+         */
+        PROTOCOL,
+        /**
+         * No more specific authoritative reason was available.
+         */
+        UNKNOWN
+    }
+
+    /**
+     * Structured exchange failure carrying authoritative delivery and ownership facts.
+     */
+    public static final class ExchangeFailure extends RuntimeException {
+
+        /**
+         * Authoritative request delivery state at the failure boundary.
+         */
+        private final DeliveryState deliveryState;
+
+        /**
+         * Resource ownership scope invalidated by the failure.
+         */
+        private final FailureScope scope;
+
+        /**
+         * Stable retry-relevant failure classification.
+         */
+        private final FailureReason reason;
+
+        /**
+         * Creates a structured exchange failure.
+         *
+         * @param deliveryState authoritative delivery state
+         * @param scope         invalidated ownership scope
+         * @param reason        stable failure reason
+         * @param cause         underlying failure, or {@code null}
+         */
+        public ExchangeFailure(final DeliveryState deliveryState, final FailureScope scope, final FailureReason reason,
+                final Throwable cause) {
+            super(cause == null ? "HTTP exchange failed: " + reason : cause.getMessage(), cause);
+            this.deliveryState = require(deliveryState, "Delivery state");
+            this.scope = require(scope, "Failure scope");
+            this.reason = require(reason, "Failure reason");
+        }
+
+        /**
+         * Returns the authoritative delivery state.
+         *
+         * @return delivery state
+         */
+        public DeliveryState deliveryState() {
+            return deliveryState;
+        }
+
+        /**
+         * Returns the invalidated ownership scope.
+         *
+         * @return failure scope
+         */
+        public FailureScope scope() {
+            return scope;
+        }
+
+        /**
+         * Returns the stable failure classification.
+         *
+         * @return failure reason
+         */
+        public FailureReason reason() {
+            return reason;
+        }
     }
 
 }

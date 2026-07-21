@@ -24,6 +24,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
@@ -79,6 +81,21 @@ public final class Ingress implements Connection, Conduit {
     private final Sink sink;
 
     /**
+     * Reusable bounded buffer that receives bytes directly from the socket channel.
+     */
+    private final ByteBuffer readBuffer;
+
+    /**
+     * Lock enforcing the single-reader contract around the reusable channel buffer.
+     */
+    private final ReentrantLock readLock;
+
+    /**
+     * Terminal close flag shared by the source, sink, and owning ingress.
+     */
+    private final AtomicBoolean closed;
+
+    /**
      * Creates an ingress.
      *
      * @param destination ingress destination
@@ -92,6 +109,9 @@ public final class Ingress implements Connection, Conduit {
         this.lifecycle = LifecycleScope.resource(this, "ingress", null, EventObserver.noop());
         this.source = new IngressSource();
         this.sink = new IngressSink();
+        this.readBuffer = ByteBuffer.allocateDirect(Normal._8192);
+        this.readLock = new ReentrantLock();
+        this.closed = new AtomicBoolean();
     }
 
     /**
@@ -190,14 +210,20 @@ public final class Ingress implements Connection, Conduit {
                     return CompletableFuture.completedFuture(prefix.read(target, Math.min(byteCount, prefix.size())));
                 }
             }
-            final ByteBuffer buffer = ByteBuffer.allocate(readCapacity(byteCount));
-            final int read = channel.read(buffer);
-            if (read == Normal.__1) {
-                return CompletableFuture.completedFuture((long) Normal.__1);
+            readLock.lock();
+            try {
+                readBuffer.clear();
+                readBuffer.limit(readCapacity(byteCount));
+                final int read = channel.read(readBuffer);
+                if (read == Normal.__1) {
+                    return CompletableFuture.completedFuture((long) Normal.__1);
+                }
+                readBuffer.flip();
+                target.write(readBuffer);
+                return CompletableFuture.completedFuture((long) read);
+            } finally {
+                readLock.unlock();
             }
-            buffer.flip();
-            target.write(buffer);
-            return CompletableFuture.completedFuture((long) read);
         } catch (final IOException e) {
             lifecycle.fail(e);
             return CompletableFuture.failedFuture(new SocketException("Unable to read ingress", e));
@@ -301,6 +327,9 @@ public final class Ingress implements Connection, Conduit {
      */
     @Override
     public void close() {
+        if (!closed.compareAndSet(false, true)) {
+            return;
+        }
         IOException failure = null;
         try {
             channel.close();

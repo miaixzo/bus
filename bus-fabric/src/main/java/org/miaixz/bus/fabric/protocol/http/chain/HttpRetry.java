@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.registry.policy.RetryPolicy;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * HTTP retry and redirect stage.
@@ -103,75 +102,24 @@ public final class HttpRetry implements HttpStage {
         HttpResponse prior = null;
         while (true) {
             try {
-                Logger.debug(
-                        true,
-                        "Fabric",
-                        "HTTP retry attempt started: method={}, host={}, port={}, path={}, attempt={}, followUps={}",
-                        current.method().value(),
-                        current.url().host(),
-                        current.url().port(),
-                        current.url().path(),
-                        attempt,
-                        followUps);
-                final HttpResponse response = next.proceed(current);
-                Logger.debug(
-                        false,
-                        "Fabric",
-                        "HTTP retry attempt response: method={}, host={}, port={}, path={}, code={}, attempt={}, "
-                                + "followUps={}",
-                        current.method().value(),
-                        current.url().host(),
-                        current.url().port(),
-                        current.url().path(),
-                        response.code(),
-                        attempt,
-                        followUps);
+                final HttpResponse response = next.replayFromCurrent().proceed(current);
                 final HttpRequest followUp = followUp(response);
                 if (followUp == null) {
-                    Logger.debug(
-                            false,
-                            "Fabric",
-                            "HTTP retry completed without follow-up: code={}, attempts={}",
-                            response.code(),
-                            attempt);
                     return prior == null ? response : response.toBuilder().priorResponse(prior).build();
                 }
                 if (!followUpAllowed(response.code(), followUps)) {
                     response.close();
                     throw new ProtocolException("Too many HTTP follow-ups");
                 }
-                Logger.debug(
-                        false,
-                        "Fabric",
-                        "HTTP follow-up scheduled: code={}, fromHost={}, toHost={}, sameOrigin={}, method={}, "
-                                + "followUps={}",
-                        response.code(),
-                        current.url().host(),
-                        followUp.url().host(),
-                        sameOrigin(current.url(), followUp.url()),
-                        followUp.method().value(),
-                        followUps + Normal._1);
                 prior = response.toBuilder().body(PayloadBody.empty()).priorResponse(prior).build();
                 response.close();
                 current = followUp;
                 followUps++;
                 attempt = Normal._0;
             } catch (final RuntimeException e) {
-                if (!recover(e, attempt)) {
-                    Logger.debug(
-                            false,
-                            "Fabric",
-                            "HTTP retry declined: attempt={}, exception={}",
-                            attempt,
-                            e.getClass().getSimpleName());
+                if (!recover(current, e, attempt)) {
                     throw e;
                 }
-                Logger.debug(
-                        false,
-                        "Fabric",
-                        "HTTP retry scheduled: attempt={}, exception={}",
-                        attempt + Normal._1,
-                        e.getClass().getSimpleName());
                 attempt++;
             }
         }
@@ -201,7 +149,45 @@ public final class HttpRetry implements HttpStage {
      * @return true when recoverable
      */
     public boolean recover(final Throwable cause, final int attempt) {
-        return policy.retry(require(cause, "Failure cause"), attempt);
+        final Throwable current = require(cause, "Failure cause");
+        if (!(current instanceof HttpChain.ExchangeFailure failure)) {
+            return false;
+        }
+        return retryableDelivery(failure) && retryableReason(failure)
+                && policy.retry(failure.getCause() == null ? failure : failure.getCause(), attempt);
+    }
+
+    /**
+     * Applies request replay and idempotency constraints in addition to the structured failure policy.
+     */
+    private boolean recover(final HttpRequest request, final Throwable cause, final int attempt) {
+        return idempotent(request.method()) && request.body().repeatable() && recover(cause, attempt);
+    }
+
+    /**
+     * Only network-owner-confirmed safe delivery states can be replayed.
+     */
+    private static boolean retryableDelivery(final HttpChain.ExchangeFailure failure) {
+        return failure.deliveryState() == HttpChain.DeliveryState.NOT_SENT
+                || failure.deliveryState() == HttpChain.DeliveryState.PEER_CONFIRMED_UNPROCESSED;
+    }
+
+    /**
+     * Certificate/protocol/cancellation failures are never automatically recovered.
+     */
+    private static boolean retryableReason(final HttpChain.ExchangeFailure failure) {
+        return failure.reason() != HttpChain.FailureReason.TLS && failure.reason() != HttpChain.FailureReason.PROTOCOL
+                && failure.reason() != HttpChain.FailureReason.CANCELLED;
+    }
+
+    /**
+     * RFC idempotent method set used by automatic transport retries.
+     */
+    private static boolean idempotent(final HTTP.Method method) {
+        return switch (method) {
+            case GET, HEAD, PUT, DELETE, OPTIONS, TRACE -> true;
+            default -> false;
+        };
     }
 
     /**
@@ -243,16 +229,6 @@ public final class HttpRetry implements HttpStage {
         } else {
             builder.body(PayloadBody.empty());
         }
-        Logger.debug(
-                false,
-                "Fabric",
-                "HTTP redirect built: code={}, fromHost={}, toHost={}, sameOrigin={}, method={}, preserveBody={}",
-                response.code(),
-                request.url().host(),
-                url.host(),
-                sameOrigin(request.url(), url),
-                method.value(),
-                preserveBody);
         return builder.build();
     }
 

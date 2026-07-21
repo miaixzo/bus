@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.socket.session;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,7 +26,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
@@ -97,7 +95,7 @@ public final class SocketLease {
         return acquire(
                 pool,
                 destination,
-                Timeout.of(Duration.ofSeconds(Normal._10)),
+                Timeout.of(Builder.TIMEOUT_DEFAULT_NETWORK),
                 null,
                 DnsResolver.system(),
                 FrameCodec.line(),

@@ -21,6 +21,8 @@ package org.miaixz.bus.fabric.protocol.http;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -29,7 +31,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -64,6 +65,19 @@ import org.miaixz.bus.fabric.protocol.http.cache.HttpCacheControl;
  * @since Java 21+
  */
 public final class HttpResponse implements AutoCloseable {
+
+    /**
+     * Close CAS without a per-response atomic wrapper allocation.
+     */
+    private static final VarHandle CLOSED;
+
+    static {
+        try {
+            CLOSED = MethodHandles.lookup().findVarHandle(HttpResponse.class, "closed", int.class);
+        } catch (final ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     /**
      * Request snapshot.
@@ -138,7 +152,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Closed state.
      */
-    private final AtomicBoolean closed;
+    private volatile int closed;
 
     /**
      * Lazily parsed cache control snapshot.
@@ -172,7 +186,6 @@ public final class HttpResponse implements AutoCloseable {
         this.sentRequestAtMillis = validateTimestamp(sentRequestAtMillis, "Sent request timestamp");
         this.receivedResponseAtMillis = validateTimestamp(receivedResponseAtMillis, "Received response timestamp");
         this.successful = code >= HTTP.HTTP_OK && code < HTTP.HTTP_MULT_CHOICE;
-        this.closed = new AtomicBoolean();
     }
 
     /**
@@ -604,7 +617,7 @@ public final class HttpResponse implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (closed.compareAndSet(false, true)) {
+        if (CLOSED.compareAndSet(this, 0, 1)) {
             body.close();
         }
     }
@@ -774,6 +787,10 @@ public final class HttpResponse implements AutoCloseable {
     private static HttpResponse metadataResponse(final HttpResponse response) {
         if (response == null) {
             return null;
+        }
+        if (response.body == PayloadBody.empty() && response.networkResponse == null && response.cacheResponse == null
+                && response.priorResponse == null) {
+            return response;
         }
         return new HttpResponse(response.request, response.code, response.message, response.headers,
                 PayloadBody.empty(), response.protocol, response.handshake, response.trailers, null, null, null,

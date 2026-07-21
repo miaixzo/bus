@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http.chain;
 
-import java.util.Locale;
-
 import org.miaixz.bus.core.io.source.GzipSource;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Keys;
@@ -38,7 +36,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpHeaders;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * HTTP bridge stage that prepares protocol headers and decodes bridge responses.
@@ -111,26 +108,9 @@ public final class HttpBridge implements HttpStage {
      */
     @Override
     public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
-        Logger.debug(
-                true,
-                "Fabric",
-                "HTTP bridge stage started: method={}, host={}, port={}, path={}",
-                request.method().value(),
-                request.url().host(),
-                request.url().port(),
-                request.url().path());
         final HttpRequest prepared = prepare(request);
         final HttpResponse response = receive(require(chain, "HTTP chain").proceed(prepared));
         save(response);
-        Logger.debug(
-                false,
-                "Fabric",
-                "HTTP bridge stage completed: method={}, host={}, port={}, path={}, code={}",
-                prepared.method().value(),
-                prepared.url().host(),
-                prepared.url().port(),
-                prepared.url().path(),
-                response.code());
         return response;
     }
 
@@ -142,7 +122,10 @@ public final class HttpBridge implements HttpStage {
      */
     public HttpRequest prepare(final HttpRequest request) {
         final HttpRequest source = require(request, "HTTP request");
-        Headers headers = HttpHeaders.host(source.url(), source.headers());
+        Headers headers = source.headers();
+        if (!headers.contains(HTTP.HOST)) {
+            headers = HttpHeaders.host(source.url(), headers);
+        }
         headers = setIfMissing(headers, HTTP.CONNECTION, HTTP.CONNECTION_KEEP_ALIVE);
         headers = setIfMissing(headers, HTTP.ACCEPT_ENCODING, HTTP.CONTENT_CODING_GZIP);
         headers = setIfMissing(headers, HTTP.USER_AGENT, userAgent);
@@ -150,19 +133,7 @@ public final class HttpBridge implements HttpStage {
         if (cookies != null && !headers.contains(HTTP.COOKIE)) {
             headers = HttpCookie.attach(source.url(), headers, cookies.load(source.url()));
         }
-        Logger.debug(
-                false,
-                "Fabric",
-                "HTTP bridge headers prepared: host={}, port={}, bodyLength={}, repeatable={}, "
-                        + "cookiesEnabled={}, headerNames={}",
-                source.url().host(),
-                source.url().port(),
-                source.body().length(),
-                source.body().repeatable(),
-                cookies != null,
-                headers.asMap().keySet());
-        return HttpRequest.builder().method(source.method()).url(source.url()).headers(headers).body(source.body())
-                .tag(source.tag()).proxy(source.proxy()).timeout(source.timeout()).build();
+        return headers == source.headers() ? source : source.toBuilder().headers(headers).build();
     }
 
     /**
@@ -174,22 +145,12 @@ public final class HttpBridge implements HttpStage {
     public HttpResponse receive(final HttpResponse response) {
         final HttpResponse source = require(response, "HTTP response");
         if (!gzip(source.headers())) {
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "HTTP bridge response decode skipped: code={}, gzip={}",
-                    source.code(),
-                    false);
             return source;
         }
-        Logger.debug(true, "Fabric", "HTTP bridge gzip decode started: code={}", source.code());
         final Headers headers = source.headers().without(HTTP.CONTENT_ENCODING).without(HTTP.CONTENT_LENGTH);
         final PayloadBody body = PayloadBody
                 .of(Payload.source(new GzipSource(source.body().source()), Normal.__1), source.body().media());
-        final HttpResponse decoded = HttpResponse.builder().request(source.request()).code(source.code())
-                .message(source.message()).headers(headers).body(body).build();
-        Logger.debug(false, "Fabric", "HTTP bridge gzip decode completed: code={}", source.code());
-        return decoded;
+        return source.toBuilder().headers(headers).body(body).build();
     }
 
     /**
@@ -267,7 +228,7 @@ public final class HttpBridge implements HttpStage {
      */
     private static boolean gzip(final Headers headers) {
         for (final String value : HttpHeaders.values(headers, HTTP.CONTENT_ENCODING)) {
-            if (HTTP.CONTENT_CODING_GZIP.equals(value.toLowerCase(Locale.ROOT))) {
+            if (HTTP.CONTENT_CODING_GZIP.equalsIgnoreCase(value)) {
                 return true;
             }
         }
@@ -282,13 +243,6 @@ public final class HttpBridge implements HttpStage {
     private void save(final HttpResponse response) {
         if (cookies != null) {
             cookies.save(response.request().url(), response.headers());
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "HTTP bridge cookies saved: host={}, port={}, code={}",
-                    response.request().url().host(),
-                    response.request().url().port(),
-                    response.code());
         }
     }
 

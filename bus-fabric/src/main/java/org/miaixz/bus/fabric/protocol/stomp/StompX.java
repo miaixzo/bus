@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp;
 
-import static org.miaixz.bus.fabric.Builder.*;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -312,7 +310,7 @@ public final class StompX {
             final Duration clientSendHeartbeat,
             final Duration clientReceiveHeartbeat) {
         return require(headers, "Headers").with(
-                STOMP_HEADER_HEART_BEAT,
+                org.miaixz.bus.fabric.Builder.STOMP_HEADER_HEART_BEAT,
                 heartbeatMillis(clientSendHeartbeat) + "," + heartbeatMillis(clientReceiveHeartbeat));
     }
 
@@ -444,7 +442,7 @@ public final class StompX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(OPTION_TIMEOUT);
+            final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
             this.timeout = copyTimeout(configured == null ? Timeout.defaults() : configured);
             this.clientSendHeartbeat = Duration.ZERO;
             this.clientReceiveHeartbeat = Duration.ZERO;

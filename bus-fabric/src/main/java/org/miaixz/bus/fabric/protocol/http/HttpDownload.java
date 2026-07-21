@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
-import static org.miaixz.bus.fabric.Builder.BYTES_64_KIB;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -352,7 +350,7 @@ public final class HttpDownload {
             progress(written, total);
             while (true) {
                 cancellation.throwIfCancelled();
-                final long read = input.read(buffer, BYTES_64_KIB);
+                final long read = input.read(buffer, org.miaixz.bus.fabric.Builder.BYTES_64_KIB);
                 cancellation.throwIfCancelled();
                 if (read < 0) {
                     break;

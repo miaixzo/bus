@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.time.Duration;
+import java.util.ArrayDeque;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -86,6 +87,21 @@ public final class AioChannel implements AutoCloseable {
     private final Set<Operation<?>> pending;
 
     /**
+     * FIFO requests retained until their caller-owned bytes are fully written.
+     */
+    private final ArrayDeque<WriteRequest> writes;
+
+    /**
+     * Whether a native asynchronous write currently owns the queue head.
+     */
+    private boolean writeActive;
+
+    /**
+     * Reentrancy guard that turns synchronous completion callbacks into an iterative drain.
+     */
+    private boolean writeDraining;
+
+    /**
      * Local socket address.
      */
     private volatile SocketAddress local;
@@ -118,6 +134,7 @@ public final class AioChannel implements AutoCloseable {
         this.options = options == null ? SocketOptions.defaults() : options;
         this.buffers = NioBufferAllocator.heap(this.options.readBufferSize(), Normal._4);
         this.pending = ConcurrentHashMap.newKeySet();
+        this.writes = new ArrayDeque<>();
         this.closed = new AtomicBoolean();
         applySocketOptions();
     }
@@ -283,11 +300,15 @@ public final class AioChannel implements AutoCloseable {
         if (byteCount == Normal._0) {
             return CompletableFuture.completedFuture(0L);
         }
-        final Operation<Long> operation = new Operation<>("AIO write failed", null);
-        if (operation.active()) {
-            writeChunk(checkedSource, byteCount, Normal._0, Normal._0, operation);
+        final WriteRequest request = new WriteRequest(checkedSource, byteCount);
+        synchronized (writes) {
+            if (writes.size() >= 1024) {
+                return CompletableFuture.failedFuture(new SocketException("AIO write queue is full"));
+            }
+            writes.addLast(request);
         }
-        return operation.future();
+        drainWrites();
+        return request.future;
     }
 
     /**
@@ -320,6 +341,13 @@ public final class AioChannel implements AutoCloseable {
             } catch (final IOException e) {
                 failure = new SocketException("Unable to close AIO channel", e);
             } finally {
+                synchronized (writes) {
+                    final SocketException closedFailure = new SocketException("AIO channel is closed");
+                    for (final WriteRequest request : writes) {
+                        request.future.completeExceptionally(closedFailure);
+                    }
+                    writes.clear();
+                }
                 final SocketException closedFailure = new SocketException("AIO channel is closed");
                 for (final Operation<?> operation : Set.copyOf(pending)) {
                     operation.fail(closedFailure);
@@ -464,6 +492,53 @@ public final class AioChannel implements AutoCloseable {
         } catch (final RuntimeException e) {
             operation.fail(socketFailure("AIO write failed", e));
         }
+    }
+
+    /**
+     * Starts queued writes one at a time and absorbs synchronous callback recursion.
+     */
+    private void drainWrites() {
+        synchronized (writes) {
+            if (writeDraining) {
+                return;
+            }
+            writeDraining = true;
+        }
+        while (true) {
+            final WriteRequest request;
+            synchronized (writes) {
+                if (writeActive || (request = writes.peekFirst()) == null) {
+                    writeDraining = false;
+                    return;
+                }
+                writeActive = true;
+            }
+            final Operation<Long> operation = new Operation<>("AIO write failed", null);
+            operation.future().whenComplete((value, cause) -> finishWrite(request, value, cause));
+            writeChunk(request.source, request.byteCount, Normal._0, Normal._0, operation);
+            synchronized (writes) {
+                if (writeActive) {
+                    writeDraining = false;
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * Completes one queued request and schedules the next drain.
+     */
+    private void finishWrite(final WriteRequest request, final Long value, final Throwable cause) {
+        synchronized (writes) {
+            writes.removeFirstOccurrence(request);
+            writeActive = false;
+        }
+        if (cause == null) {
+            request.future.complete(value);
+        } else {
+            request.future.completeExceptionally(cause);
+        }
+        drainWrites();
     }
 
     /**
@@ -650,6 +725,42 @@ public final class AioChannel implements AutoCloseable {
             return true;
         }
 
+    }
+
+    /**
+     * Caller-owned write retained until its requested bytes are fully drained.
+     * <p>
+     * Access is serialized by the enclosing channel write monitor, while the future may be observed by any caller
+     * thread.
+     * </p>
+     */
+    private static final class WriteRequest {
+
+        /**
+         * Source whose position advances only as bytes are accepted by the channel.
+         */
+        private final Buffer source;
+
+        /**
+         * Total number of bytes promised by this request.
+         */
+        private final long byteCount;
+
+        /**
+         * Completion carrying the written byte count or terminal failure.
+         */
+        private final CompletableFuture<Long> future = new CompletableFuture<>();
+
+        /**
+         * Creates a queued write request.
+         *
+         * @param source    caller-owned source
+         * @param byteCount bytes to write
+         */
+        private WriteRequest(final Buffer source, final long byteCount) {
+            this.source = source;
+            this.byteCount = byteCount;
+        }
     }
 
 }

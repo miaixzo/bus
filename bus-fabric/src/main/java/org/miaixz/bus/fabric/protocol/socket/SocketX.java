@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
-import static org.miaixz.bus.fabric.Builder.*;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -254,10 +252,10 @@ public final class SocketX {
      * @return TLS context or null when explicitly disabled
      */
     private static TlsContext tlsContext(final Context context) {
-        if (context.options().contains(OPTION_SOCKET_TLS_CONTEXT)) {
-            return context.options().get(OPTION_SOCKET_TLS_CONTEXT);
+        if (context.options().contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_TLS_CONTEXT)) {
+            return context.options().get(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_TLS_CONTEXT);
         }
-        final TlsContext configured = context.options().get(OPTION_TLS_CONTEXT);
+        final TlsContext configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TLS_CONTEXT);
         return configured == null ? TlsContext.defaults() : configured;
     }
 
@@ -268,11 +266,12 @@ public final class SocketX {
      * @return TLS settings
      */
     private static TlsSettings tlsSettings(final Context context) {
-        if (context.options().contains(OPTION_SOCKET_TLS_SETTINGS)) {
-            final TlsSettings configured = context.options().get(OPTION_SOCKET_TLS_SETTINGS);
+        if (context.options().contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_TLS_SETTINGS)) {
+            final TlsSettings configured = context.options()
+                    .get(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_TLS_SETTINGS);
             return configured == null ? TlsSettings.defaults() : configured;
         }
-        final TlsSettings configured = context.options().get(OPTION_TLS_SETTINGS);
+        final TlsSettings configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TLS_SETTINGS);
         return configured == null ? TlsSettings.defaults() : configured;
     }
 
@@ -290,8 +289,10 @@ public final class SocketX {
             final URI parsed = new URI(value.trim());
             final String scheme = parsed.getScheme();
             if (!Protocol.TCP.name.equalsIgnoreCase(scheme) && !Protocol.UDP.name.equalsIgnoreCase(scheme)
-                    && !Protocol.TLS.name.equalsIgnoreCase(scheme) && !SOCKET_X_KCP_SCHEME.equalsIgnoreCase(scheme)
-                    && !Protocol.SOCKET.name.equalsIgnoreCase(scheme) && !AIO_SCHEME.equalsIgnoreCase(scheme)) {
+                    && !Protocol.TLS.name.equalsIgnoreCase(scheme)
+                    && !org.miaixz.bus.fabric.Builder.SOCKET_X_KCP_SCHEME.equalsIgnoreCase(scheme)
+                    && !Protocol.SOCKET.name.equalsIgnoreCase(scheme)
+                    && !org.miaixz.bus.fabric.Builder.AIO_SCHEME.equalsIgnoreCase(scheme)) {
                 throw new ProtocolException("Socket URL must use tcp, tls, udp, kcp, socket, or aio");
             }
             Address.from(parsed);
@@ -334,6 +335,22 @@ public final class SocketX {
                 .notNull(value, () -> new ValidateException("Timeout must be non-null and non-negative"));
         Assert.isTrue(!checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
         return checked;
+    }
+
+    /**
+     * Returns whether a context options map contains socket-specific keys.
+     *
+     * @param options options
+     * @return true when socket-specific keys exist
+     */
+    private static boolean hasSocketOptions(final org.miaixz.bus.fabric.Options options) {
+        return options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_READ_BUFFER_SIZE)
+                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_SIZE)
+                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_COUNT)
+                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IO_THREADS)
+                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_OPTIONS)
+                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_RETAIN_READ_BUFFER)
+                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IDLE_TIMEOUT);
     }
 
     /**
@@ -437,7 +454,7 @@ public final class SocketX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(OPTION_TIMEOUT);
+            final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.socketOptions = hasSocketOptions(context.options()) ? SocketOptions.from(context.options())
                     : SocketOptions.defaults();
@@ -514,7 +531,7 @@ public final class SocketX {
          * @return this builder
          */
         public Builder kcp(final String host, final int port) {
-            return to(target(SOCKET_X_KCP_SCHEME, host, port));
+            return to(target(org.miaixz.bus.fabric.Builder.SOCKET_X_KCP_SCHEME, host, port));
         }
 
         /**
@@ -1026,19 +1043,6 @@ public final class SocketX {
                     .idleTimeout(socketOptions.idleTimeout()).kcpWireVersion(socketOptions.kcpWireVersion());
         }
 
-    }
-
-    /**
-     * Returns whether a context options map contains socket-specific keys.
-     *
-     * @param options options
-     * @return true when socket-specific keys exist
-     */
-    private static boolean hasSocketOptions(final org.miaixz.bus.fabric.Options options) {
-        return options.contains(OPTION_SOCKET_READ_BUFFER_SIZE) || options.contains(OPTION_SOCKET_WRITE_CHUNK_SIZE)
-                || options.contains(OPTION_SOCKET_WRITE_CHUNK_COUNT) || options.contains(OPTION_SOCKET_IO_THREADS)
-                || options.contains(OPTION_SOCKET_OPTIONS) || options.contains(OPTION_SOCKET_RETAIN_READ_BUFFER)
-                || options.contains(OPTION_SOCKET_IDLE_TIMEOUT);
     }
 
 }

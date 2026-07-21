@@ -25,6 +25,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -35,6 +36,7 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.runtime.Activity;
 
 /**
  * Worker executor that accepts only short-task entries promoted by {@link DispatchQueue}.
@@ -45,9 +47,19 @@ import org.miaixz.bus.fabric.Status;
 public final class DispatchWorker implements AutoCloseable {
 
     /**
+     * Maximum entries accepted by one dispatcher-to-worker batch.
+     */
+    private static final int MAX_BATCH = 64;
+
+    /**
      * Executor service.
      */
     private final ExecutorService executor;
+
+    /**
+     * Whether this worker owns executor shutdown.
+     */
+    private final boolean ownsExecutor;
 
     /**
      * Closed flag.
@@ -57,15 +69,16 @@ public final class DispatchWorker implements AutoCloseable {
     /**
      * Entries submitted to the executor and not yet terminated.
      */
-    private final Set<DispatchQueue.Entry> active;
+    private final Set<Object> active;
 
     /**
      * Creates a worker.
      *
      * @param executor owned executor
      */
-    private DispatchWorker(final ExecutorService executor) {
+    private DispatchWorker(final ExecutorService executor, final boolean ownsExecutor) {
         this.executor = require(executor, "Executor");
+        this.ownsExecutor = ownsExecutor;
         this.closed = new AtomicBoolean();
         this.active = ConcurrentHashMap.newKeySet();
     }
@@ -77,7 +90,9 @@ public final class DispatchWorker implements AutoCloseable {
      */
     public static DispatchWorker create() {
         try {
-            return new DispatchWorker(ThreadKit.newExecutor());
+            return new DispatchWorker(
+                    Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("fabric-dispatch-", 0L).factory()),
+                    true);
         } catch (final RuntimeException e) {
             throw new InternalException("Unable to create dispatch worker", e);
         }
@@ -90,7 +105,7 @@ public final class DispatchWorker implements AutoCloseable {
      * @return dispatch worker
      */
     public static DispatchWorker of(final ExecutorService executor) {
-        return new DispatchWorker(executor);
+        return new DispatchWorker(executor, false);
     }
 
     /**
@@ -130,6 +145,65 @@ public final class DispatchWorker implements AutoCloseable {
     }
 
     /**
+     * Executes one compatibility activity without acquiring queue permits.
+     *
+     * @param activity activity
+     * @return completion future
+     */
+    public CompletableFuture<Void> execute(final Object activity) {
+        if (!(activity instanceof Activity current)) {
+            throw new ValidateException("Dispatch activity must not be null");
+        }
+        if (closed.get()) {
+            current.cancel();
+            throw new StatefulException("Dispatch worker is closed");
+        }
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+        active.add(current);
+        try {
+            executor.execute(() -> {
+                try {
+                    current.run();
+                    if (current.cancelled()) {
+                        future.cancel(false);
+                    } else {
+                        future.complete(null);
+                    }
+                } catch (final Throwable cause) {
+                    final Throwable failure = current.failure();
+                    future.completeExceptionally(failure == null ? cause : failure);
+                } finally {
+                    active.remove(current);
+                }
+            });
+        } catch (final RejectedExecutionException failure) {
+            active.remove(current);
+            future.completeExceptionally(failure);
+            throw new StatefulException("Dispatch executor rejected activity", failure);
+        }
+        return future;
+    }
+
+    /**
+     * Submits one bounded promotion batch while preserving independent executor submissions and failure isolation.
+     *
+     * @param entries promoted entries
+     */
+    void executeBatch(final List<DispatchQueue.Entry> entries) {
+        final List<DispatchQueue.Entry> current = require(entries, "Dispatch entries");
+        if (current.size() > MAX_BATCH) {
+            throw new ValidateException("Dispatch batch must not exceed " + MAX_BATCH);
+        }
+        for (final DispatchQueue.Entry entry : current) {
+            try {
+                execute(entry);
+            } catch (final RuntimeException ignored) {
+                // The entry handle already owns the isolated terminal failure; continue the batch.
+            }
+        }
+    }
+
+    /**
      * Closes owned worker resources.
      */
     @Override
@@ -137,8 +211,16 @@ public final class DispatchWorker implements AutoCloseable {
         if (!closed.compareAndSet(false, true)) {
             return;
         }
-        for (final DispatchQueue.Entry entry : List.copyOf(active)) {
-            entry.handle().cancel();
+        for (final Object task : List.copyOf(active)) {
+            if (task instanceof DispatchQueue.Entry entry) {
+                entry.handle().cancel();
+            } else if (task instanceof Activity activity) {
+                activity.cancel();
+            }
+        }
+        if (!ownsExecutor) {
+            active.clear();
+            return;
         }
         executor.shutdownNow();
         final long deadline = System.nanoTime() + Normal._5 * 1_000_000_000L;

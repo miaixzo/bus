@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.network.tls;
 
-import static org.miaixz.bus.fabric.Builder.TLS_SETTINGS_DEFAULT_VERSIONS;
-
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -83,6 +81,16 @@ public final class TlsSettings {
     private final boolean tlsExtensions;
 
     /**
+     * Stable certificate-policy identity captured at construction.
+     */
+    private final Object certificateIdentity;
+
+    /**
+     * Precomputed complete configuration hash.
+     */
+    private final int hashCode;
+
+    /**
      * Creates immutable TLS settings.
      *
      * @param versions             versions
@@ -104,6 +112,8 @@ public final class TlsSettings {
                 .notNull(certificate, () -> new ValidateException("Certificate policy must not be null"));
         this.applicationProtocols = validateApplicationProtocols(applicationProtocols);
         this.tlsExtensions = tlsExtensions;
+        this.certificateIdentity = this.certificate.reuseIdentity();
+        this.hashCode = computeHashCode();
     }
 
     /**
@@ -130,7 +140,7 @@ public final class TlsSettings {
      * @return versions
      */
     public List<String> versions() {
-        return List.copyOf(versions);
+        return versions;
     }
 
     /**
@@ -139,7 +149,7 @@ public final class TlsSettings {
      * @return ciphers
      */
     public List<String> ciphers() {
-        return List.copyOf(ciphers);
+        return ciphers;
     }
 
     /**
@@ -184,7 +194,7 @@ public final class TlsSettings {
      * @return application protocols
      */
     public List<String> applicationProtocols() {
-        return List.copyOf(applicationProtocols);
+        return applicationProtocols;
     }
 
     /**
@@ -194,6 +204,51 @@ public final class TlsSettings {
      */
     public boolean supportsTlsExtensions() {
         return tlsExtensions;
+    }
+
+    /**
+     * Returns whether another object has the same complete TLS configuration identity.
+     *
+     * @param object other object
+     * @return true when the complete configuration is equivalent
+     */
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof TlsSettings other) || hashCode != other.hashCode) {
+            return false;
+        }
+        return verifyHostname == other.verifyHostname && tlsExtensions == other.tlsExtensions
+                && clientAuth == other.clientAuth && certificateIdentity == other.certificateIdentity
+                && versions.equals(other.versions) && ciphers.equals(other.ciphers)
+                && applicationProtocols.equals(other.applicationProtocols);
+    }
+
+    /**
+     * Returns the precomputed complete TLS configuration hash.
+     *
+     * @return configuration hash
+     */
+    @Override
+    public int hashCode() {
+        return hashCode;
+    }
+
+    /**
+     * Computes the complete TLS configuration hash once during construction.
+     *
+     * @return configuration hash
+     */
+    private int computeHashCode() {
+        int result = versions.hashCode();
+        result = 31 * result + ciphers.hashCode();
+        result = 31 * result + clientAuth.hashCode();
+        result = 31 * result + Boolean.hashCode(verifyHostname);
+        result = 31 * result + System.identityHashCode(certificateIdentity);
+        result = 31 * result + applicationProtocols.hashCode();
+        return 31 * result + Boolean.hashCode(tlsExtensions);
     }
 
     /**
@@ -362,7 +417,7 @@ public final class TlsSettings {
          * Creates a builder with safe defaults.
          */
         private Builder() {
-            this.versions = TLS_SETTINGS_DEFAULT_VERSIONS;
+            this.versions = org.miaixz.bus.fabric.Builder.TLS_SETTINGS_DEFAULT_VERSIONS;
             this.ciphers = List.of();
             this.clientAuth = TlsClientAuth.NONE;
             this.verifyHostname = true;

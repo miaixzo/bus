@@ -20,7 +20,7 @@
 package org.miaixz.bus.fabric.runtime;
 
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -30,8 +30,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Lifecycle;
 import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.observe.EventObserver;
-import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
@@ -43,6 +41,31 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class Activity implements Runnable, Lifecycle {
 
     /**
+     * Activity has been accepted but has not started running.
+     */
+    private static final int QUEUED = 0;
+
+    /**
+     * Activity action is currently running.
+     */
+    private static final int RUNNING = 1;
+
+    /**
+     * Activity action completed successfully.
+     */
+    private static final int DONE = 2;
+
+    /**
+     * Activity action terminated with a retained failure.
+     */
+    private static final int FAILED = 3;
+
+    /**
+     * Activity was cancelled before a successful terminal transition.
+     */
+    private static final int CANCELLED = 4;
+
+    /**
      * Activity name.
      */
     private final String name;
@@ -50,17 +73,25 @@ public final class Activity implements Runnable, Lifecycle {
     /**
      * Runnable work.
      */
-    private final Runnable runnable;
+    private volatile Runnable action;
 
     /**
      * Lifecycle state.
      */
-    private final LifecycleScope scope;
+    private final Cancellation cancellation;
 
     /**
-     * Failure cause.
+     * Atomic lifecycle state encoded by the state constants in this class.
      */
-    private final AtomicReference<Throwable> failure;
+    private final AtomicInteger state;
+
+    /**
+     * First action failure retained for diagnostics.
+     * <p>
+     * The reference is cleared only with the activity instance and is never replaced by later terminal attempts.
+     * </p>
+     */
+    private volatile Throwable failure;
 
     /**
      * Creates an activity.
@@ -81,10 +112,9 @@ public final class Activity implements Runnable, Lifecycle {
      */
     private Activity(final String name, final Runnable runnable, final Cancellation cancellation) {
         this.name = validateName(name);
-        this.runnable = require(runnable, "Runnable");
-        this.scope = LifecycleScope.resource(this, this.name, null, EventObserver.noop());
-        this.scope.own(require(cancellation, "Cancellation")::cancel);
-        this.failure = new AtomicReference<>();
+        this.action = require(runnable, "Runnable");
+        this.cancellation = require(cancellation, "Cancellation");
+        this.state = new AtomicInteger(QUEUED);
     }
 
     /**
@@ -125,7 +155,14 @@ public final class Activity implements Runnable, Lifecycle {
      * @return lifecycle state
      */
     public Status state() {
-        return scope.state();
+        return switch (state.get()) {
+            case QUEUED -> Status.QUEUED;
+            case RUNNING -> Status.RUNNING;
+            case DONE -> Status.DONE;
+            case FAILED -> Status.FAILED;
+            case CANCELLED -> Status.CANCELLED;
+            default -> throw new IllegalStateException("Unknown activity state");
+        };
     }
 
     /**
@@ -134,7 +171,7 @@ public final class Activity implements Runnable, Lifecycle {
      * @return cancellation scope
      */
     public Cancellation cancellation() {
-        return scope.cancellation();
+        return cancellation;
     }
 
     /**
@@ -143,7 +180,17 @@ public final class Activity implements Runnable, Lifecycle {
      * @return true when this invocation changed the state
      */
     public boolean cancel() {
-        return scope.cancel(new CancellationException("Activity cancelled: " + name));
+        while (true) {
+            final int current = state.get();
+            if (current != QUEUED && current != RUNNING) {
+                return false;
+            }
+            if (state.compareAndSet(current, CANCELLED)) {
+                action = null;
+                cancellation.cancel(new CancellationException("Activity cancelled: " + name));
+                return true;
+            }
+        }
     }
 
     /**
@@ -152,7 +199,7 @@ public final class Activity implements Runnable, Lifecycle {
      * @return true when cancelled
      */
     public boolean cancelled() {
-        return scope.state() == Status.CANCELLED || scope.cancellation().cancelled();
+        return state.get() == CANCELLED;
     }
 
     /**
@@ -160,25 +207,28 @@ public final class Activity implements Runnable, Lifecycle {
      */
     @Override
     public void run() {
-        if (!scope.start()) {
-            throw new StatefulException("Activity cannot be run from state " + scope.state());
+        if (!state.compareAndSet(QUEUED, RUNNING)) {
+            throw new StatefulException("Activity cannot be run from state " + state());
         }
+        final Runnable current = action;
         try {
-            scope.cancellation().throwIfCancelled();
-            runnable.run();
-            if (scope.cancellation().cancelled()) {
-                scope.cancel(new CancellationException("Activity cancelled: " + name));
+            cancellation.throwIfCancelled();
+            current.run();
+            if (cancellation.cancelled()) {
+                state.compareAndSet(RUNNING, CANCELLED);
             } else {
-                scope.complete();
+                state.compareAndSet(RUNNING, DONE);
             }
         } catch (final RuntimeException e) {
-            failure.set(e);
-            if (e instanceof CancellationException || scope.cancellation().cancelled()) {
-                scope.cancel(e);
+            failure = e;
+            if (e instanceof CancellationException || cancellation.cancelled()) {
+                state.compareAndSet(RUNNING, CANCELLED);
                 throw e;
             }
-            scope.fail(e);
+            state.compareAndSet(RUNNING, FAILED);
             throw new InternalException("Activity failed", e);
+        } finally {
+            action = null;
         }
     }
 
@@ -188,7 +238,7 @@ public final class Activity implements Runnable, Lifecycle {
      * @return failure cause or null
      */
     public Throwable failure() {
-        return failure.get();
+        return failure;
     }
 
     /**

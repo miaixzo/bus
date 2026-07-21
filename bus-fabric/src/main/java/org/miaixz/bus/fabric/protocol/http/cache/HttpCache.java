@@ -924,6 +924,18 @@ public final class HttpCache implements AutoCloseable {
     }
 
     /**
+     * Validates required value.
+     *
+     * @param value value
+     * @param name  name
+     * @param <T>   type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Open cache payload that closes the source and its owning snapshot together.
      */
     private static final class OpenedPayload implements Payload, AutoCloseable {
@@ -1163,18 +1175,6 @@ public final class HttpCache implements AutoCloseable {
             failureCallback.run();
         }
 
-    }
-
-    /**
-     * Validates required value.
-     *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

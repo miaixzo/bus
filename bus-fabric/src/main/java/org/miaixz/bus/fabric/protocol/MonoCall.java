@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.fabric.protocol;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.time.Duration;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
@@ -54,6 +54,29 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public abstract class MonoCall<T> implements Call<T> {
 
     /**
+     * Submission CAS without allocating a per-call atomic wrapper.
+     */
+    private static final VarHandle SUBMITTED;
+
+    /**
+     * Pending terminal outcome marker.
+     */
+    private static final Object PENDING = new Object();
+
+    /**
+     * Encoded successful null result.
+     */
+    private static final Object NULL_RESULT = new Object();
+
+    static {
+        try {
+            SUBMITTED = MethodHandles.lookup().findVarHandle(MonoCall.class, "submitted", int.class);
+        } catch (final ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    /**
      * Call name.
      */
     private final String name;
@@ -71,22 +94,27 @@ public abstract class MonoCall<T> implements Call<T> {
     /**
      * Atomic guard allowing exactly one submission path.
      */
-    private final AtomicBoolean submitted;
+    private volatile int submitted;
 
     /**
      * Result future.
      */
-    private final CompletableFuture<T> future;
+    private volatile CompletableFuture<T> future;
 
     /**
      * Dispatch handle.
      */
-    private final AtomicReference<DispatchHandle> handle;
+    private volatile DispatchHandle handle;
 
     /**
      * Safe callback.
      */
-    private final Callback<T> callback;
+    private volatile Callback<? super T> callback;
+
+    /**
+     * Result or failure retained only until a lazy future observes the terminal state.
+     */
+    private volatile Object outcome;
 
     /**
      * Creates a call template.
@@ -112,10 +140,8 @@ public abstract class MonoCall<T> implements Call<T> {
         this.name = Assert.notBlank(name, () -> new ValidateException("Call name must not be blank"));
         this.dispatcher = dispatcher;
         this.scope = LifecycleScope.call(this.name, observer);
-        this.submitted = new AtomicBoolean();
-        this.future = new CompletableFuture<>();
-        this.handle = new AtomicReference<>();
-        this.callback = safe(callback);
+        this.callback = callback;
+        this.outcome = PENDING;
     }
 
     /**
@@ -235,7 +261,7 @@ public abstract class MonoCall<T> implements Call<T> {
      * @return result future
      */
     protected final CompletableFuture<T> future() {
-        return future;
+        return completionFuture();
     }
 
     /**
@@ -299,8 +325,10 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     @Override
     public boolean cancelled() {
-        final DispatchHandle current = handle.get();
-        return Call.super.cancelled() || future.isCancelled() || current != null && current.cancelled();
+        final DispatchHandle current = handle;
+        final CompletableFuture<T> completion = future;
+        return Call.super.cancelled() || completion != null && completion.isCancelled()
+                || current != null && current.cancelled();
     }
 
     /**
@@ -310,7 +338,8 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     @Override
     public boolean done() {
-        return Call.super.done() || future.isDone();
+        final CompletableFuture<T> completion = future;
+        return Call.super.done() || completion != null && completion.isDone();
     }
 
     /**
@@ -344,7 +373,7 @@ public abstract class MonoCall<T> implements Call<T> {
      * @param entry start entry name
      */
     private void claimSubmission(final String entry) {
-        if (!submitted.compareAndSet(false, true)) {
+        if (!SUBMITTED.compareAndSet(this, 0, 1)) {
             throw new StatefulException(name + " was already submitted; cannot " + entry);
         }
     }
@@ -353,7 +382,7 @@ public abstract class MonoCall<T> implements Call<T> {
      * Starts this call once when await is the first entry.
      */
     private void startForAwait() {
-        if (!submitted.compareAndSet(false, true)) {
+        if (!SUBMITTED.compareAndSet(this, 0, 1)) {
             return;
         }
         if (scope.state().terminal()) {
@@ -378,8 +407,9 @@ public abstract class MonoCall<T> implements Call<T> {
             final DispatchHandle enqueued = Assert.notNull(
                     target.enqueue(dispatchKey(), activity),
                     () -> new ValidateException("Dispatcher returned a null handle"));
-            handle.set(enqueued);
-            if (scope.state() == Status.CANCELLED || future.isCancelled()) {
+            handle = enqueued;
+            final CompletableFuture<T> completion = future;
+            if (scope.state() == Status.CANCELLED || completion != null && completion.isCancelled()) {
                 enqueued.cancel();
             }
             return this;
@@ -409,14 +439,15 @@ public abstract class MonoCall<T> implements Call<T> {
             }
             scope.cancellation().throwIfCancelled();
             final T value = perform();
-            if (scope.state() == Status.CANCELLED || scope.cancellation().cancelled() || future.isCancelled()) {
+            final CompletableFuture<T> completion = future;
+            if (scope.state() == Status.CANCELLED || scope.cancellation().cancelled()
+                    || completion != null && completion.isCancelled()) {
                 throw closeAfterCancellation(value, cancellationFailure());
             }
-            if (!scope.complete()) {
+            if (!finishSuccess(value)) {
                 throw closeAfterCancellation(value, cancellationFailure());
             }
-            future.complete(value);
-            callback.success(value);
+            notifySuccess(value);
             return value;
         } catch (final CancellationException e) {
             try {
@@ -466,17 +497,71 @@ public abstract class MonoCall<T> implements Call<T> {
     }
 
     /**
+     * Publishes a successful terminal outcome and completes a previously requested future.
+     */
+    private boolean finishSuccess(final T value) {
+        synchronized (this) {
+            outcome = value == null ? NULL_RESULT : value;
+            if (!scope.complete()) {
+                outcome = PENDING;
+                return false;
+            }
+            final CompletableFuture<T> completion = future;
+            if (completion != null) {
+                completion.complete(value);
+                outcome = PENDING;
+            }
+            handle = null;
+            return true;
+        }
+    }
+
+    /**
+     * Creates the completion holder only when an asynchronous observer actually needs it.
+     */
+    @SuppressWarnings("unchecked")
+    private synchronized CompletableFuture<T> completionFuture() {
+        CompletableFuture<T> completion = future;
+        if (completion != null) {
+            return completion;
+        }
+        completion = new CompletableFuture<>();
+        future = completion;
+        final Status state = scope.state();
+        if (state == Status.DONE) {
+            completion.complete(outcome == NULL_RESULT ? null : (T) outcome);
+            outcome = PENDING;
+        } else if (state == Status.CANCELLED) {
+            completion.cancel(false);
+        } else if (state == Status.FAILED) {
+            completion.completeExceptionally((Throwable) outcome);
+            outcome = PENDING;
+        }
+        return completion;
+    }
+
+    /**
      * Completes cancellation, future cancellation, owned work cleanup, and callback once.
      *
      * @param cause cancellation cause
      * @return true when cancellation changed the lifecycle
      */
     private boolean finishCancellation(final CancellationException cause) {
-        if (!scope.cancel(cause)) {
-            return false;
+        final DispatchHandle current;
+        final CompletableFuture<T> completion;
+        synchronized (this) {
+            if (!scope.cancel(cause)) {
+                return false;
+            }
+            outcome = PENDING;
+            current = handle;
+            handle = null;
+            completion = future;
+            if (completion != null) {
+                completion.cancel(false);
+            }
         }
         RuntimeException cleanupFailure = null;
-        final DispatchHandle current = handle.get();
         if (current != null) {
             try {
                 current.cancel();
@@ -484,7 +569,6 @@ public abstract class MonoCall<T> implements Call<T> {
                 cleanupFailure = e;
             }
         }
-        future.cancel(false);
         try {
             cancelRunning();
         } catch (final RuntimeException e) {
@@ -494,7 +578,7 @@ public abstract class MonoCall<T> implements Call<T> {
                 cleanupFailure.addSuppressed(e);
             }
         }
-        callback.failure(cause);
+        notifyFailure(cause);
         if (cleanupFailure != null) {
             throw cleanupFailure;
         }
@@ -507,9 +591,23 @@ public abstract class MonoCall<T> implements Call<T> {
      * @param cause failure cause
      */
     private void finishFailure(final Throwable cause) {
-        if (scope.fail(cause)) {
-            future.completeExceptionally(cause);
-            callback.failure(cause);
+        final boolean changed;
+        synchronized (this) {
+            outcome = cause;
+            changed = scope.fail(cause);
+            if (changed) {
+                final CompletableFuture<T> completion = future;
+                if (completion != null) {
+                    completion.completeExceptionally(cause);
+                    outcome = PENDING;
+                }
+                handle = null;
+            } else {
+                outcome = PENDING;
+            }
+        }
+        if (changed) {
+            notifyFailure(cause);
         }
     }
 
@@ -519,8 +617,9 @@ public abstract class MonoCall<T> implements Call<T> {
      * @return result
      */
     private T awaitFuture() {
+        final CompletableFuture<T> completion = completionFuture();
         try {
-            return future.get();
+            return completion.get();
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new InternalException("Interrupted while waiting for " + name, e);
@@ -537,14 +636,15 @@ public abstract class MonoCall<T> implements Call<T> {
      * @return result
      */
     private T awaitFuture(final Duration timeout, final long nanos) {
+        final CompletableFuture<T> completion = completionFuture();
         if (timeout.isZero()) {
-            if (!future.isDone()) {
+            if (!completion.isDone()) {
                 throw cancelForTimeout(new TimeoutException(name + " timed out"));
             }
             return awaitFuture();
         }
         try {
-            return future.get(nanos, TimeUnit.NANOSECONDS);
+            return completion.get(nanos, TimeUnit.NANOSECONDS);
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new InternalException("Interrupted while waiting for " + name, e);
@@ -617,113 +717,42 @@ public abstract class MonoCall<T> implements Call<T> {
     }
 
     /**
-     * Wraps a callback with failure isolation.
-     *
-     * @param callback callback
-     * @param <T>      value type
-     * @return safe callback
+     * Invokes and clears the optional callback after a successful terminal transition.
      */
-    private <T> Callback<T> safe(final Callback<? super T> callback) {
-        return new SafeCallback<>(callback == null ? noopCallback() : callback);
+    private void notifySuccess(final T value) {
+        final Callback<? super T> current = takeCallback();
+        if (current == null) {
+            return;
+        }
+        try {
+            current.success(value);
+        } catch (final RuntimeException | Error e) {
+            scope.emit(ObservationMarker.LISTENER_FAILED, e);
+        }
     }
 
     /**
-     * Returns a no-operation callback.
-     *
-     * @param <T> value type
-     * @return no-operation callback
+     * Invokes and clears the optional callback after a failed or cancelled terminal transition.
      */
-    @SuppressWarnings("unchecked")
-    private static <T> Callback<T> noopCallback() {
-        return (Callback<T>) NoopCallback.INSTANCE;
+    private void notifyFailure(final Throwable cause) {
+        final Callback<? super T> current = takeCallback();
+        if (current == null) {
+            return;
+        }
+        try {
+            current.failure(cause);
+        } catch (final RuntimeException | Error e) {
+            scope.emit(ObservationMarker.LISTENER_FAILED, e);
+        }
     }
 
     /**
-     * No-operation callback.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
+     * Removes the callback strong reference exactly once.
      */
-    private enum NoopCallback implements Callback<Object> {
-
-        /**
-         * Singleton no-operation callback.
-         */
-        INSTANCE;
-
-        /**
-         * Receives a successful value.
-         *
-         * @param value successful value
-         */
-        @Override
-        public void success(final Object value) {
-            // No-op callback intentionally ignores successful values.
-        }
-
-        /**
-         * Receives a failure cause.
-         *
-         * @param cause failure cause
-         */
-        @Override
-        public void failure(final Throwable cause) {
-            // No-op callback intentionally ignores failures.
-        }
-
-    }
-
-    /**
-     * Safe callback wrapper.
-     *
-     * @param <T> value type
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    private final class SafeCallback<T> implements Callback<T> {
-
-        /**
-         * Delegate callback.
-         */
-        private final Callback<? super T> delegate;
-
-        /**
-         * Creates a safe callback.
-         *
-         * @param delegate delegate callback
-         */
-        private SafeCallback(final Callback<? super T> delegate) {
-            this.delegate = Assert.notNull(delegate, () -> new ValidateException("Callback must not be null"));
-        }
-
-        /**
-         * Receives a successful value.
-         *
-         * @param value successful value
-         */
-        @Override
-        public void success(final T value) {
-            try {
-                delegate.success(value);
-            } catch (final RuntimeException | Error e) {
-                scope.emit(ObservationMarker.LISTENER_FAILED, e);
-            }
-        }
-
-        /**
-         * Receives a failure cause.
-         *
-         * @param cause failure cause
-         */
-        @Override
-        public void failure(final Throwable cause) {
-            try {
-                delegate.failure(cause);
-            } catch (final RuntimeException | Error e) {
-                scope.emit(ObservationMarker.LISTENER_FAILED, e);
-            }
-        }
-
+    private synchronized Callback<? super T> takeCallback() {
+        final Callback<? super T> current = callback;
+        callback = null;
+        return current;
     }
 
 }

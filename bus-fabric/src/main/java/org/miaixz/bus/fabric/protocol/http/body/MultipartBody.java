@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
-import static org.miaixz.bus.fabric.Builder.*;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -142,6 +140,130 @@ public final class MultipartBody implements RequestBody {
     @Override
     public Payload payload() {
         return payload;
+    }
+
+    /**
+     * Builds a part header segment.
+     *
+     * @param boundary boundary
+     * @param part     part
+     * @return header bytes
+     */
+    private static byte[] headerBytes(final String boundary, final Part part) {
+        final StringBuilder builder = new StringBuilder("--").append(boundary).append(Symbol.CRLF);
+        for (final Map.Entry<String, List<String>> entry : part.headers().asMap().entrySet()) {
+            for (final String value : entry.getValue()) {
+                builder.append(entry.getKey()).append(": ").append(value).append(Symbol.CRLF);
+            }
+        }
+        builder.append(Symbol.CRLF);
+        return ByteString.encodeString(builder.toString(), org.miaixz.bus.core.lang.Charset.UTF_8).toByteArray();
+    }
+
+    /**
+     * Builds part headers.
+     *
+     * @param name     part name
+     * @param filename file name
+     * @param media    media type
+     * @param length   payload length
+     * @return headers
+     */
+    private static Headers partHeaders(
+            final String name,
+            final String filename,
+            final MediaType media,
+            final long length) {
+        Assert.isFalse(length < Normal.__1, () -> new ProtocolException("Part content length must be -1 or greater"));
+        final Headers.Builder builder = Headers.builder().add(HTTP.CONTENT_DISPOSITION, disposition(name, filename));
+        if (media != null) {
+            builder.add(HTTP.CONTENT_TYPE, media.value());
+        }
+        if (length >= 0) {
+            builder.add(HTTP.CONTENT_LENGTH, Long.toString(length));
+        }
+        return builder.build();
+    }
+
+    /**
+     * Builds a Content-Disposition header value.
+     *
+     * @param name     part name
+     * @param filename file name
+     * @return header value
+     */
+    private static String disposition(final String name, final String filename) {
+        final StringBuilder builder = new StringBuilder("form-data; name=").append(Symbol.DOUBLE_QUOTES)
+                .append(quote(name)).append(Symbol.DOUBLE_QUOTES);
+        if (filename != null) {
+            builder.append(Symbol.SEMICOLON).append(Symbol.SPACE).append("filename=").append(Symbol.DOUBLE_QUOTES)
+                    .append(quote(filename)).append(Symbol.DOUBLE_QUOTES);
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Escapes a quoted header parameter.
+     *
+     * @param value parameter value
+     * @return escaped value
+     */
+    private static String quote(final String value) {
+        return value.replace(Symbol.BACKSLASH, Symbol.BACKSLASH + Symbol.BACKSLASH)
+                .replace(Symbol.DOUBLE_QUOTES, Symbol.BACKSLASH + Symbol.DOUBLE_QUOTES);
+    }
+
+    /**
+     * Validates a part name value.
+     *
+     * @param value value
+     * @param name  value name
+     * @return validated value
+     */
+    private static String validatePartName(final String value, final String name) {
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException(name + " must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(name + " must be non-blank and single-line"));
+        return checked;
+    }
+
+    /**
+     * Validates a part payload.
+     *
+     * @param payload payload
+     */
+    private static void validatePartPayload(final Payload payload) {
+        Assert.notNull(payload, () -> new ValidateException("Part payload must not be null"));
+    }
+
+    /**
+     * Builds the closing boundary segment.
+     *
+     * @param boundary boundary
+     * @return closing bytes
+     */
+    private static byte[] closingBytes(final String boundary) {
+        return ByteString.encodeString("--" + boundary + "--" + Symbol.CRLF, org.miaixz.bus.core.lang.Charset.UTF_8)
+                .toByteArray();
+    }
+
+    /**
+     * Validates boundary.
+     *
+     * @param boundary boundary
+     * @return boundary
+     */
+    private static String validateBoundary(final String boundary) {
+        final String checked = Assert.notBlank(
+                boundary,
+                () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
+        Assert.isFalse(checked.length() > Normal._70, () -> new ProtocolException("Multipart boundary is too long"));
+        return checked;
     }
 
     /**
@@ -360,7 +482,8 @@ public final class MultipartBody implements RequestBody {
             final String current = validateBoundary(boundary == null ? ID.fastSimpleUUID() : boundary);
             final List<Part> snapshot = List.copyOf(parts);
             final MediaType media = new MediaType(MediaType.MULTIPART_FORM_DATA_TYPE.type(),
-                    MediaType.MULTIPART_FORM_DATA_TYPE.subtype(), Map.of(MULTIPART_BODY_BOUNDARY_PARAMETER, current));
+                    MediaType.MULTIPART_FORM_DATA_TYPE.subtype(),
+                    Map.of(org.miaixz.bus.fabric.Builder.MULTIPART_BODY_BOUNDARY_PARAMETER, current));
             return new MultipartBody(current, snapshot, media, new MultipartPayload(current, snapshot));
         }
 
@@ -430,7 +553,7 @@ public final class MultipartBody implements RequestBody {
          */
         @Override
         public byte[] bytes() {
-            return bytes(DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(org.miaixz.bus.fabric.Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**
@@ -452,7 +575,7 @@ public final class MultipartBody implements RequestBody {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, org.miaixz.bus.fabric.Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
         }
 
         /**
@@ -630,130 +753,6 @@ public final class MultipartBody implements RequestBody {
             return new Buffer().write(bytes);
         }
 
-    }
-
-    /**
-     * Builds a part header segment.
-     *
-     * @param boundary boundary
-     * @param part     part
-     * @return header bytes
-     */
-    private static byte[] headerBytes(final String boundary, final Part part) {
-        final StringBuilder builder = new StringBuilder("--").append(boundary).append(Symbol.CRLF);
-        for (final Map.Entry<String, List<String>> entry : part.headers().asMap().entrySet()) {
-            for (final String value : entry.getValue()) {
-                builder.append(entry.getKey()).append(": ").append(value).append(Symbol.CRLF);
-            }
-        }
-        builder.append(Symbol.CRLF);
-        return ByteString.encodeString(builder.toString(), org.miaixz.bus.core.lang.Charset.UTF_8).toByteArray();
-    }
-
-    /**
-     * Builds part headers.
-     *
-     * @param name     part name
-     * @param filename file name
-     * @param media    media type
-     * @param length   payload length
-     * @return headers
-     */
-    private static Headers partHeaders(
-            final String name,
-            final String filename,
-            final MediaType media,
-            final long length) {
-        Assert.isFalse(length < Normal.__1, () -> new ProtocolException("Part content length must be -1 or greater"));
-        final Headers.Builder builder = Headers.builder().add(HTTP.CONTENT_DISPOSITION, disposition(name, filename));
-        if (media != null) {
-            builder.add(HTTP.CONTENT_TYPE, media.value());
-        }
-        if (length >= 0) {
-            builder.add(HTTP.CONTENT_LENGTH, Long.toString(length));
-        }
-        return builder.build();
-    }
-
-    /**
-     * Builds a Content-Disposition header value.
-     *
-     * @param name     part name
-     * @param filename file name
-     * @return header value
-     */
-    private static String disposition(final String name, final String filename) {
-        final StringBuilder builder = new StringBuilder("form-data; name=").append(Symbol.DOUBLE_QUOTES)
-                .append(quote(name)).append(Symbol.DOUBLE_QUOTES);
-        if (filename != null) {
-            builder.append(Symbol.SEMICOLON).append(Symbol.SPACE).append("filename=").append(Symbol.DOUBLE_QUOTES)
-                    .append(quote(filename)).append(Symbol.DOUBLE_QUOTES);
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Escapes a quoted header parameter.
-     *
-     * @param value parameter value
-     * @return escaped value
-     */
-    private static String quote(final String value) {
-        return value.replace(Symbol.BACKSLASH, Symbol.BACKSLASH + Symbol.BACKSLASH)
-                .replace(Symbol.DOUBLE_QUOTES, Symbol.BACKSLASH + Symbol.DOUBLE_QUOTES);
-    }
-
-    /**
-     * Validates a part name value.
-     *
-     * @param value value
-     * @param name  value name
-     * @return validated value
-     */
-    private static String validatePartName(final String value, final String name) {
-        final String checked = Assert
-                .notBlank(value, () -> new ValidateException(name + " must be non-blank and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException(name + " must be non-blank and single-line"));
-        return checked;
-    }
-
-    /**
-     * Validates a part payload.
-     *
-     * @param payload payload
-     */
-    private static void validatePartPayload(final Payload payload) {
-        Assert.notNull(payload, () -> new ValidateException("Part payload must not be null"));
-    }
-
-    /**
-     * Builds the closing boundary segment.
-     *
-     * @param boundary boundary
-     * @return closing bytes
-     */
-    private static byte[] closingBytes(final String boundary) {
-        return ByteString.encodeString("--" + boundary + "--" + Symbol.CRLF, org.miaixz.bus.core.lang.Charset.UTF_8)
-                .toByteArray();
-    }
-
-    /**
-     * Validates boundary.
-     *
-     * @param boundary boundary
-     * @return boundary
-     */
-    private static String validateBoundary(final String boundary) {
-        final String checked = Assert.notBlank(
-                boundary,
-                () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
-        Assert.isFalse(checked.length() > Normal._70, () -> new ProtocolException("Multipart boundary is too long"));
-        return checked;
     }
 
 }

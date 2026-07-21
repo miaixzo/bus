@@ -21,10 +21,15 @@ package org.miaixz.bus.fabric.network.dns;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.SocketException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.NetKit;
+import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.fabric.Clock;
 
 /**
  * Host resolver contract with a default JDK DNS implementation.
@@ -47,6 +52,36 @@ public interface Resolver {
         } catch (final UnknownHostException e) {
             throw new SocketException("Unable to resolve host " + validHost, e);
         }
+    }
+
+    /**
+     * Resolves one immutable result with explicit no-TTL metadata for legacy resolver implementations.
+     *
+     * <p>
+     * This compatibility method invokes {@link #resolve(String)} exactly once. Caching, asynchronous execution, waiter
+     * cancellation, and monotonic expiry remain responsibilities of {@link DnsResolver}.
+     * </p>
+     *
+     * @param host  host
+     * @param clock operation clock
+     * @return immutable resolution result
+     */
+    default DnsResult resolveResult(final String host, final Clock clock) {
+        final String normalized = NetKit.normalizeHost(host, "Resolver host");
+        final Clock operationClock = Assert
+                .notNull(clock, () -> new ValidateException("Resolver clock must not be null"));
+        final long started = operationClock.nanos();
+        final List<InetAddress> addresses = resolve(normalized);
+        if (addresses == null || addresses.isEmpty()) {
+            throw new SocketException("DNS returned no address for " + normalized);
+        }
+        for (final InetAddress address : addresses) {
+            if (address == null) {
+                throw new SocketException("DNS returned a null address for " + normalized);
+            }
+        }
+        final long elapsed = Math.max(0L, operationClock.nanos() - started);
+        return DnsResult.of(normalized, addresses, operationClock.now(), Builder.DNS_NO_TTL, Duration.ofNanos(elapsed));
     }
 
     /**

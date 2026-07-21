@@ -19,9 +19,10 @@
 */
 package org.miaixz.bus.fabric.network.dns;
 
-import java.net.InetAddress;
-import java.time.Duration;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.instance.Instances;
@@ -34,6 +35,8 @@ import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
+import org.miaixz.bus.fabric.runtime.Activity;
+import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 
 /**
  * DNS resolver with observer events and system fallback.
@@ -54,15 +57,42 @@ public final class DnsResolver {
     private final EventObserver observer;
 
     /**
+     * Shared cache and in-flight resolutions.
+     */
+    private final State state;
+
+    /**
+     * Borrowed runtime clock, or {@code null} for synchronous compatibility.
+     */
+    private final Clock runtimeClock;
+
+    /**
+     * Borrowed runtime dispatcher, or {@code null} for synchronous compatibility.
+     */
+    private final Dispatcher dispatcher;
+
+    /**
      * Creates a DNS resolver.
      *
      * @param backend  resolver backend
      * @param observer observer
      */
     private DnsResolver(final Resolver backend, final EventObserver observer) {
+        this(backend, observer, new State(), null, null);
+    }
+
+    /**
+     * Creates a resolver view over shared state.
+     */
+    private DnsResolver(final Resolver backend, final EventObserver observer, final State state,
+            final Clock runtimeClock, final Dispatcher dispatcher) {
         this.backend = Assert.notNull(backend, () -> new ValidateException("Resolver must not be null"));
-        this.observer = EventObserver
-                .safe(Assert.notNull(observer, () -> new ValidateException("Observer must not be null")));
+        final EventObserver checked = Assert
+                .notNull(observer, () -> new ValidateException("Observer must not be null"));
+        this.observer = checked == EventObserver.noop() ? checked : EventObserver.safe(checked);
+        this.state = state;
+        this.runtimeClock = runtimeClock;
+        this.dispatcher = dispatcher;
     }
 
     /**
@@ -106,30 +136,78 @@ public final class DnsResolver {
     public DnsResult resolve(final String host, final Clock clock) {
         final String normalized = NetKit.normalizeHost(host, "DNS host");
         final Clock operationClock = Assert.notNull(clock, () -> new ValidateException("DNS clock must not be null"));
-        final String operationId = ID.objectId();
-        final long started = operationClock.nanos();
-        emit(ObservationMarker.DNS_START, normalized, null, operationClock, operationId);
-        List<InetAddress> addresses;
+        final long now = operationClock.nanos();
+        final CacheEntry cached = state.cache.get(normalized);
+        if (cached != null && cached.expiresAt > now) {
+            return cached.result;
+        }
+        if (cached != null) {
+            state.cache.remove(normalized, cached);
+        }
+        final CompletableFuture<DnsResult> created = new CompletableFuture<>();
+        final CompletableFuture<DnsResult> existing = state.inFlight.putIfAbsent(normalized, created);
+        if (existing != null) {
+            return await(existing);
+        }
         try {
-            addresses = backend.resolve(normalized);
-        } catch (final RuntimeException e) {
-            emit(ObservationMarker.DNS_FAILED, normalized, e, operationClock, operationId);
-            throw e instanceof SocketException ? e : new SocketException("Unable to resolve host " + normalized, e);
+            final DnsResult result = resolveBackend(normalized, operationClock);
+            cache(normalized, result, operationClock.nanos());
+            created.complete(result);
+            return result;
+        } catch (final RuntimeException failure) {
+            created.completeExceptionally(failure);
+            throw failure;
+        } finally {
+            state.inFlight.remove(normalized, created);
         }
-        final Duration duration = Duration.ofNanos(Math.max(0L, operationClock.nanos() - started));
-        final DnsResult result = DnsResult
-                .of(normalized, addresses, operationClock.now(), Builder.DNS_NO_TTL, duration);
-        if (result.empty()) {
-            emit(
-                    ObservationMarker.DNS_FAILED,
-                    normalized,
-                    new SocketException("DNS returned no address for " + normalized),
-                    operationClock,
-                    operationId);
-        } else {
-            emit(ObservationMarker.DNS_SUCCESS, normalized, null, operationClock, operationId);
+    }
+
+    /**
+     * Resolves through a borrowed runtime without blocking the caller.
+     *
+     * @param host host
+     * @return independently cancellable waiter view
+     */
+    public CompletableFuture<DnsResult> resolveAsync(final String host) {
+        if (runtimeClock == null || dispatcher == null) {
+            throw new IllegalStateException("Asynchronous DNS resolution requires withRuntime(clock, dispatcher)");
         }
-        return result;
+        final String normalized = NetKit.normalizeHost(host, "DNS host");
+        final long now = runtimeClock.nanos();
+        final CacheEntry cached = state.cache.get(normalized);
+        if (cached != null && cached.expiresAt > now) {
+            return CompletableFuture.completedFuture(cached.result);
+        }
+        if (cached != null) {
+            state.cache.remove(normalized, cached);
+        }
+        final CompletableFuture<DnsResult> created = new CompletableFuture<>();
+        final CompletableFuture<DnsResult> shared = state.inFlight.putIfAbsent(normalized, created);
+        if (shared == null) {
+            try {
+                dispatcher.background(
+                        "dns:" + normalized,
+                        created,
+                        Activity.of("dns-resolve", () -> completeAsync(normalized, created)));
+            } catch (final RuntimeException failure) {
+                state.inFlight.remove(normalized, created);
+                created.completeExceptionally(failure);
+            }
+        }
+        return (shared == null ? created : shared).thenApply(result -> result);
+    }
+
+    /**
+     * Returns a resolver view that borrows the supplied runtime services while sharing resolution state.
+     *
+     * @param clock      time source used for cache expiry
+     * @param dispatcher dispatcher used for asynchronous resolution
+     * @return resolver view backed by the existing backend, observer, cache, and in-flight requests
+     */
+    public DnsResolver withRuntime(final Clock clock, final Dispatcher dispatcher) {
+        return new DnsResolver(backend, observer, state,
+                Assert.notNull(clock, () -> new ValidateException("DNS clock must not be null")),
+                Assert.notNull(dispatcher, () -> new ValidateException("DNS dispatcher must not be null")));
     }
 
     /**
@@ -140,7 +218,88 @@ public final class DnsResolver {
      */
     public DnsResolver withObserver(final EventObserver observer) {
         return new DnsResolver(backend,
-                Assert.notNull(observer, () -> new ValidateException("DNS observer must not be null")));
+                Assert.notNull(observer, () -> new ValidateException("DNS observer must not be null")), state,
+                runtimeClock, dispatcher);
+    }
+
+    /**
+     * Completes one dispatcher-owned backend operation.
+     */
+    private void completeAsync(final String host, final CompletableFuture<DnsResult> future) {
+        try {
+            final DnsResult result = resolveBackend(host, runtimeClock);
+            cache(host, result, runtimeClock.nanos());
+            future.complete(result);
+        } catch (final RuntimeException failure) {
+            future.completeExceptionally(failure);
+        } finally {
+            state.inFlight.remove(host, future);
+        }
+    }
+
+    /**
+     * Performs the sole observable backend call.
+     */
+    private DnsResult resolveBackend(final String host, final Clock clock) {
+        final boolean observed = observer != EventObserver.noop();
+        final String operationId = observed ? ID.objectId() : null;
+        if (observed) {
+            emit(ObservationMarker.DNS_START, host, null, clock, operationId);
+        }
+        try {
+            final DnsResult result = backend.resolveResult(host, clock);
+            if (observed) {
+                emit(
+                        result.empty() ? ObservationMarker.DNS_FAILED : ObservationMarker.DNS_SUCCESS,
+                        host,
+                        result.empty() ? new SocketException("DNS returned no address for " + host) : null,
+                        clock,
+                        operationId);
+            }
+            return result;
+        } catch (final RuntimeException failure) {
+            final RuntimeException mapped = failure instanceof SocketException ? failure
+                    : new SocketException("Unable to resolve host " + host, failure);
+            if (observed) {
+                emit(ObservationMarker.DNS_FAILED, host, mapped, clock, operationId);
+            }
+            throw mapped;
+        }
+    }
+
+    /**
+     * Publishes a bounded cache entry without scanning the cache.
+     */
+    private void cache(final String host, final DnsResult result, final long now) {
+        long ttl = result.empty() ? Builder.DNS_RESOLVER_NEGATIVE_TTL_NANOS
+                : result.hasTtl() ? result.ttl().toNanos() : Builder.DNS_RESOLVER_DEFAULT_POSITIVE_TTL_NANOS;
+        if (ttl <= 0L) {
+            return;
+        }
+        if (state.cache.size() >= Builder.DNS_RESOLVER_MAX_CACHE_ENTRIES && !state.cache.containsKey(host)) {
+            final var iterator = state.cache.entrySet().iterator();
+            if (iterator.hasNext()) {
+                final Map.Entry<String, CacheEntry> victim = iterator.next();
+                state.cache.remove(victim.getKey(), victim.getValue());
+            }
+        }
+        final long expiresAt = now > Long.MAX_VALUE - ttl ? Long.MAX_VALUE : now + ttl;
+        state.cache.put(host, new CacheEntry(result, expiresAt));
+    }
+
+    /**
+     * Waits for a shared synchronous resolution and restores its cause.
+     */
+    private static DnsResult await(final CompletableFuture<DnsResult> future) {
+        try {
+            return future.join();
+        } catch (final CompletionException failure) {
+            final Throwable cause = failure.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            throw failure;
+        }
     }
 
     /**
@@ -171,6 +330,35 @@ public final class DnsResolver {
     private static Resolver systemResolver() {
         return Instances.get(DnsResolver.class.getName() + ".systemResolver", () -> new Resolver() {
         });
+    }
+
+    /**
+     * Mutable state shared by resolver views that borrow the same backend.
+     * <p>
+     * Both maps are concurrent because synchronous callers and dispatcher activities may resolve different hosts at the
+     * same time.
+     * </p>
+     */
+    private static final class State {
+
+        /**
+         * Cached terminal results keyed by normalized host name.
+         */
+        private final ConcurrentHashMap<String, CacheEntry> cache = new ConcurrentHashMap<>();
+
+        /**
+         * Backend resolutions currently shared by callers of the same normalized host.
+         */
+        private final ConcurrentHashMap<String, CompletableFuture<DnsResult>> inFlight = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * DNS cache record with a monotonic expiration deadline.
+     *
+     * @param result    resolved addresses and optional backend TTL
+     * @param expiresAt expiration deadline in {@link Clock#nanos()} units
+     */
+    private record CacheEntry(DnsResult result, long expiresAt) {
     }
 
 }
