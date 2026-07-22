@@ -37,7 +37,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
 
@@ -78,7 +78,7 @@ public class SlackProvider extends AbstractProvider {
     @Override
     public Message<Authorization> token(Callback callback) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         String response = get(tokenUrl(callback.getCode()), null, header);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
@@ -102,8 +102,8 @@ public class SlackProvider extends AbstractProvider {
     @Override
     public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        header.put(HTTP.AUTHORIZATION, HTTP.BEARER.concat(authorization.getToken()));
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        header.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX.concat(authorization.getToken()));
         String userInfo = get(userInfoUrl(authorization), null, header);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
@@ -129,8 +129,8 @@ public class SlackProvider extends AbstractProvider {
     @Override
     public Message<Void> revoke(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        header.put(HTTP.AUTHORIZATION, HTTP.BEARER.concat(authorization.getToken()));
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        header.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX.concat(authorization.getToken()));
         String userInfo = get(this.complex.revoke(), null, header);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);

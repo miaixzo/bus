@@ -69,7 +69,9 @@ public final class SegmentAllocator {
         synchronized (LOCKS[bucket]) {
             Segment head = BUCKETS[bucket];
             if (head == null) {
-                return new Segment();
+                final Segment created = new Segment();
+                created.poolBucket = bucket;
+                return created;
             }
             Segment next = head.next;
             BUCKETS[bucket] = next;
@@ -102,7 +104,7 @@ public final class SegmentAllocator {
             throw new IllegalArgumentException("segment is already cached");
         }
 
-        int bucket = bucketIndex();
+        int bucket = segment.poolBucket >= 0 ? segment.poolBucket : bucketIndex();
         synchronized (LOCKS[bucket]) {
             Segment head = BUCKETS[bucket];
             int bucketByteCount = head != null ? head.limit : 0;

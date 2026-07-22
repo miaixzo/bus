@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.NonNull;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
@@ -166,7 +166,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 method,
                 path);
 
-        if (context.getHttpMethod() != HTTP.Method.GET) {
+        if (context.getHttpMethod() != Http.Method.GET) {
             MediaType mediaType = request.headers().contentType().orElse(null);
             if (mediaType != null) {
                 if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
@@ -396,7 +396,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             query.forEach((key, value) -> addQueryPair(parts, key, value));
         }
 
-        if (context.getHttpMethod() == HTTP.Method.GET) {
+        if (context.getHttpMethod() == Http.Method.GET) {
             Map<String, Object> parameters = context.getParameters();
             if (!parameters.isEmpty()) {
                 parameters.forEach((key, value) -> {

@@ -838,6 +838,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Authorize"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.core.basic.entity.Authorize"
@@ -861,6 +867,12 @@
         }
       ],
       "type": "org.miaixz.bus.core.basic.entity.Authorize"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Authorize$AuthorizeBuilder"
     },
     {
       "condition": {
@@ -912,6 +924,12 @@
     },
     {
       "allDeclaredFields": true,
+      "type": "org.miaixz.bus.core.basic.entity.Entity"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
       "type": "org.miaixz.bus.core.basic.entity.Entity"
     },
     {
@@ -952,6 +970,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Entity$EntityBuilder"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.core.basic.entity.Entity$EntityBuilder"
@@ -1004,6 +1028,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Lifecycle"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.core.basic.entity.Lifecycle"
@@ -1037,6 +1067,12 @@
         }
       ],
       "type": "org.miaixz.bus.core.basic.entity.Lifecycle"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilder"
     },
     {
       "condition": {
@@ -1195,6 +1231,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Namespace"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.core.basic.entity.Namespace"
@@ -1228,6 +1270,12 @@
         }
       ],
       "type": "org.miaixz.bus.core.basic.entity.Namespace"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Namespace$NamespaceBuilder"
     },
     {
       "condition": {
@@ -1283,6 +1331,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Query"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.core.basic.entity.Query"
@@ -1306,6 +1360,12 @@
         }
       ],
       "type": "org.miaixz.bus.core.basic.entity.Query"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Query$QueryBuilder"
     },
     {
       "condition": {
@@ -1530,6 +1590,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Tracer"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.core.basic.entity.Tracer"
@@ -1572,6 +1638,12 @@
         }
       ],
       "type": "org.miaixz.bus.core.basic.entity.Tracer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.entity.Tracer$TracerBuilder"
     },
     {
       "condition": {
@@ -29802,13 +29874,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.core.net.HTTP"
+      "type": "org.miaixz.bus.core.net.Http"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.net.HTTP"
+      "type": "org.miaixz.bus.core.net.Http"
     },
     {
       "condition": {
@@ -29820,13 +29892,142 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.core.net.HTTP"
+      "type": "org.miaixz.bus.core.net.Http"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Auth"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.net.HTTP$Method"
+      "type": "org.miaixz.bus.core.net.Http$Auth"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.core.net.Http$Auth"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Auth$Credential"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Auth$Credential"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Credential",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.EnumValue$Params",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.core.net.Http$Auth$Credential"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Auth$Match"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Auth$Match"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.core.net.Http$Auth$Match"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Cache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Cache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.core.net.Http$Cache"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Header"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Header"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.core.net.Http$Header"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Method"
     },
     {
       "condition": {
@@ -29845,7 +30046,127 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.core.net.HTTP$Method"
+      "type": "org.miaixz.bus.core.net.Http$Method"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Param"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Param"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.core.net.Http$Param"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Path"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Path"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.core.net.Http$Path"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Setting"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Setting"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.core.net.Http$Setting"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Status"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.net.Http$Status"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.core.net.Http$Status"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.core.net.Http$WebSocket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.core.net.Http$WebSocket"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "type": "org.miaixz.bus.core.net.Http$WebSocket"
     },
     {
       "condition": {
@@ -29956,7 +30277,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.net.PORT"
+      "type": "org.miaixz.bus.core.net.Port"
     },
     {
       "condition": {
@@ -29974,7 +30295,7 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.core.net.PORT"
+      "type": "org.miaixz.bus.core.net.Port"
     },
     {
       "condition": {
@@ -30023,30 +30344,6 @@
         }
       ],
       "type": "org.miaixz.bus.core.net.ProxySocketFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.core.net.Specifics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.net.Specifics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.core.net.Specifics"
     },
     {
       "condition": {
@@ -33981,6 +34278,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
+      },
+      "type": "org.miaixz.bus.core.xyz.LookupKit"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.core.xyz.LookupKit"
@@ -34995,6 +35298,30 @@
       ],
       "jniAccessible": true,
       "type": "sun.management.VMManagementImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.basic.normal.ErrorCode"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
+      },
+      "type": "org.miaixz.bus.core.center.object.ObjectValidator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.lang.Validator"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
+      },
+      "type": "org.miaixz.bus.core.text.dfa.Sensitive"
     }
   ],
   "resources": [

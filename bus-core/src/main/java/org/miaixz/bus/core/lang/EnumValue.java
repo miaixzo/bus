@@ -89,26 +89,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * Enumeration for append modes.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    enum Append {
-
-        /**
-         * Append to the beginning.
-         */
-        FIRST,
-
-        /**
-         * Append to the end.
-         */
-        LAST
-
-    }
-
-    /**
      * Enumeration for text alignment options.
      *
      * @author Kimi Liu
@@ -129,6 +109,26 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * Center alignment.
          */
         CENTER
+
+    }
+
+    /**
+     * Enumeration for append modes.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    enum Append {
+
+        /**
+         * Append to the beginning.
+         */
+        FIRST,
+
+        /**
+         * Append to the end.
+         */
+        LAST
 
     }
 
@@ -200,6 +200,24 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * The string representation of the comparison operator.
          */
         String code;
+
+    }
+
+    /**
+     * Enumeration for request credential types.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    enum Credential {
+        /**
+         * Access token or bearer token.
+         */
+        TOKEN,
+        /**
+         * API key credential.
+         */
+        API_KEY
 
     }
 

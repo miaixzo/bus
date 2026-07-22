@@ -38,7 +38,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -87,9 +87,9 @@ public class WechatPayBuilder {
                 VERSION == null ? "Unknown" : VERSION);
 
         Map<String, String> headers = new HashMap<>(5);
-        headers.put(HTTP.ACCEPT, MediaType.APPLICATION_JSON);
-        headers.put(HTTP.AUTHORIZATION, authorization);
-        headers.put(HTTP.USER_AGENT, userAgent);
+        headers.put(Http.Header.ACCEPT, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.AUTHORIZATION, authorization);
+        headers.put(Http.Header.USER_AGENT, userAgent);
         return headers;
     }
 
@@ -102,7 +102,7 @@ public class WechatPayBuilder {
      */
     public static Map<String, String> getHeaders(String authorization, String serialNumber) {
         Map<String, String> headers = getBaseHeaders(authorization);
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         if (StringKit.isNotEmpty(serialNumber)) {
             headers.put("Wechatpay-Serial", serialNumber);
         }
@@ -118,7 +118,7 @@ public class WechatPayBuilder {
      */
     public static Map<String, String> getUploadHeaders(String authorization, String serialNumber) {
         Map<String, String> headers = getBaseHeaders(authorization);
-        headers.put(HTTP.CONTENT_TYPE, "multipart/form-data;boundary=\"boundary\"");
+        headers.put(Http.Header.CONTENT_TYPE, "multipart/form-data;boundary=\"boundary\"");
         if (StringKit.isNotEmpty(serialNumber)) {
             headers.put("Wechatpay-Serial", serialNumber);
         }

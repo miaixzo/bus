@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.basic.normal.Consts;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -36,10 +35,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
@@ -138,8 +138,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             copyHeader(request, headers, Args.MCP_PROTOCOL_VERSION);
             copyHeader(request, headers, Args.MCP_SESSION_ID);
             copyHeader(request, headers, Args.LAST_EVENT_ID);
-            copyHeader(request, headers, HTTP.ACCEPT);
-            copyHeader(request, headers, HTTP.CONTENT_TYPE);
+            copyHeader(request, headers, Http.Header.ACCEPT);
+            copyHeader(request, headers, Http.Header.CONTENT_TYPE);
             String forwardedFor = request.headers().firstHeader("X-Forwarded-For");
             String clientIp = context.getX_request_ip();
             if (StringKit.isNotBlank(clientIp)) {
@@ -182,7 +182,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 method,
                 path);
 
-        if (context.getHttpMethod() == HTTP.Method.POST) {
+        if (context.getHttpMethod() == Http.Method.POST) {
             handleJsonRequestBody(bodySpec, request, context, ip, method, path);
         } else {
             Logger.info(
@@ -202,7 +202,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 method,
                 path);
 
-        boolean isStreaming = context.getHttpMethod() == HTTP.Method.GET
+        boolean isStreaming = context.getHttpMethod() == Http.Method.GET
                 || (target.getStream() != null && target.getStream() == 2);
         if (isStreaming) {
             Logger.info(
@@ -509,7 +509,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String ip,
             String method,
             String path) {
-        if (context == null || context.getAssets() == null || context.getHttpMethod() != HTTP.Method.GET
+        if (context == null || context.getAssets() == null || context.getHttpMethod() != Http.Method.GET
                 || headers.getContentType() == null
                 || !MediaType.TEXT_EVENT_STREAM.isCompatibleWith(headers.getContentType())) {
             return bodyFlux;

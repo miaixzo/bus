@@ -33,7 +33,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
@@ -101,7 +101,7 @@ public class TeambitionProvider extends AbstractProvider {
     public Message<Claims> userInfo(Authorization authorization) {
         String token = authorization.getToken();
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.AUTHORIZATION, "OAuth2 " + token);
+        header.put(Http.Header.AUTHORIZATION, "OAuth2 " + token);
 
         String response = get(this.complex.userinfo(), null, header);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);

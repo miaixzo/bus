@@ -32,7 +32,7 @@ import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
@@ -445,7 +445,7 @@ public class VortexHandler {
     private long routeTimeoutSeconds(Assets assets, ServerRequest request) {
         long timeout = Egress.timeoutSeconds(assets);
         if (assets.getProtocol() != null && assets.getProtocol() == Args.PROTOCOL_MCP
-                && HTTP.GET.equalsIgnoreCase(request.method().name())) {
+                && Http.Method.GET.value().equalsIgnoreCase(request.method().name())) {
             return timeout * 10;
         }
         return timeout;

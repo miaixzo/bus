@@ -24,7 +24,7 @@ import java.util.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.miaixz.bus.core.net.Specifics;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.cortex.Builder;
 
 /**
@@ -92,7 +92,7 @@ public class TokenGuardConfig {
     /**
      * Candidate header names used to discover tokens, aligned with Vortex request parsing.
      */
-    private List<String> headerNames = new ArrayList<>(Arrays.asList(Specifics.TOKEN_KEYS));
+    private List<String> headerNames = new ArrayList<>(Http.Auth.TOKEN_KEYS);
 
     /**
      * Candidate cookie names used to discover tokens.

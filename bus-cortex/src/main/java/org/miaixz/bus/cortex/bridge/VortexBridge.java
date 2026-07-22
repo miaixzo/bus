@@ -25,7 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.miaixz.bus.core.net.Specifics;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Callout;
@@ -468,7 +468,7 @@ public class VortexBridge
      * @return delivery result
      */
     private DeliveryResult deliverJson(String json) {
-        String url = syncUrl + Specifics.MAPPING_REGISTRY + Specifics.MAPPING_PUSH;
+        String url = syncUrl + Http.Path.REGISTRY + Http.Path.PUSH;
         try {
             Logger.debug(
                     true,

@@ -25,7 +25,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Specifics;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy;
@@ -48,7 +48,7 @@ import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
  * @see RequestStrategy
  * @since Java 21+
  */
-public class Args extends Specifics {
+public class Args {
 
     /**
      * Creates an empty gateway argument contract holder.
@@ -56,6 +56,31 @@ public class Args extends Specifics {
     public Args() {
         // No initialization required.
     }
+
+    /**
+     * The mandatory parameter name for the logical API method to be invoked.
+     */
+    public static final String METHOD = Http.Param.METHOD;
+
+    /**
+     * The parameter name for specifying the desired response format.
+     */
+    public static final String FORMAT = Http.Param.FORMAT;
+
+    /**
+     * The parameter name for specifying the requested API version.
+     */
+    public static final String VERSION = Http.Param.VERSION;
+
+    /**
+     * The parameter name for the request signature.
+     */
+    public static final String SIGN = Http.Param.SIGN;
+
+    /**
+     * The parameter name for the request timestamp.
+     */
+    public static final String TIMESTAMP = Http.Param.TIMESTAMP;
 
     /**
      * The parameter name for selecting the logical namespace used to resolve registry assets.

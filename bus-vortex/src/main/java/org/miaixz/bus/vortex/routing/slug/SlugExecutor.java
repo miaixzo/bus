@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
@@ -111,7 +111,7 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
             }
         });
 
-        if (context.getHttpMethod() != HTTP.Method.GET && context.getHttpMethod() != HTTP.Method.HEAD) {
+        if (context.getHttpMethod() != Http.Method.GET && context.getHttpMethod() != Http.Method.HEAD) {
             bodySpec.body(BodyInserters.fromDataBuffers(request.exchange().getRequest().getBody()));
         }
 
@@ -134,7 +134,7 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
                         headers.remove(HttpHeaders.CONTENT_LENGTH);
                     });
                     byte[] body = responseEntity.getBody();
-                    if (body == null || body.length == 0 || context.getHttpMethod() == HTTP.Method.HEAD) {
+                    if (body == null || body.length == 0 || context.getHttpMethod() == Http.Method.HEAD) {
                         return responseBuilder.build();
                     }
                     return responseBuilder.bodyValue(body);

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -228,7 +228,7 @@ public class DropboxProvider extends AbstractProvider {
                     url,
                     new byte[0],
                     MediaType.APPLICATION_OCTET_STREAM,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()),
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)));
             if (!response.successful()) {
                 Errors error = toError(response.code());
@@ -274,7 +274,7 @@ public class DropboxProvider extends AbstractProvider {
                     url,
                     new byte[0],
                     MediaType.APPLICATION_OCTET_STREAM,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()),
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)))) {
                 if (!response.successful()) {
                     throw new IOException("Download failed: " + response.code());
@@ -332,7 +332,7 @@ public class DropboxProvider extends AbstractProvider {
                     url,
                     new byte[0],
                     MediaType.APPLICATION_OCTET_STREAM,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()),
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)))) {
                 if (!response.successful()) {
                     throw new IOException("Download failed: " + response.code());
@@ -383,7 +383,7 @@ public class DropboxProvider extends AbstractProvider {
                     url,
                     JsonKit.toJsonString(requestBody),
                     MediaType.APPLICATION_JSON,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
                 if (!response.successful()) {
                     throw new IOException("List failed: " + response.code());
                 }
@@ -475,7 +475,7 @@ public class DropboxProvider extends AbstractProvider {
                     url,
                     JsonKit.toJsonString(requestBody),
                     MediaType.APPLICATION_JSON,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
                 if (!response.successful()) {
                     throw new IOException("Rename failed: " + response.code());
                 }
@@ -549,7 +549,7 @@ public class DropboxProvider extends AbstractProvider {
                     url,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()),
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)))) {
                 if (!response.successful()) {
                     throw new IOException("Upload failed: " + response.code());
@@ -675,7 +675,7 @@ public class DropboxProvider extends AbstractProvider {
                     url,
                     JsonKit.toJsonString(requestBody),
                     MediaType.APPLICATION_JSON,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
                 if (!response.successful()) {
                     throw new IOException("Delete failed: " + response.code());
                 }
@@ -754,7 +754,7 @@ public class DropboxProvider extends AbstractProvider {
                 url,
                 JsonKit.toJsonString(requestBody),
                 MediaType.APPLICATION_JSON,
-                header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+                header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
             if (response.code() == 409) {
                 return null;
             }

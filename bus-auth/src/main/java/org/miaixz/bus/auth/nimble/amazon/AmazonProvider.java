@@ -36,7 +36,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -151,8 +151,8 @@ public class AmazonProvider extends AbstractProvider {
      */
     private Authorization getToken(Map<String, String> param, String url) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.HOST, "api.amazon.com");
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
+        header.put(Http.Header.HOST, "api.amazon.com");
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
 
         String response = post(url, param, header);
         try {
@@ -213,8 +213,8 @@ public class AmazonProvider extends AbstractProvider {
         String token = authorization.getToken();
         this.checkToken(token);
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.HOST, "api.amazon.com");
-        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
+        header.put(Http.Header.HOST, "api.amazon.com");
+        header.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token);
 
         String userInfo = get(this.complex.userinfo(), new HashMap<>(0), header);
         try {

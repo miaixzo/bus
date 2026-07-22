@@ -28,7 +28,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
@@ -149,7 +149,7 @@ public class SlugRouteMatcher {
     private Keying.RegistrySpec spec(String namespace, String appId, String method) {
         Integer verb = null;
         try {
-            verb = HTTP.Method.of(method).verb();
+            verb = Http.Method.of(method).verb();
         } catch (IllegalArgumentException e) {
             Logger.warn(false, "Vortex", e, "HTTP method mapping failed: method={}", method);
         }

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -95,9 +95,9 @@ public class FigmaProvider extends AbstractProvider {
     @Override
     public Message<Authorization> token(Callback callback) {
         Map<String, String> headers = new HashMap<>(3);
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         headers.put(
-                HTTP.AUTHORIZATION,
+                Http.Header.AUTHORIZATION,
                 "Basic ".concat(
                         Base64.encode(
                                 (this.context.getClientId().concat(":").concat(this.context.getClientSecret()))
@@ -149,7 +149,7 @@ public class FigmaProvider extends AbstractProvider {
     @Override
     public Message<Authorization> refresh(Authorization authorization) {
         Map<String, String> headers = new HashMap<>(3);
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         String response = post(refreshUrl(authorization.getRefresh()), null, headers);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -209,8 +209,8 @@ public class FigmaProvider extends AbstractProvider {
     @Override
     public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> headers = new HashMap<>(3);
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        headers.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + authorization.getToken());
         String response = get(this.complex.userinfo(), null, headers);
         try {
             Map<String, Object> data = JsonKit.toPojo(response, Map.class);

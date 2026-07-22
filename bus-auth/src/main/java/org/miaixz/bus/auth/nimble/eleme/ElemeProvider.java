@@ -38,7 +38,7 @@ import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -323,14 +323,14 @@ public class ElemeProvider extends AbstractProvider {
      */
     private Map<String, String> buildHeader(String contentType, String requestId, boolean auth) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.ACCEPT, "text/xml,text/javascript,text/html");
-        header.put(HTTP.CONTENT_TYPE, contentType);
-        header.put(HTTP.ACCEPT_ENCODING, "gzip");
-        header.put(HTTP.USER_AGENT, "eleme-openapi-java-sdk");
+        header.put(Http.Header.ACCEPT, "text/xml,text/javascript,text/html");
+        header.put(Http.Header.CONTENT_TYPE, contentType);
+        header.put(Http.Header.ACCEPT_ENCODING, "gzip");
+        header.put(Http.Header.USER_AGENT, "eleme-openapi-java-sdk");
         header.put("x-eleme-requestid", requestId);
 
         if (auth) {
-            header.put(HTTP.AUTHORIZATION, this.getBasic(context.getClientId(), context.getClientSecret()));
+            header.put(Http.Header.AUTHORIZATION, this.getBasic(context.getClientId(), context.getClientSecret()));
         }
         return header;
     }

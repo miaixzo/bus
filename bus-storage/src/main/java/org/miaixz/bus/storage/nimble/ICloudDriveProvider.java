@@ -29,7 +29,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -551,7 +551,7 @@ public class ICloudDriveProvider extends AbstractProvider {
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + apiToken))) {
                 if (response.successful()) {
                     String responseBody = response.text();
                     Map<String, Object> result = JsonKit.toPojo(responseBody, Map.class);
@@ -595,7 +595,7 @@ public class ICloudDriveProvider extends AbstractProvider {
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + apiToken))) {
                 if (response.successful()) {
                     String responseBody = response.text();
                     Map<String, Object> result = JsonKit.toPojo(responseBody, Map.class);
@@ -653,7 +653,7 @@ public class ICloudDriveProvider extends AbstractProvider {
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + apiToken))) {
                 if (response.successful()) {
                     String responseBody = response.text();
                     Map<String, Object> result = JsonKit.toPojo(responseBody, Map.class);
@@ -738,7 +738,7 @@ public class ICloudDriveProvider extends AbstractProvider {
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + apiToken))) {
                 return response.successful();
             }
         } catch (Exception e) {
@@ -782,7 +782,7 @@ public class ICloudDriveProvider extends AbstractProvider {
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + apiToken))) {
                 return response.successful();
             }
         } catch (Exception e) {
@@ -817,7 +817,7 @@ public class ICloudDriveProvider extends AbstractProvider {
                     url,
                     jsonBody,
                     MediaType.APPLICATION_JSON,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + apiToken))) {
                 return response.successful();
             }
         } catch (Exception e) {

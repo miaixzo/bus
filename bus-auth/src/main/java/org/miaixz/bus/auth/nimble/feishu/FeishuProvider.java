@@ -35,7 +35,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -91,7 +91,7 @@ public class FeishuProvider extends AbstractProvider {
         object.put("app_secret", context.getClientSecret());
 
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
         String response = post(url, JsonKit.toJsonString(object), header, MediaType.APPLICATION_JSON);
         object = JsonKit.toPojo(response, Map.class);
@@ -138,8 +138,8 @@ public class FeishuProvider extends AbstractProvider {
     public Message<Claims> userInfo(Authorization authorization) {
         String token = authorization.getToken();
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        header.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token);
         String response = get(this.complex.userinfo(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -203,7 +203,7 @@ public class FeishuProvider extends AbstractProvider {
      */
     private Authorization getToken(Map<String, Object> param, String url) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         String response = post(url, JsonKit.toJsonString(param), header, MediaType.APPLICATION_JSON);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);

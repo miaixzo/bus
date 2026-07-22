@@ -28,7 +28,7 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -59,7 +59,7 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response get(final String url, final Header... headers) {
-        return execute(HTTP.GET, url, null, null, headers);
+        return execute(Http.Method.GET.value(), url, null, null, headers);
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response get(final String url, final Map<String, ?> headers) {
-        return execute(HTTP.GET, url, null, null, headers);
+        return execute(Http.Method.GET.value(), url, null, null, headers);
     }
 
     /**
@@ -81,7 +81,7 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response head(final String url, final Header... headers) {
-        return execute(HTTP.HEAD, url, null, null, headers);
+        return execute(Http.Method.HEAD.value(), url, null, null, headers);
     }
 
     /**
@@ -92,7 +92,7 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response post(final String url, final Header... headers) {
-        return execute(HTTP.POST, url, Payload.empty(), MediaType.APPLICATION_OCTET_STREAM_TYPE, headers);
+        return execute(Http.Method.POST.value(), url, Payload.empty(), MediaType.APPLICATION_OCTET_STREAM_TYPE, headers);
     }
 
     /**
@@ -106,7 +106,7 @@ public abstract class FabricX {
      */
     protected Response post(final String url, final String data, final String contentType, final Header... headers) {
         return execute(
-                HTTP.POST,
+                Http.Method.POST.value(),
                 url,
                 Payload.of(data == null ? "" : data, Charset.UTF_8),
                 media(contentType),
@@ -123,7 +123,7 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response post(final String url, final byte[] data, final String contentType, final Header... headers) {
-        return execute(HTTP.POST, url, Payload.of(data == null ? new byte[0] : data), media(contentType), headers);
+        return execute(Http.Method.POST.value(), url, Payload.of(data == null ? new byte[0] : data), media(contentType), headers);
     }
 
     /**
@@ -136,7 +136,7 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response put(final String url, final byte[] data, final String contentType, final Header... headers) {
-        return execute(HTTP.PUT, url, Payload.of(data == null ? new byte[0] : data), media(contentType), headers);
+        return execute(Http.Method.PUT.value(), url, Payload.of(data == null ? new byte[0] : data), media(contentType), headers);
     }
 
     /**
@@ -149,7 +149,7 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response put(final String url, final String data, final String contentType, final Header... headers) {
-        return execute(HTTP.PUT, url, Payload.of(data == null ? "" : data, Charset.UTF_8), media(contentType), headers);
+        return execute(Http.Method.PUT.value(), url, Payload.of(data == null ? "" : data, Charset.UTF_8), media(contentType), headers);
     }
 
     /**
@@ -163,7 +163,7 @@ public abstract class FabricX {
      */
     protected Response patch(final String url, final String data, final String contentType, final Header... headers) {
         return execute(
-                HTTP.PATCH,
+                Http.Method.PATCH.value(),
                 url,
                 Payload.of(data == null ? "" : data, Charset.UTF_8),
                 media(contentType),
@@ -178,7 +178,7 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response delete(final String url, final Header... headers) {
-        return execute(HTTP.DELETE, url, null, null, headers);
+        return execute(Http.Method.DELETE.value(), url, null, null, headers);
     }
 
     /**

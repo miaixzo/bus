@@ -26,7 +26,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -116,9 +116,9 @@ public class PaypalProvider extends AbstractProvider<Voucher, Context> {
                 StringKit.isNotEmpty(payPalPartnerAttributionId),
                 StringKit.isNotEmpty(prefer));
         Map<String, String> headers = new HashMap<>(3);
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         headers.put(
-                HTTP.AUTHORIZATION,
+                Http.Header.AUTHORIZATION,
                 accessToken.getTokenType().concat(Symbol.SPACE).concat(accessToken.getAccessToken()));
         if (StringKit.isNotEmpty(payPalRequestId)) {
             headers.put("PayPal-Request-Id", payPalRequestId);
@@ -169,10 +169,10 @@ public class PaypalProvider extends AbstractProvider<Voucher, Context> {
                 "PayPal access token request started: clientPresent={}",
                 StringKit.isNotEmpty(this.context.getAppKey()));
         Map<String, String> headers = new HashMap<>(3);
-        headers.put(HTTP.ACCEPT, MediaType.APPLICATION_JSON);
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        headers.put(Http.Header.ACCEPT, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         headers.put(
-                HTTP.AUTHORIZATION,
+                Http.Header.AUTHORIZATION,
                 "Basic ".concat(
                         Base64.encode(
                                 (this.context.getAppKey().concat(Symbol.COLON).concat(this.context.getAppSecret()))

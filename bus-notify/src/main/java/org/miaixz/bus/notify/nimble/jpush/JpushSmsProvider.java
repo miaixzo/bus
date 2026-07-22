@@ -29,7 +29,7 @@ import java.util.Objects;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -93,8 +93,8 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
         bodys.put("temp_para", entity.getParams());
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        headers.put(HTTP.AUTHORIZATION, "Basic " + getSign());
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.AUTHORIZATION, "Basic " + getSign());
 
         String response = post(this.getUrl(entity), bodys, headers);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "success_count"), 0);

@@ -32,6 +32,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.spring.Controller;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
@@ -68,7 +69,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      * @return the operation result, containing the number of affected rows if successful, or an error code otherwise
      */
     @ResponseBody
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = Http.Path.ADD, method = RequestMethod.POST)
     public Message<Integer> add(T entity) {
         Logger.info(
                 true,
@@ -100,7 +101,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      * @return the operation result, containing the number of affected rows if successful, or an error code otherwise
      */
     @ResponseBody
-    @RequestMapping(value = "/remove", method = RequestMethod.POST)
+    @RequestMapping(value = Http.Path.REMOVE, method = RequestMethod.POST)
     public Message<Map<String, Integer>> remove(T entity) {
         Logger.info(
                 true,
@@ -133,7 +134,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      * @return the operation result, containing the number of affected rows if successful, or an error code otherwise
      */
     @ResponseBody
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = Http.Path.DELETE, method = RequestMethod.POST)
     public Message<Map<String, Integer>> delete(T entity) {
         Logger.info(
                 true,
@@ -166,7 +167,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      * @return the operation result, containing the number of affected rows if successful, or an error code otherwise
      */
     @ResponseBody
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @RequestMapping(value = Http.Path.UPDATE, method = RequestMethod.POST)
     public Message<Integer> update(T entity) {
         Logger.info(
                 true,
@@ -197,7 +198,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      * @return the operation result, containing the found entity or null if not found
      */
     @ResponseBody
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    @RequestMapping(value = Http.Path.GET, method = RequestMethod.GET)
     public Message<T> get(T entity) {
         Logger.info(
                 true,
@@ -222,7 +223,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      * @return the operation result, containing a list of entities matching the conditions
      */
     @ResponseBody
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = Http.Path.LIST, method = RequestMethod.GET)
     public Message<List<T>> list(T entity) {
         Logger.info(
                 true,
@@ -246,7 +247,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
      * @return the operation result, containing a paginated list of entities
      */
     @ResponseBody
-    @RequestMapping(value = "/page", method = RequestMethod.GET)
+    @RequestMapping(value = Http.Path.PAGE, method = RequestMethod.GET)
     public Message<Result<T>> page(@Valid({ "pageSize", "pageNo" }) T entity) {
         Logger.info(
                 true,

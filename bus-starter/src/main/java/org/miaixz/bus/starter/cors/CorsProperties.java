@@ -25,7 +25,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
@@ -64,7 +64,8 @@ public class CorsProperties {
     /**
      * Allowed HTTP methods. Default includes GET, POST, PUT, OPTIONS, DELETE.
      */
-    private String[] allowedMethods = new String[] { HTTP.GET, HTTP.POST, HTTP.PUT, HTTP.OPTIONS, HTTP.DELETE };
+    private String[] allowedMethods = new String[] { Http.Method.GET.value(), Http.Method.POST.value(),
+            Http.Method.PUT.value(), Http.Method.OPTIONS.value(), Http.Method.DELETE.value() };
 
     /**
      * Headers to be exposed in the response.

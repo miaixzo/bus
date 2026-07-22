@@ -42,7 +42,7 @@ import jakarta.json.stream.JsonGenerator;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
@@ -838,12 +838,12 @@ public class StowRS {
     private Map<String, String> requestProperties(String[] httpHeaders) {
         Map<String, String> requestProperties = new HashMap<>();
         requestProperties.put(
-                HTTP.CONTENT_TYPE,
+                Http.Header.CONTENT_TYPE,
                 MediaType.MULTIPART_RELATED + "; type=\"" + requestContentType + "\"; boundary=" + boundary);
-        requestProperties.put(HTTP.ACCEPT, requestAccept);
-        requestProperties.put(HTTP.CONNECTION, "keep-alive");
+        requestProperties.put(Http.Header.ACCEPT, requestAccept);
+        requestProperties.put(Http.Header.CONNECTION, "keep-alive");
         if (authorization != null)
-            requestProperties.put(HTTP.AUTHORIZATION, authorization);
+            requestProperties.put(Http.Header.AUTHORIZATION, authorization);
         if (httpHeaders != null)
             for (String httpHeader : httpHeaders) {
                 int delim = httpHeader.indexOf(':');
@@ -864,7 +864,7 @@ public class StowRS {
         connection.setDoOutput(true);
         connection.setDoInput(true);
         connection.setRequestMethod("POST");
-        connection.setRequestProperty(HTTP.CONTENT_LENGTH, String.valueOf(tmpFile.length()));
+        connection.setRequestProperty(Http.Header.CONTENT_LENGTH, String.valueOf(tmpFile.length()));
         requestProperties.forEach(connection::setRequestProperty);
         logOutgoing(connection.getURL(), connection.getRequestProperties());
         try (OutputStream out = connection.getOutputStream()) {
@@ -917,7 +917,7 @@ public class StowRS {
         connection.setRequestMethod("POST");
         if (disableTM)
             connection.setSSLSocketFactory(sslContext().getSocketFactory());
-        connection.setRequestProperty(HTTP.CONTENT_LENGTH, String.valueOf(tmpFile.length()));
+        connection.setRequestProperty(Http.Header.CONTENT_LENGTH, String.valueOf(tmpFile.length()));
         requestProperties.forEach(connection::setRequestProperty);
         connection.setHostnameVerifier((hostname, session) -> allowAnyHost);
         logOutgoing(connection.getURL(), connection.getRequestProperties());

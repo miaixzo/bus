@@ -36,7 +36,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -128,7 +128,7 @@ public class WeiboProvider extends AbstractProvider {
         String oauthParam = String.format("uid=%s&access_token=%s", uid, token);
 
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.AUTHORIZATION, "OAuth2 " + oauthParam);
+        header.put(Http.Header.AUTHORIZATION, "OAuth2 " + oauthParam);
         header.put("API-RemoteIP", NetKit.getLocalhostStringV4());
         String userInfo = get(userInfoUrl(authorization), null, header);
         try {

@@ -26,7 +26,7 @@ import java.util.function.BiConsumer;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -164,7 +164,7 @@ public abstract class FabricX {
      * @return true when JSON
      */
     private static boolean json(final Map<String, ?> headers) {
-        final Object contentType = header(headers, HTTP.CONTENT_TYPE);
+        final Object contentType = header(headers, Http.Header.CONTENT_TYPE);
         return contentType != null
                 && contentType.toString().toLowerCase(Locale.ROOT).startsWith(MediaType.APPLICATION_JSON);
     }
@@ -177,7 +177,7 @@ public abstract class FabricX {
      * @return media type
      */
     private static MediaType media(final Map<String, ?> headers, final MediaType fallback) {
-        final Object contentType = header(headers, HTTP.CONTENT_TYPE);
+        final Object contentType = header(headers, Http.Header.CONTENT_TYPE);
         return contentType == null ? fallback : media(contentType.toString());
     }
 

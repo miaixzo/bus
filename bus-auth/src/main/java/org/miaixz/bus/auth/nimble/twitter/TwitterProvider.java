@@ -38,7 +38,7 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -148,8 +148,8 @@ public class TwitterProvider extends AbstractProvider {
         form.put("oauth_signature", sign(form, "POST", baseUrl, context.getClientSecret(), null));
 
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.AUTHORIZATION, buildHeader(form));
-        header.put(HTTP.USER_AGENT, "Bus-Fabric");
+        header.put(Http.Header.AUTHORIZATION, buildHeader(form));
+        header.put(Http.Header.USER_AGENT, "Bus-Fabric");
         String requestToken = post(baseUrl, null, header);
 
         Map<String, String> res = Builder.parseStringToMap(requestToken);
@@ -176,8 +176,8 @@ public class TwitterProvider extends AbstractProvider {
                 sign(headerMap, "POST", this.complex.token(), context.getClientSecret(), callback.getOauth_token()));
 
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.AUTHORIZATION, buildHeader(headerMap));
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        header.put(Http.Header.AUTHORIZATION, buildHeader(headerMap));
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         Map<String, String> form = new HashMap<>(3);
         form.put("oauth_verifier", callback.getOauth_verifier());
@@ -218,7 +218,7 @@ public class TwitterProvider extends AbstractProvider {
                         authorization.getOauthTokenSecret()));
 
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.AUTHORIZATION, buildHeader(form));
+        header.put(Http.Header.AUTHORIZATION, buildHeader(form));
         String response = get(userInfoUrl(authorization), null, header);
 
         // Parse JSON response using JsonKit

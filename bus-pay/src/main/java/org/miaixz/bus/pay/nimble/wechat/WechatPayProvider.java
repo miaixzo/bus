@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.XmlKit;
@@ -330,15 +330,15 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
         }
 
         Message response;
-        if (HTTP.GET.equals(method)) {
+        if (Http.Method.GET.value().equals(method)) {
             response = get(prefix.concat(suffix), authorization, platSerialNo, null);
-        } else if (HTTP.POST.equals(method)) {
+        } else if (Http.Method.POST.value().equals(method)) {
             response = post(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (HTTP.DELETE.equals(method)) {
+        } else if (Http.Method.DELETE.value().equals(method)) {
             response = delete(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (HTTP.PATCH.equals(method)) {
+        } else if (Http.Method.PATCH.value().equals(method)) {
             response = patch(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (HTTP.PUT.equals(method)) {
+        } else if (Http.Method.PUT.value().equals(method)) {
             response = put(prefix.concat(suffix), authorization, platSerialNo, body);
         } else {
             Logger.info(
@@ -408,15 +408,15 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
         }
 
         Message response;
-        if (HTTP.GET.equals(method)) {
+        if (Http.Method.GET.value().equals(method)) {
             response = get(prefix.concat(suffix), authorization, platSerialNo, null);
-        } else if (HTTP.POST.equals(method)) {
+        } else if (Http.Method.POST.value().equals(method)) {
             response = post(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (HTTP.DELETE.equals(method)) {
+        } else if (Http.Method.DELETE.value().equals(method)) {
             response = delete(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (HTTP.PATCH.equals(method)) {
+        } else if (Http.Method.PATCH.value().equals(method)) {
             response = patch(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (HTTP.PUT.equals(method)) {
+        } else if (Http.Method.PUT.value().equals(method)) {
             response = put(prefix.concat(suffix), authorization, platSerialNo, body);
         } else {
             Logger.info(

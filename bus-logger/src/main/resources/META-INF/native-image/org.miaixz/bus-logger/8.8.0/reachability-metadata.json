@@ -65,12 +65,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
-      },
-      "type": "org.miaixz.bus.core.xyz.LookupKit"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.logger.Factory"
@@ -998,6 +992,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
+      },
+      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory"
@@ -1452,6 +1452,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
+      },
+      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory"
@@ -1793,6 +1799,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
+      },
+      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory"
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory"
@@ -1854,6 +1866,12 @@
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
+      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
       },
       "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory"
     },

@@ -30,9 +30,9 @@ import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Specifics;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
@@ -92,7 +92,7 @@ public class QualifierStrategy extends AbstractStrategy {
      */
     @Override
     protected String getToken(Context context) {
-        return this.resolveToken(context);
+        return Http.Auth.token(context.getHeaders(), context.getParameters());
     }
 
     /**
@@ -103,7 +103,7 @@ public class QualifierStrategy extends AbstractStrategy {
      */
     @Override
     protected String getApiKey(Context context) {
-        return this.resolveApiKey(context);
+        return Http.Auth.apiKey(context.getHeaders(), context.getParameters());
     }
 
     /**
@@ -244,8 +244,8 @@ public class QualifierStrategy extends AbstractStrategy {
      */
     protected Mono<Void> method(Context context, Assets assets) {
         return Mono.fromRunnable(() -> {
-            final HTTP.Method actualMethod = context.getHttpMethod();
-            final HTTP.Method expectedMethod = this.methodOf(assets.getVerb());
+            final Http.Method actualMethod = context.getHttpMethod();
+            final Http.Method expectedMethod = this.methodOf(assets.getVerb());
 
             if (!Objects.equals(actualMethod, expectedMethod)) {
                 Logger.warn(
@@ -256,15 +256,15 @@ public class QualifierStrategy extends AbstractStrategy {
                         expectedMethod,
                         actualMethod);
 
-                final Errors error = switch (expectedMethod.value()) {
-                    case HTTP.GET -> ErrorCode._100200;
-                    case HTTP.POST -> ErrorCode._100201;
-                    case HTTP.PUT -> ErrorCode._100202;
-                    case HTTP.DELETE -> ErrorCode._100203;
-                    case HTTP.OPTIONS -> ErrorCode._100204;
-                    case HTTP.HEAD -> ErrorCode._100205;
-                    case HTTP.PATCH -> ErrorCode._100206;
-                    case HTTP.TRACE -> ErrorCode._100207;
+                final Errors error = switch (expectedMethod) {
+                    case GET -> ErrorCode._100200;
+                    case POST -> ErrorCode._100201;
+                    case PUT -> ErrorCode._100202;
+                    case DELETE -> ErrorCode._100203;
+                    case OPTIONS -> ErrorCode._100204;
+                    case HEAD -> ErrorCode._100205;
+                    case PATCH -> ErrorCode._100206;
+                    case TRACE -> ErrorCode._100207;
                     default -> ErrorCode._100802;
                 };
                 throw new ValidateException(error);
@@ -369,108 +369,44 @@ public class QualifierStrategy extends AbstractStrategy {
      * @return selected credential, or {@code null} when no supported credential is present
      */
     protected Credential selectCredential(Context context, Integer policy) {
-        String token = this.resolveToken(context);
-        if (StringKit.isNotBlank(token)) {
-            context.setBearer(token);
-            return this.selectedCredential(context, policy, Consts.ONE, token, "Bearer");
-        }
-
-        String apiKey = this.resolveApiKey(context);
-        if (StringKit.isBlank(apiKey)) {
+        Http.Auth.Credential credential = Http.Auth.credential(context.getHeaders(), context.getParameters());
+        if (credential == null) {
             return null;
         }
-        return this.selectedCredential(context, policy, Consts.TWO, apiKey, "API key");
-    }
-
-    /**
-     * Resolves a token from headers or request parameters using case-insensitive aliases.
-     *
-     * @param context current request context
-     * @return token value, or {@code null} when absent
-     */
-    protected String resolveToken(Context context) {
-        String token = this.resolveCredentialValue(context.getHeaders(), Specifics.TOKEN_KEYS);
-        if (StringKit.isBlank(token)) {
-            token = this.resolveCredentialValue(context.getParameters(), Specifics.TOKEN_KEYS);
+        boolean token = EnumValue.Credential.TOKEN.equals(credential.type());
+        if (token) {
+            context.setBearer(credential.value());
         }
-        if (StringKit.isBlank(token)) {
-            return null;
-        }
-        token = token.trim();
-        if (StringKit.startWithIgnoreCase(token, HTTP.BEARER)) {
-            return token.substring(HTTP.BEARER.length()).trim();
-        }
-        return token;
-    }
-
-    /**
-     * Resolves an API key from headers or request parameters using case-insensitive aliases.
-     *
-     * @param context current request context
-     * @return API key value, or {@code null} when absent
-     */
-    protected String resolveApiKey(Context context) {
-        String apiKey = this.resolveCredentialValue(context.getHeaders(), Specifics.API_KEY_KEYS);
-        if (StringKit.isBlank(apiKey)) {
-            apiKey = this.resolveCredentialValue(context.getParameters(), Specifics.API_KEY_KEYS);
-        }
-        return StringKit.isBlank(apiKey) ? null : apiKey.trim();
-    }
-
-    /**
-     * Finds the first non-blank credential value by exact match first, then by case-insensitive key match.
-     *
-     * @param values candidate values
-     * @param keys   supported keys
-     * @return matched credential value, or {@code null}
-     */
-    protected String resolveCredentialValue(Map<String, ?> values, String... keys) {
-        if (values == null || values.isEmpty() || keys == null || keys.length == 0) {
-            return null;
-        }
-
-        for (String key : keys) {
-            String value = StringKit.toString(values.get(key));
-            if (StringKit.isNotBlank(value)) {
-                return value;
-            }
-        }
-
-        for (String key : keys) {
-            if (StringKit.isBlank(key)) {
-                continue;
-            }
-            for (Map.Entry<String, ?> entry : values.entrySet()) {
-                if (StringKit.equalsIgnoreCase(key, entry.getKey())) {
-                    String value = StringKit.toString(entry.getValue());
-                    if (StringKit.isNotBlank(value)) {
-                        return value;
-                    }
-                }
-            }
-        }
-        return null;
+        String name = token && "Bearer".equalsIgnoreCase(credential.scheme()) ? "Bearer" : token ? "Token" : "API key";
+        return this.selectedCredential(context, policy, token ? Consts.ONE : Consts.TWO, credential, name);
     }
 
     /**
      * Builds a selected credential and writes the common selection log.
      *
-     * @param context current request context
-     * @param policy  current route policy
-     * @param type    credential type
-     * @param value   credential value
-     * @param name    credential display name
+     * @param context    current request context
+     * @param policy     current route policy
+     * @param type       credential type
+     * @param credential resolved request credential
+     * @param name       credential display name
      * @return selected credential
      */
-    protected Credential selectedCredential(Context context, Integer policy, Integer type, String value, String name) {
+    protected Credential selectedCredential(
+            Context context,
+            Integer policy,
+            Integer type,
+            Http.Auth.Credential credential,
+            String name) {
         Logger.info(
                 true,
                 "Vortex",
-                "{} credential selected: strategy=qualifier, clientIp={}, policy={}",
+                "{} credential selected: strategy=qualifier, clientIp={}, policy={}, source={}, key={}",
                 name,
                 context.getX_request_ip(),
-                policy);
-        return new Credential(type, value, name);
+                policy,
+                credential.source(),
+                credential.key());
+        return new Credential(type, credential.value(), name);
     }
 
     /**

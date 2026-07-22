@@ -32,7 +32,7 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -88,7 +88,7 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
         String signature = Base64
                 .encode(org.miaixz.bus.crypto.Builder.hmacSha256(signatureStr.getBytes(Charset.UTF_8)).digest(kDate));
         String signHeader = String.format("%s Headers=ctyun-eop-request-id;eop-date Signature=%s", key, signature);
-        map.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        map.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         map.put("ctyun-eop-request-id", uuid);
         map.put("Eop-date", signatureTime);
         map.put("Eop-Authorization", signHeader);

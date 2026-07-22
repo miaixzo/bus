@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.PORT;
+import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.extra.ssh.Connector;
 import org.miaixz.bus.logger.Logger;
@@ -100,7 +100,7 @@ public class CommonsFtp extends AbstractFtp {
      * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(final String host) {
-        return of(host, PORT._21.getPort());
+        return of(host, Port._21.getPort());
     }
 
     /**

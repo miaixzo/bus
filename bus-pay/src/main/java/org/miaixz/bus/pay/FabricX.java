@@ -41,7 +41,7 @@ import javax.net.ssl.SSLContext;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -344,7 +344,7 @@ public abstract class FabricX {
      * @return media type
      */
     private static MediaType media(final Map<String, ?> headers, final MediaType fallback) {
-        final Object contentType = header(headers, HTTP.CONTENT_TYPE);
+        final Object contentType = header(headers, Http.Header.CONTENT_TYPE);
         return contentType == null ? fallback : media(contentType.toString());
     }
 

@@ -29,7 +29,7 @@ import org.springframework.web.server.WebFilterChain;
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -118,7 +118,7 @@ public class PrimaryFilter extends AbstractFilter {
             context.setTimestamp(DateKit.current());
             context.setHeaders(exchange.getRequest().getHeaders().toSingleValueMap());
             try {
-                context.setHttpMethod(HTTP.Method.of(exchange.getRequest().getMethod().name()));
+                context.setHttpMethod(Http.Method.of(exchange.getRequest().getMethod().name()));
             } catch (IllegalArgumentException e) {
                 Logger.warn(
                         false,

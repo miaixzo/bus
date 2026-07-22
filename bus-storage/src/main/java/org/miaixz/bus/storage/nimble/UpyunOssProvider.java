@@ -33,7 +33,7 @@ import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -129,12 +129,12 @@ public class UpyunOssProvider extends AbstractProvider {
 
             String path = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature(HTTP.HEAD, path, date, 0);
+            String signature = generateSignature(Http.Method.HEAD.value(), path, date, 0);
 
             try (Response response = head(
                     this.context.getEndpoint() + path,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     return Message.<Blob>builder().errcode(toError(response.code()).getKey())
                             .errmsg(toError(response.code()).getValue()).build();
@@ -142,15 +142,15 @@ public class UpyunOssProvider extends AbstractProvider {
 
                 String name = nameOf(objectKey);
                 Map<String, Object> extend = new HashMap<>();
-                extend.put("date", header(response, HTTP.DATE));
-                extend.put("lastModified", header(response, HTTP.LAST_MODIFIED));
+                extend.put("date", header(response, Http.Header.DATE));
+                extend.put("lastModified", header(response, Http.Header.LAST_MODIFIED));
 
                 return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey())
                         .errmsg(ErrorCode._SUCCESS.getValue())
                         .data(
                                 Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
-                                        .size(header(response, HTTP.CONTENT_LENGTH, "0"))
-                                        .type(header(response, HTTP.CONTENT_TYPE)).hash(header(response, HTTP.ETAG))
+                                        .size(header(response, Http.Header.CONTENT_LENGTH, "0"))
+                                        .type(header(response, Http.Header.CONTENT_TYPE)).hash(header(response, Http.Header.ETAG))
                                         .extend(extend).build())
                         .build();
             }
@@ -211,12 +211,12 @@ public class UpyunOssProvider extends AbstractProvider {
 
             String path = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature(HTTP.GET, path, date, 0);
+            String signature = generateSignature(Http.Method.GET.value(), path, date, 0);
 
             Response response = get(
                     this.context.getEndpoint() + path,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date));
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date));
             if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
@@ -225,14 +225,14 @@ public class UpyunOssProvider extends AbstractProvider {
 
             String name = nameOf(objectKey);
             Map<String, Object> extend = new HashMap<>();
-            extend.put("date", header(response, HTTP.DATE));
-            extend.put("lastModified", header(response, HTTP.LAST_MODIFIED));
+            extend.put("date", header(response, Http.Header.DATE));
+            extend.put("lastModified", header(response, Http.Header.LAST_MODIFIED));
 
             return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(stream(response)).bucket(bucket).key(objectKey).name(name)
-                                    .path(objectKey).size(header(response, HTTP.CONTENT_LENGTH, "0"))
-                                    .type(header(response, HTTP.CONTENT_TYPE)).hash(header(response, HTTP.ETAG))
+                                    .path(objectKey).size(header(response, Http.Header.CONTENT_LENGTH, "0"))
+                                    .type(header(response, Http.Header.CONTENT_TYPE)).hash(header(response, Http.Header.ETAG))
                                     .extend(extend).build())
                     .build();
         } catch (Exception e) {
@@ -291,8 +291,8 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
@@ -359,8 +359,8 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
@@ -406,8 +406,8 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date),
                     header("x-upyun-list-limit", "100"))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
@@ -493,8 +493,8 @@ public class UpyunOssProvider extends AbstractProvider {
             byte[] content;
             try (Response response = get(
                     this.context.getEndpoint() + oldPath,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + getSignature),
-                    header(HTTP.DATE, date))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + getSignature),
+                    header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
@@ -509,9 +509,9 @@ public class UpyunOssProvider extends AbstractProvider {
                     this.context.getEndpoint() + newPath,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + putSignature),
-                    header(HTTP.DATE, putDate),
-                    header(HTTP.CONTENT_LENGTH, String.valueOf(content.length)))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + putSignature),
+                    header(Http.Header.DATE, putDate),
+                    header(Http.Header.CONTENT_LENGTH, String.valueOf(content.length)))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
@@ -523,8 +523,8 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = delete(
                     this.context.getEndpoint() + oldPath,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + deleteSignature),
-                    header(HTTP.DATE, deleteDate))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + deleteSignature),
+                    header(Http.Header.DATE, deleteDate))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
@@ -591,15 +591,15 @@ public class UpyunOssProvider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             String requestPath = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature(HTTP.PUT, requestPath, date, content.length);
+            String signature = generateSignature(Http.Method.PUT.value(), requestPath, date, content.length);
 
             try (Response response = put(
                     this.context.getEndpoint() + requestPath,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date),
-                    header(HTTP.CONTENT_LENGTH, String.valueOf(content.length)))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date),
+                    header(Http.Header.CONTENT_LENGTH, String.valueOf(content.length)))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
@@ -721,8 +721,8 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = delete(
                     this.context.getEndpoint() + requestPath,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }

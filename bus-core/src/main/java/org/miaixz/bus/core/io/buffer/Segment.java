@@ -47,7 +47,7 @@ public class Segment {
     /**
      * This avoids {@code arraycopy()} for this many bytes when they will be shared.
      */
-    public static final int SHARE_MINIMUM = Normal._1024;
+    public static final int SHARE_MINIMUM = Normal._2048;
 
     /**
      * The underlying byte array for this segment.
@@ -88,6 +88,9 @@ public class Segment {
      * True if this segment is currently linked into the segment allocator.
      */
     volatile boolean cached;
+
+    /** Allocator bucket that owns this segment across cross-thread buffer transfers. */
+    int poolBucket = -1;
 
     /**
      * Constructs a new, unshared segment with the default size.

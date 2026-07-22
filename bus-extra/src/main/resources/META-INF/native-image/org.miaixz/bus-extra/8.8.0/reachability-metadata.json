@@ -137,42 +137,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.center.iterator.ComputeIterator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
-      },
-      "type": "org.miaixz.bus.core.center.object.ObjectValidator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.lang.exception.InternalException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.lang.exception.UncheckedException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
-      },
-      "type": "org.miaixz.bus.core.xyz.LookupKit"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.extra.captcha.AbstractProvider"

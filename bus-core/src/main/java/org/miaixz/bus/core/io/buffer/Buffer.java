@@ -2288,6 +2288,43 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
+     * Copies and consumes bytes from another buffer without sharing or transferring its segments.
+     * <p>
+     * This is intended for cross-layer staging paths whose source segments must remain recyclable. Ordinary
+     * {@link #write(Buffer, long)} remains the preferred zero-copy operation.
+     *
+     * @param source    source buffer to consume
+     * @param byteCount exact byte count to copy
+     * @throws IllegalArgumentException  if source is null or this buffer
+     * @throws IndexOutOfBoundsException if byteCount exceeds the source
+     */
+    public void writeCopy(final Buffer source, long byteCount) {
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
+        }
+        if (source == this) {
+            throw new IllegalArgumentException("source == this");
+        }
+        IoKit.checkOffsetAndCount(source.size, 0, byteCount);
+        while (byteCount > 0L) {
+            final Segment sourceHead = source.head;
+            final Segment targetTail = writableSegment(1);
+            final int count = (int) Math
+                    .min(byteCount, Math.min(sourceHead.limit - sourceHead.pos, Segment.SIZE - targetTail.limit));
+            System.arraycopy(sourceHead.data, sourceHead.pos, targetTail.data, targetTail.limit, count);
+            sourceHead.pos += count;
+            targetTail.limit += count;
+            source.size -= count;
+            size += count;
+            byteCount -= count;
+            if (sourceHead.pos == sourceHead.limit) {
+                source.head = sourceHead.pop();
+                SegmentAllocator.release(sourceHead);
+            }
+        }
+    }
+
+    /**
      * Reads {@code byteCount} bytes from this buffer and writes them to the specified sink buffer. This method consumes
      * the bytes from this buffer.
      *

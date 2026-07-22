@@ -35,11 +35,9 @@ import org.springframework.web.server.ServerWebExchange;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.PORT;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.net.Specifics;
-import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -192,7 +190,7 @@ public abstract class AbstractStrategy implements Strategy {
             return Optional.of(appendPortIfMissing(authority, protocol));
         }
 
-        String hostHeader = headers.getFirst(HTTP.HOST);
+        String hostHeader = headers.getFirst(Http.Header.HOST);
         if (StringKit.hasText(hostHeader)) {
             Logger.debug(true, "Vortex", "{} found in 'Host' header", hostHeader);
             return Optional.of(appendPortIfMissing(hostHeader, protocol));
@@ -373,15 +371,15 @@ public abstract class AbstractStrategy implements Strategy {
     }
 
     /**
-     * Converts an integer registry verb code to the canonical {@link HTTP.Method}.
+     * Converts an integer registry verb code to the canonical {@link Http.Method}.
      *
      * @param type The integer representation of the request method (e.g., 1 for GET, 2 for POST).
      * @return The matching canonical HTTP method.
      * @throws ValidateException if the type is not a valid or supported HTTP method.
      */
-    protected HTTP.Method methodOf(int type) {
+    protected Http.Method methodOf(int type) {
         try {
-            return HTTP.Method.of(type);
+            return Http.Method.of(type);
         } catch (IllegalArgumentException e) {
             Logger.warn(
                     false,
@@ -440,9 +438,9 @@ public abstract class AbstractStrategy implements Strategy {
             return authority;
         }
         if (Protocol.HTTPS.name.equalsIgnoreCase(protocol)) {
-            return authority + Symbol.COLON + PORT._443.getPort();
+            return authority + Symbol.COLON + Port._443.getPort();
         }
-        return authority + Symbol.COLON + PORT._80.getPort();
+        return authority + Symbol.COLON + Port._80.getPort();
     }
 
     /**
@@ -468,17 +466,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @return The extracted token string, or {@code null} if no token is found in any of the checked locations.
      */
     protected String getToken(Context context) {
-        String token = MapKit.getFirstNonNull(context.getHeaders(), Specifics.TOKEN_KEYS);
-        if (StringKit.isNotBlank(token)) {
-            token = token.trim();
-            if (token.regionMatches(true, 0, HTTP.BEARER, 0, HTTP.BEARER.length())) {
-                return token.substring(HTTP.BEARER.length()).trim();
-            }
-            return token;
-        }
-
-        return Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), Specifics.TOKEN_KEYS))
-                .map(Object::toString).orElse(null);
+        return Http.Auth.token(context.getHeaders(), context.getParameters());
     }
 
     /**
@@ -488,13 +476,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @return The found API key, or {@code null} if not present.
      */
     protected String getApiKey(Context context) {
-        String apiKey = MapKit.getFirstNonNull(context.getHeaders(), Specifics.API_KEY_KEYS);
-        if (StringKit.isNotBlank(apiKey)) {
-            return apiKey.trim();
-        }
-
-        return Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), Specifics.API_KEY_KEYS))
-                .map(Object::toString).map(String::trim).orElse(null);
+        return Http.Auth.apiKey(context.getHeaders(), context.getParameters());
     }
 
 }

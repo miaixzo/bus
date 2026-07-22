@@ -435,9 +435,9 @@ public enum Protocol {
             hostPortPart = address.substring(protocolIndex + 3); // Part after "://"
 
             if ("http".equalsIgnoreCase(protocol)) {
-                implicitPort = PORT._80.getPort();
+                implicitPort = Port._80.getPort();
             } else if ("https".equalsIgnoreCase(protocol)) {
-                implicitPort = PORT._443.getPort();
+                implicitPort = Port._443.getPort();
             }
             // You could add more implicit ports here, e.g., "ws" -> 80, "wss" -> 443
         }

@@ -37,7 +37,7 @@ import org.springframework.web.server.ServerWebExchange;
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -128,7 +128,7 @@ public class RequestStrategy extends AbstractStrategy {
      */
     protected Mono<Void> parse(ServerWebExchange exchange, Chain chain, Context context) {
         ServerHttpRequest request = exchange.getRequest();
-        if (context.getHttpMethod() == HTTP.Method.GET) {
+        if (context.getHttpMethod() == Http.Method.GET) {
             return handleGetRequest(exchange, chain, context);
         }
         MediaType contentType = request.getHeaders().getContentType();

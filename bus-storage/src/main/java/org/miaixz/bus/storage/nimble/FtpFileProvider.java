@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.PORT;
+import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.ftp.CommonsFtp;
 import org.miaixz.bus.extra.ftp.Ftp;
@@ -85,7 +85,7 @@ public class FtpFileProvider extends AbstractProvider {
         try {
             Connector connector = new Connector();
             connector.setHost(host);
-            connector.setPort(port != 0 ? port : PORT._21.getPort()); // Default FTP port is 21
+            connector.setPort(port != 0 ? port : Port._21.getPort()); // Default FTP port is 21
             connector.setUser(username);
             connector.setPassword(password);
             this.client = CommonsFtp.of(connector, Charset.UTF_8);

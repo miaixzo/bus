@@ -26,7 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -119,7 +119,7 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
                     path,
                     context.getAssets().getMethod());
 
-            boolean isWebSocketUpgrade = input.headers().header(HTTP.UPGRADE).stream()
+            boolean isWebSocketUpgrade = input.headers().header(Http.Header.UPGRADE).stream()
                     .anyMatch(h -> h.equalsIgnoreCase("websocket"));
 
             if (!isWebSocketUpgrade) {

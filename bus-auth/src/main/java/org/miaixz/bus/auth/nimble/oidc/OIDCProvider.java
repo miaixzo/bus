@@ -32,7 +32,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
@@ -113,7 +113,7 @@ public class OIDCProvider extends AbstractProvider {
     public Message<Claims> userInfo(Authorization authorization) {
         String userInfoUrl = getEndpoint(Endpoint.USERINFO);
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
+        header.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + authorization.getToken());
         String response = get(userInfoUrl, null, header);
         Map<String, Object> object = JsonKit.toMap(response);
 

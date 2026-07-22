@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -83,7 +83,7 @@ public class StackOverflowProvider extends AbstractProvider {
         UrlDecoder.decodeMap(tokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         String response = post(tokenUrl, form, header);
 
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);

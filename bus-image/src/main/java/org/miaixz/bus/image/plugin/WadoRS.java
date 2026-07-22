@@ -41,7 +41,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.galaxy.media.MultipartParser;
 import org.miaixz.bus.logger.Logger;
@@ -107,9 +107,9 @@ public class WadoRS {
     private static Map<String, String> requestProperties(String[] httpHeaders) {
         Map<String, String> requestProperties = new HashMap<>();
         if (header)
-            requestProperties.put(HTTP.ACCEPT, accept);
+            requestProperties.put(Http.Header.ACCEPT, accept);
         if (authorization != null)
-            requestProperties.put(HTTP.AUTHORIZATION, authorization);
+            requestProperties.put(Http.Header.AUTHORIZATION, authorization);
         if (httpHeaders != null)
             for (String httpHeader : httpHeaders) {
                 int delim = httpHeader.indexOf(Symbol.C_COLON);
@@ -353,7 +353,7 @@ public class WadoRS {
                             String fileName = fileName(
                                     partNumber,
                                     uid,
-                                    partExtension(headerParams.get(HTTP.CONTENT_TYPE).get(0)));
+                                    partExtension(headerParams.get(Http.Header.CONTENT_TYPE).get(0)));
                             Logger.info(false, "Image", "Extract Part #{} {} \n{}", partNumber, fileName, headerParams);
                             write(multipartInputStream, fileName);
                         } catch (Exception e) {

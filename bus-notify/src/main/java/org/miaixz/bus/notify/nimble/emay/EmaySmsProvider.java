@@ -29,7 +29,7 @@ import java.util.Map;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -93,12 +93,12 @@ public class EmaySmsProvider extends AbstractProvider<EmayNotice, Context> {
                 entity.getReceive(),
                 entity.getContent());
         Map<String, String> headers = MapKit.newHashMap(1, true);
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         String response = post(this.getUrl(entity), bodys, headers);
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
         return Message.<Void>builder()
-                .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
+                .errcode(String.valueOf(Http.Status.OK).equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
     }
 

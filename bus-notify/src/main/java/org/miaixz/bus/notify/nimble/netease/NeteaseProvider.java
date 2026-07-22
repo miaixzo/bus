@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
@@ -137,7 +137,7 @@ public abstract class NeteaseProvider<T extends Notice, K extends Context> exten
         String response = FabricX.post(routerUrl, map, header);
         String code = JsonKit.getValue(response, "Code");
         Message<Void> result = Message.<Void>builder()
-                .errcode(String.valueOf(HTTP.HTTP_OK).equals(code) ? ErrorCode._SUCCESS.getKey() : code)
+                .errcode(String.valueOf(Http.Status.OK).equals(code) ? ErrorCode._SUCCESS.getKey() : code)
                 .errmsg(JsonKit.getValue(response, "desc")).build();
         Logger.debug(
                 false,

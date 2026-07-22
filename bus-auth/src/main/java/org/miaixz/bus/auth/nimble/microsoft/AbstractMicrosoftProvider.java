@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -153,7 +153,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     @Override
     public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.AUTHORIZATION, authorization.getToken_type() + Symbol.SPACE + authorization.getToken());
+        header.put(Http.Header.AUTHORIZATION, authorization.getToken_type() + Symbol.SPACE + authorization.getToken());
 
         String userInfo = get(userInfoUrl(authorization), null, header);
         try {

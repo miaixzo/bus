@@ -26,7 +26,7 @@ import java.util.*;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.crypto.Builder;
@@ -119,9 +119,9 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
                 bodys == null ? 0 : bodys.size(),
                 entity != null && entity.isSimple());
         Map<String, String> headers = new HashMap<>();
-        headers.put(HTTP.USER_AGENT, "uni-java-sdk" + "/" + "0.0.4");
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        headers.put(HTTP.ACCEPT, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.USER_AGENT, "uni-java-sdk" + "/" + "0.0.4");
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.ACCEPT, MediaType.APPLICATION_JSON);
         String url;
         if (entity.isSimple()) {
             url = this.getUrl(entity) + "?action=" + action + "&accessKeyId=" + this.context.getAppKey();

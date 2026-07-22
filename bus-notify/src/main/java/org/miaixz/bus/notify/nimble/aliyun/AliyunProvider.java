@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
@@ -100,7 +100,7 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
         }
         // Remove the first excess & symbol
         String sortedQueryString = sortQueryStringTmp.substring(1);
-        String stringToSign = HTTP.GET + Symbol.AND + specialUrlEncode(Symbol.SLASH) + Symbol.AND
+        String stringToSign = Http.Method.GET.value() + Symbol.AND + specialUrlEncode(Symbol.SLASH) + Symbol.AND
                 + specialUrlEncode(sortedQueryString);
         return sign(stringToSign);
     }

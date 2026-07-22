@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -78,8 +78,8 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
         bodys.put("vars", StringKit.split(entity.getParams(), "|").toString());
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        headers.put(HTTP.AUTHORIZATION, entity.getToken());
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.AUTHORIZATION, entity.getToken());
         String response = post(this.getUrl(entity), bodys, headers);
 
         Collection<UpyunNotice.MessageId> list = JsonKit.toList(response, UpyunNotice.MessageId.class);

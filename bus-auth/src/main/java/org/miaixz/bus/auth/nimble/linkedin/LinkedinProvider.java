@@ -36,7 +36,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -91,9 +91,9 @@ public class LinkedinProvider extends AbstractProvider {
     public Message<Claims> userInfo(Authorization authorization) {
         String token = authorization.getToken();
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.HOST, "api.linkedin.com");
-        header.put(HTTP.CONNECTION, "Keep-Alive");
-        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
+        header.put(Http.Header.HOST, "api.linkedin.com");
+        header.put(Http.Header.CONNECTION, "Keep-Alive");
+        header.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token);
 
         String response = get(userInfoUrl(authorization), null, header);
         try {
@@ -196,9 +196,9 @@ public class LinkedinProvider extends AbstractProvider {
      */
     private String getUserEmail(String token) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.HOST, "api.linkedin.com");
-        header.put(HTTP.CONNECTION, "Keep-Alive");
-        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
+        header.put(Http.Header.HOST, "api.linkedin.com");
+        header.put(Http.Header.CONNECTION, "Keep-Alive");
+        header.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token);
 
         String emailResponse = get(
                 "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))",
@@ -281,8 +281,8 @@ public class LinkedinProvider extends AbstractProvider {
      */
     private Authorization getToken(String tokenUrl) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.HOST, "www.linkedin.com");
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        header.put(Http.Header.HOST, "www.linkedin.com");
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         String response = post(tokenUrl, null, header);
         try {

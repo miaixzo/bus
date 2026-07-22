@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -219,7 +219,7 @@ public class BoxProvider extends AbstractProvider {
 
             String fileId = (String) metadata.get("id");
             String url = API_BASE + "/files/" + fileId + "/content";
-            Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()));
+            Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()));
             if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
@@ -263,7 +263,7 @@ public class BoxProvider extends AbstractProvider {
 
             String url = API_BASE + "/files/" + fileId + "/content";
 
-            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+            try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
                 if (!response.successful()) {
                     throw new IOException("Download failed: " + response.code());
                 }
@@ -318,7 +318,7 @@ public class BoxProvider extends AbstractProvider {
 
             String url = API_BASE + "/files/" + fileId + "/content";
 
-            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+            try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
                 if (!response.successful()) {
                     throw new IOException("Download failed: " + response.code());
                 }
@@ -359,7 +359,7 @@ public class BoxProvider extends AbstractProvider {
             String folderId = context.getBucket();
             String url = API_BASE + "/folders/" + folderId + "/items?fields=id,name,size,modified_at,type";
 
-            try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+            try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
                 if (!response.successful()) {
                     throw new IOException("List failed: " + response.code());
                 }
@@ -451,7 +451,7 @@ public class BoxProvider extends AbstractProvider {
                     url,
                     JsonKit.toJsonString(requestBody),
                     MediaType.APPLICATION_JSON,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
                 if (!response.successful()) {
                     throw new IOException("Rename failed: " + response.code());
                 }
@@ -539,7 +539,7 @@ public class BoxProvider extends AbstractProvider {
                     url,
                     body,
                     "multipart/form-data; boundary=" + boundary,
-                    header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
                 if (!response.successful()) {
                     throw new IOException("Upload failed: " + response.code());
                 }
@@ -663,7 +663,7 @@ public class BoxProvider extends AbstractProvider {
 
             String url = API_BASE + "/files/" + fileId;
 
-            try (Response response = delete(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+            try (Response response = delete(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
                 if (!response.successful()) {
                     throw new IOException("Delete failed: " + response.code());
                 }
@@ -709,7 +709,7 @@ public class BoxProvider extends AbstractProvider {
     private String findFileByName(String fileName, String folderId) throws IOException {
         String url = API_BASE + "/folders/" + folderId + "/items?fields=id,name,type";
 
-        try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+        try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
             if (!response.successful()) {
                 throw new IOException("Search failed: " + response.code());
             }
@@ -756,7 +756,7 @@ public class BoxProvider extends AbstractProvider {
     private Map<String, Object> getFileMetadata(String fileId) throws IOException {
         String url = API_BASE + "/files/" + fileId
                 + "?fields=id,name,size,modified_at,content_modified_at,type,sha1,extension";
-        try (Response response = get(url, header(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()))) {
+        try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()))) {
             if (response.code() == 404) {
                 return null;
             }

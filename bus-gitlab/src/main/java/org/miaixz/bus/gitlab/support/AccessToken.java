@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.gitlab.GitLabApiException;
 import org.miaixz.bus.logger.Logger;
 
@@ -288,7 +288,7 @@ public final class AccessToken {
              *******************************************************************************/
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+            connection.setRequestProperty(Http.Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
             connection.setRequestProperty("Charset", "utf-8");
             connection.setRequestProperty("Cookie", cookies);
             connection.setReadTimeout(10000);
@@ -308,7 +308,7 @@ public final class AccessToken {
                 }
             }
 
-            connection.setRequestProperty(HTTP.CONTENT_LENGTH, String.valueOf(formData.length()));
+            connection.setRequestProperty(Http.Header.CONTENT_LENGTH, String.valueOf(formData.length()));
             OutputStream output = connection.getOutputStream();
             output.write(formData.toString().getBytes());
             output.flush();
@@ -321,7 +321,7 @@ public final class AccessToken {
             }
 
             // Follow the redirect with the provided session cookie
-            String redirectUrl = connection.getHeaderField(HTTP.LOCATION);
+            String redirectUrl = connection.getHeaderField(Http.Header.LOCATION);
             url = new URL(redirectUrl);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
@@ -498,7 +498,7 @@ public final class AccessToken {
             url = new URL(baseUrl + revokePath);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+            connection.setRequestProperty(Http.Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
             connection.setRequestProperty("Charset", "utf-8");
             connection.setRequestProperty("Cookie", cookies);
             connection.setReadTimeout(10000);
@@ -510,7 +510,7 @@ public final class AccessToken {
             // Submit the form
             StringBuilder formData = new StringBuilder();
             addFormData(formData, "authenticity_token", csrfToken);
-            connection.setRequestProperty(HTTP.CONTENT_LENGTH, String.valueOf(formData.length()));
+            connection.setRequestProperty(Http.Header.CONTENT_LENGTH, String.valueOf(formData.length()));
             OutputStream output = connection.getOutputStream();
             output.write(formData.toString().getBytes());
             output.flush();
@@ -523,7 +523,7 @@ public final class AccessToken {
             }
 
             // Follow the redirect with the provided session cookie
-            String redirectUrl = connection.getHeaderField(HTTP.LOCATION);
+            String redirectUrl = connection.getHeaderField(Http.Header.LOCATION);
             url = new URL(redirectUrl);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
@@ -809,7 +809,7 @@ public final class AccessToken {
              *******************************************************************************/
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+            connection.setRequestProperty(Http.Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
             connection.setRequestProperty("Charset", "utf-8");
 
             connection.setRequestProperty("Cookie", cookies);
@@ -823,7 +823,7 @@ public final class AccessToken {
             addFormData(formData, "user[login]", username);
             addFormData(formData, "user[password]", password);
             addFormData(formData, "authenticity_token", csrfToken);
-            connection.setRequestProperty(HTTP.CONTENT_LENGTH, String.valueOf(formData.length()));
+            connection.setRequestProperty(Http.Header.CONTENT_LENGTH, String.valueOf(formData.length()));
 
             OutputStream output = connection.getOutputStream();
             output.write(formData.toString().getBytes());
@@ -840,7 +840,7 @@ public final class AccessToken {
             cookies = cookieParts[0];
 
             // Follow the redirect with the provided session cookie
-            String redirectUrl = connection.getHeaderField(HTTP.LOCATION);
+            String redirectUrl = connection.getHeaderField(Http.Header.LOCATION);
             url = new URL(redirectUrl);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);

@@ -31,7 +31,7 @@ import lombok.Setter;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -102,7 +102,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
         String response = post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
         Message<Void> result = Message.<Void>builder()
-                .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
+                .errcode(String.valueOf(Http.Status.OK).equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
         Logger.info(
                 false,
@@ -146,7 +146,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
         paramMap.put("corpsecret", context.getAppSecret());
         String response = get(url, paramMap);
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        if (String.valueOf(HTTP.HTTP_OK).equals(errcode)) {
+        if (String.valueOf(Http.Status.OK).equals(errcode)) {
             String access_token = JsonKit.getValue(response, "access_token");
             refreshTokenTime = System.currentTimeMillis();
             accessToken.set(access_token);
