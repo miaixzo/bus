@@ -25,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -46,9 +45,7 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.SslContextFactoryAdapter;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
@@ -64,15 +61,9 @@ import org.miaixz.bus.fabric.protocol.http.body.MultipartBody;
 public abstract class FabricX {
 
     /**
-     * Shared Fabric options for payment HTTP calls.
-     */
-    private static final Options OPTIONS = Options.of("timeout", Timeout.of(Duration.ofSeconds(30)));
-
-    /**
      * Shared Fabric context for non-certificate payment HTTP calls.
      */
-    private static final org.miaixz.bus.fabric.Context CONTEXT = org.miaixz.bus.fabric.Context.create()
-            .withOptions(OPTIONS);
+    private static final org.miaixz.bus.fabric.Context CONTEXT = org.miaixz.bus.fabric.Context.create();
 
     /**
      * Form media used by payment requests.
@@ -288,13 +279,14 @@ public abstract class FabricX {
             final String certPass,
             final String filePath,
             final String protocol) {
-        final org.miaixz.bus.fabric.Context context = certificateContext(certPath, null, certPass, protocol);
-        final var builder = Fabric.http(context).post(url).multipart();
-        if (StringKit.isNotEmpty(data)) {
-            builder.part(MultipartBody.Part.of("params", Payload.of(data, Charset.UTF_8)));
+        try (org.miaixz.bus.fabric.Context context = certificateContext(certPath, null, certPass, protocol)) {
+            final var builder = Fabric.http(context).post(url).multipart();
+            if (StringKit.isNotEmpty(data)) {
+                builder.part(MultipartBody.Part.of("params", Payload.of(data, Charset.UTF_8)));
+            }
+            builder.file("file", Path.of(filePath));
+            return execute(builder::execute).body();
         }
-        builder.file("file", Path.of(filePath));
-        return execute(builder::execute).body();
     }
 
     /**
@@ -315,9 +307,14 @@ public abstract class FabricX {
             final InputStream certFile,
             final String certPass,
             final String protocol) {
-        final org.miaixz.bus.fabric.Context context = certificateContext(certPath, certFile, certPass, protocol);
-        final var builder = Fabric.http(context).post(url).body(data == null ? "" : data, FORM);
-        return execute(builder::execute).body();
+        try (org.miaixz.bus.fabric.Context context = certificateContext(
+                certPath,
+                certFile,
+                certPass,
+                protocol)) {
+            final var builder = Fabric.http(context).post(url).body(data == null ? "" : data, FORM);
+            return execute(builder::execute).body();
+        }
     }
 
     /**
@@ -411,8 +408,10 @@ public abstract class FabricX {
                 .of(() -> sslContext(certPath, certFile, certPass, selected));
         final TlsContext tlsContext = factory.tlsContext();
         final TlsSettings tlsSettings = TlsSettings.builder().versions(List.of(selected)).build();
-        return org.miaixz.bus.fabric.Context.create()
-                .withOptions(OPTIONS.with("http.tlsContext", tlsContext).with("http.tlsSettings", tlsSettings));
+        return org.miaixz.bus.fabric.Context.builder()
+                .tlsContext(tlsContext)
+                .tlsSettings(tlsSettings)
+                .build();
     }
 
     /**
@@ -451,7 +450,9 @@ public abstract class FabricX {
         if (certFile != null) {
             clientStore.load(certFile, password);
         } else {
-            clientStore.load(Files.newInputStream(Path.of(certPath)), password);
+            try (InputStream input = Files.newInputStream(Path.of(certPath))) {
+                clientStore.load(input, password);
+            }
         }
         final KeyManagerFactory factory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         factory.init(clientStore, password);

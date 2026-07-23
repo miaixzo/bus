@@ -245,7 +245,9 @@ public final class Callout {
             Logger.debug(true, "Cortex", "Callout HTTP client creation started: timeoutMs={}", timeoutMs);
             this.timeoutMs = timeoutMs;
             Duration timeout = Duration.ofMillis(timeoutMs);
-            this.context = Context.create().withOptions(Options.of("timeout", Timeout.of(timeout)));
+            this.context = Context.builder()
+                    .options(Options.of(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT, Timeout.of(timeout)))
+                    .build();
             this.calls = ConcurrentHashMap.newKeySet();
             Logger.debug(false, "Cortex", "Callout HTTP client created: timeoutMs={}", timeoutMs);
         }
@@ -314,7 +316,7 @@ public final class Callout {
             }
             calls.clear();
             try {
-                context.reactor().close();
+                context.close();
             } catch (RuntimeException e) {
                 failure = e;
             }
