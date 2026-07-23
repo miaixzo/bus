@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Clock;
+import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
 import org.miaixz.bus.fabric.registry.Directory;
@@ -268,6 +269,11 @@ public final class Reactor implements AutoCloseable {
         private PoolPolicy poolPolicy;
 
         /**
+         * Generic policy options supplied by a context composition root.
+         */
+        private Options options = Options.empty();
+
+        /**
          * Creates a runtime builder.
          */
         private Builder() {
@@ -341,6 +347,17 @@ public final class Reactor implements AutoCloseable {
         }
 
         /**
+         * Sets generic policy options used when no explicit component policy is supplied.
+         *
+         * @param options immutable option snapshot
+         * @return this builder
+         */
+        public Builder options(final Options options) {
+            this.options = require(options, "Options");
+            return this;
+        }
+
+        /**
          * Builds a reactor, creating defaults in dependency order and transferring ownership only after success.
          *
          * @return fully initialized reactor owning any collaborators created by this build
@@ -365,7 +382,7 @@ public final class Reactor implements AutoCloseable {
                 if (resolvedDirectory == null) {
                     resolvedDirectory = Directory.create(
                             resolvedClock,
-                            poolPolicy == null ? PoolPolicy.defaults() : poolPolicy,
+                            poolPolicy == null ? PoolPolicy.resolve(options) : poolPolicy,
                             resolvedMeter,
                             resolvedDispatcher);
                 }

@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.protocol.http.HttpRunner;
 import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
-import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
+import org.miaixz.bus.fabric.protocol.sse.retry.SseRetry;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;

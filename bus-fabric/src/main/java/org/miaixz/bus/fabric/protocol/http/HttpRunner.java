@@ -55,9 +55,10 @@ import org.miaixz.bus.fabric.protocol.http.chain.HttpBridge;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpChain;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpConnect;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpCoordinator;
-import org.miaixz.bus.fabric.protocol.http.chain.HttpRetry;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpTransport;
 import org.miaixz.bus.fabric.protocol.http.codec.Http1Codec;
+import org.miaixz.bus.fabric.protocol.http.retry.HttpRetry;
+import org.miaixz.bus.fabric.protocol.http.retry.HttpRetryPolicy;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
@@ -685,7 +686,7 @@ public final class HttpRunner {
             this.connect = new HttpConnect(context.directory().connectionPool(), tlsContext, tlsSettings,
                     context.listener(), context.resolver(), context.reactor().dispatcher());
             this.stages = List.of(
-                    new HttpRetry(authenticator),
+                    new HttpRetry(HttpRetryPolicy.resolve(context.options()), authenticator),
                     bridge,
                     cache == null ? HttpCoordinator.disabled(context.reactor().clock())
                             : HttpCoordinator.create(cache, context.reactor().clock()),

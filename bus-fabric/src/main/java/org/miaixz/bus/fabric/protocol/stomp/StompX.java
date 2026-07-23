@@ -81,13 +81,10 @@ public final class StompX {
     private StompX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        final Headers connectHeaders = connectHeaders(
-                builder.headers.build(),
-                builder.clientSendHeartbeat,
-                builder.clientReceiveHeartbeat);
+        final Headers connectHeaders = connectHeaders(builder.headers.build(), builder.policy);
         this.snapshot = new StompSnapshot(current, builder.uri, Address.from(builder.uri), connectHeaders,
-                copyTimeout(builder.timeout), builder.clientSendHeartbeat, builder.clientReceiveHeartbeat,
-                builder.destination, builder.login, builder.passcode, builder.guard, builder.filter, currentObserver,
+                copyTimeout(builder.timeout), builder.policy, builder.destination, builder.login, builder.passcode,
+                builder.guard, builder.filter, currentObserver,
                 builder.handler == null ? noopHandler() : builder.handler, builder.listener);
         this.runner = new StompRunner(snapshot);
         this.callback = builder.callback;
@@ -204,6 +201,7 @@ public final class StompX {
                 snapshot.context().reactor().dispatcher(),
                 callback,
                 snapshot.observer(),
+                snapshot.timeout(),
                 cancellation -> Mediator.execute(Type.STOMP, cancellation, runner::open),
                 dispatchKey());
     }
@@ -300,45 +298,25 @@ public final class StompX {
     /**
      * Creates CONNECT headers from immutable heartbeat request components.
      *
-     * @param headers                caller headers
-     * @param clientSendHeartbeat    client send heartbeat
-     * @param clientReceiveHeartbeat client receive heartbeat
+     * @param headers caller headers
+     * @param policy  complete STOMP policy
      * @return CONNECT headers
      */
-    private static Headers connectHeaders(
-            final Headers headers,
-            final Duration clientSendHeartbeat,
-            final Duration clientReceiveHeartbeat) {
+    private static Headers connectHeaders(final Headers headers, final StompPolicy policy) {
+        final StompPolicy current = require(policy, "STOMP policy");
         return require(headers, "Headers").with(
                 org.miaixz.bus.fabric.Builder.STOMP_HEADER_HEART_BEAT,
-                heartbeatMillis(clientSendHeartbeat) + "," + heartbeatMillis(clientReceiveHeartbeat));
+                current.clientSendHeartbeatMillis() + "," + current.clientReceiveHeartbeatMillis());
     }
 
     /**
-     * Copies all six timeout components without applying compatibility defaults.
+     * Validates and retains the immutable timeout policy.
      *
      * @param timeout timeout policy
-     * @return copied timeout policy
+     * @return validated timeout policy
      */
     private static Timeout copyTimeout(final Timeout timeout) {
-        final Timeout current = require(timeout, "Timeout");
-        return new Timeout(current.connect(), current.read(), current.write(), current.call(), current.ping(),
-                current.close());
-    }
-
-    /**
-     * Converts one validated heartbeat to CONNECT header milliseconds.
-     *
-     * @param duration heartbeat duration
-     * @return milliseconds
-     */
-    private static long heartbeatMillis(final Duration duration) {
-        final Duration current = validateDuration(duration, "STOMP heart-beat");
-        try {
-            return current.toMillis();
-        } catch (final ArithmeticException e) {
-            throw new ValidateException("STOMP heart-beat is too large", e);
-        }
+        return require(timeout, "Timeout");
     }
 
     /**
@@ -370,14 +348,9 @@ public final class StompX {
         private Timeout timeout;
 
         /**
-         * Heartbeat interval the client can send.
+         * Complete client heartbeat policy.
          */
-        private Duration clientSendHeartbeat;
-
-        /**
-         * Heartbeat interval the client requests to receive.
-         */
-        private Duration clientReceiveHeartbeat;
+        private StompPolicy policy;
 
         /**
          * Default destination.
@@ -444,8 +417,7 @@ public final class StompX {
             this.headers = Headers.builder();
             final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
             this.timeout = copyTimeout(configured == null ? Timeout.defaults() : configured);
-            this.clientSendHeartbeat = Duration.ZERO;
-            this.clientReceiveHeartbeat = Duration.ZERO;
+            this.policy = StompPolicy.resolve(context.options());
             this.observer = EventObserver.noop();
             this.callback = null;
             this.handler = noopHandler();
@@ -518,10 +490,18 @@ public final class StompX {
          * @return this builder
          */
         public Builder heartBeat(final Duration outgoing, final Duration incoming) {
-            heartbeatMillis(outgoing);
-            heartbeatMillis(incoming);
-            this.clientSendHeartbeat = outgoing;
-            this.clientReceiveHeartbeat = incoming;
+            this.policy = new StompPolicy(outgoing, incoming);
+            return this;
+        }
+
+        /**
+         * Sets the complete STOMP client heartbeat policy.
+         *
+         * @param policy complete STOMP policy
+         * @return this builder
+         */
+        public Builder heartBeat(final StompPolicy policy) {
+            this.policy = require(policy, "STOMP policy");
             return this;
         }
 

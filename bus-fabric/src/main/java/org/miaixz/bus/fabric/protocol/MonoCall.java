@@ -26,6 +26,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
@@ -36,6 +37,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.runtime.Activity;
@@ -93,6 +95,11 @@ public abstract class MonoCall<T> implements Call<T> {
     private final Dispatcher dispatcher;
 
     /**
+     * Complete immutable protocol timeout policy.
+     */
+    private final Timeout timeout;
+
+    /**
      * Lifecycle scope.
      */
     private final LifecycleScope scope;
@@ -113,6 +120,11 @@ public abstract class MonoCall<T> implements Call<T> {
     private volatile DispatchHandle handle;
 
     /**
+     * Configured logical Call deadline handle, allocated only when {@link Timeout#call()} is positive.
+     */
+    private volatile DispatchHandle deadlineHandle;
+
+    /**
      * Safe callback.
      */
     private volatile Callback<? super T> callback;
@@ -130,7 +142,20 @@ public abstract class MonoCall<T> implements Call<T> {
      * @param observer   event observer
      */
     protected MonoCall(final String name, final Dispatcher dispatcher, final EventObserver observer) {
-        this(name, dispatcher, observer, null);
+        this(name, dispatcher, observer, null, Timeout.defaults());
+    }
+
+    /**
+     * Creates a call template with a complete timeout policy.
+     *
+     * @param name       call name
+     * @param dispatcher dispatcher used by enqueue()
+     * @param observer   event observer
+     * @param timeout    complete protocol timeout policy
+     */
+    protected MonoCall(final String name, final Dispatcher dispatcher, final EventObserver observer,
+            final Timeout timeout) {
+        this(name, dispatcher, observer, null, timeout);
     }
 
     /**
@@ -143,8 +168,23 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     protected MonoCall(final String name, final Dispatcher dispatcher, final EventObserver observer,
             final Callback<? super T> callback) {
+        this(name, dispatcher, observer, callback, Timeout.defaults());
+    }
+
+    /**
+     * Creates a call template with a complete timeout policy.
+     *
+     * @param name       call name
+     * @param dispatcher dispatcher used by enqueue()
+     * @param observer   event observer
+     * @param callback   optional terminal callback invoked at most once
+     * @param timeout    complete protocol timeout policy
+     */
+    protected MonoCall(final String name, final Dispatcher dispatcher, final EventObserver observer,
+            final Callback<? super T> callback, final Timeout timeout) {
         this.name = Assert.notBlank(name, () -> new ValidateException("Call name must not be blank"));
         this.dispatcher = dispatcher;
+        this.timeout = Assert.notNull(timeout, () -> new ValidateException("Timeout must not be null"));
         this.scope = LifecycleScope.call(this.name, observer);
         this.callback = callback;
         this.outcome = PENDING;
@@ -171,13 +211,39 @@ public abstract class MonoCall<T> implements Call<T> {
             final Callback<? super T> callback,
             final SupplierX<T> operation,
             final Runnable cancelAction) {
+        return create(name, dispatchKey, dispatcher, observer, callback, Timeout.defaults(), operation, cancelAction);
+    }
+
+    /**
+     * Creates a simple single-result call backed by an operation, a complete timeout policy, and a cancellation action.
+     *
+     * @param name         call name
+     * @param dispatchKey  asynchronous dispatch key
+     * @param dispatcher   optional dispatcher used by enqueue()
+     * @param observer     event observer
+     * @param callback     optional callback
+     * @param timeout      complete protocol timeout policy
+     * @param operation    call operation
+     * @param cancelAction optional running-operation cancellation action
+     * @param <T>          result type
+     * @return simple call
+     */
+    public static <T> MonoCall<T> create(
+            final String name,
+            final String dispatchKey,
+            final Dispatcher dispatcher,
+            final EventObserver observer,
+            final Callback<? super T> callback,
+            final Timeout timeout,
+            final SupplierX<T> operation,
+            final Runnable cancelAction) {
         final String key = Assert
                 .notBlank(dispatchKey, () -> new ValidateException("Call dispatch key must not be blank"));
         final SupplierX<T> currentOperation = Assert
                 .notNull(operation, () -> new ValidateException("Call operation must not be null"));
         final Runnable currentCancelAction = cancelAction == null ? () -> {
         } : cancelAction;
-        return new MonoCall<>(name, dispatcher, observer, callback) {
+        return new MonoCall<>(name, dispatcher, observer, callback, timeout) {
 
             /**
              * Runs the supplied operation while preserving runtime failures and errors.
@@ -277,8 +343,46 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     @Override
     public T execute() {
+        if (!timeout.call().isZero()) {
+            return executeWithin(timeout);
+        }
         claimSubmission("execute");
         return runOnce();
+    }
+
+    /**
+     * Executes this call synchronously on the current thread while a dispatcher deadline only coordinates cancellation.
+     * <p>
+     * A zero timeout preserves the allocation-free direct execution path. A positive timeout allocates one delayed
+     * dispatch handle but does not enqueue the protocol operation or create a completion future.
+     *
+     * @param timeout complete timeout policy
+     * @return synchronously produced protocol result
+     */
+    private T executeWithin(final Timeout timeout) {
+        final Duration callTimeout = timeout.call();
+        final Dispatcher target = Assert
+                .notNull(dispatcher, () -> new ValidateException("Dispatcher must not be null"));
+        claimSubmission("execute");
+        final AtomicReference<TimeoutException> timeoutFailure = new AtomicReference<>();
+        final DispatchHandle deadline = target.schedule(
+                dispatchKey() + ":deadline",
+                callTimeout,
+                Activity.of(name + ":deadline", () -> expire(timeoutFailure)));
+        try {
+            return runOnce();
+        } catch (final RuntimeException e) {
+            final TimeoutException failure = timeoutFailure.get();
+            if (failure == null) {
+                throw e;
+            }
+            if (failure != e) {
+                failure.addSuppressed(e);
+            }
+            throw failure;
+        } finally {
+            target.cancel(deadline);
+        }
     }
 
     /**
@@ -413,6 +517,7 @@ public abstract class MonoCall<T> implements Call<T> {
     private Call<T> enqueueClaimed(final Dispatcher target) {
         final Activity activity = Activity.of(name, this::runDispatched, scope.cancellation());
         try {
+            armDeadline(target);
             final DispatchHandle enqueued = Assert.notNull(
                     target.enqueue(dispatchKey(), activity),
                     () -> new ValidateException("Dispatcher returned a null handle"));
@@ -425,6 +530,29 @@ public abstract class MonoCall<T> implements Call<T> {
         } catch (final RuntimeException | Error e) {
             finishFailure(e);
             throw e;
+        }
+    }
+
+    /**
+     * Arms the logical Call deadline for asynchronous execution when configured.
+     *
+     * @param target target dispatcher
+     */
+    private void armDeadline(final Dispatcher target) {
+        final Duration callTimeout = timeout.call();
+        if (callTimeout.isZero()) {
+            return;
+        }
+        final DispatchHandle deadline = Assert.notNull(
+                target.schedule(
+                        dispatchKey() + ":deadline",
+                        callTimeout,
+                        Activity.of(name + ":deadline", () -> expire(null))),
+                () -> new ValidateException("Dispatcher returned a null deadline handle"));
+        deadlineHandle = deadline;
+        if (scope.state().terminal()) {
+            deadline.cancel();
+            deadlineHandle = null;
         }
     }
 
@@ -512,6 +640,7 @@ public abstract class MonoCall<T> implements Call<T> {
      * @return {@code true} when this call won the terminal transition
      */
     private boolean finishSuccess(final T value) {
+        final DispatchHandle deadline;
         synchronized (this) {
             outcome = value == null ? NULL_RESULT : value;
             if (!scope.complete()) {
@@ -524,8 +653,13 @@ public abstract class MonoCall<T> implements Call<T> {
                 outcome = PENDING;
             }
             handle = null;
-            return true;
+            deadline = deadlineHandle;
+            deadlineHandle = null;
         }
+        if (deadline != null) {
+            deadline.cancel();
+        }
+        return true;
     }
 
     /**
@@ -561,6 +695,7 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     private boolean finishCancellation(final CancellationException cause) {
         final DispatchHandle current;
+        final DispatchHandle deadline;
         final CompletableFuture<T> completion;
         synchronized (this) {
             if (!scope.cancel(cause)) {
@@ -569,6 +704,8 @@ public abstract class MonoCall<T> implements Call<T> {
             outcome = PENDING;
             current = handle;
             handle = null;
+            deadline = deadlineHandle;
+            deadlineHandle = null;
             completion = future;
             if (completion != null) {
                 completion.cancel(false);
@@ -580,6 +717,17 @@ public abstract class MonoCall<T> implements Call<T> {
                 current.cancel();
             } catch (final RuntimeException e) {
                 cleanupFailure = e;
+            }
+        }
+        if (deadline != null && deadline != current) {
+            try {
+                deadline.cancel();
+            } catch (final RuntimeException e) {
+                if (cleanupFailure == null) {
+                    cleanupFailure = e;
+                } else if (cleanupFailure != e) {
+                    cleanupFailure.addSuppressed(e);
+                }
             }
         }
         try {
@@ -605,6 +753,7 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     private void finishFailure(final Throwable cause) {
         final boolean changed;
+        final DispatchHandle deadline;
         synchronized (this) {
             outcome = cause;
             changed = scope.fail(cause);
@@ -615,9 +764,15 @@ public abstract class MonoCall<T> implements Call<T> {
                     outcome = PENDING;
                 }
                 handle = null;
+                deadline = deadlineHandle;
+                deadlineHandle = null;
             } else {
                 outcome = PENDING;
+                deadline = null;
             }
+        }
+        if (deadline != null) {
+            deadline.cancel();
         }
         if (changed) {
             notifyFailure(cause);
@@ -683,6 +838,70 @@ public abstract class MonoCall<T> implements Call<T> {
             }
         }
         return failure;
+    }
+
+    /**
+     * Fails a Call whose configured logical deadline elapsed, cancels owned work, and reports the timeout directly.
+     *
+     * @param failure logical Call timeout
+     * @return true when the timeout won the terminal transition
+     */
+    private boolean finishTimeout(final TimeoutException failure) {
+        final DispatchHandle current;
+        final DispatchHandle deadline;
+        final CompletableFuture<T> completion;
+        synchronized (this) {
+            outcome = failure;
+            if (!scope.fail(failure)) {
+                outcome = PENDING;
+                return false;
+            }
+            current = handle;
+            handle = null;
+            deadline = deadlineHandle;
+            deadlineHandle = null;
+            completion = future;
+            if (completion != null) {
+                completion.completeExceptionally(failure);
+                outcome = PENDING;
+            }
+        }
+        if (current != null) {
+            try {
+                current.cancel();
+            } catch (final RuntimeException cleanupFailure) {
+                failure.addSuppressed(cleanupFailure);
+            }
+        }
+        if (deadline != null && deadline != current) {
+            try {
+                deadline.cancel();
+            } catch (final RuntimeException cleanupFailure) {
+                failure.addSuppressed(cleanupFailure);
+            }
+        }
+        try {
+            cancelRunning();
+        } catch (final RuntimeException cleanupFailure) {
+            failure.addSuppressed(cleanupFailure);
+        }
+        notifyFailure(failure);
+        return true;
+    }
+
+    /**
+     * Cancels a synchronously running call after its configured deadline.
+     *
+     * @param timeoutFailure shared timeout marker observed by the executing thread
+     */
+    private void expire(final AtomicReference<TimeoutException> timeoutFailure) {
+        final TimeoutException failure = new TimeoutException(name + " timed out");
+        if (timeoutFailure != null) {
+            timeoutFailure.set(failure);
+        }
+        if (!finishTimeout(failure) && timeoutFailure != null) {
+            timeoutFailure.compareAndSet(failure, null);
+        }
     }
 
     /**

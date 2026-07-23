@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Callback;
+import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.stomp.StompSession;
@@ -61,23 +62,45 @@ public final class StompCall extends MonoCall<StompSession> {
      * @param dispatcher dispatcher used by no-argument {@code enqueue()}
      * @param callback   optional terminal callback managed by the call lifecycle
      * @param observer   observer receiving call lifecycle events
+     * @param timeout    complete protocol timeout policy
      * @param operation  function that opens a session within the lifecycle cancellation scope
      * @param key        dispatch key used for asynchronous submission
      */
     private StompCall(final Dispatcher dispatcher, final Callback<? super StompSession> callback,
-            final EventObserver observer, final Function<Cancellation, StompSession> operation, final String key) {
-        super(Builder.STOMP_TAG_OPEN, dispatcher, observer, callback);
+            final EventObserver observer, final Timeout timeout, final Function<Cancellation, StompSession> operation,
+            final String key) {
+        super(Builder.STOMP_TAG_OPEN, dispatcher, observer, callback, timeout);
         this.operation = require(operation, "STOMP operation");
         this.key = require(key, "STOMP dispatch key");
         this.session = new AtomicReference<>();
     }
 
     /**
-     * Creates a call.
+     * Creates a call with the shared default timeout policy.
      *
      * @param dispatcher dispatcher used by no-argument {@code enqueue()}
      * @param callback   optional terminal callback managed by the call lifecycle
      * @param observer   observer receiving call lifecycle events
+     * @param operation  function that opens a session within the lifecycle cancellation scope
+     * @param key        dispatch key used for asynchronous submission
+     * @return new single-use, unsubmitted STOMP-open call
+     */
+    public static StompCall create(
+            final Dispatcher dispatcher,
+            final Callback<? super StompSession> callback,
+            final EventObserver observer,
+            final Function<Cancellation, StompSession> operation,
+            final String key) {
+        return create(dispatcher, callback, observer, Timeout.defaults(), operation, key);
+    }
+
+    /**
+     * Creates a call with a complete timeout policy.
+     *
+     * @param dispatcher dispatcher used by no-argument {@code enqueue()}
+     * @param callback   optional terminal callback managed by the call lifecycle
+     * @param observer   observer receiving call lifecycle events
+     * @param timeout    complete protocol timeout policy
      * @param operation  function that opens a session within the lifecycle cancellation scope
      * @param key        dispatch key used for asynchronous submission
      * @return new single-use, unsubmitted STOMP-open call
@@ -88,10 +111,11 @@ public final class StompCall extends MonoCall<StompSession> {
             final Dispatcher dispatcher,
             final Callback<? super StompSession> callback,
             final EventObserver observer,
+            final Timeout timeout,
             final Function<Cancellation, StompSession> operation,
             final String key) {
         return new StompCall(require(dispatcher, "Dispatcher"), callback,
-                EventObserver.safe(require(observer, "Observer")), operation, key);
+                EventObserver.safe(require(observer, "Observer")), require(timeout, "Timeout"), operation, key);
     }
 
     /**

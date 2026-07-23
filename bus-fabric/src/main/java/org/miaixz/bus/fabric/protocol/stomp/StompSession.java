@@ -55,6 +55,7 @@ import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Session;
 import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
@@ -157,14 +158,14 @@ public final class StompSession implements Session {
     private final Cancellation cancellation;
 
     /**
-     * Negotiated outbound heartbeat interval.
+     * Complete immutable transport timeout policy.
      */
-    private final Duration outboundHeartbeat;
+    private final Timeout timeout;
 
     /**
-     * Negotiated inbound heartbeat deadline including tolerance.
+     * Immutable negotiated STOMP state.
      */
-    private final Duration inboundDeadline;
+    private final StompState state;
 
     /**
      * Whether this session owns its compatibility dispatcher.
@@ -258,7 +259,8 @@ public final class StompSession implements Session {
             final EventObserver observer, final Filter filter, final Listener<? super StompSession> listener,
             final long materializeMaxBytes) {
         this(sender, closeHook, cancelHook, handler, address, guard, observer, filter, listener, materializeMaxBytes,
-                Dispatcher.create(), Clock.system(), Cancellation.create(), Duration.ZERO, Duration.ZERO, true);
+                Dispatcher.create(), Clock.system(), Cancellation.create(), Timeout.defaults(), StompState.disabled(),
+                true);
     }
 
     /**
@@ -277,16 +279,16 @@ public final class StompSession implements Session {
      * @param dispatcher          shared dispatcher
      * @param clock               shared clock
      * @param cancellation        session cancellation
-     * @param outboundHeartbeat   negotiated outbound heartbeat interval
-     * @param inboundDeadline     negotiated inbound heartbeat deadline including tolerance
+     * @param timeout             complete transport timeout policy
+     * @param state               negotiated STOMP state
      */
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
             final EventObserver observer, final Filter filter, final Listener<? super StompSession> listener,
             final long materializeMaxBytes, final Dispatcher dispatcher, final Clock clock,
-            final Cancellation cancellation, final Duration outboundHeartbeat, final Duration inboundDeadline) {
+            final Cancellation cancellation, final Timeout timeout, final StompState state) {
         this(sender, closeHook, cancelHook, handler, address, guard, observer, filter, listener, materializeMaxBytes,
-                dispatcher, clock, cancellation, outboundHeartbeat, inboundDeadline, false);
+                dispatcher, clock, cancellation, timeout, state, false);
     }
 
     /**
@@ -305,15 +307,15 @@ public final class StompSession implements Session {
      * @param dispatcher          runtime dispatcher
      * @param clock               session clock
      * @param cancellation        session cancellation
-     * @param outboundHeartbeat   negotiated outbound heartbeat interval
-     * @param inboundDeadline     negotiated inbound heartbeat deadline including tolerance
+     * @param timeout             complete transport timeout policy
+     * @param state               negotiated STOMP state
      * @param ownsDispatcher      true when this session owns the dispatcher
      */
     private StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
             final EventObserver observer, final Filter filter, final Listener<? super StompSession> listener,
             final long materializeMaxBytes, final Dispatcher dispatcher, final Clock clock,
-            final Cancellation cancellation, final Duration outboundHeartbeat, final Duration inboundDeadline,
+            final Cancellation cancellation, final Timeout timeout, final StompState state,
             final boolean ownsDispatcher) {
         this.sender = require(sender, "STOMP sender");
         this.closeHook = closeHook == null ? () -> {
@@ -334,8 +336,8 @@ public final class StompSession implements Session {
         this.dispatcher = require(dispatcher, "STOMP dispatcher");
         this.clock = require(clock, "STOMP clock");
         this.cancellation = require(cancellation, "STOMP cancellation");
-        this.outboundHeartbeat = validateDuration(outboundHeartbeat, "STOMP outbound heartbeat");
-        this.inboundDeadline = validateDuration(inboundDeadline, "STOMP inbound deadline");
+        this.timeout = require(timeout, "STOMP timeout");
+        this.state = require(state, "STOMP state");
         this.ownsDispatcher = ownsDispatcher;
         this.scope = LifecycleScope.session(
                 this,
@@ -1185,10 +1187,10 @@ public final class StompSession implements Session {
      * Schedules the next outbound heartbeat relative to the latest successful write.
      */
     private void scheduleOutboundHeartbeat() {
-        if (outboundHeartbeat.isZero() || terminating.get() || !opened()) {
+        if (state.outboundHeartbeat().isZero() || terminating.get() || !opened()) {
             return;
         }
-        scheduleOutboundHeartbeat(outboundHeartbeat, lastWriteNanos);
+        scheduleOutboundHeartbeat(state.outboundHeartbeat(), lastWriteNanos);
     }
 
     /**
@@ -1217,7 +1219,7 @@ public final class StompSession implements Session {
         if (!opened() || terminating.get() || activityNanos != lastWriteNanos) {
             return;
         }
-        final long intervalNanos = durationNanos(outboundHeartbeat);
+        final long intervalNanos = state.outboundHeartbeatNanos();
         final long elapsed = elapsedSince(activityNanos);
         if (elapsed < intervalNanos) {
             scheduleOutboundHeartbeat(Duration.ofNanos(intervalNanos - elapsed), activityNanos);
@@ -1240,10 +1242,10 @@ public final class StompSession implements Session {
      * Schedules the next inbound heartbeat deadline relative to the latest received byte.
      */
     private void scheduleInboundDeadline() {
-        if (inboundDeadline.isZero() || terminating.get() || !opened()) {
+        if (state.inboundHeartbeatDeadline().isZero() || terminating.get() || !opened()) {
             return;
         }
-        scheduleInboundDeadline(inboundDeadline, lastReadNanos);
+        scheduleInboundDeadline(state.inboundHeartbeatDeadline(), lastReadNanos);
     }
 
     /**
@@ -1272,7 +1274,7 @@ public final class StompSession implements Session {
         if (!opened() || terminating.get() || activityNanos != lastReadNanos) {
             return;
         }
-        final long deadlineNanos = durationNanos(inboundDeadline);
+        final long deadlineNanos = state.inboundHeartbeatDeadlineNanos();
         final long elapsed = elapsedSince(activityNanos);
         if (elapsed < deadlineNanos) {
             scheduleInboundDeadline(Duration.ofNanos(deadlineNanos - elapsed), activityNanos);
@@ -1419,35 +1421,6 @@ public final class StompSession implements Session {
     }
 
     /**
-     * Converts a positive duration to nanoseconds, saturating on overflow.
-     *
-     * @param duration positive duration to convert
-     * @return nanoseconds
-     */
-    private static long durationNanos(final Duration duration) {
-        try {
-            return duration.toNanos();
-        } catch (final ArithmeticException ignored) {
-            return Long.MAX_VALUE;
-        }
-    }
-
-    /**
-     * Validates a non-negative heartbeat duration.
-     *
-     * @param duration heartbeat duration to validate
-     * @param name     field name
-     * @return validated duration
-     */
-    private static Duration validateDuration(final Duration duration, final String name) {
-        final Duration current = require(duration, name);
-        if (current.isNegative()) {
-            throw new ValidateException(name + " must be non-negative");
-        }
-        return current;
-    }
-
-    /**
      * Ensures the session is open.
      */
     private void ensureOpen() {
@@ -1536,7 +1509,7 @@ public final class StompSession implements Session {
          * @param receiptId receipt identifier
          */
         private ReceiptCall(final String receiptId) {
-            super("stomp-receipt", dispatcher, observer);
+            super("stomp-receipt", dispatcher, observer, timeout);
             this.receiptId = receiptId;
         }
 

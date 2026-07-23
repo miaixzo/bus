@@ -166,7 +166,7 @@ public final class HttpChain {
      * @param replayIndex zero-based downstream stage index for the new cursor
      * @return fresh replay cursor
      */
-    HttpChain replayFrom(final int replayIndex) {
+    public HttpChain replayFrom(final int replayIndex) {
         return new HttpChain(stages, replayIndex, lease, connection, cancellation);
     }
 

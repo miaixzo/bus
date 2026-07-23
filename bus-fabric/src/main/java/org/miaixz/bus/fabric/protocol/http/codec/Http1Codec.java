@@ -127,14 +127,9 @@ public final class Http1Codec implements HttpCodec {
     private final Supplier<Headers> trailerSupplier;
 
     /**
-     * Current read timeout.
+     * Complete timeout policy for the current request and its response body.
      */
-    private volatile Duration readTimeout;
-
-    /**
-     * Current write timeout.
-     */
-    private volatile Duration writeTimeout;
+    private volatile org.miaixz.bus.fabric.Timeout timeout;
 
     /**
      * Creates an HTTP/1 codec.
@@ -151,8 +146,7 @@ public final class Http1Codec implements HttpCodec {
         this.connectionClose = new AtomicBoolean();
         this.trailers = new AtomicReference<>(Headers.empty());
         this.trailerSupplier = this::trailers;
-        this.readTimeout = Duration.ZERO;
-        this.writeTimeout = Duration.ZERO;
+        this.timeout = org.miaixz.bus.fabric.Timeout.defaults();
     }
 
     /**
@@ -163,7 +157,7 @@ public final class Http1Codec implements HttpCodec {
     @Override
     public void writeRequest(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
-        writeTimeout = current.timeout().write();
+        timeout = current.timeout();
         state.set(Status.RUNNING);
         writeHeaders(current);
         if (current.body().length() == Normal._0) {
@@ -228,14 +222,14 @@ public final class Http1Codec implements HttpCodec {
     @Override
     public HttpResponse readResponse(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
-        readTimeout = current.timeout().read();
+        timeout = current.timeout();
         state.set(Status.RUNNING);
         trailers.set(Headers.empty());
-        String line = reader.readLine(readTimeout);
+        String line = reader.readLine(timeout.read());
         int code = HttpLine.status(line);
         Headers headers = readHeaders();
         while (code >= Http.Status.CONTINUE && code < Http.Status.OK && code != Http.Status.SWITCHING_PROTOCOLS) {
-            line = reader.readLine(readTimeout);
+            line = reader.readLine(timeout.read());
             code = HttpLine.status(line);
             headers = readHeaders();
         }
@@ -300,11 +294,11 @@ public final class Http1Codec implements HttpCodec {
         connectionClose.set(connectionClose(request.headers()) || connectionClose(headers));
         final InputStream input;
         if (chunked(headers)) {
-            input = new ChunkedInputStream(reader, readTimeout, this);
+            input = new ChunkedInputStream(reader, timeout, this);
         } else if (length >= Normal._0) {
-            input = new FixedInputStream(reader, readTimeout, length, this);
+            input = new FixedInputStream(reader, timeout, length, this);
         } else {
-            input = new UnknownInputStream(reader, readTimeout, this);
+            input = new UnknownInputStream(reader, timeout, this);
             connectionClose.set(true);
         }
         return new NetworkSource(input, length, responseMedia, this);
@@ -362,7 +356,7 @@ public final class Http1Codec implements HttpCodec {
      */
     private void write(final Buffer source) {
         final Buffer payload = require(source, "HTTP write buffer");
-        configureTimeout(sink.timeout(), writeTimeout);
+        configureTimeout(sink.timeout(), timeout.write());
         while (payload.size() > Normal._0) {
             final long before = payload.size();
             try {
@@ -418,7 +412,7 @@ public final class Http1Codec implements HttpCodec {
         final Headers cached = cachedResponseHeaders;
         Headers.Builder builder = cached == null ? Headers.builder() : null;
         int index = Normal._0;
-        int rawLength = reader.peekHeaderLine(readTimeout);
+        int rawLength = reader.peekHeaderLine(timeout.read());
         int lineLength = reader.headerContentLength(rawLength);
         while (lineLength != Normal._0) {
             final int colon = reader.headerIndexOf(Symbol.C_COLON, lineLength);
@@ -442,7 +436,7 @@ public final class Http1Codec implements HttpCodec {
                 reader.skipHeaderLine(rawLength);
             }
             index++;
-            rawLength = reader.peekHeaderLine(readTimeout);
+            rawLength = reader.peekHeaderLine(timeout.read());
             lineLength = reader.headerContentLength(rawLength);
         }
         reader.skipHeaderLine(rawLength);
@@ -1625,7 +1619,7 @@ public final class Http1Codec implements HttpCodec {
         /**
          * Timeout.
          */
-        private final Duration timeout;
+        private final org.miaixz.bus.fabric.Timeout timeout;
 
         /**
          * Codec.
@@ -1650,8 +1644,8 @@ public final class Http1Codec implements HttpCodec {
          * @param length  exact number of body bytes to expose
          * @param codec   owning codec notified when the stream completes
          */
-        private FixedInputStream(final NetworkReader reader, final Duration timeout, final long length,
-                final Http1Codec codec) {
+        private FixedInputStream(final NetworkReader reader, final org.miaixz.bus.fabric.Timeout timeout,
+                final long length, final Http1Codec codec) {
             this.reader = require(reader, "Network reader");
             this.timeout = require(timeout, "Timeout");
             this.remaining = length;
@@ -1672,7 +1666,7 @@ public final class Http1Codec implements HttpCodec {
                 }
                 return Normal.__1;
             }
-            final int value = reader.read(timeout);
+            final int value = reader.read(timeout.read());
             if (value < Normal._0) {
                 throw new SocketException("HTTP fixed body reached EOF");
             }
@@ -1704,7 +1698,7 @@ public final class Http1Codec implements HttpCodec {
                 return Normal.__1;
             }
             final int limit = (int) Math.min(length, remaining);
-            final int read = reader.read(bytes, offset, limit, timeout);
+            final int read = reader.read(bytes, offset, limit, timeout.read());
             if (read < Normal._0) {
                 throw new SocketException("HTTP fixed body reached EOF");
             }
@@ -1739,7 +1733,7 @@ public final class Http1Codec implements HttpCodec {
                 return false;
             }
             final byte[] buffer = new byte[(int) Math.min(remaining, Normal._8192)];
-            final Duration bounded = drainTimeout(timeout);
+            final Duration bounded = drainTimeout(timeout.read());
             while (remaining > Normal._0) {
                 final int read = reader.read(buffer, Normal._0, (int) Math.min(buffer.length, remaining), bounded);
                 if (read < Normal._0) {
@@ -1758,7 +1752,7 @@ public final class Http1Codec implements HttpCodec {
             if (closed || target.length != remaining) {
                 throw new StatefulException("HTTP fixed body is not positioned for direct materialization");
             }
-            reader.readFixed(target, Normal._0, target.length, timeout);
+            reader.readFixed(target, Normal._0, target.length, timeout.read());
             remaining = Normal._0;
             codec.completeBody();
         }
@@ -1778,7 +1772,7 @@ public final class Http1Codec implements HttpCodec {
         /**
          * Timeout.
          */
-        private final Duration timeout;
+        private final org.miaixz.bus.fabric.Timeout timeout;
 
         /**
          * Codec.
@@ -1807,7 +1801,8 @@ public final class Http1Codec implements HttpCodec {
          * @param timeout maximum duration allowed for each network read
          * @param codec   owning codec notified when the stream completes
          */
-        private ChunkedInputStream(final NetworkReader reader, final Duration timeout, final Http1Codec codec) {
+        private ChunkedInputStream(final NetworkReader reader, final org.miaixz.bus.fabric.Timeout timeout,
+                final Http1Codec codec) {
             this.reader = require(reader, "Network reader");
             this.timeout = require(timeout, "Timeout");
             this.codec = require(codec, "HTTP codec");
@@ -1830,12 +1825,12 @@ public final class Http1Codec implements HttpCodec {
                     return Normal.__1;
                 }
             }
-            final int value = reader.read(timeout);
+            final int value = reader.read(timeout.read());
             if (value < Normal._0) {
                 throw new SocketException("HTTP chunked body reached EOF");
             }
             if (--remaining == Normal._0) {
-                reader.expectCrlf(timeout);
+                reader.expectCrlf(timeout.read());
             }
             return value;
         }
@@ -1863,13 +1858,13 @@ public final class Http1Codec implements HttpCodec {
                 }
             }
             final int limit = Math.min(length, remaining);
-            final int read = reader.read(bytes, offset, limit, timeout);
+            final int read = reader.read(bytes, offset, limit, timeout.read());
             if (read < Normal._0) {
                 throw new SocketException("HTTP chunked body reached EOF");
             }
             remaining -= read;
             if (remaining == Normal._0) {
-                reader.expectCrlf(timeout);
+                reader.expectCrlf(timeout.read());
             }
             return read;
         }
@@ -1889,7 +1884,7 @@ public final class Http1Codec implements HttpCodec {
          * Reads the next chunk size.
          */
         private void readChunkSize() {
-            final String line = reader.readLine(timeout);
+            final String line = reader.readLine(timeout.read());
             final int semicolon = line.indexOf(Symbol.C_SEMICOLON);
             final String size = semicolon < Normal._0 ? line : line.substring(Normal._0, semicolon);
             try {
@@ -1909,14 +1904,14 @@ public final class Http1Codec implements HttpCodec {
          */
         private void readTrailers() {
             final Headers.Builder builder = Headers.builder();
-            String line = reader.readLine(timeout);
+            String line = reader.readLine(timeout.read());
             while (!line.isEmpty()) {
                 final int colon = line.indexOf(Symbol.COLON);
                 if (colon <= Normal._0) {
                     throw new ProtocolException("Invalid HTTP trailer line");
                 }
                 builder.add(line.substring(Normal._0, colon), line.substring(colon + Normal._1).trim());
-                line = reader.readLine(timeout);
+                line = reader.readLine(timeout.read());
             }
             codec.trailers(builder.build());
         }
@@ -1932,7 +1927,7 @@ public final class Http1Codec implements HttpCodec {
             }
             final byte[] buffer = new byte[Normal._8192];
             int drained = Normal._0;
-            final Duration original = timeout;
+            final Duration original = timeout.read();
             while (drained < Builder.HTTP1_CODEC_MAX_DRAIN_BYTES) {
                 final int limit = Math.min(buffer.length, Builder.HTTP1_CODEC_MAX_DRAIN_BYTES - drained);
                 final int read;
@@ -1995,7 +1990,7 @@ public final class Http1Codec implements HttpCodec {
         /**
          * Timeout.
          */
-        private final Duration timeout;
+        private final org.miaixz.bus.fabric.Timeout timeout;
 
         /**
          * Codec.
@@ -2014,7 +2009,8 @@ public final class Http1Codec implements HttpCodec {
          * @param timeout maximum duration allowed for each network read
          * @param codec   owning codec notified when the stream completes
          */
-        private UnknownInputStream(final NetworkReader reader, final Duration timeout, final Http1Codec codec) {
+        private UnknownInputStream(final NetworkReader reader, final org.miaixz.bus.fabric.Timeout timeout,
+                final Http1Codec codec) {
             this.reader = require(reader, "Network reader");
             this.timeout = require(timeout, "Timeout");
             this.codec = require(codec, "HTTP codec");
@@ -2031,7 +2027,7 @@ public final class Http1Codec implements HttpCodec {
             if (done) {
                 return Normal.__1;
             }
-            final int value = reader.read(timeout);
+            final int value = reader.read(timeout.read());
             if (value < Normal._0) {
                 done = true;
                 codec.completeBody();
@@ -2055,7 +2051,7 @@ public final class Http1Codec implements HttpCodec {
             if (length == Normal._0) {
                 return Normal._0;
             }
-            final int read = reader.read(bytes, offset, length, timeout);
+            final int read = reader.read(bytes, offset, length, timeout.read());
             if (read < Normal._0) {
                 done = true;
                 codec.completeBody();

@@ -25,6 +25,8 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Policy;
 
 /**
  * Immutable policy for connection pool limits and timeouts.
@@ -38,7 +40,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @since Java 21+
  */
 public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, int maxConnectionsPerDestination,
-        Duration acquireTimeout) {
+        Duration acquireTimeout) implements Policy {
+
+    /**
+     * Typed option for the connection pool policy.
+     */
+    public static final Options.Key<PoolPolicy> OPTION = Options.key("pool.policy", PoolPolicy.class);
 
     /**
      * Creates a pool policy.
@@ -73,6 +80,29 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
      */
     public static PoolPolicy defaults() {
         return Instances.get(PoolPolicy.class.getName() + ".defaults", () -> builder().build());
+    }
+
+    /**
+     * Resolves the connection pool policy from options.
+     *
+     * @param options option source
+     * @return configured policy or shared defaults
+     */
+    public static PoolPolicy resolve(final Options options) {
+        final Options current = Assert.notNull(options, () -> new ValidateException("Options must not be null"));
+        final PoolPolicy configured = current.get(OPTION);
+        return configured == null ? defaults() : configured;
+    }
+
+    /**
+     * Adds this policy to an immutable option snapshot.
+     *
+     * @param options option source
+     * @return updated option snapshot
+     */
+    @Override
+    public Options from(final Options options) {
+        return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
     }
 
     /**

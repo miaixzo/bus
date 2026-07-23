@@ -161,14 +161,9 @@ public final class WebSocketSession implements Session {
     private final Clock clock;
 
     /**
-     * Close handshake timeout.
+     * Complete immutable WebSocket timeout policy.
      */
-    private final Duration closeTimeout;
-
-    /**
-     * Automatic ping interval.
-     */
-    private final Duration pingInterval;
+    private final Timeout timeout;
 
     /**
      * Shared cancellation scope.
@@ -317,9 +312,8 @@ public final class WebSocketSession implements Session {
      */
     WebSocketSession(final Address address) {
         this(address, null, null, null, null, null, null, null, false, defaultDispatchKey(address), Clock.system(),
-                Duration.ZERO, Builder.DURATION_60_SECONDS, null, WebSocketRole.CLIENT,
-                defaultAttributes(EventObserver.noop()), null, EventObserver.noop(), null, Cancellation.create(),
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                Timeout.defaults(), null, WebSocketRole.CLIENT, defaultAttributes(EventObserver.noop()), null,
+                EventObserver.noop(), null, Cancellation.create(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -334,9 +328,9 @@ public final class WebSocketSession implements Session {
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
             final ConnectionLease lease, final Handler handler) {
         this(address, writer, reader, null, lease, null, handler, Dispatcher.create(), true,
-                defaultDispatchKey(address), Clock.system(), Duration.ZERO, Builder.DURATION_60_SECONDS, null,
-                WebSocketRole.CLIENT, defaultAttributes(EventObserver.noop()), null, EventObserver.noop(), null,
-                Cancellation.create(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                defaultDispatchKey(address), Clock.system(), Timeout.defaults(), null, WebSocketRole.CLIENT,
+                defaultAttributes(EventObserver.noop()), null, EventObserver.noop(), null, Cancellation.create(),
+                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -353,9 +347,8 @@ public final class WebSocketSession implements Session {
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey) {
         this(address, writer, reader, null, lease, null, handler, dispatcher, false, dispatchKey, Clock.system(),
-                Duration.ZERO, Builder.DURATION_60_SECONDS, null, WebSocketRole.CLIENT,
-                defaultAttributes(EventObserver.noop()), null, EventObserver.noop(), null, Cancellation.create(),
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                Timeout.defaults(), null, WebSocketRole.CLIENT, defaultAttributes(EventObserver.noop()), null,
+                EventObserver.noop(), null, Cancellation.create(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -377,9 +370,9 @@ public final class WebSocketSession implements Session {
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
             final Duration ping, final GuardRule guard, final EventObserver observer,
             final Listener<? super WebSocketSession> listener) {
-        this(address, writer, reader, null, lease, null, handler, dispatcher, false, dispatchKey, Clock.system(), ping,
-                Builder.DURATION_60_SECONDS, guard, WebSocketRole.CLIENT, defaultAttributes(observer), null, observer,
-                listener, Cancellation.create(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(address, writer, reader, null, lease, null, handler, dispatcher, false, dispatchKey, Clock.system(),
+                timeout(ping), guard, WebSocketRole.CLIENT, defaultAttributes(observer), null, observer, listener,
+                Cancellation.create(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
     }
 
     /**
@@ -403,9 +396,9 @@ public final class WebSocketSession implements Session {
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey,
             final Duration ping, final GuardRule guard, final Filter filter, final EventObserver observer,
             final Listener<? super WebSocketSession> listener, final long materializeMaxBytes) {
-        this(address, writer, reader, null, lease, null, handler, dispatcher, false, dispatchKey, Clock.system(), ping,
-                Builder.DURATION_60_SECONDS, guard, WebSocketRole.CLIENT, defaultAttributes(observer), filter, observer,
-                listener, Cancellation.create(), materializeMaxBytes);
+        this(address, writer, reader, null, lease, null, handler, dispatcher, false, dispatchKey, Clock.system(),
+                timeout(ping), guard, WebSocketRole.CLIENT, defaultAttributes(observer), filter, observer, listener,
+                Cancellation.create(), materializeMaxBytes);
     }
 
     /**
@@ -433,8 +426,8 @@ public final class WebSocketSession implements Session {
             final Duration ping, final GuardRule guard, final WebSocketRole role, final Map<String, Object> attributes,
             final AutoCloseable owner, final Filter filter, final EventObserver observer,
             final Listener<? super WebSocketSession> listener, final long materializeMaxBytes) {
-        this(address, writer, reader, null, lease, owner, handler, dispatcher, false, dispatchKey, Clock.system(), ping,
-                Builder.DURATION_60_SECONDS, guard, role, attributes, filter, observer, listener, Cancellation.create(),
+        this(address, writer, reader, null, lease, owner, handler, dispatcher, false, dispatchKey, Clock.system(),
+                timeout(ping), guard, role, attributes, filter, observer, listener, Cancellation.create(),
                 materializeMaxBytes);
     }
 
@@ -467,8 +460,8 @@ public final class WebSocketSession implements Session {
                 new WebSocketWriter(require(sink, "WebSocket sink"), require(role, "WebSocket role").writerMask()),
                 new WebSocketReader(require(source, "WebSocket source"), role.readerExpectMasked()), sink, lease, owner,
                 handler, require(context, "Context").reactor().dispatcher(), false, dispatchKey, context.clock(),
-                require(timeout, "WebSocket timeout").ping(), timeout.close(), guard, role, attributes, filter,
-                observer, listener, cancellation, context.options().materializeMaxBytes());
+                require(timeout, "WebSocket timeout"), guard, role, attributes, filter, observer, listener,
+                cancellation, context.options().materializeMaxBytes());
     }
 
     /**
@@ -485,8 +478,7 @@ public final class WebSocketSession implements Session {
      * @param ownsDispatcher      dispatcher ownership flag
      * @param dispatchKey         dispatch key
      * @param clock               session clock
-     * @param ping                ping interval
-     * @param closeTimeout        close timeout
+     * @param timeout             complete timeout policy
      * @param guard               optional guard
      * @param role                endpoint role
      * @param attributes          initial session attributes
@@ -499,7 +491,7 @@ public final class WebSocketSession implements Session {
     private WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
             final Sink output, final ConnectionLease lease, final AutoCloseable owner, final Handler handler,
             final Dispatcher dispatcher, final boolean ownsDispatcher, final String dispatchKey, final Clock clock,
-            final Duration ping, final Duration closeTimeout, final GuardRule guard, final WebSocketRole role,
+            final Timeout timeout, final GuardRule guard, final WebSocketRole role,
             final Map<String, Object> attributes, final Filter filter, final EventObserver observer,
             final Listener<? super WebSocketSession> listener, final Cancellation cancellation,
             final long materializeMaxBytes) {
@@ -519,8 +511,7 @@ public final class WebSocketSession implements Session {
         this.ownsDispatcher = ownsDispatcher;
         this.dispatchKey = validateDispatchKey(dispatchKey, writer != null || reader != null);
         this.clock = require(clock, "WebSocket clock");
-        this.pingInterval = validateDuration(ping, "WebSocket ping interval");
-        this.closeTimeout = validateDuration(closeTimeout, "WebSocket close timeout");
+        this.timeout = require(timeout, "WebSocket timeout");
         this.guard = guard;
         this.filter = filter;
         final EventObserver sink = EventObserver.safe(observer);
@@ -613,7 +604,7 @@ public final class WebSocketSession implements Session {
      * @return close timeout
      */
     public Duration closeTimeout() {
-        return closeTimeout;
+        return timeout.close();
     }
 
     /**
@@ -1357,7 +1348,7 @@ public final class WebSocketSession implements Session {
         }
         final DispatchHandle next = dispatcher.schedule(
                 dispatchKey + ":close-timeout",
-                closeTimeout,
+                timeout.close(),
                 Activity.of(Builder.WEBSOCKET_ACTIVITY_CLOSE_TIMEOUT, () -> {
                     if (!terminalNotified.get() && scope.state() == Status.CLOSING) {
                         terminate(Termination.CANCEL, new TimeoutException("WebSocket close handshake timed out"));
@@ -1373,12 +1364,12 @@ public final class WebSocketSession implements Session {
      * Schedules the next automatic ping tick.
      */
     private void schedulePing() {
-        if (pingInterval.isZero() || writer == null || dispatcher == null || terminalNotified.get()) {
+        if (timeout.ping().isZero() || writer == null || dispatcher == null || terminalNotified.get()) {
             return;
         }
         final DispatchHandle next = dispatcher.schedule(
                 dispatchKey + ":ping",
-                pingInterval,
+                timeout.ping(),
                 Activity.of(Builder.WEBSOCKET_PING, this::automaticPing, cancellation));
         final DispatchHandle previous = pingHandle.getAndSet(next);
         if (previous != null && previous != next) {
@@ -1788,18 +1779,13 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Validates a non-negative duration.
+     * Builds a complete compatibility timeout policy from a legacy ping interval.
      *
-     * @param duration duration to validate
-     * @param name     field name
-     * @return validated duration
+     * @param ping ping interval
+     * @return complete timeout policy
      */
-    private static Duration validateDuration(final Duration duration, final String name) {
-        final Duration checked = require(duration, name);
-        if (checked.isNegative()) {
-            throw new ValidateException(name + " must not be negative");
-        }
-        return checked;
+    private static Timeout timeout(final Duration ping) {
+        return Timeout.builder().ping(require(ping, "WebSocket ping interval")).build();
     }
 
     /**
@@ -1924,7 +1910,7 @@ public final class WebSocketSession implements Session {
          * @param factory frame factory
          */
         private OutboundCall(final String name, final EntryKind kind, final Supplier<WebSocketFrame> factory) {
-            super(name, dispatcher, observer);
+            super(name, dispatcher, observer, timeout);
             this.kind = require(kind, "WebSocket entry kind");
             this.factory = require(factory, "WebSocket frame factory");
             this.entry = new AtomicReference<>();

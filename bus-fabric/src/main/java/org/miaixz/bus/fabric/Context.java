@@ -27,7 +27,6 @@ import org.miaixz.bus.fabric.network.dns.DnsResolver;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.registry.Directory;
-import org.miaixz.bus.fabric.registry.policy.PoolPolicy;
 import org.miaixz.bus.fabric.runtime.Reactor;
 
 /**
@@ -225,11 +224,6 @@ public final class Context implements AutoCloseable {
         private Reactor reactor;
 
         /**
-         * Connection pool policy used when this builder creates the reactor.
-         */
-        private PoolPolicy poolPolicy;
-
-        /**
          * Options candidate.
          */
         private Options options = Options.empty();
@@ -269,17 +263,14 @@ public final class Context implements AutoCloseable {
         }
 
         /**
-         * Sets the connection pool policy used by a context-owned reactor.
-         * <p>
-         * The policy is ignored when an explicit reactor is supplied.
-         * </p>
+         * Adds a policy through the protocol-neutral policy contract.
          *
-         * @param poolPolicy connection pool policy
+         * @param policy policy to add to the immutable option snapshot
          * @return this builder
-         * @throws ValidateException if {@code poolPolicy} is {@code null}
+         * @throws ValidateException if {@code policy} is {@code null}
          */
-        public Builder poolPolicy(final PoolPolicy poolPolicy) {
-            this.poolPolicy = require(poolPolicy, "Pool policy");
+        public Builder policy(final Policy policy) {
+            this.options = require(policy, "Policy").from(options);
             return this;
         }
 
@@ -364,11 +355,7 @@ public final class Context implements AutoCloseable {
             Reactor resolvedReactor = reactor;
             final boolean createdReactor = resolvedReactor == null;
             if (createdReactor) {
-                final Reactor.Builder reactorBuilder = Reactor.builder();
-                if (poolPolicy != null) {
-                    reactorBuilder.poolPolicy(poolPolicy);
-                }
-                resolvedReactor = reactorBuilder.build();
+                resolvedReactor = Reactor.builder().options(options).build();
             }
             try {
                 final DnsResolver resolvedResolver = resolver == null ? DnsResolver.system() : resolver;

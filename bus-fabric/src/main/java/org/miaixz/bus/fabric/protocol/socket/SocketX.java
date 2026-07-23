@@ -210,6 +210,7 @@ public final class SocketX {
                 snapshot.context().reactor().dispatcher(),
                 callback,
                 snapshot.observer(),
+                snapshot.timeout(),
                 cancellation -> Mediator.execute(Type.SOCKET, cancellation, runner::open),
                 dispatchKey());
     }

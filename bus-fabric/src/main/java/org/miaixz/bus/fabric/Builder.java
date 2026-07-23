@@ -189,7 +189,7 @@ public class Builder {
      * <p>
      * Absence and explicit null both use {@link Timeout#defaults()}.
      */
-    public static final Options.Key<Timeout> OPTION_TIMEOUT = Options.key("timeout", Timeout.class);
+    public static final Options.Key<Timeout> OPTION_TIMEOUT = Timeout.OPTION;
 
     /**
      * Typed option for the generic TLS context.

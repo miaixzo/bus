@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.protocol.http.chain;
+package org.miaixz.bus.fabric.protocol.http.retry;
 
 import java.net.URI;
 
@@ -34,7 +34,9 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
-import org.miaixz.bus.fabric.registry.policy.RetryPolicy;
+import org.miaixz.bus.fabric.protocol.http.chain.HttpChain;
+import org.miaixz.bus.fabric.protocol.http.chain.HttpStage;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * HTTP retry and redirect stage.
@@ -45,6 +47,11 @@ import org.miaixz.bus.fabric.registry.policy.RetryPolicy;
 public final class HttpRetry implements HttpStage {
 
     /**
+     * Cached debug flag that avoids logger capability lookups on every HTTP exchange.
+     */
+    private static final boolean DEBUG_ENABLED = Logger.isDebugEnabled();
+
+    /**
      * Stable identifier exposed to the HTTP stage chain.
      */
     private final String name;
@@ -52,7 +59,7 @@ public final class HttpRetry implements HttpStage {
     /**
      * Policy controlling transport retry and redirect limits.
      */
-    private final RetryPolicy policy;
+    private final HttpRetryPolicy policy;
 
     /**
      * Authenticator that optionally creates 401 and 407 follow-up requests.
@@ -63,7 +70,7 @@ public final class HttpRetry implements HttpStage {
      * Creates a retry stage with default policy.
      */
     public HttpRetry() {
-        this(RetryPolicy.defaults(), HttpAuthenticator.none());
+        this(HttpRetryPolicy.defaults(), HttpAuthenticator.none());
     }
 
     /**
@@ -73,7 +80,7 @@ public final class HttpRetry implements HttpStage {
      * @throws ValidateException if {@code authenticator} is {@code null}
      */
     public HttpRetry(final HttpAuthenticator authenticator) {
-        this(RetryPolicy.defaults(), authenticator);
+        this(HttpRetryPolicy.defaults(), authenticator);
     }
 
     /**
@@ -83,7 +90,7 @@ public final class HttpRetry implements HttpStage {
      * @param authenticator authenticator producing authorization follow-ups
      * @throws ValidateException if either collaborator is {@code null}
      */
-    private HttpRetry(final RetryPolicy policy, final HttpAuthenticator authenticator) {
+    public HttpRetry(final HttpRetryPolicy policy, final HttpAuthenticator authenticator) {
         this.name = "http-retry";
         this.policy = require(policy, "Retry policy");
         this.authenticator = require(authenticator, "HTTP authenticator");
@@ -102,6 +109,7 @@ public final class HttpRetry implements HttpStage {
     public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
         HttpRequest current = require(request, "HTTP request");
         final HttpChain next = require(chain, "HTTP chain");
+        final boolean debug = DEBUG_ENABLED;
         int attempt = Normal._0;
         int followUps = Normal._0;
         HttpResponse prior = null;
@@ -114,11 +122,48 @@ public final class HttpRetry implements HttpStage {
                 final HttpResponse response = attemptChain.proceed(current);
                 final HttpRequest followUp = followUp(response);
                 if (followUp == null) {
+                    if (debug && (attempt > Normal._0 || followUps > Normal._0)) {
+                        Logger.debug(
+                                false,
+                                "Fabric",
+                                "HTTP retry stage completed: method={}, host={}, port={}, code={}, retries={}, "
+                                        + "followUps={}",
+                                current.method().value(),
+                                current.url().host(),
+                                current.url().port(),
+                                response.code(),
+                                attempt,
+                                followUps);
+                    }
                     return prior == null ? response : response.toBuilder().priorResponse(prior).build();
                 }
                 if (!followUpAllowed(response.code(), followUps)) {
+                    if (debug) {
+                        Logger.debug(
+                                false,
+                                "Fabric",
+                                "HTTP follow-up rejected: method={}, host={}, port={}, code={}, acceptedFollowUps={}",
+                                current.method().value(),
+                                current.url().host(),
+                                current.url().port(),
+                                response.code(),
+                                followUps);
+                    }
                     response.close();
                     throw new ProtocolException("Too many HTTP follow-ups");
+                }
+                if (debug) {
+                    Logger.debug(
+                            false,
+                            "Fabric",
+                            "HTTP follow-up accepted: fromMethod={}, toMethod={}, fromHost={}, toHost={}, code={}, "
+                                    + "followUp={}",
+                            current.method().value(),
+                            followUp.method().value(),
+                            current.url().host(),
+                            followUp.url().host(),
+                            response.code(),
+                            followUps + Normal._1);
                 }
                 prior = response.toBuilder().body(PayloadBody.empty()).priorResponse(prior).build();
                 response.close();
@@ -126,7 +171,27 @@ public final class HttpRetry implements HttpStage {
                 followUps++;
                 attempt = Normal._0;
             } catch (final RuntimeException e) {
-                if (!recover(current, e, attempt)) {
+                final boolean recoverable = recover(current, e, attempt);
+                if (debug) {
+                    final HttpChain.ExchangeFailure failure = e instanceof HttpChain.ExchangeFailure currentFailure
+                            ? currentFailure
+                            : null;
+                    Logger.debug(
+                            false,
+                            "Fabric",
+                            "HTTP retry decision: retry={}, attempt={}, maxAttempts={}, method={}, host={}, port={}, "
+                                    + "delivery={}, reason={}, exception={}",
+                            recoverable,
+                            attempt,
+                            policy.maxAttempts(),
+                            current.method().value(),
+                            current.url().host(),
+                            current.url().port(),
+                            failure == null ? "unstructured" : failure.deliveryState(),
+                            failure == null ? "unstructured" : failure.reason(),
+                            e.getClass().getSimpleName());
+                }
+                if (!recoverable) {
                     throw e;
                 }
                 attempt++;

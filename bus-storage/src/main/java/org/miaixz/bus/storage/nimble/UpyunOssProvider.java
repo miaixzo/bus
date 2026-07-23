@@ -150,8 +150,8 @@ public class UpyunOssProvider extends AbstractProvider {
                         .data(
                                 Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
                                         .size(header(response, Http.Header.CONTENT_LENGTH, "0"))
-                                        .type(header(response, Http.Header.CONTENT_TYPE)).hash(header(response, Http.Header.ETAG))
-                                        .extend(extend).build())
+                                        .type(header(response, Http.Header.CONTENT_TYPE))
+                                        .hash(header(response, Http.Header.ETAG)).extend(extend).build())
                         .build();
             }
         } catch (Exception e) {
@@ -232,8 +232,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     .data(
                             Blob.builder().inputStream(stream(response)).bucket(bucket).key(objectKey).name(name)
                                     .path(objectKey).size(header(response, Http.Header.CONTENT_LENGTH, "0"))
-                                    .type(header(response, Http.Header.CONTENT_TYPE)).hash(header(response, Http.Header.ETAG))
-                                    .extend(extend).build())
+                                    .type(header(response, Http.Header.CONTENT_TYPE))
+                                    .hash(header(response, Http.Header.ETAG)).extend(extend).build())
                     .build();
         } catch (Exception e) {
             Logger.error(

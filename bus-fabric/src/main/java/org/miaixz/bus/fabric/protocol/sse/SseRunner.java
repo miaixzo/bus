@@ -50,7 +50,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpRunner;
 import org.miaixz.bus.fabric.protocol.sse.body.SseBody;
 import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
-import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
+import org.miaixz.bus.fabric.protocol.sse.retry.SseRetry;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
@@ -97,8 +97,7 @@ final class SseRunner {
     SseSession open(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         final String operationId = ID.objectId();
-        final SseRetry sessionRetry = SseRetry.defaults();
-        sessionRetry.update(snapshot.retry().current());
+        final SseRetry sessionRetry = SseRetry.of(snapshot.retryPolicy());
         final CompletableFuture<Void> stream = new CompletableFuture<>();
         final AtomicReference<SseSession> holder = new AtomicReference<>();
         final AtomicReference<DispatchHandle> handle = new AtomicReference<>();
@@ -195,6 +194,7 @@ final class SseRunner {
                 snapshot.context().reactor().dispatcher(),
                 snapshot.observer(),
                 null,
+                snapshot.timeout(),
                 () -> response(eventId, cancellation),
                 cancellation::cancel);
     }
@@ -328,6 +328,13 @@ final class SseRunner {
                 @Override
                 public void retry(final java.time.Duration retryDelay) {
                     retry.update(retryDelay);
+                    Logger.debug(
+                            false,
+                            "Fabric",
+                            "SSE server retry directive applied: host={}, port={}, delay={}",
+                            snapshot.address().host(),
+                            snapshot.address().port(),
+                            retryDelay);
                 }
             });
             closeReader(reader);

@@ -52,6 +52,11 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public record Timeout(Duration connect, Duration read, Duration write, Duration call, Duration ping, Duration close) {
 
     /**
+     * Typed option for the shared protocol timeout policy.
+     */
+    public static final Options.Key<Timeout> OPTION = Options.key("timeout", Timeout.class);
+
+    /**
      * Shared immutable default time policy.
      */
     private static final Timeout DEFAULTS = new Timeout(org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK,
@@ -99,6 +104,19 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
      */
     public static Timeout defaults() {
         return DEFAULTS;
+    }
+
+    /**
+     * Adds this timeout policy to an immutable option snapshot.
+     *
+     * @param options option source
+     * @return updated option snapshot
+     */
+    public Options from(final Options options) {
+        if (options == null) {
+            throw new ValidateException("Options must not be null");
+        }
+        return options.with(OPTION, this);
     }
 
     /**

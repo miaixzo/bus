@@ -44,6 +44,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.CertificateChain;
 import org.miaixz.bus.crypto.builtin.CertificateChainCleaner;
 import org.miaixz.bus.crypto.builtin.CertificatePin;
+import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Policy;
 
 /**
  * TLS certificate validation policy with trust manager, hostname, and pin checks.
@@ -51,7 +53,13 @@ import org.miaixz.bus.crypto.builtin.CertificatePin;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class CertificatePolicy {
+public final class CertificatePolicy implements Policy {
+
+    /**
+     * Typed option for the TLS certificate policy.
+     */
+    public static final Options.Key<CertificatePolicy> OPTION = Options
+            .key("tls.certificate.policy", CertificatePolicy.class);
 
     /**
      * Trust manager.
@@ -111,6 +119,29 @@ public final class CertificatePolicy {
      */
     public static CertificatePolicy trustSystem() {
         return builder().build();
+    }
+
+    /**
+     * Resolves the certificate policy from options.
+     *
+     * @param options option source
+     * @return configured policy or system trust policy
+     */
+    public static CertificatePolicy resolve(final Options options) {
+        final Options current = Assert.notNull(options, () -> new ValidateException("Options must not be null"));
+        final CertificatePolicy configured = current.get(OPTION);
+        return configured == null ? trustSystem() : configured;
+    }
+
+    /**
+     * Adds this policy to an immutable option snapshot.
+     *
+     * @param options option source
+     * @return updated option snapshot
+     */
+    @Override
+    public Options from(final Options options) {
+        return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
     }
 
     /**

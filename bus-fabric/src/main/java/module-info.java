@@ -66,12 +66,14 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.protocol.http.auth;
     exports org.miaixz.bus.fabric.protocol.http.body;
     exports org.miaixz.bus.fabric.protocol.http.cache;
+    exports org.miaixz.bus.fabric.protocol.http.retry;
     exports org.miaixz.bus.fabric.protocol.socket;
     exports org.miaixz.bus.fabric.protocol.socket.body;
     exports org.miaixz.bus.fabric.protocol.socket.frame;
     exports org.miaixz.bus.fabric.protocol.sse;
     exports org.miaixz.bus.fabric.protocol.sse.body;
     exports org.miaixz.bus.fabric.protocol.sse.event;
+    exports org.miaixz.bus.fabric.protocol.sse.retry;
     exports org.miaixz.bus.fabric.protocol.stomp;
     exports org.miaixz.bus.fabric.protocol.stomp.body;
     exports org.miaixz.bus.fabric.protocol.stomp.broker;

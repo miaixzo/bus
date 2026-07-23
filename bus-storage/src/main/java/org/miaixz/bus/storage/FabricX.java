@@ -50,8 +50,7 @@ public abstract class FabricX {
     /**
      * Shared Fabric contexts keyed by the public storage timeout policy to preserve connection pooling.
      */
-    private static final ConcurrentHashMap<Timeout, org.miaixz.bus.fabric.Context> FABRIC_CONTEXTS =
-            new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Timeout, org.miaixz.bus.fabric.Context> FABRIC_CONTEXTS = new ConcurrentHashMap<>();
 
     /**
      * The context containing configuration details for the storage provider.
@@ -99,7 +98,12 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response post(final String url, final Header... headers) {
-        return execute(Http.Method.POST.value(), url, Payload.empty(), MediaType.APPLICATION_OCTET_STREAM_TYPE, headers);
+        return execute(
+                Http.Method.POST.value(),
+                url,
+                Payload.empty(),
+                MediaType.APPLICATION_OCTET_STREAM_TYPE,
+                headers);
     }
 
     /**
@@ -130,7 +134,12 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response post(final String url, final byte[] data, final String contentType, final Header... headers) {
-        return execute(Http.Method.POST.value(), url, Payload.of(data == null ? new byte[0] : data), media(contentType), headers);
+        return execute(
+                Http.Method.POST.value(),
+                url,
+                Payload.of(data == null ? new byte[0] : data),
+                media(contentType),
+                headers);
     }
 
     /**
@@ -143,7 +152,12 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response put(final String url, final byte[] data, final String contentType, final Header... headers) {
-        return execute(Http.Method.PUT.value(), url, Payload.of(data == null ? new byte[0] : data), media(contentType), headers);
+        return execute(
+                Http.Method.PUT.value(),
+                url,
+                Payload.of(data == null ? new byte[0] : data),
+                media(contentType),
+                headers);
     }
 
     /**
@@ -156,7 +170,12 @@ public abstract class FabricX {
      * @return storage response
      */
     protected Response put(final String url, final String data, final String contentType, final Header... headers) {
-        return execute(Http.Method.PUT.value(), url, Payload.of(data == null ? "" : data, Charset.UTF_8), media(contentType), headers);
+        return execute(
+                Http.Method.PUT.value(),
+                url,
+                Payload.of(data == null ? "" : data, Charset.UTF_8),
+                media(contentType),
+                headers);
     }
 
     /**
@@ -282,9 +301,7 @@ public abstract class FabricX {
                 .write(seconds(context == null ? 30 : context.getWriteTimeout(), 30)).build();
         return FABRIC_CONTEXTS.computeIfAbsent(
                 timeout,
-                policy -> org.miaixz.bus.fabric.Context.builder()
-                        .options(Options.of(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT, policy))
-                        .build());
+                policy -> org.miaixz.bus.fabric.Context.builder().options(policy.from(Options.empty())).build());
     }
 
     /**

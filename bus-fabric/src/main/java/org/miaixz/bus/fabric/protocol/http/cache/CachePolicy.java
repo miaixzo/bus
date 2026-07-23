@@ -33,6 +33,8 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Headers;
+import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Policy;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
@@ -42,7 +44,12 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class CachePolicy {
+public final class CachePolicy implements Policy {
+
+    /**
+     * Typed option for the HTTP cache decision policy.
+     */
+    public static final Options.Key<CachePolicy> OPTION = Options.key("http.cache.policy", CachePolicy.class);
 
     /**
      * Creates a policy.
@@ -58,6 +65,29 @@ public final class CachePolicy {
      */
     public static CachePolicy defaults() {
         return Instances.get(CachePolicy.class.getName() + ".defaults", CachePolicy::new);
+    }
+
+    /**
+     * Resolves the cache policy from options.
+     *
+     * @param options option source
+     * @return configured policy or shared defaults
+     */
+    public static CachePolicy resolve(final Options options) {
+        final Options current = Assert.notNull(options, () -> new ValidateException("Options must not be null"));
+        final CachePolicy configured = current.get(OPTION);
+        return configured == null ? defaults() : configured;
+    }
+
+    /**
+     * Adds this policy to an immutable option snapshot.
+     *
+     * @param options option source
+     * @return updated option snapshot
+     */
+    @Override
+    public Options from(final Options options) {
+        return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
     }
 
     /**

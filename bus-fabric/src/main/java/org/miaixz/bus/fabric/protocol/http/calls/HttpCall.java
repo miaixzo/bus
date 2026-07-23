@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Callback;
+import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
@@ -66,7 +67,7 @@ public final class HttpCall extends MonoCall<HttpResponse> {
      */
     private HttpCall(final HttpRequest request, final Dispatcher dispatcher,
             final Callback<? super HttpResponse> callback, final Function<Cancellation, HttpResponse> operation) {
-        super("http-call", dispatcher, EventObserver.noop(), callback);
+        super("http-call", dispatcher, EventObserver.noop(), callback, timeout(request));
         final HttpRequest current = require(request, "HTTP request");
         this.address = current.url().address();
         this.operation = require(operation, "HTTP operation");
@@ -144,6 +145,16 @@ public final class HttpCall extends MonoCall<HttpResponse> {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Returns the complete timeout policy from a validated request.
+     *
+     * @param request request candidate
+     * @return complete request timeout policy
+     */
+    private static Timeout timeout(final HttpRequest request) {
+        return require(request, "HTTP request").timeout();
     }
 
 }

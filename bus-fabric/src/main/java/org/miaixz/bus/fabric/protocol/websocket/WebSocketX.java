@@ -138,6 +138,7 @@ public final class WebSocketX {
                 snapshot.context().reactor().dispatcher(),
                 callback,
                 snapshot.observer(),
+                snapshot.timeout(),
                 cancellation -> Mediator.execute(Type.WEBSOCKET, cancellation, runner::open),
                 dispatchKey());
     }

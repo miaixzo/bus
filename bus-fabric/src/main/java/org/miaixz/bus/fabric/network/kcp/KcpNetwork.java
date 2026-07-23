@@ -45,6 +45,7 @@ import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.network.Transport;
 import org.miaixz.bus.fabric.network.udp.UdpNetwork;
 import org.miaixz.bus.fabric.network.udp.UdpSession;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Lightweight KCP packet endpoint over UDP sessions.
@@ -53,6 +54,11 @@ import org.miaixz.bus.fabric.network.udp.UdpSession;
  * @since Java 21+
  */
 public final class KcpNetwork implements AutoCloseable {
+
+    /**
+     * Cached debug flag that keeps packet hot paths free from repeated logger capability lookups.
+     */
+    private static final boolean DEBUG_ENABLED = Logger.isDebugEnabled();
 
     /**
      * UDP transport owned and closed by this endpoint.
@@ -75,24 +81,9 @@ public final class KcpNetwork implements AutoCloseable {
     private final Clock clock;
 
     /**
-     * Configured maximum number of unacknowledged outbound packets.
+     * Complete immutable KCP runtime policy.
      */
-    private final int sendWindowSize;
-
-    /**
-     * Configured maximum forward distance accepted by the inbound reorder window.
-     */
-    private final int receiveWindowSize;
-
-    /**
-     * Minimum packet age before an unacknowledged packet becomes due for retransmission.
-     */
-    private final Duration retransmitDelay;
-
-    /**
-     * Wire version emitted by this endpoint.
-     */
-    private final int wireVersion;
+    private final KcpPolicy policy;
 
     /**
      * Unacknowledged outbound packets retained in sequence insertion order.
@@ -185,44 +176,22 @@ public final class KcpNetwork implements AutoCloseable {
      * @param udp UDP network owned by the endpoint
      */
     private KcpNetwork(final UdpNetwork udp) {
-        this(udp, Clock.system(), Normal._1, Normal._32, Normal._32, Builder.KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY);
+        this(udp, Clock.system(), KcpPolicy.defaults());
     }
 
     /**
      * Creates a KCP network.
      *
-     * @param udp               UDP network owned by the endpoint
-     * @param clock             time source for protocol accounting and expiry
-     * @param wireVersion       wire version
-     * @param sendWindowSize    maximum unacknowledged outbound packet count
-     * @param receiveWindowSize maximum forward sequence distance accepted inbound
-     * @param retransmitDelay   minimum age before retransmitting a packet
+     * @param udp    UDP network owned by the endpoint
+     * @param clock  time source for protocol accounting and expiry
+     * @param policy complete KCP policy
      */
-    private KcpNetwork(final UdpNetwork udp, final Clock clock, final int wireVersion, final int sendWindowSize,
-            final int receiveWindowSize, final Duration retransmitDelay) {
+    private KcpNetwork(final UdpNetwork udp, final Clock clock, final KcpPolicy policy) {
         this.udp = Assert.notNull(udp, () -> new ValidateException("UDP network must not be null"));
         this.sequence = new AtomicLong();
         this.messageId = new AtomicLong();
         this.clock = Assert.notNull(clock, () -> new ValidateException("KCP clock must not be null"));
-        if (wireVersion != Normal._1 && wireVersion != Normal._2) {
-            throw new ValidateException("KCP wire version must be 1 or 2");
-        }
-        this.wireVersion = wireVersion;
-        this.sendWindowSize = Assert.checkBetween(
-                sendWindowSize,
-                Normal._1,
-                Normal._65535,
-                () -> new ValidateException("KCP send window must be between 1 and 65535"));
-        this.receiveWindowSize = Assert.checkBetween(
-                receiveWindowSize,
-                Normal._1,
-                Normal._65535,
-                () -> new ValidateException("KCP receive window must be between 1 and 65535"));
-        this.retransmitDelay = Assert
-                .notNull(retransmitDelay, () -> new ValidateException("KCP retransmit delay must not be null"));
-        Assert.isTrue(
-                !this.retransmitDelay.isNegative(),
-                () -> new ValidateException("KCP retransmit delay must be non-negative"));
+        this.policy = Assert.notNull(policy, () -> new ValidateException("KCP policy must not be null"));
         this.sendWindow = new LinkedHashMap<>();
         this.receiveWindow = new TreeMap<>();
         this.outboundQueue = new ArrayDeque<>();
@@ -230,7 +199,20 @@ public final class KcpNetwork implements AutoCloseable {
         this.closed = new AtomicBoolean();
         this.lastRttMillis = Normal.__1;
         this.smoothedRttMillis = Normal.__1;
-        this.congestionWindow = this.sendWindowSize;
+        this.congestionWindow = this.policy.sendWindowSize();
+        if (DEBUG_ENABLED) {
+            Logger.debug(
+                    false,
+                    "Fabric",
+                    "KCP endpoint created: wireVersion={}, sendWindow={}, receiveWindow={}, retransmitDelayMs={}, "
+                            + "maxRetransmissions={}, reassemblyTimeoutMs={}",
+                    this.policy.wireVersion(),
+                    this.policy.sendWindowSize(),
+                    this.policy.receiveWindowSize(),
+                    this.policy.retransmitDelayMillis(),
+                    this.policy.maxRetransmissions(),
+                    this.policy.reassemblyTimeoutMillis());
+        }
     }
 
     /**
@@ -261,7 +243,8 @@ public final class KcpNetwork implements AutoCloseable {
             final int sendWindowSize,
             final int receiveWindowSize,
             final Duration retransmitDelay) {
-        return new KcpNetwork(udp, clock, Normal._1, sendWindowSize, receiveWindowSize, retransmitDelay);
+        return new KcpNetwork(udp, clock, KcpPolicy.builder().sendWindowSize(sendWindowSize)
+                .receiveWindowSize(receiveWindowSize).retransmitDelay(retransmitDelay).build());
     }
 
     /**
@@ -274,8 +257,19 @@ public final class KcpNetwork implements AutoCloseable {
      * @throws ValidateException if a dependency or wire version is invalid
      */
     public static KcpNetwork create(final UdpNetwork udp, final Clock clock, final int wireVersion) {
-        return new KcpNetwork(udp, clock, wireVersion, Normal._32, Normal._32,
-                Builder.KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY);
+        return new KcpNetwork(udp, clock, KcpPolicy.builder().wireVersion(wireVersion).build());
+    }
+
+    /**
+     * Creates a KCP network with a complete immutable policy.
+     *
+     * @param udp    UDP network transferred to the endpoint
+     * @param clock  time source for protocol accounting and expiry
+     * @param policy complete KCP policy
+     * @return configured KCP endpoint
+     */
+    public static KcpNetwork create(final UdpNetwork udp, final Clock clock, final KcpPolicy policy) {
+        return new KcpNetwork(udp, clock, policy);
     }
 
     /**
@@ -291,13 +285,20 @@ public final class KcpNetwork implements AutoCloseable {
         Assert.notNull(payload, () -> new ValidateException("KCP payload must not be null"));
         ensureOpen();
         expireReassemblies();
-        final long limit = wireVersion == Normal._1 ? Builder.KCP_PACKET_V1_MAX_PAYLOAD
-                : Builder.KCP_NETWORK_MAX_MESSAGE_BYTES;
+        final int wireVersion = policy.wireVersion();
+        final long limit = wireVersion == Normal._1 ? Builder.KCP_PACKET_V1_MAX_PAYLOAD : policy.maxMessageBytes();
         final ByteString bytes = ByteString.of(payload.bytes(limit));
         if (wireVersion == Normal._1 && bytes.size() > Builder.KCP_PACKET_V1_MAX_PAYLOAD) {
             throw new ValidateException("KCP V1 payload exceeds one packet");
         }
-        if (outboundQueueBytes + bytes.size() > Builder.KCP_NETWORK_MAX_OUTBOUND_QUEUE_BYTES) {
+        if (outboundQueueBytes + bytes.size() > policy.maxOutboundQueueBytes()) {
+            Logger.warn(
+                    false,
+                    "Fabric",
+                    "KCP outbound queue limit exceeded: queuedBytes={}, incomingBytes={}, limitBytes={}",
+                    outboundQueueBytes,
+                    bytes.size(),
+                    policy.maxOutboundQueueBytes());
             throw new StatefulException("KCP outbound queue byte limit exceeded");
         }
         final long id = wireVersion == Normal._2 ? nextMessageId() : Normal._0;
@@ -347,14 +348,42 @@ public final class KcpNetwork implements AutoCloseable {
         outbound.add(ack);
         if (isBeforeExpected(packet.sequence())) {
             duplicatePackets++;
+            if (DEBUG_ENABLED) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "KCP stale packet ignored: sequence={}, expected={}, duplicates={}",
+                        packet.sequence(),
+                        expectedReceiveSequence,
+                        duplicatePackets);
+            }
             return new Inbound(delivered, outbound);
         }
-        if (sequenceDistance(expectedReceiveSequence, packet.sequence()) >= receiveWindowSize) {
+        if (sequenceDistance(expectedReceiveSequence, packet.sequence()) >= policy.receiveWindowSize()) {
             droppedPackets++;
+            if (DEBUG_ENABLED) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "KCP packet outside receive window: sequence={}, expected={}, receiveWindow={}, drops={}",
+                        packet.sequence(),
+                        expectedReceiveSequence,
+                        policy.receiveWindowSize(),
+                        droppedPackets);
+            }
             return new Inbound(delivered, List.of());
         }
         if (receiveWindow.putIfAbsent(packet.sequence(), packet) != null) {
             duplicatePackets++;
+            if (DEBUG_ENABLED) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "KCP duplicate packet ignored: sequence={}, expected={}, duplicates={}",
+                        packet.sequence(),
+                        expectedReceiveSequence,
+                        duplicatePackets);
+            }
             return new Inbound(delivered, outbound);
         }
         receivedPackets++;
@@ -395,7 +424,14 @@ public final class KcpNetwork implements AutoCloseable {
         if (sent != null) {
             acknowledgedPackets++;
             updateRtt(sent.sentAt);
-            congestionWindow = Math.min(sendWindowSize, Math.max(Normal._1, congestionWindow + Normal._1));
+            congestionWindow = Math.min(policy.sendWindowSize(), Math.max(Normal._1, congestionWindow + Normal._1));
+        } else if (DEBUG_ENABLED) {
+            Logger.debug(
+                    false,
+                    "Fabric",
+                    "KCP acknowledgement ignored: sequence={}, pending={}",
+                    packet.acknowledgement(),
+                    sendWindow.size());
         }
     }
 
@@ -409,11 +445,22 @@ public final class KcpNetwork implements AutoCloseable {
         ensureOpen();
         expireReassemblies();
         final long current = now();
+        final long retransmitDelayMillis = policy.retransmitDelayMillis();
+        final int maxRetransmissions = policy.maxRetransmissions();
         final ArrayList<KcpPacket> due = new ArrayList<>();
         for (final var entry : sendWindow.entrySet()) {
             final SentPacket sent = entry.getValue();
-            if (current - sent.sentAt >= retransmitDelay.toMillis()) {
-                if (sent.retries >= Builder.KCP_NETWORK_MAX_RETRANSMISSIONS) {
+            if (current - sent.sentAt >= retransmitDelayMillis) {
+                if (sent.retries >= maxRetransmissions) {
+                    Logger.warn(
+                            false,
+                            "Fabric",
+                            "KCP retransmission limit exhausted: sequence={}, retries={}, pending={}, "
+                                    + "smoothedRttMs={}",
+                            sent.packet.sequence(),
+                            sent.retries,
+                            sendWindow.size(),
+                            smoothedRttMillis);
                     throw new StatefulException("KCP packet retry limit exhausted");
                 }
                 due.add(sent.packet);
@@ -423,6 +470,17 @@ public final class KcpNetwork implements AutoCloseable {
         if (!due.isEmpty()) {
             retransmissions += due.size();
             congestionWindow = Math.max(Normal._1, congestionWindow / Normal._2);
+            if (DEBUG_ENABLED) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "KCP retransmission batch ready: packets={}, totalRetransmissions={}, pending={}, "
+                                + "congestionWindow={}",
+                        due.size(),
+                        retransmissions,
+                        sendWindow.size(),
+                        congestionWindow);
+            }
         }
         return due;
     }
@@ -518,6 +576,20 @@ public final class KcpNetwork implements AutoCloseable {
     @Override
     public synchronized void close() {
         if (closed.compareAndSet(false, true)) {
+            if (DEBUG_ENABLED) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "KCP endpoint closing: pending={}, buffered={}, acknowledged={}, retransmissions={}, "
+                                + "duplicates={}, drops={}, delivered={}",
+                        sendWindow.size(),
+                        buffered(),
+                        acknowledgedPackets,
+                        retransmissions,
+                        duplicatePackets,
+                        droppedPackets,
+                        deliveredPackets);
+            }
             sendWindow.clear();
             receiveWindow.clear();
             outboundQueue.clear();
@@ -559,6 +631,7 @@ public final class KcpNetwork implements AutoCloseable {
      */
     private List<KcpPacket> drainOutbound() {
         final ArrayList<KcpPacket> emitted = new ArrayList<>();
+        final int wireVersion = policy.wireVersion();
         while (sendWindow.size() < currentSendLimit() && !outboundQueue.isEmpty()) {
             final OutboundMessage message = outboundQueue.peekFirst();
             final int maxPayload = wireVersion == Normal._1 ? Builder.KCP_PACKET_V1_MAX_PAYLOAD
@@ -605,34 +678,47 @@ public final class KcpNetwork implements AutoCloseable {
         final ReassemblyKey key = new ReassemblyKey(udp, packet.messageId());
         ReassemblyState state = reassemblies.get(key);
         final long added = packet.payloadBytes().size();
+        final long maxMessageBytes = policy.maxMessageBytes();
+        final long maxReassemblyBytes = policy.maxReassemblyBytes();
+        final long maxSourceReassemblyBytes = policy.maxSourceReassemblyBytes();
         if (state == null) {
-            if (reassemblies.size() >= Builder.KCP_NETWORK_MAX_ACTIVE_REASSEMBLIES) {
+            if (reassemblies.size() >= policy.maxActiveReassemblies()) {
                 throw new StatefulException("KCP active reassembly limit exceeded");
             }
-            if (added > Builder.KCP_NETWORK_MAX_MESSAGE_BYTES) {
+            if (added > maxMessageBytes) {
                 throw new StatefulException("KCP reassembled message byte limit exceeded");
             }
-            if (reassemblyBytes + added > Builder.KCP_NETWORK_MAX_REASSEMBLY_BYTES) {
+            if (reassemblyBytes + added > maxReassemblyBytes) {
                 throw new StatefulException("KCP total reassembly byte limit exceeded");
             }
-            if (sourceReassemblyBytes(key.source) + added > Builder.KCP_NETWORK_MAX_SOURCE_REASSEMBLY_BYTES) {
+            if (sourceReassemblyBytes(key.source) + added > maxSourceReassemblyBytes) {
                 throw new StatefulException("KCP source reassembly byte limit exceeded");
             }
             state = new ReassemblyState(packet.fragmentCount(), now());
             reassemblies.put(key, state);
+            if (DEBUG_ENABLED) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "KCP reassembly started: messageId={}, fragments={}, active={}, retainedBytes={}",
+                        packet.messageId(),
+                        packet.fragmentCount(),
+                        reassemblies.size(),
+                        reassemblyBytes);
+            }
         } else if (state.fragmentCount != packet.fragmentCount()) {
             throw new StatefulException("KCP fragment count changed during reassembly");
         }
         if (state.fragments.containsKey(packet.fragmentIndex())) {
             return;
         }
-        if (state.bytes + added > Builder.KCP_NETWORK_MAX_MESSAGE_BYTES) {
+        if (state.bytes + added > maxMessageBytes) {
             throw new StatefulException("KCP reassembled message byte limit exceeded");
         }
-        if (reassemblyBytes + added > Builder.KCP_NETWORK_MAX_REASSEMBLY_BYTES) {
+        if (reassemblyBytes + added > maxReassemblyBytes) {
             throw new StatefulException("KCP total reassembly byte limit exceeded");
         }
-        if (sourceReassemblyBytes(key.source) + added > Builder.KCP_NETWORK_MAX_SOURCE_REASSEMBLY_BYTES) {
+        if (sourceReassemblyBytes(key.source) + added > maxSourceReassemblyBytes) {
             throw new StatefulException("KCP source reassembly byte limit exceeded");
         }
         state.fragments.put(packet.fragmentIndex(), packet.payloadBytes());
@@ -653,6 +739,16 @@ public final class KcpNetwork implements AutoCloseable {
         reassemblyBytes -= state.bytes;
         delivered.add(merged.size() == Normal.LONG_ZERO ? Payload.empty() : Payload.of(merged.readByteString()));
         deliveredPackets++;
+        if (DEBUG_ENABLED) {
+            Logger.debug(
+                    false,
+                    "Fabric",
+                    "KCP reassembly completed: messageId={}, fragments={}, messageBytes={}, active={}",
+                    packet.messageId(),
+                    state.fragmentCount,
+                    state.bytes,
+                    reassemblies.size());
+        }
     }
 
     /**
@@ -676,17 +772,28 @@ public final class KcpNetwork implements AutoCloseable {
      */
     private void expireReassemblies() {
         final long current = now();
-        boolean expired = false;
+        final long reassemblyTimeoutMillis = policy.reassemblyTimeoutMillis();
+        int expired = Normal._0;
+        long releasedBytes = Normal.LONG_ZERO;
         final var iterator = reassemblies.entrySet().iterator();
         while (iterator.hasNext()) {
             final ReassemblyState state = iterator.next().getValue();
-            if (current - state.createdAt >= Builder.KCP_NETWORK_REASSEMBLY_TIMEOUT.toMillis()) {
+            if (current - state.createdAt >= reassemblyTimeoutMillis) {
                 reassemblyBytes -= state.bytes;
+                releasedBytes += state.bytes;
                 iterator.remove();
-                expired = true;
+                expired++;
             }
         }
-        if (expired) {
+        if (expired > Normal._0) {
+            Logger.warn(
+                    false,
+                    "Fabric",
+                    "KCP reassembly expired: messages={}, releasedBytes={}, remaining={}, timeoutMs={}",
+                    expired,
+                    releasedBytes,
+                    reassemblies.size(),
+                    reassemblyTimeoutMillis);
             throw new StatefulException("KCP fragment reassembly expired");
         }
     }
@@ -729,7 +836,7 @@ public final class KcpNetwork implements AutoCloseable {
      * @return available receive window slots
      */
     private int remainingReceiveWindow() {
-        return Math.max(Normal._0, receiveWindowSize - receiveWindow.size());
+        return Math.max(Normal._0, policy.receiveWindowSize() - receiveWindow.size());
     }
 
     /**
@@ -738,7 +845,7 @@ public final class KcpNetwork implements AutoCloseable {
      * @return maximum unacknowledged packets allowed now
      */
     private int currentSendLimit() {
-        return Math.min(sendWindowSize, Math.max(Normal._1, congestionWindow));
+        return Math.min(policy.sendWindowSize(), Math.max(Normal._1, congestionWindow));
     }
 
     /**
@@ -891,7 +998,7 @@ public final class KcpNetwork implements AutoCloseable {
         private OutboundMessage(final ByteString bytes, final long messageId) {
             this.bytes = bytes;
             this.messageId = messageId;
-            final int maxPayload = wireVersion == Normal._1 ? Builder.KCP_PACKET_V1_MAX_PAYLOAD
+            final int maxPayload = policy.wireVersion() == Normal._1 ? Builder.KCP_PACKET_V1_MAX_PAYLOAD
                     : Builder.KCP_PACKET_V2_MAX_PAYLOAD;
             this.fragmentCount = Math.max(Normal._1, (bytes.size() + maxPayload - Normal._1) / maxPayload);
         }

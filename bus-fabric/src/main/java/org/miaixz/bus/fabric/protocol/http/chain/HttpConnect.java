@@ -733,9 +733,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 connection.sink(),
                 new Buffer().write(
                         ByteString.encodeString(request, org.miaixz.bus.core.lang.Charset.US_ASCII).toByteArray()),
-                timeout.write(),
+                timeout,
                 scope);
-        final String response = readHeader(connection.source(), timeout.read(), scope);
+        final String response = readHeader(connection.source(), timeout, scope);
         if (!response.startsWith(Protocol.HTTP_1_1 + " 200 ") && !response.startsWith(Protocol.HTTP_1_0 + " 200 ")
                 && !response.startsWith("HTTP/2 200 ")) {
             throw new ProtocolException("HTTP CONNECT tunnel failed");
@@ -772,24 +772,14 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         writeAll(
                 connection.sink(),
                 new Buffer().write(new byte[] { Builder.HTTP_CONNECT_SOCKS5, 0x01, Normal._0 }),
-                timeout.write(),
+                timeout,
                 scope);
-        final byte[] selection = readExact(
-                connection.source(),
-                2,
-                timeout.read(),
-                "SOCKS method selection timed out",
-                scope);
+        final byte[] selection = readExact(connection.source(), 2, timeout, "SOCKS method selection timed out", scope);
         if (selection[0] != Builder.HTTP_CONNECT_SOCKS5 || selection[1] != Normal._0) {
             throw new ProtocolException("SOCKS proxy requires an unsupported authentication method");
         }
-        writeAll(connection.sink(), new Buffer().write(socksConnectRequest(target)), timeout.write(), scope);
-        final byte[] header = readExact(
-                connection.source(),
-                4,
-                timeout.read(),
-                "SOCKS connect response timed out",
-                scope);
+        writeAll(connection.sink(), new Buffer().write(socksConnectRequest(target)), timeout, scope);
+        final byte[] header = readExact(connection.source(), 4, timeout, "SOCKS connect response timed out", scope);
         if (header[0] != Builder.HTTP_CONNECT_SOCKS5) {
             throw new ProtocolException("Invalid SOCKS response version");
         }
@@ -798,16 +788,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         }
         final int addressLength = switch (header[3]) {
             case Normal._1 -> 4;
-            case Normal._3 -> readExact(
-                    connection.source(),
-                    1,
-                    timeout.read(),
-                    "SOCKS domain length timed out",
-                    scope)[0] & Builder.UNSIGNED_BYTE_MASK;
+            case Normal._3 -> readExact(connection.source(), 1, timeout, "SOCKS domain length timed out", scope)[0]
+                    & Builder.UNSIGNED_BYTE_MASK;
             case Normal._4 -> 16;
             default -> throw new ProtocolException("Unsupported SOCKS address type");
         };
-        readExact(connection.source(), addressLength + 2, timeout.read(), "SOCKS bind address timed out", scope);
+        readExact(connection.source(), addressLength + 2, timeout, "SOCKS bind address timed out", scope);
         Logger.debug(
                 false,
                 "Fabric",
@@ -1141,12 +1127,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     private static void writeAll(
             final Sink sink,
             final Buffer source,
-            final Duration timeout,
+            final Timeout timeout,
             final Cancellation cancellation) {
         final Cancellation scope = require(cancellation, "Cancellation");
         final Sink current = require(sink, "Sink");
         final Buffer payload = require(source, "Write buffer");
-        configureTimeout(current.timeout(), timeout);
+        configureTimeout(current.timeout(), require(timeout, "Timeout").write());
         scope.throwIfCancelled();
         try {
             current.write(payload, payload.size());
@@ -1163,10 +1149,10 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      * @param cancellation cancellation scope
      * @return response header
      */
-    private static String readHeader(final Source source, final Duration timeout, final Cancellation cancellation) {
+    private static String readHeader(final Source source, final Timeout timeout, final Cancellation cancellation) {
         final Cancellation scope = require(cancellation, "Cancellation");
         final Source current = require(source, "Source");
-        configureTimeout(current.timeout(), timeout);
+        configureTimeout(current.timeout(), require(timeout, "Timeout").read());
         final StringBuilder header = new StringBuilder();
         while (header.length() < Builder.BYTES_64_KIB) {
             scope.throwIfCancelled();
@@ -1209,12 +1195,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     private static byte[] readExact(
             final Source source,
             final int length,
-            final Duration timeout,
+            final Timeout timeout,
             final String message,
             final Cancellation cancellation) {
         final Cancellation scope = require(cancellation, "Cancellation");
         final Source current = require(source, "Source");
-        configureTimeout(current.timeout(), timeout);
+        configureTimeout(current.timeout(), require(timeout, "Timeout").read());
         final Buffer buffer = new Buffer();
         while (buffer.size() < length) {
             scope.throwIfCancelled();
@@ -2155,6 +2141,14 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          */
         private final TlsSocketChannel tls;
 
+        /**
+         * Creates a routed connection backed by a blocking JSSE socket.
+         *
+         * @param destination routed destination
+         * @param raw         raw connection that owns the socket
+         * @param tls         TLS socket conduit
+         * @param protocol    negotiated application protocol
+         */
         private TlsSocketRoutedConnection(final Destination destination, final Connection raw,
                 final TlsSocketChannel tls, final Protocol protocol) {
             super(destination, raw, protocol);
@@ -2162,40 +2156,78 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             this.tls = require(tls, "TLS socket channel");
         }
 
+        /**
+         * Returns metadata from the completed TLS handshake.
+         *
+         * @return negotiated TLS handshake metadata
+         */
         private TlsHandshake handshake() {
             return tls.handshakeMetadata();
         }
 
+        /**
+         * Returns the TLS conduit used for application data.
+         *
+         * @return TLS socket conduit
+         */
         @Override
         public Conduit conduit() {
             return tls;
         }
 
+        /**
+         * Returns the TLS-decoded source.
+         *
+         * @return application-data source
+         */
         @Override
         public Source source() {
             return tls.source();
         }
 
+        /**
+         * Returns the TLS-encoding sink.
+         *
+         * @return application-data sink
+         */
         @Override
         public Sink sink() {
             return tls.sink();
         }
 
+        /**
+         * Reports whether both the TLS conduit and raw connection remain usable.
+         *
+         * @return {@code true} when the routed connection is healthy
+         */
         @Override
         public boolean healthy() {
             return tls.opened() && raw.healthy();
         }
 
+        /**
+         * Reports whether the raw connection is currently idle.
+         *
+         * @return {@code true} when no operation is active
+         */
         @Override
         public boolean idle() {
             return raw.idle();
         }
 
+        /**
+         * Returns the lifecycle state of the raw connection.
+         *
+         * @return current connection status
+         */
         @Override
         public Status state() {
             return raw.state();
         }
 
+        /**
+         * Closes the TLS conduit and its owning raw connection.
+         */
         @Override
         public void close() {
             try {
@@ -2205,6 +2237,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             }
         }
 
+        /**
+         * Aborts the TLS conduit and its owning raw connection.
+         */
         @Override
         public void abort() {
             try {
@@ -2857,6 +2892,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          */
         private final Sink sink;
 
+        /**
+         * Creates a stream conduit over a connected socket.
+         *
+         * @param socket connected TLS application-data socket
+         */
         private SocketStreamConduit(final Socket socket) {
             this.socket = require(socket, "Socket");
             try {
@@ -2869,6 +2909,13 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             this.sink = Conduit.super.sink();
         }
 
+        /**
+         * Reads bytes from the socket and exposes the completed result as a future.
+         *
+         * @param target    destination buffer
+         * @param byteCount maximum number of bytes to read
+         * @return completed read result or failed future
+         */
         @Override
         public CompletableFuture<Long> read(final Buffer target, final long byteCount) {
             try {
@@ -2878,6 +2925,14 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             }
         }
 
+        /**
+         * Reads bytes synchronously from the socket input stream.
+         *
+         * @param target    destination buffer
+         * @param byteCount maximum number of bytes to read
+         * @return bytes read, zero for an empty request, or {@code -1} at end of stream
+         * @throws IOException if the input stream cannot be read
+         */
         @Override
         public long readSynchronously(final Buffer target, final long byteCount) throws IOException {
             if (byteCount == Normal._0)
@@ -2889,6 +2944,13 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             return count;
         }
 
+        /**
+         * Writes bytes to the socket and exposes the completed result as a future.
+         *
+         * @param source    source buffer
+         * @param byteCount number of bytes to write
+         * @return completed write result or failed future
+         */
         @Override
         public CompletableFuture<Long> write(final Buffer source, final long byteCount) {
             try {
@@ -2898,6 +2960,14 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             }
         }
 
+        /**
+         * Writes the requested bytes synchronously to the socket output stream.
+         *
+         * @param source    source buffer
+         * @param byteCount number of bytes to write
+         * @return number of bytes written
+         * @throws IOException if the output stream cannot be written
+         */
         @Override
         public long writeSynchronously(final Buffer source, final long byteCount) throws IOException {
             final byte[] scratch = SCRATCH.get();
@@ -2911,21 +2981,39 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             return byteCount;
         }
 
+        /**
+         * Returns the reusable source view.
+         *
+         * @return conduit source
+         */
         @Override
         public Source source() {
             return source;
         }
 
+        /**
+         * Returns the reusable sink view.
+         *
+         * @return conduit sink
+         */
         @Override
         public Sink sink() {
             return sink;
         }
 
+        /**
+         * Reports whether the socket remains open.
+         *
+         * @return {@code true} while the socket is not closed
+         */
         @Override
         public boolean opened() {
             return !socket.isClosed();
         }
 
+        /**
+         * Closes the underlying socket.
+         */
         @Override
         public void close() {
             try {

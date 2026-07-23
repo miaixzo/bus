@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.registry.policy;
+package org.miaixz.bus.fabric.protocol.http.retry;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -28,6 +28,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Policy;
 
 /**
  * Immutable retry and redirect policy.
@@ -35,12 +37,22 @@ import org.miaixz.bus.core.net.Http;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class RetryPolicy {
+public final class HttpRetryPolicy implements Policy {
 
     /**
-     * Exclusive upper bound applied to retry attempt indices and redirect follow-up counts.
+     * Typed option for the complete HTTP retry and redirect policy.
      */
-    private final int maxFollowUps;
+    public static final Options.Key<HttpRetryPolicy> OPTION = Options.key("http.retry.policy", HttpRetryPolicy.class);
+
+    /**
+     * Exclusive upper bound applied to connection-failure retry attempt indices.
+     */
+    private final int maxAttempts;
+
+    /**
+     * Exclusive upper bound applied to redirect follow-up counts.
+     */
+    private final int maxRedirects;
 
     /**
      * Whether connection failures are retryable.
@@ -53,16 +65,26 @@ public final class RetryPolicy {
     private final Duration baseDelay;
 
     /**
+     * Maximum retry delay used to saturate exponential backoff.
+     */
+    private final Duration maxDelay;
+
+    /**
      * Creates a retry policy.
      *
-     * @param maxFollowUps             non-negative retry and redirect follow-up limit
+     * @param maxAttempts              non-negative retry attempt limit
+     * @param maxRedirects             non-negative redirect follow-up limit
      * @param retryOnConnectionFailure whether recognized connection failures may be retried
      * @param baseDelay                non-negative base delay for retry backoff
+     * @param maxDelay                 maximum retry backoff
      */
-    private RetryPolicy(final int maxFollowUps, final boolean retryOnConnectionFailure, final Duration baseDelay) {
-        this.maxFollowUps = maxFollowUps;
+    private HttpRetryPolicy(final int maxAttempts, final int maxRedirects, final boolean retryOnConnectionFailure,
+            final Duration baseDelay, final Duration maxDelay) {
+        this.maxAttempts = maxAttempts;
+        this.maxRedirects = maxRedirects;
         this.retryOnConnectionFailure = retryOnConnectionFailure;
         this.baseDelay = baseDelay;
+        this.maxDelay = maxDelay;
     }
 
     /**
@@ -70,8 +92,31 @@ public final class RetryPolicy {
      *
      * @return shared default policy
      */
-    public static RetryPolicy defaults() {
-        return Instances.get(RetryPolicy.class.getName() + ".defaults", () -> builder().build());
+    public static HttpRetryPolicy defaults() {
+        return Instances.get(HttpRetryPolicy.class.getName() + ".defaults", () -> builder().build());
+    }
+
+    /**
+     * Resolves the complete retry policy from options.
+     *
+     * @param options option source
+     * @return configured policy or shared defaults
+     */
+    public static HttpRetryPolicy resolve(final Options options) {
+        final Options current = Assert.notNull(options, () -> new ValidateException("Options must not be null"));
+        final HttpRetryPolicy configured = current.get(OPTION);
+        return configured == null ? defaults() : configured;
+    }
+
+    /**
+     * Adds this complete policy to an option snapshot.
+     *
+     * @param options option source
+     * @return updated option snapshot
+     */
+    @Override
+    public Options from(final Options options) {
+        return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
     }
 
     /**
@@ -97,7 +142,7 @@ public final class RetryPolicy {
         Assert.isFalse(
                 attempt < Normal._0,
                 () -> new ValidateException("Retry cause must be non-null and attempt must not be negative"));
-        return retryOnConnectionFailure && attempt < maxFollowUps && connectionFailure(current);
+        return retryOnConnectionFailure && attempt < maxAttempts && connectionFailure(current);
     }
 
     /**
@@ -111,7 +156,7 @@ public final class RetryPolicy {
         Assert.isFalse(
                 status < Normal._100 || followUps < Normal._0,
                 () -> new ValidateException("Status and follow-up count are invalid"));
-        return followUps < maxFollowUps && switch (status) {
+        return followUps < maxRedirects && switch (status) {
             case Http.Status.MULTIPLE_CHOICES, Http.Status.MOVED_PERMANENTLY, Http.Status.FOUND, Http.Status.SEE_OTHER, Http.Status.TEMPORARY_REDIRECT, Http.Status.PERMANENT_REDIRECT -> true;
             default -> false;
         };
@@ -128,7 +173,57 @@ public final class RetryPolicy {
         if (attempt == Normal._0 || baseDelay.isZero()) {
             return Duration.ZERO;
         }
-        return baseDelay.multipliedBy(1L << Math.min(attempt - Normal._1, Normal._30));
+        try {
+            final Duration calculated = baseDelay.multipliedBy(1L << Math.min(attempt - Normal._1, Normal._30));
+            return calculated.compareTo(maxDelay) > Normal._0 ? maxDelay : calculated;
+        } catch (final ArithmeticException ignored) {
+            return maxDelay;
+        }
+    }
+
+    /**
+     * Returns the retry-attempt limit.
+     *
+     * @return maximum retry attempts
+     */
+    public int maxAttempts() {
+        return maxAttempts;
+    }
+
+    /**
+     * Returns the redirect-follow-up limit.
+     *
+     * @return maximum redirects
+     */
+    public int maxRedirects() {
+        return maxRedirects;
+    }
+
+    /**
+     * Returns whether connection failures may be retried.
+     *
+     * @return connection failure retry flag
+     */
+    public boolean retryOnConnectionFailure() {
+        return retryOnConnectionFailure;
+    }
+
+    /**
+     * Returns the base retry delay.
+     *
+     * @return base retry delay
+     */
+    public Duration baseDelay() {
+        return baseDelay;
+    }
+
+    /**
+     * Returns the maximum retry delay.
+     *
+     * @return maximum retry delay
+     */
+    public Duration maxDelay() {
+        return maxDelay;
     }
 
     /**
@@ -153,7 +248,12 @@ public final class RetryPolicy {
         /**
          * Maximum follow-ups candidate.
          */
-        private int maxFollowUps = Normal._20;
+        private int maxAttempts = Normal._20;
+
+        /**
+         * Redirect follow-up limit candidate.
+         */
+        private int maxRedirects = Normal._20;
 
         /**
          * Retry flag candidate.
@@ -164,6 +264,11 @@ public final class RetryPolicy {
          * Base delay candidate.
          */
         private Duration baseDelay = Duration.ZERO;
+
+        /**
+         * Maximum retry delay candidate.
+         */
+        private Duration maxDelay = Duration.ofSeconds(Long.MAX_VALUE);
 
         /**
          * Creates a builder.
@@ -180,7 +285,32 @@ public final class RetryPolicy {
          */
         public Builder maxFollowUps(final int max) {
             Assert.isFalse(max < Normal._0, () -> new ValidateException("Max follow-ups must not be negative"));
-            this.maxFollowUps = max;
+            this.maxAttempts = max;
+            this.maxRedirects = max;
+            return this;
+        }
+
+        /**
+         * Sets the retry-attempt limit.
+         *
+         * @param max non-negative retry-attempt limit
+         * @return this builder
+         */
+        public Builder maxAttempts(final int max) {
+            Assert.isFalse(max < Normal._0, () -> new ValidateException("Max attempts must not be negative"));
+            this.maxAttempts = max;
+            return this;
+        }
+
+        /**
+         * Sets the redirect-follow-up limit.
+         *
+         * @param max non-negative redirect limit
+         * @return this builder
+         */
+        public Builder maxRedirects(final int max) {
+            Assert.isFalse(max < Normal._0, () -> new ValidateException("Max redirects must not be negative"));
+            this.maxRedirects = max;
             return this;
         }
 
@@ -196,17 +326,56 @@ public final class RetryPolicy {
         }
 
         /**
+         * Sets the exponential-backoff base delay.
+         *
+         * @param delay non-negative base delay
+         * @return this builder
+         */
+        public Builder baseDelay(final Duration delay) {
+            this.baseDelay = duration(delay, "Base delay");
+            return this;
+        }
+
+        /**
+         * Sets the maximum retry delay.
+         *
+         * @param delay non-negative maximum delay
+         * @return this builder
+         */
+        public Builder maxDelay(final Duration delay) {
+            this.maxDelay = duration(delay, "Maximum delay");
+            return this;
+        }
+
+        /**
          * Builds an immutable retry policy.
          *
          * @return immutable retry policy containing the validated builder state
          */
-        public RetryPolicy build() {
-            final Duration currentDelay = Assert
-                    .notNull(baseDelay, () -> new ValidateException("Base delay must be non-null and non-negative"));
+        public HttpRetryPolicy build() {
+            final Duration currentBase = duration(baseDelay, "Base delay");
+            final Duration currentMaximum = duration(maxDelay, "Maximum delay");
+            if (currentMaximum.compareTo(currentBase) < Normal._0) {
+                throw new ValidateException("Maximum delay must not be less than base delay");
+            }
+            return new HttpRetryPolicy(maxAttempts, maxRedirects, retryOnConnectionFailure, currentBase,
+                    currentMaximum);
+        }
+
+        /**
+         * Validates a non-negative delay.
+         *
+         * @param value delay candidate
+         * @param name  component name
+         * @return validated delay
+         */
+        private static Duration duration(final Duration value, final String name) {
+            final Duration checked = Assert
+                    .notNull(value, () -> new ValidateException(name + " must be non-null and non-negative"));
             Assert.isFalse(
-                    currentDelay.isNegative(),
-                    () -> new ValidateException("Base delay must be non-null and non-negative"));
-            return new RetryPolicy(maxFollowUps, retryOnConnectionFailure, currentDelay);
+                    checked.isNegative(),
+                    () -> new ValidateException(name + " must be non-null and non-negative"));
+            return checked;
         }
 
     }

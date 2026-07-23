@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
-import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
+import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
 
 /**
  * Immutable execution snapshot for an SSE exchange.
@@ -43,7 +43,7 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
  * @param address         normalized HTTP address for the event stream
  * @param headers         request headers sent when opening the stream
  * @param timeout         connect and read timeout policy
- * @param retry           per-session retry policy copied from the builder
+ * @param retryPolicy     immutable reconnect policy copied from the builder
  * @param lastEventId     last event id sent during reconnect, or {@code null}
  * @param autoReconnect   whether the runner should reopen the stream after retryable disconnects
  * @param responseHandler callback receiving the opening HTTP status and headers
@@ -55,9 +55,10 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
  * @author Kimi Liu
  * @since Java 21+
  */
-record SseSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout, SseRetry retry,
-        String lastEventId, boolean autoReconnect, BiConsumer<Integer, Headers> responseHandler, GuardRule guard,
-        Filter filter, EventObserver observer, Consumer<SseEvent> handler, Listener<? super SseSession> listener) {
+record SseSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout,
+        SseRetryPolicy retryPolicy, String lastEventId, boolean autoReconnect,
+        BiConsumer<Integer, Headers> responseHandler, GuardRule guard, Filter filter, EventObserver observer,
+        Consumer<SseEvent> handler, Listener<? super SseSession> listener) {
 
     /**
      * Creates a validated snapshot.
@@ -67,7 +68,7 @@ record SseSnapshot(Context context, URI uri, Address address, Headers headers, T
      * @param address         normalized HTTP address
      * @param headers         stream-opening request headers
      * @param timeout         stream timeout policy
-     * @param retry           retry policy copied into session-local state
+     * @param retryPolicy     immutable retry policy
      * @param lastEventId     optional event id supplied during reconnect
      * @param autoReconnect   whether retryable disconnects reopen the stream
      * @param responseHandler opening-response callback
@@ -83,22 +84,10 @@ record SseSnapshot(Context context, URI uri, Address address, Headers headers, T
         address = require(address, "Address");
         headers = require(headers, "Headers");
         timeout = require(timeout, "Timeout");
-        retry = copyRetry(require(retry, "SSE retry"));
+        retryPolicy = require(retryPolicy, "SSE retry policy");
         responseHandler = require(responseHandler, "SSE response handler");
         observer = EventObserver.safe(require(observer, "Observer"));
         handler = require(handler, "SSE handler");
-    }
-
-    /**
-     * Copies the current retry delay into a session-local policy.
-     *
-     * @param retry retry source
-     * @return copied retry policy
-     */
-    private static SseRetry copyRetry(final SseRetry retry) {
-        final SseRetry copy = SseRetry.defaults();
-        copy.update(retry.current());
-        return copy;
     }
 
     /**

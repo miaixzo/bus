@@ -303,7 +303,9 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath + ":/content";
 
-            try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+            try (Response response = get(
+                    url,
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
                 if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
@@ -366,7 +368,9 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath + ":/content";
 
-            try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+            try (Response response = get(
+                    url,
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
                 if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
@@ -412,7 +416,9 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(context.getBucket(), prefix);
             String url = context.getEndpoint() + apiPath + ":/children";
 
-            try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+            try (Response response = get(
+                    url,
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
                 if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
@@ -697,7 +703,9 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath;
 
-            try (Response response = delete(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+            try (Response response = delete(
+                    url,
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
                 if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
@@ -836,7 +844,9 @@ public class SharePointProvider extends AbstractProvider {
     private Map<String, Object> getItemMetadata(String bucket, String objectKey, boolean retry) throws IOException {
         String apiPath = buildApiPath(bucket, objectKey);
         String url = context.getEndpoint() + apiPath + "?$select=id,name,size,lastModifiedDateTime,file,folder";
-        try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+        try (Response response = get(
+                url,
+                header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
             if (response.code() == 401 && retry) {
                 refreshAccessToken();
                 return getItemMetadata(bucket, objectKey, false);

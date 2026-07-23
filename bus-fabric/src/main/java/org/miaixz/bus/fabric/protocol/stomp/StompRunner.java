@@ -164,7 +164,7 @@ final class StompRunner {
                 currentCancellation.throwIfCancelled();
                 final StompFrame connectedFrame = awaitConnected(connected, currentCancellation);
                 currentCancellation.throwIfCancelled();
-                final Heartbeats heartbeats = negotiate(connectedFrame);
+                final StompState state = negotiate(connectedFrame);
                 Logger.info(
                         false,
                         "Fabric",
@@ -178,7 +178,7 @@ final class StompRunner {
                         snapshot.observer(), FilterChain.compose(snapshot.context().filter(), snapshot.filter()),
                         snapshot.listener(), snapshot.context().options().materializeMaxBytes(),
                         snapshot.context().reactor().dispatcher(), snapshot.context().clock(), currentCancellation,
-                        heartbeats.outbound(), heartbeats.inboundDeadline());
+                        snapshot.timeout(), state);
                 session.set(opened);
                 currentCancellation.throwIfCancelled();
                 Logger.info(
@@ -289,31 +289,45 @@ final class StompRunner {
      * @throws ProtocolException if the heartbeat field is duplicated, malformed, or too large
      * @throws ValidateException if {@code connected} is {@code null}
      */
-    private Heartbeats negotiate(final StompFrame connected) {
+    private StompState negotiate(final StompFrame connected) {
         final Headers headers = require(connected, "STOMP CONNECTED frame").headers();
         final List<String> values = headers.values(Builder.STOMP_HEADER_HEART_BEAT);
         if (values.size() > Normal._1) {
             throw new ProtocolException("STOMP CONNECTED heart-beat header must be unique");
         }
         final long[] server = heartbeatPair(values.isEmpty() ? null : values.getFirst());
-        final long clientSend = heartbeatMillis(snapshot.clientSendHeartbeat(), "Client send heartbeat");
-        final long clientReceive = heartbeatMillis(snapshot.clientReceiveHeartbeat(), "Client receive heartbeat");
+        final long clientSend = snapshot.policy().clientSendHeartbeatMillis();
+        final long clientReceive = snapshot.policy().clientReceiveHeartbeatMillis();
         final long serverSend = server[Normal._0];
         final long serverReceive = server[Normal._1];
         final Duration outbound = clientSend == Normal.LONG_ZERO || serverReceive == Normal.LONG_ZERO ? Duration.ZERO
                 : duration(Math.max(clientSend, serverReceive), "STOMP outbound heartbeat");
+        final StompState state;
         if (clientReceive == Normal.LONG_ZERO || serverSend == Normal.LONG_ZERO) {
-            return new Heartbeats(outbound, Duration.ZERO);
+            state = new StompState(outbound, Duration.ZERO);
+        } else {
+            final long inbound = Math.max(clientReceive, serverSend);
+            final long tolerance = Math.max(Builder._1000, halfCeiling(inbound));
+            final long deadline;
+            try {
+                deadline = Math.addExact(inbound, tolerance);
+            } catch (final ArithmeticException e) {
+                throw new ProtocolException("STOMP inbound heartbeat deadline is too large", e);
+            }
+            state = new StompState(outbound, duration(deadline, "STOMP inbound heartbeat deadline"));
         }
-        final long inbound = Math.max(clientReceive, serverSend);
-        final long tolerance = Math.max(Builder._1000, halfCeiling(inbound));
-        final long deadline;
-        try {
-            deadline = Math.addExact(inbound, tolerance);
-        } catch (final ArithmeticException e) {
-            throw new ProtocolException("STOMP inbound heartbeat deadline is too large", e);
-        }
-        return new Heartbeats(outbound, duration(deadline, "STOMP inbound heartbeat deadline"));
+        Logger.debug(
+                false,
+                "Fabric",
+                "STOMP heartbeat negotiated: clientSendMs={}, clientReceiveMs={}, serverSendMs={}, "
+                        + "serverReceiveMs={}, outbound={}, inboundDeadline={}",
+                clientSend,
+                clientReceive,
+                serverSend,
+                serverReceive,
+                state.outboundHeartbeat(),
+                state.inboundHeartbeatDeadline());
+        return state;
     }
 
     /**
@@ -354,22 +368,6 @@ final class StompRunner {
             result = result * Normal._10 + digit;
         }
         return result;
-    }
-
-    /**
-     * Converts one client heartbeat Duration to milliseconds.
-     *
-     * @param value non-null client heartbeat duration
-     * @param name  component name
-     * @return duration converted to milliseconds
-     * @throws ProtocolException if the millisecond conversion overflows
-     */
-    private static long heartbeatMillis(final Duration value, final String name) {
-        try {
-            return require(value, name).toMillis();
-        } catch (final ArithmeticException e) {
-            throw new ProtocolException(name + " is too large", e);
-        }
     }
 
     /**
@@ -545,16 +543,6 @@ final class StompRunner {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Negotiated heartbeat settings transferred once to the Session.
-     *
-     * @param outbound        outbound heartbeat interval
-     * @param inboundDeadline inbound heartbeat deadline
-     */
-    private record Heartbeats(Duration outbound, Duration inboundDeadline) {
-
     }
 
 }

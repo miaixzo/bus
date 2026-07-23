@@ -25,7 +25,6 @@ import java.net.SocketOption;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -169,7 +168,7 @@ public final class AioChannel implements AutoCloseable {
             return operation.future();
         }
         try {
-            scheduleConnectTimeout(operation, checkedTimeout.connect());
+            scheduleConnectTimeout(operation, checkedTimeout);
             channel.connect(checkedAddress, operation, new CompletionHandler<>() {
 
                 /**
@@ -397,12 +396,13 @@ public final class AioChannel implements AutoCloseable {
      * @param operation connect operation
      * @param timeout   connect timeout
      */
-    private void scheduleConnectTimeout(final Operation<Void> operation, final Duration timeout) {
-        if (timeout.isZero()) {
+    private void scheduleConnectTimeout(final Operation<Void> operation, final Timeout timeout) {
+        final java.time.Duration connectTimeout = timeout.connect();
+        if (connectTimeout.isZero()) {
             return;
         }
         final DispatchHandle deadline = dispatcher
-                .schedule("aio:connect:timeout", timeout, Activity.of("aio:connect:timeout", () -> {
+                .schedule("aio:connect:timeout", connectTimeout, Activity.of("aio:connect:timeout", () -> {
                     if (operation.fail(new TimeoutException("AIO connect timed out"))) {
                         closeAfterFailure();
                     }

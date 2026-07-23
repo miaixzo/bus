@@ -2938,12 +2938,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.Logger"
-      },
-      "type": "org.miaixz.bus.fabric.protocol.http.HttpRunner"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
       "type": "org.miaixz.bus.fabric.protocol.http.HttpX"
@@ -4850,18 +4844,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.Logger"
-      },
-      "type": "org.miaixz.bus.fabric.protocol.http.calls.HttpCall"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.logger.Logger"
-      },
-      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpBridge"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpChain"
@@ -4883,12 +4865,6 @@
         "typeReached": "org.miaixz.bus.logger.Logger"
       },
       "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpCoordinator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.logger.Logger"
-      },
-      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpRetry"
     },
     {
       "condition": {
@@ -7461,12 +7437,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.Logger"
-      },
-      "type": "org.miaixz.bus.fabric.protocol.socket.calls.SocketCall"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "org.miaixz.bus.fabric.protocol.sse.EventSource"
@@ -7565,12 +7535,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Logger"
       },
-      "type": "org.miaixz.bus.fabric.protocol.sse.calls.SseCall"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.logger.Logger"
-      },
       "type": "org.miaixz.bus.fabric.protocol.stomp.StompRunner"
     },
     {
@@ -7583,12 +7547,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.logger.Logger"
       },
-      "type": "org.miaixz.bus.fabric.protocol.stomp.calls.StompCall"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.logger.Logger"
-      },
       "type": "org.miaixz.bus.fabric.protocol.websocket.WebSocketRunner"
     },
     {
@@ -7596,12 +7554,6 @@
         "typeReached": "org.miaixz.bus.logger.Logger"
       },
       "type": "org.miaixz.bus.fabric.protocol.websocket.WebSocketSession"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.logger.Logger"
-      },
-      "type": "org.miaixz.bus.fabric.protocol.websocket.calls.WebSocketCall"
     },
     {
       "condition": {
@@ -8396,6 +8348,78 @@
         "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
       },
       "type": "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.network.kcp.KcpNetwork"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$1"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$3"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$DiskFile$1"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Editor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Entry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$State"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.network.tcp.TcpServer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.network.tcp.TcpServer$TcpSession"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.retry.HttpRetry"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpConnect$ReleaseState"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.logger.Logger"
+      },
+      "type": "org.miaixz.bus.fabric.protocol.sse.SseRunner$1"
     },
     {
       "condition": {

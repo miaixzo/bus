@@ -296,7 +296,9 @@ public class GoogleDriveProvider extends AbstractProvider {
 
             String url = context.getEndpoint() + "/files/" + fileId + "?alt=media";
 
-            try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+            try (Response response = get(
+                    url,
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
                 if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
@@ -358,7 +360,9 @@ public class GoogleDriveProvider extends AbstractProvider {
 
             String url = context.getEndpoint() + "/files/" + fileId + "?alt=media";
 
-            try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+            try (Response response = get(
+                    url,
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
                 if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
@@ -406,7 +410,9 @@ public class GoogleDriveProvider extends AbstractProvider {
             String url = context.getEndpoint() + "/files?q=" + URLEncoder.encode(query, Charset.UTF_8)
                     + "&fields=files(id,name,size,mimeType,modifiedTime)&pageSize=100";
 
-            try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+            try (Response response = get(
+                    url,
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
                 if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
@@ -722,7 +728,9 @@ public class GoogleDriveProvider extends AbstractProvider {
 
             String url = context.getEndpoint() + "/files/" + fileId;
 
-            try (Response response = delete(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+            try (Response response = delete(
+                    url,
+                    header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
                 if (!response.successful()) {
                     if (response.code() == 401) {
                         refreshAccessToken();
@@ -844,7 +852,9 @@ public class GoogleDriveProvider extends AbstractProvider {
         String url = context.getEndpoint() + "/files?q=" + URLEncoder.encode(query, Charset.UTF_8)
                 + "&fields=files(id,name)";
 
-        try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+        try (Response response = get(
+                url,
+                header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
             if (!response.successful()) {
                 if (response.code() == 401) {
                     refreshAccessToken();
@@ -892,7 +902,9 @@ public class GoogleDriveProvider extends AbstractProvider {
     private Map<String, Object> getFileMetadata(String fileId, boolean retry) throws IOException {
         String fields = "id,name,size,mimeType,modifiedTime,md5Checksum,sha256Checksum";
         String url = context.getEndpoint() + "/files/" + fileId + "?fields=" + fields;
-        try (Response response = get(url, header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
+        try (Response response = get(
+                url,
+                header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + getAccessToken()))) {
             if (response.code() == 401 && retry) {
                 refreshAccessToken();
                 return getFileMetadata(fileId, false);

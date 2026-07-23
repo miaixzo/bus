@@ -50,7 +50,7 @@ import org.miaixz.bus.fabric.protocol.Itinerary;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.sse.calls.SseCall;
-import org.miaixz.bus.fabric.protocol.sse.event.SseRetry;
+import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
 
 /**
  * Immutable SSE exchange.
@@ -84,8 +84,8 @@ public final class SseX {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.snapshot = new SseSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, builder.retry, builder.lastEventId, builder.autoReconnect, builder.responseHandler,
-                builder.guard, builder.filter, currentObserver,
+                builder.timeout, builder.retryPolicy, builder.lastEventId, builder.autoReconnect,
+                builder.responseHandler, builder.guard, builder.filter, currentObserver,
                 builder.handler == null ? noopHandler() : builder.handler, builder.listener);
         this.runner = new SseRunner(snapshot);
         this.callback = builder.callback;
@@ -193,6 +193,7 @@ public final class SseX {
                 snapshot.context().reactor().dispatcher(),
                 callback,
                 snapshot.observer(),
+                snapshot.timeout(),
                 cancellation -> Mediator.execute(Type.SSE, cancellation, runner::open),
                 dispatchKey());
     }
@@ -318,7 +319,7 @@ public final class SseX {
         /**
          * Retry policy.
          */
-        private SseRetry retry;
+        private SseRetryPolicy retryPolicy;
 
         /**
          * Whether EOF should reconnect.
@@ -385,7 +386,7 @@ public final class SseX {
             this.headers = Headers.builder();
             final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
-            this.retry = SseRetry.defaults();
+            this.retryPolicy = SseRetryPolicy.resolve(context.options());
             this.autoReconnect = true;
             this.responseHandler = (status, headers) -> {
             };
@@ -488,7 +489,19 @@ public final class SseX {
          * @return this builder
          */
         public Builder retry(final Duration retry) {
-            this.retry.update(validateDuration(retry, "SSE retry"));
+            final Duration current = validateDuration(retry, "SSE retry");
+            this.retryPolicy = new SseRetryPolicy(current, retryPolicy.maxDelay());
+            return this;
+        }
+
+        /**
+         * Sets the complete SSE reconnect policy.
+         *
+         * @param retryPolicy complete immutable reconnect policy
+         * @return this builder
+         */
+        public Builder retry(final SseRetryPolicy retryPolicy) {
+            this.retryPolicy = require(retryPolicy, "SSE retry policy");
             return this;
         }
 

@@ -47,6 +47,7 @@ import org.miaixz.bus.fabric.network.Transport;
 import org.miaixz.bus.fabric.network.aio.AioGroup;
 import org.miaixz.bus.fabric.network.aio.AioNetwork;
 import org.miaixz.bus.fabric.network.kcp.KcpNetwork;
+import org.miaixz.bus.fabric.network.kcp.KcpPolicy;
 import org.miaixz.bus.fabric.network.tcp.TcpNetwork;
 import org.miaixz.bus.fabric.network.tls.TlsChannel;
 import org.miaixz.bus.fabric.network.tls.TlsEngine;
@@ -357,8 +358,11 @@ final class SocketRunner {
         final DatagramOwner owner = DatagramOwner
                 .open(snapshot.context().listener(), snapshot.context().reactor().dispatcher());
         try {
-            final KcpNetwork kcp = KcpNetwork
-                    .create(owner.udp(), snapshot.context().clock(), snapshot.socketOptions().kcpWireVersion());
+            final KcpPolicy configured = snapshot.context().options().get(KcpPolicy.OPTION);
+            final KcpPolicy policy = configured == null
+                    ? KcpPolicy.builder().wireVersion(snapshot.socketOptions().kcpWireVersion()).build()
+                    : configured;
+            final KcpNetwork kcp = KcpNetwork.create(owner.udp(), snapshot.context().clock(), policy);
             final UdpSession session = kcp.open(snapshot.address());
             Logger.debug(
                     false,
